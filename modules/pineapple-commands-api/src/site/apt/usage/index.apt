@@ -1,0 +1,889 @@
+ ------
+ Guidelines for implementation of commands 
+ ------
+ Allan Thrane Andersen
+ ------
+ July 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Guidelines for implementation of commands
+
+	This document describes how Chain commands in Pineapple project should be 
+	implemented using the content of the commands API project.
+
+	Implementation of commands involves these issues:
+
+		* <<Types:>> Which interface and classes to implement.
+
+		* <<Interface contract:>> Legal outcomes of command execution.
+
+		* <<Command naming:>> Which package to place the commands in what to name the command classes.	
+
+		* <<Command initialization:>> Mapping of context values into commands fields.	 
+			 
+		* <<Context validation:>> Validation of the command context values.	 
+
+		* <<Exposing available commands:>> How to expose commands to other Maven projects. And to access the commands. 
+
+		* <<Command invocation:>> How to invoke commands.		 	
+		
+		* <<Documentation:>> How to write Javadoc for commands.	
+			
+		[]
+
+* Types
+
+	Two kinds of commands exists in Pineapple:
+	
+		* <<Test commands:>> commands that tests the state of resources. 
+	
+		* <<Regular commands:>> commands that don't tests anything but serves 
+		another purpose, e.g. initiating the tool, loading data or 
+		executing stuff.
+	
+		[]	
+
+	Both kind of commands should implement the command interface from Commons Chain:
+	<<<org.apache.commons.chain.Command>>>.
+	 	
+
+* Interface contract
+
+	The interface contract defines the legal outcomes of command execution and it is
+	defined by the <<<org.apache.commons.chain.Command>>> interface in the Commons Chain 
+	project. The definition of <<<org.apache.commons.chain.Command>>> interface is:
+
++-----------
+public interface Command {
+	
+	public boolean execute(Context context) throws Exception
+}		
++-----------
+ 
+ 	A command is executed by invoking the <<<execute(..)>>> method. There is 
+ 	three legal outcomes for execution of a regular command in Pineapple:
+
+		[[1]] Command succeeded, continue chain.		
+		
+		[[2]] Command succeeded, discontinue chain.
+	
+		[[3]] Command failed. 	
+
+		[]
+
+** Command succeeded, continue chain	
+	
+	Successful command execution with continued chain is signaled by:
+	
+		* The <<<execute(..)>>> method returns <<<false>>>.
+		
+		[]
+
+	If the command resides in a chain then returning <<<false>>> signals that 
+	execution should continue on the next command in the chain. If no command 
+	returns true, before reaching the end of the command sequence, the chain 
+	is assumed to have completed normally.			     
+
+** Command succeeded, discontinue chain	
+	
+	Successful command execution with discontinued chain is signaled by:
+	
+		* The <<<execute(..)>>> method returns <<<true>>>.
+		
+		[]
+
+	If the command resides in a chain then returning <<<true>>> signals that 
+	execution shouldn't continue on the next command in the chain. A command 
+	should return true if the chain has completely handled the process. This 
+	notion is the basis of the Chain of Responsibility. Processing is handed 
+	off from command to command, until a command handles the command.	
+
+** Command failed	
+
+	Failed command execution is signaled by:
+	
+		* A command throws a <<<com.alpha.pineapple.command.CommandException>>>.
+				
+		[]
+
+	A chain ends abnormally when any exception is thrown by a command. With 
+	Commons Chain, if a command throws an exception, the chain is broken. 
+	The exception, be it a runtime exception or application exception, will 
+	bubble up to the original caller of the chain. 
+		
+
+* Command naming
+
+	Commands which are implemented as part of a Pineapple plugin should be 
+	placed in unique package named: <<<\<unique plugin package>.command>>>, 
+	where <<<\<unique plugin package>>>> is a unique package name for the 
+	plugin. Example: <<<com.alpha.pineapple.plugin.net.command>>>.
+	
+	Classes should be named <<<\<my thing>Command>>>, where <<<\<my thing>>>> is 
+	description of what the command does. 	  
+
+
+* Command initialization	 
+
+	The command API contains classes which implements support for automatic
+	mapping of context values into commands fields at run time.
+	
+	A command is invoked with a context which contains the data that the command
+	operates on. Use the class 
+	<<<com.alpha.pineapple.command.initialization.CommandInitializerImpl>>> to map values from 
+	the context into command fields before the command logic is executed.
+	
+	Initialization can be implemented by inheritance or by delegation.
+  	  
+** Initialization by inheritance
+
+	This hasn't been designed yet. Until then, please use delegation.
+
+** Initialization by delegation
+
+	Example of how to implement initialization in a command:
+
++-----------
+
+public class SomeCommand {
+	
+    // Context key
+    public static final String CONTEXT_KEY = "my-key";
+
+    // Definition of some field.
+    @Initialize( CONTEXT_KEY )
+    String someField;
+		       				
+	public boolean execute(Context context) throws Exception
+	{
+
+		// initialize command 
+		CommandInitializer initializer =  new CommandInitializerImpl();
+		initializer.initialize(context, this);
+
+		// remaining command execution here....
+		...      
+	}
+         		
+}
++-----------	 
+
+	The example consists of three parts:
+	
+		* Definition of key <<<CONTEXT_KEY>>> which defines key in the context 
+		which contains a value in context.
+		
+		* Definition of annotated field <<<someField>>> to whom the context 
+		value is mapped.
+		
+		* Execution of <<<CommandInitializer.initialize(..)>>> to do the 
+		initialization.
+	
+		[]
+	
+** How to implement automatic command initialization
+
+	Add these three elements to a command class:
+
+	[[1]] Definition of annotated fields which should be initialized with value 
+	from the context. A field is annotated with <<<@Initialize( \<key> )>>>. 
+	Where \<key> is an String constant which is expected by the command to be 
+	defined in the context at runtime.   
+	
+	[[2]] Definition of content keys for the values which should be mapped into 
+	command fields. Please notice that the initialization can map value from 
+	any context key.    
+		 	
+	[[3]] Add execution of <<<CommandInitializer.initialize(..)>>> to the 
+	beginning of the <<<execute(..)>>> method body to trigger the initialization.
+		
+	[]
+		
+** Failing initialization
+		
+	If an expected context key-value pairs isn't found then a
+	<<<com.alpha.pineapple.command.initialization.CommandInitializationFailedException>>>
+	is thrown and command initialization is aborted.		
+		
+** Value conversion during field initialization
+
+	The strategy for conversion of values used during field initialization,
+	depends on the type and value of the source key in the context and the 
+	type of the target field: 
+	
+*-----------------*------------------*-----------------*---------------------------------------------*
+| <<Source Type>> | <<Source Value>> | <<Target Type>> | <<Result>>                                  |
+*-----------------*------------------*-----------------*---------------------------------------------*
+| any             | null             | primitive       | Value assignment is skipped as null can't   |
+|                 |                  |                 | be assigned to primitive types.             |
+*-----------------*------------------*-----------------*---------------------------------------------*
+| String          | any              | primitive       | Converted from String to primitive value.   |
+*-----------------*------------------*-----------------*---------------------------------------------*
+| String          | any              | String[]        | Converted from String to String[].          |
+*-----------------*------------------*-----------------*---------------------------------------------*
+Supported value conversions
+  
+		
+** The benefits of using automatic command initialization
+
+	The benefits are:
+	
+		* Removes the need for wiring code which map values from context into 
+		command fields.  
+		
+		* Removes the need to type cast context values to field types. 
+		
+		* Context values can be supplied as <<<String>>> and be automatically 
+		converted to the type declared by a field.				
+		
+		* Command execution fails if expected context keys isn't defined in the 
+		context at runtime, i.e. the the annotated fields serves to define 
+		the precondition for execution of a command. 
+				
+		[]		
+	
+
+* Context validation
+
+	The command API contains classes which implements support for automatic 
+	validation of values mapped from the context into commands
+	during command initialization. 
+
+	The context is essentially a map with key-value pairs. In addition to 
+	mapping value parts of key-values pair from the context, the command 
+	initializer also support validation of the values before they are mapped to 
+	command fields.   
+	   
+	Example of how to implement value validation in a command:
+
++-----------
+
+public class SomeCommand {
+	
+	...
+	
+    // Definition of some field.
+    @Initialize( SomeCommand.CONTEXT_KEY )
+    @ValidateValue( ValidationPolicy.NOT_NULL )
+    String someField;
+		       				         		
+}
++-----------	 
+
+	
+	Value validation is implemented by adding a 
+	<<<@ValidateValue( \<policy> )>>> annotation to a field which is already 
+	annotated with the <<<@Initialize( \<key> )>>> annotation. The \<policy> 
+	part of the validation annotation defines one or more <<validation policies>>.
+	A validation policy defines what is legal value for the field.
+	
+** Failing validation	
+	
+	If an illegal value is found in the context then a 
+	<<<com.alpha.pineapple.command.initialization.CommandInitializationFailedException>>>
+	is thrown and command initialization is aborted.
+
+** Supported validation policies
+
+	Two validation policies is defined:
+	
+		* Not Null - validates that the value isn't null.
+		
+		* Not Empty - validates that the content of validated object isn't null 
+		and empty. The semantics of depends on the type of the validated object. 
+		The "not empty" validation is supported for these types: 
+		
+			* <<<java.lang.String>>>
+			
+			* <<<java.util.Map>>>
+			
+			* <<<java.util.Collection>>>
+			
+			* <<<java.lang.Object[]>>> 
+	
+			[]
+			
+		[]
+							
+** Implementation is based on <<<org.apache.commons.lang.Validate>>>
+		
+	The validation of the policies is implemented using 
+	<<<org.apache.commons.lang.Validate>>> so the validation of the supported 
+	types corresponds to the behavior that class:
+	
+	The not-empty policy for <<<java.lang.String>>> fails if:
+	
+		* The object is null.
+		
+		* The length of the string is zero.
+		
+		[]
+		
+	The not-empty policy for <<<java.util.Map>>> and <<<java.util.Collection>>> 
+	fails if:
+	
+		* The object is null.
+		
+		* The size of the collection / map is zero.
+		
+		[]
+
+	The not-empty policy for <<<java.lang.File>>> fails if:
+	
+		* The object is null.
+		
+		* The length of the parent and child is zero.
+		
+		* The length of the file name or the path is zero. 
+		
+		[]
+
+	The not-empty policy for <<<java.lang.Object[]>>> fails if:
+	
+		* The object is null.
+		
+		* The length of the array is zero.
+		
+		[]
+							
+	
+** Examples	
+			
+	1) String is not null 
+	
++-----------
+    // Definition of some field.
+    @Initialize( SomeCommand.CONTEXT_KEY )
+    @ValidateValue( ValidationPolicy.NOT_NULL )
+    String someField;		       				         		
++-----------	 
+	
+	2) Object is not null 
+	
++-----------
+    // Definition of some field.
+    @Initialize( SomeCommand.CONTEXT_KEY )
+    @ValidateValue( ValidationPolicy.NOT_NULL )
+    Object someField;		       				         		
++-----------	 
+	
+	3) String is not empty
+	
++-----------
+    // Definition of some field.
+    @Initialize( SomeCommand.CONTEXT_KEY )
+    @ValidateValue( ValidationPolicy.NOT_EMPTY )
+    String someField;		       				         		
++-----------	 
+
+	4) Collection is not empty
+	
++-----------
+    // Definition of some field.
+    @Initialize( SomeCommand.CONTEXT_KEY )
+    @ValidateValue( ValidationPolicy.NOT_EMPTY )
+    Collection someField;		       				         		
++-----------	 
+
+	4) Unnecessary double test using not-null + not-empty
+	
++-----------
+    // Definition of some field.
+    @Initialize( SomeCommand.CONTEXT_KEY )
+    @ValidateValue( {ValidationPolicy.NOT_NULL, ValidationPolicy.NOT_EMPTY})
+    Collection someField;		       				         		
++-----------	 
+
+	Since the not-empty policy includes a not-null validation before the 
+	object is tested for emptiness, there is no need to combine not-null and 
+	not-empty on fields. A not-empty policy will do.
+	
+
+* Exposing available commands
+		  	 	
+	A project which implements Chains commands should expose the commands 
+	by defining them as beans in a Spring context configuration file. The commands can 
+	then be looked up from within the project or from other projects. 
+	
+	An alternative is to use use a Chain catalog. This was initially used in 
+	Pineapple but was left behind because the Spring approach gave more 
+	development benefits due to the support for dependency injection.    
+	
+	Example of definition of commands in a spring context from the
+	<<<pineapple-infrastructure-test-plugin>>>:
+	
++-----------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:context="http://www.springframework.org/schema/context"
+    
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    		http://www.springframework.org/schema/oxm 
+    		http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+    		http://www.springframework.org/schema/context 
+    		http://www.springframework.org/schema/context/spring-context-3.0.xsd" >
+	
+	<!-- import pineapple-command-api bean definitions. -->
+	<bean id="commandRunner" class="com.alpha.pineapple.command.execution.CommandRunnerImpl" scope="prototype" />													
+
+	<!-- enable annotation based configuration / dependency injection -->
+	<context:annotation-config />
+
+	<!-- define input unmarshalling -->
+	<!-- define message source for internationalization  -->
+  
+	<!-- define support commands -->
+	<bean id="invokeHttpGetMethodCommand" class="com.alpha.pineapple.plugin.net.command.InvokeHttpGetMethodCommand" scope="prototype" />		
+	<bean id="testResponsePropertiesCommand" class="com.alpha.pineapple.plugin.net.command.TestResponsePropertiesCommand" scope="prototype" />
+
+	<!-- define test commands -->
+	<bean id="testResolveNameToIpAddressCommand" class="com.alpha.pineapple.plugin.net.command.TestResolveNameToIPAddressCommand" scope="prototype" />	
+	<bean id="testStickynessCommand" class="com.alpha.pineapple.plugin.net.command.TestStickynessCommand" scope="prototype" />	
+	<bean id="testLoadBalancingCommand" class="com.alpha.pineapple.plugin.net.command.TestLoadBalancingCommand" scope="prototype" />	
+	<bean id="testHostListenPortCommand" class="com.alpha.pineapple.plugin.net.command.TestHostListenPortCommand" scope="prototype" />	
+	<bean id="testFtpServerActiveCommand" class="com.alpha.pineapple.plugin.net.command.TestFtpServerActiveCommand" scope="prototype" />	
+	<bean id="testFtpServerContainsDirectoryCommand" class="com.alpha.pineapple.plugin.net.command.TestFtpServerContainsDirectoryCommand" scope="prototype" />	
+	<bean id="testFtpServerCanCreateDirectoryCommand" class="com.alpha.pineapple.plugin.net.command.TestFtpServerCanCreateDirectoryCommand" scope="prototype" />	
+	<bean id="testWindowsShareCommand" class="com.alpha.pineapple.plugin.net.command.TestWindowsShareCommand" scope="prototype" />	
+	<bean id="testHttpRedirectCommand" class="com.alpha.pineapple.plugin.net.command.TestHttpRedirectCommand" scope="prototype" />	
+	<bean id="testHttpHeaderCommand" class="com.alpha.pineapple.plugin.net.command.TestHttpHeaderCommand" scope="prototype" />	
+
+	<!-- define model mapper -->
+</beans>
++-----------	
+			
+		  	
+* Command invocation
+
+	There are two approaches to invoke commands:
+	
+	* Indirectly through a command facade (Recommended). 
+	
+	* Directly using a command runner.
+	
+** Invoking commands using a command facade
+
+	Invocation of indirectly commands through a command facade requires
+	the implementation of the facade.
+	
+	The facade should expose the parameter required by a command through the facade interface. 
+	Examples of commands facades are the <<<CommandFacade>>> in the core component and the
+	<<<DockerClient>>> in the docker support project.	
+	
+	The facade should invoke commands using a command as described in the next section.
+
+	The usage of a facade is recommended for command which are reused across a project,
+	since the command invocation using a command runner only needs to be implemented once.
+
+	A command facade should throw a an exception when the command invocation fails.
+	The exception should be a subclass of the <<<ExecutionResultException>>> which
+	can contain an embedded <<<ExecutionResult>>>. 
+	The exception should contain execution result for the failed command to allow
+	for further inspection by the client.
+			
+** Invoking commands using a command runner	
+
+	Invoking commands using a <<command runner>> supports:
+	
+	* Execution of a command in a controlled way, i.e. runtime exceptions are caught and
+	collected for analysis.
+	
+	* Information about how the execution went is collected for analysis.
+	
+	* Factory for creation of command context.
+	
+	[]	  
+	
+	The command runner core interface is <<<com.alpha.pineapple.command.execution.CommandRunner>>> 
+	which provides the interface for execution of commands in Pineapple. The command API contains 
+	a standard implementation of the interface which is named <<<CommandRunnerImpl>>>. 		
+		
+	Example of how to execute a command using the command runner:
+
++-----------
+class SomeClass {
+
+  /**
+   * Test response properties command.
+   */
+  @Resource
+  Command testResponsePropertiesCommand;
+
+  /**
+   * Command runner
+   */
+  @Resource
+  CommandRunner commandRunner;        
+
+  public void someMethod( ExecutionResult executionResult ) {
+            
+    // configure command runner with execution result
+    commandRunner.setExecutionResult( executionResult );
+
+    // create context
+    Context context = commandRunner.createContext();
+    
+    // setup the context
+    context.put(.....);
+
+    // create description
+    String description = "description of the command....";
+                	        	
+    // run command            
+    commandRunner.run(testResponsePropertiesCommand, description, context);
+  }
+}		 		 
++-----------	 
+	
+	The example shows the five steps needed to run a command:
+	
+	* Get a command runner.
+	
+	* Get the command.	
+	
+	* Configure the command runner with a execution result.	
+	
+	* Setup the context.
+	
+	* Use the runner to run the command.
+	
+	[]
+
+** Getting the command runner
+
+	A command runner is obtained by dependency injection done by Spring. In the 
+	example above the class <<<SomeClass>>> is part of some project. The project
+	should define a Spring context configuration file where <<<SomeClass>>>  
+	and the command runner are defined as beans: 
+
++-----------	
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+    
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    		http://www.springframework.org/schema/context 
+    		http://www.springframework.org/schema/context/spring-context-3.0.xsd" >
+	
+	<!-- import pineapple-command-api bean definitions. -->
+	<bean id="commandRunner" class="com.alpha.pineapple.command.execution.CommandRunnerImpl" />													
+
+	<!-- enable annotation based configuration / dependency injection -->
+	<context:annotation-config />
+
+	<!-- define SomeClass bean-->
+	<bean id="someClass" class="com.alpha.pineapple.example.SomeClass" />
+	
+	<!-- define command bean-->	
+    <bean id="testResponsePropertiesCommand" class="com.alpha.pineapple.plugin.net.command.TestResponsePropertiesCommand" scope="prototype" />		
+</beans>
++-----------	
+	
+	The configuration file contains:
+		
+	* The class <<<SomeClass>>> is defined as a bean named <<<someClass>>>.
+	
+	* The class <<<CommandRunnerImpl>>> is defined as a bean named <<<commandRunner>>>.
+	
+	* Annotation based configuration is enabled with the tag <<<context:annotation-config>>>.
+	
+	[]
+		 	
+	The configuration file is <missing> the wiring of the command runner into the
+	<<<someClass>>> bean. The dependency injection is instead setup by these two steps:
+	
+	* <<<SomeClass>>> defines a <<<@Resource>>> annotated field with a matching of the 
+	type <<<CommandRunner>>> and matching name of the command runner bean, i.e. <<<commandRunner>>>:
+	
++-----------            
+@Resource
+CommandRunner commandRunner;        
++-----------	 	
+	
+	* The Spring configuration file has annotation based configuration enabled, which trigger the
+	wiring of the command runner into the <<<someClass>>> bean when the context is initialized.
+
++-----------            
+<!-- enable annotation based configuration / dependency injection -->
+<context:annotation-config />
++-----------	 	
+	
+	[]
+	
+	..so lookup the <<<SomeClass>>> bean from the application context (or inject it into another object)
+	and it will be initialized with a command runner instance.
+	
+	Finally, a few bits about the command runner bean definition:
+	
+	* The command runner is defined as a <prototype> bean. This is not necessary but it ensures that
+	a new command runner instance is injected into each dependent object.
+	
+	* The spring context configuration file shown above will reside in the project where <<<SomeClass>>>
+	is defined, and yet there is a bean definition of the command runner which reside in the 
+	<<<pineapple-commands-api>>> project. This is not an optimal solution as each project is required
+	to (re)define command runner as a bean. 
+		
+	[]    
+	
+** Getting the command
+
+	The command is obtained the same way as the command runner, e.g. by dependency injection. The steps are the same:
+	
+	* Define the command in the Spring context configuration file, as shown in the above example:
+	
++-----------            
+<!-- define command bean-->	
+<bean id="testResponsePropertiesCommand" class="com.alpha.pineapple.plugin.net.command.TestResponsePropertiesCommand" scope="prototype" />		
++-----------	 	
+
+	* Define a field of the type <<<Command>>> in the class where the command runner is used. Let the field name match
+	the bean ID in the Spring application context (or define the bean ID on the <<<@Resource>>> annotation). Here is
+	the field definition in <<<SomeClass>>>: 
+
++-----------                       
+ @Resource
+ Command testResponsePropertiesCommand;	 	
++-----------	 	
+
+	* The field is initialized where the class is wired by Spring.
+
+	[]	
+	 		
+** Configure the command runner with a execution result	
+	
+	The command runner should be configured with a execution result object to provide a way to capture 
+	the result of the execution of the command. Invoke the 
+	<<<CommandRunner.setExecutionResult( executionResult )>>> with a root execution result object:
+	
++-----------            
+// configure command runner with execution result
+commandRunner.setExecutionResult( executionResult );
++-----------	 
+		
+	If the no execution result object is configured before the command runner is used
+	then the command runner will create a new root execution result object when the runner
+	is used to execute commands. This create an new hierarchy of execution objects 
+	and this is not recommended. Always tap into an existing hierarchy of execution 
+	objects as this will ensure that the results are propagated to the client.
+	 	
+** Setup the context
+
+	Create a context for the chain command and populate it with the properties required 
+	by the command. Use the command runner to create contexts for commands by invoking
+	the method <<<CommandRunner.createContext()>>> which creates e new Chain context;
+		 
++-----------
+// create context
+Context context = commandRunner.createContext();
+    
+// setup the context
+context.put(.....);		 
++-----------		 
+
+** Use the runner to run the command
+
+	Invoke the method <<<CommandRunner.run(Command command, String description, Context context)>>> 
+	to execute the command:
+
++-----------
+// run command            
+commandRunner.run(testResponsePropertiesCommand, description, context);
++-----------		
+	
+	When the runner is invoked it will:
+	
+	[[1]] The runner validates whether it has been configured with a root execution result 
+	object. If this is not the case, then it will create a new root execution result 
+	object.
+	
+	[[2]] The runner creates a new child execution result object and stores the supplied
+	description argument with the result object. This result object is used to describe
+	how the execution of the command proceeds.
+	
+	[[3]] The child execution result object is added as the child to the root execution 
+	result object.   
+	
+	[[4]] The runner adds the child execution object to the context with the 
+	key <<execution-result>>.
+	
+	[[5]] The runner invokes <<<Command.execute(Context context)>>> on the
+	command.
+	
+	[[6]] The command executes its business logic. And prior to completion it should
+	update the execution result object which where added to the context. The command 
+	should update the state by:
+	
+		* Set the execution state to reflect the outcome of the execution, e.g. <success>, 
+		<failed>, <error> or <computed>.
+		
+		* Add a message with the key <Message> which describes how the execution went.
+		
+		* If the execution completed with an <error> state, then add a message with the 
+		key <StackTrace> which contains the stack trace for the error. 
+		
+		[] 
+	 
+	[[7]] If the command throws an exception, then the runner will catch it and complete 
+	the child execution result as failed with an error using the exception as input.
+	 
+	[[8]] Return the child execution result.
+	 
+	[]
+	
+		 
+** Invoking command from other commands
+
+	The <<recommended>> approach to invoke a command from another command is to implemente
+	the invocation in a command facade which enable reused of the invocation plumbing code.
+
+	The recipe for invoking other commands from a command is basically the same as invoking a 
+	command from any class, which was illustrated by <<<SomeClass>>> above. Here is an example 
+	of <<<CommandA>>> which invokes <<<CommandB>>>:
+	
++-----------
+
+class CommandA implements Command{
+
+ @Resource
+ Command commandB;	 	
+
+ @Resource
+ CommandRunner commandRunner;        
+
+ public boolean execute(Context context) throws Exception {
+
+   // get execution result from context
+   ExecutionResult result = (execution result) context.get("execution-result");
+
+   // configure command runner with execution result
+   commandRunner.setExecutionResult( result );
+
+   // create context for CommandB
+   Context cmdBcontext = commandRunner.createContext();
+    
+   // setup the context CommandB
+   cmdBcontext.put(.....);
+
+   // run command            
+   commandRunner.run(commandB, "description of the command B...", context);
+ 
+   // other stuff here....  
+ }
+
+}
+
++-----------		
+	
+	Be aware of these points: 
+	
+	* <<Create child execution results from the existing execution result>>. If <<<CommandA>>> is invoked 
+	from the class <<<SomeClass>>> using the recipe described above, then command context contains a 
+	execution result object for <<<CommandA>>>. The execution result should be used to configure 
+	the command runner which is used to invoke <<<CommandB>>>. This will ensure that the execution result 
+	for <<<CommandB>>> is created as a child for <<<CommandA>>> and all of the results are propagated to 
+	the Pineapple client:   
+
++-----------
+
+class CommandA implements Command{
+
+ @Resource
+ Command commandB;	 	
+
+ @Resource
+ CommandRunner commandRunner;        
+
+ public boolean execute(Context context) throws Exception {
+
+   // get execution result from context
+   ExecutionResult result = (execution result) context.get("execution-result");
+
+   // configure command runner with execution result
+   commandRunner.setExecutionResult( result );
+
+   // create context for CommandB
+   Context cmdBcontext = commandRunner.createContext();
+    
+   // setup the context CommandB
+   cmdBcontext.put(.....);
+
+   // run command            
+   commandRunner.run(commandB, "description of the command B...", context);
+ 
+   // other stuff here....  
+ }
+
+}
+
++-----------		
+		 	
+	* <<Create a separate command context>>. Create a new command context for <<<CommandB>>> to 
+	avoid overwriting properties that the invoker of <<<CommandA>>> expects to be defined in 
+	the context.
+	
+	[]
+		
+	These principles should be observed even if the commands reside in the same project. 
+	
+* Documentation: How to write Javadoc for commands			
+
+	Please use the Javadoc for the command 
+	<<<com.alpha.pineapple.plugin.net.command.TestResponsePropertiesCommand>>>
+	for a template which shows how to JavaDoc should written for a regular 
+	command. Including purpose, precondition and postcondition:
+
++---
+/**
+ * <p>Implementation of the <code>com.alpha.pineapple.command.test.Command</code> 
+ * interface which which asserts a {@link ResponsePropertyInfoSet} against 
+ * the content of a {@link HttpInvocationsSet}.</p>
+ * 
+ * <p>Each {@link ResponsePropertyInfo} can contains two assertions which
+ * are tested against the {@link HttpInvocationResult } objects contained
+ * in the {@link HttpInvocationsSet}.
+ * 
+ * <p>If the HTTP invocation set is empty or contains a single sequence, 
+ * then the test is successful by default.</p>
+ *  
+ * <p>Precondition for execution of the command is definition of these keys in 
+ * the context:
+ * 
+ * <ul>
+ * <li><code>execution-result</code> contains execution result object which is used 
+ * to report the result of the execution of the test. The type is 
+ * <code>com.alpha.pineapple.plugin.execution.ExecutionResult</code>.</li> 
+ * 
+ * <li><code>invocation-result-set</code> HTTP invocation 
+ * result set which the test is run against. The type is 
+ * <code>HttpInvocationsSet</code>.</li>
+ * 
+ * <li><code>response-property-info-set</code> defines a collection of
+ * response properties which which are asserted against the content 
+ * of the {@link HttpInvocationsSet}. The type is 
+ * <code>com.alpha.pineapple.plugin.net.http.ResponsePropertyInfoSet</code>.</li>
+ * </ul>
+ * </p> 
+ *
+ * <p>Postcondition after execution of the command is:
+ * 
+ * <ul> 
+ * <li>The the state of the supplied <code>ExecutionResult</code> is updated
+ * with <code>ExecutionState.SUCCESS</code> if the test succeeded. If the 
+ * test failed then the <code>ExecutionState.FAILURE</code> is returned.</li>
+ * <li>If the test fails due to an exception then the exception isn't caught, 
+ * but passed on the the invoker whose responsibility it is to catch it and update 
+ * the <code>ExecutionResult</code> with the state <code>ExecutionState.ERROR</code>.
+ * </li>
+ * </ul>  
+ * </p>        
+ */
++---	  
+								

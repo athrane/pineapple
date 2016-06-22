@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+    xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+   <mmd:model target-resource="ssh-ci-node1"  target-operation="create-report" description="Get logs from docker host at 192.168.99.10" >
+        <mmd:content>
+            <shp:ssh>
+                <shp:execute command="sudo journalctl -u docker.service --no-pager"/>
+            </shp:ssh>
+        </mmd:content>
+    </mmd:model>
+   <mmd:model target-resource="ssh-ci-node2"  target-operation="create-report" description="Get logs from docker host at 192.168.99.11" >
+        <mmd:content>
+            <shp:ssh>
+                <shp:execute command="sudo journalctl -u docker.service --no-pager"/>
+            </shp:ssh>
+        </mmd:content>
+    </mmd:model>    
+</mmd:models>

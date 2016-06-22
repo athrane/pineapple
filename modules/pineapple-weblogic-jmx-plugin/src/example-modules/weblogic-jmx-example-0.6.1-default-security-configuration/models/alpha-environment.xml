@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+		xmlns:wjp="http://www.bea.com/ns/weblogic/920/domain" 
+		xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls" 
+		xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/security/xacml 
+		http://www.bea.com/ns/weblogic/90/security/xacml.xsd 	
+		http://www.bea.com/ns/weblogic/90/security 
+		http://www.bea.com/ns/weblogic/90/security.xsd 
+		http://www.bea.com/ns/weblogic/920/domain 
+		http://www.bea.com/ns/weblogic/920/domain.xsd 
+		http://www.bea.com/ns/weblogic/90/security/wls 
+		http://www.bea.com/ns/weblogic/90/security/wls.xsd"
+		>
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>		
+			<wjp:domain >				
+				<wjp:name>alphadomain</wjp:name>
+				<wjp:security-configuration>
+					<wjp:name>alphadomain</wjp:name>
+					<wjp:realm>
+					  <sec:authentication-provider xsi:type="wls:default-authenticatorType">
+					  </sec:authentication-provider>
+					  <sec:authentication-provider xsi:type="wls:default-identity-asserterType">
+					  <sec:active-type>AuthenticatedUser</sec:active-type>
+					  </sec:authentication-provider>
+					  <sec:role-mapper xmlns:xac="http://www.bea.com/ns/weblogic/90/security/xacml" xsi:type="xac:xacml-role-mapperType"></sec:role-mapper>
+					  <sec:authorizer xmlns:xac="http://www.bea.com/ns/weblogic/90/security/xacml" xsi:type="xac:xacml-authorizerType"></sec:authorizer>
+					  <sec:adjudicator xsi:type="wls:default-adjudicatorType"></sec:adjudicator>
+					  <sec:credential-mapper xsi:type="wls:default-credential-mapperType"></sec:credential-mapper>
+					  <sec:cert-path-provider xsi:type="wls:web-logic-cert-path-providerType"></sec:cert-path-provider>
+					  <sec:cert-path-builder>WebLogicCertPathProvider</sec:cert-path-builder>
+					  <sec:name>myrealm</sec:name>
+					</wjp:realm>
+					<wjp:default-realm>myrealm</wjp:default-realm>
+					<wjp:credential-encrypted>{3DES}lzk5xgJ+NKaLUb8SJm5BUmNVSqa7yAFGEXp5WV2Mz6Pl6gYHVsINZvt+Bm7EDRNpSPXCW5JMA8lJifTPy3pulJ5LbvRlWTVR</wjp:credential-encrypted>
+					<wjp:node-manager-username>weblogic</wjp:node-manager-username>
+					<wjp:node-manager-password-encrypted>{3DES}sFVI2zdwIyefey5hsxsGeA==</wjp:node-manager-password-encrypted>
+				</wjp:security-configuration>										
+			</wjp:domain>			
+		</mmd:content>							
+	</mmd:model>		
+</mmd:models>		

@@ -1,0 +1,47 @@
+ ------
+ How-to: Use the commands API with the Spring framework
+ ------
+ Allan Thrane Andersen
+ ------
+ November 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Use the commands API with the Spring framework
+
+	The commands API should be configured with Spring by:
+	
+	* Use Spring configuration file from the commands API project.		
+	
+	[] 
+
+* Use Spring configuration file from the commands API project 
+
+	The commands API project contains a Spring configuration file 
+	which can be imported into a Spring configuration file
+	which wishes to use the classes in the commands API.
+	 
+	To use the Spring configuration file from the commands API project, 
+	add an <import> tag which imports the file
+	<<com.alpha.pineapple.command-config.xml>> into the bean definitions:
+	
++---
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- import pineapple-command-api bean definitions. -->
+	<import resource="com.alpha.pineapple.commands-config.xml"/>
+				
+	<!-- all remaining bean definitions. -->
+	    	    
+</beans>    
+
++---
+
+		

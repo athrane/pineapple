@@ -1,0 +1,2128 @@
+ ------
+ Development documentation - Implementation 
+ ------
+ Allan Thrane Andersen 
+ ------
+ August 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Development documentation - Implementation
+
+	The implementation contains these packages:
+	
+	* Plugin class.
+	
+	* Session classes.
+	
+	* Operation classes.
+	
+	* {{{Resolved_model_classes}Resolved model classes}}.
+	 
+	* {{{Resolved_model_traversal_classes}Resolved model traversal classes}}.
+	
+	* {{{Resolved_model_traversal_strategy_classes}Resolved model traversal strategy classes}}.
+
+	* {{{Resolved_model_building_classes}Resolved model building classes}}.
+	
+	* {{{Resolved_model_test_classes}Resolved model test classes}}.	
+	
+	* {{{Commands}Commands}}.		
+	
+	* {{{XMLBeans_model_access_classes}XMLBeans model access classes}}.
+	 
+	* {{{MBeans_model_access_classes}MBeans model access classes}}.
+		 
+	* {{{Generic_reflection_helper_classes}Generic reflection helper classes}}.
+		 
+	* {{{Generic_JMX_helper_classes}Generic JMX helper classes}}.		 		 
+		 
+	[]	 
+
+
+* Plugin class
+
+	The package <<<com.alpha.pineapple.plugin.weblogic.jmx>>> is the root
+	package of the plugin and contains the plugin class <<<PluginImpl>>>. 
+	
+* Constants 
+
+	The package <<<com.alpha.pineapple.plugin.weblogic.jmx>>> is the root
+	package an contains these constant classes:
+	
+	* <<<WebLogicMBeanConstants>>> implements WebLogic and JMX constants.
+	
+	* <<<WebLogicXmlBeanConstants>>> implements WebLogic XMLBeans constants.
+	
+	[]
+	
+* Session classes
+
+	The package <<<com.alpha.pineapple.plugin.weblogic.jmx.session>>> contains
+	the session classes for the plugin:
+	
+	* <<<JMXSession>>> extends the <<<Session>>> interface.
+	
+	* <<<WeblogicJMXEditSession>>> extends the <<<JMXSession>>> interface.
+		
+	* <<<WeblogicJMXEditSessionImpl>>> implements the <<<WeblogicJMXEditSessionImpl>>> 
+	interface and provides access to a WebLogic Edit Session.
+		
+	[]
+
+* Operation classes
+
+	The package <<<com.alpha.pineapple.plugin.weblogic.jmx.operation>>> contains
+	the operation classes for the plugin.
+	
+	The plugin implement these default operations: 
+
+	* <<<CreateReport>>> implements the operation <<<deploy-configuration>>>.
+	
+	* <<<DeployConfiguration>>> implements the operation <<<deploy-configuration>>>. 
+	
+	* <<<UndeployConfiguration>>> implements the operation <<<undeploy-configuration>>>.	
+
+	* <<<TestOperation>>> implements the operation <<<test>>>. 
+		
+	[]
+	
+	
+	
+** Preparing the XMLBeans model for traversal	
+
+	The XMLBeans model must be stored in an <<<ResolvedParticipant>>> which is used during
+	traversal. A resolved participant object contains three pieces of information: value, 
+	type and a name.		
+	
+	The value part of the participant is resolved as:
+	
+	* When <<<execute( Object content, Session session, ExecutionResult result )>>> is invoked
+	the <<<content object>>> contains a <<<DomainDocument>>> object. 
+	
+	* The domain document object is type cast to <<<DomainDocument>>>.
+	
+	* The root object in the model, the domain object, of type <<<DomainType>>> is retrieved from
+	the domain document. 
+	
+	[]
+	
+	The type part of the participant is resolved as:	
+		
+	* Reading <<<SchemaType>>> from the the domain document.
+	
+	* Resolving the property named <Domain> from the schema type, which is returned as an
+	<<<SchemaProperty>>>.
+	
+	* The schema property is stored as the type for the domain object.
+	
+	[]        
+	
+	The name part of the participant is resolved as:
+	
+	* The value of the <<<name>>> attribute of the domain  object.
+	
+	[]        		
+	 
+
+** Preparing the MBeans model for traversal
+
+	The MBeans model must be stored in an <<<ResolvedParticipant>>> which is used during
+	traversal. A resolved participant object contains three pieces of information: value, 
+	type and a name.		
+	
+	The value part of the participant is resolved as:
+	
+	* The <<<session>>> argument is type cast to a <<<WeblogicJMXEditSession>>>.
+	
+	* The WebLogic Edit session is set into <edit mode>, at which point the 
+	<<<DomainMBean>>> for the current session is available. 
+	
+	* The <<<DomainMBean>>> is obtained as a <<<ObjectName>>> which allows for standard JMX 
+	access to the MBeans model. 
+	
+	[]
+
+	The type part of the participant is resolved as:	
+	
+	* The type is resolved as <<<ObjectName>>>.
+	
+	[]
+
+	The name part of the participant is resolved as:
+	
+	* The value of the <<<Name>>> key property read from domain object name.
+	
+	[]        		
+	 
+** Setting up the model traversal 	 
+	
+	With two models ready for traversal the operation class prepares the traversal by:
+	
+	* Create a <<<ResolvedObject>>> object	which contains:
+
+		* A primary resolved participant which contains the XMLBeans model as described above. 	
+		
+		* A secondary resolved participant which contains the MBeans model as described above.		
+			
+		[]
+	
+	* The operation is configured with the Spring bean
+	{{{Configured_ModelTraversalDirector_instances}xmlBeansModelBuilder}}
+	which is an instance of the class <<<ModelTraversalDirectorImpl>>>. The traversal director 
+	directs the <<building>> of an resolved model from the two models. The traversal director 
+	uses the resolved model visitor 
+	{{{Model_building_algorithm_in_ResolvedModelBuilderVisitorImpl}ResolvedModelBuilderVisitorImpl}} 
+	to build the resolved model. The traversal director completes initialization of the visitor 
+	by setting the session object which gives access to a JMX Edit Session in WebLogic.
+	
+	* The operation is configured with the Spring bean
+	{{{Configured_ModelTraversalDirector_instances}xmlBeansModelTester}}
+	which is an instance of the class <<<ModelTraversalDirectorImpl>>>. The traversal director 
+	directs the <<test>> of an resolved model containing the two models. The traversal director 
+	uses the resolved model visitor 
+	{{{Model_test_algorithm_in_ResolvedModelTesterVisitorImpl}ResolvedModelTesterVisitorImpl}} 
+	to test the resolved model.	The traversal director completes initialization of the visitor 
+	by setting the session object which gives access to a JMX Edit Session in WebLogic.
+	
+	[]
+	
+	Finally the traversal is started. The pseudo code for the process looks like:
+	
++-----
+    // create resolved type at the root of the models
+    ResolvedType resolvedRoot = ResolvedTypeImpl.createResolvedObject( NULL_PARENT, primary, secondary );                              
+
+    // recursive traversal of the model
+    builderDirector.traverse( resolvedRoot, result  );
+    
+    // recursive traversal of the model
+    testDirector.traverse( resolvedRoot, result  );
+    
++-----	
+
+* {Resolved model classes}
+
+	The package <<<com.alpha.pineapple.resolvedmodel>>> 
+	contains classes which are used to store the result when two models 
+	are resolved against each other to locate the corresponding model entities 
+	which should be processed. A resolved model contains these types:  
+	
+	* <<<ResolvedType>>> - defines a type which is resolved in each of the two traversed 
+	models.  
+	
+	* <<<ResolvedTypeImpl>>> - the default implementation of <<<ResolvedType>>> which
+	contains a two model participants, one from each model which have been resolved. The
+	<<<ResolvedType>>> is extended with specific sub types which the model participants 
+	can be resolved into:
+	
+		* <<<ResolvedObject>>> - represents model entities resolved to object.  
+	 
+		* <<<ResolvedCollection>>> - represents model entities resolved to a collection,
+		which contains model entities of a type. A collection can be implemented 
+		different in the different models. The <<<ResolvedCollection>>> is used
+		to represent both arrays and collection classes.  
+  	
+		* <<<ResolvedPrimitive>>> - represents model entities resolved to a primitive, 
+		such as a integer, char, boolean and string.
+
+		* <<<ResolvedEnum>>> - represents model entities resolved to a enumerated type. 
+
+		* <<<UnresolvedType>>> - represents unresolved type due to an exception. The exception
+		is contained in both of the participants.		 
+
+		[]				
+	
+	* <<<ResolvedParticipant>>> - defines information about a entity from a single model. Used by
+	<<<ResolvedType>>> which always contains two of these, one from each model.
+	
+	* <<<ResolvedParticipantImpl>>> - default implementation of <<<ResolvedParticipant>>>.
+
+	* <<<ResolvedParticipantStyle>>> - extension of the <<<org.apache.commons.lang.builder.ToStringStyle>>>
+	class which can output the content of an resolved participant on a single line.
+			
+	[]	
+
+** Creating resolved objects
+	
+	Resolved object are created by <<<ResolvedModelBuilderVisitorImpl>>> during model construction. The builder visitor invokes
+	the <<<createResolvedType(..)>>> method on its primary model resolver to create resolved model object:
+	
++----
+
+interface ModelResolver {
+
+  ResolvedType createResolvedType(ResolvedType parent, ResolvedParticipant primary, ResolvedParticipant secondary);
+ 
+  // remaining interface definition goes here.. 
+}  
+
++----	
+	
+	The primary model resolver for a model builder visitor is initialized using depedency injection based on the Spring 
+	configuration for a particular model visitor bean definition.
+	
+	Implementations of the <<<ModelResolver>>> interface should create resolved type instances using the public factory 
+	methods on <<<ResolvedTypeImpl>>>:	
+	
++-----
+
+public static ResolvedType createResolvedType( ResolvedType parent, ResolvedParticipant primary, ResolvedParticipant secondary );
+public static ResolvedObject createResolvedObject( Object primary, Object secondary );
+public static ResolvedObject createResolvedObject( ResolvedType parent, ResolvedParticipant primary, ResolvedParticipant secondary );
+public static ResolvedCollection createResolvedCollection( ResolvedType parent, ResolvedParticipant primary, ResolvedParticipant secondary );
+public static ResolvedEnum createResolvedEnum( ResolvedType parent, ResolvedParticipant primary, ResolvedParticipant secondary );
+public static ResolvedPrimitive createResolvedPrimitive( ResolvedType parent, ResolvedParticipant primary, ResolvedParticipant secondary );
+public static ResolvedType createUnresolvedType(ResolvedType parent, Exception exception);
+
++-----	
+	
+	Resolved participants are created using the public factory methods on 
+	<<<ResolvedParticipantImpl>>>: 
+	  
++-----
+
+public static ResolvedParticipant createSuccessfulResult( String name, Object type, Object value );
+public static ResolvedParticipant createSuccessfulResult( String name, Object type, Object value, ValueState state );
+public static ResolvedParticipant createUnsuccessfulResult( String name, Object type, Object value, Exception exception );
+
++-----	  
+		  		
+* {Resolved model traversal classes} 
+
+	The package <<<com.alpha.pineapple.resolvedmodel.traversal>>> 
+	contains classes for traversal of models:
+
+	* <<<ResolvedModelVisitor>>> - interface for visitor which can visit resolved model types.
+
+	* <<<ModelTraversalDirector>>> - interface for traversal of models. The traversal 
+	director supports parallel traversal of two models from a resolved root model node.
+
+	* <<<PostOrderDirectorImpl>>> - which implements the 
+	<<<ModelTraversalDirector>>> interface and supports postorder traversal of a resolved 
+	model. 
+
+	* <<<PreOrderDirectorImpl>>> - which implements the 
+	<<<ModelTraversalDirector>>> interface and supports preorder traversal of a resolved 
+	model. 
+			
+	[]
+
+** Visiting resolved objects
+	
+	Resolved object can be visited by resolved model visitors, which implement the 
+	interface <<<ResolvedModelVisitor>>>:
+
++----
+public interface ResolvedModelVisitor
+{
+    public Object visit(ResolvedType resolvedType, ExecutionResult result);
+    public Object visit(ResolvedObject resolvedObject, ExecutionResult result);
+    public Object visit(ResolvedEnum resolvedEnum, ExecutionResult result);
+    public Object visit(ResolvedCollection resolvedCollection, ExecutionResult result);
+    public Object visit(ResolvedPrimitive resolvedPrimitive, ExecutionResult result);
+    public Object visit(UnresolvedType unresolved, ExecutionResult result);
+    
+    public void setSession(Session session);
+}	
++----
+	
+	The interface defines two type of methods:
+	
+	* <<<setSession(Session session)>>> which is used to configure the visitor with
+	a Pineapple session object which enables the visitor to access a Pineapple 
+	resource if needed.
+		
+	* <<<visitXXX(..)>>> methods which allow visitation of resolved model types. 
+	Implementations of the interface can choose to return an optional product which
+	is produced by the visitor. The <<<ExecutionResult>>> argument contains a execution 
+	result which is passed on by the model traversal director. A visitor is free to
+	ignore the argument or create child execution results which documents the 
+	execution the visitor:
+	
+		* <<<XmlBeansDescriptionGeneratorImpl>>> is an example of an visitor which 
+		ignores the execution result.
+		
+		* <<<ResolvedModelBuilderVisitorImpl>>> is an example of an visitor which 
+		creates child execution results to document the how the construction of the
+		resolved model proceeds.
+		  		
+		[]	 
+		
+	[]					
+
+** ModelTraversalDirector implementations
+
+	The <<<PostOrderDirectorImpl>>> class implements a postorder  
+	traversal of resolved model. Postorder is defined as:
+	
+		* Visit the children of the current resolved object.
+		
+		* Visit the current resolved object.
+		
+		[]
+		
+	The <<<PreOrderDirectorImpl>>> class implements a preorder  
+	traversal of resolved model. Postorder is defined as:
+
+		* Visit the current resolved object.
+	
+		* Visit the children of the current resolved object.
+				
+		[]
+		 
+
+	Constructor injection is used for dependencies which are used in multiple 
+	different configurations. Field injection is used for objects which are 
+	doesn't change, i.e. are static. These dependencies is configured using 
+	constructor injection: 
+	
+	* resolved model visitor - which is invoked with each visited resolved model node.
+	
+	* traversal strategy - which is used to determine whether traversal should 
+	continue on a resolved model node.
+	
+	* description generator - which is an <<<ResolvedModelVisitor>>> implementation
+	capable of generating string descriptions of resolved objects.	 
+	
+	[]
+
+** {Configured ModelTraversalDirector instances}
+
+	The configuration of the director implementations and their dependencies are 
+	configured in the plugin application context configuration file:
+	<<<src/main/resources/com.alpha.pineapple.plugin.weblogic.jmx-config.xml>>>. The 
+	application context configuration file for the plugin contains these director beans:
+	
+	* <<<xmlBeansModelBuilder>>> which can build a resolved model from an XMLBeans model
+	and an MBeans model. The director is configured as an instance of <<<PreOrderDirectorImpl>>>
+	with the dependencies:
+	
+		* <<<xmlBeansModelBuilderVisitor>>> which constructs an resolved model from the 
+		visited model parts.
+			 
+		* <<<traverseExplicitSetNodesStrategy>>> which directs the traversal to only 
+		visit resolved model nodes, where resolution of at least one participant 
+		succeeded.
+		
+		* <<<xmlBeansDescriptionGenerator>>> which constructs an description of an
+		visited resolved model node.
+				
+		[]
+
+	* <<<xmlBeansModelTester>>> which can test a resolved model. The director is configured 
+	as an instance of <<<PostOrderDirectorImpl>>> with the dependencies:
+	
+		* <<<xmlBeansModelTesterVisitor>>> which tests the content of an resolved model.
+		
+		* <<<traverseExplicitSetPrimaryNodesStrategy>>> which directs the traversal to only 
+		visit resolved model nodes, where resolution of the primary participant 
+		succeeded.
+		
+		* <<<xmlBeansDescriptionGenerator>>> which constructs an description of an
+		visited resolved model node.
+				
+		[]
+
+	* <<<mbeansModelCreator>>> which can create MBeans in WebLogic from resolved model. 
+	The director is configured as an instance of <<<PreOrderDirectorImpl>>> with the dependencies:
+	
+		* <<<mbeansCreatorVisitor>>> which creates MBeans from the content of an resolved model.
+		
+		* <<<traverseExplicitSetPrimaryNodesStrategy>>> which directs the traversal to only 
+		visit resolved model nodes, where resolution of the primary participant 
+		succeeded.
+		
+		* <<<xmlBeansDescriptionGenerator>>> which constructs an description of an
+		visited resolved model node.
+				
+		[]
+
+	* <<<mbeansModelDeletor>>> which can delete MBeans in WebLogic from resolved model. 
+	The director is configured as an instance of <<<PostOrderDirectorImpl>>> with the dependencies:
+	
+		* <<<mbeansDeletorVisitor>>> which deletes MBeans from the content of an resolved model.
+		
+		* <<<traverseExplicitSetPrimaryNodesStrategy>>> which directs the traversal to only 
+		visit resolved model nodes, where resolution of the primary participant 
+		succeeded.
+		
+		* <<<xmlBeansDescriptionGenerator>>> which constructs an description of an
+		visited resolved model node.
+				
+		[]
+
+	* <<<mbeansModelBuilder>>> which can build a resolved model from an XMLBeans model
+	and an MBeans model. The director is configured as an instance of 
+	<<<PreOrderDirectorImpl>>> with the dependencies:
+	
+		* <<<xmlBeansModelBuilderVisitor>>> which constructs an resolved model from the 
+		visited model parts.
+		
+		* <<<traverseExplicitSetSecondaryNodesStrategy>>> which directs the traversal to only 
+		visit resolved model nodes, where resolution of the secondary participant 
+		succeeded.
+		
+		* <<<mbeansDescriptionGenerator>>> which constructs an description of an
+		visited resolved model node.
+				
+		[]
+
+	* <<<mbeansReportCreator>>> which can build a resolved model from an XMLBeans model
+	and an MBeans model. The director is configured as an instance of 
+	<<<PostOrderDirectorImpl>>> with the dependencies:
+	
+		* <<<resolvedModelReportVisitor>>> which echo the content of the secondary participant
+		and thus creating a report of the MBeans model.
+		
+		* <<<traverseExplicitSetSecondaryNodesStrategy>>> which directs the traversal to only 
+		visit resolved model nodes, where resolution of the secondary participant 
+		succeeded.
+		
+		* <<<mbeansDescriptionGenerator>>> which constructs an description of an
+		visited resolved model node.
+				
+		[]
+	
+	[]
+		 						
+** Traversal algorithm in ModelTraversalDirectorImpl
+
+	The director implements a recursive traversal. The important method is:
+
++-----	
+    public void traverse (ResolvedType type, ExecutionResult result) throws Exception;  
++-----	
+		
+	which implements the algorithm:
+
+	[[1]] If <<<strategy.continueTraversal( type ))>>> returns <<<false>>> 
+	then the traversal is considered completed and then method returns.
+
+	[[3]] Visit the resolved type <<<type>>> with the configured vistitor 
+	by invoking <<<type.accept(visitor, result)>>>: 
+	
+		[[3.1]] The <<<accept(..)>>> method invoked the appropiate 
+		<<<visit(ResolvedType..or subtype, result)>>> method on the visitor. 
+
+		[[3.2]] The visitor does its stuff.
+		
+		[[3.3]] The visitor creates a child <<<ExecutionResult>>> from the <<<result>>> 
+		argument, which describes the traversal of the resolved type <<<type>>>. 
+		
+		[[3.4]] The visitor returns the child result.		 
+
+		[]
+	
+	[[4]] Iterate over the children from from the resolved type <<<type>>>:
+			
+		[[4.1]] Invoke <<<traverse ( child, childResult )>>>.
+		
+		[]
+		
+	[[5]] If the child result isn't <executing> then return.
+	
+	[[6]] Otherwise compute the state of the child result.	  		 
+		
+	[]		
+	
+* {Resolved model traversal strategy classes} 
+
+	The package <<<com.alpha.pineapple.resolvedmodel.traversal.strategy>>> 
+	contains classes which implement traversal strategies:
+
+	* <<<TraversalStrategy>>> - interface for controlling traversals, implements
+	a strategy which decides how the traversal is executed.
+
+	* <<<TraverseExplicitSetPrimaryNodesImpl>>> - implements the <<explicit nodes only>> 
+	strategy which only traverses nodes which are explicit defined in the primary 
+	model.
+
+	* <<<TraverseAllNodesImpl>>> - implements the <<traverse all nodes>> 
+	strategy which traverse any object/attribute that the traversal director 
+	can resolve from the type system (schema) of the primary model.
+
+	[]
+	
+	Intended use for the strategies:
+	
+	* <<<TraverseExplicitSetPrimaryNodesImpl>>> is intented to be used udring creation 
+	of a resolved model which only contains model nodes which are explicit defined in the 
+	primary model.  	
+
+	* <<<TraverseAllNodesImpl>>> is intented to be used.... 
+			
+	[]
+
+** Explicit set primary nodes only strategy
+
+	A node is traversed if:
+		
+	* Value state of primary attribute is SET.	
+	
+	[]  
+		
+** All nodes strategy	
+	
+	A node is always traversed.	
+
+* {Resolved model building classes}
+
+	The package <<<com.alpha.pineapple.resolvedmodel.traversal>>> 
+	contains classes for building resolved models:
+	
+	* <<<ModelResolver>>> - interface for resolution of model entities.	
+
+	* <<<ModelResolutionFailedException>>> - exception class used to signal errors
+	during resolution of model entities. 	
+
+	* <<<ResolvedModelBuilderVisitorImpl>>> - which implements the <<<ResolvedModelVisitor>>> 
+	interface can build a resolved model from the contents of two models.  
+	
+	[]
+
+	The package <<<com.alpha.pineapple.plugin.weblogic.jmx.model.xmlbeans>>> 
+	contains classes which participates in traversal of models with the 
+	purpose of building a resolved model:
+	
+	* <<<XmlBeansDescriptionGeneratorImpl>>> - implementation of the interface 
+	<<<ResolvedModelVisitor>>> which can create a description of an 
+	resolved model node.
+	   
+	[]
+	
+** ResolvedModelBuilderVisitorImpl	
+
+	Constructor injection is used for dependencies which are used in multiple 
+	different configurations. Field injection is used for objects which are 
+	doesn't change, i.e. are static. These dependencies is configured using 
+	constructor injection: 
+	
+	* primary model resolver - which is used to resolved model entitiies 
+	from the primary model.
+
+	* secondary model resolver - which is used to resolved model entitiies 
+	from the secondary model.
+	
+	[]
+
+** Configured ResolvedModelBuilderVisitorImpl instance
+
+	The configuration of the model builder and its dependencies are configured in the plugin 
+	application context configuration file:
+	<<<src/main/resources/com.alpha.pineapple.plugin.weblogic.jmx-config.xml>>>. The 
+	application context configuration file for the plugin contains the builder bean:
+	
+	* <<<xmlBeansModelBuilderVisitor>>> which can build a resolved model from an XMLBeans model
+	and an MBeans model. The builder is configured with:
+	
+		* <<<xmlBeansModelResolver>>> which resolves model entities form an XMLBeans model.
+
+		* <<<mbeansModelResolver>>> which resolves model entities form an MBeans model.
+				
+		[]
+	
+	[]
+
+** {Model building algorithm in ResolvedModelBuilderVisitorImpl} 		
+	
+	The visitor builds a resolved model by adding new child model node to each 
+	resolved model node which is it invoked with. The interface defines visitiation
+	of these resolved types:
+	
++----
+public interface ResolvedModelVisitor
+{
+    public void visit(ResolvedType resolvedType, ExecutionResult result);
+    public void visit(ResolvedObject resolvedObject, ExecutionResult result);
+    public void visit(ResolvedEnum resolvedEnum, ExecutionResult result);
+    public void visit(ResolvedCollection resolvedCollection, ExecutionResult result);
+    public void visit(ResolvedPrimitive resolvedPrimitive, ExecutionResult result);
+    public void visit(UnresolvedType unresolved, ExecutionResult result);
+    
+    // additional methods...
+}	
++----
+
+	The next sub sections describes the algorithm for building new resolved model parts
+	when the visitor is visiting an already resolved model object. <<The central
+	part of the algorithm is the invocation of the method createResolvedType(..) 
+	on the primary resolver which creates a new resolved model part of the correct type.>> The 
+	algorithm for resolution of a new resolved model part from an XMLBeans based model is implemented in the	
+	{{{Creation_of_resolved_model_ojects_during_model_building}XmlBeansModelResolvedImpl.createResolvedType(..)}}	
+	method. 
+	 	 
+*** Model construction from <<<ResolvedType>>>
+ 
+	[[1]] Create description of the resolved object using the description generator.	
+	
+	[[2]] Create execution result which describes contruction of the resolved model node.	
+
+	[[3]] Return the execution result.
+	
+	[]
+ 
+*** Model construction from <<<ResolvedObject>>> 
+
+	The algorithm for construction of the model from a <<<ResolvedObject>>> is:
+	
+	[[1]] Create description of the resolved object using the description generator.	
+	
+	[[2]] Create execution result which describes contruction of the resolved model node.	
+			
+	[[3]] Resolve attribute names from primary participant.  
+
+	[[4]] Resolve attribute names from primary participant 
+	(using the primary resolver object).  
+
+	[[5]] Iterate over the set of names: 
+	  
+		[[5.1]] Resolve attribute from primary participant, using the
+		current attribute name (using the primary resolver object). 
+
+		[[5.2]] If resolution fails then skip to next attribute name.
+
+		[[5.3]] Resolve attribute from secondary participant, using the
+		current attribute name (using the secondary resolver object). 
+
+		[[5.4]] Create a new child resolved object by invoking the method 
+		<<<createResolvedType(..)>>> on the primary resolver with the two 
+		resolved attributes as arguments. It is the responsibility of the 
+		primary resolver to determine the actual type of the resolved object
+		by analyzing the arguments.  
+		
+		[[5.5]] Add the child resolved object as a child to the <<<ResolvedObject>>>.
+		
+		[]   
+
+	[[6]] Return the execution result.
+	
+	[]
+
+  	
+*** Model construction from <<<ResolvedEnum>>> 
+
+	[[1]] Create description of the resolved object using the description generator.	
+	
+	[[2]] Create execution result which describes contruction of the resolved model node.	
+
+	[[3]] Return the execution result.
+	
+	[]
+
+
+*** Model construction from <<<ResolvedCollection>>> 
+
+	The algorithm for construction of the model from a <<<ResolvedCollection>>> is:
+
+	[[1]] Create description of the resolved object using the description generator.	
+	
+	[[2]] Create execution result which describes contruction of the resolved model node.	
+
+	[[3]] Resolve the value (which is an collection) of the 
+	primary participant into an HashMap which contains 
+	an <<<ResolvedParticipant>>> for each entry in the collection.
+
+	[[4]] Resolve the value (which is an collection) of the 
+	secondary participant into an HashMap which contains 
+	an <<<ResolvedParticipant>>> for each entry in the collection.
+
+	[[5]] Create a combined key set which is a union of the
+	keys from the two resolved collections (from step 3+4). 
+
+	[[6]] Iterate over the keys in the combined key set.
+	  
+		[[6.1]] Look up the resolved participant in the map 
+		with the primary participant values. If the value isn't defined in the
+		map then a unsuccessful resolved object is created which describes the 
+		missing primary value as cause for the problem. The created resolved 
+		object contains a valid id and type. The value state is set to FAILED 
+		and the valus is null.   
+		
+		[[6.2]] Look up the resolved participant in the map 
+		with the secondary participant values. If the value isn't defined in the
+		map then a unsuccessful resolved object is created which describes the 
+		missing secondary value as cause for the problem. The created resolved 
+		object contains a valid id and type. The value state is set to FAILED 
+		and the valus is null.   
+		
+		[[6.3]] Create a new child resolved object from the resolved participants:
+				
+			[[6.3.1]] If the primary resolved participant was resolved successfully
+			then create a new child resolved object by invoking the method 
+			<<<createResolvedType(..)>>> on the primary resolver with the two 
+			resolved participants as arguments. It is the responsibility of the
+			primary resolver to determine the actual type of the resolved object
+			by analyzing the arguments. Skip to step 6.4. Note: this case also 
+			handles the case where the secondary participant wasn't resolved 
+			successfully.
+			
+			[[6.3.2]] If the secondary resolved participant was resolved successfully
+			then create a new child resolved object by invoking the method 
+			<<<createResolvedType(..)>>> on the secondary resolver with the two 
+			resolved participants as arguments. It is the responsibility of the
+			secondary resolver to determine the actual type of the resolved object
+			by analyzing the arguments. Skip to step 6.4. 
+			
+			[[6.3.3]] If neither participants was resolved successfully
+			then create a new child resolved object of the type <<<UnresolvedType>>>
+			to signal the resolution failed for both participants.
+				  								
+		[[6.4]] Add the child resolved object as a child to the <<<ResolvedCollection>>>.
+		
+		[]  
+
+	[[7]] Return the execution result.
+						 
+	[]		 		
+  	
+*** Model construction from <<<ResolvedPrimitive>>> 
+
+	[[1]] Create description of the resolved object using the description generator.	
+	
+	[[2]] Create execution result which describes contruction of the resolved model node.	
+
+	[[3]] Return the execution result.
+	
+	[]
+
+*** Model construction from <<<UnresolvedType>>> 
+
+	[[1]] Create description of the resolved object using the description generator.	
+	
+	[[2]] Create execution result which describes contruction of the resolved model node.	
+
+	[[3]] Return the execution result.
+	
+	[]
+ 
+** XmlBeansDescriptionGeneratorImpl
+
+	This class has no injected dependencies.
+
+** Configured XmlBeansDescriptionGeneratorImpl instance
+
+	The configuration of the XMLBean generator is configured in the plugin 
+	application context configuration file:
+	<<<src/main/resources/com.alpha.pineapple.plugin.weblogic.jmx-config.xml>>>. The 
+	application context configuration file for the plugin contains the generator bean:
+	
+	* <<<xmlBeansDescriptionGenerator>>> which can describe resolved model entities.
+		
+	[]
+
+** {Model description algorithm in XmlBeansDescriptionGeneratorImpl} 		
+	
+	The visitor describes a resolved model by creating a single line string description 
+	of the the resolved model entity. 
+	
+	The visitor interface defines a <<<ExecutionResult>>> as the second parameter:
+	
++----
+public interface ResolvedModelVisitor
+{
+    public void visit(ResolvedType resolvedType, ExecutionResult result);
+    public void visit(ResolvedObject resolvedObject, ExecutionResult result);
+    public void visit(ResolvedEnum resolvedEnum, ExecutionResult result);
+    public void visit(ResolvedCollection resolvedCollection, ExecutionResult result);
+    public void visit(ResolvedPrimitive resolvedPrimitive, ExecutionResult result);
+    public void visit(UnresolvedType unresolved, ExecutionResult result);
+    
+    // additional methods...
+}	
++----
+
+	The second parameter isn't used by the generator, so it accepts null values.
+
+* {Resolved model test classes}
+
+	The package <<<com.alpha.pineapple.resolvedmodel.traversal>>> 
+	contains classes which participates in traversal of models with the 
+	purpose of testing two models contained by a resolved model:
+	
+	* <<<ResolvedModelTesterVisitorImpl>>> - implementation of the interface 
+	<<<ResolvedModelVisitor>>> which can test the contents of the two 
+	models contained by a resolved model.  
+	   
+	[]
+
+** ResolvedModelTesterVisitorImpl
+
+	Constructor injection is used for dependencies which are used in multiple 
+	different configurations. Field injection is used for objects which are 
+	doesn't change, i.e. are static. No dependencies is configured using 
+	constructor injection.
+
+** Configured ResolvedModelTesterVisitorImpl instance
+
+	The configuration of the model tester and its dependencies are configured in the plugin 
+	application context configuration file:
+	<<<src/main/resources/com.alpha.pineapple.plugin.weblogic.jmx-config.xml>>>. The 
+	application context configuration file for the plugin contains the bean definition:
+	
+	* <<<xmlBeansModelTesterVisitor>>> which can test a resolved model from an XMLBeans model
+	and an MBeans model. 
+	
+	[]
+	
+** Model test algorithm in ResolvedModelTesterVisitorImpl	
+
+	TODO: write how the commands are used...
+
+
+* {Resolved model create classes}
+
+	The package <<<com.alpha.pineapple.resolvedmodel.traversal>>> 
+	contains classes which participates in traversal of models with the 
+	purpose of creating models contained by a resolved model:
+	
+	* <<<MBeansCreatorVisitorImpl>>> - implementation of the interface 
+	<<<ResolvedModelVisitor>>> which can create MBeans from the contents of the two 
+	models contained by a resolved model.  
+	   
+	[]
+
+** MBeansCreatorVisitorImpl
+
+	Constructor injection is used for dependencies which are used in multiple 
+	different configurations. Field injection is used for objects which are 
+	doesn't change, i.e. are static. No dependencies is configured using 
+	constructor injection.
+
+** Configured MBeansCreatorVisitorImpl instance
+
+	The configuration of the MBeans model creator and its dependencies are configured in the plugin 
+	application context configuration file:
+	<<<src/main/resources/com.alpha.pineapple.plugin.weblogic.jmx-config.xml>>>. The 
+	application context configuration file for the plugin contains the bean definition:
+	
+	* <<<mbeansModelCreatorVisitor>>> which can create MBeans from a resolved model.
+	
+	[]
+	
+** Model creation algorithm in MBeansCreatorVisitorImpl	
+
+	The visitor builds MBeans and set MBean attributes for each resolved model node which is it invoked with. 
+	
+	The next sub sections describes the algorithm for building MBeans when the visitor is visiting an already 
+	resolved model object. 
+	 	 
+*** Model construction from <<<ResolvedType>>>
+
+	No operation. Null is returned.
+ 
+*** Model construction from <<<ResolvedObject>>> 
+
+	The algorithm for creation an MBean from a <<<ResolvedObject>>> is:
+	
+	[[1]] Invoke the <<<CreateMBeanCommand>>> command. The command creates the MBean 
+	in the WebLogic MBean server.
+
+	[[2]] Return the execution result.
+		
+	[]
+
+  	
+*** Model construction from <<<ResolvedEnum>>> 
+
+	The algorithm for creation an MBean from a <<<ResolvedEnum>>> is:
+	
+	[[1]] Invoke the <<<SetMBeanAttributeCommand>>> command. The command sets 
+	the value of the MBean in the WebLogic MBean server.
+
+	[[2]] Return the execution result.
+
+	[]
+
+
+*** Model construction from <<<ResolvedCollection>>> 
+
+	No operation. Null is returned.
+	  	
+*** Model construction from <<<ResolvedPrimitive>>> 
+
+	The algorithm for creation an MBean from a <<<ResolvedPrimitive>>> is:
+	
+	[[1]] Invoke the <<<SetMBeanAttributeCommand>>> command. The command sets 
+	the value of the MBean in the WebLogic MBean server.
+
+	[[2]] Return the execution result.
+
+	[]
+
+*** Model construction from <<<UnresolvedType>>> 
+
+	No operation. Null is returned.	
+
+* {Commands}
+ 	
+	The package <<<com.alpha.pineapple.plugin.weblogic.jmx.command>>> 
+	contains Chain commands:
+
+	* <<<CreateMBeanCommand>>> Creates an MBean from a resolved model object. 
+	
+	* <<<SetMBeanAttributeCommand>>> Sets attribute value on an MBean from 
+	a resolved model object.	
+ 		
+	* <<<TestAttributeValueCommand>>> Test the values of two resolved 
+	attributes in a resolved type object. 
+
+	* <<<TestObjectIdentityCommand>>> Test the values of two resolved 
+	objects in a resolved type object 
+
+	* <<<TestCollectionValueCommand>>> Test the values of two resolved 
+	attributes which are known to be collections. 
+
+	* <<<TestEnumValueCommand>>> Test the values of two resolved 
+	attributes which are know to be enums. 
+
+	[]
+		
+** <<<CreateMBeanCommand>>>
+
+	The command creates a new MBean based on this data in the resolved type:
+	
+	* Name = secondary participant name.
+	
+	* Type = secondary participant type, e.g. an <<<MBeanAttributeInfo>>>.
+
+	* Parent Object Name = <<<ObjectName>>> of parent MBean. 
+		
+	[]
+	
+	The used algorithm is:
+	
+	[[1]] Validate whether the <value state> of secondary participant is <SET>. 
+	If the value state is set then the command assumes the MBean already exist 
+	and will consider the job done. 
+	The command will be completed as successful.
+	The command will return the object name of the secondary participant in the context.
+			
+	[[2]] Validate whether <name> of the secondary participant is defined (e.g. isn't null).
+	If the name isn't defined then the command will abort the creation of the MBean.
+	The command will be completed as failed.
+	The command will return a null value in the context.
+
+	[[3]] Validate whether <type> of the secondary participant is defined (e.g. isn't null).
+	If the type isn't defined then the command will abort the creation of the MBean.
+	The command will be completed as failed.
+	The command will return a null value in the context.
+
+	[[4]] Validate that the <parent> is defined (e.g. isn't null).
+	If the parent isn't defined then the command will abort the creation of the MBean.
+	The command will be completed as failed.
+	The command will return a null value in the context.
+
+	[[5]] If the parent is a <resolved collection> then validate that the 
+	<grand parent> is defined, since it will be used to resolve the parent object name.
+	If the parent is resolved collection and the grand parent isn't defined then the 
+	command will abort the creation of the MBean.
+	The command will be completed as failed.
+	The command will return a null value in the context.
+
+	[[6]] Validate that the <value state> of parent secondary participant is <SET>.
+	If the parent secondary isn't set then the command will abort the creation of the MBean.
+	The command will be completed as failed.
+	The command will return a null value in the context.
+	
+	[[7]] Resolve the <object name> of the parent MBean. If the parent is a resolved collection
+	the object is resolved from the grand parent. Since collections are presented as a 
+	explicit resolved collections, it represents the problem that the parent 
+	(i.e. the resolved collection) can't produce a valid object name to invoke the 
+	factory method on. If the the (grand)parent secondary value contains a object name 
+	then it it used.       
+
+	[[8]] Validate that resolved <object name> is defined (e.g. isn't null).
+	If the object name isn't defined then the command will abort the creation of the MBean.
+	The command will be completed as failed.
+	The command will return a null value in the context.
+
+	[[9]] Get type from secondary participant, which is an <<<AttributeInfo>>>. If the MBean to be 
+	created is a collection entry then the attribute info is inherited from the collection attribute. 
+		 
+	[[10]] Resolves the name of the factory method on parent MBean using the parent object name
+	and the name of the attribute (which is read from the attribute info). The factory method is 
+	looked up from the session which contains a repository of MBean meta data from which the 
+	factory method name is resolved, the used method is <<<WeblogicJmxEditSession.getCreateMethod(..)>>>. 
+
+	[[11]] Validate that the returned <<<MBeanOperationInfo>>> is defined (e.g. isn't null). 
+	If the operation info isn't defined then the command will abort the creation of the MBean.
+	The command will be completed as failed.
+	The command will return a null value in the context.
+
+	[[12]] Invoke the factory method using the session to create the MBean. The factory 
+	method returns the object name of the created MBean. The command supports invocation of
+	factory methods with zero or one argument. The name of the secondary participant is used
+	as argument when a one argument factory method is invoked. 
+	
+	[[13]] Replace the secondary participant with an updated one which contains:
+
+		* Name = Original secondary participant name.
+		
+		* Type = Original secondary participant type, e.g. an <<<MBeanAttributeInfo>>>.
+	
+		* Value = <<<ObjectName>>> of created MBean.
+		
+		[]
+		
+	[]
+	
+
+*** Session handling 
+
+	It is a precondition for successful execution of the command that the 
+	JMX session is in edit mode. The command doesn't validate whether
+	session is in the required state for making changes in the MBeans model. 
+	
+	Also the command doesn't save and activate it's changes.
+	
+	The reason for this due to the fact the certain attribute can't be set and save before
+	other dependent attributes have been set. To resolved this issue all session handling 
+	has been moved to the operation classes.    
+		
+** <<<SetMBeanAttributeCommand>>>		
+
+	The command set the value of an MBean attribute based on this data in the resolved type:
+	
+	* Name = secondary participant name.
+
+	* Type = secondary participant type, e.g. an <<<MBeanAttributeInfo>>>.
+
+	* Value = primary participant value. Can be null.
+	
+	* Object Name = The object name is resolved from the value which is contained in the 
+	secondary participant in the parent resolved type. The expected type is <<<ObjectName>>> .  
+		
+	[]
+
+	The used algorithm is:
+
+	[[1]] Validate whether the secondary participant was successfully resolved. If
+	it wasn't successfully resolved (maybe due to fact that the parent MBean wasn't 
+	created yet when the models was resolved) then the secondary participant resolved
+	once more to get meta data.
+	
+	[[2]] Validate whether <name> of the secondary participant is defined (e.g. isn't null).
+	If the name isn't defined then the command will abort setting the attribute.
+	The command will be completed as failed.
+
+	[[3]] Validate that the <parent> is defined (e.g. isn't null).
+	If the parent isn't defined then the command will abort setting the attribute.
+	The command will be completed as failed.
+
+	[[4]] Validate that the <value state> of parent secondary participant is <SET>.
+	If the parent secondary isn't set then the command will setting the attribute.
+	The command will be completed as failed.
+	
+	[[5]] Get the <object name> of the MBean from the parent secondary value.      
+
+	[[6]] Validate that the <object name> is defined (e.g. isn't null) and that the 
+	type is <<<ObjectName>>>. 
+	If the object name isn't defined then the command will abort setting the attribute.
+	The command will be completed as failed.
+
+	[[7]] Validate that the the <type> of the secondary participant is defined (e.g. isn't null)
+	and that the type is <<<MBeanAttributeInfo>>>. 
+	If the type isn't defined then the command will abort setting the attribute.
+	The command will be completed as failed.
+			
+	[[8]] Validate that attribute is defined as <writable> in the attribute info.
+	If the attribute isn't writable then the command will abort setting the attribute.
+	The command will be completed as failed.
+
+	[[9]] Get the value from the primary participant.
+	
+	[[10]] Convert attribute value.
+	
+		[[1]] If the MBean attribute type is <<<ObjectName>>> or <<<ObjectName[]>>> then the 
+		value of the value to be set is treated as a reference or a collection of 
+		<<<ObjectName>>> references. The references is converted from names to the corresponding 
+		<<<ObjectName>>>'s in the MBean server through searching. The conversion of references
+		to <<<ObjectName>>> is delegated to <<<WeblogicJMXEditSessionImpl.convertReferenceToObjectNames(..)>>>.
+		 		
+		[[2]] Otherwise the value is treated as a simple value and it converted to the type
+		of the MBean attribute. 		   
+
+	[[12]] Validate whether the value is already set, i.e. exist with the same value on the target
+	MBean. If the value is set then command will skip setting the attribute.
+	The command will be completed as successful.
+	
+	[[13]] The value is set on the attribute.
+	
+	[[14]] Replace the secondary participant with an updated one which contains:
+
+		* Name = Original secondary participant name.
+		
+		* Type = Original secondary participant type, e.g. an <<<MBeanAttributeInfo>>>.
+	
+		* Value = The set value.
+		
+		[]
+			
+	[]
+
+*** Session handling 
+
+	It is a precondition for successful execution of the command that the 
+	JXM session is in edit mode. The command doesn't validate whether
+	session is in the required state for make changes in the MBeans model. 
+	
+	Also the command doesn't save and activate it's changes.
+	
+	The reason for this due to the fact the certain attribute can be set and save before
+	other dependent attributes have been set. To resolved this issue all session handling 
+	has been moved to the operation classes.    
+		
+		
+** <<<TestAttributeValueCommand>>> 
+
+	Test the values of two resolved attributes in a resolved type object.
+	The command succeeds if:
+	
+	* The value of the two resolved attributes are identical,
+	i.e. passes an <<<Object.equals(..)>>> test. Or the value 
+	of the two resolved attributes are both null.   
+
+	* Neither of the attributes was resolved unsuccessfully, i.e. none of the
+	resolved attribute must contain an embedded exception. 
+	
+	[]
+
+** <<<TestObjectIdentityCommand>>> 
+
+	Tests the values of two resolved attributes contained in a resolved type object. 
+	The contained values are expected to objects. The command succeeds if:
+	
+	* The value of the two resolved attributes are both null.   
+
+	* Neither of the attributes was resolved unsuccessfully, i.e. none of the
+	resolved attribute must contain an embedded exception.
+	
+	* Neither of any child tests failed or completed with an error. The child tests 
+	are contained as child execution result objects which exists on the execution
+	result object whihc is passed as input to the test.
+	
+	[]  
+
+** <<<TestCollectionValueCommand>>> 
+
+	Test the values of two resolved attributes in a resolved type object. 
+	
+	The command succeeds if:
+	
+	* The type of the resolved type is an <<<ResolvedCollection>>>.   
+		
+	* The value of the two resolved attributes are both defined, or 
+	the value of the two resolved attributes are both null.   
+
+	* If the both values are defined then the length of collections must equal.
+
+	* Neither of the attributes was resolved unsuccessfully, i.e. none of the
+	resolved attribute must contain an embedded exception.
+	
+	* Neither of any child tests failed or completed with an error. The child tests 
+	are contained as child execution result objects which exists on the execution
+	result object which is passed as input to the test.  
+	 	
+	[]
+
+** <<<TestEnumValueCommand>>> 
+
+	Test the values of two resolved attributes in a resolved type object.
+	
+	The used algorithm is:
+
+	[[1]] Validate the primary participant was resolved successfully. If the participant
+	wasn't successlfully resolved then the command will be completed as failed.
+	
+	[[2]] Validate the secondary participant was resolved successfully. If the participant
+	wasn't successlfully resolved then the command will be completed as failed.
+
+	[[3]] Validate the primary participant type is XMLBeans enum, e.g. a type derived from 
+	<<<StringEnumAbstractBase>>>. If the participant isn't an enum then the command will 
+	be completed as failed.
+
+	[[4]] Validate the secondary participant type is a <<<java.lang.String>>> or <<<int>>>. If 
+	the participant isn't a string or int then the command will be completed as failed.   	
+	
+	[[5]] If the secondary type is <<<int>>> then the value is converted to a string.
+
+	[[6]] If both values are <<<null>>> then the command will be completed as successful.	
+
+	[[7]] If only one of the values are <<<null>>> then the command will be completed as failed.	
+
+	[[8]] If the string value of the first participant is equal to the value of
+	the second participant, i.e. passes an <<<Object.equals(..)>>> test then the command 
+	will be completed as successful.
+
+	[]
+
+	
+* XMLBeans model access classes
+
+	The package <<<com.alpha.pineapple.plugin.weblogic.jmx.model.xmlbeans>>> 
+	contains classes for reflection based access to XMLBean generated model 
+	classes:
+	
+	* <<<XmlBeansModelResolverImpl>>>
+		
+	* <<<XmlBeansModelAccessorImpl>>> 
+	
+	* <<<XmlBeansGetterMethodMatcherImpl>>>
+	
+	* <<<XmlBeansDescriptionGeneratorImpl>>> implements the  <<<<ResolvedModelVisitor>>> 
+	interface and it can create a description of an resolved model node.
+	 
+	
+	[]  
+
+** {XmlBeansModelResolverImpl}	
+	 
+	Implements the <<<ModelResolver>>> interface and it is capable of 
+	resolving models objects from the XMLBean based model. The important methods are:
+	
+	* <<<resolveAttributeNames(ResolvedAttribute attribute )>>>
+	
+	* <<<resolveAttribute( String attributeName, Object modelObject )>>>
+	
+	* <<<resolveCollectionAttributeValues( ResolvedAttribute attribute )>>>
+	
+	* <<<resolveAttributeValue(..)>>> which can resolve the attribute value for an XMLBean based on the attribute characteristics.
+	
+	* <<<createNonExistingCollectionValue( String id, ResolvedParticipant parent)>>> which can create
+	a resolved participant placeholder if a collection value isn't defined in a traversed collection.	
+	
+	* <<<createResolvedType(ResolvedType parent, ResolvedParticipant primary, ResolvedParticipant secondary)>>> 
+	which can create a resolved model object. 
+		
+	[]
+					
+*** {Resolution of attribute names from an XMLBean}					
+					
+	The method <<<resolveAttributeNames(ResolvedAttribute attribute )>>> resolves
+	all the attribute names from an XMLBean. The used algorithm is:
+	
+	[[1]] Get type from the resolved attribute argument.
+	
+	[[2]] Validate that the type is a XMLBeans <<<SchemaProperty>>>, if
+	not throw an exception.
+	 	 	
+	[[3]] Get the <<<SchemaType>>> from the <<<SchemaProperty>>>.
+	
+	[[4]] Get all the properties from <<<SchemaType>>>
+		
+	[[5]] Iterate over the properties:
+	
+		[[5.1]] Get the name of the property and add it to the result set.
+
+		[]
+
+	[]		
+		 	 
+*** {Resolution of an attribute from an XMLBean}		 	 
+		 	 
+	The method <<<resolveAttribute( String attributeName, Object modelObject )>>>
+	resolve an attribute from a attribute name. If the attribute is resolved then it
+	is returned as a <<<ResolvedAttribute>>> object. The used algorithm is:
+	
+	[[1]] Resolve the getter method from the XMLBean, using the attribute name.
+	
+	[[2]] Resolve the type as <<<SchemaProperty>>> from XMLBean using the attribute name.
+	
+	[[3]] Resolve the value from the XMLBean using the name, type and getter method.	 
+	
+	[[4]] Return the resolved attribute with:
+	
+		* name
+		
+		* value
+		
+		* type == the schema property
+		
+		* value state = one of <set>, <default>, <nil>, <failed>.
+		
+		[]  
+	
+	[]	
+	
+	
+*** {Resolution of collection attribute from an XMLBean}		
+	
+	The method <<<resolveCollectionAttributeValues( ResolvedAttribute attribute )>>> resolves
+	the value of an resolved participant which represents a value in a collection. The used 
+	algorithm is:
+
+	[[1]] Get the attribute value as an object array <<<Object[]>>>.
+		
+	[[2]] Iterate over the object array:
+	
+		[[2.1]] Create a resolved participant from the current value object, by
+		invoking the private method <<<resolveSingleArrayAttribute(..)>>> which does:
+		
+			[[2.1.1]] Resolve the attribute type as using <<<valueObject.getClass()>>>.
+			
+			[[2.1.2]] Resolve the attribute name from the value of the <Name> attribute
+			on the value object.
+			
+			[[2.1.3]] Return the resolved participant with:
+			
+				* name
+				
+				* value
+				
+				* type == type of value object (schema property????!)
+				
+				* value state = <SET>.
+				
+				[]  			 		
+
+		[[2.2]] Add the resolved participant to a hash map....
+		
+		[]
+
+	[]		
+
+*** {Creation of non existing collection values from an XMLBean}
+
+	The method <<<createNonExistingCollectionValue( String id, ResolvedParticipant parent)>>> can creates
+	a resolved participant placeholder if a collection doesn't contain values which where found in the model 
+	that the XMLBeans model is resolved against. 
+	
+	The method is used by model builder visitors, e.g. <<<ResolvedModelBuilderVisitorImpl>>> during model 
+	construction from a collection.	 
+	
+	As described in the section <Representation of collections in the resolved model> then there is a problem 
+	with XMLBeans model because it doesn't define two distinct types for collections. The XMLBeans model only 
+	define the type for the unbounded attribute, which is corresponds to the type of the content in the collection.
+	The corresponding schema property contains attributes which signals that type is an unbounded attribute, 
+	e.g. an collection. There is a mismatch between the resolved model and the XMLBeans. The problem is that 
+	in the XMLBeans schema property based type system there is no explicit representaion of container types. 
+	The solution described in the above is to reuse the schema property for BOTH the container type and the
+	content of the collection. 
+	 	
+	The used algorithm is:
+
+	[[1]] Resolve the type as <<<SchemaProperty>>> by using the type from the parent resolved participant
+	which represents a resolved collection.
+	
+	[[2]] Resolve the value to null.	 
+	
+	[[3]] Return the resolved attribute with:
+	
+		* name = id 
+		
+		* value = null
+		
+		* type == the schema property
+		
+		* value state = <failed>.
+		
+		[]  
+	
+	[]	
+		
+
+*** {Creation of resolved model objects during model building} 
+
+	The method <<<createResolvedType(ResolvedType parent, ResolvedParticipant primary, ResolvedParticipant secondary)>>>
+    can create a resolved model object. The used algorithm is: 	
+	 
+	The algorithm is:
+
+	[[1]] If primary participant type is <<primitive>> then:
+	
+		[[1.1]] Create a <<<ResolvedPrimitive>>>.
+		
+		[]
+		
+	[[2]] If primary participant type is <<collection>> then:
+	
+		[[2.1]] Create a <<<ResolvedCollection>>>.
+		
+		[]
+		
+		TODO: There is a bug here!!!! What happens if both types are arrays????
+		
+		
+	[[3]] If primary participant type is <<enum>> then:
+	
+		[[3.1]] Create a <<<ResolvedEnum>>>.
+		
+		[]
+
+	[[4]] If primary participant type is <<object>> then:
+	
+		[[4.1]] Create a <<<ResolvedObject>>>.
+		
+		[]
+
+	[[5]] Else create <<<ResolvedType>>>.
+	
+	[[6]] If an exception is thrown during step 1) - 5) then create <<<UnresolvedType>>>.
+
+	[]	 			 	 	 	 		 	 
+
+** {XmlBeansModelAccessorImpl}
+
+	Implements the <<<XmlBeansModelAccessor>>> interface and it is capable of
+	accessing model objects generated by XMLBeans. The important methods are:
+	
+	* <<<resolveGetterMethod(String attributeName, Object modelObject )>>>
+	
+	* <<<IsPrimitive(ResolvedParticipant)>>>
+	
+	* <<<isEnum(ResolvedParticipant)>>> 	
+	
+	* <<<isCollection(ResolvedParticipant, ResolvedParticipant)>>>
+	
+	* <<<isObject(ResolvedParticipant)>>>	
+	
+	[]	 	
+
+	The method <<<resolveGetterMethod(String attributeName, Object modelObject )>>> can resolve
+	a single getter method from an attribute name. The used algorithm is:
+	
+	* Get all candidates using the getter method matcher <<<XmlBeansGetterMethodMatcherImpl>>>,
+	 and an attribute name.
+	
+	* Return the first candidate with zero arguments.
+	
+	[]
+ 	
+	The method <<<isPrimitive(ResolvedParticipant)>>> return true if:
+	
+	* Participant type is <<<SchemaProperty>>>.
+	
+	* The schema type contains a simple type 
+	( verified using the method <<<SchemaType.isSimpleType()>>> ).
+
+	* The schema type doesn't contains any enumeration values 
+	( verified using the method <<<SchemaType.getEnumerationValues()>>> ).
+	
+	[]
+
+	The method <<<isEnum(ResolvedParticipant)>>> return true if:
+	
+	* Participant type is <<<SchemaProperty>>>.
+
+	* The schema type contains a simple type 
+	( verified using the method <<<SchemaType.isSimpleType()>>> ).
+	
+	* The schema type contains enumeration values ( using the method 
+	<<<SchemaType.getEnumerationValues()>>> ).
+	
+	[]
+
+	The method <<<isCollection(ResolvedParticipant parent, ResolvedParticipant child)>>> return true if:
+	
+	* Child participant type is <<<SchemaProperty>>>.
+
+	* Parent participant type is <<<SchemaProperty>>>.	
+
+	* The child schema type doesn't contains a simple type 
+	( verified using the method <<<SchemaType.isSimpleType()>>> ).
+
+	* The child schema property represents an array 
+	( verified using the method <<<SchemaProperty.extendsJavaArray()>>> ).
+	 	
+	* The child and parent type isn't equal.
+	
+	[]
+
+	The method <<<isObject(ResolvedParticipant parent, ResolvedParticipant child)>>> return true if:
+	
+	* Child participant type is <<<SchemaProperty>>>.
+
+	* Parent participant type is <<<SchemaProperty>>>.	
+
+	* The schema type contains a complex type 
+	( verified using the method <<<SchemaType.isSimpleType()>>> ).
+
+	* The child schema property doesn't represents an array, e.g. an unbounded type
+	( verified using the method <<<SchemaProperty.extendsJavaArray()>>> ).
+
+	* The child schema property does represents an array and the child and parent type is equal.
+			
+	[]
+
+	<<Please notice:>> There is an (ugly) implementation trick at play here. XMLBeans doesn't
+	create an dedicated type to represent collections/array attributes. Collection/array attributes
+	are represented by the type of the collection/array content and then attributes on the
+	<<<SchemaType>>> and <<SchemaProperty>>> indicated that multiple values can exist for an attributes,
+	i.e. an collection.
+	   		
+	
+** {XmlBeansGetterMethodMatcherImpl} 
+
+ 	Implements the <<<<GetterMethodMatcher>>> interface and it can decide 
+ 	whether an method is a getter method. Furthermore it can resolve the 
+ 	attribute name from a matched getter method.	
+	
+	The method <<<isMatch( Method method )>>> can resolve whether an method defines
+	a getter method, using the algorithm:
+	
+	* The method is declared in a class which belongs to the package <<<com.oracle.xmlns.weblogic>>>.
+	
+	* The method starts with <<<get>>> and doesn't take any arguments.  	 
+
+	[]
+	
+	The method <<<resolveAttributeFromGetterMethod>>> can resolve the attribute name from
+	a method which is known to be a getter method ( i.e. passed the <<<isMatch(..)>>> 
+	method. The attribute name is resolved using the algorithm:
+	
+	* The leading <<<get>>> is stripped from the method name.
+	
+	* Any trailing <<<Array>>> is stripped from the method name.		
+	
+	[] 
+	
+** {XmlBeansDescriptionGeneratorImpl}	
+
+ 	Implements the <<<<ResolvedModelVisitor>>> interface and it can create a 
+ 	description of an resolved model node.
+
+		 
+* MBeans model access classes
+
+	The package <<<com.alpha.pineapple.plugin.weblogic.jmx.model.mbeans>>> 
+	contains classes for JMX style access to MBean based model (using run time
+	discovery of type info using MBean meta data) classes:
+			
+	* <<<MBeansObjectNameBasedModelResolverImpl>>> implements the 
+	<<<<ModelResolver>>> interface and it is capable of resolving models 
+	objects from the MBean based model.
+	
+	* <<<MBeansModelAccessorImpl>>>
+
+	* <<<ResolvedModelJmxGetter>>> - defines interface to for helper class which provides 
+	access to data from resolved model objects which is intrepreted as JMX data. 
+
+	* <<<ResolvedModelJmxGetterImpl>>> - implements the <<<ResolvedModelJmxGetter>>> 
+	interface. The class is used by command objects which manipulates MBeans.
+	
+	* <<<MBeansDescriptionGeneratorImpl>>> immplements the <<<<ResolvedModelVisitor>>> 
+	interface and it can create a description of an resolved model node.
+	
+	[]  
+
+** {MBeansObjectNameBasedModelResolverImpl}
+
+	Implements the <<<ModelResolver>>> interface and it is capable of 
+	resolving models objects from the MBean based model. 
+	
+*** {Resolution of attribute names from an MBean}	
+
+	The method <<<resolveAttributeNames(ResolvedParticipant attribute )>>> will throw an 
+	<<<UnsupportedOperationException>>> if invoked since this operation isn't supported by 
+	this class. 
+
+*** {Resolution of an attribute from an MBean}		 	 
+		 	 
+	The method <<<resolveAttribute( String attributeName, ResolvedParticipant participant )>>>
+	resolve an attribute from a attribute name. If the attribute is resolved then it
+	is returned as a <<<ResolvedParticipant>>> object. The used algorithm is:
+
+	[[1]] Validate that the value of the participant is <<<ObjectName>>>. If the validation fails
+	then an <<<ModelValidationFailedException>>> is thrown.
+
+	[[2]] Query the <<<WebLogicJmxEditSession>>> for an <<<MBeanAttributeInfo>>> for an 
+	attribute with the name <<<attributeName>>>. A <<little bit of magic>> takes places here, 
+	since the session is able to resolve the attribute name from the XMLBeans model into the 
+	corresponding name in the MBeans model. The mapping is done through the usage of meta data
+	on the MBean attribute (for more info, see <<<WebLogicJmxEditSession>>> ).
+
+	[[3]] Validate that the <<<MBeanAttributeInfo>>> isn't null. If the validation fails
+	then an <<<ModelValidationFailedException>>> is thrown.
+
+	[[4]] The attribute id is read from the <<<MBeanAttributeInfo.getName()>>> 
+	
+	[[5]] Validate that the value of MBean attribute is readable. If the validation fails
+	then an <<<ModelValidationFailedException>>> is thrown.
+
+	[[6]] The attribute value(s) is read from the MBean server.
+
+	[[7]] If the value is a null reference to an object name (e.g. the value is null and the attribute 
+	type stored within the <<<MBeanAttributeInfo>>> is <<<ObjectName>>>) then a <<<ResolvedParticipant>>> 
+	is created with:
+
+		* id = the id read in step 4.
+		
+		* type = the <<<MBeanAttributeInfo>>> from step 2.
+		
+		* value = null 
+ 
+		* value state = NIL.
+		
+		[]
+
+	
+	[[8]] Otherwise a <<<ResolvedParticipant>>> is created with:
+
+		* id = the id read in step 4.
+		
+		* type = the <<<MBeanAttributeInfo>>> from step 2.
+		
+		* value = the value(s) read form step 6. 
+		
+		[]
+	
+	[]	
+
+	If the method <<<resolveAttribute(..)>>> fails to resolve an attribute on
+	the MBean then an unsuccessful resolution result is created for the resolved
+	attribute. The unsuccessful result contains an <<<ModelResolutionFailedException>>>
+	which describes which attribute failed to be resolved. Known cases:
+	
+*** {Resolution of collection attribute from an MBean}		
+	
+	The method <<<resolveCollectionAttributeValues( ResolvedParticipant participant )>>> resolves
+	the value of an resolved attribute. The used algorithm is:
+	
+	[[1]] A <<<HashMap>>> is created.
+	
+	[[2]] The values is read from the resolved attribute as an array: <<<Object[]>>>.
+	
+	[[3]] Iteration over the array, where each array value is resolved in turn:
+	
+		[[3.1]] If the value isn't of the type <<<ObjectName>>> then unsuccessful 
+		resolution result is created for the resolved value. The unsuccessful result 
+		contains an <<<ModelResolutionFailedException>>> which describes that the resolution
+		failed because type isn't <<<ObjectName>>>. 
+		
+		[[3.2]] A <<<ResolvedParticipant>>> is created with:
+		
+			* id = read from the <<<Name>>> attribute of the MBean represented by the array value as <<<ObjectName>>>.
+			
+			* type = <<<ObjectName>>>
+			
+			* value = the array value itself. 
+			
+			[]
+
+		[[3.3]] The resolution result is added to the hash map. 
+				
+		[]
+		
+	[]			
+	
+	
+*** {Creation of non existing collection values from an XMLBean}
+
+	The method <<<createNonExistingCollectionValue( String id, ResolvedParticipant parent)>>> can creates
+	a resolved participant placeholder if a collection doesn't contain values which where found in the model 
+	that the MBeans model is resolved against. 
+	
+	The method is used by model builder visitors, e.g. <<<ResolvedModelBuilderVisitorImpl>>> during model 
+	construction from a collection.	 
+		
+	The used algorithm is:
+
+	[[1]] Resolve the type as the Java Component type from the array returned as the type from the parent 
+	resolved collection.
+	
+	[[2]] Resolve the value to null.	 
+	
+	[[3]] Return the resolved attribute with:
+	
+		* name = id 
+		
+		* value = null
+		
+		* type == type (the component type from the array type defined as type for the parent resolved collection.
+		
+		* value state = <failed>.
+		
+		[]  
+	
+	[]	
+			
+*** {Type resolution during model building} 
+
+	The method <<<createResolvedType(ResolvedType parent, ResolvedParticipant primary, ResolvedParticipant secondary)>>>
+    can create a resolved model object. The MBeans model resolver doesn't implement any algorithms for type resolution
+    and will throw an <<<UnsupportedOperationException>>> if invoked. 		 
+
+
+** {MBeansModelAccessorImpl}
+
+	Implements the <<<MBeansModelAccessor>>> interface and it is capable 
+	of getting type information from model objects and retrieve object 
+	and attributes from model objects.
+
+*** findAttributeInfo( .. ) method
+
+	The method can resolve an appropriate <<<MBeanAttributeInfo>>> object  
+	from a queried attribute name on an MBean (which represented as an <<<ObjectName>>>).
+
+	The used algorithm is:
+
+	[[1]] Remap names of certain MBean attributes to handles special cases where getter 
+	method otherwise resolution will fail. The mapping is delegated to 
+	<<<SpecialCasesAttributeMapperImpl.mapResolution()>>>.
+
+	[[2]] Get <<<MBeanInfo>>> for MBean.
+	
+	[[3]] Get all <<<MBeanAttributeInfo>>> from <<<MBeanInfo>>>.
+	
+	[[4]] Iterate through all info until a match is found with the remapped attribute name. 
+	When a match is found then return the found <<<MBeanAttributeInfo>>>. Otherwise return null. 		 
+	
+	[]
+	
+*** getNameAttributeFromObjName( .. ) method
+	
+	The method returns the value of the attribute named "Name" from a MBean. 
+	
+	The value is returned as a string.  
+
+*** getAttributeValue( .. ) method
+
+	The method returns the value of an attribute from a MBean.
+	 
+	The value is returned as a <<<Object>>>.
+	 
+    The method <<doesn't>>> do any remapping of attribute names. 
+
+
+** {ResolvedModelJmxGetterImpl}		
+
+	Contains these methods to access resolved model objects to get data which is used to create MBeans:
+	
+	* <<<getAttributeID(ResolvedType resolvedType)>>> resolves a MBean attribute name from the name 
+	of the secondary participant in a resolved type. 		
+
+	* <<<getAttributeValue(ResolvedType resolvedType)>>> gets MBean attribute value from from 
+	resolved type. The value resolved from the value of the primary participant which is 
+	returned as a string object..	
+
+	* <<<getObjectName(ResolvedType resolvedType)>>> gets MBean object name. The object name 
+	is resolved from object name of the dynamic MBean proxy which is stored in the 
+	secondary participant in the parent resolved type.
+
+	* <<<resolveObjectName(ResolvedType resolvedType)>>> resolves MBean object name. 
+	The object name is resolved from the value contained in the secondary participant 
+	in the parent resolved type. If the value contained in the secondary participant 
+	is a object namethen it is returned. If the value is a dynamic MBean Proxy then 
+	the object name of the proxy is resolved.  
+	
+	[]
+
+** {MBeansDescriptionGeneratorImpl} 
+
+	Implements the <<<ResolvedModelVisitor>>> interface and it can create a description of 
+	an resolved model node:
+
+	* Values whose type is <<<null>>>, the then value-as-single-line-string is returned. 
+	
+	* Values whose type is stored as <<<ObjectName>>>, which is is the case for the root
+	resolved type since no <<<MBeanAttributeInfo>>> exists for the domain. Then the 
+	description <<<NAME:TYPE>>> is generated. Example: 
+	<<<alphadomain-wls1035-jmxplugin-inttest:Domain>>>. 
+	
+	* Values whose type is stored as <<<MBeanAttributeInfo>>> and the type in the info
+	object is <<<ObjectName>>> then ...
+	
+	* Values whose type is stored as <<<MBeanAttributeInfo>>> and the type in the info
+	object is <<<ObjectName[]>>> then ...
+	
+	[]  
+
+* MBeans meta data repository classes
+
+	The package <<<com.alpha.pineapple.plugin.weblogic.jmx.model.mbeans.metadata>>> 
+	contains classes for caching MBean meta data and mapping of attribute name from
+	the XMLBeans model to the MBeans model:
+				
+	* <<<AttributeMetadata>>> defines interface for meta data for a single MBean attribute. 
+
+	* <<<AttributeMetadataImpl>>> implements the <<<AttributeMetadata>>> interface. 
+
+	* <<<MBeanMetadata>>> defines interface for meta data for a single MBean. 
+
+	* <<<MBeanMetadataImpl>>> implements the <<<MBeanMetadata>>> interface. 
+
+	* <<<MetadataRepository>>> defines interface for repository for MBean meta data. 
+
+	* <<<MetadataRepositoryImpl>>> implements the <<<MetadataRepository>>> interface. 
+	
+	[]  
+
+
+** {MetadataRepositoryImpl}
+
+	Defines a repository for storage of meta data about WebLogic MBeans. 
+	
+	The repository stores meta data for each WebLogic MBean type and its attributes. Meta data about MBeans are stored in
+	a map with objects of the type <<<MBeanMetadata>>> (implemented by the <<<MBeanMetadataImpl>>> class).
+	
+	Each <<<MBeanMetadataImpl>>> contains a map of <<<AttributeMetadata>>> (implemented by the <<<AttributeMetadataImpl>>> class).
+	
+	The repository supports:
+	
+	* <<Looking up attribute info for an MBean>> - Implemented by <<<getAttributeInfo(..)>>>.
+	
+	* <<Looking up the create method for an MBean>> - Implemented by <<<getCreateMethod(..)>>>.
+
+	* <<Looking up the destroy method for an MBean>> - Implemented by <<<getDestroyMethod(..)>>>.
+
+	* <<Resolve candidate MBean types>> - Implemented by <<<resolveCandidateReferenceTypes(..)>>>.
+	
+	[]
+	
+***	Looking up attribute info for an MBean
+
+	The method <<<MBeanAttributeInfo getAttributeInfo(..)>>> returns the meta data for an MBean attribute.
+	
+	The method implements a few custom mapping rules:
+		
+	* If the attribute name is <<<VirtualHostName>>> AND the MBean type is 
+	<<<VirtualHostMBeanImpl>> then the attribute name is mapped to <<<VirtualHostNames>>> 
+		
+		[]
+	
+	[]			 
+
+***	Looking up the create method for an MBean
+
+	The method <<<MBeanOperationInfo getCreateMethod(..)>>> returns the meta data for the create method to create an 
+	instance of an MBean type. 
+	
+	The actual resolution is done by looking up the method on the <<<AttributeMetadata>>> for the attribute.    	 
+
+	
+***	Looking up the destroy method for an MBean	
+	
+	The method <<<MBeanOperationInfo getDestroyMethod(..)>>> returns the meta data for the destroy method to 
+	destroy an instance of an MBean type. 
+	
+	The actual resolution is done by looking up the method on the <<<AttributeMetadata>>> for the attribute.    	 
+
+*** Resolve candidate MBean types
+
+	The XMLBeans model contains attributes whose value is an MBean reference. For good reason the references in the 
+	XMLBeans can't be object name references since the model is text based.
+	
+	During resolution the textual references are converted from text to object names.
+	
+	The conversion requires information about which MBean types an attribute can contain a reference to.
+	
+	The method <<<String[] resolveCandidateReferenceTypes(..)>>> supports these conversions:
+	
+	* If the attribute name is <<<Targets>>> AND the attribute type is an array of 
+	MBeans (e.g. <<<[Ljavax.management.ObjectName;>>>) then the candidate types are:
+	
+		* <<<Cluster>>> 
+		
+		* <<<Server>>>
+		
+		[]
+
+	* If the attribute name is <<<Machine>>> AND the attribute type is a single MBean
+	(e.g. <<<javax.management.ObjectName>>>) then the candidate type is:
+	
+		* <<<Machine>>> 
+		
+		[]
+	
+	[]			 
+
+** {MBeanMetadataImpl}
+
+	Contains meta data for a single MBean.
+	
+*** Algorithm for storage of attributes
+ 	
+ 	The algorithm is:
+ 	
+	[[1]] The attribute is stored in <lower case> under its name read from the <<<MbeanAttributeInfo.getName()>>>.
+	
+	[[2]] Get the alternate name (See {{{./implementation.html#Computation_of_alternate_attribute_name}Algorithm for computation of an alternate name for each attribute}}).
+	
+	[[3]] If the alternate name is null or an empty string:
+	
+		* Exit, the attribute isn't stored under an alternate name.
+		
+		[] 
+	
+	[[4]] If the alternate name is equal to the attribute name:
+	
+		* Exit, the attribute isn't stored under an alternate name.
+		
+		[] 
+	
+	[[5]] If the alternate name isn't already in use:
+	
+		* Store the attribute in <lower case> under the alternate name.
+		
+		[] 
+	
+	[[6]] If the alternate name is in use:
+	
+		* If the name and the alternate name have a common prefix, then overwrite attribute
+		in <lower case> under the alternate name.			
+		
+		[]			 		
+		
+	[]
+
+*** Algorithm for storage of operations
+ 	
+ 	The algorithm is:
+ 	
+	[[1]] If the operation signature has more than one argument:
+	
+		* Exit, the plugin currently only support zero or single argument methods.
+		
+		[] 
+	
+	[[2]] If no operation is stored with operation name: 
+	
+		* Store the operation in using its name as key.
+		
+		* Exit.
+		
+		[] 
+	
+	[[3]] If the operation signature has more than one argument:
+	
+		* Overwrite the existing operation with the one-argument version.
+		
+		[] 
+	
+	[]
+
+	
+** {AttributeMetadataImpl}
+
+	Contains meta data for a single MBean attribute:
+	
+		* <<Create method>> - If defined, it defined the method used to create a MBean instance.
+		
+		* <<Destroy method>> - If defined, it defined the method used to destroy a MBean instance.
+		
+		* <<Name>> - Unique ID for the MBean.		
+		
+		* <<Alternate name>> - Alternate ID for the MBean, used to map from the XMLBeans models to the MBeans model.
+		
+		* <<Type>> - In the form of an <<<MBeanAttributeInfo>>>.
+		
+	[]						
+		 
+
+*** Computation of MBean create method
+
+	The algorithm is:
+	
+	[[1]] The <<<Descriptor>>> object defines a field named <<<com.bea.creator>>> for MBeans which can be
+	created on demand. The field defines the name of the factory method which should be used to create the MBean,
+	If the field is defined then value will be of the form <<<createXXX>>>. 
+
+	[]
+	
+*** Computation of MBean destroy method
+
+	The algorithm is:
+	
+	[[1]] The <<<Descriptor>>> object defines a field named <<<com.bea.destroyer>>> for MBeans which can be
+	created on demand. The field defines the name of the destructor method which should be used to destroy the MBean..
+	If the field is defined then value will be of the form <<<createXXX>>>. 
+
+	[]
+
+*** Computation of alternate attribute name
+
+	The  alternate name for an attribute is computed from the content of the <<<Descriptor>>> objects 
+	found on each <<<MBeanAttributeInfo>>>. 
+
+	The algorithm is:
+	
+	[[1]] The <<<Descriptor>>> object defines a field named <<<com.bea.creator>>> for MBeans which can be
+	created on demand. The field defines the name of the factory method which should be used to create the MBean (see:
+	{{{./mbeans-model.html#Creation_and_deletion_of_MBeans_in_WebLogic}Creation and deletion of MBeans in WebLogic}}). 
+	If the field is defined then value will be of the form: <<<createXXX>>>. The alternate name is computed as the 
+	name of the method without the <<<create>>>, e.g. <<<XXX>>>.
+	
+	[[2]] The <<<Descriptor>>> object defines a field named <<<interfaceclassname>>> for MBeans which defines
+	an interface class. The field defines the name of the interface class for the MBean, i.e.
+	<<<[Lweblogic.management.configuration.AppDeploymentMBean;>>>. If the field is defined then the alternate 
+	name is computed as the name of the MBean without the <<<MBean>>>, e.g. <<<AppDeployment>>>.
+	
+	[[3]] If the attribute doesn't have an create method or an interface name then no alternate name is computed. 
+		
+	[] 
+
+
+* Generic reflection helper classes
+
+	The package <<<com.alpha.pineapple.plugin.weblogic.jmx.reflection>>> 
+	contains generic reflection helper classes:
+	
+	* <<<MethodUtils>>> - helper class which can get type information from object
+	and invoke methods using reflection.
+	
+	[]
+
+	TODO: MethodUtils.getMethod shouldn't handle the boolean::getXX -> boolean::isXX. 
+	this should be located in the get MBeanModelAccessor.   
+
+	TODO: MethodUtils.isMethodEncrypted should be located in the get XMLBeansModelAccessor.   
+	
+	TODO: MethodUtils.isMethodPasswordEncrypted should be located in the get XMLBeansModelAccessor.	
+
+* Generic JMX helper classes
+
+	The package <<<com.alpha.pineapple.plugin.weblogic.jmx.utils>>> contains
+	utilities classes for the plugin:
+	
+	* <<<JmxUtils>>> - Utility class for creation of Dynamic proxies and Webogic object names.
+	
+	* <<<JmxServiceUrlFactoryFactory>>> - Factory which supports resolution of proper 
+	service URL factory to be used by a session to connect to a MBean server using a select
+	protocol.
+	
+	* <<<JmxServiceUrlFactory>>> - Interface for service URL factories which
+	can create JMX service URL and connection properties for a specific protocol.
+	  
+	* <<<HttpJmxServiceUrlFactoryImpl>>> - Implementation of the <<<JmxServiceUrlFactory>>>
+	interface which can create JMX service URL and connection properties for the Oracle implementation
+	of the HTTP and HTTPS protocols which are supplied with WebLogic.
+
+	* <<<IiopJmxServiceUrlFactoryImpl>>> - Implementation of the <<<JmxServiceUrlFactory>>>
+	interface which can create JMX service URL and connection properties for the Oracle implementation
+	of the IIOP and IIOPS protocols which are supplied with WebLogic.
+
+	* <<<RmiJmxServiceUrlFactoryImpl>>> - Implementation of the <<<JmxServiceUrlFactory>>>
+	interface which can create JMX service URL and connection properties for the Oracle implementation
+	of the RMI protocol which is supplied with WebLogic.
+	
+	* <<<t3jmxServiceUrlFactoryImpl>>> - Implementation of the <<<JmxServiceUrlFactory>>>
+	interface which can create JMX service URL and connection properties for the T3 and T3S protocols 
+	which are supplied with WebLogic.
+
+	* <<<JdkIiopJmxServiceUrlFactoryImpl>>> - Implementation of the <<<JmxServiceUrlFactory>>>
+	interface which can create JMX service URL and connection properties for the JDK implementation
+	of the IIOP protocol.
+
+	* <<<jdkRmiJmxServiceUrlFactoryImpl>>> - Implementation of the <<<JmxServiceUrlFactory>>>
+	interface which can create JMX service URL and connection properties for the JDK implementation
+	of the RMI protocol.
+	
+	[] 
+	
+	The package <<<com.alpha.pineapple.plugin.weblogic.jmx.management>>> 
+	contains generic JMX helper classes:
+		
+	* <<<JMXManagmentException>>> - exception class for JMX classes in the plugin.
+		
+	* <<<WeblogicJMXNamingUtils>>> - helper class for creation of MBean object 
+	names and MBean type resolution. 
+	
+	[]
+
+	
+	
+	
+					

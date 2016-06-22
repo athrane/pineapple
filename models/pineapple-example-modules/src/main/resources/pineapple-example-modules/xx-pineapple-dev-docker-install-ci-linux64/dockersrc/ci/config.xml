@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson>
+  <jdks>
+    <jdk>
+      <name>java-1.8.0-openjdk</name>
+      <home>/usr/lib/jvm/java-1.8.0-openjdk-amd64</home>
+      <properties/>
+    </jdk>
+  </jdks>
+</hudson>

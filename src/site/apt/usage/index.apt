@@ -1,0 +1,173 @@
+ ------
+ Usage
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Usage
+
+* Getting started
+		 
+	<<{{{./overview.html}Brief overview of Pineapple}}>>\
+	Description of the central concepts in Pineapple: core component, plugins, clients, resources and modules. 	
+	 
+	<<{{{../usage/installation.html}Download and install Pineapple}}>>\
+	Description of how to download and install Pineapple.
+	 
+	<<{{{../development/clients.html}Pineapple clients overview.}}>>\
+	Overview of the available Pineapple clients.
+
+	<<{{{../usage/plugins.html}Plugins overview.}}>>\
+	Overview of the available plugins.
+
+* Reference
+
+** Configuration
+
+	{{{./configuration.html}Pineapple configuration overview.}}
+	
+	* {{{./configuration-environment.html}Environment Configuration Reference.}}
+	
+	* {{{./configuration-modules.html}Module Configuration Reference.}}
+		
+	[]
+		
+	{{{./schemas.html}Schema locations for environment and module configuration.}}\
+	Locations where schema files for configuration of Pineapple and plugins can be found.
+	
+	{{{./runtime-directories.html}Runtime directories.}}\
+	The used runtime directory structure and how Pineapple resolves its home directory.
+	
+	{{{./system-properties.html}Pineapple system properties.}}\
+	Java system properties used to configure Pineapple.
+	
+	{{{./default-configuration.html}Default Configuration.}}\
+	The content of the default environment configuration, which is generated if no configuration exists when Pineapple is started.
+
+	{{{../pineapple-modules/pineapple-core/usage/encrypting-credential-passwords.html}Encrypting credential passwords.}}\
+	How Pineapple encrypts credential passwords.
+	
+	{{{./scheduled-operation-support.html} Scheduled operation support.}}\
+	How the execution of operations can be scheduled to executed with a fixed frequency.
+		
+** Operations and workflows
+
+	{{{./operations.html}Operation and workflow reference.}}	
+	
+	[]
+
+** Plugins
+
+	* {{{../pineapple-plugins/pineapple-agent-plugin/index.html}Agent plugin.}}
+	
+	* {{{../pineapple-plugins/pineapple-composite-execution-plugin/index.html}Composite execution plugin.}}
+
+	* {{{../pineapple-plugins/pineapple-ssh-plugin/index.html}SSH plugin.}}
+
+	* {{{../pineapple-plugins/pineapple-docker-plugin/index.html}Docker plugin.}}
+	
+	* {{{../pineapple-modules/pineapple-infrastructure-test-plugin/index.html}Infrastructure test plugin.}}		
+
+	* {{{../pineapple-plugins/pineapple-jrockit-installation-plugin/index.html}JRockit installation plugin.}}
+
+	* {{{../pineapple-plugins/pineapple-fusion-middleware-installation-plugin/index.html}Fusion Middleware installation plugin.}}
+
+	* {{{../pineapple-plugins/pineapple-weblogic-installation-plugin/index.html}WebLogic installation plugin.}}
+		
+	* {{{../pineapple-modules/pineapple-weblogic-deployment-plugin/index.html}Weblogic deployment plugin.}}	
+
+	* {{{../pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html}Weblogic scripting tool (WLST) plugin.}}
+
+	* {{{../pineapple-modules/pineapple-weblogic-jmx-plugin/index.html}Weblogic JMX plugin.}}	
+
+	* {{{../pineapple-modules/pineapple-wbem-plugin/index.html}WBEM plugin.}}
+	
+	* {{{../pineapple-modules/pineapple-filesystem-plugin/index.html}File system plugin.}}		
+		
+	[]	
+
+	{{{./schemas-plugins.html}Schema locations for plugins.}}	
+
+** Clients
+	
+	{{{../development/clients.html}Pineapple clients overview:}}
+	
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/index.html}Stand-alone web application.}}		 	
+
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-web-application-war/index.html}Deployable web application.}}		 
+		
+	* {{{../pineapple-applications/pineapple-maven-plugin/index.html}Maven 3 plugin.}}
+
+	[]
+
+** Agents
+
+	* {{{./agents.html}Pineapple agent architecture overview.}}
+
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/usage/installation-linux.html}How-to: Install the Pineapple as an agent (i.e a service) on Linux.}}
+	
+	* {{{../pineapple-plugins/pineapple-ssh-plugin/examples/install-pineapple-agent-linux.html}Example illustrating how use the SSH plugin to install agents on Linux}}.
+	
+	* {{{./issues-installing-agents-linux-ssh.html}Common issues during installation of Pineapple agents on Linux}}.
+	
+	[]
+
+** General information
+
+	{{{./version-info.html}Pineapple version information (supported and required software versions).}}\
+	Supported Java and WebLogic versions.
+	
+	{{{../pineapple-modules/pineapple-core/usage/session-retry-support.html}Session retry support.}}\
+	How Pineapple plugin sessions automatically tries to connect/disconnect several times prior to failing.
+	
+** Using Pineapple with Maven
+	
+	{{{./configure-maven-project.html}How-to: Configure a Maven project to build a Pineapple module.}}
+
+** Operating System specific details 
+
+	{{{./linux-users.html}How-to: Setup Linux users and directories for Pineapple clients.}}	
+		
+* Configuration examples
+
+** General configuration
+
+	* {{{../examples/wildcard-env.html}How-to: Configure usage of the wildcard environment for resources.}}
+
+	* {{{../examples/target-resource-list.html}How-to: Use a list to target a model to multiple target resources.}}	
+
+	* {{{../examples/target-resource-regex.html}How-to: Use a regular expression to target a model to multiple target resources.}}	
+
+	* {{{../examples/trigger-targeting-single-host.html}How-to: Define a trigger to monitor and restart a service.}}	
+
+	* {{{../examples/trigger-targeting-multiple-hosts.html}How-to: Define a trigger to monitor and restart a service at multiple hosts.}}	
+	
+	[]
+ 
+** Stand-alone web application
+		
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/examples/start.html}How-to: Start the stand-alone web application.}}	
+	
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/examples/configure-jetty-logging.html}How-to: Modify the logging configuration for the embedded Jetty server.}}
+	
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/examples/configure-pineapple-logging.html}How-to: Modify the logging configuration for pineapple stand-alone web application.}}
+	
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/examples/configure-home-directory.html}How-to: Configure the home directory for the stand-alone web application.}}
+	
+	[]
+
+** Deployable web application
+	
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-web-application-war/examples/configure-home-directory.html}How-to: Configure the home directory for the deployable web application.}}
+		
+		[]
+			
+* Examples by plugin
+
+	Please visit the documentation pages for the individual plugins for examples.
+	
+	

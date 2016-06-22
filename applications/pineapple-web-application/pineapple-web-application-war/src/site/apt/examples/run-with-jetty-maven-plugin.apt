@@ -1,0 +1,38 @@
+ ------
+ How-to: run the web application using the Jetty-maven-plugin for development and testing
+ ------
+ Allan Thrane Andersen
+ ------
+ October 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: run the web application using the Jetty-maven-plugin for development and testing
+
+* Overview
+
+	This example illustrates how to to use the Jetty-Maven-plugin for rapid development 
+	and testing. To run the application in Jetty invoke, open a command prompt, change into
+	the the <<<pineapple-web-application-war>>> project directory and enter	the Maven command:
+	
++---	
+	mvn jetty:run	
++---	
+
+	The plugin will start the Jetty 7.1.x server with the application deployed with these parameters:
+	
+		* host = localhost
+		
+		* port = 8080
+		
+		[]
+	
+	The application URL is: <<{{{http://localhost:8080}http://localhost:8080}}>>
+
+** Pineapple Home directory configuration
+
+	The Pineapple Home directory, which is defined thrugh the system property <<<pineapple.home.dir>>> will 
+	be set to the value of the <<<pineapple.home.dir>>> parameter in the <<<web.xml>>> whose default value  
+	is <<<$\{user.home}/.pineapple>>>.
+	

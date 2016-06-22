@@ -1,0 +1,80 @@
+
+<!--
+	binder definition: binder="@init(queueName='pineapple-queue',queueScope='application')" 
+	is required for view model to respond to global commands posted 
+	on the ZK Application queue:
+	
+	@GlobalCommand public void createScheduledOperationConfirmed() { .. }		
+	
+	The create report notifier CreatedReportNotifierImpl.java posts global command using:
+		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, 
+				EventQueues.APPLICATION,
+				CREATE_SCHEDULED_OPERATION_CONFIRMED_GLOBALCOMMAND,
+				NULL_GLOBALCOMMAND_ARGS);	
+ -->	
+<window id="scheduledOperationPanelWindow" apply="org.zkoss.bind.BindComposer" 
+	binder="@init(queueName='pineapple-queue',queueScope='application')"
+	viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.ScheduledOperationPanel')" 
+	hflex="1" vflex="1" border="none" >
+	
+	<borderlayout>	
+		<north size="60%" 
+			border="none" 
+			splittable="true">
+			
+				<vbox hflex="1" vflex="1" >	    		    
+					<hbox hflex="1" pack="right" >
+						<button tooltiptext="Create scheduled operation"  
+							label="Create"
+							onClick="@global-command('createScheduledOperation')"
+							mold="trendy" 
+							iconSclass="z-icon-plus" />						    													    	
+						<button tooltiptext="Delete selected scheduled operation"  
+							label="Delete"
+							onClick="@global-command('deleteScheduledOperation')" 
+							mold="trendy" 														
+							iconSclass="z-icon-trash-o" />																				    													    	
+						<button tooltiptext="Delete all scheduled operations"  
+							label="Delete All"
+							onClick="@global-command('deleteAllScheduledOperations')" 
+							mold="trendy" 														
+							iconSclass="z-icon-trash-o" />																				    													    	
+					</hbox>			
+
+				<listbox id="scheduledOperationListbox"					 	
+				 	model="@load(vm.scheduledOperations)" 
+				 	selectedItem="@save(vm.selectedScheduledOperation)" 
+					onSelect="@command('showDetailsForSelectedScheduledOperation')"										 
+					hflex="1" vflex="1" >
+					
+					<listhead>            
+						<listheader label="Name" width="10%" />					
+						<listheader label="Description" width="30%" />
+						<listheader label="Module" width="20%" />						
+						<listheader label="Environment" width="15%" />												
+						<listheader label="Operation" width="15%" />																		
+						<listheader label="Scheduling expression" width="10%" />
+			        </listhead>				
+					
+					<template name="model" var="scheduledOperation">
+	            		<listitem >
+	                		<listcell label="@load(scheduledOperation.name)" />	            		
+	                		<listcell label="@load(scheduledOperation.description)" />
+	                		<listcell label="@load(scheduledOperation.module)" />	                			                		
+	                		<listcell label="@load(scheduledOperation.environment)" />	                			                		
+	                		<listcell label="@load(scheduledOperation.operation)" />	                			                			                		
+	                		<listcell label="@load(scheduledOperation.cron)" />	                		
+	            		</listitem>
+	        		</template>				
+				</listbox>
+
+			</vbox>
+		</north>
+		
+	   		<center border="none" >			    								   		
+				<vbox hflex="1" vflex="1"  >		    		    				    
+				</vbox>
+  			</center>
+		
+	</borderlayout>
+</window>

@@ -1,0 +1,27 @@
+<jaxb:bindings version="2.0"	
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"	
+	jaxb:extensionBindingPrefixes="xjc" >
+  
+  	<jaxb:globalBindings choiceContentProperty="true"/> 
+  
+ 	<jaxb:bindings schemaLocation="test.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.model.test" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+ 	<jaxb:bindings schemaLocation="test_input_marshalling_1_0.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.plugin.test.inputmarshalling.model" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="test_input_marshalling_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='testType']" >
+			<jaxb:class name="Test" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+</jaxb:bindings>

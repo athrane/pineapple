@@ -1,0 +1,87 @@
+ ------
+ WebLogic scripting tool (WLST) plugin
+ ------
+ Allan Thrane Andersen 
+ ------
+ April 2011
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<WebLogic scripting tool (WLST) plugin>> implements functionality to execute WebLogic scripts (WLST). 
+	For more information about WLST, please refer to the pages:
+	
+		* {{{http://docs.oracle.com/cd/E15586_01/web.1111/e13715/toc.htm}WLST documentation home page for WebLogic 10.3.5 (11g).}}	
+
+		* {{{http://docs.oracle.com/cd/E24329_01/web.1211/e24491/toc.htm#BEGIN}WLST documentation home page for WebLogic 12.1.1 (12c).}}	
+
+		[]
+			
+	The plugin supports execution of scripts against these releases of WebLogic:
+	
+	* 9.2.x
+	
+	* 10.3.x (11g) 
+	
+	* 12.1.x (12c)	
+	
+	[]
+		 	    
+* Usage
+
+	Go to the {{{./usage/index.html}Plugin Usage page}} for instructions on using the plugin. 
+
+** Supported operations
+
+	The plugin supports the default operations:
+	
+    * <<test>> (from the test workflow). When the plugin is invoked with this 
+    operation, the content of the module model (e.g. WLST script configuration) 
+    is validated with the home directory of the targeted resource (e.g. a product home directory).
+	
+    * <<deploy-configuration>> (from the deployment workflow). When the plugin is invoked with this 
+    operation, the plugin executes one or more WLST scripts.
+	
+    * <<undeploy-configuration>> (from the deployment workflow). When the plugin is invoked with this 
+    operation, the plugin executes executes one or more WLST scripts.
+	        
+	[]		
+		
+	For more information about the default operations, refer to the	
+	{{{../../usage/operations.html}Operation and workflow reference.}}
+
+** Plugin schema
+
+	The plugin defines a schema named <<WebLogic scripting tool (WLST) plugin schema>> 
+	for definition of models in module model files.	The schema defines the namespace 
+	<<<http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0>>>. For more 
+	information about where the schema can be found, refer to the 
+	{{{../../usage/schemas-plugins.html}Schema locations for plugins page.}}
+
+* Examples
+
+	To provide you with better understanding on some usages of the plugin,
+	you can take a look into the following examples:
+
+	* {{{./examples/execute-hello-world-script.html}How-to: Execute hello world script}}
+
+	* {{{./examples/load-properties.html}How-to: Execute script with property file}}
+	
+	* {{{./examples/create-wls1035-domain-from-template.html}How-to: Execute script which creates a WebLogic 10.3.5 domain from a domain template}}	
+	
+	* {{{./examples/create-domain-and-start.html}How-to: Create model which executes two scripts, e.g. creates a WebLogic domain and starts the server}}		
+	
+	* {{{./examples/create-domain-and-enroll.html}How-to: Create model which creates a WebLogic domain, do online configuration and then enrolls the server under NodeManager control}}	
+
+	* {{{./examples/configure-linux-fast-random.html}How-to: Avoid WLST hangs on Linux - configure fast random generator}}
+
+	[]
+  
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

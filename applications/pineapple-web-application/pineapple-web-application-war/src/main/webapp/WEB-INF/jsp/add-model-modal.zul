@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	"forDetatchAfterOpen" and forDetatchAfterCancel are dummy attributes whose purpose is 
+	to trigger the detach converter to close the modal dialog window.
+ -->
+      
+<window title="Create Model"
+	apply="org.zkoss.bind.BindComposer"
+    viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.CreateModelModalPanel')"    
+    width="50%" border="normal"    
+ 	forDetatchAfterOpen="@load(true,after='confirmModel') @converter('com.alpha.pineapple.web.zk.utils.DetachConverter')"
+ 	forDetatchAfterCancel="@load(true,after='cancelModel') @converter('com.alpha.pineapple.web.zk.utils.DetachConverter')" >    	
+ 
+	<grid>
+	    <columns visible="false" >
+	        <column width="20%" align="right"/>
+	        <column width="30%" />
+	        <column width="50%" />				        
+	    </columns>
+	    <rows>
+	        <row>
+	        	<cell valign="top" height="100%" >
+	        		<hlayout>
+	                  	<label value="Environment" />                	
+	        			<label value="*" style="color:red"  />				        	
+	        		</hlayout>        	
+	        	</cell>                                                              
+	        	<cell valign="top" >
+                   	<textbox id="modelName" value="@save(vm.modelName)" onChanging="@command('updateModelName', name=event.value)" width="80%" style="font-weight:bold;" />
+	        	</cell>
+	        	<cell valign="top" >
+					<label value="Unique name among defined models in the module. The name of the model defines the target environment." style="font-size:11px" />				        	
+	        	</cell>
+	        </row>					        
+	        <row>
+	        	<cell valign="top" height="100%" >
+                  	<label value="Status" />                	
+	        	</cell>
+	        	<cell valign="top" colspan="2" >
+                   	<label value="@load(vm.modelStatusAsString)" width="80%" style="@load(vm.modelStatus eq 'true' ?'font-weight:bold;color:red;':'font-weight:bold;color:green;')" />
+	        	</cell>
+s	        </row>					        
+	        <row>
+		    	<cell colspan="3" align="center">
+	            <button id="confirmButton" label="Confirm" onClick="@command('confirmModel')" disabled="@load(vm.modelStatus)" mold="trendy" />
+	            <button id="cancelButton" label="Cancel" onClick="@command('cancelModel')" mold="trendy" />
+		    	</cell>
+		   	</row>					        		        
+	    </rows>
+	</grid>       					         						
+     
+</window>

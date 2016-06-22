@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	"forDetatchAfterOpen" and forDetatchAfterCancel are dummy attributes whose purpose is 
+	to trigger the detach converter to close the model dialog window.
+ -->     
+<window title="Open Module"
+    apply="org.zkoss.bind.BindComposer"
+    viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.OpenModuleModalPanel')" 
+    width="50%" height="75%" border="normal"    
+ 	forDetatchAfterOpen="@load(true,after='openModule') @converter('com.alpha.pineapple.web.zk.utils.DetachConverter')"
+ 	forDetatchAfterCancel="@load(true,after='cancel') @converter('com.alpha.pineapple.web.zk.utils.DetachConverter')" >    	
+ 
+   	<borderlayout>
+	    <north border="normal" size="70%" >	    	
+			<listbox model="@load(vm.modules)" 
+				selectedItem="@bind(vm.selectedModule)" 
+				onSelect="@command('loadDescription')"
+				checkmark="true" 
+				hflex="1" vflex="1" >
+				
+				<template name="model" var="module">
+            		<listitem >
+                		<listcell label="@load(module.id)" />
+            		</listitem>
+        		</template>				
+			</listbox>
+	    </north>				 
+	    
+		<center title="Module Description" 
+			border="none" >
+						
+			<textbox hflex="1" vflex="1" 
+				multiline="true" 
+				style="resize: none;"
+				value="@load(vm.description, after='loadDescription')" />
+		</center>
+	    	      	
+   		<south border="none" size="10%" >
+	        <hbox pack="end" align="center" spacing="10px" hflex="1" vflex="1" >      
+	            <button id="openModuleButton" label="Open Module" onClick="@command('openModule')" mold="trendy" />
+	            <button id="refreshButton" label="Refresh Modules" onClick="@command('refreshModules')" mold="trendy" />	            
+	            <button id="cancelButton" label="Cancel" onClick="@command('cancel')" mold="trendy" />
+	        </hbox>        	
+   		</south>
+   	</borderlayout>											
+    
+</window>

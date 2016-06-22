@@ -1,0 +1,84 @@
+ ------
+ com.alpha.pineapple.context package description
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+com.alpha.pineapple.context description
+	
+* Content
+	
+	
+	* Application context implementation
+
+		* Contains implementation of ManagerContext, i.e the main 
+		application context.
+
+		[]
+		
+	* Runtime context validation
+
+		* Class which can perform runtime validation of the state of the 
+		application context.
+		
+		[]
+			
+	[]
+
+* Class diagram 
+
+	TODO: insert class diagram from PPT: 
+	alpha.pineapple-1.16 (pinapple-0.8).ppt, page 39.
+	
+* Interfaces and classes
+
+** ManagerContext
+
+	Defines the context interface for the application.
+	
+	The purpose of the interface is to allow typed access for mandatory 
+	and common context properties.
+
+** ManagerContextImpl
+
+	Implementation of the <<<ManagerContext>>> interface.
+
+	Instances are created by invoking the method 
+	<<<ManagerContextimpl.createContext(..)>>>, the constructor is private 
+	to enforce usage of the create method which set mandatory properties.	
+	
+** ContextValidator	
+	
+	The context validator interface provides methods for validation of 
+	the contents of aCommons Chain context.
+	
+	The supported validation rules are defined in the <<<Enum>>> 
+	<<<ContextValidator.Rule>>>:
+	
+	* KEY_DEFINED - validates that property key is defined in context
+	
+	* VALUE_NOT_NULL - validates that property value isn't null in context. 
+	
+	* VALUE_NOT_EMPTY_STRING - validates that property value is of the type 
+	<<<java.lang.String>>> and the string isn't empty i.e. "".
+	
+	[] 
+	
+** ContextValidatorImpl
+
+	Implementation of the <<<ContextValidator>>> interface.	
+	
+
+** ContextValidationFailedException
+
+	Exception class which is used by the context validator to signal 
+	validation failures 
+	
+	The class is a sub class of the <<<CommandException>>> class which is
+	used signal command execution failures.
+		

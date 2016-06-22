@@ -1,0 +1,764 @@
+ ------
+ Execution framework reference
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Execution framework reference
+
+	* {{{Introduction}Introduction}}
+	
+	* {{{Execution_result}Execution result}}
+
+		* {{{Start_a_new_execution}Start a new execution}}
+
+		* {{{Composite_result_hierarchies}Composite result hierarchies}}
+
+		* {{{Execution_state}Execution state}}
+
+		* {{{Setting_execution_state}Setting execution state}}
+
+		* {{{Computing_the_execution_state}Computing the execution state}}
+
+		[]
+
+	* {{{Continuation policy}Continuation policy}}
+
+	* {{{Result_listener}Result listener}}
+
+	* {{{Result_repository}Result repository}}
+
+	* {{{Result_factory}Result factory}}
+
+		* {{{Creating_a_result_using_the_factory}Creating a result using the factory}}
+
+		[]
+
+	* {{{Exceptions}Exceptions}}
+
+	[]
+	
+* Introduction
+
+	Pineapple defines an framework for monitoring and controlling the execution of operations. The purpose 
+	of the framework is to:
+
+	* Control the execution of operations.
+	
+	* Gather runtime information about the execution of operations and commands.
+
+	* Deliver the information to clients in real time.
+	
+	[]
+	
+* Execution result
+	
+	The core class in the framework is the <<<ExecutionResultImpl>>> class which implements the <<<ExecutionResult>>> interface.
+	The class is used by Pineapple to capture runtime information about and control the execution of operations. 
+
+** Start a new execution
+
+	A new execution can  be create in three different ways:
+
+	* {{{Starting_a_new_execution_using_the_result_class_directly}Starting a new execution using the result class directly}}
+	
+	* {{{Creating_new_execution_using_the_factory}Creating new execution using the factory}}
+	
+	* {{{Starting_a_new_execution_using_the_result_repository}Starting a new execution using the result repository}}
+	
+	[]
+
+*** Starting a new execution using the result class directly
+
+	To start a new execution which should tracked by execution results, create an instance by invoked the <<<new>>> operator:
+
++----		
+  ExecutionResult rootResult = new ExecutionResultImpl("some description");  	
++----
+
+	The semantics of invoking the constructor <<<ExecutionResultImpl( String description )>>> is:
+	
+	[[1]] Creates a new execution result with <running> state.
+	
+	[[2]] The internal stop watch is running for the execution result.
+	
+	[[3]] The execution result has the description "some description".
+	
+	[[4]] The parent result is null for the new execution result.		
+			
+	[]	 
+	
+*** Starting a new execution using the result repository
+
+	To start a new execution which should tracked by execution results, invoke the 
+	<<<startNewExecution(String description)>>> on a result repository to create a root
+	result: 
+
++----		
+  ExecutionResult rootResult = resultRepository.startNewExecution( "some description" );     	
++----
+
+	The semantics of the <<<startNewExecution( description )>>> is:
+	
+		[[1]] Creates a new execution result with <running> state.
+		
+		[[2]] The internal stop watch is running for the execution result.
+		
+		[[3]] The execution result has the description "some description".
+		
+		[[4]] The parent result is null for the new execution result.		
+				
+		[]	 
+	
+** Composite result hierarchies
+
+	Branching of the execution path can be tracked by adding a child result to an 
+	existing execution result:
+	
++----	
+  ExecutionResult modelResult = rootResult.addChild( "some description" );	
++----	 
+
+	The semantics of the <<<addChild( description )>>> method is: 
+
+		[[1]] Creates a new execution result with <running> state.
+		
+		[[2]] The internal stop watch is running for the execution result.
+		
+		[[3]] The execution result has the description "some description".
+		
+		[[4]] The child result is added as a child result to the <<<rootResult>>> on which
+		the <<<addChild(..)>>> method was invoked. 
+		 
+		[[5]] The <<<rootResult>>> is added as parent result to the child result.
+		
+		[]
+
+	TODO: clarify what happens if a child is added to a non-running result?
+
+** Execution state
+
+	A execution result contains an state variable which defines the runtime state of the 
+	application whose execution is documented by the result.
+
+*** The legal states
+
+	The legal states are:
+	
+	* <executing> - signals that the tracked application part is executing.
+	
+	* <success> - signals that execution is completed and it was a success.
+			
+	* <failure> - signals that execution is completed and it failed due to some criteria 
+	defined by the application.
+	
+	* <error> - signals that execution is completed and it terminated with an unexpected exception.
+	
+	* <computed> - signals that execution is completed and that the state should be computed based on 
+	the results of its child results.
+
+	* <interrupted> - signals the execution was interrupted (either cancelled of aborted due to failure)
+
+	[] 
+	
+	The legal states is defined as an <<<enum>>> named <<<com.alpha.pineapple.execution.ExecutionResult.ExecutionState>>>
+	which is used to set and query about the states of execution results when using the framework: 
+	
++----
+public interface ExecutionResult {
+
+  /**
+   * Defines the execution state of a execution result.
+   */
+  enum ExecutionState {
+    COMPUTED,	// completed execution state is computed from children
+    SUCCESS,	// completed execution, execution was successful
+    FAILURE,	// completed execution, execution resulted in failure
+    ERROR,      // completed execution, execution encountered an unexpected error
+    EXECUTING,	// execution is in progress
+    INTERRUPTED // completed execution, execution was interrupted (either cancelled of aborted due to failure)
+  }
+  
+  // remaining interface definition here..
+}
++----	 	
+						 
+*** The initial state is <executing>
+	 
+	When an execution result is created the state is set to <executing>. 	 
+	This applies for root and child results.
+
+** Setting execution state
+
+	When the execution (or the application part which is tracked by an execution result) is complete 
+	the execution result needs to be updated to reflect the outcome of the execution. Set the 
+	state using the methods:
+	
+	* <<<CompleteAsSuccessful(..)>>>
+	
+	* <<<CompleteAsFailure(..)>>>
+	
+	* <<<CompleteAsError(..)>>>
+	
+	* <<<CompleteAsComputed(..)>>>
+
+	* <<<CompleteAsInterrupted(..)>>>
+	
+	[]
+
+	..which add one or more messages using a message source and sets the state. Usage of the different 
+	methods are described in the following sections.
+	
+	Finally the state can be set using the method <<<setState(...)>>>, but using this method has the 
+	disadvantage that messages needs to be added afterwards
+
+*** Setting the state as success 
+
+	The <success> state is used to capture the successful execution of some code. An example could the successful
+	execution of an test command where the assertion of the expected and actual values succeeded. An example of a test
+	command which uses the <success> and <failure> state to report the outcome of the test can be found here: 
+	{{{../../pineapple-commands-api/examples/simple-command-with-execution-result.html}How-to: Write a simple test command whose outcome is reported using the execution framework.}}		
+	
+	The state of the execution result object is set using the <<<completeAsSuccessful(..)>>> method:
+
++----	
+  // assert
+  if (ip.equalsIgnoreCase( actualIP )) {
+    // set successful result            	
+    Object[] args = { this.hostname, this.ip };            	
+    executionResult.completeAsSuccessful(messageSource, "trnc.succeed", args);            	        		
+    return;            	            	
+  }
+	
+  // else set failed result
++----	   	 
+
+	The semantics of the <<<completeAsSuccessful(MessageSource messageSource, String key, Object[] args)>>> is:
+
+	[[1]] The message key defined by <<<key>>> is resolved from the message source object <<<messageSource>>> with the 
+	<<<args>>> arguments which is substituted into the resolved message.
+	
+	[[2]] The resolved message is stored in the execution result using the message key <<<Message>>>.
+		
+	[[3]] The state is set to <success>.		
+			
+	[]			
+		 	
+
+*** Setting the state as failure
+
+	The <success> state is used to capture the unsuccessful execution of some code. An example could the unsuccessful
+	execution of an test command where the assertion of the expected and actual values failed. An example of a test
+	command which uses the <success> and <failure> state to report the outcome of the test can be found here:
+	{{{../../pineapple-commands-api/examples/simple-command-with-execution-result.html}How-to: Write a simple test command whose outcome is reported using the execution framework.}}
+	
+	The state of the execution result object is set using the <<<completeAsFailure(..)>>> method:
+
++----	
+  // assert
+  if (ip.equalsIgnoreCase( actualIP )) {
+    // set successful result                	
+    return;            	            	
+  }
+    
+  // set failed result
+  Object[] args = { this.hostname, this.ip.toString(), this.actualIP.toString() };            
+  executionResult.completeAsFailure(messageSource, "trnc.failed", args);
++----	   	 
+
+	The semantics of the <<<completeAsFailure(MessageSource messageSource, String key, Object[] args)>>> is:
+
+	[[1]] The message key defined by <<<key>>> is resolved from the message source object <<<messageSource>>> with the 
+	<<<args>>> arguments which is substituted into the resolved message.
+	
+	[[2]] The resolved message is stored in the execution result using the message key <<<Error Message>>>.
+		
+	[[3]] The state is set to <failure>.		
+			
+	[]			
+
+
+*** Setting the state as error
+
+	The <error> state is used to capture unexpected exceptions in logic/code whose execution is documented
+	by execution results. An example of a test command which uses the <error> state to report errors during execution of the test can be found here: 
+	{{{../../pineapple-commands-api/examples/simple-command-with-execution-result.html}How-to: Write a simple test command whose outcome is reported using the execution framework.}}		 
+	
+	If exceptions is caught by a <<<try/catch>>> block then the error state can set be using 
+	the <<<completeAsError(..)>>> method:   	  	 
+	
++----	
+  ExecutionResult myResult = ...	
+  // some logic 
+  
+  try {          
+    // some logic        		    		
+    // set result as successful, failed or compute it     		        		     		
+  } catch (Exception e) {        	    	      
+    myResult.completeAsError(messageSource, "dmtd.error", null, e);
+  }
++----        
+
+	The semantics of the <<<completeAsError(MessageSource messageSource, String key, Object[] args, Exception e)>>> is:
+
+	[[1]] The message key defined by <<<key>>> is resolved from the message source object <<<messageSource>>> with the 
+	<<<args>>> arguments which is substituted into the resolved message.
+	
+	[[2]] The resolved message is stored in the execution result using the message key <<<Error Message>>>.
+
+	[[3]] The stack trace of the exception defined by argument <<<e>>> is extracted and stored in the execution result using 
+	the message key <<<Stack Trace>>>.
+		
+	[[4]] The state is set to <error>.		
+			
+	[]
+
+	The execution can alos be completed with an error using an exception is input:
+	
++----	
+  ExecutionResult myResult = ...	
+  // some logic 
+  
+  try {          
+    // some logic        		    		
+    // set result as successful, failed or compute it     		        		     		
+  } catch (Exception e) {        	    	      
+    myResult.completeAsError(e);
+  }
++----        
+	
+	The semantics of the <<<completeAsError(Exception e)>>> is:
+	
+	[[1]] The message is read from the exception using <<<Exception.getMessage()>>> and stored in the execution result using the message key <<<Error Message>>>.
+
+	[[2]] The stack trace of the exception defined is extracted and stored in the execution result using 
+	the message key <<<Stack Trace>>>.
+		
+	[[3]] The state is set to <error>.		
+			
+	[]
+
+*** Setting the state as computed
+
+	Logic whose state should be computed based on the results of its child results should 
+	implement it this way:
+		
++----    		
+  Object[] args = { type };
+  myResult.completeAsComputed(messageSource, "dmtd.completed", args);        	
++----	
+
+	The semantics of the <<<completeAsComputed(MessageSource messageSource, String key, Object[] args)>>> is:
+
+	[[1]] The message key defined by <<<key>>> is resolved from the message source object <<<messageSource>>> with the 
+	<<<args>>> arguments which is substituted into the resolved message.
+	
+	[[2]] The resolved message is stored in the execution result using the message key <<<Message>>>.
+	
+	[[4]] The state is set to computed and the execution result will compute the execution state as described in XXXX.
+			
+	[]
+
+*** Setting the state as computed, advanced version
+
+	There is an more advanced way to set the state as computed which will produce different messages depending 
+	on the whether computed state is
+		
+	* <success> 
+	
+	* <failure> or <error>
+	
+	[] 
+
+	The advanced method is invoked this way:	 	
+		
++----    		
+  Object[] successfulArgs = { type };
+  Object[] failedArgs = { type2 };
+  myResult.completeAsComputed(messageSource, "xyz.completed", successfulArgs, "xyz.failed", failedArgs);        	                      
++----	
+
+	The semantics of the <<<completeAsComputed(MessageSource messageSource, 
+		String successfulKey, Object[] successfulArgs, 
+		String failedKey, Object[] failedArgs)>>> is:
+			
+	[[1]] The state is set to computed and the execution result will compute the execution state as described in XXXX.			
+	
+	[[2]] If the computed state is <success> then:
+
+		[[2.1]] The message key defined by <<<successfulKey>>> is resolved from the message source object <<<messageSource>>> 
+		with the <<<successfulArgs>>> arguments which is substituted into the resolved message.
+	
+		[[2.2]] The resolved message is stored in the execution result using the message key <<<Message>>>.
+		
+		[]
+
+	[[3]] Else:
+
+		[[3.1]] If the array <<<failedArgs>>> is null, then a new extended <<<failedArgs>>> 
+		array of size 2 is created. Otherwise a new extended <<<failedArgs>> array is created 
+		which is the size of <<<failedArgs>>> + 2.  
+
+		[[3.2]] If the array <<<failedArgs>>> is null, then a new message argument array of size 2 is created. 
+		Otherwise a new message argument array is created which is the size of <<<failedArgs>>> + 2.  
+
+		[[3.3]] The number of failed children is added at index 0 in the extended <<<failedArgs>>> array.    
+		
+		[[3.4]] The number of children terminated with an error is added at index 1 in the extended <<<failedArgs>>> array.		
+	
+		[[3.5]] The message key defined by <<<failedKey>>> is resolved from the message source object <<<messageSource>>> 
+		with the extended <<<failedArgs>>> array whose content is substituted into the resolved message.
+	
+		[[3.6]] The resolved message is stored in the execution result using the message key <<<Message>>>.
+		
+		[]
+		  			
+	[]
+
+	Using the advance version requires that the failed message is defined with at least two arguments:
+	
++----
+tdc.failed=XYZ failed, because [{0}] child executions failed and [{1}] child executions terminated with an error.
++----	  	
+
+	It is possible to invoke the method with null argument lists:	
+	
++----    		
+  myResult.completeAsComputed(messageSource, "xyz.completed", null, "xyz.failed", null );        	                      
++----	
+
+	..but the requirement for the failed message is the same.
+
+*** Setting the state as interrupted
+
+	TODO: write...
+
+** Computing the execution state
+
+*** Algorithm for computing the execution state
+
+	Input to the state computation:
+	
+	* The <input state> which is the state of the node it self.  
+	
+	[]
+		
+	The algorithm is:
+	
+	[[1]] Count the number children which have state <success>, <failure>, <error>,  <executing> and <interrupted>.
+	
+	[[2]] Force all <executing> children to execution state <error>.
+	
+	[[3]] Add a message with the message key <Composite Execution Result> which describes the 
+	number of children, how many succeeded, how many failed, how many terminated with an error and how many was interrupted.
+
+	[[4]] If <input state> for the current result is <error> then the state is set to <error> and the computation is complete.
+
+	[[5]] If the number of children with errors > 0 then state is set to <error> and the computation is complete. 
+
+	[[6]] If <input state> for the current result is <interrupted> then the state is set to <interrupted> and the computation is complete.
+
+	[[7]] If the number of children which where interrupted > 0 then state is set to <interrupted> and the computation is complete. 
+
+	[[8]] If <input state> for the current result is <failure> then the state is set to <failure> and the computation is complete.
+
+	[[9]] If the number of children with failure > 0 then state is set to <failure> and the computation is complete.	
+	
+	[[10]] The state is set to <success> and the computation is complete.	
+	
+	[]	
+	
+	Comments regarding the <input state> and the algorithm:
+	
+	* Resolution of the state is based on the priority, that <error> takes precedence over 
+	<interrupted> which takes precedence over <failure> which takes precedence over <success>.
+	  
+	* If the <input state> is computed then algorithm will only compute from the state of the children. If the
+	node doesn't have any children then then we have a <success>.
+	
+	[]			 	
+		
+***	..child error is propagated to parent result with computed state	
+	
+***	..child failure is propagated to parent result with computed state
+	
+***	..child success doesn't override parent error
+	
+***	..child success doesn't override parent failure
+	
+***	..child success doesn't override parent failure
+	
+*** ..forcing a running child to error	
+	
+	..state of running children is forced to error, because of the programming bug that the parent state is
+	attempted to be set before the child state is set.
+
+** State is propagated to parent node
+
+	..when state is set then parent is inspected..
+	
+	.. if parent isn't running (i.e. have already be set) then parent state is updated 
+	by setting the parent state <computed> to trigger a recomputation of the parent state..
+		
+** Result contains an stop watch
+
+	..starts when execution result is created
+	
+	.. stops when state is changed from initial running state to something else		
+	
+	..cannot be restarted.	
+
+** Facility for storing messages
+
+	..messages can be stored used the <<<addMessage>>> method
+	
+	..default names: 
+	
+	* Message
+	
+	* Stack Trace			
+
+	* Error Message
+	
+	* Composite Execution Result
+	
+	[]
+	
+	The default names are defined as constants on the <<<ExecutionResult>>> interface:
+	
++----	 
+public interface ExecutionResult {
+
+	public final String MSG_MESSAGE = "Message";
+	public final String MSG_ERROR_MESSAGE = "Error Message";	
+	public final String MSG_STACKTRACE = "Stack Trace";
+	public final String MSG_COMPOSITE = "Composite Execution Result";
+	
+	// remaining interface definition goes here..
+}	
++----
+
+	Example of storing a message using one of the constants:
+	
++----
+
+	....
++----	
+
+* Continuation policy
+
+	A result is created with a continuation policy which defines how the execution 
+	should react to events regarding the interruption of the execution.
+	The continuation policy supports these event:
+	
+	* Execution is aborted when an failure or error occurs.
+	
+	* Execution is interrupted by external party, e.g. the human user.
+	
+	[]
+	
+** Creation of the continuation policy
+
+	The continuation policy is created when a root result is created.	
+	The continuation is global/shared for the root result and all child results in an execution.
+
+	The continuation policy is created with the directive:
+	
+	* <Continue execution on failure or error>. 
+	This is the default behavior of Pineapple prior to the introduction of support for continuation policy. 
+	
+	[]
+
+	Pineapple sets this value based on the content of models. 
+	Pineapple uses the content of models to directs it runtime behavior to support the continuation policy.
+
+** Getting the policy 
+
+	The result continuation policy can be obtained from a result using the method:
+	
++----
+  ContinuationPolicy policy = result.getContinuationPolicy();
++----
+
+** Modify the initial policy directive 
+
+	The directive can be modified:
+	
++----
+  ContinuationPolicy policy = result.getContinuationPolicy();
+  policy.disableContinueOnFailure();
++----
+
+	or (to confirm the default value):
+	
++----
+  ContinuationPolicy policy = result.getContinuationPolicy();
+  policy.enableContinueOnFailure();
++----
+		
+	The API is designed in such a way that the directive can only be changed once.
+	
+** Reporting an error, failure or interruption in a cooperative fashion
+
+	If the continuation directive is disabled and an error, failure or 
+	interruption is registered by the framework then it will capture 
+	the "failed" result and throw an exception to signal that the execution
+	should be aborted.
+	
+	The prerequisite is to disable the continuation directive:
+	
++----
+  ContinuationPolicy policy = result.getContinuationPolicy();
+  policy.disableContinueOnFailure();
++----
+		
+	..then an execution (or part of it) is completed by setting the state of an result:
+	
++----
+  // create child result
+  ExecutionResult childResult = rootResult.addChild( "some child description");
+
+  // complete 
+  childResult.completeAsError(messageSource, "dmtd.error", null, e);
++----
+	
+	The framework implements the algorithm to signal that execution should be aborted:
+	
+	[[1]] If the result completed with error, failure or interruption (either directly
+	or computed into one of these states) then the result will be captured 
+	internally by the execution framework.
+	
+	[[2]] The state of the continuation policy will be updated with the captured result: 
+	
++----
+  policy.setFailedResult(failedResult);
++----
+
+	[[3]] If attempt is made to create a new child result then the framework will throw 
+	the runtime exception <<<InterruptedExecutionException>>>.	
+	
+	[]
+	
+	Users of the framework should take note when this exception is thrown and in a <friendly cooperative> approach:
+	
+	* Restrain from creating more child results.
+		
+	* Complete all executing results. 
+	
+	* Exit execution of whatever is	going on.
+
+	[]
+
+** Querying the continuation policy for friendly cooperation
+
+	To avoid the presence of <<<InterruptedExecutionException>>> the 
+	continuation policy can be queried as to whether the execution should
+	be aborted or continue:
+		
++----
+  // query whether execution should continue
+  if(!policy.continueExecution()) return;
+  
+  // continue execution 
++----
+
+* Result listener
+
+	Interested parties can implement the <<<ResultListener>>> interface and then register
+	them self as an observer at the core component. 
+	
+	The core component implements the <observer> pattern to provide a facility for 
+	clients to be notified in real time of how the execution of an operation proceeds. 
+	
+	The core component has the role of <subject> in the observer pattern. To support
+	the role, it provides the <<<addListener( ResultListener listener )>>> method 
+	which should be used by observers to register themselves. The core component contain 
+	logic which notifies all registered observers during execution of an operation.
+	 
+	Clients should implement objects with the role of <observer> and register them with 
+	the core component to be notified of how the execution an operation proceeds. 
+		     			
+	An observer must implement the <<<com.alpha.pineapple.execution.ResultListener>>> interface:
+	
++--------
+public interface ResultListener {
+
+  void notify(ExecutionResultNotification notification);
+}
++--------	
+	
+** Notification of observers
+	
+	Each time an execution result object changes it state, all registered observers are notified 
+	of the change. The notification is implemented by invoking 
+	<<<notify(ExecutionResultNotification notification)>>> on the each registered observer.
+	
+	The argument is a notification object which contains:
+	
+		* Execution result object which have changed state. 
+		
+		* The new recorded state of the execution result object.
+		
+		[]
+			
+	To capture the state when listeners are notified the state is recorded separately in the notification. 
+	Since the state of an execution result is mutable, the recorded state in the notification might 
+	not match the state of the execution result since its state can have changed since the creation of the 
+	notification and the notification of the observers.
+			
+	An observer can query the the execution result about its new state and additional info.       
+	
+* Result repository
+
+	..container for listeners 
+	
+	..container controlling execution of operations. 
+	
+* Result factory
+
+	The <<<ExecutionResultFactory>>> interface defines an interface for creation of
+	execution results objects.
+
+	The Spring application context for the API project contains a bean named 
+	<<<executionResultFactory>>> which implements the <<<ExecutionResultFactory>>> 
+	interface. The bean is implemented by the <<<DefaultExecutionResultFactoryImpl>>> class.	
+
+** Creating new execution using the factory
+
+	Inject the result factory using Spring:
+	
++--------
+  @Resource
+  ExecutionResultFactory executionResultFactory;
++--------	
+
+	A result instance can be created using the factory
+
++--------
+  ExecutionResult result = executionResultFactory.startExecution("Some description");
++--------	
+
+	The semantics of the <<<startExecution(String description)>>> is:
+	
+	[[1]] Creates a new execution result with <running> state.
+	
+	[[2]] The internal stop watch is running for the execution result.
+	
+	[[3]] The execution result has the description "some description".
+	
+	[[4]] The parent result is null for the new execution result.		
+			
+	[]	 
+	
+* Exceptions
+
+	The exception class <<<ExecutionResultException>>> can be used to signal an error during execution of execution result
+	by encapsulating the result..
+	
+	
+	

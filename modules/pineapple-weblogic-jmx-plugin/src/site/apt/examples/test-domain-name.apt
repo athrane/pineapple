@@ -1,0 +1,140 @@
+ ------
+ How-to: Test the name of a WebLogic domain 
+ ------
+ Allan Thrane Andersen
+ ------
+ December 2009
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Test the name of a WebLogic domain
+
+* Install WebLogic and create the alpha domain
+
+	Install WebLogic 10.3.5+ and create a new domain named <alphadomain> with
+	a administration server named <admserver> which listens at <<<127.0.0.1:7001>>>.
+	
+	You can use the module in <<<src/test/resources/create-alphadomain-wls1035-for-jmxplugin-test>>> to
+	create the domain using Pineapple and start the administration server.
+
+* Define the alpha environment 
+
+	Open the <<<.pineapple/conf/resources.xml>>> and add a new environment named <<<alpha-environment>>>
+	and define a WebLogic JMX resource named <<<weblogic-jmx>>> for an administration server
+	expected to be listening at <<<127.0.01:7001>>>:
+	  
++---
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <environments>
+    <environment id="alpha-environment">
+      <resources>
+        <resource id="weblogic-jmx" plugin-id="com.alpha.pineapple.plugin.weblogic.jmx" 
+          credential-id-ref="weblogic-jmx-credential">
+          <property key="host" value="127.0.0.1" />
+          <property key="port" value="7001" />
+          <property key="url-path" value="weblogic.management.mbeanservers.edit" />
+        </resource>
+        <resource id="infrastructure-test" plugin-id="com.alpha.pineapple.plugin.net" />        
+      </resources>
+    </environment>
+    
+     <!-- more environments goes here -->
+
+  </environments>
+</configuration>
+
++---
+
+  Open the <<<.pineapple/conf/credential.xml>>> and add a new environment named <<<alpha-environment>>>
+  and define a credential for the previously defined WebLogic JMX resource:
+
++---
+
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <environments>
+    <environment id="alpha-environment">
+      <credentials>
+        <credential id="weblogic-jmx-credential" user="weblogic" password="Weblogic11g" />
+      </credentials>
+    </environment>    
+
+     <!-- more environments goes here -->
+                   
+  </environments>
+</configuration>
+
++---
+
+* Create a module 
+
+	In <<<.pineapple/modules>>> create a new module named <weblogic-jmx-example>.
+	
+	Create the <<<weblogic-jmx-example/models>>> directory.
+	
+	Optionally, create the <<<module.xml>>> in  the <<<weblogic-jmx-example>>> directory:
+	
++---
+
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="http://pineapple.dev.java.net/ns/module_1_0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  id="weblogic-jmx-example" version="1.0.0">
+</module>
+
++---        
+  
+** Create the model 
+
+  Create the <<<alpha-environment.xml>>> in  the <<<weblogic-jmx-example/models>>> directory:
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"			
+		xmlns:wjp="http://xmlns.oracle.com/weblogic/domain" 
+		xmlns:sec="http://xmlns.oracle.com/weblogic/security" 
+		xmlns:wls="http://xmlns.oracle.com/weblogic/security/wls" 		
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 		
+		xsi:schemaLocation="http://xmlns.oracle.com/weblogic/security/xacml 
+		http://xmlns.oracle.com/weblogic/security/xacml/1.0/xacml.xsd 
+		http://xmlns.oracle.com/weblogic/security/providers/passwordvalidator 
+		http://xmlns.oracle.com/weblogic/security/providers/passwordvalidator/1.0/passwordvalidator.xsd 
+		http://xmlns.oracle.com/weblogic/domain 
+		http://xmlns.oracle.com/weblogic/1.0/domain.xsd 
+		http://xmlns.oracle.com/weblogic/security 
+		http://xmlns.oracle.com/weblogic/1.0/security.xsd 
+		http://xmlns.oracle.com/weblogic/security/wls 
+		http://xmlns.oracle.com/weblogic/security/wls/1.0/wls.xsd">
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>				
+			<wjp:domain >
+				<wjp:name>alphadomain</wjp:name>
+			</wjp:domain>			
+		</mmd:content>							
+	</mmd:model>		
+</mmd:models>
++---
+    
+  The model will test:
+  
+  * a DomainMBean named <<alphadomain>> exists.    
+    
+* Invoke Pineapple to execute the script 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<<weblogic-jmx-example>>>.
+	
+	* Select the environment named <<<alpha-environment>>>.   	  
+	
+	* Invoke the <<test>> operation.
+	
+	[]
+	
+	If the domain was created with module located in 
+	<<<src/test/resources/create-alphadomain-wls1035-for-jmxplugin-test>>>
+	then the test will fail because the actual domain name is 
+	<<<alphadomain-wls1035-jmxplugin-inttest>>>. Modify the domain name in module model file
+	to <<<alphadomain-wls1035-jmxplugin-inttest>>> and rerun the test to get a success.
+

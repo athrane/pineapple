@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?> 
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+
+<?page title="Pineapple web application"?>
+
+<window id="errorWindow" vflex="1" border="none">
+		
+	<borderlayout vflex="1" >
+	    <north size="5%" border="none" >	    
+			<include src="menu.zul"/>	    
+	    </north>
+	    
+	    <center border="none" >
+	    	<vbox>
+				<label value ="Ups! An unexpected error occurred in the application:" style="font-weight:bold" />		    	
+				<label value ="Error Message:" style="font-weight:bold" />
+				<label multiline="true"	value="${requestScope['javax.servlet.error.message']}" sclass="word-wrap" width="100%" />
+				<label value ="HTTP Status Code:" style="font-weight:bold" />
+				<label multiline="true"	value="${requestScope['javax.servlet.error.status_code']}" sclass="word-wrap" width="100%" />				
+				<label value ="Request URI:" style="font-weight:bold" />																
+				<label multiline="true"	value="${requestScope['javax.servlet.forward.request_uri']}" sclass="word-wrap" width="100%" />								
+				<separator />		    	
+				<label value ="Did you mean to visit one of these URLS?" />				
+				<separator />				
+				<toolbarbutton label="Login" href="/mvc/login"  style="text-decoration: underline" />         
+				<toolbarbutton label="Workspace" href="/mvc/workspace"  style="text-decoration: underline" />				         	    					         	    	
+	    	</vbox>
+	    </center>
+	    
+	    <south size="5%" border="none" >
+			<include src="footer.zul"/>	    
+	    </south>
+	</borderlayout>
+				
+				
+</window>

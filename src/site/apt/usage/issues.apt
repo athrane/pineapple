@@ -1,0 +1,124 @@
+
+ ------
+ Known issues
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2012
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+
+Known issues
+
+	Visit the <<{{{exceptiontrail.blogspot.com}Pineapple Exception Trail Blog}}>> for a list of known issues 
+	which can be encountered while using Pineapple. 
+
+	Information about known issues to make Pineapple work.
+
+* Linux related issues
+
+** <<<bash: ./runPineapple.sh: Permission denied>>>
+
+*** Specifics
+
+	* Client: Standalone web application.
+	
+	* Operating System: Linux.
+	
+	[]
+
+*** Issue
+	
+	Running Pineapple under another user than <<<Root>>> fails wit a permission denied error:
+	
++---
+bash: ./runPineapple.sh: Permission denied
++---	
+	
+*** Resolution	
+
+	Change the permission of the executable:
+	
+	* SU to <<<root>>>
+	
+	* Add execution permissions with:  <<<chmod +x ./runPineapple.sh>>>
+	
+	* SU back to the original user.
+	
+	[]
+
+** <<<Xlib: connection to ":0.0" refused by server>>>
+
+*** Specifics
+
+	* Client: Standalone web application.
+		
+	* Operating System: Linux.
+	
+	[]
+
+*** Issue
+	
+	Running Pineapple fails with the error: 
+
++---
+Xlib: connection to ":0.0" refused by server
+Xlib: No protocol specified
++---	
+	
+*** Resolution	
+
+	User has been logged on as root prior to changing to the current user. To resolve the issue: 
+	
+	* Log off server.
+	
+	* Log on using the proper non root user.
+	
+	[]
+	
+
+** <<<java.io.FileNotFoundException: /home/admin/.pineapple/logs/pineapple.log (Permission denied)>>>
+
+*** Specifics
+
+	* Client: Standalone web application.
+		
+	* Operating System: Linux.
+	
+	* Observations:
+	
+		* The client is started under user <<<admin>>>. 
+		
+		* The client start up despite the error, but no logging will be done in the directory.
+	
+		[]
+
+	[]
+	
++----
+java.io.FileNotFoundException: /home/admin/.pineapple/logs/pineapple.log (Permission denied)
+        at java.io.FileOutputStream.openAppend(Native Method)
+        at java.io.FileOutputStream.<init>(FileOutputStream.java:207)
+        at java.io.FileOutputStream.<init>(FileOutputStream.java:131)
+        at org.apache.log4j.FileAppender.setFile(FileAppender.java:289)
+        at org.apache.log4j.FileAppender.activateOptions(FileAppender.java:163)
+        at org.apache.log4j.config.PropertySetter.activate(PropertySetter.java:256)
+        at org.apache.log4j.config.PropertySetter.setProperties(PropertySetter.java:132)
+        at org.apache.log4j.config.PropertySetter.setProperties(PropertySetter.java:96)
+        at org.apache.log4j.PropertyConfigurator.parseAppender(PropertyConfigurator.java:654)
+        at org.apache.log4j.PropertyConfigurator.parseCategory(PropertyConfigurator.java:612)
+        at org.apache.log4j.PropertyConfigurator.parseCatsAndRenderers(PropertyConfigurator.java:533)
+        at org.apache.log4j.PropertyConfigurator.doConfigure(PropertyConfigurator.java:417)
+        at org.apache.log4j.PropertyConfigurator.doConfigure(PropertyConfigurator.java:441)
+        at org.apache.log4j.helpers.OptionConverter.selectAndConfigure(OptionConverter.java:470)
+        at org.apache.log4j.LogManager.<clinit>(LogManager.java:122)
+        at org.apache.log4j.Logger.getLogger(Logger.java:104)
++----	 
+
+
+* Windows related issues
+
+	

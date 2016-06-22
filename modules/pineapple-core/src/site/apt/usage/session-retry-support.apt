@@ -1,0 +1,39 @@
+
+ ------
+ Session retry support
+ ------
+ Allan Thrane Andersen 
+ ------
+ May 2012
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Session retry support
+
+* Purpose
+
+    When a plugin session tries to connect or disconnect from a remote resource it will occasionally
+    fail. 
+    To increase robustness, when establishing a remote connection (or terminating it), Pineapple
+    will retry to establish/terminate a connection several times prior to reporting that it failed.    
+    Intermediate failures during connection management, which eventually succeeds, will reported in the text 
+    output of the operation.     
+    When the internal retry limit is reached, Pineapple will report that establishing/terminating the 
+    connection failed.
+
+	Pineapple is currently configured to retry 4 times before reporting that establishing/terminating a
+    connection failed.
+    
+* Supported for all plugins
+	
+	The retry logic is implemented in the Pineapple core component. 
+	The behavior is automatically supported for all current and future plugins. 
+	        
+* Configuration
+	
+	Configuration of the number of retries is only possible by modifying the internal configuration file for the core component.
+	
+	The value is defined the core configuration file <<<com.alpha.pineapple.core-config.xml>>> in the XML element named 
+	<<<simpleRetryPolicy>>> where the attribute <<<maxAttempts>>> defines  the number of retries.	

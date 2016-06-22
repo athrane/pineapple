@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+    xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+    <mmd:model target-resource="regex:ssh-node.*" target-operation="deploy-configuration" description="Configure proxy and Install YUM packages" >
+        <mmd:content>
+        <shp:ssh>
+            <shp:copy-to source="modulepath:bin/yum.conf.fragment" destination="/tmp/yum.conf.fragment"/>
+            <shp:execute command="sudo mv /etc/yum.conf /tmp/yum.conf.backup" />
+            <shp:execute command="sudo cat /tmp/yum.conf.backup /tmp/yum.conf.fragment &gt;&gt; /tmp/yum.conf" />
+            <shp:execute command="sudo cp /tmp/yum.conf /etc/yum.conf" />
+            <shp:execute command="sudo cat /tmp/yum.conf.fragment &gt;&gt; /tmp/yum.conf" />
+            <shp:execute command="sudo yum --assumeyes install unzip" />
+            <shp:execute command="sudo yum --assumeyes install chkconfig" />
+            <shp:execute command="sudo yum --assumeyes install nano" />
+            <shp:execute command="sudo yum --assumeyes install curl" />
+            </shp:ssh>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>

@@ -1,0 +1,163 @@
+ ------
+ How-to: Use the composite execution plugin to setup WebLogic 12c and JRockit locally 
+ ------
+ Allan Thrane Andersen
+ ------
+ March 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Use the composite execution plugin to setup WebLogic 12c and JRockit locally
+
+* Overview
+
+	This example illustrates how the composite execution plugin can be used to
+	install a local WebLogic environment for development. JRockit 4.1 will be 
+	used as JVM along with WebLogic 12.1.1 on a 64-bit Windows. The software 
+	will be installed with default path values.
+ 	
+	Three steps are required to setup the environment:
+	
+	* Define resource for enabling usage of the plugin
+		 	
+	* Define the module model which defines the execution sequence.
+	
+	* Download installers for JRockit and WebLogic.	
+	
+	[]
+	
+	..And finally Pineapple should be invoked to execute the two modules.	   
+	
+** Part of the default configuration
+
+	This example is included in the 
+	{{{../../../usage/default-configuration.html}default configuration}}	
+	created by Pineapple, so there is no need to create it by hand.
+
+* Define resource 
+
+	Pineapple's default configuration create a resource definition for the composite 
+	execution plugin in the wild card environment which enables usage of the plugin in
+	all environments. The resource definition is located in the resources file at
+	<<<$\{user.home}/.pineapple/conf/resources.xml>>>:
+	
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <environments>
+    <environment id="*" >
+      <resources>
+        <resource id="composite-execution" plugin-id="com.alpha.pineapple.plugin.composite.execution" />                  
+      </resources>
+    </environment>								
+  </environments>
+</configuration>  	
++--------		 
+	  
+	In this example we intend to use the plugin in an environment named <<<windows-default>>>, which
+	is defined as part of the {{{../../../usage/default-configuration.html}default configuration}}	
+	and is intended for installation of Fusion Middleware software on Windows.
+		
+** The configuration details	 		 	
+	
+	The <<<resouce.xml>>> file uses the <<<http://pineapple.dev.java.net/ns/environment_1_0>>> 
+	schema which must be used to define the Pineapple environment configuration. 
+	
+	An environment with ID "*" is defined, which is the ID for wild card environments in Pineapple.
+	
+	The resource is defined with the ID <<<composite-execution>>> which defines a key which is 
+	used to reference the resource from any module we may define in the future. Later on when the 
+	model is defined in a module, the <<<composite-execution>>> ID is then used to tell Pineapple 
+	that this resource (and thus the composite execution plugin) should be used to parse and 
+	execute the module model which defines composite execution of modules
+
+	The <<<plugin-id>>> in the resource is the technical part of the definition which binds 
+	the resource to some plugin code. Each plugin is identified	with a Java package and the 
+	Java package for the composite execution plugin is <<<com.alpha.pineapple.plugin.composite.execution>>>. 	
+			
+* Define the module 
+
+	Pineapple's unit of work is modules. A module is a self contained unit which 
+	can contain models, scripts and binaries. Models serves to specify test cases, 
+	deployment of applications, configuration of devices or execution of scripts. 
+	
+	The default directory for modules is <<<$\{user.home\}/.pineapple/modules>>> so we will 
+	create a module named <<<composite-execution-002-jrockit-and-weblogic-wind64>>> there. The module 
+	for this example will end up with the structure:
+
++---
+composite-execution-002-jrockit-and-weblogic-win64
+ |
+ +--- models	 
+       +--- windows-default.xml 
++---
+	
+* Define the module model <<<windows-default.xml>>> 
+
+	The model file for execution of the modules looks like:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:cep="http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0" >
+    <mmd:model target-resource="composite-execution">
+        <mmd:content>
+          <cep:composite-execution>
+            <cep:module name="jrockit-installation-003-r28-win64" />
+            <cep:module name="weblogic-installation-005-r1211-win64" />
+            <cep:module name="weblogic-wlst-003-r121-create-domain-from-template" />            				
+        </cep:composite-execution>			
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++----	 
+
+** The configuration details
+
+	Two schema are used in the model file. The <<<http://pineapple.dev.java.net/ns/module_model_1_0>>> is used
+	to define the namespace <<<mmd>>> which defines the general infrastructure for models. The 
+	<<<http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0>>> schema is used to
+	define the namespace <<<cep>>> which is used to define the model for the composite execution plugin. Since 
+	multiple schemas are used to define the model file, the elements are qualified.
+	
+	The <<<target-resource>>> attribute defines a reference to the resource which is targeted when the 
+	model executed. In this case, the value <<<composite-execution>>> is a reference to resource defined 
+	previously in the example.
+	
+	The <<<composiste-execution>>> element defines the root of model for the composite-execution plugin. The
+	three <<<module>>> elements defines the sequence of modules which should be executed by the plugin.
+
+* Download installers for JRockit and WebLogic
+
+	Download the JRockit installer jrockit-jdk1.6.0_31-R28.2.3-4.1.0-windows-x64.exe and drop it in the 
+	module at <<<$\{user.home\}/.pineapple/modules/jrockit-installation-003-r28-win64/bin>>>. 	
+	
+	Download the Weblogic installer wls1211_generic.jar and drop it in the module at 
+	<<<$\{user.home\}/.pineapple/modules/weblogic-installation-005-r1211-win64/bin>>>. 	 
+		 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple client of choice:
+	
+	* Select the modules named <<composite-execution-002-jrockit-and-weblogic-win64>>
+	
+	* Select the <<windows-default>> model.
+	
+	* Invoke the <<deploy-configuration>> operation to execute the composite modules which will:
+	
+		* Install JRockit with default Windows path values
+		
+		* Install WebLogic with default Windows path values
+		
+		* Create a domain in <<<c:/app/oracle/admin/alphadomain-003-create-domain-from-template>>> 
+		where you can execute startWebLogic.cmd to start the administration server. The server can 
+		be accessed at http:127.0.0.1:7001/console with the weblogic/Weblogic99
+		
+		[]
+	
+	[]
+
+

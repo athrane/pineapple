@@ -1,0 +1,105 @@
+ ------
+ How-to: Define the security authorizer for WebLogic 
+ ------
+ Allan Thrane Andersen
+ ------
+ June 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Define the security authorizer for WebLogic  
+			
+* Overview
+
+	This example illustrates how the authorizer in the security configuration 
+	should be defined in an Pineapple module for usage with the WebLogic JMX plugin.  
+          
+* Defining authorizer
+
+** Creation of "unnamed" authorizer
+
+	A default realm created by WebLogic either by invoking the <<<weblogic.Server>>> 
+	class to create a domain or using a template will create a default security realm 
+	named <<myrealm>>. The generated <<<config.xml>>> will be defined as:          
+     
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<domain xsi:schemaLocation="http://xmlns.oracle.com/weblogic/security/wls http://xmlns.oracle.com/weblogic/security/wls/1.0/wls.xsd http://xmlns.oracle.com/weblogic/domain http://xmlns.oracle.com/weblogic/1.0/domain.xsd http://xmlns.oracle.com/weblogic/security http://xmlns.oracle.com/weblogic/1.0/security.xsd http://xmlns.oracle.com/weblogic/security/xacml http://xmlns.oracle.com/weblogic/security/xacml/1.0/xacml.xsd" xmlns="http://xmlns.oracle.com/weblogic/domain" xmlns:sec="http://xmlns.oracle.com/weblogic/security" xmlns:wls="http://xmlns.oracle.com/weblogic/security/wls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <name>alphadomain</name>
+  <domain-version>12.1.1.0</domain-version>
+  <security-configuration xmlns:xacml="http://xmlns.oracle.com/weblogic/security/xacml" xmlns:pas="http://xmlns.oracle.com/weblogic/security/providers/passwordvalidator">
+    <name>alphadomain</name>
+    <realm>
+      <sec:authentication-provider xsi:type="wls:default-authenticatorType"/>
+      <sec:authentication-provider xsi:type="wls:default-identity-asserterType">
+        <sec:active-type>AuthenticatedUser</sec:active-type>
+      </sec:authentication-provider>
+      <sec:role-mapper xsi:type="xacml:xacml-role-mapperType"/>
+      <sec:authorizer xsi:type="xacml:xacml-authorizerType"/>
+      <sec:adjudicator xsi:type="wls:default-adjudicatorType"/>
+      <sec:credential-mapper xsi:type="wls:default-credential-mapperType"/>
+      <sec:cert-path-provider xsi:type="wls:web-logic-cert-path-providerType"/>
+      <sec:cert-path-builder>WebLogicCertPathProvider</sec:cert-path-builder>
+      <sec:name>myrealm</sec:name>
+      <sec:password-validator xsi:type="pas:system-password-validatorType">
+        <sec:name>SystemPasswordValidator</sec:name>
+        <pas:min-password-length>8</pas:min-password-length>
+        <pas:min-numeric-or-special-characters>1</pas:min-numeric-or-special-characters>
+      </sec:password-validator>
+    </realm>
+    <default-realm>myrealm</default-realm>
+    <credential-encrypted>{AES}yhdASTIUtuughSyaSlkHpic0e6qpIHab/kgpGpXCGc/s7Nc3Uu/Wm3q9V2HXEfeRZf+bs7DDzoIOaRaXyf2CI91s7WEbpLkqx/5yJycbj/qYQE5ESYpAo+BF1nYXGANN</credential-encrypted>
+    <node-manager-username>weblogic</node-manager-username>
+    <node-manager-password-encrypted>{AES}LmMHG9HWr3krp41vlCvgSYtbXqZmY6HW4qyFdmxqbfw=</node-manager-password-encrypted>
+  </security-configuration>
+  	....	
+</domain>	
++---
+
+	The import part of the configuration is:
+
++---
+	<sec:authorizer xsi:type="xacml:xacml-authorizerType"/>
++---
+	
+	..which defines a authorizer of the type:
+	
+	* <<<xacml-authorizerType>>>
+	 
+	[] 
+
+	At runtime a WebLogic server will initialize one authorizer from the above configuration:
+	
+		* a authorizer named <<<XACMLAuthorizer>>>
+				
+	[]		   		
+	
+** Making Pineapple cope with "unnamed" authorizer   	
+	
+	The shown configuration poses a problem for Pineapple which can't resolve
+	unnamed authorizers against the actual runtime authorizers which exist in WebLogic.
+	
+	The solution is to name the authorizers by adding a <<<name>>> element to their definition:
+   
++---
+  <sec:authorizer xmlns:xac="http://www.bea.com/ns/weblogic/90/security/xacml" xsi:type="xac:xacml-authorizerType">
+	<sec:name>XACMLAuthorizer</sec:name>					  
+  </sec:authorizer>
++---
+     
+** Why Pineapple can't handle "unnamed" authorizer    
+     
+     The plugin is unable to resolve the unnamed authorizer because its current implementation 
+     doesn't support mapping of the <<<xsi:type>>> definitions to runtime names, e.g. :
+     
+     * <<<xsi:type="xac:xacml-authorizerType>>> isn't mapped to <<<XACMLAuthorizer>>>
+     
+     []
+          
+     The plugin uses the <<<name>>> attribute on the providers to resolve them from the two models
+     and if they are unnamed then the plugin must resolve <<<\{null\}>>> from the module model against
+     <<<\{XACMLAuthorizer\}>>> from the MBean model which fails.
+          
+          
+          

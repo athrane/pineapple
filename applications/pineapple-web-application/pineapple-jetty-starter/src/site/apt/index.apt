@@ -1,0 +1,41 @@
+ ------
+ Pineapple Jetty starter 
+ ------
+ Allan Thrane Andersen 
+ ------
+ September 2010
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<Pineapple Jetty starter>> project contains a single Java class which is used 
+	to start the Jetty web server and deploys the Pineapple web application to the
+	server. 
+		 	
+	Links to related projects:
+	 	
+	* {{{../../pineapple-web-application-war/index.html}Pineapple web application}} which
+	implements the web application deployed by the starter class. 				
+
+	* {{{../../pineapple-standalone-web-client/index.html}Pineapple stand-alone web application}} which
+	build a binary release of Pineapple. The projects uses the Jetty starter project and the web 
+	application project.
+	
+	[] 				
+				  
+* Usage
+
+	Instructions on the usage of the project can be found {{{./usage/index.html}here}}.
+	
+* Examples
+
+	No examples for this project. 		 
+	
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

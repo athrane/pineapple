@@ -1,0 +1,88 @@
+ ------
+ How-to: Use proxy server for HTTP based tests. 
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Use proxy server for HTTP based tests
+
+* Defining usage of proxy server
+
+	To enable a test case to use a proxy server named "bigbossproxy" on port 
+	8080, two steps are needed:
+	
+	* Add a HTTP configuration element to the model file. The HTTP configuration
+	element should define the proxy settings.
+	
+	* Reference the HTTP configuration from test cases.
+	
+	[]	
+	 
+* Adding a HTTP configuration to the model file 	 
+	 
+	First define the HTTP configuration in the model file: 
+	
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>
+
+        <itp:http-configuration id="default-http-config" description="My default HTTP configuration" >
+          <itp:proxy host="bigbossproxy" port="8080"/>
+        </itp:http-configuration>
+
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+* Reference the proxy definition from test cases
+
+	The id <<<default-http-config>>> can be referenced from any number of test cases to
+	trigger usage of the HTTP configuration including proxy server definition: 	 
+	 
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>
+
+        <itp:http-configuration id="default-http-config" description="My default HTTP configuration" >
+          <itp:proxy host="bigbossproxy" port="8080"/>
+        </itp:http-configuration>
+
+        <itp:load-balancing-test description="load-balancing-test for..." requests="5" http-configuration-ref="default-http-config" > 
+          <itp:urls>
+            <itp:url>http://www.myhost.com</itp:url>
+            <itp:url>http://www.myhost.com/login</itp:url>
+          </itp:urls>
+          <itp:assert>
+            <itp:properties>
+              <itp:property name="host" value="null" />
+              <itp:property name="environment" value="null" />
+              <itp:property name="location" value="null" />
+            </itp:properties>
+            <itp:servers>
+              <itp:server>null</itp:server>
+            </itp:servers>
+          </itp:assert>
+        </itp:load-balancing-test>
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	

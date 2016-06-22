@@ -1,0 +1,125 @@
+ ------
+ How-to: Configure proxy settings for YUM
+ ------
+ Allan Thrane Andersen
+ ------
+ August 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Configure proxy settings for YUM
+
+* Overview
+
+	This example illustrates how the SSH plugin can be used to configure the proxy
+	settings for YUM in the likely event that your servers accesses the internet 
+	through a company proxy. 
+	
+	This example expands the {{{./yum-packages-vagrant.html}How-to: Install YUM packages}} example,
+	which illustrated how to define resources for enabling usage of the SSH plugin, define credentials 
+	for authentication and create the module which installs YUM packages.	
+
+** Part of the default configuration
+
+	This example is included in the 
+	{{{../../../usage/default-configuration.html}default configuration}}	
+	created by Pineapple, so there is no need to create it by hand.
+
+* Define module
+
+	The created module in the {{{./yum-packages-vagrant.html}How-to: Install YUM packages}} example was named
+	<<<ssh-002-install-yum-packages>>>. In this example we will start off with a copy of that module, but 
+	naming it <<<ssh-003-configure-yum-proxy>>> and expand it on two ways:
+	
+	* Add a text file to the module which constitutes a fragment of the YUM configuration 
+	file which contains the proxy settings that should be applied.
+	
+	* Expand the content of the model to append the YUM configuration file fragment to the 
+	YUM configuration file at each accessed host.
+	
+** Add YUM configuration file fragment to module
+
+	Add the configuration file fragment to the module:
+
+	* Create a directory named <<</path/to/modules/ssh-003-configure-yum-proxy/bin>>>
+
+	* Create file <<</path/to/modules/ssh-003-configure-yum-proxy/bin/yum.conf.fragment>>> with the content:
+
++---	
+# Proxy setting added by Pineapple
+proxy=http://bossproxy:3128/	
++---	
+
+	[]
+
+	 The <<<ssh-003-configure-yum-proxy>>> module now has the structure: 
+
++---
+ssh-003-configure-yum-proxy
+ |
+ +--- bin	 
+ |     +--- yum.conf.fragment 
+ +--- models	 
+       +--- linux-vagrant.xml 
++---
+
+** Expand the model 
+ 
+	Add these five lines to the model file name <<<linux-vagrant>>>:
+	
++---
+<shp:copy-to source="modulepath:bin/yum.conf.fragment" destination="/tmp/yum.conf.fragment"/>
+<shp:execute command="sudo mv /etc/yum.conf /tmp/yum.conf.backup" />
+<shp:execute command="sudo cat /tmp/yum.conf.backup /tmp/yum.conf.fragment &gt;&gt; /tmp/yum.conf" />
+<shp:execute command="sudo cp /tmp/yum.conf /etc/yum.conf" />				
+<shp:execute command="sudo cat /tmp/yum.conf.fragment &gt;&gt; /tmp/yum.conf" />
++---
+
+	The result being:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+    xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+    <mmd:model target-resource="regex:ssh-node.*">
+        <mmd:content>
+        <shp:ssh>
+            <shp:copy-to source="modulepath:bin/yum.conf.fragment" destination="/tmp/yum.conf.fragment"/>
+            <shp:execute command="sudo mv /etc/yum.conf /tmp/yum.conf.backup" />
+            <shp:execute command="sudo cat /tmp/yum.conf.backup /tmp/yum.conf.fragment &gt;&gt; /tmp/yum.conf" />
+            <shp:execute command="sudo cp /tmp/yum.conf /etc/yum.conf" />
+            <shp:execute command="sudo cat /tmp/yum.conf.fragment &gt;&gt; /tmp/yum.conf" />
+            <shp:execute command="sudo yum --assumeyes install unzip" />
+            <shp:execute command="sudo yum --assumeyes install chkconfig" />
+            <shp:execute command="sudo yum --assumeyes install nano" />
+            <shp:execute command="sudo yum --assumeyes install curl" />
+            </shp:ssh>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++---
+
+** The configuration details
+
+	The added five lines copies the configuration fragment file to each accessed host. The fragment is 
+	then appended to the YUM configuration file <<</etc/yum.conf>>>. 
+
+	Finally, the commands in the model is executed using sudo. The requirement for sudo depends on 
+	the privileges of the user used by the SSH plugin to connect to a given host. The users was defined in 
+	credentials file in the previous section.
+		  		 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple client of choice:
+	
+	* Select the modules named <<ssh-003-configure-yum-proxy>>
+	
+	* Select the <<linux-vagrant>> model.
+	
+	* Invoke the <<deploy-configuration>> operation to install the YUM packages unzip, chkconfig, 
+	nano and curl at the three nodes defines in the <<<linux-vagrant>>> environment.
+	
+	[]
+
+

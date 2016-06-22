@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<environments>
+		<environment id="localdomain" >
+			<resources>			
+				<!--  the plugin is located in the test-utils project -->
+				<resource id="test-resource-id" 
+						credential-id-ref="test-resource-credential-id"
+						plugin-id="com.alpha.pineapple.plugin.test" />
+			</resources>
+		</environment>
+	</environments>
+</configuration>

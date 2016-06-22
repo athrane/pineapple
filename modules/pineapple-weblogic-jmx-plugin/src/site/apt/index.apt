@@ -1,0 +1,139 @@
+ ------
+ WebLogic JMX plugin
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+  The <<WebLogic JMX plugin>> implements a JMX client which can access the WebLogic Edit MBean server
+  for the purpose of:
+        	  	
+  	* Test of Configuration MBeans values and existence.
+  	
+  	* Creation of Configuration MBeans.
+  	
+  	* Update of existing Configuration MBeans.
+  	
+  	* Deletion of Configuration MBeans.  	
+  
+  	[]
+  	
+	The plugin supports JMX access to these releases of WebLogic:
+
+    * 10.3.x (11g)
+    
+    * 12.1.1 (12c)
+    
+    []   	
+  	  
+* Usage
+
+	Go to the {{{./usage/index.html}Plugin Usage page}} for instructions on using the plugin.  		
+	
+** Supported operations
+
+	The plugin supports the default operations:
+	
+    * <<test>> (from the test workflow). When the plugin is invoked with this operation, it will 
+    traverse the module model and validate that the MBeans exists in the targeted WebLogic Edit MBean server 
+    and their attribute values are equal.
+
+    * <<create-report>> (from the report workflow). When the plugin is invoked with this operation, 
+    it will traverse the module model and create a report that documents <all> configurations in the 
+    WebLogic Edit MBean server.
+    
+    * <<deployed-configuration>> (from the Deployment workflow). When the plugin is invoked with this operation,
+    it will traverse the module module and create all the MBeans (and set attributes) defined in the model at the 
+    WebLogic Edit MBean server.
+    
+    * <<undeploy-configuration>> (from the Deployment workflow). When the plugin is invoked with this operation,
+    it will traverse the module module and delete all the MBeans defined in the model.
+    
+    []
+		
+	For more information about the default operations, refer to the	
+	{{{../../usage/operations.html}Operation and workflow reference.}}
+	
+** Plugin schema
+
+	The plugin uses multiple schemas for definition of models. The main domain schema 
+	defines the namespace:
+	
+	* <<<http://xmlns.oracle.com/weblogic/domain>>>.
+	
+	[]
+	
+	The domain schema uses three auxiliary security schemas which defines the namespaces:
+	
+	* <<<http://xmlns.oracle.com/weblogic/security>>>.
+	
+	* <<<http://xmlns.oracle.com/weblogic/security/wls>>>.
+	
+	* <<<http://xmlns.oracle.com/weblogic/security/xacml>>>.
+			
+	[]	
+
+	Finally, the diagnostics schema defines the namespace:
+	
+	* <<<http://xmlns.oracle.com/weblogic/weblogic-diagnostics>>>.
+	
+	[]
+		
+	For more information about where the schemas can be found, refer to the 			
+	{{{../../usage/schemas-plugins.html}Schema locations for plugins page.}}
+		 						
+* Examples
+
+	To provide you with better understanding on some usages of the plugin,
+	you can take a look into the examples in the following sections:
+	
+** Starter examples	
+
+  * {{{./examples/test-domain-name.html}How-to: Test the name of a WebLogic domain.}}
+
+** Security examples
+  
+  * {{{./examples/define-security-configuration.html}How-to: Define the security configuration for WebLogic.}}
+  
+  * {{{./examples/define-security-authentication-providers.html}How-to: Define the security authentication providers for WebLogic.}}
+  
+  * {{{./examples/define-security-role-mappers.html}How-to: Define the security role mappers for WebLogic.}}
+  
+  * {{{./examples/define-security-authorizer.html}How-to: Define the security authorizer for WebLogic.}}  
+  
+  * {{{./examples/define-security-adjudicator.html}How-to: Define the security adjudicator for WebLogic.}}
+  
+  * {{{./examples/define-security-credential-mappers.html}How-to: Define the security credential mappers for WebLogic.}}
+  
+  * {{{./examples/define-security-cert-path-providers.html}How-to: Define the security certification path providers for WebLogic.}}
+  
+  []
+  
+** SNMP examples
+  
+  * {{{./examples/define-snmp-agent.html}How-to: Define a SNMP agent for WebLogic.}}  
+  
+  * {{{./examples/define-snmp-agent-with-trapdestination.html}How-to: Define the SNMP agent with a trap destination.}}
+  
+  []      
+  
+** WLDF examples  
+
+  * {{{./examples/define-wldf-skeleton.html}How-to: Define skeleton configuration for usage of WLDF.}}
+  
+  []
+  
+** Example modules
+
+	Several example modules can be found in the project directory <<<./src/examples-modules>>>.  	  
+
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.

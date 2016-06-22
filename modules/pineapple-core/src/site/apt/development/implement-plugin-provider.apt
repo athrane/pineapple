@@ -1,0 +1,70 @@
+ ------
+ Implement plugin provider in the core component
+ ------
+ Allan Thrane Andersen 
+ ------
+ February 2011
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Implement plugin provider in the core component
+
+* Introduction
+
+	The plugin framework can be extend with <plugin providers> which provides
+	plugins access to different forms of data at runtime. 
+
+* Overview 
+
+	Follow these steps to implement a plugin provider:
+
+	[[1]] Define a interface for the plugin provider in the <pineapple-api> project. 
+	Example: <<<com.alpha.pineapple.execution.ExecutionInfoProvider>>>.
+	
+	[[2]] Implement the plugin provider interface in the <pineapple-core> project. 
+	Example: <<<com.alpha.pineapple.execution.ExecutionInfoProviderImpl>>>:
+
++----	
+	public class ExecutionInfoProviderImpl implements ExecutionInfoProvider {
+	
+		public ExecutionInfo get(ExecutionResult result) {
+			// TODO Auto-generated method stub
+			return null;
+		}	
+	}
++----
+
+	[[4]] Add a bean definition of the provider to the core component application context , e.g.
+	com.alpha.pineapple.core-config.xml Example: 
+	
++----
+	<!--  define execution info provider -->
+	<bean id="executionInfoProviderImpl" class="com.alpha.pineapple.execution.ExecutionInfoProviderImpl" />	
++----	
+
+	[[5]] Define a field in the <<<PluginInitializerImpl>>> class with a <<<@Resource>>> annotation
+	to have the provider injected to the initializer at runtime. Example:
+
++----
+    /**
+     * Execution info provider.
+     */   
+    @Resource
+    ExecutionInfoProvider executionInfoProvider;
++----	
+
+	[[6]] Implement a new Spring bean definition in the <<<PluginInitializerImpl.addProvidersToContext(..)>>> method to
+	add the provider to plugin application contexts. Example: 
+	  
++----
+    	// register execution info provider
+    	factory.registerSingleton(EXECUTION_INFO_PROVIDER_BEANID, executionInfoProvider);    	    	
++----	
+
+	The result is that the same provider instance which is used by the core compoent is injected into
+	all plugin contexts.
+		  
+	  
+	  

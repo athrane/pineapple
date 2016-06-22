@@ -1,0 +1,288 @@
+ ------
+ How-to: Execute hello world script 
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Execute hello world script
+
+* Overview
+
+	This example describes how to define and execute a hello world script.
+ 	
+	These steps are needed to configure the plugin to work:
+	
+	* Define resource which defines access to the plugin.
+		 	
+	* Define the module model <<<local-environment.xml>>> which defines
+	the execution of the script.
+	
+	[]
+	
+	..And finally Pineapple should be invoked to run the script using the module.
+		
+	For information about how to define resource, credentials and modules, 
+	refer to the {{{../usage/index.html} plugin usage page.}}				
+
+* Define resource
+	
+	To define the resource, first open the resources file at
+	<<<$\{user.home}/.pineapple/conf/resources.xml>>> and add an 
+	environment that plugin should be executed in. In this example 
+	we intend to use the plugin in an environment named <<<local-environment>>>. 
+	
+	The initial environment definition will look like:
+		 		
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <environments>
+    <environment id="local-environment" />								
+  </environments>
+</configuration>
++--------  				 		
+		 		
+	Then the resource is defined which enables usage of the plugin
+	in the <<<local-environment>>> environment:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <environments>
+    <environment id="local-environment" >
+      <resources>
+        <resource id="weblogic-r1035-scriptingtool" plugin-id="com.alpha.pineapple.plugin.weblogic.scriptingtool" >
+          <property key="weblogic-home" value="C:\alphabea\weblogic1035" />
+        </resource>
+      </resources>
+    </environment>								
+  </environments>
+</configuration>  	
++--------		 
+
+** What the resource attributes defines
+
+	The <<<id>>> defines a key which is used to reference the resource
+	from any module we may define in the future. Later on when the script 
+	execution is defined in a module, the <<<weblogic-r1035-scriptingtool>>> 
+	ID is used to tell Pineapple that this resource (and thus the WLST plugin 
+	plugin) should be used to parse and execute the module model which defines
+	the execution of the WLST script.
+			
+	The <<<plugin-id>>> is the technical part of the definition. It binds 
+	the resource to some plugin code. Each plugin is identified with a 
+	Java package and the Java package for the WLST 
+	plugin is <<<com.alpha.pineapple.plugin.weblogic.scriptingtool>>>. 	
+
+	Finally a property named <<<weblogic-home>>> is defined on the resource
+	which defines the WebLogic home directory of a WebLogic installation. The
+	WebLogic home directory is used to setup and conduct the execution of WLST.
+
+* Define the module 
+
+	Pineapple's unit of work is modules. A module is a self contained unit which 
+	can contain models, scripts and binaries. Models serves to specify test cases, 
+	deployment of applications, configuration of devices or execution of scripts. 
+	
+	The default directory for modules is <<<$\{user.home\}/.pineapple/modules>>> so we will 
+	create a module named <<<weblogic-wlst-example-0.2-hello-world>>> there. The module 
+	for this example will end up with the structure:
+
++---
+weblogic-wlst-example-hello-world
+ |
+ +--- bin
+ |     +--- script.py
+ |
+ +--- models	 
+       +--- local-environment.xml 
++---
+	 
+
+* Define the module model <<<local-environment.xml>>> 
+
+	The purpose of the model is to configure execution of the script.
+	
+	The basic module module file looks like:
+	
++----
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:wsp="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0"  />
+  
+  <mmd:model target-resource="weblogic-r1035-scriptingtool">
+    <mmd:content>
+    </mmd:content>
+  </mmd:model>	
+</mmd:models>  	 
++----	 
+  
+  	..here is the assumption that the defined resource is named 
+  	<<<weblogic-r1035-scriptingtool>>>. 
+  	
+  	Then the skeleton of script execution model is added:
+	
++----
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:wsp="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0"  />
+  
+  <mmd:model target-resource="weblogic-r1035-scriptingtool">
+    <mmd:content>
+      <wsp:wlst>              
+      </wsp:wlst>
+    </mmd:content>
+  </mmd:model>	
+</mmd:models>  	 
++----	 	   
+  
+	The final step is to define the <<<wlst-script>>> execution: 
+		
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:wsp="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0"  />
+  
+  <mmd:model target-resource="weblogic-r1035-scriptingtool">
+    <mmd:content>
+      <wsp:wlst>              
+        <wsp:wlst-script file="modulepath:bin\script.py" />
+      </wsp:wlst>
+    </mmd:content>
+  </mmd:model>	
+</mmd:models>  	 
++--------		
+
+	with the mandatory attributes:
+	
+    * <<<file>>> which defines where the WLST scrip is located. The <modulepath:> 
+    expression is resolved to the root directory of the module. 
+	
+	[]
+	 
+* Add the WLST script to the module
+
+	The script is placed in the directory <<<$\{module-dir\}/bin/script.py>>> 
+	where <<<$\{module-dir\}>>> is the module root directory which identifies the 
+	module with a unique name and version.
+
+	The content of the script:
+
++--------
+import java.util.Date as Date
+
+def main():   
+    print ("Starting hello world: " + Date().toString() + "\n")	
+    print ("Completed hello world: " + Date().toString() + "\n")
+
+main()		
++--------		
+	
+* A look at the module and the Pineapple configuration 
+
+	The module looks like:
+
++---
+weblogic-wlst-example-hello-world
+ |
+ +--- module.xml (optional)
+ |    
+ +--- bin
+ |     +--- script.py
+ |
+ +--- models	 
+       +--- local-environment.xml 
++---
+
+
+** <<<Module.xml>>> (optional)
+
+	The content of the <<<module.xml>>>:
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="http://pineapple.dev.java.net/ns/module_1_0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	
+    id="weblogic-wlst-example" version="1.0.0">
+</module>
++---
+
+** <<<local-environment.xml>>>
+
+	Module model for the environment <local-environment> which is targeted at the resource <<<weblogic-r1035-scriptingtool>>>
+	and invokes the script <<<script.py>>>:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:wsp="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0" >
+    <mmd:model target-resource="weblogic-scriptingtool">
+        <mmd:content>
+            <wsp:wlst>              
+              <wsp:wlst-script file="modulepath:bin\script.py" />
+            </wsp:wlst>
+        </mmd:content>
+    </mmd:model>		
+</mmd:models>	
++---
+
+** <<<script.py>>>
+
+	Listed above.
+	
+** The <<<weblogic-r1035-scriptingtool>>> resource definition
+
+	The resource <<<weblogic-r1035-scriptingtool>>> definition in the <<<resources.xml>>>:
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <environments>
+    <environment id="local-environment">
+	  <resources>
+        <resource id="weblogic-r1035-scriptingtool" plugin-id="com.alpha.pineapple.plugin.weblogic.scriptingtool" >
+          <property key="weblogic-home" value="C:\alphabea\weblogic1035" />
+        </resource>
+        
+        <!-- additional resources goes here... -->
+        												
+      </resources>						
+    </environment>								
+
+      <!-- additional environments goes here... -->
+  </environments>
+</configuration> 
++---
+
+
+** The <<<weblogic-r1035-scriptingtool>>> credential definition
+     	 
+	Since the resource doesn't defines any reference to a credential, then none is defined in 
+	the <<<credentials.xml>>> file.     	 
+     	 
+     	 
+
+* Invoke Pineapple to execute the script 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<<weblogic-wlst-example-hello-world>>>.
+	
+	* Select the environment named <<<local-environment>>>.   	  
+	
+	* Invoke the <<deploy-configuration>> operation  toexecute the script.
+	
+	[]
+
+

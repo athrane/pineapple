@@ -1,0 +1,43 @@
+ ------
+ JSR88 commands
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<JSR88 commands project >> implements a set of commands (based on 
+	Commons Chains) which makes usage of JSR88 easier. 
+	
+	JSR88 is the <<J2EE Application Deployment Specification>>. Information 
+	about JSR88 can be found 
+	{{{http://java.sun.com/j2ee/tools/deployment/index.jsp}here}}.
+	
+	The project contains these commands:
+	
+	* <<Get deployment manager>> - gets deployment manager instance from which provides access to a J2EE domain.
+	
+	* <<Release deployment manager>> - releases a deployment manager instance.
+	
+	* <<Get available modules>> - retrieves a list of available modules in a J2EE domain.
+	
+	[]
+	
+* Usage
+
+	Instructions on the usage of the commands can be found {{{./usage/index.html}here.}}
+
+* Examples
+
+	Currently no examples exists :-(.
+
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

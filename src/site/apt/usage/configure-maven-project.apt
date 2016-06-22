@@ -1,0 +1,248 @@
+ ------
+ Configuring a Maven project to build modules for Pineapple
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Configuring a Maven project to build modules for Pineapple
+
+	This document illustrates how to create a simple web application project
+	and configure the project to build a module for Pineapple.   
+
+	Setting up a web project takes these steps:
+	
+	* Create a simple web application project. 
+	
+	* Extend the project with the source for the Pineapple module. 
+	
+	* Adding an assembly descriptor to the project.
+	
+	* Build the project.
+		
+	[]
+
+* Create a simple web application project
+
+	Create a web application project using the archetype plugin:
+	
++--------
+mvn archetype:create 
+  -DgroupId=org.alpha.webapp
+  -DartifactId=webapp
+  -DarchetypeArtifactId=maven-archetype-webapp
++---------
+	
+	Which creates a Maven project with this layout: 
+ 
++-------- 
+webapp
+ |-- src
+ |   `-- main
+ |       `-- java
+ |           |-- resources
+ |           |-- webapp
+ |           |   `-- WEB-INF
+ |           |       `-- web.xml
+ |           `-- index.jsp
+  `-- pom.xml
++--------  
+  
+  
+* Extend the project with the source for the Pineapple module
+
+	Add a new source directory named <<pineapple>> to the project which will 
+	contain the source for the module. 
+		
+	Create these directories and file: 
+		
+		* <<<src/main/pineapple>>>
+		 
+			* The directory is the root directory for the module.
+			
+			[] 
+
+		* <<<src/main/pineapple/app>>> 
+		
+			* The directory is a placeholder directory which at	runtime
+			time for operations will contain the project artifact if the 
+			projects creates a deployable artifact.
+			
+			[]  
+
+		* add an empty file named <<<dummy.txt>>> to the <<<app>>> directory 
+		for the sake of CVS. 
+
+		* <<<src/main/pineapple/plan>>> 
+		
+			* Contains deployment plans if the project artifact is deployed 
+			using deployment plans.  
+			
+			[]
+
+		* <<<src/main/plineapple/properties>>> 
+		
+			* This is the most important directory in the module. 
+			
+			* The directory contains a property file for each 
+			environment in which the project artifact is used.
+			
+			[]
+
+		[]
+		
+	The resulting project layout is :
+
++-------- 
+webapp
+ |-- src
+ |   `-- main
+ |       |-- pineapple
+ |       |   |-- app
+ |       |   |   `-- dummy.txt
+ |       |   |-- plan
+ |       |   `-- properties
+ |       `-- java
+ |           |-- resources
+ |           |-- webapp
+ |           |   `-- WEB-INF
+ |           |       `-- web.xml
+ |           `-- index.jsp
+  `-- pom.xml
++--------  
+
+* Add assembly descriptor
+
+	An assembly is configured to create an project binary which contains the <<<pineapple>>>
+	directory and its content.  
+
+	Create the directory <<<src/main/assembly>>>.
+
+	Add an assembly descriptor named <<<pineapple.xml>>> to the <<<assembly>>> directory.
+
+	The resulting project layout is :
+
++-------- 
+webapp
+ |-- src
+ |   `-- main
+ |       |-- assembly
+ |       |   `-- pineapple.xml 
+ |       |-- pineapple
+ |       |   |-- app
+ |       |   |   `-- dummy.txt
+ |       |   |-- plan
+ |       |   `-- properties
+ |       `-- java
+ |           |-- resources
+ |           |-- webapp
+ |           |   `-- WEB-INF
+ |           |       `-- web.xml
+ |           `-- index.jsp
+  `-- pom.xml
++--------  
+	
+	Put this content into the assembly descriptor:
+	 
++--------  	 
+<?xml version="1.0"?>
+<assembly>
+  <id>deployment</id>
+  <formats>
+    <format>zip</format>
+    <format>dir</format>    
+  </formats>
+  <fileSets>
+    <fileSet>
+      <directory>src/main/pineapple</directory>
+      <outputDirectory></outputDirectory>
+      <excludes>
+        <exclude>**/dummy.txt</exclude>
+      </excludes>
+    </fileSet>
+  </fileSets>
+  <files>
+    <file>
+      <source>${basedir}/target/${artifactId}-${version}.war</source>
+      <outputDirectory>app</outputDirectory>
+      <destName>${artifactId}-${version}.war</destName>
+    </file>
+  </files>  
+</assembly>
++--------  
+
+	Configure the project to use the assembly plugin (with the assembly descriptor) as 
+	part of the build process by adding this to the POM in the <<<build/plugins>>> 
+	section:
+	
++--------  	
+  <build>
+    <plugins>
+      ...
+      ...
+      ...
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/pineapple.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      ...
+      ...
+    </plugins>
+  </build>
++--------  		
+	
+	<<Note:>> The assembly plugin is attached to the Maven <package> phase. If
+	 the project is built using a <<<package>>> goal then the assembly plugin
+	 is invoked as part of the build process.
+
+* Build the project
+	
+	Build the project by executing the following command:
+
++--------
+mvn clean package
++---------
+	
+	The <<<target>>> directory will contain:
+	
++-------- 
+webapp
+ |-- src
+ |-- target
+ |   |-- webapp-1.0-SNAPSHOT
+ |   |-- webapp-1.0-SNAPSHOT-pineapple.dir
+ |   |-- webapp-1.0-SNAPSHOT-pineapple.zip 
+ |   `-- webapp-1.0-SNAPSHOT.war 
++--------  
+	
+	The <<<webapp-1.0-SNAPSHOT>>> contains an exploded build of the application.
+	
+	The <<<webapp-1.0-SNAPSHOT.war>>> contains the "zipped" build of the 
+	application.	
+	
+	The <<<webapp-1.0-SNAPSHOT-pineapple.dir>>> contains an exploded build 
+	of the application including the module which needed by Pineapple. 
+
+	The <<<webapp-1.0-SNAPSHOT-pineapple.zip>>> contains an zipped build 
+	of the application including the module which needed by Pineapple.
+ 
+	
+	
+	
+	

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+	xmlns:mdl="http://pineapple.dev.java.net/ns/module_1_0" 
+	xmlns:fsp="http://pineapple.dev.java.net/ns/plugin/filesystem_1_0" >
+    <mmd:model target-resource="trfpij2eeapcp11-smb">
+        <mmd:content>
+            <fsp:filesystem>
+				<fsp:root target-path="/logs" />
+				<fsp:root target-path="/logs/default" />
+				<fsp:root target-path="/applications" />
+				<fsp:root target-path="/domains" />				
+				<fsp:root target-path="/domains/prod2domain" />				
+            </fsp:filesystem>
+        </mmd:content>
+    </mmd:model>
+	
+    <mmd:model target-resource="trfpij2eeapcp11-ftp">
+        <mmd:content>
+            <fsp:filesystem>
+				<fsp:root target-path="/logs" />
+				<fsp:root target-path="/logs/default" />
+				<fsp:root target-path="/logs/nodemanager" />
+				<fsp:root target-path="/logs/prod2domain" />
+            </fsp:filesystem>
+        </mmd:content>
+    </mmd:model>
+	
+</mmd:models>
+
+	
+

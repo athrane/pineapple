@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   xmlns="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0" 
+		   targetNamespace="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0" 
+		   elementFormDefault="qualified" 
+		   attributeFormDefault="unqualified">
+	<xs:element name="wlst">
+		<xs:annotation>
+			<xs:documentation>WebLogic scripting tool wrapper</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>							
+				<xs:element name="wlst-script" type="scriptType" minOccurs="0" maxOccurs="1"/>				
+			</xs:sequence>			
+		</xs:complexType>
+	</xs:element>
+				
+	<xs:complexType name="scriptType">
+		<xs:annotation>
+			<xs:documentation>Script specification.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="file" type="xs:string" use="required"/>
+		<xs:attribute name="properties-file" type="xs:string" use="optional"/>
+		<xs:attribute name="demo-trust-enabled" type="xs:boolean" use="optional" default="false"/>																						
+	</xs:complexType>
+	
+</xs:schema>

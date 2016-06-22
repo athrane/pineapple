@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:context="http://www.springframework.org/schema/context"    
+    
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    		http://www.springframework.org/schema/oxm 
+    		http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+    		http://www.springframework.org/schema/context 
+    		http://www.springframework.org/schema/context/spring-context-3.0.xsd" >
+
+	<!-- Configures pineapple-api -->
+	<import resource="classpath:com.alpha.pineapple.api-config.xml" />
+
+	<!-- Configures pineapple-commands-api -->
+	<import resource="classpath:com.alpha.pineapple.commands-api-config.xml" />
+
+	<!-- enable annotation based configuration / dependency injection -->
+	<context:annotation-config />
+
+	<!-- define input unmarshalling -->
+	<oxm:xmlbeans-marshaller id="unmarshaller"/>
+	
+	<!-- define message provider for internationalization  -->
+	<bean id="messageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">
+    	<property name="basename" value="com.alpha.pineapple.plugin.weblogic.jmx-messages"/>
+	</bean>	
+	
+	<!-- define utilities -->						
+	<bean id="methodUtils" class="com.alpha.pineapple.plugin.weblogic.jmx.reflection.MethodUtilsImpl" />					
+	<bean id="resolvedModelJmxGetter" class="com.alpha.pineapple.plugin.weblogic.jmx.model.mbeans.ResolvedModelJmxGetterImpl" />		
+	<bean id="resolvedModelIntializer" class="com.alpha.pineapple.plugin.weblogic.jmx.operation.ResolvedModelIntializerImpl" />						
+	<bean id="mbeanMetadataRepository" class="com.alpha.pineapple.plugin.weblogic.jmx.model.mbeans.metadata.MetadataRepositoryImpl" />	
+
+	<!-- define JMX Service URL factories -->						                             
+	<bean id="jmxServiceUrlFactoryFactory" class="com.alpha.pineapple.plugin.weblogic.jmx.utils.JmxServiceUrlFactoryFactory" />
+	<bean id="httpJmxServiceUrlFactory" class="com.alpha.pineapple.plugin.weblogic.jmx.utils.HttpJmxServiceUrlFactoryImpl" />						
+	<bean id="iiopJmxServiceUrlFactory" class="com.alpha.pineapple.plugin.weblogic.jmx.utils.IiopJmxServiceUrlFactoryImpl" />					
+	<bean id="t3JmxServiceUrlFactory" class="com.alpha.pineapple.plugin.weblogic.jmx.utils.T3JmxServiceUrlFactoryImpl" />					
+	<bean id="rmiJmxServiceUrlFactory" class="com.alpha.pineapple.plugin.weblogic.jmx.utils.RmiJmxServiceUrlFactoryImpl" />					
+	<bean id="jdkIiopJmxServiceUrlFactory" class="com.alpha.pineapple.plugin.weblogic.jmx.utils.JdkIiopJmxServiceUrlFactoryImpl" />					
+	<bean id="jdkRmiJmxServiceUrlFactory" class="com.alpha.pineapple.plugin.weblogic.jmx.utils.JdkRmiJmxServiceUrlFactoryImpl" />					
+	
+	<!-- define traversal strategy objects -->
+	<bean id="traverseAllNodesStragegy" class="com.alpha.pineapple.resolvedmodel.traversal.strategy.TraverseAllNodesImpl" />	
+	<bean id="traverseExplicitSetSecondaryNodesStrategy" class="com.alpha.pineapple.resolvedmodel.traversal.strategy.TraverseExplicitSetSecondaryNodesImpl" />
+	<bean id="traverseExplicitSetPrimaryNodesStrategy" class="com.alpha.pineapple.resolvedmodel.traversal.strategy.TraverseExplicitSetPrimaryNodesImpl" />
+	<bean id="traverseExplicitSetNodesStrategy" class="com.alpha.pineapple.resolvedmodel.traversal.strategy.TraverseExplicitSetNodesImpl" />					
+
+	<!-- define model access objects -->
+	<bean id="xmlBeansModelAccessor" class="com.alpha.pineapple.plugin.weblogic.jmx.model.xmlbeans.XmlBeansModelAccessorImpl" />		
+	<bean id="mbeansModelAccessor" class="com.alpha.pineapple.plugin.weblogic.jmx.model.mbeans.MBeansModelAccessorImpl" />
+
+	<!-- define method matcher objects -->
+	<bean id="xmlBeansGetterMethodMatcher" class="com.alpha.pineapple.plugin.weblogic.jmx.model.xmlbeans.XmlBeansGetterMethodMatcherImpl" />			
+
+	<!-- define model resolver objects -->	
+	<bean id="xmlBeansModelResolver" class="com.alpha.pineapple.plugin.weblogic.jmx.model.xmlbeans.XmlBeansModelResolverImpl" />		
+	<bean id="mbeansObjectNameBasedModelResolver" class="com.alpha.pineapple.plugin.weblogic.jmx.model.mbeans.MBeansObjectNameBasedModelResolverImpl" />
+
+	<!-- define resolved model visitors -->				
+	<bean id="mbeansDescriptionGenerator" class="com.alpha.pineapple.plugin.weblogic.jmx.model.mbeans.MBeansDescriptionGeneratorImpl" />				
+	<bean id="xmlBeansDescriptionGenerator" class="com.alpha.pineapple.plugin.weblogic.jmx.model.xmlbeans.XmlBeansDescriptionGeneratorImpl" />	
+	<bean id="xmlBeansModelBuilderVisitor" class="com.alpha.pineapple.resolvedmodel.traversal.ResolvedModelBuilderVisitorImpl" >
+		<constructor-arg index="0" ref="xmlBeansModelResolver" />												 		
+		<constructor-arg index="1" ref="mbeansObjectNameBasedModelResolver" />								
+	</bean>			
+	<bean id="xmlBeansModelTesterVisitor" class="com.alpha.pineapple.resolvedmodel.traversal.ResolvedModelTesterVisitorImpl" />									
+	<bean id="mbeansCreatorVisitor" class="com.alpha.pineapple.resolvedmodel.traversal.MBeansCreatorVisitorImpl" />
+	<bean id="mbeansDeletorVisitor" class="com.alpha.pineapple.resolvedmodel.traversal.MBeansDeletorVisitorImpl" />
+	<bean id="resolvedModelReportVisitor" class="com.alpha.pineapple.resolvedmodel.traversal.ResolvedModelReportVisitorImpl" />	
+
+	<!-- define model traversal directors -->
+	<bean id="deployDirector" class="com.alpha.pineapple.resolvedmodel.traversal.DefaultTraversalDirectorImpl" >
+		<constructor-arg index="0">
+			<array>
+				<ref bean="mbeansCreatorVisitor"/>
+				<ref bean="xmlBeansModelBuilderVisitor"/>
+				<!-- 
+				Should actually be deleted - but is only disabled for now to allow for easy debugging at a later point. 					
+				<ref bean="resolvedModelReportVisitor"/>
+				-->									
+			</array>			
+		</constructor-arg>
+			<constructor-arg index="1">
+			<array />				
+		</constructor-arg>			
+		<constructor-arg index="2" ref="traverseExplicitSetPrimaryNodesStrategy" />		
+		<constructor-arg index="3" ref="xmlBeansDescriptionGenerator" />					
+	</bean>
+	<bean id="undeployDirector" class="com.alpha.pineapple.resolvedmodel.traversal.DefaultTraversalDirectorImpl" >	
+		<constructor-arg index="0">
+			<array>				
+				<ref bean="xmlBeansModelBuilderVisitor"/>
+			</array>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<array>				
+				<ref bean="mbeansDeletorVisitor"/>				
+			</array>			
+		</constructor-arg>
+		<constructor-arg index="2" ref="traverseExplicitSetPrimaryNodesStrategy" />		
+		<constructor-arg index="3" ref="xmlBeansDescriptionGenerator" />					
+	</bean>	
+	<bean id="testDirector" class="com.alpha.pineapple.resolvedmodel.traversal.DefaultTraversalDirectorImpl" >	
+		<constructor-arg index="0">
+			<array>				
+				<ref bean="xmlBeansModelBuilderVisitor"/>
+			</array>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<array>				
+				<ref bean="xmlBeansModelTesterVisitor"/>				
+			</array>			
+		</constructor-arg>
+		<constructor-arg index="2" ref="traverseExplicitSetPrimaryNodesStrategy" />		
+		<constructor-arg index="3" ref="xmlBeansDescriptionGenerator" />					
+	</bean>
+	<bean id="reportDirector" class="com.alpha.pineapple.resolvedmodel.traversal.DefaultTraversalDirectorImpl" >	
+		<constructor-arg index="0">
+			<array>				
+				<ref bean="xmlBeansModelBuilderVisitor"/>
+			</array>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<array>				
+				<ref bean="resolvedModelReportVisitor"/>				
+			</array>			
+		</constructor-arg>
+		<constructor-arg index="2" ref="traverseExplicitSetSecondaryNodesStrategy" />		
+		<constructor-arg index="3" ref="mbeansDescriptionGenerator" />					
+	</bean>
+		    	    	    	    	    	    	    	    	 
+	<!-- definition used by the integration tests. TODO: find some solution for these definitions. -->
+	<bean id="testOperation" class="com.alpha.pineapple.plugin.weblogic.jmx.operation.TestOperation" />		
+	<bean id="deployConfiguration" class="com.alpha.pineapple.plugin.weblogic.jmx.operation.DeployConfiguration" />		
+	<bean id="undeployConfiguration" class="com.alpha.pineapple.plugin.weblogic.jmx.operation.UndeployConfiguration" />
+	<bean id="createReport" class="com.alpha.pineapple.plugin.weblogic.jmx.operation.CreateReport" />		
+		
+	<!-- definition of command facade -->
+	<bean id="commandFacade" class="com.alpha.pineapple.plugin.weblogic.jmx.command.CommandFacadeImpl"
+		scope="prototype" />
+		
+	<!-- define command objects -->		
+	<bean id="createMBeanCommand" class="com.alpha.pineapple.plugin.weblogic.jmx.command.CreateMBeanCommand" scope="prototype" />
+	<bean id="deleteMBeanCommand" class="com.alpha.pineapple.plugin.weblogic.jmx.command.DeleteMBeanCommand" scope="prototype" />	
+	<bean id="setMBeanAttributeCommand" class="com.alpha.pineapple.plugin.weblogic.jmx.command.SetMBeanAttributeCommand" scope="prototype" />	
+	<bean id="readAttributeValueCommand" class="com.alpha.pineapple.plugin.weblogic.jmx.command.ReadAttributeValueCommand" scope="prototype" />	
+	<bean id="testObjectIdentityCommand" class="com.alpha.pineapple.plugin.weblogic.jmx.command.TestObjectIdentityCommand" scope="prototype" />
+	<bean id="testEnumValueCommand" class="com.alpha.pineapple.plugin.weblogic.jmx.command.TestEnumValueCommand" scope="prototype" />
+	<bean id="testAttributeValueCommand" class="com.alpha.pineapple.plugin.weblogic.jmx.command.TestAttributeValueCommand" scope="prototype" />
+	<bean id="testCollectionValueCommand" class="com.alpha.pineapple.plugin.weblogic.jmx.command.TestCollectionValueCommand" scope="prototype" />
+	<bean id="reportCommand" class="com.alpha.pineapple.plugin.weblogic.jmx.command.ReportCommand" scope="prototype" />
+
+</beans>

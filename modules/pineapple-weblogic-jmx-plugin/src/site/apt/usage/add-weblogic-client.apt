@@ -1,0 +1,38 @@
+ ------
+ How-to: Add a Weblogic client library to Pineapple 
+ ------
+ Allan Thrane Andersen
+ ------
+ October 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Add a Weblogic client library to Pineapple
+
+* Identify the appropriate library
+
+	Visit the 
+	{{{http://docs.oracle.com/cd/E24329_01/web.1211/e24378/basics.htm#i1062773}WebLogic Stand-alone Client Libraries}} 
+	page and determine which client library you want to use depending on your protocol requirements:
+	
+	* The super-size-me choice is the fat <<<wlfullclient.jar>>>.
+	
+	* The slim choice is the combination of <<<wljmxclient.jar>>> and <<<wlclient.jar>>>.	  
+	
+	[]
+
+* Download the libraries
+
+	The libraries are part of the WebLogic distribution. Download the server and locate the libraries in <<<WL_HOME/lib>>>.
+ 
+* Add to the library to Pineapple
+
+	The process of adding the libraries to Pineapple depends on the type of Pineapple client used, and a description 
+	for each type of client are described below:
+	
+	* {{{../../../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/usage/add-3rdparty-lib.html}How-to: Add a 3rd party library to the Pineapple standalone web application.}}	
+
+	* {{{../../../pineapple-applications/pineapple-web-application/pineapple-web-application-war/usage/add-3rdparty-lib.html}How-to: Add a 3rd party library to the Pineapple deployable web application.}}	
+	
+	[]

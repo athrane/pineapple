@@ -1,0 +1,4 @@
+[artifactory]
+name=Artifactory
+baseurl=http://dl.bintray.com/jfrog/artifactory-rpms/
+gpgcheck=0

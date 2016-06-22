@@ -1,0 +1,68 @@
+<jaxb:bindings version="2.0"	
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"	
+	jaxb:extensionBindingPrefixes="xjc" >
+
+	<jaxb:bindings schemaLocation="fusion_middleware_installation_1_0.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.plugin.fusion.installation.model" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="fusion_middleware_installation_1_0.xsd" >
+		<jaxb:bindings node="//xs:element[@name='fusion-middleware']" >
+			<jaxb:class name="FusionMiddlewareInstallation" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+	
+	<jaxb:bindings schemaLocation="fusion_middleware_installation_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='appDevRuntimeType']" >
+			<jaxb:class name="AppDevRuntimeInstallation" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="fusion_middleware_installation_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='appDevRuntimeRelease11Type']" >
+			<jaxb:class name="AppDevRuntimeRelease11Installation" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="fusion_middleware_installation_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='webCenterType']" >
+			<jaxb:class name="WebCenterInstallation" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="fusion_middleware_installation_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='webCenterRelease11Type']" >
+			<jaxb:class name="WebCenterRelease11Installation" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="fusion_middleware_installation_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='soaSuiteType']" >
+			<jaxb:class name="SoaSuiteInstallation" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="fusion_middleware_installation_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='soaSuiteRelease11Type']" >
+			<jaxb:class name="SoaSuiteRelease11Installation" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="fusion_middleware_installation_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='soaOracleServiceBusType']" >
+			<jaxb:class name="SoaOracleServiceBusInstallation" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="fusion_middleware_installation_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='soaOracleServiceBusRelease11Type']" >
+			<jaxb:class name="SoaOracleServiceBusRelease11Installation" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+
+</jaxb:bindings>

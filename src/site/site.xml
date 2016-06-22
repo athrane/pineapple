@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project>
+
+	<googleAnalyticsAccountId>UA-28287414-1</googleAnalyticsAccountId>
+
+	<skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.3.0</version>
+    </skin>
+    <custom>
+        <fluidoSkin>
+      		<leftColumnClass>span2</leftColumnClass>
+      		<bodyColumnClass>span10</bodyColumnClass>        
+            <sideBarEnabled>true</sideBarEnabled>
+            <googlePlusOne />
+			<sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+        </fluidoSkin>
+    </custom>
+
+	<publishDate format="dd MMM yyyy" position="right" />
+	<version position="none"/>
+	
+	<body>	
+	
+		<breadcrumbs>
+            <item name="Pineapple Home" href="./index.html" />
+		</breadcrumbs>            	
+	
+		<menu name="Project Overview" inherit="top">
+			<item name="Home" href="./index.html" />
+			<item name="Installation" href="./usage/installation.html" />
+			<item name="For Users" href="./usage/index.html" />
+			<item name="For Developers" href="./development/index.html" />
+			<item name="Terms and Conditions" href="./usage/terms.html" />			
+		</menu>
+
+		<menu name="Clients" inherit="top">
+			<item name="Standalone Web Application" href="./pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/index.html" />
+			<item name="Deployable Web Application" href="./pineapple-applications/pineapple-web-application/pineapple-web-application-war/index.html" />
+			<item name="Maven Plugin" href="./pineapple-applications/pineapple-maven-plugin/index.html" />
+		</menu>
+
+		<menu name="Plugins" inherit="top">
+			<item name="Agent" href="./pineapple-plugins/pineapple-agent-plugin/index.html" />		
+			<item name="Composite Execution" href="./pineapple-plugins/pineapple-composite-execution-plugin/index.html" />
+			<item name="SSH" href="./pineapple-plugins/pineapple-ssh-plugin/index.html" />						
+			<item name="Docker" href="./pineapple-plugins/pineapple-docker-plugin/index.html" />		
+			<item name="Infrastructure Test" href="./pineapple-modules/pineapple-infrastructure-test-plugin/index.html" />
+			<item name="JRockit Installation" href="./pineapple-plugins/pineapple-jrockit-installation-plugin/index.html" />
+			<item name="Fusion Middleware Installation" href="./pineapple-plugins/pineapple-fusion-middleware-installation-plugin/index.html" />			
+			<item name="WebLogic Installation" href="./pineapple-plugins/pineapple-weblogic-installation-plugin/index.html" />
+			<item name="WebLogic Deployment" href="./pineapple-modules/pineapple-weblogic-deployment-plugin/index.html" />			
+			<item name="WebLogic Scripting Tool (WLST)" href="./pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html" />			
+			<item name="WebLogic JMX" href="./pineapple-modules/pineapple-weblogic-jmx-plugin/index.html" />									
+		</menu>
+
+		<menu name="API's" inherit="top">
+			<item name="REST" href="./pineapple-applications/pineapple-web-application/pineapple-web-application-war/usage/rest.html" />
+			<item name="Plugin Framework" href="./development/plugin-framework.html" />			
+		</menu>
+
+		<menu name="Additional Information" inherit="top">
+			<item name="The Pineapple Tool Blog" href="http://pineapplesoftware.blogspot.com" />
+			<item name="Pineapple Exception Trail Blog" href="http://exceptiontrail.blogspot.com" />			
+		</menu>
+
+		<menu name="Project Tools" inherit="top">
+			<item name="Downloads" href="http://java.net/projects/pineapple/downloads" />
+			<item name="Source Code" href="http://java.net/projects/pineapple/sources/svn/show" />
+			<item name="Issue Tracker" href="http://java.net/jira/browse/PINEAPPLE" />
+			<item name="Mailing Lists" href="http://java.net/projects/pineapple/lists" />
+		</menu>
+
+		<menu ref="reports" inherit="bottom" />
+		
+		 <footer>Copyright (C) 2007-2013 Allan Thrane Andersen. All Rights Reserved.</footer>
+	</body>
+</project>

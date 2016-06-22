@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:context="http://www.springframework.org/schema/context"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    		http://www.springframework.org/schema/oxm 
+    		http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+    		http://www.springframework.org/schema/context 
+    		http://www.springframework.org/schema/context/spring-context-3.0.xsd" >    		
+
+	<!-- Configures pineapple-api -->
+	<import resource="classpath:com.alpha.pineapple.api-config.xml" />
+
+	<!-- Configures pineapple-commands-api -->
+	<import resource="classpath:com.alpha.pineapple.commands-api-config.xml" />
+        
+	<!-- enable annotation based configuration / dependency injection -->
+	<context:annotation-config />
+    
+	<oxm:jaxb2-marshaller id="unmarshaller" contextPath="com.alpha.pineapple.plugin.agent.model"/>
+
+	<!-- 
+		JAXB marshaller used for marshalling objects returned by REST web services  
+	-->
+	<bean id="restMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller"> 
+    	<property name="classesToBeBound"> 
+   			<list>
+   				<value>com.alpha.pineapple.model.execution.Results</value>
+   				<value>com.alpha.pineapple.model.execution.Result</value>
+   				<value>com.alpha.pineapple.model.execution.Messages</value>   				   				   				
+   				<value>com.alpha.pineapple.model.execution.Message</value>   				
+   				<value>com.alpha.pineapple.model.execution.MessageValue</value>   
+   			</list>
+    	</property>
+    </bean>
+
+	<!-- define message provider for internationalization  -->
+	<bean id="messageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">
+    	<property name="basename" value="com.alpha.pineapple.plugin.agent-messages"/>
+	</bean>	
+	    	    
+	<!-- define model mapper -->
+	<bean id="mapper" class="com.alpha.pineapple.plugin.agent.model.MapperImpl" />
+
+	<!-- REST template error handlers -->
+	<bean id="restResponseErrorHandler" class="com.alpha.pineapple.plugin.agent.utils.RestResponseErrorHandler" />
+	<bean id="defaultResponseErrorHandler" class="org.springframework.web.client.DefaultResponseErrorHandler" />
+
+	<!-- Configure HTTP request factory to use streaming to avoid loading large modules into memory prior to uploading --> 
+	<bean id="simpleClientHttpRequestFactory" class="org.springframework.http.client.SimpleClientHttpRequestFactory" >
+		<property name="bufferRequestBody" value="false" />		
+	</bean>
+	
+	<!-- Spring REST template -->		
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">  
+		<property name="messageConverters">
+			<list>
+				<!-- MarshallingHttpMessageConverter is added to be able to consume messages of the
+					 type [class com.alpha.pineapple.model.execution.Results] 
+					 and content type [application/xml]  
+				-->
+				<bean class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+        			<property name="marshaller" ref="restMarshaller" />
+        			<property name="unmarshaller" ref="restMarshaller" />
+      			</bean> 				 						
+	           	<bean class="org.springframework.http.converter.FormHttpMessageConverter"/>
+	            <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+			</list>
+		</property>
+		<property name="errorHandler" ref="restResponseErrorHandler" />
+		<property name="requestFactory" ref="simpleClientHttpRequestFactory" />				
+	</bean>
+
+	<!-- define ZIP utility -->
+	<bean id="zipUtils" class="com.alpha.javautils.ZipUtils" />
+
+	<!-- define command objects -->
+	<bean id="distributeModuleCommand" class="com.alpha.pineapple.plugin.agent.command.DistributeModuleCommand" />
+	<bean id="deleteModuleCommand" class="com.alpha.pineapple.plugin.agent.command.DeleteModuleCommand" />
+	<bean id="refreshEnvironmentConfigurationCommand" class="com.alpha.pineapple.plugin.agent.command.RefreshEnvironmentConfigurationCommand" />
+	<bean id="createEnvironmentCommand" class="com.alpha.pineapple.plugin.agent.command.CreateEnvironmentCommand" />
+	<bean id="executeOperationCommand" class="com.alpha.pineapple.plugin.agent.command.ExecuteOperationCommand" />
+	<bean id="scheduleOperationCommand" class="com.alpha.pineapple.plugin.agent.command.ScheduleOperationCommand" />
+	<bean id="deleteScheduledOperationCommand" class="com.alpha.pineapple.plugin.agent.command.DeleteScheduledOperationCommand" />
+	<bean id="deleteAllScheduledOperationsCommand" class="com.alpha.pineapple.plugin.agent.command.DeleteAllScheduledOperationsCommand" />
+		
+ 	<!-- 
+ 		definitions used by the integration tests. 
+ 		Only available for test with @ActiveProfiles("integration-test") 
+ 	-->
+	<beans profile="integration-test" >
+		<bean id="defaultOperation" class="com.alpha.pineapple.plugin.agent.operation.DefaultOperation" />
+		
+		<bean id="coreAdministrationProvider" class="org.easymock.EasyMock" factory-method="createMock" primary="true" >
+			<constructor-arg value="com.alpha.pineapple.admin.AdministrationProvider"/>
+		</bean>
+		<bean id="coreExecutionInfoProvider" class="org.easymock.EasyMock" factory-method="createMock">
+			<constructor-arg value="com.alpha.pineapple.execution.ExecutionInfoProvider"/>
+		</bean>
+		<bean id="coreRuntimeDirectoryProvider" class="org.easymock.EasyMock" factory-method="createMock">
+			<constructor-arg value="com.alpha.pineapple.io.file.RuntimeDirectoryProvider"/>
+		</bean>					    	    	
+	</beans>
+	    	    
+</beans>

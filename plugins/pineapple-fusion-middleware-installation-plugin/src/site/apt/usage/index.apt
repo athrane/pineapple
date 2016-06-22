@@ -1,0 +1,352 @@
+ ------
+ Usage
+ ------
+ Allan Thrane Andersen
+ ------
+ June 2011
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Introduction
+
+* Overview
+
+** Invoking the plugin
+
+	The plugin is invoked by the core component when the core component is 
+	used by one of the Pineapple clients. To trigger invocation by the core 
+	component the plugin needs to be configured.  
+
+** Configuration
+
+[../images/configure-plugin1.jpg]		
+
+	Three steps are needed to configure the plugin:
+	
+	[[1]] {{{Define_resource}Define resource:}} Define resource which 
+	enabled usage of the the plugin. For this particular plugin the
+	resource doesn't define a manageable entity in some computing environment but serves to
+	setup the execution of the plugin.   
+	
+	[[2]] {{{Define_the_module}Define the module model}} and add
+	a model which contains the installation instructions. The installation instructions 
+	are used to direct the installation of the Fusion Middleware products. The model is defined using the 
+	{{{The_Fusion_Middleware_installation_plugin_schema}The Fusion Middleware installation plugin schema}}.
+						
+	[]
+
+	For more info about configuration of plugins:
+
+	* For info about <<resources>> and <<credentials>> read the 
+	{{{../../../usage/configuration-environment.html}Environment configuration}}
+	document.
+	
+	* For info about <<modules>> and <<module models>> read the	
+	{{{../../../usage/configuration-modules.html}Modules configuration}}
+	document.
+	
+	[]
+	
+** Supported operations by the plugin	
+ 
+	The plugin supports the operations:
+	
+    * <<deploy-configuration>>      
+    
+    * <<undeploy-configuration>>    
+
+	[]		
+		
+	For more information about the default operations, refer to the	
+	{{{../../../usage/operations.html}Operation and workflow reference.}}
+
+** Execution of the deploy-configuration operation
+
+	When the plugin is invoked with this operation and a module model which 
+	contains entities defined by the plugin schema then the plugin will:
+	
+	* Validate whether the product is already installed locally on the computer where the plugin is executed. 
+
+	* If the product is installed then the installation is skipped.	
+	
+	* Validates whether the installer is valid prior to installation. If not the installation is skipped.	
+		
+	[]
+	
+** Execution of the undeploy-configuration operation
+
+	When the plugin is invoked with this operation and a module model which 
+	contains entities defined by the plugin schema then the plugin will:
+	
+	* Validate whether the product is already installed locally on the computer where the plugin is executed. 
+
+	* If the product isn't installed then the uninstallation is skipped.	
+	
+	* Validates whether the installer is valid prior to uninstallation. If not the uninstallation is skipped.	
+		
+	[]		
+			
+
+* {Define resource}
+
+	The purpose of defining a resource for this plugin is to define a mapping between the resource ID and the plugin ID. 
+	The resource ID is the user defined key which is referenced from module models which are targeting the resource.
+	The plugin ID is the Java package name which implements the plugin: <<<com.alpha.pineapple.plugin.fusion.installation>>>.
+
+	To define a new resource, add a <<<resource>>> element to the target environment in the configuration file <<<$\{pineapple.home.dir}/conf/resources.xml>>>:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <environments>
+    <environment id="local-environment" >
+      <resources>
+        <resource id="fusion-middleware" plugin-id="com.alpha.pineapple.plugin.fusion.installation" />                                                      
+      </resources>
+    </environment>								
+  </environments>
+</configuration>  	
++--------		 
+
+	For all the details about configuration of environments and resources, please visit the {{{../../../usage/configuration-environment.html}Environment Configuration Reference}}.	
+
+	The semantics of the resource element is:
+	 
+** The <<<id>>> attribute
+
+	Identifies the resource uniquely in the current environment.  
+		
+** The <<<plugin-id>>> element
+ 
+	Defines the plugin id for which should be used to execute management 
+	operations for the resource. The plugin id for the installation plugin is:
+	<<<com.alpha.pineapple.plugin.fusion.installation>>>.
+	
+** The <<<property>>> attributes(s)
+	
+	There are no mandatory properties used by the plugin.   
+
+* {Define the module}
+
+[../images/module-directory-layout.jpg]		
+
+	A <<{{{../../../usage/configuration-modules.html}module}}>>		
+	defines the input used by Pineapple to execute operations. A module is defined by a directory 
+	layout. Part of a module is the <<model(s)>> which defines what happens when the module is invoked. A model
+	is put together by one or more sub models from different plugins. Each plugin defines its own schema 
+	for its particular model   
+	
+** {The Fusion Middleware plugin schema}	
+	
+	The Fusion Middleware installation plugin defines a schema named <<The Fusion Middleware installation plugin schema>> 
+	which defines the <<<http://pineapple.dev.java.net/ns/plugin/fusion_middleware_installation_1_0>>> namespace. 
+	The schema can be used to define instructions for installation of FMW products. For more information about 
+	where the schema can be found, refer to the 
+	{{{../../../usage/schemas-plugins.html}Schema locations for plugins page.}} 
+		
+** Name and location of the the module model file	
+	
+	Installation instructions are defined in the module model files which are located at
+	<<<$\{module-dir\}>/models/$\{environment\}.xml>>> where:
+	
+	* <<<$\{module-dir\}>>> is the module root directory which identifies 
+	the module with a unique name and version. 
+
+	* <<<$\{environment\}>.xml>>> is a module model file for a target environment,
+	with <<<$\{environment\}>>> substituted with the environment name, e.g. 
+	<<<local-environment.xml>>> for an environment named <<<local-environment>>>. 
+	In the context of the Fusion Middleware installation plugin each model contains 
+	installation instructions for different environments.
+	
+	[]   	  
+	
+	If the module model file doesn't exist for an environment where the FMW product should be 
+	installed, then create the file and name it after the target environment, 
+	e.g. <<<local-environment.xml>>> for an environment named <<<local-environment>>>. 
+
+** The module model configuration schema
+
+	Module model files are defined using the <<module model configuration schema>>
+	which defines the <<<http://pineapple.dev.java.net/ns/module_model_1_0>>>
+	namespace. Since module model files contain elements from multiple
+	namespace all the elements and attributes should be qualified. The header and
+	root element should be defined as (look in the 
+	{{{../../../usage/configuration-modules.html}Modules configuration}}	
+	document for more details):
+	
+	This example shows definition of the minimal model file for
+	<<<local-environment:>>> 
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" />
++--------  
+
+** Adding the plugin schema to the model
+
+	The next step is to include the 
+	{{{The_Fusion_Middleware_installation_plugin_schema}The Fusion Middleware installation plugin schema}}
+	to get access to the entities defined by the schema:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:mip="http://pineapple.dev.java.net/ns/plugin/fusion_middleware_installation_1_0" />
++--------  
+	
+	Now we have a minimal module model file with three namespaces:
+	
+	* <<xs:>> The basic XMLSchema schema which is only used in the root element of the
+	document.
+	
+	* <<mmd:>> The module model schema which is used to define the skeleton of a model
+	file.
+	
+	* <<mip:>> The Fusion Middleware installation plugin schema which is used to define installation
+	instruction for Fusion Middleware.
+
+	[]
+
+** Defining the model which targets resources
+
+	Add a new <<<model>>> with a <<<target-resource>>> attribute. The value of
+	the <<<target-resource>>> should match the id of the resource which was 
+	defined previously in the section {{{Define_resource}Define resource}}, e.g. 
+	<<<fusion-middleware>>>:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:mip="http://pineapple.dev.java.net/ns/plugin/fusion_middleware_installation_1_0" />
+    
+  <mmd:model target-resource="fusion-middleware">		
+    <mmd:content />				
+  </mmd:model>
+</mmd:models>  	 
++--------  
+
+	Add content to the model which uses the Fusion Middleware installation plugin through the
+	<<<fusion-middleware>>> reference:
+	 
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:mip="http://pineapple.dev.java.net/ns/plugin/fusion_middleware_installation_1_0" />
+    
+  <mmd:model target-resource="fusion-middleware">		
+    <mmd:content>
+      <mip:fusion-middleware>                  
+    </mmd:content>				
+  </mmd:model>
+</mmd:models>  	 
++--------  
+
+* {Define installation instructions in the module model} 
+
+	Define installation instructions which directs the installation of a product: 
+	
+	Example:
+
++--------
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:mip="http://pineapple.dev.java.net/ns/plugin/fusion_middleware_installation_1_0" >
+    <mmd:model target-resource="fusion-middleware">
+        <mmd:content>
+            <mip:fusion-middleware>              
+              <mip:soa-suite>
+                <mip:release11 installer="modulepath:bin\ofm_soa_generic_11.1.1.6.0\Disk1\setup.exe"
+                  uninstaller="C:\app\oracle\product\fmw\oracle_common\oui\bin\setup.exe"  
+                  target-directory="C:\app\oracle\product\fmw\Oracle_SOA1" 					
+                  local-jvm="C:\app\oracle\product\fmw\jrockit\R28.2.3-1.6.0_31"							
+                  oracle-inventory-directory="C:/Program Files/Oracle/Inventory" />																
+                </mip:soa-suite>
+            </mip:fusion-middleware>
+        </mmd:content>
+    </mmd:model>		
+</mmd:models>
++--------	
+
+** Selecting which product to install
+
+	The plugin supports the installation of these products:
+	
+	* Application Development Runtime 11g.
+	
+	* Oracle SOA Suite 11g.
+	
+	* Oracle WebCenter Portal 11g.
+		
+	[] 
+	
+	The element used for each product is different but all sub elements are the same.
+	
+** <<<soa-suite>>> element	
+	
+	Defines installation instructions for SOA Suite.
+
+** <<<relrease11>>> element	
+	
+	Defines installation instructions for release 11, e.g. 11g.
+	
+	The semantics of its attributes is explained in the next sub sections:
+
+	
+*** <<<installer>>> attribute	
+	
+	Mandatory attribute, which defines the location of the installer which is used
+	to install the product. The location can either be absolute or local to the module.
+	
+	 * Example of an absolute path: <<<C:temp\ofm_soa_generic_11.1.1.6.0\Disk1\setup.exe>>>
+	 
+	 * Example of an path local to the module: <<<modulepath:bin\ofm_soa_generic_11.1.1.6.0\Disk1\setup.exe>>>
+	 
+	 []
+*** <<<uninstaller>>> attribute	
+	
+	Mandatory attribute, which defines the location of the uninstaller which is used
+	to uninstall the product. The location should be absolute within the target director
+	for the installation.
+	
+	 * Example of an absolute path: <<<C:\app\oracle\product\fmw\oracle_common\oui\bin\setup.exe>>>
+	 
+	 []
+	
+*** <<<target-directory>>> attribute
+
+	Mandatory attribute, which defines the target directory where the product
+	should be installed. Example: <<<C:\app\oracle\product\fmw\Oracle_SOA1>>>		 	
+	   
+*** <<<local-jvm>>> attribute
+	   
+	Mandatory attribute, which defines the location of the preinstalled JVM which should be used with the product.				
+
+*** <<<oracle-inventory-directory>>> attribute
+	   
+	Mandatory attribute, which defines the location of the Oracle inventory file.				
+
+** <<<application-development-runtime>>> element	
+	
+	Defines installation instructions for Application Development Runtime.
+	
+	Has the same sub element and attribute as the SOA Suite.
+
+** <<<webcenter>>> element	
+	
+	Defines installation instructions for WebCenter.
+	
+	Has the same sub element and attribute as the SOA Suite.
+
+
+* {Download installer}
+
+	Download the appropiate installer and add it at the location 
+	specified by the <<installer>> attribute defined above.
+	

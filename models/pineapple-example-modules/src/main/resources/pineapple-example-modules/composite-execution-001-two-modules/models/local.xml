@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+        xmlns:cep="http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0" >
+    <mmd:model target-resource="composite-execution">
+        <mmd:content>
+          <cep:composite-execution>
+            <cep:module name="infrastructure-test-001-forward-dns-resolution-localhost" />
+            <cep:module name="infrastructure-test-004-host-listens-on-ports" />                         
+        </cep:composite-execution>                      
+        </mmd:content>
+    </mmd:model>
+</mmd:models>

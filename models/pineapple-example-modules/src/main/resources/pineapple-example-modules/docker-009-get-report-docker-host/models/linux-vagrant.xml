@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+    xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" continue="false" >
+  <mmd:model target-resource="regex:docker-node" target-operation="create-report" description="List Docker images and containers" >
+    <mmd:content>
+      <dkp:docker />
+    </mmd:content>
+	</mmd:model>	
+</mmd:models>

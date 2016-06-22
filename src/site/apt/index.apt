@@ -1,0 +1,118 @@
+ ------
+ Introduction 
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	Pineapple is an open source project whose goal it is to create a free tool 
+	for <<prototyping>> and <<provisioning>> of web applications and platforms.
+
+	Pineapple can help you with:
+
+	* <<Automated installation of Fusion Middleware software:>>
+
+		* Installation of the Oracle and JRockit JVM.
+
+		* Installation of the WebLogic server, WebCenter and ADF.
+
+		[]
+
+	* <<Automated configuration of Fusion Middleware software:>>
+
+		* Configuration the Oracle and JRockit JVM.
+
+		* Creation of WebLogic Domains. Update and deletion of the configuration of a WebLogic Domain.
+		
+		* Installation of WebLogic NodeManager.		
+
+		[]
+
+	* <<Automated test of Fusion Middleware software:>>
+
+		* Test the installation of the JRockit JVM, WebLogic server and the configuration in a WebLogic Domain.
+
+		[]
+
+	* <<Automated deployment of application in WebLogic domains:>>
+
+		* Deployment and undeployment of applications in a WebLogic Domain.
+
+		[]
+
+	* <<Automated deployment of Docker images:>>
+
+		* Creation and deletion of a Docker image.
+
+		* Creation of a Docker image from a Dockerfile.
+
+		* Creation and deletion of a Docker container.
+		
+		* Control of Docker containers.
+
+		[]
+
+	* <<Automated test of infrastructure:>> 
+
+		* Test of DNS entry definitions, port scans, layout of FTP-sites.
+
+		* Test of load-balancing and stickyness of HTTP-sessions.
+
+		* SSH based test of settings of accessed hosts.
+		
+		[]
+
+	[]
+	
+* Usage
+
+	Follow the <<{{{./usage/installation.html}Installation guide}}>> to download or build Pineapple. 
+	Then go to the <<{{{./usage/index.html}User guide}}>> page to get started.	
+	
+** Visit the blogs for up to date information
+	 
+	The <<{{{http://pineapplesoftware.blogspot.com}Pineapple Tool Blog}}>> is continuously updated with information regarding
+	current development activities and examples. 
+
+	Visit the <<{{{http://exceptiontrail.blogspot.com}Pineapple Exception Trail Blog}}>> for a list of known issues 
+	which can be encountered while using Pineapple. 
+
+* How to participate
+
+	Help is wanted on this project so please participate! Please Send an email to Allan Andersen at: <einheriii@gmail.com> to get started.
+
+* Version Information
+
+** Version 1.8.0 (Current release)
+
+	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=17380}Release Notes for version 1.8.0}}.>> 
+
+** Version 1.7.0 
+
+	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=17057}Release Notes for version 1.7.0}}.>> 
+
+** Version 1.6.0
+
+	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=16820}Release Notes for version 1.6.0}}.>> 
+
+** Version 1.5.0
+
+	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=16658}Release Notes for version 1.5.0}}.>> 
+	  
+** Version 1.4.0
+
+	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=16301}Release Notes for version 1.4.0}}.>> 
+
+   
+* Development documentation
+
+	Go to the <<{{{./development/index.html}Technical documentation}}>> for information about the architecture, design and 
+	implementation of the project.
+
+				

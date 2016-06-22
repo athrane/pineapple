@@ -1,0 +1,1727 @@
+ ------
+ Usage
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Introduction
+
+* Overview
+
+** Invoking the plugin
+
+	The plugin is invoked by the core component when the core component is 
+	used by one of the Pineapple clients. To trigger invocation by the core 
+	component the plugin needs to be configured.  
+
+** Configuration
+
+[../images/configure-plugin2.jpg]		
+
+	Two steps are needed to configure the plugin:
+	
+	[[1]] {{{Define_resource}Define resource:}} Define resource which 
+	enables usage of the the plugin. For this particular plugin the
+	resource doesn't define a manageable entity in some computing
+	environment. 
+
+	[[2]] {{{Define_the_module}Define the module}} and add a model where the 
+	test cases can be defined. The test cases are used to test the configuration 
+	of IT a infrastructure:
+	
+	* {{{Supported_test_cases}Supported test cases}} which can test the configuration 
+	of IT infrastructure.
+	
+	* Test cases are defined using the {{{The_infrastructure_test_plugin_schema}Infrastructure test plugin schema}}.
+											
+	* {{{Support_for_HTTP_configuration_for_configuration_of_proxies_and_timeout}Support
+	for configuration of the HTTP layer}} in HTTP related test cases, which enables the 
+	configuration of proxy servers and timeout values.      
+	
+	* {{{Support_for_SSL_using_HTTPS_connections}Support for SSL using HTTPS connections}}
+	in HTTP related test cases.
+	
+	[]
+
+	For more info about configuration of plugins:
+
+	* For info about <<resources>> and <<credentials>> read the 
+	{{{../../../usage/configuration-environment.html}Environment configuration}}
+	document.
+	
+	* For info about <<modules>> and <<module models>> read the	
+	{{{../../../usage/configuration-modules.html}Modules configuration}}
+	document.
+	
+	[]
+	
+** Supported operations by the plugin	
+ 
+	The plugin supports the default operations:
+	
+    * <<test>>       
+
+	[]		
+		
+	For more information about the default operations, refer to the	
+	{{{../../../usage/operations.html}Operation and workflow reference.}}
+
+** Execution of the test operation
+
+	When the plugin is invoked with this operation and a module model which 
+	contains entities defined by the plugin schema then the plugin will:
+	
+	* Execute each of the defined test cases in turn. The test cases are grouped
+	by type and executed. 
+
+	[]	
+			
+* {Define resource}
+		
+	The purpose of defining a resource for this plugin is to define a mapping between the resource ID and the plugin ID. 
+	The resource ID is the user defined key which is referenced from module models which are targeting the resource.
+	The plugin ID is the Java package name which implements the plugin: <<<com.alpha.pineapple.plugin.net>>>.
+		
+	To define a new resource, add a <<<resource>>> element to the target environment in the configuration file <<<$\{pineapple.home.dir}/conf/resources.xml>>>:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <environments>
+    <environment id="local" >
+      <resources>
+        <resource id="infrastructure-test" 
+                  plugin-id="com.alpha.pineapple.plugin.net" />
+      </resources>
+    </environment>								
+  </environments>
+</configuration>  	
++--------		 
+
+	For all the details about configuration of environments and resources, please visit the {{{../../../usage/configuration-environment.html}Environment Configuration Reference}}.	
+
+	The semantics of the resource element is:
+	 
+** The <<<id>>> attribute
+
+	Identifies the resource uniquely in the current environment. 
+		
+** The <<<plugin-id>>> element
+ 
+	Defines the plugin id for which should be used to execute management 
+	operations for the resource. The plugin id for the 
+	<<infrastructure test plugin>> is: <<<com.alpha.pineapple.plugin.net>>>.
+	
+** The <<<properties>>> element
+	
+	No additional properties are defined for this plugin.
+	
+* {Define the module}
+
+[../images/module-directory-layout.jpg]		
+
+	A <<{{{../../../usage/configuration-modules.html}module}}>>		
+	defines the input used by Pineapple to execute operations. A module is defined by a directory 
+	layout. Part of a module is the <<model(s)>> which defines what happens when the module is invoked. A model
+	is put together by one or more sub models from different plugins. Each plugin defines its own schema 
+	for its particular model   
+	
+** {The infrastructure test plugin schema}
+
+	The infrastructure test plugin defines a schema named <<Infrastructure test plugin schema>> 
+	which defines the <<<http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0>>> namespace. The 
+	schema can be used to define a collection of test cases. The defined test cases in the 
+	model can then be used to test the IT infrastructure of a computing environment by invoking the 
+	operation supported by the plugin. For more information about where the schema can be found, refer to the 
+	{{{../../../usage/schemas-plugins.html}Schema locations for plugins page.}} 
+
+** Name and location of the the module model file
+	
+	If the module model file doesn't exist for an environment where a script should be executed, 
+	then create the file and name it after the target environment. 
+
+	Test cases are defined in the module model files which are located at
+	<<<$\{module-dir\}>/models/$\{environment\}.xml>>> where:
+	
+	* <<<$\{module-dir\}>>> is the <Module Directory> which identifies 
+	the module with a unique name and version. 
+
+	* <<<$\{environment\}.xml>>> is a model file for a target environment,
+	with <<<$\{environment\}>>> substituted with the environment name, e.g. 
+	<<<local.xml>>> for an environment named <<<local>>>. 
+	
+	[]   	  
+	
+	If the module model file doesn't exist for an environment where the 
+	infrastructure should be tested, then create the file and name it after the 
+	target environment.  
+
+** The module model configuration schema 
+
+	Module model files are defined using the <<module model configuration schema>>
+	which defines the <<<http://pineapple.dev.java.net/ns/module_model_1_0>>>
+	namespace. Since module model files contain elements from multiple
+	namespace all the elements and attributes should be qualified. The header and
+	root element should be defined as (look in the 
+	<<{{{../../../usage/configuration-modules.html}modules configuration}}>>	
+	document for more details):
+	
+	This example shows definition of the minimal model file for
+	<<<local>>> environment: 
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" />
++--------  
+
+** Adding the plugin schema to the model
+
+	The next step is to include the schema for the infrastructure test plugin
+	to get access to the entities defined by the schema:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" />
++--------  
+	
+	Now we have a minimal module model file with three namespaces:
+	
+	* <<xs:>> The basic XMLSchema schema which is only used in the root element of the
+	document.
+	
+	* <<mmd:>> The module model schema which is used to define the skeleton of a model
+	file.
+	
+	* <<itp:>> The infrastructure test plugin schema which is used to define test cases.
+
+	[]
+
+** Defining the model which targets resources
+
+	Add a new <<<model>>> with a <<<target-resource>>> attribute. The value of
+	the <<<target-resource>>> should match the id of the resource which was 
+	defined previously in the section {{{Define_resource}Define resource}}, e.g. 
+	<<<infrastructure-test>>>:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content />				
+  </mmd:model>
+</mmd:models>  	 
++--------  
+
+	Add content to the model which uses the infrastructure test plugin through the
+	<<<infrastructure-test>>> reference:
+	 
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>
+      <itp:infrastructure>
+      </itp:infrastructure>      
+    </mmd:content>      													    				
+  </mmd:model>
+</mmd:models>  	   	 
++--------  
+
+** Included example
+
+	The configuration of the environment and module shown above are included as an example 
+	in the default configuration generated by Pineapple when it is started. The name of the 
+	example is <<infrastructure-test-000-empty-model-file>>.    		
+		
+* {Supported test cases}
+
+	Test cases can be added to the defined module model: 
+
+	* <<dns-forward-resolution-test>> - tests whether a host name can be resolved to an expected IP-address.
+
+	* <<dns-reverse-resolution-test>> - tests whether an IP-address can be resolved to a expected  host name.
+
+	* <<dns-resolution-test>> - tests whether a host name can be resolved to an expected IP-address and that the IP-address can be resolved 
+	back to the host name.
+
+	* <<tcp-connection-test>> - test whether a TCP host listens on expected port(s).
+	
+	* <<http-test>> - tests the HTTP behavior of a HTTP host.
+	
+	* <<test-stickyness>> - tests whether a sequence of HTTP-request from the same client are routed to and handled by the same host.
+
+	* <<test-load-balancing>> - tests whether HTTP-requests from new HTTP clients are routed to and handled by different hosts.
+
+	* <<test-http-statuscode>> - test whether a host returns an expected HTTP status code.		
+
+	* <<test-http-redirect>> - test whether a host redirects a HTTP request to another URL.		
+
+	* <<test-http-header>> - test whether a host returns expected and not expected HTTP headers.
+
+	* <<test-can-access-unc-path>> - tests a unprotected UNC path can be accessed.
+
+	* <<test-active-ftp-server>> - tests whether a FTP server is active on designated host.
+
+	* <<test-ftp-server-contains-directory>> - tests whether a FTP server contains a designated directory.
+
+	* <<test-ftp-server-can-create-directory>> - tests whether a directory can be created and then deleted on FTP server.
+
+	[]
+
+* Test case: Forward DNS resolution test
+
+	Test that a host name can be resolved to an expected IP address. 
+	The test succeeds if the host name is resolved to the expected IP address. 
+
+	Example:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>
+        
+        <itp:dns-forward-resolution-test host="localhost" ip="127.0.0.1" description="localhost resolves to 127.0.0.1" />
+        
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	The semantics of the elements is explained in the next sub 
+	sections:
+	
+** dns-forward-resolution-test element
+
+	Defines the skeleton of the test case.
+
+** description attribute 
+
+	Should contain a suitable description of the test. The description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.	  
+
+** host attribute
+
+	Defines the host name which should be resolved to an IP address.
+
+** ip attribute 
+
+	The expected IP address that the host name should be resolved to.	
+
+
+* Test case: Reverse DNS resolution test
+
+	Test that an IP address can be resolved to an expected host name. 
+	The test succeeds if the IP address is resolved to the expected host name.
+	
+	If the IP address is resolved to multiple host names then the test succeeds if the 
+	designated host name is among the resolved host names. 
+
+	Example:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>
+        
+        <itp:dns-reverse-resolution-test host="localhost" ip="127.0.0.1" description="127.0.0.1 resolves to localhost" />
+        
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	The semantics of the elements is explained in the next sub 
+	sections:
+	
+** dns-reverse-resolution-test element
+
+	Defines the skeleton of the test case.
+
+** description attribute 
+
+	Should contain a suitable description of the test. The description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.
+
+** host attribute
+
+	The expected host name that the IP address should be resolved to.
+
+** ip attribute 
+
+	Defines the IP address which should be resolved to an host name.
+
+
+* Test case: Forward and reverse DNS resolution test
+
+	Test that a host name can be resolved to an expected IP address and that
+	the IP address can be resolved back to the host name. 
+	
+	Alternatively the IP address can be left blank. In that case the host is attempted to
+	resolved to an IP and then the resolved IP is reverse resolved to the host.  		
+	 	 	 
+	If the IP address is defined then the test succeeds if:
+	
+	* The host name is resolved to the expected IP address.
+	
+	* The IP address is resolved to the expected host name. If the IP address is 
+	resolved to multiple host names then the designated host name must be among
+	the resolved host names otherwise the test will fail. 
+	
+	[]
+		
+	If the IP address isn't defined then the test succeeds if:	
+	
+	* The host name is resolved to an IP address.
+	
+	* The IP address is resolved to the expected host name. If the IP address is 
+	resolved to multiple host names then the designated host name must be among
+	the resolved host names otherwise the test will fail. 
+	
+	[]				
+		
+	Example:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>
+        
+        <itp:dns-resolution-test host="localhost" ip="127.0.0.1" description="localhost resolves to 127.0.0.1 and reverse" />
+        
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	Example without explicit IP address:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>
+        
+        <itp:dns-resolution-test host="localhost" description="localhost resolves to 127.0.0.1 and reverse" />
+        
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+
+
+	The semantics of the elements is explained in the next sub 
+	sections:
+	
+** dns-resolution-test element
+
+	Defines the skeleton of the test case.
+
+** description attribute 
+
+	Should contain a suitable description of the test. The description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.	  
+
+** host attribute
+
+	Defines the host name which should be resolved to an IP address
+	and resolved in reverse from the IP address.  
+
+** ip attribute 
+
+	Optional attribute which defines the IP address which should be resolved from a 
+	host name and resolved back to the host name.  
+	
+* Test case: TCP connection test
+
+	Test that a host listen listens on designated port(s). The test succeeds if:
+	
+		* The host name can be resolved to an IP address. If the host value is an
+		IP adresse then this test will succeeded by default.	
+	
+		* The host listens on the expected port(s).
+				
+		[]
+
+	Example:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>													
+        
+        <itp:tcp-connection-test host="belis.host" description="belis.host:80,443" >
+          <itp:port value="80" />
+          <itp:port value="443" />
+        </itp:tcp-connection-test>
+        
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	The semantics of the elements are explained in the next sub 
+	sections:
+	
+** tcp-connection-test element
+
+	Defines a TCP connection test.	   
+
+** host attribute
+
+	Define host name which should listen to designated port(s).
+
+** description attribute 
+
+	Should contain a suitable description of the test. The description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.	  
+
+** port element
+
+	The expected TCP-port on which the host should listen. Legal values is an integer between 0 and 65535. 
+	
+	Any number of port elements can be added to the test to verify that the host
+	listens to multiple ports. The example above illustrates this feature where the
+	it is validated that the host <<<belis.host>>> listens to the two ports 80 abd 443.	
+
+* Test case: HTTP test 
+
+	A generic test case which can test many aspects of the behavior of an HTTP host.
+
+	The test invokes the same <<URL sequence>> a designated number of times using HTTP the Get operation:
+	
++--------	
+	seq0 = { url0, url1, .... urlM}
+	seq1 = { url0, url1, .... urlM}
+	...	
+	seqN = { url0, url1, .... urlM}		
++--------
+ 	
+	The test succeeds if:
+
+	TODO: define success criterias.	
+
+	Example:
+		
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>								
+      					
+        <itp:http-configuration id="myproxy8080" description="Proxy definition" >
+          <itp:proxy host="myproxy" port="8080"/>
+        </itp:http-configuration>
+      					      
+        <itp:http-test description="generic http test" requests="5" reset="true" http-configuration-ref="myproxy8080" > 
+          <itp:urls>
+            <itp:url>http://www.myhost.com</itp:url>
+            <itp:url>http://www.myhost.com/login</itp:url>																		
+          </itp:urls>
+          <itp:assertions>
+              <itp:assertion name="host" xpath="a/b/c" intra-strategy="" inter-strategy="" >
+                <itp:value v="v" />              
+                <itp:value v="v2" />					
+              </itp:assertion>
+
+              <!-- HTTP header -->			  
+              <itp:assertion name="HTTP Status code" xpath="method/statusCode" intra-strategy="equalTo" inter-strategy="equalTo" >
+                <itp:value v="200" />              					
+              </itp:assertion>
+              <itp:assertion name="HTTP Response headers" xpath="method/responseHeaders" intra-strategy="isHeadersContaining" inter-strategy="isHeadersContaining" >
+                <itp:value name="Accept" v="text/plain" />              					
+                <itp:value name="Via" v="1.0 fred, 1.1 nowhere.com (Apache/1.1)" />				
+              </itp:assertion>
+              <itp:assertion name="Non existing HTTP Response headers" xpath="method/responseHeaders" intra-strategy="not(isHeadersContaining)" inter-strategy="not(isHeadersContaining)" >
+                <itp:value name="terminated-by-super-encryption-scheme" v="" />              					
+              </itp:assertion>              
+
+              <!-- HTTP redirect -->			  
+              <itp:assertion name="HTTP Status code" xpath="method/statusCode" intra-strategy="equalTo" inter-strategy="equalTo" >
+                <itp:value v="302" />              					
+              </itp:assertion>
+              <itp:assertion name="HTTP Response headers" xpath="method/responseHeaders" intra-strategy="isHeadersContaining" inter-strategy="isHeadersContaining" >
+                <itp:value name="Location" v="https://www.myhost.com/niceuri/connect" />              									
+              </itp:assertion>
+
+              <!-- HTTP LB -->			  
+              <itp:assertion name="HTTP Status code" xpath="method/statusCode" intra-strategy="equalTo" inter-strategy="equalTo" >
+                <itp:value v="200" />              					
+              </itp:assertion>
+              <itp:assertion name="Server" xpath="body/html/body/j2ee-sniffer/system-properties/pineapple.server" intra-strategy="matchingSingleValueInRange" inter-strategy="distributedAcrossRange" >
+                <itp:value v="exo-server1" />              					
+                <itp:value v="exo-server2" />				
+              </itp:assertion>
+              <itp:assertion name="Environment" xpath="body/html/body/j2ee-sniffer/system-properties/pineapple.environment" intra-strategy="equalTo" inter-strategy="equalTo" >
+                <itp:value v="cool-environment" />              									
+              </itp:assertion>
+              <itp:assertion name="Location" xpath="body/html/body/j2ee-sniffer/system-properties/pineapple.location" intra-strategy="equalTo" inter-strategy="equalTo" >
+                <itp:value v="this-location" />              									
+              </itp:assertion>
+              <itp:assertion name="Host" xpath="body/html/body/j2ee-sniffer/hostname" intra-strategy="equalTo" inter-strategy="equalTo" >
+                <itp:value v="stable-host" />              									
+              </itp:assertion>
+              <itp:assertion name="Cookies" xpath="state/cookies" intra-strategy="cookieMapsContainsEqualValues" inter-strategy="cookieMapsContainsNonEqualValues" >
+                <itp:value v="JSessionId" />              									
+                <itp:value v="BC_HA_*" />				
+              </itp:assertion>
+                            
+          </itp:assertions>
+
+        </itp:http-test>																
+      </itp:infrastructure>									
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	The semantics of the elements is explained in the next sub 
+	sections:
+
+** http-test  
+
+	Defines the skeleton of a generic HTTP test case.	   
+
+** description attribute 
+
+	Should contain a suitable description of the test. The description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.	  
+
+** requests attribute
+
+	The number of times the URL sequence should be invoked.
+
+** reset attribute
+
+	Defines whether the HTTP client should reset it self after invocation
+	of each URL sequence. 
+	
+	If the HTTP client is reset then all of its state (e.g. credentials 
+	and cookies) will be lost after each sequence. If the HTTP client 
+	isn't reset then it will maintain its state will be maintained across 
+	all sequences.
+	
+	This flag controls the behavior of the HTTP client in regard to 
+	session stickyness and can used to configure test cases which
+	test the load balancing and session behaviorof a HTTP host.      
+
+** http-configuration-ref attribute
+
+	Defines the id of the HTTP configuration which should used to customize the
+	configuration of the the HTTP client used to send HTTP requests.
+
+** urls element 
+
+	Container element for a URL sequence, which contains a list of URLs which 
+	is accessed using a HTTP Get operation, during each test.
+
+** url element
+
+	Defines a single URL in the URL sequence.
+
+** assertions element
+
+	Container element for assertions.
+
+** assertion element
+
+	Define an assertion which validates a single aspects of the behavior of
+	the tested HTTP host(s). An assertion consists of the following parts:
+	
+	* Human readable name of what is tested.
+	
+	* What is the actual value?
+	
+	* The expected value(s)?
+		
+	* Which strategy is used to assert the actual value with the expected value?
+		
+	[] 
+	
+	The remaining attributes and sub elements in a <<<assertion>>> defines exactly those four parts: 
+	name, actual value, expected value(s) and strategy.	 	
+	
+** assertion name attribute
+
+	Should contain a suitable name of the assertion. The name is used by Pineapple at run 
+	time in clients and stored in reports to show the outcome of the test.
+	
+	This attribute defines the <name> part of the assertion.	  
+
+** assertion xpath attribute
+
+	Defines an XPath expression which is used to is identify and extract 
+	actual values from each returned HTTP response. The XPath expression can 
+	extracts values from:
+
+	* The returned HTTP response. 
+	
+	* The HTTP state of the HTTP client. 
+	
+	* The HTTP Get method used to invoke the HTTP Get operation. 
+	
+	[]
+	
+	This attribute defines the <actual value> part of the assertion.		
+		
+*** Extracting value(s) from the HTTP response 		
+		
+	The HTTP resonse is accessed with an expression starting with <<<body/>>>. 
+	Examples are:
+	
+		* <<<body/html/body/>>> to access ....
+
+		[]
+	
+*** Extracting value(s) from HTTP State	
+	
+	The HTTP client manages a HTTP state object which acts as an container for 
+	HTTP attributes that may persist from request to request, such as cookies and 
+	authentication credentials. The HTTP state is defined by the the interface
+	<<<org.apache.commons.httpclient.HttpState>>>. All of the attributes of this
+	interface can be accessed.
+	
+	The HTTP state is accessed with an expression starting with <<<state/>>>.
+	Examples are:
+	
+		* <<<state/cookies>>> to access the returned map of cookies.	
+
+		[]
+	
+*** Extracting value(s) from the HTTP Get method
+
+	The HTTP client uses an instance of the interface 
+	<<<org.apache.commons.httpclient.HttpMethod>>> to represents a request 
+	to be sent via a HTTP connection. All of the attributes of this
+	interface can be accessed.		
+	
+	The HTTP Get metod is accessed with an expression starting with <<<method/>>>. 
+	Examples are:
+	
+		* <<<method/statusCode>>> to access the returned HTTP status code.
+		
+		* <<<method/responseHeaders>>> to access the returned map of HTTP response headers.		
+
+		* <<<method/responseHeaders>>> to access the returned map of HTTP response footers.
+		
+		[]
+		
+** assertion intra-strategy attribute
+
+	Defines the strategy used to assert actual value against expected value(s) within
+	a URL sequence.
+	
+	The legal single value strategies are:
+				
+	* equalTo
+		
+	* cookieMapsContainsEqualValues
+	
+	* cookieMapsContainsNonEqualValues
+	
+	* Any single value Hamcrest matcher??! not or and???
+	
+	* Any single value Pineapple matcher??!
+		
+	[] 
+
+	The legal multi value strategies are:
+					
+	* isHeadersNotContaining
+	
+	* matchingSingleValueInRange
+	
+	* distributedAcrossRange
+		
+	* Any multi value Hamcrest matcher??!
+	
+	* Any multi value Pineapple matcher??!
+		
+	[] 
+	
+	This attribute and the <<<inter-strategy>>> attribute defines the <strategy> 
+	part of the assertion.
+
+** assertion inter-strategy attribute
+
+	Defines the strategy used to assert actual value against expected value(s) across
+	URL sequences.
+	
+	This attribute and the <<<intra-strategy>>> attribute defines the <strategy> 
+	part of the assertion.	 
+		
+** assertion value element	   
+
+	Defines a single expected value in the assertion. Minimum one value element
+	must be defined for an assertion. If multiple value elements are defined for
+	an assertion then it will depende on the used strategies whether multiple values
+	are intepreted as an set or list or another kind of collection. 
+	
+	This attribute defines the <expected value> part of the assertion.	
+		
+* Test case: HTTP session is sticky to single server
+
+	Test that a HTTP session is load balanced sticky to a single server, e.g.
+	a complete set of requests is handled by the same server. The test executes 
+	the same <<URL sequence>> a designated number of times:
+	
++--------	
+	seq0 = { url0, url1, .... urlM}
+	seq1 = { url0, url1, .... urlM}
+	...	
+	seqN = { url0, url1, .... urlM}		
++--------
+ 	
+	The HTTP client state is maintained across all sequences, to simulate an the
+	same user accessing the defined URL's.
+		
+	The test succeeds if:
+	
+	* All HTTP requests contains the HTTP status code 200.	
+	
+	* Returned cookie values are equal within an URL sequence.
+	
+	* Returned cookie values are equal across URL sequences (values from seq0 == seq1).  		
+
+	* Returned meta data property values (for <<host>>, <<environement>> and <<location>>) are equal within an URL sequence.
+	
+	* Returned meta data property values (for <<host>>, <<environement>> and <<location>>) are equal across URL sequences (values from seq0 == seq1).
+	
+	* Returned meta data property <<server>> values are equal within an URL sequence.	
+		
+	* Returned meta data property <<server>> values are qual across URL sequences.					
+	
+	[] 
+
+	Example:
+		
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>	
+      					
+        <itp:http-configuration id="myproxy8080" description="Proxy definition" >
+          <itp:proxy host="myproxy" port="8080"/>
+        </itp:http-configuration>
+      					      
+        <itp:session-stickyness-test description="session-stickyness-test for..." requests="5" http-configuration-ref="myproxy8080" > 
+          <itp:urls>
+            <itp:url>http://www.myhost.com</itp:url>
+            <itp:url>http://www.myhost.com/login</itp:url>
+          </itp:urls>					
+          <itp:assert>
+            <itp:properties>
+              <itp:property name="host" value="null" />
+              <itp:property name="environment" value="null" />
+              <itp:property name="location" value="null" />
+            </itp:properties>
+            <itp:servers>
+              <itp:server>null</itp:server>
+            </itp:servers>
+          </itp:assert>
+        </itp:session-stickyness-test>
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	The semantics of the elements is explained in the next sub 
+	sections:
+
+** session-stickyness-test  
+
+	Defines a session stickyness test .	   
+
+** description attribute 
+
+	Should contain a suitable description of the test. The description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.	  
+
+** requests attribute
+
+	The number of times the URL sequence should be invoked.
+
+** http-configuration-ref attribute
+
+	Defines the id of the HTTP configuration which should used to customize the
+	configuration of the the HTTP client used to send HTTP requests.
+
+** urls 
+
+	Container element for a URL sequence, which contains a list of URLs which 
+	is accessed using a HTTP Get operation, during each test.
+
+** url
+
+	Defines a single URL in the URL sequence.
+
+** assert
+
+	Container element for the expected test values.
+
+** properties
+
+	Container element for properties which are are extracted from the 
+	returned HTTP responses.
+	
+** property
+
+	Defines a expected name-value pair. The plugin attempts to extract a 
+	property with the defined name from each the returned HTTP response.
+	
+	The HTTP response is parsed as s XML document with the strucuture:
+	
++--------	 
+<?xml version="1.0" encoding="UTF-8" ?> 
+<j2ee-sniffer>
+  <hostname>myhost.alpha..net</hostname> 
+  <system-properties>
+    <pineapple.location>some-network-zone</pineapple.location> 
+    <pineapple.server>server-with-id-alpha</pineapple.server> 
+    <pineapple.environment>stable-test-environment</pineapple.environment>  
+  </system-properties>
+</j2ee-sniffer>	
++--------	
+
+	The test case extracts the these property values from the response:
+	
+	* <<host>> is extract using the XPath expression <<</j2ee-sniffer/hostname>>>. 
+	The property defines the host name in the HTTP session.  
+
+	* <<environment>> is extract using the XPath expression 
+	<<</j2ee-sniffer/system-properties/pineapple.environment>>>.
+	The property defines an environment identifier. 	
+	 
+	* <<location>> is extract using the XPath expression 
+	<<</j2ee-sniffer/system-properties/pineapple.location>>>.
+	The property defines an infrastructure zone identifier. The location 
+	is used to logically divide an environment in multiple sections. 
+	An environment can be divided into multiple clusters, network zones 
+	or even geographical locations.	
+
+	[]
+	
+	The extracted actual values is then tested with expected values defined for each propery.
+	
+	If an URL doesn't return an XML document with the above form, the values for the 
+	properties <<host>>, <<environment>> and <<location>> are interpreted as null.     				
+	
+** servers + server
+
+	The <<<servers>>> element defines a container element for server set. The <<<server>>> 
+	element defines an individual server in the server set. The set of servers defines a 
+	range of expected values wich is tested against the actual values.
+	
+	The actual values from the server property is extracted by the test case from the response:
+	
+	* <<server>> is extracted using the XPath expression <<</j2ee-sniffer/system-properties/pineapple.server>>>. 
+  
+	[]
+	
+	If an URL doesn't return an XML document with the expected form, then the value for the 
+	<<server>>> property is interpreted as null.     				
+	
+		
+* Test case: New HTTP sessions are load balanced between servers
+
+	Test that a set new HTTP sessions is load balanced evenly to a set of
+	servers. The test executes the same <<URL sequence>> a designated 
+	number of times:
+	
++--------	
+	seq0 = { url0, url1, .... urlM}
+	seq1 = { url0, url1, .... urlM}
+	...	
+	seqN = { url0, url1, .... urlM}		
++--------
+
+	The HTTP client is reset after each sequence, to simulate an new user accessing
+	the defined URL's.
+ 		
+	The test succeeds if:
+	
+	* All HTTP requests contains the HTTP status code 200.	
+	
+	* Returned cookie values are equal within an URL sequence.
+	
+	* Returned cookie values differ across URL sequences (values from seq0 != seq1).  		
+
+	* Returned meta data property values (for <<host>>, <<environement>> and <<location>>) are equal within an URL sequence.
+	
+	* Returned meta data property values (for <<host>>, <<environement>> and <<location>>) differ across URL sequences (values from seq0 != seq1).
+	
+	* Returned meta data property <<server>> values are equal within an URL sequence.	
+		
+	* Returned meta data property <<server>> values differ across URL sequences.	
+				
+	[] 
+	
+	Example:
+		
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>
+      
+        <itp:http-configuration id="myproxy8080" description="Proxy definition" >
+          <itp:proxy host="myproxy" port="8080"/>
+        </itp:http-configuration>
+      					       
+        <itp:load-balancing-test description="load-balancing-test for..." requests="5" http-configuration-ref="myproxy8080" > 
+          <itp:urls>
+            <itp:url>http://www.myhost.com</itp:url>
+            <itp:url>http://www.myhost.com/login</itp:url>
+          </itp:urls>					
+          <itp:assert>
+            <itp:properties>
+              <itp:property name="host" value="null" />
+              <itp:property name="environment" value="null" />
+              <itp:property name="location" value="null" />
+            </itp:properties>
+            <itp:servers>
+              <itp:server>null</itp:server>
+            </itp:servers>
+          </itp:assert>
+        </itp:load-balancing-test>
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	The semantics of the elements is explained in the next sub 
+	sections:
+	 
+** load-balancing-test 
+
+	Defines a load balancing test.	   
+
+** description attribute 
+
+	Should contain a suitable description of the test. The description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.	  
+
+** requests attribute
+
+	The number of times the URL sequence should be invoked.
+
+** http-configuration-ref attribute
+
+	Defines the id of the HTTP configuration which should used to customize the
+	configuration of the the HTTP client used to send HTTP requests.
+
+** urls 
+
+	Container element for a URL sequence, which contains a list of URLs which 
+	is accessed using a HTTP Get operation, during each test.
+
+** url
+
+	Defines a single URL in the URL sequence.
+
+** assert
+
+	Container element for the expected test values.
+
+** properties
+
+	Container element for properties which are are extracted from the 
+	returned HTTP responses.
+	
+** property
+
+	Defines a expected name-value pair. The plugin attempts to extract a 
+	property with the defined name from each the returned HTTP response.
+	
+	The HTTP response is parsed as s XML document with the strucuture:
+	
++--------	 
+<?xml version="1.0" encoding="UTF-8" ?> 
+<j2ee-sniffer>
+  <hostname>myhost.alpha.net</hostname> 
+  <system-properties>
+    <pineapple.location>some-network-zone</pineapple.location> 
+    <pineapple.server>server-with-id-alpha</pineapple.server> 
+    <pineapple.environment>stable-test-environment</pineapple.environment>  
+  </system-properties>
+</j2ee-sniffer>	
++--------	
+
+	The test case extracts the these property values from the response:
+	
+	* <<host>> is extract using the XPath expression <<</j2ee-sniffer/hostname>>>. 
+	The property defines the host name in the HTTP session.  
+
+	* <<environment>> is extract using the XPath expression 
+	<<</j2ee-sniffer/system-properties/pineapple.environment>>>.
+	The property defines an environment identifier. 	
+	 
+	* <<location>> is extract using the XPath expression 
+	<<</j2ee-sniffer/system-properties/pineapple.location>>>.
+	The property defines an infrastructure zone identifier. The location 
+	is used to logically divide an environment in multiple sections. 
+	An environment can be divided into multiple clusters, network zones 
+	or even geographical locations.	
+
+	[]
+	
+	The extracted actual values is then tested with expected values defined for each propery.
+	
+	If an URL doesn't return an XML document with the above form, the values for the 
+	properties <<host>>, <<environment>> and <<location>> are interpreted as null.     				
+	
+** servers + server
+
+	The <<<servers>>> element defines a container element for server set. The <<<server>>> 
+	element defines an individual server in the server set. The set of servers defines a 
+	range of expected values wich is tested against the actual values.
+	
+	The actual values from the server property is extracted by the test case from the response:
+	
+	* <<server>> is extracted using the XPath expression <<</j2ee-sniffer/system-properties/pineapple.server>>>. 
+  
+	[]
+	
+	If an URL doesn't return an XML document with the expected form, then the value for the 
+	<<server>>> property is interpreted as null.     				
+	
+			
+* Test case: Host redirects a HTTP request to another URL
+
+	Test that a HTTP request redirected to a new URL. 
+	
+	The test succeeds if:
+	
+	* Invoking the URL results in HTTP status code 301, 302, 303, 304 or 305.	
+	
+	* Invoking the URL results in a recieved HTTP header which contains the new location
+	which macthes the expected redirect URL.
+			
+	[] 
+	
+	Example:
+		
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>													
+        <itp:http-configuration id="myproxy8080" description="Proxy definition" >
+          <itp:proxy host="myproxy" port="8080"/>
+        </itp:http-configuration>
+
+        <itp:http-redirect-test description="http-redirect-test for..." http-configuration-ref="myproxy8080" > 
+          <itp:url>http://www.myhost.com/niceuri/connect</itp:url>
+          <itp:assert>
+            <itp:url>https://www.myhost.com/niceuri/connect</itp:url>
+          </itp:assert>
+        </itp:http-redirect-test>
+
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	The semantics of the elements is explained in the next sub 
+	sections:
+
+** http-redirect-test 
+
+	Defines a HTTP redirect test.	   
+
+** description attribute 
+
+	Should contain a suitable description of the test. Thes description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.	  
+
+** http-configuration-ref attribute
+
+	Defines the id of the HTTP configuration which should used to customize the
+	configuration of the the HTTP client used to send HTTP requests.
+
+*** The <<<follow-redirects>>> attribute will have no effect
+
+	Even if the <<<follow-redirects>>> element is defined in the referenced 
+	HTTP configuration it will have NO effect for the HTTP redirect test case. 
+	This is because the purpose of the HTTP redirect test case is to test that 
+	a HTTP host replies with expected redirect directives.   	  
+
+** url
+		
+	Defines the initial URL to which the responding host should reply to, by sending an 
+	HTTP redirect back to the HTTP client.
+	
+** assert
+
+	Container element for the expected test values.
+
+** assert/url
+		
+	Defines the expected url that the host redirects to.
+
+* Test case: Host returns expected HTTP status code
+
+	Test that a host returns an expected HTTP status code.
+	
+	The test succeeds if:
+	
+	* Invoking a URL results in an expected HTTP status code.	
+				
+	[] 
+	
+	Example:
+		
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>
+      <itp:infrastructure>
+        <itp:http-configuration id="myproxy8080" description="Proxy definition" >
+          <itp:proxy host="myproxy" port="8080"/>
+        </itp:http-configuration>
+
+        <itp:http-statuscode-test
+          http-configuration-ref="myproxy8080"
+          description="OBIEE Analytics application" 
+          url="http://myexalytics.alpha.net:9704/analytics" 
+          expected="200" />
+
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	The semantics of the elements is explained in the next sub 
+	sections:
+
+** http-statuscode-test
+
+	Defines a HTTP status code test.	   
+
+** description attribute  
+
+	Mandatory attribute which defines a description of the test. The description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.	  
+
+** http-configuration-ref attribute
+
+	Optinal attribute which	defines the id of the HTTP configuration which should used to customize the
+	configuration of the the HTTP client used to send HTTP requests.
+
+** url
+		
+	Mandatory attribute which defines the URL to which the HTTP request is sent.
+	
+	If the host returns a redirect status code the test case will follow the
+	redirect and return the result of the hosts response to redirected URL. The <<<follow-redirects>>> element 
+	is defined in the referenced HTTP configuration can be used to control the redirect behavior. 
+	
+** expected 
+
+	Mandatory attribute which defines the expected HTTP status code.
+
+* Test case: Host returns expected and not-expected HTTP headers 
+
+	Test that a HTTP response contains expected HTTP header(s) with expected value(s). 
+	For more information about HTTP headers, visit the
+	{{{http://en.wikipedia.org/wiki/List_of_HTTP_headers}Wikipedia HTTP headers page.}}	 
+	
+	The test succeeds if:
+	
+	* Invoking the URL results in HTTP status code 200.	
+	
+	* The recieved HTTP response contains the all expected HTTP headers.
+	
+	* The recieved HTTP response contains the all expected HTTP header values.	
+			
+	* The recieved HTTP response doesn't contain any of specified non-exising HTTP headers.			
+			
+	[] 
+	
+	Example:
+		
++--------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>													
+        <itp:http-configuration id="myproxy8080" description="Proxy definition" >
+          <itp:proxy host="myproxy" port="8080"/>
+        </itp:http-configuration>
+
+        <itp:http-header-test description="http-header-test for..." http-configuration-ref="myproxy8080" > 
+          <itp:url>http://www.myhost.com/niceuri/connect</itp:url>					
+          <itp:assert>
+            <itp:headers>
+              <itp:header name="Accept" value="text/plain" />
+              <itp:header name="Via" value="1.0 fred, 1.1 nowhere.com (Apache/1.1)" />
+            </itp:headers>
+            <itp:nonexisting-headers>
+              <itp:header name="terminated-by-super-encryption-scheme" />
+            </itp:nonexisting-headers>
+          </itp:assert>
+        </itp:http-header-test>
+
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	The semantics of the elements is explained in the next sub 
+	sections:
+
+** http-header-test  
+
+	Defines a HTTP header test.	   
+
+** description attribute 
+
+	Should contain a suitable description of the test. The description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.	  
+
+** http-configuration-ref attribute
+
+	Defines the id of the HTTP configuration which should used to customize the
+	configuration of the the HTTP client used to send HTTP requests.
+
+** url
+		
+	Defines the initial URL to which the responding host should reply to, by sending an 
+	HTTP redirect back to the HTTP client.
+	
+** assert
+
+	Container element for the expected test values.
+
+** headers + header
+
+	The <<<headers>>> element defines a container element for expected HTTP headers. The <<<header>>> 
+	element defines an individual HTTP header which is expected with an expected vaule.
+	
+** nonexisting-headers + header	
+
+	The <<<nonexisting-headers>>> element defines a container element for HTTP headers which are expected not to 
+	present in the returned HTTP response. The <<<header>>> element defines the name of individual HTTP header which
+	is expected not to present in the returned HTTP response.
+
+
+				
+* test case: FTP server is active on host
+
+	Test that a FTP server is accessible on a designated host.
+	The test succeeds if a logon to the FTP server succeeds and the files in 
+	the root directory can be listed.  
+
+	Example:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">
+    <mmd:content>
+      <itp:infrastructure>
+
+        <itp:ftp-server-active-test description="ftp-server-active-test..." proxy-id="myproxy8080" > 
+          <itp:host>myftpserver</itp:host>
+          <itp:port>21</itp:port>
+          <itp:user>gertrude</itp:user>
+          <itp:password>muzzlehatch</itp:password>
+        </itp:ftp-server-active-test>
+
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	The semantics of the test elements is explained in the next sub 
+	sections:
+	 
+** ftp-server-active-test 
+	
+	Defines a FTP server is active test case.
+
+** description
+
+	Should contain a suitable description of the test. The description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.	  
+
+** host
+
+	The host where the FTP server should be running.
+	
+** port
+
+	The port where the FTP server should be running.
+	
+** user
+
+	User name used to access to FTP server.
+
+** password
+
+	Password used to access to FTP server.
+
+				
+* Test case: FTP server contains directory
+
+	Test that a FTP server contains a designated directory.
+	The test succeeds if a logon to the FTP server succeeds and that the
+	roor directory contains the expected directory.  
+
+	Example:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>
+      <itp:infrastructure>
+
+        <itp:ftp-server-contains-directory-test description="ftp-server-contains-directory-test for..." proxy-id="myproxy8080" > 
+          <itp:host>myftpserver</itp:host>
+          <itp:port>21</itp:port>
+          <itp:user>titus</itp:user>
+          <itp:password>fusicha</itp:password>
+          <itp:directoy>mylogs</itp:directoy>
+        </itp:ftp-server-contains-directory-test>
+
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+		
+	The semantics of the test elements is explained in the next sub 
+	sections:
+
+** ftp-server-contains-directory 
+	
+	Defines a FTP server contain directory test case.
+
+** description
+
+	Should contain a suitable description of the test. The description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.	  
+
+** host
+
+	The host where the FTP server should be running.
+	
+** port
+
+	The port where the FTP server should be running.
+	
+** user
+
+	User name used to access to FTP server.
+
+** password
+
+	Password used to access to FTP server.
+
+** directory
+
+	Name of the expected directory. The expression ".." can be used to 
+	navigate up to the parent directory from default root directory when 
+	logged on to the FTP server.
+	  	
+								
+* Test case: FTP server can create directory
+
+	Test that a directory can be created and then deleted on FTP server.
+	The test succeeds if:
+
+	* A logon to the FTP server succeeds.
+	
+	* A directory can be created.
+	
+	* The directory can then deleted.
+	
+	[]
+
+	Example:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>
+      <itp:infrastructure>
+
+        <itp:ftp-server-create-directory-test description="ftp-server-create-directory-test for..." proxy-id="myproxy8080" > 
+          <itp:host>myftpserver</itp:host>					
+          <itp:port>21</itp:port>          
+          <itp:user>titus</itp:user>
+          <itp:password>fusicha</itp:password>	      	      	      
+        </itp:ftp-server-create-directory-test>
+
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	The semantics of the test elements is explained in the next sub 
+	sections:
+
+** ftp-server-create-directory-test 
+	
+	Defines a FTP server can create directory test case.
+
+** description
+
+	Should contain a suitable description of the test. The description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.	  
+
+** host
+
+	The host where the FTP server should be running.
+	
+** port
+
+	The port where the FTP server should be running.
+	
+** user
+
+	User name used to access to FTP server.
+
+** password
+
+	Password used to access to FTP server.
+
+																
+* Test case: Can access UNC path
+
+	Test that an unprotected UNC path can be accessed. This can be use to test 
+	Winsdows shares which are not protected. The test succeeds if the UNC path can 
+	be access with out any logon. The Test case can not be use to test Windows 
+	shares which requires a log on.
+
+	Example:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>
+
+        <itp:access-unc-path-test description="access-unc-path-test for..." proxy-id="myproxy8080" > 
+          <itp:host>myftpserver</itp:host>
+          <itp:path>my-public-logs</itp:path>
+        </itp:access-unc-path-test>
+
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	The semantics of the test elements is explained in the next sub 
+	sections:
+
+** access-unc-path-test 
+	
+	Defines a access UNC path test case.
+
+** description
+
+	Should contain a suitable description of the test. The description is used by 
+	Pineapple at run time in clients and stored in reports to show the outcome of the test.	  
+
+** host
+
+	The host where the FTP server should be running.
+		
+** path
+
+	The UNC path which should be accessed.
+	
+* {Support for HTTP configuration for configuration of proxies and timeout} 
+
+	The HTTP related test cases support configuration of the HTTP layer
+	using a custom HTTP configuration. Two steps are required to use
+	a custom HTTP configuration:
+	
+	* Define the HTTP configuration element and add the desired settings
+	
+	* Reference the HTTP configuration element by its ID from any number of 
+	HTTP related test cases within the model.
+	
+	[] 
+
+** Defining a HTTP configuration  
+
+	First an example, which illustrates an HTTP configuration:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>
+
+        <itp:http-configuration id="basic-configuration" description="a config that uses pinky the proxy" >
+          <itp:proxy host="pinkytheproxy" port="8080"/>
+          <itp:tcp socket-timeout="3000" />
+          <itp:follow-redirects value="true" />
+        </itp:http-configuration>
+
+      </itp:infrastructure>	
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+
+	The semantics of the HTTP configuration element and its parts are explained in 
+	the next sub sections:
+	
+*** http-configuration element  
+
+	Defines a custom HTTP configuration which can referenced from HTTP related test cases.	   
+
+*** id attribute
+
+	Defines the id of the configuration, this id should be referenced from test 
+	cases who want to apply the settings in the configuration to test case.   
+	 
+*** description attribute
+
+	Contains a human readable desription of the particular HTTP configuration.	 
+	 
+*** proxy element	 
+	 
+	Defines a proxy server which should be used by this HTTP configuration.	
+		 
+*** proxy host attribute
+
+	Defines the proxy server host name.
+
+*** proxy port attribute 
+
+	Defines the proxy server port number. Legal values is an integer between 0 and 65535.		 
+
+*** tcp element	 
+	 
+	Defines TCP related settings which should be used by this HTTP configuration.	
+	
+*** tcp socket-timeout attribute
+
+	Defines the socket timeout in milliseconds. 	
+
+*** follow-redirects element	 
+	 
+	Defines whether the HTTP client should follow HTTP redirects recieved from 
+	hosts. Legal values are:
+	
+		* <<<true>>> - The HTTP client will follow HTTP redirects.
+		
+		* <<<false>>> - The HTTP client will not follow HTTP redirects.
+		
+		[]	
+
+** Reference the HTTP configuration element by its ID from test cases 
+
+	The HTTP related test cases supports configuration of a custom HTTP configuration
+	through the usage of the <<<http-configuration-ref>>> attribute. The attribute 
+	defines the ID of the HTTP configuration which should be used for HTTP Get operations.
+
+
+** Using the default HTTP configuration
+
+	If a HTTP related test case doesn't explicit reference a HTTP configuration
+	then it will use the default HTTP configuration with these settings:
+	
+	* No proxy defined, e.g. proxy host = "" and proxy port = 0
+	
+	* TCP socket timeout = 3000 (ms)
+	
+	* HTTP follow-redirects = true
+			
+	[]    
+	
+	
+* {Support for SSL using HTTPS connections}
+
+	All the test cases supports HTTPS connections, e.g. URL's with HTTPS://... can be
+	tested. The HTTP transport layer is configured to accept <<all>> SSL certificates 
+	that it is presented for. The certificates are not stored permanently in the 
+	key store of the used Java installation.   		
+
+	
+	

@@ -1,0 +1,794 @@
+
+<!--
+	binder definition: binder="@init(queueName='pineapple-queue')" 
+	is required for view model to respond to global commands posted 
+	on the "pineapple-queue" queue:
+	
+	@GlobalCommand public void completedOperation() { .. }		
+	
+	The Execution panel controller, ExecutionPanel.java posts global command using:
+	BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, COMPLETED_OPERATION_GLOBALCOMMAND, NULL_GLOBALCOMMAND_ARGS);			
+ -->	
+<window id="environmentConfigurationPanelWindow" 
+	apply="org.zkoss.bind.BindComposer"
+	binder="@init(queueName='pineapple-queue',queueScope='session')"
+	viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.EnvironmentConfigurationPanel')" 
+	hflex="1" vflex="1" border="none" >
+	
+	<!-- Modal window for environment deletion -->
+	<window title="Confirm Deletion" mode="modal" border="normal" width="25%" visible="@load(vm.confirmEnvironmentDeletion)">
+        <vbox hflex="true">
+            <hlayout height="15%" />        
+            <hlayout height="70px">
+                <label value="Are you sure you want to delete the environment?"/>
+            </hlayout>
+            <hbox pack="center" hflex="true">
+                <button label="Delete" 
+                	onClick="@command('deleteEnvironmentConfirmed')" 
+	     			mold="trendy" 
+	     			iconSclass="z-icon-check" />
+                <button label="Cancel" 
+                	onClick="@command('deleteEnvironmentCancelled')" 
+	     			mold="trendy"
+	     			iconSclass="z-icon-times" />							     			
+            </hbox>
+            <hlayout height="15%" />
+        </vbox>
+    </window>
+
+	<!-- Modal window for resource deletion -->
+	<window title="Confirm Deletion" mode="modal" border="normal" width="25%" visible="@load(vm.confirmResourceDeletion)">
+        <vbox hflex="true">
+            <hlayout height="15%" />        
+            <hlayout height="70px">
+                <label value="Are you sure you want to delete the resource?"/>
+            </hlayout>
+            <hbox pack="center" hflex="true">
+                <button label="Delete" 
+                	onClick="@command('deleteResourceConfirmed')" 
+	     			mold="trendy" 
+	     			iconSclass="z-icon-check" />
+                <button label="Cancel" 
+                	onClick="@command('deleteResourceCancelled')" 
+	     			mold="trendy"
+	     			iconSclass="z-icon-times" />							     			
+            </hbox>
+            <hlayout height="15%" />
+        </vbox>
+    </window>
+
+	<!-- Modal window for resource property deletion -->
+	<window title="Confirm Deletion" mode="modal" border="normal" width="25%" visible="@load(vm.confirmResourcePropertyDeletion)">
+        <vbox hflex="true">
+            <hlayout height="15%" />        
+            <hlayout height="70px">
+                <label value="Are you sure you want to delete the resource property?"/>
+            </hlayout>
+            <hbox pack="center" hflex="true">
+                <button label="Delete" 
+                	onClick="@command('deleteResourcePropertyConfirmed')" 
+	     			mold="trendy" 
+	     			iconSclass="z-icon-check" />
+                <button label="Cancel" 
+                	onClick="@command('deleteResourcePropertyCancelled')" 
+	     			mold="trendy"
+	     			iconSclass="z-icon-times" />							     			
+            </hbox>
+            <hlayout height="15%" />
+        </vbox>
+    </window>
+
+	<!-- Modal window for credential deletion -->
+	<window title="Confirm Deletion" mode="modal" border="normal" width="25%" visible="@load(vm.confirmCredentialDeletion)">
+        <vbox hflex="true">
+            <hlayout height="15%" />        
+            <hlayout height="70px">
+                <label value="Are you sure you want to delete the credential?"/>
+            </hlayout>
+            <hbox pack="center" hflex="true">
+                <button label="Delete" 
+                	onClick="@command('deleteCredentialConfirmed')" 
+                	mold="trendy" />
+                <button label="Cancel" 
+                	onClick="@command('deleteCredentialCancelled')" 
+                	mold="trendy" />
+            </hbox>
+            <hlayout height="15%" />
+        </vbox>
+    </window>
+	
+	<borderlayout>	
+		<north size="5%" 
+			border="none" >
+			
+				<vbox hflex="1" vflex="1" >	    		    
+					<hbox hflex="1" pack="right" >
+		     			<button tooltiptext="Create new environment" 
+		     				label="Create Environment"
+		     				onClick="@global-command('createEnvironment')" 
+		     				mold="trendy" 
+		     				iconSclass="z-icon-plus" />						    	            						
+			     		<button tooltiptext="Refresh environment configuration" 
+			     			label="Refresh"
+			     			onClick="@global-command('refreshEnvironmentConfiguration')" 
+			     			mold="trendy" 
+			     			iconSclass="z-icon-refresh" />						    		            							
+					</hbox>
+				</vbox>					
+		</north>					
+						
+		<west size="20%" 
+			border="none" 
+			splittable="true">
+
+			<tree id="tree" 
+				model="@bind(vm.treeModel)"
+				selectedItem="@bind(vm.selectedItem)"
+				onSelect="@command('selectTreeItem')" 								 			
+				hflex="1" vflex="1" >
+				
+				<treecols>	
+					<treecol width="100%" />
+				</treecols>
+				<template name="model" var="node">
+					<treeitem>
+                    	<treerow>
+                        	<treecell label="@load(node)" />
+                        </treerow>                        
+                	</treeitem>
+                </template>									
+			</tree>
+						
+		</west>
+		
+		<center border="none"
+			autoscroll="true" >
+					
+			<vlayout spacing="0" hflex="1" vflex="1" >
+
+				<!-- PAGE: nothing is selected -->
+				<groupbox visible="@load(vm.pageState eq 'NothingSelected'?'true':'false')" >										
+					<grid>					
+						<auxhead>
+	       					<auxheader label="Please make a selection.." colspan="1" style="font-size:16px; "  />
+	   					</auxhead>
+					    <columns visible="false" >
+					        <column width="100%" align="right"/>
+					    </columns>
+					    <rows/>
+					</grid>
+				</groupbox>
+
+				<!-- PAGE: System is selected -->
+				<groupbox visible="@load(vm.pageState eq 'SYSTEM'?'true':'false')" >										
+					<include id="systemPanelInclude" src="environment-configuration-system-info-panel.zul"/>            											
+				</groupbox>
+
+				<!-- PAGE: Environment configuration root is selected -->
+				<groupbox visible="@load(vm.pageState eq 'ENVCONFIG_ROOT'?'true':'false')" >										
+					<grid>					
+						<auxhead>
+	       					<auxheader label="Environment Configuration for this Pineapple instance" colspan="1" style="font-size:16px; "  />
+	   					</auxhead>
+					    <columns visible="false" >
+					        <column width="100%" align="left"/>
+					    </columns>
+					    <rows>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<label value="This is the root element of the environment configuration for the current Pineapple instance."  />
+					        	</cell>
+					        </row>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<label value="The Pineapple instance can have the role of master if it controls Pineapple agents."  />				        						        						        	
+					        	</cell>
+					        </row>
+					        <row>
+						    	<cell>
+            						<hbox pack="center" hflex="true">
+							     		<button label="Refresh Environment Configuration" 
+							     			onClick="@global-command('refreshEnvironmentConfiguration')" 
+							     			mold="trendy" 
+							     			iconSclass="z-icon-refresh" />						    		            							
+            						</hbox>						    	
+						    	</cell>
+						   	</row>					        		        					        					    					        					    
+					    </rows>
+					</grid>
+				</groupbox>
+
+				<!-- PAGE: Pineapple resources root is selected -->
+				<groupbox visible="@load(vm.pageState eq 'ENVCONFIG_ROOT_RESOURCES'?'true':'false')" >										
+					<grid>					
+						<auxhead>
+	       					<auxheader label="Resources defined for this Pineapple instance" colspan="1" style="font-size:16px;"  />
+	   					</auxhead>
+					    <columns visible="false" >
+					        <column width="100%" align="left"/>
+					    </columns>
+					    <rows>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<label value="A resource defines a computing device which is managed by Pineapple."  />				        	
+					        	</cell>
+					        </row>					    
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<label value="Resources are grouped by environment."  />				        	
+					        	</cell>
+					        </row>
+					        <row>
+						    	<cell>
+            						<hbox pack="center" hflex="true">
+						     			<button label="Create Environment" 
+						     				onClick="@global-command('createEnvironment')" 
+						     				mold="trendy" 
+						     				iconSclass="z-icon-plus"/>						    	            						
+            						</hbox>						    	
+						    	</cell>
+						   	</row>					        		        					        					    
+					    </rows>
+					</grid>					
+				</groupbox>
+
+				<!-- PAGE: Pineapple credentials root is selected -->
+				<groupbox visible="@load(vm.pageState eq 'ENVCONFIG_ROOT_CREDENTIALS'?'true':'false')" >										
+					<grid>					
+						<auxhead>
+	       					<auxheader label="Credentials defined for this Pineapple instance" colspan="1" style="font-size:16px; "  />
+	   					</auxhead>
+					    <columns visible="false" >
+					        <column width="100%" align="left"/>
+					    </columns>
+					    <rows>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<label value="The credentials are grouped by environment."  />				        	
+					        	</cell>
+					        </row>					    
+					        <row>
+						    	<cell>
+            						<hbox pack="center" hflex="true">
+						     			<button label="Create Environment" 
+						     				onClick="@global-command('createEnvironment')" 
+						     				mold="trendy" 
+						     				iconSclass="z-icon-plus" />						    	            						
+            						</hbox>						    	
+						    	</cell>
+						   	</row>					        		        					        					    
+					    </rows>
+					</grid>
+				</groupbox>
+
+				<!-- PAGE: Pineapple agents is selected -->
+				<groupbox visible="@load(vm.pageState eq 'AGENTS'?'true':'false')" >										
+					<grid>					
+						<auxhead>
+	       					<auxheader label="Pineapple Agents" colspan="1" style="font-size:16px; "  />
+	   					</auxhead>
+					    <columns visible="false" >
+					        <column width="100%" align="left"/>
+					    </columns>
+					    <rows>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<label value="A Pineapple agent is remote instance of Pineapple which can be used for distributed operations."  />				        	
+					        	</cell>
+					        </row>					    
+					    </rows>
+					</grid>
+				</groupbox>
+								
+				<!-- PAGE: create new environment -->						
+				<groupbox form="@id('fx') @load(vm.newEnvironment) @save(vm.newEnvironment, before='saveNewEnvironment')"
+					visible="@load(vm.pageState eq 'NewEnvironment'?'true':'false')" >
+	 				
+					<grid hflex="1" >
+						<auxhead>
+	       					<auxheader label="Create New Environment" colspan="3" style="font-size:16px; "  />
+	   					</auxhead>
+					    <columns visible="false" >
+					        <column width="15%" align="right"/>
+					        <column width="30%" />
+					        <column width="55%" />				        
+					    </columns>
+					    <rows>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<hlayout>
+					        			<label value="ID "  />
+					        			<label value="*" style="color:red"  />				        	
+					        		</hlayout>
+					        	</cell>
+					        	<cell valign="top" >
+					        		<textbox value="@bind(vm.newEnvironment.id)" width="90%" style="font-weight: bold;" constraint="no empty" />				        
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="Unique ID within the Pineapple environment configuration. Used to define key used to name models." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>
+					        <row>
+					        	<cell valign="top" height="100%" >
+		                    		<label value="Description" />                	
+					        	</cell>
+					        	<cell valign="top" >
+					        		<textbox value="@bind(vm.newEnvironment.description)" width="90%" style="font-weight: bold;overflow:auto" rows="2" />				    					        	
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="Description of the environment. Used to provide a description of the grouping of resources defined by the environment." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>
+					        <row>
+						    	<cell colspan="3" >
+            						<hbox pack="center" hflex="true">
+							     		<button label="Save" 
+							     			onClick="@command('saveNewEnvironment')" 
+							     			mold="trendy" 
+							     			iconSclass="z-icon-check" />
+							     		<button label="Cancel" 
+							     			onClick="@command('cancelSaveNewEnvironment')" 
+							     			mold="trendy"
+							     			iconSclass="z-icon-times" />							     			
+            						</hbox>
+						    	</cell>
+						   	</row>					        		        
+					    </rows>
+					</grid>                		 				
+	 			</groupbox>				
+
+				<!-- PAGE: environment is selected -->						
+				<groupbox form="@id('env') @load(vm.selectedEnvironment) @save(vm.selectedEnvironment, before='updateEnvironment') "
+					visible="@load(vm.pageState eq 'ENVCONFIG_ENVIRONMENT'?'true':'false')" >
+	 				
+					<grid>
+						<auxhead>
+	       					<auxheader label="Environment" colspan="3" style="font-size:16px; "  />
+	   					</auxhead>
+					    <columns visible="false" >
+					        <column width="15%" align="right" />
+					        <column width="30%" />
+					        <column width="55%" />				        
+					    </columns>
+					    <rows>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<label value="ID"  />				        	
+					        	</cell>
+					        	<cell valign="top" >
+					        		<textbox value="@bind(vm.selectedEnvironment.id)" width="90%" style="font-weight: bold;" constraint="no empty" />				        
+					        	</cell>
+					        	<cell>
+									<label value="Unique ID within the Pineapple environment configuration. Used to define key used to name models." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>
+					        <row>
+					        	<cell valign="top" height="100%" >
+		                    		<label value="Description" />                	
+					        	</cell>
+					        	<cell valign="top" >
+					        		<textbox value="@bind(vm.selectedEnvironment.description)" width="90%" style="font-weight: bold;overflow:auto" rows="2" />				    					        	
+					        	</cell>
+					        	<cell valign="top">
+									<label value="Description of the environment. Used to provide a human readable description of the grouping of resources defined by the environment." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>
+					        <row>
+						    	<cell colspan="3">
+            						<hbox pack="center" hflex="true">
+							     		<button label="Update Environment" 
+							     			onClick="@command('updateEnvironment')" 
+							     			mold="trendy"
+							     			iconSclass="z-icon-refresh" />							     			
+							     		<button label="Delete Environment" 
+							     			onClick="@global-command('deleteEnvironment')" 
+							     			mold="trendy"
+							     			iconSclass="z-icon-trash-o" />							     			
+							     		<button label="Create Resource" 
+							     			onClick="@global-command('createResource')"  
+							     			mold="trendy"
+							     			iconSclass="z-icon-plus" />							     			
+							     		<button label="Create Credential" 
+							     			onClick="@global-command('createCredential')"  
+							     			mold="trendy"
+							     			iconSclass="z-icon-plus" />							     			
+            						</hbox>
+						    	</cell>
+						   	</row>					        		        
+					    </rows>
+					</grid>                		 				
+	 			</groupbox>				
+
+				<!-- PAGE: create new resource -->						
+				<groupbox form="@id('fx') @load(vm.newResource) @save(vm.newResource, before='saveNewResource')"
+					visible="@load(vm.pageState eq 'NewResource'?'true':'false')" >
+	 				
+					<grid hflex="1" >
+						<auxhead>
+	       					<auxheader label="Create New Resource" colspan="3" style="font-size:16px; "  />
+	   					</auxhead>
+					    <columns visible="false" >
+					        <column width="15%" align="right"/>
+					        <column width="30%" />
+					        <column width="55%" />				        
+					    </columns>
+					    <rows>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<hlayout>
+					        			<label value="Environment "  />
+					        			<label value="*" style="color:red"  />				        	
+					        		</hlayout>
+					        	</cell>
+					        	<cell valign="top" >
+					        		<label value="@bind(vm.selectedEnvironment.id)" width="90%" style="font-weight: bold;" />				        
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="Target environment where resource is defined." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<hlayout>
+					        			<label value="ID "  />
+					        			<label value="*" style="color:red"  />				        	
+					        		</hlayout>
+					        	</cell>
+					        	<cell valign="top" >
+					        		<textbox value="@bind(vm.newResource.id)" width="90%" style="font-weight: bold;" constraint="no empty" />				        
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="Unique ID within the environment. Used to define key for targeting resources in models." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<hlayout>
+					        			<label value="Plugin ID "  />
+					        			<label value="*" style="color:red"  />				        	
+					        		</hlayout>
+					        	</cell>
+					        	<cell valign="top" >
+					        		<textbox value="@bind(vm.newResource.pluginId)" width="90%" style="font-weight: bold;" constraint="no empty" />				    					        	
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="Binds resource to plugin implementation. Used to define the Java package which implements the plugin." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>
+					        <row>
+					        	<cell valign="top" height="100%" >
+		                    		<label value="Credential ID Reference" />                	
+					        	</cell>
+					        	<cell valign="top" >
+					        		<textbox value="@bind(vm.newResource.credentialIdRef)" width="90%" style="font-weight: bold;" />				    					        	
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="Optional reference to credential defined within environment. Used by by Pineapple to lookup security information for authentication when a session is created to access the resource." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>					        
+					        <row>
+						    	<cell colspan="3" >
+            						<hbox pack="center" hflex="true">
+							     		<button label="Save" 
+							     			onClick="@command('saveNewResource')" 
+							     			mold="trendy" 
+							     			iconSclass="z-icon-check" />
+							     		<button label="Cancel" 
+							     			onClick="@command('cancelSaveNewResource')" 
+							     			mold="trendy"
+							     			iconSclass="z-icon-times" />							     			
+            						</hbox>						    	
+						    	</cell>
+						   	</row>					        		        
+					    </rows>
+					</grid>                		 				
+	 			</groupbox>				
+
+				<!-- PAGE: resource is selected -->
+				<groupbox form="@id('res') @load(vm.selectedResource) @save(vm.selectedResource, before='updateResource')"
+					visible="@load(vm.pageState eq 'ENVCONFIG_RESOURCE'?'true':'false')" >
+										
+					<grid>
+						<auxhead>
+	       					<auxheader label="Resource" colspan="3" style="font-size:16px; "  />
+	   					</auxhead>
+					    <columns visible="false" >
+					        <column width="15%" align="right"/>
+					        <column width="30%" />
+					        <column width="55%" />				        
+					    </columns>
+					    <rows>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<label value="ID"  />				        	
+					        	</cell>
+					        	<cell valign="top" >
+					        		<textbox value="@bind(vm.selectedResource.id)" width="90%" style="font-weight: bold;" />				        
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="Unique resource ID within an environment. Used in models to define target resource through usage of the target-resource attribute." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>
+					        <row>
+					        	<cell valign="top" height="100%" >
+		                    		<label value="Plugin ID" />                	
+					        	</cell>
+					        	<cell valign="top" >
+			                    	<textbox value="@bind(vm.selectedResource.pluginId)" width="90%" style="font-weight: bold;" />
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="Java package name for a plugin. Used to bind the resouce to plugin implementation." style="font-size:11px" />				        	
+					        	</cell>	
+					        </row>					        
+					        <row>
+					        	<cell valign="top" height="100%" >
+		                    		<label value="Credential ID Reference" />                	
+					        	</cell>
+					        	<cell>
+					        		<vlayout>
+			                    		<textbox value="@bind(vm.selectedResource.credentialIdRef)" width="90%" style="font-weight: bold;" />					        	
+			                    		<label value="No credential is defined for this resource." width="90%" style="font-weight: bold;"  visible="@load(empty vm.selectedResource.credentialIdRef)" />					        				                    			
+					        		</vlayout>
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="Optional reference to a credential. Used to lookup user/password for authentication when session to resource is established." style="font-size:11px" />				        	
+					        	</cell>	
+					        </row>
+					    </rows>
+					</grid>       
+					         	
+					<grid visible="@load(not empty vm.selectedResource.credentialIdRef)" >						
+						<auxhead>
+	       					<auxheader label="Referenced Credential" colspan="3"/>       					
+	   					</auxhead>
+					    <columns visible="false" >
+					        <column width="15%" align="right"/>
+					        <column width="30%" />
+					        <column width="55%" />				        
+					    </columns>
+					    <rows>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<label value="ID"  />				        	
+					        	</cell>
+					        	<cell valign="top">
+					        		<label value="@load(vm.selectedCredential.id)" width="90%" style="font-weight: bold;" />				        
+					        	</cell>
+					        	<cell valign="top">
+									<label value="Unique credential ID within an environment. Used by resource to reference security information used for authentication.." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>
+					        <row>
+					        	<cell valign="top" height="100%" >
+		                    		<label value="User" />                	
+					        	</cell>
+					        	<cell valign="top" >
+			                    	<label value="@load(vm.selectedCredential.user)" width="90%" style="font-weight: bold;" />
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="User name defined for credential. Used to authenticate session for resource." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>					        
+					        <row>
+					        	<cell valign="top" height="100%" >
+		                    		<label value="Password" />                	
+					        	</cell>
+					        	<cell valign="top" >
+			                    	<label value="@load(vm.selectedCredential.password)" width="90%" style="font-weight: bold;" />
+					        	</cell>
+					        	<cell valign="top">
+									<label value="Password defined for credential. Used to authenticate session for resource." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>					        
+					    </rows>
+					</grid>                	
+	
+					<listbox model="@load(vm.properties)" 				
+						selectedItem="@save(vm.selectedResourceProperty)" >
+	
+						<auxhead>
+	   	   					<auxheader label="Properties" colspan="3"/>
+	  					</auxhead>					
+						<listhead sizable="true">
+	            			<listheader label="Key" width="18%" />            
+				            <listheader label="Value" width="82%" />
+	        			</listhead>
+	        													
+						<template name="model" var="item">
+		            		<listitem >
+		                		<listcell label="@load(item.key)" />
+		                		<listcell label="@load(item.value)" />
+		            		</listitem>
+		        		</template>				
+					</listbox>
+
+					<grid>
+					    <columns visible="false" >
+					        <column align="right" />
+					    </columns>
+					    <rows>
+					        <row>
+						    	<cell>
+            						<hbox pack="center" hflex="true">
+							     		<button label="Update Resource" 
+							     			onClick="@command('updateResource')" 
+							     			mold="trendy" 
+							     			iconSclass="z-icon-refresh" />
+							     		<button label="Delete Resource" 
+							     			onClick="@global-command('deleteResource')" 
+							     			mold="trendy" 
+							     			iconSclass="z-icon-trash-o" />
+							     		<button label="Create Property" 
+							     			onClick="@command('createResourceProperty')" 
+							     			mold="trendy" 
+							     			iconSclass="z-icon-plus" />
+							     		<button label="Delete Property" 
+							     			onClick="@command('deleteResourceProperty')" 
+							     			disabled="@load(empty vm.selectedResourceProperty.key?'true':'false')" 
+							     			mold="trendy"
+							     			iconSclass="z-icon-times" />							     										     			            						
+            						</hbox>						    	
+						    	</cell>
+						   	</row>					        		        
+					    </rows>
+					</grid>                		 									
+				</groupbox>
+
+				<!-- PAGE: create new credential -->						
+				<groupbox form="@id('fx') @load(vm.newCredential) @save(vm.newCredential, before='saveNewCredential')"
+					visible="@load(vm.pageState eq 'NewCredential'?'true':'false')" >
+	 				
+					<grid hflex="1" >
+						<auxhead>
+	       					<auxheader label="Create New Credential" colspan="3" style="font-size:16px; "  />
+	   					</auxhead>
+					    <columns visible="false" >
+					        <column width="15%" align="right"/>
+					        <column width="30%" />
+					        <column width="55%" />				        
+					    </columns>
+					    <rows>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<hlayout>
+					        			<label value="Environment"  />
+					        			<label value="*" style="color:red"  />				        	
+					        		</hlayout>
+					        	</cell>
+					        	<cell valign="top" >
+					        		<label value="@bind(vm.selectedEnvironment.id)" width="90%" style="font-weight: bold;" />				        
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="Target environment where credential is created." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<hlayout>
+					        			<label value="ID "  />
+					        			<label value="*" style="color:red"  />				        	
+					        		</hlayout>
+					        	</cell>
+					        	<cell valign="top" >
+					        		<textbox value="@bind(vm.newCredential.id)" width="90%" style="font-weight: bold;" constraint="no empty" />				        
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="Unique ID within the environment. Used to define key for referencing credential from resources." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<hlayout>
+					        			<label value="User"  />
+					        			<label value="*" style="color:red"  />				        	
+					        		</hlayout>
+					        	</cell>
+					        	<cell valign="top" >
+					        		<textbox value="@bind(vm.newCredential.user)" width="90%" style="font-weight: bold;" constraint="no empty" />				    					        	
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="User name used for authentiction when session is established to resource." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>
+					        <row>
+					        	<cell valign="top" height="100%" >
+		                    		<label value="Password" />                	
+					        	</cell>
+					        	<cell valign="top" >
+					        		<textbox value="@bind(vm.newCredential.password)" type="password" width="90%" style="font-weight: bold;" />				    					        	
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="Password used for authentiction when session is established to resource." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>					        
+					        <row>
+						    	<cell colspan="3" >
+            						<hbox pack="center" hflex="true">
+							     		<button label="Save" 
+							     			onClick="@command('saveNewCredential')" 
+							     			mold="trendy" 
+							     			iconSclass="z-icon-check" />
+							     		<button label="Cancel" 
+							     			onClick="@command('cancelSaveNewCredential')" 
+							     			mold="trendy" 
+							     			iconSclass="z-icon-times" />
+            						</hbox>						    	
+						    	</cell>
+						   	</row>					        		        
+					    </rows>
+					</grid>                		 				
+	 			</groupbox>				
+
+				<!-- PAGE: credential is selected -->
+				<groupbox form="@id('res') @load(vm.selectedCredential) @save(vm.selectedCredential, before='updateCredential')"
+					visible="@load(vm.pageState eq 'ENVCONFIG_CREDENTIAL'?'true':'false')" >
+										
+					<grid>
+						<auxhead>
+	       					<auxheader label="Credential" colspan="3" style="font-size:16px; "  />
+	   					</auxhead>
+					    <columns visible="false" >
+					        <column width="15%" align="right"/>
+					        <column width="30%" />
+					        <column width="55%" />				        
+					    </columns>
+					    <rows>
+					        <row>
+					        	<cell valign="top" height="100%" >
+					        		<label value="ID"  />				        	
+					        	</cell>
+					        	<cell valign="top" >
+					        		<textbox value="@bind(vm.selectedCredential.id)" width="90%" style="font-weight: bold;" />				        
+					        	</cell>
+					        	<cell valign="top">
+									<label value="Unique credential ID within an environment. Used by resource to reference security information used for authentication." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>
+					        <row>
+					        	<cell valign="top" height="100%" >
+		                    		<label value="User" />                	
+					        	</cell>
+					        	<cell valign="top" >
+			                    	<textbox value="@bind(vm.selectedCredential.user)" width="90%" style="font-weight: bold;" />
+					        	</cell>
+					        	<cell valign="top" >
+									<label value="User name defined for credential. Used to authenticate session for resource." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>					        
+					        <row>
+					        	<cell valign="top" height="100%" >
+		                    		<label value="Password" />                	
+					        	</cell>
+					        	<cell valign="top" >
+			                    	<textbox value="@load(vm.selectedCredential.password)" type="password" readonly="true" width="90%" style="font-weight: bold;" />
+					        	</cell>
+					        	<cell valign="top">
+									<label value="Password defined for credential. Used to authenticate session for resource." style="font-size:11px" />				        	
+					        	</cell>
+					        </row>					        
+					        <row>
+						    	<cell colspan="3" >
+            						<hbox pack="center" hflex="true">
+							     		<button label="Reset Password" 
+							     			onClick="@command('resetCredentialPassword')" 
+							     			mold="trendy" 
+							     			iconSclass="z-icon-shield" />
+							     		<button label="Update Credential" 
+							     			onClick="@command('updateCredential')" 
+							     			mold="trendy" 
+							     			iconSclass="z-icon-refresh" />
+							     		<button label="Delete Credential" 
+							     			onClick="@global-command('deleteCredential')" 
+							     			mold="trendy" 
+							     			iconSclass="z-icon-trash-o" />
+            						</hbox>						    	
+						    	</cell>
+						   	</row>					        		        
+					    </rows>
+					</grid>       					         						
+				</groupbox>
+									
+			</vlayout>											
+		</center>		
+	</borderlayout>
+</window>

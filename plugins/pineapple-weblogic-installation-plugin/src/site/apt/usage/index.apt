@@ -1,0 +1,488 @@
+ ------
+ Usage
+ ------
+ Allan Thrane Andersen
+ ------
+ November 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Introduction
+
+* Overview
+
+** Invoking the plugin
+
+	The plugin is invoked by the core component when the core component is 
+	used by one of the Pineapple clients. To trigger invocation by the core 
+	component the plugin needs to be configured.  
+
+** Configuration
+
+[../images/configure-plugin1.jpg]		
+
+	Three steps are needed to configure the plugin:
+	 
+	[[1]] {{{Define_resource}Define resource:}} Define resource which 
+	enabled usage of the the plugin. For this particular plugin the
+	resource doesn't define a manageable entity in some target environment 
+	but only serves to setup the execution of the plugin.   
+	
+	[[2]] {{{Define_the_module}Define the module}} and add a model which contains 
+	the installation instructions. The installation instructions are used to direct 
+	the installation of WebLogic or validate the installation of WebLogic. The model 
+	is defined using the 
+	{{{The_WebLogic_installation_plugin_schema}The WebLogic installation plugin schema}}.
+
+	[[3]] {{{Download_installer}Download installer}} and add it to the module.	
+						
+	[]
+
+	For more info about configuration of plugins:
+
+	* For info about <<resources>> and <<credentials>> read the 
+	{{{../../../usage/configuration-environment.html}Environment configuration}}
+	document.
+	
+	* For info about <<modules>> and <<module models>> read the	
+	{{{../../../usage/configuration-modules.html}Modules configuration}}
+	document.
+	
+	[]
+	
+** Supported operations by the plugin	
+ 
+	The plugin supports the operations:
+	
+    * <<test>>     
+    
+    * <<deploy-configuration>>      
+    
+    * <<undeploy-configuration>>    
+
+	[]		
+		
+	For more information about the default operations, refer to the	
+	{{{../../../usage/operations.html}Operation and workflow reference.}}
+
+** Execution of the test operation
+
+	When the plugin is invoked with this operation and a module model which 
+	contains entities defined by the plugin schema then the plugin will:
+	
+	* Test that the specified WebLogic server is installed locally on the computer where 
+	the plugin is executed by validating:
+	
+		* That the weblogic.jar can be found in the directory <<<$\{WLS-HOME\}>/server/lib>>>
+		
+		[]  
+
+	[]	
+
+** Execution of the deploy-configuration operation
+
+	When the plugin is invoked with this operation and a module model which 
+	contains entities defined by the plugin schema then the plugin will:
+	
+	* Validate whether WebLogic is already installed locally on the computer where the plugin is executed. 
+
+	* If WebLogic already is installed, then the plugin skips the installation of WebLogic.	
+	
+	* If WebLogic isn't installed, then WebLogic is installed locally on the computer where the plugin is executed.	
+		
+	[]
+	
+** Execution of the undeploy-configuration operation
+
+	When the plugin is invoked with this operation and a module model which 
+	contains entities defined by the plugin schema then the plugin will:
+	
+	* Validate whether WebLogic is already installed locally on the computer where the plugin is executed. 
+	
+	* If WebLogic is installed, then the plugin uninstalls WebLogic from the computer where the plugin is executed.	
+	
+	* If WebLogic isn't installed, then the plugin skips the uninstallation of WebLogic.	
+		
+	[]		
+			
+
+* {Define resource}
+
+	The purpose of defining a resource for this plugin is to define a mapping between the resource ID and the plugin ID. 
+	The resource ID is the user defined key which is referenced from module models which are targeting the resource.
+	The plugin ID is the Java package name which implements the plugin: <<<com.alpha.pineapple.plugin.weblogic.installation>>>.
+
+	To define a new resource, add a <<<resource>>> element to the target environment in the configuration file <<<$\{pineapple.home.dir}/conf/resources.xml>>>:
+
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <environments>
+    <environment id="local-environment" >
+      <resources>
+        <resource id="weblogic-r1035" plugin-id="com.alpha.pineapple.plugin.weblogic.installation" />                  
+      </resources>
+    </environment>								
+  </environments>
+</configuration>  	
++--------		 
+
+	For all the details about configuration of environments and resources, please visit the {{{../../../usage/configuration-environment.html}Environment Configuration Reference}}.	
+
+	The semantics of the resource element is:
+	 
+** The <<<id>>> attribute
+
+	Identifies the resource uniquely in the current environment. In the above example the id
+	<<<weblogic-r1035>>> which should define the installation of WebLogic release 10.3.5. If another
+	version is installed then an appropriate id should be used to identify the proper version.
+		
+** The <<<plugin-id>>> element
+ 
+	Defines the plugin id for which should be used to execute management 
+	operations for the resource. The plugin id for this plugin is:
+	<<<com.alpha.pineapple.plugin.weblogic.installation>>>.
+	
+** The <<<property>>> attributes(s)
+	
+	There are no mandatory properties used by the plugin.   
+
+
+* {Define the module}
+
+	A <<{{{../../../usage/configuration-modules.html}module}}>>		
+	defines the input used by Pineapple to execute operations. A module is defined by a directory 
+	layout. Part of a module is the <<model(s)>> which defines what happens when the module is invoked. A model
+	is put together by one or more sub models from different plugins. Each plugin defines its own schema 
+	for its particular model   
+	
+** {The WebLogic installation plugin schema}	
+	
+	This plugin defines a schema named <<The WebLogic installation plugin schema>> 
+	which defines the <<<http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0>>> namespace. 
+	For more information about where the schema can be found, refer to the 
+	{{{../../../usage/schemas-plugins.html}Schema locations for plugins page.}} 
+		
+** Name and location of the the module model file	
+	
+	Installation instructions are defined in the module model files which are located at
+	<<<$\{module-dir\}>/models/$\{environment\}.xml>>> where:
+	
+	* <<<$\{module-dir\}>>> is the module root directory which identifies 
+	the module with a unique name and version. 
+
+	* <<<$\{environment\}>.xml>>> is a module model file for a target environment,
+	with <<<$\{environment\}>>> substituted with the environment name, e.g. 
+	<<<local-environment.xml>>> for an environment named <<<local-environment>>>. 
+	In the context of the WebLogic installation plugin each model contains installation instructions 
+	for different environments.
+	
+	[]   	  
+	
+	If the module model file doesn't exist for an environment where WebLogic should be 
+	installed/validated, then create the file and name it after the target environment, 
+	e.g. <<<local-environment.xml>>> for an environment named <<<local-environment>>>. 
+
+** The module model configuration schema
+
+	Module model files are defined using the <<module model configuration schema>>
+	which defines the <<<http://pineapple.dev.java.net/ns/module_model_1_0>>>
+	namespace. Since module model files contain elements from multiple
+	namespace all the elements and attributes should be qualified. The header and
+	root element should be defined as (look in the 
+	{{{../../../usage/configuration-modules.html}Modules configuration}}	
+	document for more details):
+	
+	This example shows definition of the minimal model file for
+	<<<local-environment:>>> 
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" />
++--------  
+
+** Adding the plugin schema to the model
+
+	The next step is to include the 
+	{{{The_WebLogic_installation_plugin_schema}The WebLogic installation plugin schema}}
+	to get access to the entities defined by the schema:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:wip="http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0" />
++--------  
+	
+	Now we have a minimal module model file with three namespaces:
+	
+	* <<xs:>> The basic XMLSchema schema which is only used in the root element of the
+	document.
+	
+	* <<mmd:>> The module model schema which is used to define the skeleton of a model
+	file.
+	
+	* <<wip:>> The WebLogic installation plugin schema which is used to define installation
+	instructions for WebLogic.
+
+	[]
+
+** Defining the model which targets resources
+
+	Add a new <<<model>>> with a <<<target-resource>>> attribute. The value of
+	the <<<target-resource>>> should match the id of the resource which was 
+	defined previously in the section {{{Define_resource}Define resource}}, e.g. 
+	<<<weblogic-r1035>>>:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:wip="http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0" />
+  
+  <mmd:model target-resource="weblogic-r1035">		
+    <mmd:content />				
+  </mmd:model>
+</mmd:models>  	 
++--------  
+
+	Add content to the model which uses the plugin through the <<<weblogic-r1035>>> reference:
+	 
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:wip="http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0" />
+  
+  <mmd:model target-resource="weblogic-r1035">		
+    <mmd:content>
+      <wip:weblogic>
+      </wip:weblogic>      
+    </mmd:content>      													    								
+  </mmd:model>
+</mmd:models>  	 
++--------  
+
+* {Define installation instructions in the module model} 
+
+	Define installation instructions which directs the installation of WebLogic: 
+	
+	Example:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:wip="http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0" />
+  
+  <mmd:model target-resource="weblogic-r1035">		
+    <mmd:content>
+      <wip:weblogic>
+        <wip:release10 installer="modulepath:bin\wls1035_win32.exe"
+                       target-directory="c:\alphabea\weblogic1035"        
+                       uninstaller="C:\alphabea\utils\uninstall\uninstall.cmd"  
+                       local-jvm="c:\jrockit\R28.0.0-1.6.0_17"	/>												
+      </wip:weblogic>
+    </mmd:content>	
+  </mmd:model>
+</mmd:models>  	 
++--------	
+
+** Selecting which version to install
+
+	The plugin supports installation of these versions of WebLogic:
+	
+	* WebLogic 9.x
+	
+	* WebLogic 10.x
+
+	* WebLogic 12.x
+	
+	[] 
+	
+	Each version has different stanzas due to differences in the configuration options
+	for the WebLogic installers. 	
+	
+** <<<release9>>> element	
+	
+	Defines installation instructions for WebLogic release 9.x.
+	
+	The semantics of its attributes is explained in the next sub sections:
+	
+*** <<<installer>>> attribute	
+	
+	Mandatory attribute, which defines the location of the installer which is used
+	to install WebLogic. The location can either be absolute or local to the module.
+	
+	 * Example of an absolute path on Windows: <<<C:\Documents and Settings\mrpono\.pineapple\modules\weblogic-r923-example\bin\wls923_win32.exe>>>
+	 
+	 * Example of an path local to the module, where the <modulepath> expression 
+	 is resolved to the root directory of the module: <<<modulepath:bin\wls923_win32.exe>>>
+	 
+	 []
+	 
+	 The plugin support installation of both binary installers (e.g. .exe. on Windows and .bin on Linux) and
+	 installation archives (e.g. .jar installers):	 
+	 
+	 * Example of an local path for a archive installer: <<<modulepath:bin\server923_generic.jar>>>
+	 
+	 []
+	 
+
+*** <<<uninstaller>>> attribute	
+	
+	Mandatory attribute, which defines the location of the uninstaller which is used
+	to uninstall WebLogic. The location is absolute in the final WebLogic installation directory. 
+
+	The value of this attribute should correspond to the value of the <<<target-directory>>> 
+	attribute with the path <<</uninstall/uninstall.sh>>> or <<</uninstall/uninstall.cmd>>> appended:  
+	
+	 * Example of an absolute path on Windows: <<<C:\alphabea\weblogic923\uninstall\uninstall.cmd>>>
+	 
+	 * Example of an absolute path on Linux: <<<app/oracle/middleware/weblogic923/uninstall/uninstall.sh>>>
+	 	 
+	 []
+	 
+ 	
+*** <<<target-directory>>> attribute
+
+	Mandatory attribute, which defines the target directory where the JVM
+	should be installed. 
+	
+	* Example of target directory on Windows: <<<c:\alphabea\weblogic923>>>
+	
+	* Example of target directory on Linux: <<<app/oracle/middleware/weblogic923>>>	
+	
+	[]
+				 		   
+** <<<release10>>> element	
+	
+	Defines installation instructions for WebLogic release 10.x.
+	
+	The semantics of its attributes is explained in the next sub sections:
+	
+*** <<<installer>>> attribute	
+	
+	Mandatory attribute, which defines the location of the installer which is used
+	to install WebLogic. The location can either be absolute or local to the module:
+	
+	 * Example of an absolute path on Windows: <<<C:\Documents and Settings\mrpono\.pineapple\modules\weblogic-r1035-example\bin\bin\wls1035_win32.exe>>>
+	 
+	 * Example of an path local to the module, where the <modulepath> expression 
+	 is resolved to the root directory of the module: <<<modulepath:bin\wls1035_win32.exe>>>
+	 
+	 []
+	 
+	 The plugin support installation of both binary installers (e.g. .exe. on Windows and .bin on Linux) and
+	 installation archives (e.g. .jar installers):	 
+	 
+	 * Example of an local path for a archive installer: <<<modulepath:bin/wls1035_generic.jar>>>
+	 
+	 []
+	 
+*** <<<uninstaller>>> attribute	
+	
+	Mandatory attribute, which defines the location of the uninstaller which is used
+	to uninstall WebLogic. The location is absolute in the final WebLogic installation directory.
+	
+	The value of this attribute should correspond to the value of the <<<target-directory>>> 
+	attribute with the path <<</uninstall/uninstall.sh>>> or <<</uninstall/uninstall.cmd>>> appended:  
+		
+	 * Example of an absolute path on Windows: <<<C:\alphabea\weblogic1035\uninstall\uninstall.cmd>>>
+
+	 * Example of an absolute path on Linux: <<<app/oracle/middleware/weblogic1035/uninstall/uninstall.sh>>>
+	 
+	 []
+	
+*** <<<target-directory>>> attribute
+
+	Mandatory attribute, which defines the target directory where the JVM
+	should be installed. 
+	
+	* Example of target directory on Windows: <<<c:\alphabea\weblogic1035>>>
+	
+	* Example of target directory on Linux: <<<app/oracle/middleware/weblogic1035>>>	
+	
+	[]		 	
+	   
+*** <<<local-jvm>>> attribute
+	   
+	Mandatory attribute, which defines the location of the JVM which should be used by the product. 		
+		
+	* Example of JVM directory on Windows: <<<c:\jrockit\R28.0.0-1.6.0_17>>>
+	
+	* Example of JVM directory on Linux: <<</app/oracle/jrockit/R28.2.2-4.1.0>>>	
+	
+	[]		 	
+
+** <<<release12>>> element	
+	
+	Defines installation instructions for WebLogic release 12.x.
+	
+	The semantics of its attributes is explained in the next sub sections:
+	
+*** <<<installer>>> attribute	
+	
+	Mandatory attribute, which defines the location of the installer which is used
+	to install WebLogic. The location can either be absolute or local to the module:
+	
+	 * Example of an absolute path on Windows: <<<C:\Documents and Settings\mrpono\.pineapple\modules\weblogic-r1211-example\bin\bin\wls1211_win32.exe>>>
+	 
+	 * Example of an path local to the module, where the <modulepath> expression 
+	 is resolved to the root directory of the module: <<<modulepath:bin\wls1035_win32.exe>>>
+	 
+	 []
+	 
+	 The plugin support installation of both binary installers (e.g. .exe. on Windows and .bin on Linux) and
+	 installation archives (e.g. .jar installers):	 
+	 
+	 * Example of an local path for a archive installer: <<<modulepath:bin/wls1211_generic.jar>>>
+	 
+	 []
+	 
+*** <<<uninstaller>>> attribute	
+	
+	Mandatory attribute, which defines the location of the uninstaller which is used
+	to uninstall WebLogic. The location is absolute in the final WebLogic installation directory.
+	
+	The value of this attribute should correspond to the value of the <<<target-directory>>> 
+	attribute with the path <<</uninstall/uninstall.sh>>> or <<</uninstall/uninstall.cmd>>> appended:  
+		
+	 * Example of an absolute path on Windows: <<<C:\alphabea\weblogic1211\uninstall\uninstall.cmd>>>
+
+	 * Example of an absolute path on Linux: <<<app/oracle/middleware/weblogic1035/uninstall/uninstall.sh>>>
+	 
+	 []
+	
+*** <<<target-directory>>> attribute
+
+	Mandatory attribute, which defines the target directory where the JVM
+	should be installed. 
+	
+	* Example of target directory on Windows: <<<c:\alphabea\weblogic1211>>>
+	
+	* Example of target directory on Linux: <<<app/oracle/middleware/weblogic1211>>>	
+	
+	[]		 	
+	   
+*** <<<local-jvm>>> attribute
+	   
+	Mandatory attribute, which defines the location of the JVM which should be used by the product. 		
+		
+	* Example of JVM directory on Windows: <<<c:\jrockit\R28.0.0-1.6.0_17>>>
+	
+	* Example of JVM directory on Linux: <<</app/oracle/jrockit/R28.2.2-4.1.0>>>	
+	
+	[]		 	
+
+* {Download installer}
+
+	Download the appropiate installer and add it at the location 
+	specified by the <<installer>> attribute defined above.
+
+	

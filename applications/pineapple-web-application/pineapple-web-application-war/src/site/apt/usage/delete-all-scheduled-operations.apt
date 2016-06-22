@@ -1,0 +1,40 @@
+ ------
+ Delete all scheduled operations in the Pineapple web application
+ ------
+ Allan Thrane Andersen
+ ------
+ December 2015
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Delete all scheduled operations in the Pineapple web application
+
+* Requirements
+
+	No requirements.
+
+* Steps
+
+	To delete a scheduled operation :
+	
+		* Click on the <Scheduling> tab.
+
+[../images/schedule-operation-tab.png] 
+		
+		* Click the <Delete All> button.
+		
+		* Click <Confirm>.
+		
+		[]	
+		 
+* Result
+
+	The result after executing the steps are:
+	
+	* All scheduled operations has been deleted can no longer be seen in the <Scheduling> tab.
+	
+	* The scheduled operations has been removed from the configuration file <<<PINEAPPLE_HOME/conf/scheduled-operations.xml>>>
+	
+	[]
+	

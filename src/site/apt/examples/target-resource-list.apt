@@ -1,0 +1,130 @@
+ ------
+ How-to: Use a list to target a model to multiple target resources
+ ------
+ Allan Thrane Andersen
+ ------
+ March 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Use a list to target a model to multiple target resources
+
+	A model can be targeted to multiple resources within an environment using 
+	a list notation in the <<<target-resource>>> attribute in the model.
+	
+	In this example, we have a Linux shell script that needs to be executed on 
+	multiple Linux hosts using the Pineapple SSH plugin.
+
+* Modeling the resources
+
+	Three hosts where the model should be applied to, are defined in a environment
+	named <<alpha-dev-cluster>>. Three resources are defined in the <<<resources.xml>>> 
+	file, one for each host:
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/environment_1_0 
+                      http://pineapple.dev.java.net/ns/environment_1_0.xsd">
+
+  <environments>
+    <environment description="an example environment" id="alpha-dev-cluster">
+      <resources>
+        <resource plugin-id="com.alpha.pineapple.plugin.ssh" credential-id-ref="ssh-host1" id="ssh-host1" >
+          <property value="92.168.33.10" key="host"/>				
+          <property value="22" key="port"/>			
+          <property value="1000" key="timeout"/>								
+        </resource>				
+        <resource plugin-id="com.alpha.pineapple.plugin.ssh" credential-id-ref="ssh-host2" id="ssh-host2" >
+          <property value="92.168.33.11" key="host"/>				
+          <property value="22" key="port"/>			
+          <property value="1000" key="timeout"/>								
+        </resource>				
+        <resource plugin-id="com.alpha.pineapple.plugin.ssh" credential-id-ref="ssh-host3" id="ssh-host3" >
+          <property value="92.168.33.12" key="host"/>				
+          <property value="22" key="port"/>			
+          <property value="1000" key="timeout"/>								
+        </resource>				
+    </resources>
+    </environment>
+  </environments>
+</configuration> 
++---
+
+	The host resources are named <<<ssh-host1>>>, <<<ssh-host2>>> and <<<ssh-host1>>>. Each have 
+	different IP address and references a different Pineapple credential definition which is omitted 
+	here. 
+
+* Creating the model
+
+	A module is created. A model named <<<alpha-dev-cluster>>> for the target environment <alpha-dev-cluster> 
+	is added to the module.
+	The model defines the shell script which should be executed on each of the three hosts:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+    <mmd:model target-resource="{ssh-host1, ssh-host2, ssh-host3}">
+        <mmd:content>
+            <shp:ssh>
+                <shp:execute command="sudo yum --assumeyes install unzip" />
+                <shp:execute command="sudo yum --assumeyes install chkconfig" />
+            </shp:ssh>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
+
++---
+ 
+	And now to the <<important part of the model which is the target-resource attribute defined in the model as:>>
+	<<<target-resource="\{ssh-host1, ssh-host2, ssh-host3\}">>> 
+	
+	At runtime Pineapple will interpret the value enclosed by \{ \} as a comma-separated list and iterate over 
+	the resources defined in the list and execute the model on each target resource in turn. 
+	
+* A redundant alternative 
+
+	The model defined in the previous section can be defined in a semantically identical but more redundant way as: 
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+    <mmd:model target-resource="ssh-host1">
+        <mmd:content>
+            <shp:ssh>
+                <shp:execute command="sudo yum --assumeyes install unzip" />
+                <shp:execute command="sudo yum --assumeyes install chkconfig" />
+            </shp:ssh>
+        </mmd:content>
+    </mmd:model>
+    <mmd:model target-resource="ssh-host2">
+        <mmd:content>
+            <shp:ssh>
+                <shp:execute command="sudo yum --assumeyes install unzip" />
+                <shp:execute command="sudo yum --assumeyes install chkconfig" />
+            </shp:ssh>
+        </mmd:content>
+    </mmd:model>
+    <mmd:model target-resource="ssh-host3">
+        <mmd:content>
+            <shp:ssh>
+                <shp:execute command="sudo yum --assumeyes install unzip" />
+                <shp:execute command="sudo yum --assumeyes install chkconfig" />
+            </shp:ssh>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
+
++---
+ 
+	The differences between this model and the model in the previous section are: 
+	
+		* The model content is repeated for each target resource (error prone).
+		
+		* Each model is only targeted to a single resource.
+	
+		[]

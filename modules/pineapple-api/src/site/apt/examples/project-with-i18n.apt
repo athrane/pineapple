@@ -1,0 +1,131 @@
+ ------
+ How-to: Setup a project with internalization (I18N) support
+ ------
+ Allan Thrane Andersen
+ ------
+ April 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Setup a project with internalization (I18N) support
+
+* Introduction
+
+	This example illustrates how to setup a project to use the
+	internalization (I18N) classes in Pineapple, i.e. resolve message from a
+	resource bundle defined in property file.
+		 
+	To setup a project with I18N support follow these steps:
+
+	* Add Maven dependency to the project.
+	
+	* Define a message file for the project.
+	
+	* Define a <<<messageProvider>>> bean in the Spring configuration file for the project.
+	
+	* Define a field in each class which need access to the message provider.
+	
+	* Resolve messages at runtime from the messages file.
+		
+	[]
+	
+* Add Maven dependency to the project
+
+	The I18N classes are defined in the <<<pineapple-api>>> project, so add a Maven dependency 
+	to the project POM:
+ 
++----	
+  <dependency>
+    <groupId>com.alpha.pineapple</groupId>
+    <artifactId>pineapple-api</artifactId>                       
+  </dependency>   			
++----	 
+
+* Define a message file for the project
+		
+    Create a text file in the Maven project which contains the messages for the project. 
+
+** Recommended location for the messages file <<<src/main/resources>>>
+
+	Place the message file in the directory <<<src/main/resources>>>
+	in the project.
+
+** Recommended file name is <<<$\{package-name\}-messages.xml>>> 		
+
+	Name the message file <<<$\{package-name\}-messages.properties>>> where 
+	$\{package-name\} is the unique package name for the project.
+	
+	<<Example>>: The message file for basic HTML report generator is
+	<<<com.alpha.pineapple.report.basichtml-messages.properties>>>.
+
+* Define a <<<messageProvider>>> bean in the Spring configuration file for the project
+
+	If the project contain a Spring configuration file for definition of the 
+	beans used by the project then add an additional bean definition to the 
+	configuration file which defines the message provider:
+	
+	Example:
+	
++-----		
+    <!-- define message provider for internationalization  -->
+    <bean id="messageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">
+      <property name="basename" value="com.alpha.pineapple.report.basichtml-messages"/>
+    </bean>	
++-----			
+	
+	The id of the bean should be <<<messageProvider>>>.
+
+* Message provider implementation is <<<PropertyFileMessageProviderImpl>>> 
+	
+	Pineapple only support a single implementation of the <<<MessageProvider>>> 
+	interface which is named <<<com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl>>>.
+	 
+	The <<<PropertyFileMessageProviderImpl>>> class supports usage of dots in the name of 
+	message file. This enables usage of the naming scheme which uses the package name 
+	for the message file: <<<$\{package-name\}-messages.properties>>>.
+
+* Define a field in each class which need access to the message provider
+
+	To get access to the message provider bean from a class in the project, 
+	declare a field in a class and let Spring inject the message provider 
+	when the class is initialized.
+
+	Example:
+	
++-----		
+
+    /**
+     * Message provider I18N support.
+     */
+    @Resource
+    MessageProvider messageProvider;
+	
++-----			
+
+** Resolve messages at runtime from the messages file
+
+	To use the message provider, first define a key-value pair in the message file:
+	
+	Example: <<<com.alpha.pineapple.report.basichtml-messages.properties>>> contains:
+	
++-----		
+
+good_message=This a good message from [{0}] and [{1}].
+	
++-----
+
+	And resolve the message in the class:
+	
++-----		
+
+	// log debug message
+	if ( logger.isDebugEnabled() )
+	{
+		Object[] args = { "Titus", "Ed Chianese" };
+		String message = messageProvider.getMessage("good_message", args );
+		logger.debug(message);
+	}                        
+	
++-----
+

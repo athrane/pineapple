@@ -1,0 +1,43 @@
+ ------
+ Upload module
+ ------
+ Allan Thrane Andersen
+ ------
+ September 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Upload module
+
+* Steps
+
+	To upload a module:
+
+		* Open the <Module> menu and select the <Upload Module> menu item:
+		
+		* Click the <Upload Module> button.
+		
+		* A file chooser dialog is opened. Select a local ZIP file 
+		containing a module to upload and then click <Open>.
+		
+		* The ZIP file is uploaded to the host where the Pineapple web 
+		client is running. The file is then unpacked into the module 
+		directory on the host where the web application is running.
+		
+		[]
+
+* Result
+
+	The result after executing the steps are:
+
+		* A local module archived as a ZIP file has been uploaded to
+		the host where the Pineapple web application is running.
+	
+		* The module archive has been unpacked into the local module 
+		directory.
+	
+		* The module can now be opened and used. 
+	
+		[]
+

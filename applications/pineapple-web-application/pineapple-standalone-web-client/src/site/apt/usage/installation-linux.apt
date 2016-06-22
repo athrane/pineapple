@@ -1,0 +1,311 @@
+ ------
+ Installation of the Pineapple standalone web application on Linux
+ ------
+ Allan Thrane Andersen
+ ------
+ June 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Installation of the Pineapple standalone web application on Linux
+
+	This guide describes how the Pineapple standalone web application is installed under Linux.
+
+* Download Pineapple
+
+	Download the client <<<pineapple-standalone-web-client-VERSION.zip>>> 
+	from the <<{{{http://java.net/projects/pineapple/downloads}Downloads page}}>>.
+
+* Select an installation type
+
+	Pineapple can be installed in different ways to reflect different usage patterns:
+	
+	* <<Simple installation.>> 
+	This type of installation is intended for getting started with Pineapple or using it for 
+	prototyping or provisioning.
+	Pineapple will be run under the installing user with default directories.
+	Few (if any) configurations are required to complete this installation.
+		
+	* <<Installation as a service.>>
+	This type of installation is intended for creating a stable installation of Pineapple
+	where the GUI is used or Pineapple is installed as an agent to conduct remote operations.
+	Pineapple will be installed as a service running under a dedicated user and group.
+	Pineapple will use directories common for services.
+	This installation requires additional configurations.
+	
+	* <<Installation as a service with a customized setup>>.
+	This type of installation is intended for creating a stable installation of Pineapple
+	where the GUI is used or Pineapple is installed as an agent to conduct remote operations.
+	But with additional requirements to the configuration.
+	Pineapple will be installed as a service running under a customized user and group setup.
+	Pineapple will use customized directories.
+	This installation will require the most configurations.
+	
+	[]
+				
+* Simple installation
+
+	Pineapple will be run under the installing user with default directories.
+
+** Unpack the client 
+
+	Unzip <<<pineapple-standalone-web-client-VERSION.zip>>> to any directory. Some examples are:
+	
+		* <<</opt>>> (the intended default)
+		
+		* <<</home/$\{user\}/>>> 		
+		
+		* <<</u01/app/alpha/product>>> 
+		
+		[]
+
+** The Pineapple installation directory
+
+	Once unpacked a directory named <<<pineapple-standalone-web-client-VERSION>>> is created. 
+	Example: <<</opt/pineapple-standalone-web-client-1.8.0>>>. This directory is called 
+	the <<Pineapple installation directory>>, and referred to as <<<PINEAPPLE_INSTALL_DIR>>> 
+	in the remaining part of this guide.
+
+	The unzipped archive contains the directory layout:
+	
++---
+pineapple-standalone-web-client-VERSION
+     |     
+     +--- runPineapple.cmd
+     +--- runPineapple.sh
+     |
+     +--- bin     
+     |     +- create-runtime-dirs.sh
+     |     +- install-service.sh        	 	              	 	 
+     |     +- pineapple-service.sh        
+     |     +- setup.sh
+     |     +- uninstall-service.sh        	 	              	 	 
+     |     
+     +--- conf     
+     |     +--- log4j.properties
+     |     `--- jetty.xml
+     |               
+     +--- webapps
+     |     `--- pineapple-web-application-war.war
+     |               
+     +--- lib
+           +--- pineapple-jetty-starter-1.0.jar
+           +--- jetty-*.jar
+           +--- log4j-*.jar
+           `--- servlet-api-*.jar
++---	 	 
+
+** Make Pineapple executable
+
+	If the <<<PINEAPPLE_INSTALL_DIR/runPineapple.sh>>> isn't executable then:
+	
+	[[1]] Open a Linux terminal and change directory (CD) to the <<<PINEAPPLE_INSTALL_DIR>>> directory.
+
+	[[2]] Execute: <<<chmod +x ./runPineapple.sh>>>
+	
+	[]
+	
+** Start Pineapple 
+
+	Execute <<<PINEAPPLE_INSTALL_DIR/runPineapple.sh>>> to start Pineapple.
+
+** Creation of the default configuration
+
+	When Pineapple is started then it will look for configuration files in the 
+	<<{{{../../../../usage/runtime-directories.html}Pineapple Home Directory.}}>>		
+	If no configuration files are found then it will a create a 
+	<<{{{../../../../usage/default-configuration.html}default configuration}}>> which allows the
+	application to start and provides a starting point to using the supplied examples.
+	
+** Ready for usage
+
+	Now the application is installed and ready to be used.
+	Pineapple is configured to listen on http://localhost:8080. 
+	The host and port are configured in the <<<PINEAPPLE_INSTALL_DIR/runPineapple.sh>>> script. 	
+
+* Installation as a service
+
+	Pineapple will be installed as a service running under a default user and group.
+	Pineapple will used directories common for services.
+
+** Unpack the client 
+
+	Unzip <<<pineapple-standalone-web-client-VERSION.zip>>> to <<</opt>>>.
+	
+** The Pineapple installation directory
+
+	Once unpacked a directory named <<<pineapple-standalone-web-client-VERSION>>> is created. 
+	Example: <<</opt/pineapple-standalone-web-client-1.8.0>>>. This directory is called 
+	the <<Pineapple installation directory>>, and referred to as <<<PINEAPPLE_INSTALL_DIR>>> 
+	in the remaining part of this guide.
+
+	The unzipped archive contains the directory layout:
+	
++---
+pineapple-standalone-web-client-VERSION
+     |     
+     +--- runPineapple.cmd
+     +--- runPineapple.sh
+     |
+     +--- bin     
+     |     +- create-runtime-dirs.sh
+     |     +- install-service.sh        	 	              	 	 
+     |     +- pineapple-service.sh        
+     |     +- setup.sh
+     |     +- uninstall-service.sh        	 	              	 	 
+     |     
+     +--- conf     
+     |     +--- log4j.properties
+     |     `--- jetty.xml
+     |               
+     +--- webapps
+     |     `--- pineapple-web-application-war.war
+     |               
+     +--- lib
+           +--- pineapple-jetty-starter-1.0.jar
+           +--- jetty-*.jar
+           +--- log4j-*.jar
+           `--- servlet-api-*.jar
++---	 	 
+
+** Rename the installation directory
+
+	Rename the <<<PINEAPPLE_INSTALL_DIR>>> from <<<pineapple-standalone-web-client-VERSION>>> 
+	to <<<pineapple>>>:
+	
+	Example:
+	
++---
+mv /opt/pineapple-standalone-web-client-VERSION /opt/pineapple
++---	
+		
+** Create user and directories
+
+	Pineapple contains a script called <<<setup.sh>>> which creates the default user and directory
+	setup for Pineapple. The script creates the setup:
+	  
+	* Creates a <<<pineapple>>> group.
+	
+	* Creates a <<<pineapple>>> user which is member of the <<<pineapple>>> group.
+
+	* Set permissions for the Pineapple installation directory <<</opt/pineapple>>> 
+	to make it owned by <<<pineapple:pineapple>>> with file permissions 775.
+	
+	* Creates the Pineapple log directory <<</var/log/pineapple>>>.	
+
+	* Makes <<<PINEAPPLE_INSTALL_DIR/runPineapple.sh>>> executable.	
+
+	[]	
+	
+	Locate the script in the <<<PINEAPPLE_INSTALL_DIR/bin>>> directory,
+	make it executable and and execute it as <<<root>>>:
+
++---
+chmod +x /opt/pineapple/bin/setup.sh
+/opt/pineapple/bin/setup.sh
++---	
+
+	If you require more information about the default setup or a customized setup, please follow these guidelines to 
+	<<{{{../../../../usage/linux-users.html}Setup Linux users and directories for Pineapple clients.}}>>
+	  
+** Creation of the default configuration or not?
+
+	When Pineapple is started then it will look for configuration files in the 
+	<<{{{../../../../usage/runtime-directories.html}Pineapple Home Directory.}}>>		
+	If no configuration files are found then it will a create a 
+	<<{{{../../../../usage/default-configuration.html}default configuration}}>> which allows the
+	application to start and provides a starting point to using the supplied examples.
+
+*** Configuring Pineapple to use the default configuration 
+
+	If you want to use the default configuration then skip to the next installation step (Install as a service).
+
+*** Configuring Pineapple to use a provided set of configuration files
+
+	If you do <<not>> want to use the default configuration but want configure Pineapple with your
+	own configuration files, then Pineapple contains a script called <<<create-runtime-dirs.sh>>> 
+	which creates the runtime directories used by Pineapple:
+
+	* Creates the Pineapple home directory <<</var/pineapple>>>.	
+
+	* Creates the Pineapple configuration directory <<</var/pineapple/conf>>>.	
+
+	* Creates the Pineapple modules directory <<</var/pineapple/modules>>>.	
+
+	* Creates the Pineapple reports directory <<</var/pineapple/reports>>>.	
+
+	* Set permissions recursively for the Pineapple home directory <<</var/pineapple>>> 
+	to make it owned by <<<pineapple:pineapple>>> with file permissions 775.
+		
+	[]
+	
+	Locate the script in the <<<PINEAPPLE_INSTALL_DIR/bin>>> directory, 
+	make it executable and execute it as <<<root>>>:
+
++---
+chmod +x /opt/pineapple/bin/create-runtime-dirs.sh
+/opt/pineapple/bin/create-runtime-dirs.sh
++---	
+
+	Then add your own configuration files into the <<</conf>>>directory and set <<<pineapple:pineapple>>> as owner.
+
+** Install as a service
+
+	Pineapple contains a script called <<<pineapple-service.sh>>> which can be installed to 
+	run Pineapple as an OS service. 
+	Pineapple also contains a script called <<<install-service.sh>>> which can be used to
+	install the service script. 
+	Locate the script in the <<<PINEAPPLE_INSTALL_DIR/bin>>> directory,
+	make it executable and execute it as <<<root>>>:
+
++---
+chmod +x /opt/pineapple/bin/install-service.sh
+/opt/pineapple/bin/install-service.sh
++---	
+
+** Ready for usage
+
+	Now Pineapple is installed and started as a service running under the user <<<pineapple:pineapple>>>.	
+	Pineapple is configured to listen on http://0.0.0.0:7099. 
+	The host and port are configured in the <<<etc/init.d/pineapple>>> service script. 	
+	The used user and group is also configurable in the service script.
+
+	The service will use <<</home/pineapple/.pineapple>>> as the 
+	<<{{{../../../../usage/runtime-directories.html}Pineapple Home Directory.}}>>		
+
+** Control the service 
+
+	The service can be controlled with the commands:
+	
++---
+service pineapple start 
+service pineapple status
+service pineapple stop
+service pineapple restart
++---	
+
+** Some service runtime information
+
+	The service script writes a PID file to <<</var/run/pineapple/pineapple.pid>>> to capture its process ID.
+
+	The service script logs to <<</var/log/pineapple/pineapple-service.log>>>.
+
+** Uninstall the service 
+
+	Pineapple contains a script called <<<uninstall-service.sh>>> which can be used to
+	uninstall the service. 
+	Locate the script in the <<<PINEAPPLE_INSTALL_DIR/bin>>> directory, 
+	make it executable and execute it as <<<root>>>:
+
++---
+chmod +x /opt/pineapple/bin/uninstall-service.sh
+/opt/pineapple/bin/uninstall-service.sh
++---	
+
+	  
+* Installation as a service with a customized setup	  
+	
+	TODO: write...  
+	
+	

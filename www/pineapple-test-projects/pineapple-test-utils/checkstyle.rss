@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>Pineapple test utilities - Checkstyle report</title>
+    <link>https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils</link>
+    <description>Pineapple test utilities - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2011</copyright>
+    <item>
+      <title>File: 16,
+             Errors: 2123,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.testutils.ObjectMotherResource.java">com/alpha/testutils/ObjectMotherResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  75
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.pineapple.plugin.helloworld.session.TestSession.java">com/alpha/pineapple/plugin/helloworld/session/TestSession.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.testutils.ObjectMotherEnvironmentConfiguration.java">com/alpha/testutils/ObjectMotherEnvironmentConfiguration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  319
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.springutils.NameAwareTestExecutionListener.java">com/alpha/springutils/NameAwareTestExecutionListener.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  62
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.pineapple.plugin.helloworld.PluginImpl.java">com/alpha/pineapple/plugin/helloworld/PluginImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.testutils.ObjectMotherPineappleUnitConfiguration.java">com/alpha/testutils/ObjectMotherPineappleUnitConfiguration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  79
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.javautils.ReflectionHelper.java">com/alpha/javautils/ReflectionHelper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  42
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.testutils.ObjectMotherIO.java">com/alpha/testutils/ObjectMotherIO.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  145
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.pineapple.plugin.helloworld.operation.HelloWorldOperationImpl.java">com/alpha/pineapple/plugin/helloworld/operation/HelloWorldOperationImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  32
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.easymockutils.MessageProviderAnswerImpl.java">com/alpha/easymockutils/MessageProviderAnswerImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  49
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.pineapple.plugin.helloworld.session.TestSessionImpl.java">com/alpha/pineapple/plugin/helloworld/session/TestSessionImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  29
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.springutils.DirectoryTestExecutionListener.java">com/alpha/springutils/DirectoryTestExecutionListener.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  105
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.testutils.ObjectMotherModule.java">com/alpha/testutils/ObjectMotherModule.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  344
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.testutils.MBeanMetaDataPrinter.java">com/alpha/testutils/MBeanMetaDataPrinter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  290
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.testutils.TestUtilsTestConstants.java">com/alpha/testutils/TestUtilsTestConstants.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  46
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/pineapple-test-projects/pineapple-test-utils/checkstyle.html#com.alpha.testutils.ObjectMotherConfiguration.java">com/alpha/testutils/ObjectMotherConfiguration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  502
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

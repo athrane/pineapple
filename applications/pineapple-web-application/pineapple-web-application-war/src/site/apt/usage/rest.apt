@@ -1,0 +1,2074 @@
+ ------
+ Pineapple REST API
+ ------
+ Allan Thrane Andersen
+ ------
+April 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Pineapple REST API
+
+* Introduction
+
+	The Pineapple web application implements a REST API which supports remote and headless usage of Pineapple.
+
+[../images/web-application-architecture.jpg]	 		
+
+** General Notes
+
+*** SSL 
+	
+	n/a.
+
+*** Encoding
+	
+	Target encoding is UTF-8 (final validation pending issue PINEAPPLE-431).
+
+*** Used Schemas
+
+	The REST API uses the schemas:
+	
+	* The {{{../../../../usage/configuration-environment.html}Environment Configuration Schema}} 
+	is defined in the Pineapple API and defines entities for modeling resources and credentials 
+	grouped by environments. 		
+
+	* The {{{../../../../usage/schemas.html}Execution Result Schema}} is defined in the Pineapple API. 
+	The schema defines sequences of execution results which describes the remote execution 
+	of a operation through a sequence of result (e.g. events). 
+	The model is used to transport the state of execution from agents to a controlling Pineapple instance. 
+
+	* The {{{../../../../usage/schemas.html}Module Info Schema}} is defined in the Pineapple API. 
+	The schema defines meta data about the current set of registered modules.
+	The model is used to exposed information about the current set of scheduled operations.
+
+	* The {{{../../../../usage/schemas.html}Scheduled Operations Schema}} is defined in the Pineapple API. 
+	The schema defines meta data about the current set of scheduled operations.
+	The model is used to exposed information about the current set of scheduled operations.
+
+	* The {{{../../../../usage/schemas.html}Reports Schema}} is defined in the Pineapple API. 
+	The schema defines meta data about the current set of reports.
+	The model is used to exposed information about the current set of reports.
+			
+	[]
+
+* Modules Management
+
+** {Refresh Modules}
+
+	Refresh modules repository. Will update Pineapple's knowledge of the current set of modules 
+	defined in the modules directory. This service should only used if modules are managed outside
+	control of Pineapple.  
+	
+***	Service Details 
+	
+	* URL: <<</api/module/refresh>>>
+
+	* Method: POST
+	
+	* Parameters: No parameters. 
+		
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+				
+	[]						
+				
+***	Example request 	 
+
++---
+POST http://dave.alpha:8080/api/module/refresh
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
+** {Get modules}
+
+	Get all registered modules.
+			
+***	Service Details 
+	
+	* URL: <<</api/module/modules>>>
+
+	* Method: GET
+	
+	* Parameters: None. 
+
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		*  Content: A model is returned in XML which contains all registered modules. 
+		The model is defined using the {{{../../../../usage/schemas.html}Module Info Schema}}.
+					
+		* Content Type: application/xml
+					 								
+		[] 
+		
+	[]						
+			
+***	Example request 	 
+
++---
+GET http://dave.alpha:8080/api/module/modules
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<modules xmlns="http://pineapple.dev.java.net/ns/module_info_1_0">
+	<module isDescriptorDefined="false" description="n/a" directory="C:\Users\Alpha\.pineapple\modules\agent-001-install-weblogic-r1212-linux64" id="agent-001-install-weblogic-r1212-linux64">
+		<model id="linux-pineapple-test-infrastructure"/>
+		<model id="linux-vagrant"/>
+	</module>
+	<module isDescriptorDefined="false" description="n/a" directory="C:\Users\Alpha\.pineapple\modules\composite-execution-001-two-modules" id="composite-execution-001-two-modules">
+		<model id="linux-default"/>
+		<model id="local"/>
+		<model id="windows-default"/>
+	</module>
+	<module isDescriptorDefined="false" description="n/a" directory="C:\Users\Alpha\.pineapple\modules\composite-execution-002-jrockit-and-weblogic-win64" id="composite-execution-002-jrockit-and-weblogic-win64">
+		<model id="aaaa"/>
+		<model id="as"/>
+		<model id="windows-default"/>
+	</module>
+	
+	....
+	
+</modules>	
++---		 			
+
+** {Upload Module}
+
+	Uploads a zipped module archive. The archive is unpacked and then installed into
+	the current module directory used by Pineapple.
+	
+***	Service Details 	
+	
+	* URL: <<</api/module>>>
+
+	* Method: POST
+	
+	* Parameters: 
+	
+		* <<<file>>> Multi part property which contains the module archive. Media type must be .. TODO: write
+		
+		[]
+		
+	* Response: TODO: 			
+		
+	[]						
+				
+	Example request: 	 
+
+		TODO: 	 
+	 
+	Example response: 	 	 
+
+		TODO: 	 
+
+** {Delete Module}
+
+	Delete module. 
+	
+	The module is deleted on disk from the module directory and from Pineapple altogether.   	
+
+***	Service Details 
+	
+	* URL: <<<api/module/\{module\}>>>
+
+	* Method: DELETE 
+	
+	* Parameters: 
+	
+		* <<<\{module\}>>> - the name of the module to be deleted.
+		
+		[]
+
+	* Successful response: 
+
+		* HTTP 200 (OK) if the module is exists and it is deleted successfully. 
+
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the module is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 500 (Internal Server Error) is returned if the deletion fails.
+		
+		* Content: An error message.
+		
+		* Content Type: text/plain
+
+		[] 
+										
+	[]						
+										
+***	Example request 	 
+
++---
+DELETE http://dave.alpha:8080/api/module/ssh-001-configure-wm-swapiness
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
+** {Create Model}
+
+	Create a new model in a module. 
+	The model is added to the <<<models>>> directory of the module.
+	The model contains some placeholder content.
+	
+	[]
+	
+***	Service Details 
+	
+	* URL: <<</api/module/\{module\}/environment/\{environment\}>>>
+
+	* Method: POST
+	
+	* Parameters: 
+	
+		* <<<\{module\}>>> - the name of the module where the new model is created.
+
+		* <<<\{environment\}>>> - the model target environment, which is also the name of the model.
+		
+		[]
+
+	* Successful response: 
+
+		* HTTP 201 (Created). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 400 (Bad Request) is returned if a parameter isn't defined.
+		
+		* Content: An error message.
+		
+		* Content Type: text/plain
+
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the module is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 500 (Internal Server Error) is returned if the creation fails.
+		
+		* Content: An error message.
+		
+		* Content Type: text/plain
+
+		[] 
+										
+	[]						
+				
+***	Example request 	 
+
++---
+POST http://dave.alpha:8080/api/module/ssh-001-configure-wm-swapiness/environment/alpha
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 201 Created.
++---
+
+** {Delete Model}
+
+	Delete model in a module. 
+	The model file is deleted from the <<<models>>> directory within the module.
+	
+	[]
+	
+***	Service Details 
+	
+	* URL: <<</api/module/\{module\}/environment/\{environment\}>>>
+
+	* Method: DELETE 
+	
+	* Parameters: 
+	
+		* <<<\{module\}>>> - the name of the module where the model is deleted from.
+
+		* <<<\{environment\}>>> - the model target environment, which is also the name of the model.
+		
+		[]
+
+	* Successful response: 
+
+		* HTTP 200 (OK) if the module is exist and it contains the targeted model and the model is deleted successfully. 
+
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 400 (Bad Request) is returned if a parameter isn't defined.
+		
+		* Content: An error message.
+		
+		* Content Type: text/plain
+
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the module is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the model is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 500 (Internal Server Error) is returned if the deletion fails.
+		
+		* Content: An error message.
+		
+		* Content Type: text/plain
+
+		[] 
+										
+	[]						
+				
+***	Example request 	 
+
++---
+POST http://dave.alpha:8080/api/module/ssh-001-configure-wm-swapiness/environment/alpha
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 201 Created.
++---
+
+* Executing Operations
+
+** {Execute Operation}
+
+	Starts execution of operation at targeted model in module.
+
+	Invocation of this service returns a location header which contains a URL for a created 
+	resource which can be used for retrieving status about the progress of the execution.	
+
+***	Service Details 
+	
+	* URL: <<<api/execute/module/\{module\}/operation/\{operation\}/environment/\{environment\}>>>
+
+	* Method: POST
+	
+	* Parameters: 
+	
+		* <<<\{module\}>>> - the name of the module to invoke model from.
+				
+		* <<<\{operation\}>>> - the operation to execute.
+							
+		* <<<\{environment\}>>> - the name of model within module to execute operation on.
+		
+		[]
+
+	* Successful response: 
+
+		* HTTP 201 (Created) if the module name corresponds to a module and model for the targeted 
+		environment is defined in the module. 
+
+		* Headers: A <<<Location>>> header is returned with the URI of the created 
+		resource for retrieving status about the progress of the execution.
+								
+		* Content: None.
+					
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the input is illegal.  
+		
+		* Content: An error message.
+		
+		* Content Type: text/plain
+					 								
+		[] 
+										
+	[]						
+				
+***	Example request 	 
+
++---
+http://dave.alpha:8080/api/execute/module/ssh-001-configure-wm-swapiness/operation/deploy-configuration/environment/alpha
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 201 Created.
+Location: /api/execute/56572346
++---
+
+** {Get Operation Status}
+
+	Get status of executing or completed operation. 
+	
+	The ID for a operation is created using the <<<Execute Operation>>> service. 
+
+***	Service Details 
+	
+	* URL: <<<api/execute/\{id\}>>>
+
+	* Method: GET
+	
+	* Parameters: 
+	
+		* <<<\{id\}>>> - the operation ID of the executing operation.
+		
+		[]
+
+	* Successful response: 
+
+		* HTTP 200 (OK) if the operation ID is known. 
+
+		* Content: A model is returned in XML which contains a sequence of 
+		events which occurred at the agent since the last invocation of this method, as a consequence 
+		the method will NEVER return the same same of events (e.g. execution results). 
+		After the operation has completed execution then the service will return a empty sequence. 
+		The model is defined using the Execution Result schema.
+					
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the resource is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+										
+	[]						
+						
+***	Example request 	 
+
++---
+GET http://dave.alpha:8080//api/execute/56572346
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
++---
+TODO...
++---		 			
+
+** {Delete Operation Status}
+
+	Delete status of executing or completed operation. 
+	
+	The ID for a operation is created using the <<<Execute Operation>>> service. Invocation of the service
+	returns a location header which contains a URL for invoking this service for an executing (or completed) operation. 	
+
+***	Service Details 
+	
+	* URL: <<<api/execute/\{id\}>>>
+
+	* Method: DELETE 
+	
+	* Parameters: 
+	
+		* <<<\{id\}>>> - the operation ID of the executing operation.
+		
+		[]
+
+	* Successful response: 
+
+		* HTTP 200 (OK) if the operation ID is known. 
+
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the resource is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+										
+	[]						
+				
+***	Example request 	 
+
++---
+DELETE http://dave.alpha:8080/api/execute/56572346
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
+* Environment Configuration
+
+** {Refresh Environment Configuration}
+
+	Refresh the environment configuration of Pineapple. Will reload the environment configuration 
+	files which defines the known set of environments, resources and credentials.  
+	
+***	Service Details 
+	
+	* URL: <<<api/configuration/refresh>>>
+
+	* Method: POST
+	
+	* Parameters: No parameters. 
+		
+	* Successful response: 
+
+		* HTTP 200. 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 500 (Internal Server Error) is returned if the refresh fails.
+
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+		 								
+		[] 
+				
+	[]						
+				
+***	Example request 	 
+
++---
+POST http://dave.alpha:8080/api/configuration/refresh
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
+** {Create Environment}
+
+	Create a new environment in the environment configuration. The environment is created both for
+	resources and credentials using the algorithm:
+
+	[[1]] If no environment exists with the name for resources then a new environment 
+	is created for resources. Otherwise skip to step 2). 
+
+	[[2]] If no environment exists with the name for credentials then a new environment 
+	is created for credentials.
+	
+	[]
+	
+***	Service Details 
+	
+	* URL: <<</api/configuration/environment/\{environment\}/description/\{description\}>>>
+
+	* Method: POST
+	
+	* Parameters: 
+	
+		* <<<\{environment\}>>> - the name of the new environment.
+
+		* <<<\{description\}>>> - a description of the environment.
+		
+		[]
+
+	* Successful response: 
+
+		* HTTP 201 (Created). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+										
+	[]						
+				
+***	Example request 	 
+
++---
+POST http://dave.alpha:8080/api/configuration/environment/alpha/description/A group of alpha nodes.
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 201 Created.
++---
+
+** {Update Environment}
+
+	Updates existing environment in the environment configuration. The environment is created both for
+	resources and credentials using the algorithm:	
+	
+	[[1]] If no environment exists with the name for resources then throw an exception. 
+	
+	[[2]] If no environment exists with the name for credentials then throw an exception.
+	
+	[[3]] Update the environment for resources.
+	
+	[[4]] Update the environment for credentials.
+	
+	[]
+	
+***	Service Details 
+	
+	* URL: <<</api/configuration/environment/\{environment\}>>>
+
+	* Method: PUT
+	
+	* Parameters: 
+	
+		* <<<\{environment\}>>> - the name of environment which should be updated.
+		
+		[]
+
+	* Request body: Defines a model containing a environment whose values are used to update the
+	environment defined by <<<environment>>> parameter. The model is defined using 
+	the {{{../../../../usage/configuration-environment.html}Environment configuration schema}}.
+		
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<configuration>
+  <environments>
+    <environment description="A group of alpha nodes" id="alpha" />
+  </environments>
+</configuration>
++---		 			
+
+	* Successful response: 
+
+		* HTTP 201 (Created). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the target environment is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+										
+	[]						
+				
+***	Example request 	 
+
++---
+PUT http://dave.alpha:8080/api/configuration/environment/alpha.
++---
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<configuration>
+  <environments>
+    <environment description="A group of beta nodes" id="beta" />
+  </environments>
+</configuration>
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 201 Created.
++---
+
+
+** {Delete Environment}
+
+	Create an environment in the environment configuration. The environment is deleted both for
+	resources and credentials using the algorithm:
+
+	[[1]] If an environment exists with the name for resources then delete it. Otherwise skip to step 2). 
+
+	[[2]] If an environment exists with the name for credentials then delete it.
+	
+	[]
+	
+***	Service Details 
+	
+	* URL: <<</api/configuration/environment/\{environment\}>>>
+
+	* Method: DELETE
+	
+	* Parameters: 
+	
+		* <<<\{environment\}>>> - the name of environment which is deleted.
+		
+		[]
+		
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[]					
+	[]						
+				
+***	Example request 	 
+
++---
+DELETE http://dave.alpha:8080/api/configuration/environment/alpha
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
+** {Create Resource}
+
+	Create a new resource in the environment configuration. The resource is created with no properties. 
+	
+***	Service Details 
+	
+	* URL: <<</api/configuration/environment/\{environment\}/resource/\{resource\}/pluginid/\{pluginid\}/credentialidref/\{credentialidref\}>>>
+
+	* Method: POST
+	
+	* Parameters: 
+	
+		* <<<\{environment\}>>> - the name of of the target environment.
+
+		* <<<\{resource\}>>> - the name of the resource which is created.
+		
+		* <<<\{pluginid\}>>> - the plugin ID of the resource.			
+		
+		* <<<\{credentialidref\}>>> - optional credential ID reference. 			
+					
+		[]
+		
+	* Successful response: 
+
+		* HTTP 201 (Created). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the target environment is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 500 (Internal Server Error) is returned if the resource already exists.
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+							
+	[]						
+				
+***	Example request 	 
+
++---
+POST http://dave.alpha:8080/api/configuration/environment/alpha/resource/ssh-node1/pluginid/com.alpha.pineapple.plugin.ssh/credentialidref/ssh-node1
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 201 Created.
++---
+
+** {Update Resource}
+
+	Updates existing resource in the environment configuration.
+	
+***	Service Details 
+	
+	* URL: <<</api/configuration/environment/\{environment\}/resource/\{resource\}>>>
+
+	* Method: PUT
+	
+	* Parameters: 
+	
+		* <<<\{environment\}>>> - the name of the environment where the resource is defined.
+
+		* <<<\{resource\}>>> - the name of the resource which is updated.
+		
+		[]
+
+	* Request body: Defines a model containing a resource  whose values are used to update the
+	resource defined by <<<resource>>> parameter. The model is defined using 
+	the {{{../../../../usage/configuration-environment.html}Environment configuration schema}}.
+	All attributes in a resource can be updated, e.g. ID, pluginID and credential ID reference. 
+	The method can't be used to move a resource to another environment. 
+	The environment ID in the request model is ignored. 
+	Only the first resource in the request model is processed as input. 
+	If the request model contains multiple resources then the first is processed as input and the rest are ignored.
+			
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<configuration>
+  <environments>
+    <environment description="A group of alpha nodes" id="alpha">
+      <resources />
+        <resource plugin-id="com.alpha.pineapple.plugin.agent" credential-id-ref="agent-node1" id="agent-node1" />
+     </resources>
+   </environment>
+  </environments>
+</configuration>
++---		 			
+			
+	* Successful response: 
+
+		* HTTP 201 (Created). 
+		
+		* Content: A model is returned in XML which contains updated resource. 
+		The model is defined using the {{{../../../../usage/configuration-environment.html}Environment configuration schema}}.
+					
+		* Content Type: application/xml
+					 								
+		[] 
+									
+	[]						
+				
+***	Example request 	 
+
++---
+PUT http://dave.alpha:8080/api/configuration/environment/alpha/resource/ssh-node1
++---
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<configuration>
+  <environments>
+    <environment description="A group of alpha nodes" id="alpha">
+      <resources />
+        <resource plugin-id="com.alpha.pineapple.plugin.agent" credential-id-ref="agent-node1" id="agent-node1" />
+     </resources>
+   </environment>
+  </environments>
+</configuration>
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 201 Created.
++---
+
+** {Delete Resource}
+
+	Delete resource in the environment configuration. 
+	
+***	Service Details 
+
+	* URL: <<</api/configuration/environment/\{environment\}/resource/\{resource\}>>>
+
+	* Method: DELETE 
+	
+	* Parameters: 
+	
+		* <<<\{environment\}>>> - the name of the environment where the resource is defined.
+
+		* <<<\{resource\}>>> - the name of the resource which is deleted.
+								
+		[]
+			
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[]
+		
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the target environment is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+		
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the resource is unknown within the target environment.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+		 
+	[]						
+				
+***	Example request 	 
+
++---
+DELETE http://dave.alpha:8080/api/configuration/environment/alpha/resource/ssh-node1
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
+** {Get Resources}
+
+	Get all resources defined in the environment configuration.
+			
+***	Service Details 
+	
+	* URL: <<</api/configuration/resources>>>
+
+	* Method: GET
+	
+	* Parameters: None. 
+
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		*  Content: A model is returned in XML which contains all resources defined in the environment configuration. 
+		The resources are grouped by environment. The model is defined using the 
+		{{{../../../../usage/configuration-environment.html}Environment configuration schema}}.
+					
+		* Content Type: application/xml
+					 								
+		[] 
+		
+	[]						
+			
+***	Example request 	 
+
++---
+GET http://dave.alpha:8080/api/configuration/resources
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<configuration>
+  <environments>
+    <environment description="Wildcard environment for definition of resources available in ALL evironments." id="*">
+      <resources>
+        <resource plugin-id="com.alpha.pineapple.plugin.composite.execution" id="composite-execution" />
+        <resource plugin-id="com.alpha.pineapple.plugin.net" id="infrastructure-test" />
+      </resources>
+    </environment>
+    <environment description="A group of alpha nodes" id="alpha">
+      <resources />
+    </environment>
+    <environment description="Environment to support execution of modules on a Linux guest hosted in vagrant." id="vagrant">
+      <resources>
+        <resource plugin-id="com.alpha.pineapple.plugin.agent" id="agent-node1">
+          <property value="192.168.34.10" key="host" />
+          <property value="8080" key="port" />
+          <property value="1000" key="timeout" />
+        </resource>
+        <resource plugin-id="com.alpha.pineapple.plugin.ssh" credential-id-ref="ssh-node1" id="ssh-node1">
+          <property value="192.168.34.10" key="host" />
+          <property value="22" key="port" />
+          <property value="1000" key="timeout" />
+       </resource>
+       <resource plugin-id="com.alpha.pineapple.plugin.weblogic.installation" id="weblogic-r121" />
+       <resource plugin-id="com.alpha.pineapple.plugin.weblogic.scriptingtool" id="weblogic-wlst-r121">
+         <property value="true" key="enable-linux-fast-random-generator" />
+         <property value="/u01/app/oracle/product/fmw/wlserver_12.1/wlserver_12.1" key="home-directory" />
+       </resource>
+     </resources>
+   </environment>
+  </environments>
+</configuration>
++---		 			
+
+** {Create Resource Property}
+
+	Create a new resource property which is added to a resource in the environment configuration.
+	The property is a key-value pair. 
+	
+***	Service Details 
+	
+	* URL: <<</api/configuration/environment/\{environment\}/resource/\{resource\}/key/\{key\}/value/\{value\}>>>
+
+	* Method: POST
+	
+	* Parameters: 
+	
+		* <<<\{environment\}>>> - the name of the environment where the resource is defined.
+
+		* <<<\{resource\}>>> - the name of the resource where the property is added to.
+		
+		* <<<\{key\}>>> - the property key.			
+		
+		* <<<\{value\}>>> - the property value. 			
+					
+		[]
+		
+	* Successful response: 
+
+		* HTTP 201 (Created). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the target environment is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the target resource is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 500 (Internal Server Error) is returned if the property already exists.
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+						
+	[]						
+				
+***	Example request 	 
+
++---
+POST http://dave.alpha:8080/api/configuration/environment/alpha/resource/ssh-node1/key/host/value/192.168.34.10
+POST http://dave.alpha:8080/api/configuration/environment/alpha/resource/ssh-node1/key/port/value/22
+POST http://dave.alpha:8080/api/configuration/environment/alpha/resource/ssh-node1/key/timeout/value/1000
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 201 Created.
++---
+
+** {Delete Resource Property}
+
+	Delete resource property from a resource in the environment configuration.
+	The property is a key-value pair. 
+	
+***	Service Details 
+	
+	* URL: <<</api/configuration/environment/\{environment\}/resource/\{resource\}/key/\{key\}>>>
+
+	* Method: DELETE
+	
+	* Parameters: 
+	
+		* <<<\{environment\}>>> - the name of the environment where the resource is defined.
+
+		* <<<\{resource\}>>> - the name of the resource where the property is defined.
+		
+		* <<<\{key\}>>> - the property key.			
+		
+		[]
+		
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the target environment is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the target resource is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the target resource property is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+						
+	[]						
+				
+***	Example request 	 
+
++---
+POST http://dave.alpha:8080/api/configuration/environment/alpha/resource/ssh-node1/key/host
+POST http://dave.alpha:8080/api/configuration/environment/alpha/resource/ssh-node1/key/port
+POST http://dave.alpha:8080/api/configuration/environment/alpha/resource/ssh-node1/key/timeout
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---
+
+
+** {Create Credential} 
+
+	Create a new credential in the environment configuration. If a credential already exists 
+	with the ID in the target environment then no new credential is created. 
+	
+***	Service Details 
+	
+	* URL: <<</api/configuration/environment/\{environment\}/credential/\{credential\}/user/\{user\}/password/\{password\}>>>
+
+	* Method: POST 
+	
+	* Parameters:
+	 
+		* <<<\{environment\}>>> - the name of the environment where the credential is defined.
+
+		* <<<\{credential\}>>> - the name of the credential which is created.
+		
+		* <<<\{user\}>>> - the user name for the credential.			
+		
+		* <<<\{password\}>>> - the password for the credential. 			
+				
+		[]
+		
+	* Successful response: 
+
+		* HTTP 201 (Created).  
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the target environment is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 500 (Internal Server Error) is returned if the credential already exists.
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+										
+	[]						
+				
+***	Example request 	 
+
++---
+GET http://dave.alpha:8080/api/configuration/environment/vagrant/credential/ssh-node1/user/vagrant/password/vagrant
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 201 Created.
++---		 			
+
+	
+** {Get Credential} 
+
+	Get single credential from the environment configuration.
+		
+***	Service Details 
+	
+	* URL: <<</api/configuration/environment/\{environment\}/credential/\{credential\}>>>
+
+	* Method: GET 
+	
+	* Parameters: 
+	
+		* <<<\{environment\}>>> - the name of the environment where the credential is defined.
+
+		* <<<\{credential\}>>> - the name of the requested credential.
+	
+		[]
+		
+	* Successful response: 
+
+		* HTTP 200 (OK) if the credential exists. 
+
+		* Content: A model is returned in XML which contains the requested credential.
+		The model is defined using the {{{../../../../usage/configuration-environment.html}Environment configuration schema}}.			
+					
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the target environment is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the credential is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+													
+	[]						
+				
+***	Example request 	 
+
++---
+GET http://dave.alpha:8080/api/configuration/environment/vagrant/credential/ssh-node1
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<configuration>
+  <environments>
+    <environment id="vagrant">
+      <credentials>
+        <credential password="vagrant" user="vagrant" id="ssh-node1" />
+      </credentials>
+    </environment>
+  </environments>
+</configuration>
++---		 			
+
+** {Update Credential} 
+
+	Update credential in the environment configuration. 
+
+***	Service Details 
+
+	* URL: <<</api/configuration/environment/\{environment\}/credential/\{credential\}>>>
+	
+	* Method: PUT
+	
+	* Parameters: 
+
+		* <<<\{environment\}>>> - the name of the environment where the credential is defined.
+	
+		* <<<\{credential\}>>> - the name of the credential which is updated.
+
+		* Request body: Defines a model containing a credential whose values are used to update the
+		credential defined by <<<credential>>> parameter. The model is defined using 
+		the {{{../../../../usage/configuration-environment.html}Environment configuration schema}}.
+		All attributes in a credential can be updated, e.g. ID, user and password. 
+		The method can't be used to move a credential to another environment. The environment ID in
+		the request model is ignored. Only the first credential in the request model is processed as
+		input. If the request model contains multiple credentials then the first is processed as input
+		and the rest are ignored. 
+
+		[]
+		
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<configuration>
+  <environments>
+    <environment description="A group of alpha nodes" id="alpha">
+      <credentials>
+        <credential password="superbims" user="some-user" id="credential-1"/>
+      </credentials>
+   </environment>
+  </environments>
+</configuration>
++---		 			
+													
+	* Successful response: 
+
+		* HTTP 201 (Created).
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[]
+		
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the target environment is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the credential doesn't exist.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+		
+	[]			
+
+***	Example request 	 
+
++---
+PUT http://dave.alpha:8080/api/configuration/environment/alpha/credential/credential-1
++---
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<configuration>
+  <environments>
+    <environment description="A group of alpha nodes" id="alpha">
+      <credentials>
+        <credential password="superbims" user="some-user" id="credential-1"/>
+      </credentials>
+   </environment>
+  </environments>
+</configuration>
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 201 Created.
++---
+
+** {Delete Credential} 
+
+	Delete credential in the environment configuration. 
+	
+***	Service Details 
+
+	* URL: <<</api/configuration/environment/\{environment\}/credential/\{credential\}>>>
+
+	* Method: DELETE 
+	
+	* Parameters: 
+	
+		* <<<\{environment\}>>> - the name of the environment where the credential is defined.
+
+		* <<<\{credential\}>>> - the name of the credential which is deleted.
+								
+		[]
+			
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[]
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the target environment is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+		
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the credential is unknown within the target environment.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+		 
+	[]						
+				
+***	Example request 	 
+
++---
+DELETE http://dave.alpha:8080/api/configuration/environment/alpha/credential/ssh-node1
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
+
+** {Get Credentials}
+
+	Get all credentials defined in the environment configuration.
+			
+***	Service Details 
+	
+	* URL: <<</api/configuration/credentials>>>
+
+	* Method: GET
+	
+	* Parameters: None. 
+
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		*  Content: A model is returned in XML which contains all credentials defined in the environment configuration. 
+		The credentials are grouped by environment.
+		If Pineapple is configured to encrypt credential passwords (the default setting) then the passwords will be returned
+		encrypted, as described here: {{{../../../../pineapple-modules/pineapple-core/usage/encrypting-credential-passwords.html}Encrypting credential passwords}}.			    
+		The model is defined using the 
+		{{{../../../../usage/configuration-environment.html}Environment configuration schema}}.
+					
+		* Content Type: application/xml
+					 								
+		[] 
+		
+	[]						
+				
+***	Example request 	 
+
++---
+GET http://dave.alpha:8080/api/configuration/credentials
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0">
+  <environments>
+    <environment description="Description for environment-1" id="environment-1">
+      <credentials>
+        <credential password="encrypted:K9Yz8/OpQM+OXCsmpwxm19cHM3OrGD/Hsx7myQ8B/UQ=" user="some-user" id="credential-1"/>
+        <credential password="encrypted:K9Yz8/OpQM+OXCsmpwxm19cHM3OrGD/Hsx7myQ8B/UQ=" user="some-user" id="credential-2"/>
+      </credentials>
+    </environment>
+  </environments>
+</configuration>
++---		 			
+
+* Scheduled Operations
+
+** {Schedule Operation} 
+
+	Schedule execution of an module. 
+	The execution frequency is defined by a scheduling expression using Cron syntax.
+	
+***	Service Details 
+	
+	* URL: <<</api/schedule/name/\{name\}/module/\{module\}/environment/\{environment\}/operation/\{operation\}/cron/\{cron\}/description/\{description\}>>>
+
+	* Method: POST 
+	
+	* Parameters:
+	 
+		* <<<\{name\}>>> - the name of the scheduled operation. The name must be unique.
+
+		* <<<\{module\}>>> - the name of the module to schedule execution of. the module must exist.
+
+		* <<<\{environment\}>>> - the targeted environment (model) for the module. 			
+		
+		* <<<\{operation\}>>> - the operation to apply to the module at a fixed frequency.		
+		
+		* <<<\{cron\}>>> - scheduling expression using Cron syntax.			
+		
+		* <<<\{description\}>>> - description of the scheduled operation.			
+				
+		[]
+		
+	* Successful response: 
+
+		* HTTP 201 (Created).  
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the module is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if the target environment is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 500 (Internal Server Error) is returned if operation with name already exists.
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 500 (Internal Server Error) is returned if the scheduling expression is illegal.
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+										
+	[]						
+				
+***	Example request 	 
+
++---
+POST http://dave.alpha:8080/api/schedule/name/myjob/module/infrastructure-test-004-pineapple-web-client-returns-http-200/environment/local/operation/test/cron/0 * * * * */description/Test pineapple is running, executed hourly.
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 201 Created.
++---		 			
+
+** {Delete Scheduled Operation} 
+
+	Delete scheduled operation.
+	
+***	Service Details 
+
+	* URL: <<</api/schedule/name/\{name\}>>>
+
+	* Method: DELETE 
+	
+	* Parameters: 
+	
+		* <<<\{name\}>>> - the name of the scheduled operation. The name must be unique.
+								
+		[]
+			
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[]
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if scheduled operation with target name is unknown.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+				 
+	[]						
+				
+***	Example request 	 
+
++---
+DELETE http://dave.alpha:8080/api/schedule/name/myjob
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
+** {Delete All Scheduled Operations} 
+
+	Delete all scheduled operations.
+
+***	Service Details 
+
+	* URL: <<</api/schedule/operations>>>
+
+	* Method: DELETE 
+	
+	* Parameters: None
+			
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[]
+				 
+	[]						
+				
+***	Example request 	 
+
++---
+DELETE http://dave.alpha:8080/api/schedule/operations
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
+
+** {Get Scheduled Operations}
+
+	Get all scheduled operations.
+			
+***	Service Details 
+	
+	* URL: <<</api/schedule/operations>>>
+
+	* Method: GET
+	
+	* Parameters: None. 
+
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		*  Content: A model is returned in XML which contains all scheduled operations. 
+		The model is defined using the {{{../../../../usage/schemas.html}Scheduled Operations Schema}}.
+					
+		* Content Type: application/xml
+					 								
+		[] 
+		
+	[]						
+			
+***	Example request 	 
+
++---
+GET http://dave.alpha:8080/api/api/schedule/operations
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<scheduledOperations xmlns="http://pineapple.dev.java.net/ns/scheduled_operation_1_0">
+	<scheduledOperation cron="0 0 * * * *" description="Test Analystics is responding, executed daily." 
+	    module="infrastructure-test-900-exalytics-post-installation" environment="linux-default" operation="test" name="mubo"/>
+	<scheduledOperation cron="0 * * * * *" description="Test pineapple is responding, executed hourly." 
+	    module="infrastructure-test-004-pineapple-web-client-returns-http-200" environment="local" operation="test" name="ppkw"/>
+</scheduledOperations>
++---		 				
+
+* Reports
+
+** {Delete All Reports} 
+
+	Delete all reports.
+
+***	Service Details 
+
+	* URL: <<</api/report/reports>>>
+
+	* Method: DELETE 
+	
+	* Parameters: None
+			
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[]
+				 
+	[]						
+				
+***	Example request 	 
+
++---
+DELETE http://dave.alpha:8080/api/report/reports
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
+
+** {Get Reports}
+
+	Get all reports.
+			
+***	Service Details 
+	
+	* URL: <<</api/report/reports>>>
+
+	* Method: GET
+	
+	* Parameters: None. 
+
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		*  Content: A model is returned in XML which contains metat data about all reports. 
+		The model is defined using the {{{../../../../usage/schemas.html}Reports Schema}}.
+					
+		* Content Type: application/xml
+					 								
+		[] 
+		
+	[]						
+			
+***	Example request 	 
+
++---
+GET http://dave.alpha:8080/api/api/report/reports
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
++---		 			
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<reports xmlns="http://pineapple.dev.java.net/ns/report_1_0">
+    <report directory="/var/pineapple/reports/report-20160515-202305" duration="2195" start="20:23:03 15/05/16" result="Success" operation="N/A" model="N/A" module="N/A. Initialization of Pineapple." id="report-20160515-202305"/>
+    <report directory="/var/pineapple/reports/report-20160515-201801" duration="538" start="20:18:01 15/05/16" result="Success" operation="test" model="local" module="infrastructure-test-004-pineapple-web-client-returns-http-200" id="report-20160515-201801"/>
+    <report directory="/var/pineapple/reports/report-20160515-201703" duration="2036" start="20:17:01 15/05/16" result="Failure" operation="test" model="local" module="infrastructure-test-004-host-listens-on-ports" id="report-20160515-201703"/>
+</reports>
++---		 				
+
+* System Information 
+
+** {Get Simple Initialization Status}
+
+	Get the initialization status of Pineapple. 
+	The status is returned in a single human readable string which states whether Pineapple 
+	the core component) was initialized successfully or with errors.
+	
+***	Service Details 
+	
+	* URL: <<</api/system/status>>>
+
+	* Method: GET
+	
+	* Parameters: No parameters. 
+		
+	* Successful response: 
+
+		* HTTP 200 (OK) if Pineapple was successfully initialized. 
+		
+		* Content: An single status message.
+		
+		* Content Type: application/xml
+							 								
+		[] 
+		
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if Pineapple isn't initialized yet.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 500 (Internal Server Error) if initialization of Pineapple failed.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+						
+	[]						
+				
+***	Example request 	 
+
++---
+POST http://dave.alpha:8080/api/system/status
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
+Pineapple Core Component was initialized successfully in 1234 ms.
++---		 			
+
+** {Get Detailed Initialization Status}
+
+	Get the detailed initialization status of Pineapple. 
+	The status is returned in a model containing a sequence of events which occurred at
+	the agent during the initialization of Pineapple.
+	
+***	Service Details 
+	
+	* URL: <<</api/system/status/details>>>
+
+	* Method: GET
+	
+	* Parameters: No parameters. 
+		
+	* Successful response: 
+
+		* HTTP 200 (OK) if Pineapple has been initialized. 
+
+		* Content: A model is returned in XML which contains a sequence of 
+		events which occurred at the agent during initialization of Pineapple.
+		The model is defined using the Execution Result schema.
+					
+		* Content Type: application/xml
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 404 (Not Found) if Pineapple isn't initialized yet.  
+		
+		* Content: An error message.
+		
+		* Content Type: application/xml
+					 								
+		[] 
+										
+	[]						
+				
+***	Example request 	 
+
++---
+POST http://dave.alpha:8080/api/system/status/details
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
+TODO
++---		 			
+	
+** {Get Version Info}
+
+	Get version information about Pineapple. 
+	The information is returned in a single human readable string.
+	
+***	Service Details 
+	
+	* URL: <<</api/system/version>>>
+
+	* Method: GET
+	
+	* Parameters: No parameters. 
+		
+	* Successful response: 
+
+		* HTTP 200 (OK). 
+		
+		* Content: An single status message.
+		
+		* Content Type: application/xml
+							 								
+		[] 
+				
+	[]						
+				
+***	Example request 	 
+
++---
+POST http://dave.alpha:8080/api/system/version
++---		 			
+	 
+*** Example Response 	 	 
+
++---
+HTTP/1.1 200 OK
+Pineapple Core Component, version 1.8.0, (c) Allan Thrane Andersen, 2007-2016.
++---		 			
+	
+	

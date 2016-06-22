@@ -1,0 +1,164 @@
+ ------
+ How-to: Test whether a server listens to select ports
+ ------
+ Allan Thrane Andersen
+ ------
+June 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Test whether a server listens to select ports.
+
+* Requirements
+
+	The example requires these preconditions to <<succeed>>:
+	 
+	[[1]] Install WebLogic and create a domain with a administration server which listens on 
+	<<<localhost>>> port <<<7001>>>.
+	
+	[[2]] Enable the JMX Connector for the administration server by setting these JVM arguments:
+
++---
+-Dcom.sun.management.jmxremote 
+-Dcom.sun.management.jmxremote.port=7091 
+-Dcom.sun.management.jmxremote.ssl=false 
+-Dcom.sun.management.jmxremote.authenticate=false	
++---	
+
+	[[3]] Start the administration server.
+
+ 	[]
+
+** A prefabricated example in the default configuration
+
+	Pineapple includes a prefabricated version of this example in the default configuration. The example is named	
+	<<infrastructure-test-004-host-listens-on-ports>>. The default configuration is created by starting 
+	Pineapple. The default configuration will also create the required resource in the <<local>> environment 
+	which is used to execute the test operation on the model. 
+
+
+* Overview
+ 	
+	Three steps are needed to configure the plugin to work:
+	
+	* Define <<resource>> which defines access to the plugin. 
+	
+	* Define test cases in Pineapple module.
+	
+	[]
+	
+	This example extends the last step of the 
+	{{{./resolve-to-ip.html}basic example}} by adding some new test cases.	
+			
+	For information about how to define resource, credentials and modules refer to 
+	{{{../usage/index.html}the plugin usage page.}}
+			
+
+* Add tcp-connection-test test cases to Pineapple module	
+
+	Open the model file for the target environment and add the test case:
+				
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"                 
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">             
+    <mmd:content>                               
+      <itp:infrastructure>                                                                                                      
+        
+        <itp:tcp-connection-test host="localhost" description="localhost:7001" >
+          <itp:port value="7001" />										
+        </itp:tcp-connection-test>
+                                                        
+      </itp:infrastructure>                                                                     
+    </mmd:content>
+  </mmd:model>
+</mmd:models>  	 
++---  
+
+** Meaning of the elements in the test 
+
+	* The <<<tcp-connection-test>>> element defines the skeleton of the test case.
+	
+	* The <<<description>>> attribute should contain a suitable description of the test which 
+	is used by Pineapple at run time in clients and reports to show the outcome of the test.	  
+
+	* The <<<host>>> attribute defines the host which should listen to designated port. In 
+	this case it is the <<<admserver>>> which listens to <<<localhost>>>. 
+
+	* The <<<port>>> element defines the expected TCP-port on which the host should listen. In 
+	this case it is the <<<7001>>> which <<<admserver>>> which listens on. 
+
+	[]
+
+
+** Adding another tcp-connection-test test for the management port
+
+	Add a another <<<test-host-listen-port>>> test with the host value 
+	<<<localhost>>> and the port value <<<7091>>>: 
+	
++--------  	 
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"                 
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">             
+    <mmd:content>                               
+      <itp:infrastructure>                                                                                                      
+        
+        <itp:tcp-connection-test host="localhost" description="localhost:7001" >
+          <itp:port value="7001" />										
+        </itp:tcp-connection-test>
+        <itp:tcp-connection-test host="localhost" description="localhost:7001" >
+          <itp:port value="7091" />										
+        </itp:tcp-connection-test>
+                                                
+      </itp:infrastructure>                                                                     
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------  
+
+	An alternative to defining two separate test cases is to define a single test case 
+	which asserts multiple ports:
+
++--------  	 
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"                 
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">             
+    <mmd:content>                               
+      <itp:infrastructure>                                                                                                      
+        
+        <itp:tcp-connection-test host="localhost" description="localhost:7001" >
+          <itp:port value="7001" />
+          <itp:port value="7091" />          										
+        </itp:tcp-connection-test>
+                                                
+      </itp:infrastructure>                                                                     
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------  
+	  
+
+** Adding more tests
+
+	If the WebLogic NodeManager is running on port 5556 then add a test which 
+	tests that portion of the platform. And the dedicated management port on 
+	port 7002....    			
+
+* Run the test
+
+	[[1]] Start Pineapple again.
+	
+	[[2]] Select the module <<infrastructure-test-004-host-listens-on-ports>> which where created above.
+	
+	[[3]] Select the model named <<local>>.
+	
+	[[4]] Execute the <<test>> operation by selecting the menu <<Execute>> | <<Test>> | <<Run Test>>.
+		
+	[]				

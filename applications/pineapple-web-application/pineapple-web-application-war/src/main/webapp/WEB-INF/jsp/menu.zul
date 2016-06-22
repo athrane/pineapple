@@ -1,0 +1,191 @@
+<zk xmlns:w="http://www.zkoss.org/2005/zk/client" >
+	
+	<!-- 
+		Adjust of menu margin, see PINEAPPLE-815.		
+	  -->
+	<style>
+    .z-menu-content i:not(.z-menu-icon), .z-menuitem-content i:not(.z-menu-icon) {
+        margin-right: 9px;
+    }
+  	</style>
+
+	<window id="menuWindow" 
+		apply="com.alpha.pineapple.web.zk.controller.Menu"	 
+		hflex="1" vflex="1" border="none" >
+		
+		<vlayout>
+			<menubar id="menubar" autodrop="false" hflex="1" vflex="1" >
+			    <menu label="Module" >
+			        <menupopup>
+			            <menuitem label="Create Module" 
+			            	disabled="true" 
+							iconSclass="z-icon-file-text-o" />						    													    	
+			            <menuitem id="openModuleMenuitem" 
+			            	label="Open Module" 
+							iconSclass="z-icon-folder-open-o" />						    													    	
+			            <menuseparator/>		        
+			            <menuitem id="closeModuleMenuitem" 
+			            	label="Close Module"
+							iconSclass="z-icon-times" />
+			            <menuseparator/>		        
+			            <menuitem id="uploadModuleMenuitem" 
+			            	label="Upload Module"
+							iconSclass="z-icon-upload" />			            	
+			            <menuitem label="Download Module" 
+			            	disabled="true"
+							iconSclass="z-icon-download" />			            	
+			            <menuseparator/>		            		            
+			            <menuitem id="deleteModuleMenuitem" 
+			            	label="Delete Module" 
+							iconSclass="z-icon-trash-o" />
+			        </menupopup>
+			    </menu>
+			    <menu label="Model" >
+			        <menupopup>
+			            <menuitem id="createModelMenuitem" 
+			            	label="Create Model"
+							iconSclass="z-icon-file-text-o" />						    													    				            	 		            
+			            <menuseparator/>		            		            		            
+			            <menuitem label="Copy Model" 
+			            	disabled="true" />
+			            <menuitem label="Rename Model" 
+			            	disabled="true" />		            
+			            <menuseparator/>		            		            		            
+			            <menuitem id="saveModelMenuitem" 
+			            	label="Save Model" 
+							iconSclass="z-icon-save" />						    													    	
+			            <menuseparator/>		            		            		            
+			            <menuitem label="Upload Model" 
+			            	disabled="true" 
+							iconSclass="z-icon-upload" />			            				            	
+			            <menuitem id="downloadModelMenuitem" 
+			            	label="Download Model" 
+							iconSclass="z-icon-download" />			            				            			            
+			            <menuseparator/>		            
+			            <menuitem id="deleteModelMenuitem" 
+			            	label="Delete Model"            
+							iconSclass="z-icon-trash-o" />
+			        </menupopup>
+			    </menu>	        
+			    <menu label="Execute" >
+			        <menupopup>
+	            		<menuitem id="executeTestMenuitem" 
+	            			label="Run Test" 
+							iconSclass="z-icon-check-square-o"  />			            				            
+	            		<menuitem id="executeDeployConfigurationMenuitem" 
+	            			label="Deploy Configuration" 
+							iconSclass="z-icon-star"/>
+	            		<menuitem id="executeDeployApplicationMenuitem" 
+	            			label="Deploy Application" 
+	            			disabled="true" />
+	            		<menuitem id="executeStartApplicationMenuitem" 
+	            			label="Start Application" 
+	            			disabled="true" />		            		
+	            		<menuitem id="executeStopApplicationMenuitem" 
+	            			label="Stop Application" 
+	            			disabled="true" />		            		
+	            		<menuitem id="executeUndeployApplicationMenuitem" 
+	            			label="Undeploy Application" 
+	            			disabled="true" />
+	            		<menuitem id="executeUndeployConfigurationMenuitem" 
+	            			label="Undeploy Configuration" 		            		
+							iconSclass="z-icon-star-o" />
+	            		<menuitem id="executeCreateReportMenuitem" 
+		            		label="Create Report" 
+							iconSclass="z-icon-archive"  />
+						<menuseparator/>		            		            		            		        
+						<menuitem label="Execute Custom Operation" 
+							disabled="true" />	            
+						<menuitem label="Execute Last Operation" 
+							disabled="true" />	          
+						<menuseparator/>		            		            		            		        
+						<menuitem label="Cancel Operation" disabled="true" />	          
+			        </menupopup>
+			    </menu>	    
+			    <menu label="Scheduling" >
+			        <menupopup>
+			            <menuitem id="createScheduledOperationMenuitem" 
+			            	label="Create Scheduled Operation" 
+							iconSclass="z-icon-plus" />			            		            	            
+	            		<menuseparator/>
+			            <menuitem id="deleteScheduledOperationMenuitem"
+			            	label="Delete Scheduled Operation" 
+							iconSclass="z-icon-trash-o" />			            	
+			            <menuitem label="Delete All Scheduled Operations" 
+							iconSclass="z-icon-trash-o" />			            		            		            	           
+			        </menupopup>
+			    </menu>
+			    <menu label="Reports" >
+			        <menupopup>
+			            <menuitem id="downloadReportMenuitem" 
+			            	label="Download Report" 
+							iconSclass="z-icon-download" />			            		            	            
+	            		<menuseparator/>
+			            <menuitem id="deleteAllReportsMenuitem"
+			            	label="Delete All Reports" 
+							iconSclass="z-icon-trash-o" />			            		            		            	           
+			        </menupopup>
+			    </menu>			    
+			    <menu label="Configuration" >
+			        <menupopup>
+			            <menuitem id="createResourceMenuitem" 
+			            	label="Create Resource" 
+			     			iconSclass="z-icon-plus" />			            			        		        	            	        
+			            <menuitem id="deleteResourceMenuitem" 
+			            	label="Delete Resource" 
+							iconSclass="z-icon-trash-o" />			            		            		            	           
+	            		<menuseparator/>
+			            <menuitem id="createCredentialMenuitem" 
+			            	label="Create Credential" 		        		        	            	        
+			     			iconSclass="z-icon-plus" />			            			        		        	            	        
+			            <menuitem id="deleteCredentialMenuitem" 
+			            	label="Delete Credential" 
+							iconSclass="z-icon-trash-o" />			            		            		            	           			            	
+	            		<menuseparator/>		            		        		        	            	        	                        				            		        		        	            	        	            
+			            <menuitem id="createEnvironmentMenuitem" 
+			            	label="Create Environment" 
+			     			iconSclass="z-icon-plus" />			            			        		        	            	        			            			        		        	            	        
+			            <menuitem id="deleteEnvironmentMenuitem" 
+			            	label="Delete Environment" 
+							iconSclass="z-icon-trash-o" />			            		            		            	           			            	
+	            		<menuseparator/>		            		        		        	            	        	                        				            		        		        	            	        	            
+			            <menuitem id="refreshEnvironmentConfigurationMenuitem" 
+			            	label="Refresh Configuration" 
+			     			iconSclass="z-icon-refresh" />						    		            							
+			        </menupopup>
+			    </menu>	
+			    <menu label="Administration" >
+			        <menupopup>
+			            <menuitem id="enableDebugInfoMenuitem" 
+			            	label="Toggle Debug Info On/Off" 		        		        	            	        
+			     			iconSclass="z-icon-bug" />						    		            							
+			        </menupopup>
+			    </menu>	
+			    <menu label="Help" >
+			        <menupopup>		        
+			            <menuitem id="aboutPineappleMenuitem" 
+			            	label="About Pineapple" 
+			     			iconSclass="z-icon-info" />						    		            										            	
+			            <menuseparator/>	            
+			            <menuitem id="webClientUserGuide" 
+			            	label="Web Client User Documentation" 
+			            	href="http://pineapple.java.net/pineapple-applications/pineapple-web-application/pineapple-web-application-war/index.html" 
+			            	target="http://pineapple.java.net/pineapple-applications/pineapple-web-application/pineapple-web-application-war/index.html"
+			            	iconSclass="z-icon-question" />						    		            										            	
+			            <menuitem id="pineappleProjectSite" 
+			            	label="Pineapple Project Site" 
+			            	href="http://pineapple.java.net" 
+			            	target="http://pineapple.java.net"
+			     			iconSclass="z-icon-question" />						    		            										            			            
+			            <menuitem id="pineappleBlog" 
+			            	label="Pineapple Blog" 
+			            	href="http://pineapplesoftware.blogspot.dk/" 
+			            	target="http://pineapplesoftware.blogspot.dk/"
+			     			iconSclass="z-icon-rss" />						    		            										            			            		            		            
+			        </menupopup>
+			    </menu>	    	    		    		    		    		        		    		    		    		    	    		    		    		    		    
+			</menubar>                
+		</vlayout>
+	</window>
+</zk>
+	

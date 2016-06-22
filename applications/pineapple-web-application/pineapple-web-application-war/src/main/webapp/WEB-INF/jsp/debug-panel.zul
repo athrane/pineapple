@@ -1,0 +1,23 @@
+<window id="debugPanelWindow" 
+	apply="org.zkoss.bind.BindComposer" 
+	viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.DebugPanel')" 
+	hflex="1" vflex="1" border="none">
+	
+	<listbox id="reportListbox"
+	 	model="@load(vm.debugModel)" 
+	 	hflex="1" vflex="1" >
+		
+		<listhead>
+			<listheader label="Key" width="25%" />		
+			<listheader label="Value" width="75%" />
+		</listhead>
+		<template name="model" var="item">
+          		<listitem >
+              		<listcell label="@load(item.key)" />
+             		<listcell>
+             			<label value ="@load(item.value)" style="word-wrap:break-word;" />
+             		</listcell>
+          		</listitem>
+      		</template>				
+	</listbox>
+</window>

@@ -1,0 +1,219 @@
+ ------
+ How-to: Execute script which creates a WebLogic 10.3.5 domain from a domain template  
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Execute script which creates a WebLogic 10.3.5 domain from a domain template  
+
+* Overview
+
+	This example describes how to define and execute a script which
+	creates a WebLogc 10.3.5 domain from a domain template. The example 
+	extends the {{{./load-properties.html} Script with property file example}} 
+	by:
+	
+	* Modifying the WLST script to create a domain by: 
+		
+		* Loading a WebLogic domain template.
+				
+		* Using the Java system property <<<pineapple.module.path>>> to locate
+		the domain template file. When a WLST script is executed Pineapple adds a
+		system property named <<<pineapple.module.path>>> which is resolved to 
+		path of the module directory. The purpose is to enable WLST scripts to 
+		load files  within the module, e.g. a WebLogic domain template in the 
+		example.	   
+		
+		* Loading a WebLogic domain template.
+		
+		* Customizing select domain properties:
+		
+			* Domain name
+			
+			* system user and password
+			
+			* Administration server listen address and port.
+			
+			[]
+			
+		* Creating the domain.
+
+	* Modifying the property file with relevant domain properties. 
+		
+	[]		  	
+
+
+* Modify WLST script to create domain
+
+	The script is modified to:
+
+	* Using the Java system property <<<pineapple.module.path>>> to locate
+	the domain template file  
+	
+	* Loading the domain template, customize it and create a domain from it. 
+	
+	[]
+	
+	The content of the script:
+	
++--------
+
+import os
+import java
+
+#=======================================================================================
+# Set System User
+#=======================================================================================
+def setSystemUser():
+    # navigate to domain root
+    cd('/')
+    sysUser = cd('/Security/%s/User/weblogic' % domainName)
+    sysUser.setName(systemUser)
+    sysUser.setPassword(systemPassword)
+
+#=======================================================================================
+# Configure administration server
+#=======================================================================================
+def configureAdmServer():
+    # navigate to domain root
+    cd('/')
+    cd('Servers/AdminServer')
+    set('ListenAddress',adminListenAddress)
+    set('ListenPort', adminListenPort)
+		
+def main():   
+
+    try:
+        # system argument contains pineappleModulePath
+        pineappleModulePath = java.lang.System.getProperty('pineapple.module.path')
+        templateFile = str(pineappleModulePath) + '/bin/' + templateName
+        print ("Template file: " + templateFile + "\n")
+
+        readTemplate(templateFile)
+        domain = create(domainName, 'Domain')
+        setSystemUser()    
+        domainDirectory = domainsDirectory + '/' + domainName
+        setOption('OverwriteDomain', 'true')
+        writeDomain(domainDirectory)
+        closeTemplate()   
+
+    except:
+        dumpStack()
+
+main()
++--------		
+	
+* Modify the property file with relevant domain properties
+
+	The content of the property file:
+	
++--------
+domainsDirectory=c:/domains
+domainName=alphadomain-wls1035
+systemUser=weblogic
+systemPassword=Weblogic11g
+adminListenAddress=127.0.0.1
+adminListenPort=7001
+templateName=domain-template-wls1035.jar
++--------		
+	
+	
+* A look at the module and the Pineapple configuration 
+
+	The module looks like:
+
++---
+weblogic-wlst-example-create-wls1035-domain-from-template
+ |
+ +--- module.xml (optional)
+ |    
+ +--- bin
+ |     +--- script.py
+ |     +--- script.properties 
+ |     +--- domain-template-wls1035.jar 
+ |
+ +--- models	 
+       +--- local-environment.xml 
++---
+
+
+** <<<Module.xml>>> (optional)
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="http://pineapple.dev.java.net/ns/module_1_0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	
+    id="weblogic-wlst-example" version="1.0.0">
+</module>
++---
+
+** <<<local-environment.xml>>>
+
+	Module model for the environment <local-environment> which is targeted at 
+	the resource <<<weblogic-r1035-scriptingtool>>> and invokes the script <<<script.py>>>:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:wsp="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0" >
+    <mmd:model target-resource="weblogic-r1035-scriptingtool">
+        <mmd:content>
+            <wsp:wlst>              
+                <wsp:wlst-script file="modulepath:bin\script.py" properties-file="modulepath:bin\script.properties" />
+            </wsp:wlst>
+        </mmd:content>
+    </mmd:model>		
+</mmd:models>	
++---
+
+** <<<script.py>>>
+
+	Listed above.
+
+** <<<script.properties>>>
+
++--------
+domainsDirectory=c:/domains
+domainName=alphadomain-wls1035
+systemUser=weblogic
+systemPassword=Weblogic11g
+adminListenAddress=127.0.0.1
+adminListenPort=7001
+templateName=domain-template-wls1035.jar
++--------		
+	
+** <<<domain-template-wls1035.jar>>>
+
+	The most basic WebLogic template will do. Make a copy of the template 
+	<<<wls.jar>>> which is part of the WebLogic 10.3.5 installation. 
+	The template can be found at <<<WEBLOGIC_HOME\common\templates\domains\wls.jar>>>
+	
+	Copy and rename the file to ${module-dir}/bin/domain-template-wls1035.jar. 
+	
+
+** The <<<weblogic-r1035-scriptingtool>>> resource definition
+
+	Same as in the Load Properties example.
+
+** The <<<weblogic-r1035-scriptingtool>>> credential definition
+     	 
+	Same as in the Load Properties example.
+
+* Invoke Pineapple to execute the script 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<<weblogic-wlst-example-create-wls1035-domain-from-template>>>.
+	
+	* Select the environment named <<<local-environment>>>.   	  
+	
+	* Invoke the <<deploy-configuration>> operation.
+	
+	[]
+
+
+ 	

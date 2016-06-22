@@ -1,0 +1,100 @@
+ ------
+ How-to: Control containers
+ ------
+ Allan Thrane Andersen
+ ------
+ August 2015
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Control containers
+
+* Overview
+
+	This example illustrates how the Docker plugin can be used to control a Docker container,
+	as part of the container creation or destruction.
+	
+** Extension of another example
+
+	This example modifies the container configuration example 	
+	{{{./configure-container-exposed-ports.html}How-to: Configure Docker containers (Exposed ports).}}
+	
+	Please consult that example for details about Pineapple configuration, modules and models		
+	describes how Pineapple can be used to install Docker on a Vagrant box for the purpose of the example.
+	
+* Define the module model
+
+	The model file for definition of the image and the container:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+    xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" continue="false" >
+  <mmd:model target-resource="docker-node" target-operation="deploy-configuration" description="Define Docker image: busybox:latest" >
+    <mmd:content>
+      <dkp:docker>
+        <dkp:image repository="busybox" tag="latest" />
+      </dkp:docker>                       
+    </mmd:content>
+  </mmd:model>
+  <mmd:model target-resource="docker-node" description="Define Docker container alpha01" >
+    <mmd:content>
+      <dkp:docker>
+        <dkp:container name="alpha01" state="running" >
+          <dkp:image repository="docker.io/busybox" tag="latest" />
+        </dkp:container>        
+      </dkp:docker>                       
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++----	 
+
+* The configuration details
+
+** Definition of a container	
+
+	The second model contains the <<<dkp:container>>> element which defines a Docker container.
+	When the model is invoked with the <deploy-configuration> operation then the container is created.
+	When the model is invoked with the <undeploy-configuration> operation then the container is deleted.
+
+** Controlling a container	
+
+	The container element contains an optional <<<state>>> attribute. 
+	The attribute defines which state the container should be put in when the 
+	model is invoked with a <deploy-configuration> operation, i.e. when the container
+	is created.
+
+	The attribute is used in this example to start the container by putting it into the
+	<running> state.	
+		
++----
+  <dkp:container name="alpha01" state="running" >
++----	 
+
+	The <<<state>>> attribute supports three states:
+	
+	* <running> - the container is started. 
+	The container can be paused or stopped.
+
+	* <stopped> - the container is stopped. 
+	The container can be started.
+
+	* <paused> - the container have been started and is now paused. 
+	The container can be started or stopped.
+
+	[]
+	
+	When the model is invoked with a <undeploy-configuration> operation then a container handled a bit
+	differently depending on its state:
+	
+	* If the container is <running> then container is stopped and then deleted.
+
+	* If the container is <stopped> then container is deleted. 
+
+	* If the container is <paused> then container is un-paused (i.e. started),
+	stopped and then deleted. 
+
+	[]
+		
+	

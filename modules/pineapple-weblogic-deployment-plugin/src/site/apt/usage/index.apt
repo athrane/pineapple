@@ -1,0 +1,480 @@
+ ------
+ Usage
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Introduction
+
+* Invoking the plugin
+
+	The plugin is invoked by the core component when the core component is 
+	used by one of the Pineapple clients. To trigger invocation by the core 
+	component the plugin needs to be configured.  
+
+* Configuration
+
+	Three steps are needed to configure the plugin to work:
+	
+	* Define WebLogic server as a <<resource>> for Pineapple to access 
+	for deployment operations. 
+
+	* Define user name and password for the WebLogic server in a <<credential>> 
+	which is used by Pineapple at run time to access the server resource.   
+			
+	* Define the module model used by the plugin as input for execution of 
+	deployment operations. The model defines how and where an application 
+	should be deployed (and undeployed).
+		
+	[] 
+
+	For more info about configuration of plugins:
+
+	* For info about <<resources>> and <<credentials>> read the 
+	<<{{{../../../usage/configuration-environment.html}Environment configuration}}>>
+	document.
+	
+	* For info about <<modules>> read the	
+	<<{{{../../../usage/configuration-modules.html}Modules configuration}}>>
+	document.
+	
+	[]
+			
+* Define resource
+		
+	A <<resource>> defines how a managed resource is accessed in a computing 
+	environment. The resource in this case is a WebLogic server used for 
+	deployment and undeployment.
+
+	The resources are defined in the file 
+	<<<$\{user.home}/.pineapple/conf/resources.xml>>>.
+
+	The resources are grouped by environment. The first step is define an 
+	environment in the <<<resources.xml>>> file if the environment isn't
+	already defined. 
+	
+	To define a new environment just add a new <<<environment>>> definition
+	with to the <<<environments>>> section in the <<<resources.xml>>> file. 
+	This example shows definition of an environment named <<<localdomain:>>>	
+		 		
++--------  	
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <environments>
+    <environment>
+      <identifier>localdomain</identifier>
+      <resources/>
+    </environment>
+  </environments>
+</configuration>
++--------  			
+
+	Add a new <<<resource>>> to the selected environment in the
+	<<<resources.xml>>> file: 
+
++--------
+<configuration>
+  <environments>
+    <environment>
+      <identifier>localdomain</identifier>
+      <resources>
+        ...
+        ...
+        <resource>
+          <identifier>weblogic-deployment</identifier>
+          <credential-identifier>weblogic-deployment-credential</credential-identifier>
+          <factory>
+            com.alpha.pineapple.plugin.weblogic.deployment.WeblogicDeploymentFactoryImpl
+          </factory>
+          <properties>
+            <adminserver-protocol>t3</adminserver-protocol>					
+            <adminserver-listenaddress>127.0.0.1</adminserver-listenaddress>
+            <adminserver-listenport>7001</adminserver-listenport>					
+          </properties>
+        </resource>									
+        ...
+      </resources>
+    </environment>		
+  </environments>
+</configuration>          				
++--------		 
+
+	The semantics of the resource elements is explained in the next sub 
+	sections:
+	 
+** identifier
+	
+	Identifies the resource in the current environment. 
+	
+	The identifier is used during configuration of management data, e.g. the 
+	deployment details for a application. The management data contains a 
+	reference to the resource that Pineapple should use at run time for 
+	deployment operations. 
+		
+** credential-identifier
+	
+	Identifier for the credential which is used to lookup user name and 
+	password for this resource. 		
+	
+** factory
+ 
+	Factory class for the plugin which should be used to execute management 
+	operations for the resource. 
+
+	The factory class for the <<WebLogic deployment plugin>> is: 	  	
+	<<<com.alpha.pineapple.plugin.weblogic.deployment.WeblogicDeploymentFactoryImpl>>>.
+ 	
+** properties
+	
+	Required properties used by the deployment plugin:
+	
+		* <<adminserver-protocol>> - defines the protocol to access the 
+		WebLogic administration server, i.e. t3, http. 
+	
+		* <<adminserver-listenaddress>> - defines the server listen address, 
+		i.e. localhost, 127.0.0.1, prod7admin.	
+		
+		* <<adminserver-listenport>> - defines the server listen port, i.e. 
+		7001, 7002.
+		
+		[]		
+		
+	Optional properties:
+	
+		* <<timestamp-enabled>> - defines whether a time stamp should be 
+		appended to the module name when a module is deployed. Legal values 
+		for the property is <<true>> or <<false>>. Default value is <<false>>. 
+		If the property isn't defined then default value is used. 
+				
+		[]						
+		
+	Information about valid protocols can be found 
+	in the {{{http://e-docs.bea.com/wls/docs92/deployment/wldeployer.html#wp1003708}<<weblogic.Deployer documentation.>>}}
+	
+** Summary of the example 
+	
+	The result of defining the resource in the example is:
+	
+	* A resource named <<<weblogic-deployment>>> is defined in the 
+	<<<localdomain>>> environment.
+
+	*  The <<<factory>>> element of the resource defines that the WebLogic 
+	deployment plugin should be used at run time by Pineapple to access the 
+	resource.
+	
+	*  The resource defines how to access a WebLogic server instance by 
+	providing connection properties (protocol, port and host 
+	name). The connection properties are used by the WebLogic deployment plugin
+	to connect to the server.
+	
+	* The <<<credential identifier>>> element of the resource defines which 
+	credential is used to provide security information for the resource to 
+	authenticate itself with the WebLogic server. Definition of credentials is 
+	described in the next section.       
+	 
+	
+* Define credential		 
+		 
+	A <<credential>> defines authentication information used to access a 
+	protected resource. The WebLogic administration server is a protected 
+	resource which is protected by a user-id/password. So a credential needs
+	to be defined.
+	 
+	The credentials are defined in the file 
+	<<<$\{user.home}/.pineapple/conf/credentials.xml>>>.
+	
+	Credentials are grouped by environment the same way as resources are. The 
+	first step is define an environment in the <<<credentials.xml>>> file if 
+	the environment isn't already defined.    
+		 		
+	To define a new environment just add a new <<<environment>>> definition 
+	with the identifier <<<localdomain>>> to the <<<environments>>> section 
+	in the <<<credentials.xml>>> file:  
+	
++--------  	
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <environments>
+    <environment>
+      <identifier>localdomain</identifier>
+      <credentials>
+    </environment>
+  </environments>
+</configuration>
++--------  		
+
+	Add a new <<<credential>>> to the selected environment in 
+	<<<credentials.xml>>> file: 
+	
++--------
+<configuration>
+  <environments>
+    <environment>
+      <identifier>localdomain</identifier>
+        ...
+        ...
+        <credential>
+          <identifier>weblogic-deployment-credential</identifier>
+          <user>weblogic</user>
+          <password>weblogic</password>
+        </credential>
+        ...				
+      </credentials>
+    </environment>		
+  </environments>
+</configuration>
++--------
+
+	The semantics of the resource elements is explained in the next sub 
+	sections:
+	
+** identifier	
+	
+	Identifies the credential in the current environment.
+		
+** user	
+
+	User name used to authenticate a resource with. 	
+	
+** password	
+
+	Password used to authenticate a resource with. 	
+
+** Summary of the example 
+
+	The result of defining the credential in the example is:
+	
+	* A credential named <<<weblogic-deployment-credential>>> is defined in the 
+	<<<localdomain>>> environment.
+	
+	* The credential uses user name/password for authentication. 
+	
+	* The identifier <<<weblogic-deployment-credential>>> is referenced from 
+	the resource definition in the <<<resources.xml>>> file. The sematics of the
+	reference is that the resource will use user name/password in the 
+	referenced credential for authentication.
+		
+	
+* Add deployment configuration to Pineapple module
+ 	
+	A Pineapple module defines what the different plugins should do in a 
+	set of target environments. In the context of the WebLogic deployment plugin, 
+	a module should contain the application which should be deployed and 
+	information about where the application should be deployed.
+
+	Deployment information is defined in model files:
+	<<<\<module-data-dir>/properties/\<environment>.xml>>> where:
+	
+	* <<<\<module-data-dir>>>> is the module root directory which identifies 
+	the module with a unique name and version. 
+
+	* <<<\<environment>.xml>>> is a model file for a target environment,
+	with <<<\<environment>>>> substituted with the environment name, e.g. 
+	<<<localdomain.xml>>> for an environment named <<<localdomain>>>. In the 
+	context of the deployment plugin each model contains deployment targets for 
+	the different environments that the an application is deployed to.
+	
+	[]
+	
+** Location of the application in the module
+
+	The Maven project is configured to create a ZIP file or an exploded 
+	directory structure which contains the module. The application can be found 
+	in the directory <<<\<module-data-dir>/app>>>. The deployment plugin will 
+	look for here for the application to deploy.  
+			
+** Specifying deployment targets    	  
+	
+	If the model file doesn't exist for an environment where the application 
+	should be deployed to, then create the file and name it after the target 
+	environment, e.g. <<<localdomain.xml>>> for an environment named 
+	<<<localdomain>>>. Then add a <<<environment>>> definition to the model 
+	file.
+	
+	This example shows definition of an environment named <<<localdomain>>>	in 
+	<<<localdomain.xml:>>> 
+ 	 
++--------  	 
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <environment>
+    <description>Deployment to the localdomain environment.</description>
+    <resources/>
+    </resources>    
+  </environment>
+</configuration>    
++--------  
+
+	Add a new <<<resource>>> to the file: 
+		
++--------  	 
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <environment>
+    <description>Deployment to the localdomain environment.</description>
+    <resources>
+      <resource identifier="weblogic-deployment" >      	
+        <targets>admserver</targets>
+      </resource>       
+    </resources>    
+  </environment>
+</configuration>    
++--------  
+
+	The semantics of the resource elements is explained in the next sub 
+	sections:
+	 
+** The <<<resource@identifier>>> attribute
+	
+	Name of the resource in the <<<resources.xml>>> which should be used
+	to execute the deployment operation.  
+	
+	This value must match a resource identifier already defined in the 
+	<<<resources.xml>>> file.
+	
+	At run time (when Pineapple executes an operation for a selected 
+	environment) the management data in the <<<\<environment>.xml>>> 
+	file is inspected. With the found <<<resource@identifier>>> attributes
+	in the managment data Pineapple lookups the corresponding resource 
+	definition in the <<<resources.xml>>> file. If Pineapple finds a resource 
+	definition, then the plugin specified by the factory class is used to 
+	execute the management operation. The data in the resource definition 
+	in the <<<\<environment.xml>>>> and <<<resources.xml>>> files are used as 
+	input for the plugin.	 
+	
+	In the example, the resource identifier was defined with the value 
+	<<<weblogic-deployment>>> so that value was reused to trigger execution
+	using the resource.
+	
+** The <<<name>>> element
+
+	This parameter is optional and it is not recommended to set it manually.
+	
+	If the parameter isn't set manually then the plugin uses the name of the 
+	management data directory, which contains a name and version.
+
+	If the parameter is set manually then it overrides the values that the plugin
+	would have used. 
+	   		
+** The <<<source>>> element
+ 	
+ 	This parameter is optional and it is not recommended to set it manually.
+ 	
+	If the parameter isn't set manually then the plugin will search for a 
+	deployable artifact in the <<</app>>> directory in the management data 
+	directory using the algorithm: 
+
+	[[1]] Search for file with <<<.ear>>> suffix. 
+	First .ear file found is deployed.
+	
+	[[2]] Search for file with <<<.war>>> suffix. 
+	First .war file found is deployed.	
+	
+	[[3]] Search for file with <<<.jar>>> suffix.
+	First .jar file found is deployed.
+	
+	[[4]] Search for file with <<<.rar>>> suffix.
+	First .rar file found is deployed.	
+ 		
+	[[4]] Search for directory. 
+	First directory found is deployed as exploded application archive.
+	 		
+	[] 		   		
+
+	If the parameter is set manually then the plugin wil attempt to deploy the
+	file at the external location.  
+
+** The <<<plan>>> element
+ 	
+ 	This parameter is optional and it is not recommended to set it manually.
+ 	
+	If the parameter isn't set manually then the plugin will search the 
+	<<</plan>>> directory in the management using the algorithm:  
+	
+	[[1]] Search for <<<plan.xml>>>. If the file is found then the file is 
+	used as deployment plan. 
+	
+	[[2]] Search for <<<\<environment>.xml>>> (where \<environment>
+	is the name of the current environment). If the file is found then 
+	file is used as deployment plan
+	
+	[[3]] No plan is found. Deploy without a deployment plan.
+
+	[]
+	
+	Step 1) in the algorithm supports the scenario where one deployment 
+	plan is used in all deployment environments.
+
+	Step 2) in the algorithm supports the scenario where a different deployment	 
+	plan is used in each deployment environment.
+	
+	TODO: describe how to add deployment plans to the management directory...
+		   		
+** The <<<targets>>> element
+
+	Defines deployment target for the application. The targeting syntax 
+	supported by the weblogic.Deployer is supported, e.g. sub module 
+	targeting using @. Information about valid targeting syntax can be found 
+	in the {{{http://e-docs.bea.com/wls/docs92/deployment/wldeployer.html#wp1003708}<<weblogic.Deployer documentation.>>}}				   
+	
+	Multiple targets can be specified in two different ways:
+	
+	* multiple targets a single element:
+	
++--------  	 
+      <resource identifier= .... >      	
+        <targets>server1,server2,server3</targets>
+      </resource>               
++--------  
+	 
+	* Multiple elements with single target each:
+
++--------  	 
+      <resource identifier= .... >      	
+        <targets>server1</targets>
+        <targets>server2</targets>
+        <targets>server3</targets>                
+      </resource>               
++--------  
+
+	[]
+	
+* Which arguments the weblogic.Deployer is invoked with
+
+	The plugin invokes weblogic.Deployer with the arguments:
+	
+	* <<<\<operation>>>> which is either <<<deploy>>> or <<<undeploy>>>.	
+	
+	* <<<-name \<name>>>> where <<<\<name>>>> defines the name of the application 
+	in WebLogic.	
+
+	* <<<-source \<source>>>> where <<<\<source>>>> defines the file or 
+	directory in the Pineaple module which is deployed.
+	
+	* <<<-plan \<deployment-plan>>>> where <<<\<deployment-plan>>>> is a 
+	deployment plan if one is found in the Pineapple module.	
+
+	* <<<user-specified-arguments>>> which is any arguments defined in 
+	the <<<resource>>> element.	
+
+	* <<<-upload>>> which defines that the application should uploaded to the 
+	administration server before it is deployed.
+	
+	* <<<-stage>>> which defines that a staged deploymend should take place.
+	
+	* <<<-usenonexclusivelock>>> which defines that deployer should acquire a 
+	lock which can be taken away at any time. 
+	
+	[]	
+	
+	
+	 
+
+
+
+
+	

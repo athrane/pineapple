@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+<html>
+  <head>
+    <title>Pineapple WebLogic 9.2 schemas - Development documentation</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+          <meta name="author" content="Allan Thrane Andersen" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      </head>
+  <body class="composite">
+    <!-- TODO: move this into JavaScript to patch the skin
+      <div class="xright">  </div>
+    -->
+    <div id="leftColumn">
+      <div id="navcolumn">
+             <dl class=navgroup>
+        <dt>Project Documentation</dt>
+        <dd><ul>
+              
+                
+              
+      
+            
+      
+              
+        <li class="collapsed">
+              <a href="../project-info.html">Project Information</a>
+              </li>
+              
+                
+              
+      
+              
+        <li class="collapsed">
+              <a href="../project-reports.html">Project Reports</a>
+              </li>
+          </ul></dd>
+    </dl>
+        </div>
+      <script>
+        // replace the java.net project tools with the navigation bar from Maven.
+        // also get rid of "Get Involved" thingie too, while we are at it
+        var pt = document.getElementById("projecttools");
+        var nv = document.getElementById("navcolumn");
+        
+        while(pt.previousSibling!=null)
+          pt.parentNode.removeChild(pt.previousSibling);
+        
+        pt.parentNode.insertBefore(nv,pt);
+        pt.parentNode.removeChild(pt);
+      </script>
+      <script>
+        // kill "description" h3 bar
+        var ld = document.getElementById("longdescription");
+        if(ld!=null) {
+          for( n=ld.firstChild; n!=null; n=n.nextSibling ) {
+            if(n.nodeType==1 && n.innerHTML=="Description" ) {
+              n.parentNode.removeChild(n);
+              break;
+            }
+          }
+        }
+      </script>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <!-- NOTE: For help with the syntax of this file, see: --><!-- http://maven.apache.org/guides/mini/guide-apt-format.html --><div class="section"><h2>Development documentation<a name="Development_documentation"></a></h2><div class="section"><h3>Schema location<a name="Schema_location"></a></h3><p>The project uses multiple schemas for definition of models. The main schema file <tt>domain_9_2.xsd</tt> defines the namespace:</p><ul><li><tt>http://www.bea.com/ns/weblogic/920/domain</tt>.</li></ul><p>Three auxiliary schema files defines the namespaces:</p><ul><li><tt>security_9_2.xsd</tt> defines <tt>http://www.bea.com/ns/weblogic/90/security</tt>.</li><li><tt>wls_9_2.xsd</tt> defines <tt>http://www.bea.com/ns/weblogic/90/security/wls</tt>.</li><li><tt>xacml_9_2.xsd</tt> defines <tt>http://www.bea.com/ns/weblogic/90/security/xacml</tt>.</li></ul><p>Finally, the schema file <tt>diagnostics_9_2.xsd</tt> defines the namespace:</p><ul><li><tt>http://www.bea.com/ns/weblogic/90/diagnostics</tt>.</li></ul><p>The schemas are located in the folder: <tt>src/main/resources</tt>.</p><div class="section"><h4>Adding the schemas to the main project web site<a name="Adding_the_schemas_to_the_main_project_web_site"></a></h4><p>During the <tt>site</tt> phase the schemas are copied to the main site in the <tt>pineapple-project</tt>. The schemas is copied to the directory <tt>/ns</tt>.</p><p>This is implemented in the project <tt>pom.xml</tt>.</p></div></div><div class="section"><h3>Generation of classes from XML schemas<a name="Generation_of_classes_from_XML_schemas"></a></h3><p>The project uses XMLBeans through the Maven 2 plugin <tt>xmlbeans-maven-plugin</tt> to generate classes from XML schemas. </p><p>Package and type names are not customized. </p></div></div>
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2011
+    
+          
+  
+
+  
+  
+  &nbsp;| Last Published: 01 Nov 2011
+  &nbsp;| Version: 1.0.0
+</div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

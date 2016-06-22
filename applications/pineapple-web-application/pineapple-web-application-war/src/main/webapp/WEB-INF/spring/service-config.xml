@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" >
+
+	<!-- Configures core component -->
+	<import resource="classpath:com.alpha.pineapple.core-config.xml" />
+
+	<!-- Configures report generator component -->
+	<import resource="classpath:com.alpha.pineapple.report.basichtml-config.xml" />
+
+	<!-- definition of web application factory for Pineapple core component -->
+	<bean id="webAppCoreFactory" class="com.alpha.pineapple.web.WebAppCoreFactory" />					
+
+	<!--  define pineapple core component --> 	
+	<bean id="coreComponent" factory-bean="webAppCoreFactory" factory-method="createCore" />
+
+	<!-- definition of web application result listener -->
+	<bean id="webAppResultListener" class="com.alpha.pineapple.web.event.WebAppResultListenerImpl" />					
+			
+	<!-- define report repository -->
+	<bean id="reportRepository" class="com.alpha.pineapple.web.report.ReportRepositoryImpl" scope="singleton" />
+	<bean id="reportSetMarshaller" class="com.alpha.pineapple.web.report.ReportSetMarshallerImpl" scope="singleton" />
+
+	<!-- define activity repository -->
+	<bean id="activityRepository" class="com.alpha.pineapple.web.activity.ActivityRepositoryImpl" scope="singleton" />
+		
+	<!-- Object factories -->		
+	<bean id="configurationModelObjectFactory" class="com.alpha.pineapple.model.configuration.ObjectFactory" scope="singleton" />
+	<bean id="webAppObjectFactory" class="com.alpha.pineapple.web.model.ObjectFactory" scope="singleton" />
+
+	<!-- define Reactor beans-->
+	<bean id="webAppReactor" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	   	<property name="staticMethod" value="reactor.core.spec.Reactors.reactor"/>
+	  	<property name="targetMethod" value="env" />
+	  	<property name="arguments" ref="webAppReactorEnvironment" />
+	</bean>	 
+	<bean id="webAppReactorEnvironment" class="reactor.core.Environment" />
+
+	<!--  define consumers -->
+	<bean id="createReport" class="com.alpha.pineapple.web.event.consumer.CreateReportImpl"  />	
+	<bean id="createdReportNotifier" class="com.alpha.pineapple.web.event.consumer.CreatedReportNotifierImpl"  />	
+	<bean id="openModuleActivityInvoker" class="com.alpha.pineapple.web.event.consumer.OpenModuleActivityInvokerImpl"  />					
+	<bean id="executeOperationActivityInvoker" class="com.alpha.pineapple.web.event.consumer.ExecuteOperationActivityInvokerImpl"  />					
+	<bean id="resultNotificationNotifier" class="com.alpha.pineapple.web.event.consumer.ResultNotificationNotifierImpl"  />					
+				
+</beans>
+

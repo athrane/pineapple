@@ -1,0 +1,298 @@
+ ------
+ Usage
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Introduction
+
+* Configuration
+
+	The get access to the test utilities, add a dependency with <<test>> scope 
+	to the project which need access to the test utilities.
+	
+	To use the test utilities, <the pineapple-core project> has defined 
+	this dependency in the POM:
+	
++--------	
+  <!-- pineapple internal dependencies -->
+  <dependency>
+    <groupId>${pom.groupId}</groupId>
+    <artifactId>pineapple-test-utils</artifactId>
+    <scope>test</scope>    
+  </dependency>
++--------
+
+** Transitive dependency to the pineapple-api project 
+	
+	The test utilities project contains a dependency to the 
+	<<<pineapple-api>>> project to get access to all the model classes and
+	plugin interfaces. Any project linking to the test utilities 
+	project will also get access to these interfaces/classes at test time.
+	
+* Helper classes for unit and integration test 
+
+	Two classes are implemented to aid unit testing:
+	
+	* <<<MessageProviderAnswerImpl>>>
+	
+	* <<<DirectoryTestExecutionListener>>>
+	
+	* <<<NameAwareTestExecutionListener>>>	
+	
+	[]
+
+** MessageProviderAnswerImpl
+
+	<<<com.alpha.easymockutils.MessageProviderAnswerImpl>>> is an EasyMock 
+	helper class which can be used to log the parameters that
+	an mock message provider is invoked with.
+	
+	When the mock message source is invoked it logs the arguments that the provider
+	was invoked with and  returns the key as answer.
+
+** DirectoryTestExecutionListener
+
+	<<<com.alpha.springutils.DirectoryTestExecutionListener>>> is an Spring
+	test execution listener class which create a runtime directory for 
+	each test method and can be configured to cleans up afterwards.
+
+	This class should always be used with the Spring 
+	<<<DependencyInjectionTestExecutionListener>>> in integration test cases 
+	to enable the dependency injection.   
+
+** NameAwareTestExecutionListener
+
+	<<<com.alpha.springutils.NameAwareTestExecutionListener>>> is an Spring
+	test execution listener class which gives access to the name of the
+	currently executing test method.
+	
+	This class should always be used with the Spring 
+	<<<DependencyInjectionTestExecutionListener>>> in integration test cases 
+	to enable the dependency injection.   	
+
+** SpringBeansUtils
+
+	<<<com.alpha.springutils.SpringBeansUtils>>> is small utility class
+	for accessing Spring managed beans in integration tests.
+	
+
+* Object mothers
+
+	the object mothers are implementations of the ObjectMother pattern which
+	can manufacture complete objects used in tests. 
+
+	Object mother classes:
+	
+	* <<<com.alpha.testutils.ObjectMotherResource>>>
+	
+	* <<<com.alpha.testutils.ObjectMotherConfiguration>>>	
+	
+	* <<<com.alpha.testutils.ObjectMotherIO>>>	
+
+	* <<<com.alpha.testutils.ObjectMotherModule>>>	
+
+	* <<<com.alpha.testutils.ObjectMotherEnvironmentConfiguration>>>	
+
+	[]
+	
+** ObjectMotherResource	
+	
+	<<<com.alpha.testutils.ObjectMotherResource>>> provides helper 
+	functions for testing the <<<Resource>>> class or using resources in tests.	
+
+** ObjectMotherConfiguration	
+	
+	<<<com.alpha.testutils.ObjectMotherConfiguration>>> provides 
+	helper functions for accessing Commons Configuration objects. 
+
+** ObjectMotherIO	
+	
+	<<<com.alpha.testutils.ObjectMotherIO>>> provides 
+	helper functions for creating and deleting directories. 	
+	
+** ObjectMotherPineappleUnitConfiguration (@Deprecated)
+
+	<<<com.alpha.testutils.ObjectMotherIO>>> provides 
+	helper functions for unit testing classes which uses a 
+	Pineapple-Unit-Configuration.
+	
+	TODO: This class is deprecated and should be deleted when all 
+	references are refactored away.
+
+** ObjectMotherModule
+
+	<<<com.alpha.testutils.ObjectMotherModule>>> provides 
+	helper functions for unit testing classes which uses a 
+	Pineapple modules and models.
+
+*** ObjectMotherEnvironmentConfiguration	
+	
+	<<<com.alpha.testutils.ObjectMotherEnvironmentConfiguration>>> is an implementation 
+	of the ObjectMother pattern. The class provides helper functions for unit 
+	testing classes which uses environment configuration, e.g. resources and credentials.	 
+
+* Test constants
+
+	The class <<<com.alpha.testutils.TestUtilsTestConstants>>> contains
+	constants which are used in the unit tests. 
+	
+	The class defines the location of unit test output in the constant
+	<<<TestUtilsTestConstants.TEST_RUNTIME_ROOT_DIRECTORY>>>. 
+
+	The class defines the default name for directory based JUnit test cases in the constant
+	<<<TestUtilsTestConstants.TEST_DEFAULT_DIRECTORY>>>. 
+	
+	
+* Test context configuration with plugin providers
+
+	The application context file <<<com.alpha.pineapple.testutils-config.xml>>> contains
+	bean definitions of the plugin provider whose implementations are uninitialized <EasyMock> 
+	objects for usage in integration tests.	   		
+
+* Test Log4j configuration 
+
+	The project provides a Log4j configuration as part of its
+	production build. A log4j configuration file is defined in the project 
+	in the directory <<<src/java/resources/log4.properties>>> for use
+	by dependent projects as part of their test configuration. 
+	
+	The test configuration configures Log4j to write these log files 
+	to $\{user.home}/.pineapple/logs/:
+	
+	* pineapple-test.log � unit test log from pineapple classes
+	
+	* pineapple-root-test.log � unit test log from all packages
+	
+* Test plugins
+	
+	The project contains several test plugins:
+	
+	* Hello world - a plugin with NO-OP session handling and no functionality
+
+	* Input marshalling - a plugin with input marshalling and no functionality
+
+** The hello world plugin	
+		
+	The test plugin is defined in the package 
+	<<<com.alpha.pineapple.plugin.helloworld>>> and sub packages.
+		
+*** Plugin class
+
+	The package <<<com.alpha.pineapple.plugin.helloworld>>> is the root
+	package of the plugin and contains the plugin class <<<PluginImpl>>>. 
+	
+*** Session class
+
+	The package <<<com.alpha.pineapple.plugin.helloworld>>> contains
+	the session classes for the plugin:
+	
+	* <<<TestSession>>> extends the <<<Session>>> interface.
+	
+	* <<<TestSessionImpl>>> extends the <<<TestSession>>> interface.
+		
+	[]
+	
+*** Operation classes
+
+	The package <<<com.alpha.pineapple.plugin.helloworld.operation>>> contains
+	the operation classes for the plugin.
+	
+	The plugin implement these default operations:
+
+	* <<<HelloWorldOperationImpl>>> implements the operation <<<hello-world>>>. The
+	operation id is defined as a constant in 
+	<<<com.alpha.testutils.TestUtilsTestConstants.helloWorldOperation>>>. 
+		
+	[]
+			
+** The input marshalling plugin	
+		
+	The test plugin is defined in the package 
+	<<<com.alpha.pineapple.plugin.test.inputmarshalling>>>.
+		
+*** Plugin class
+
+	The plugin class is <<<InputMarshallingTestPluginImpl>>> which also implements 
+	the wild card operation, i.e.  "*" which is a NO-OP operation and succeeds.
+	
+** Plugin schema and model classes
+
+	The plugin defines a plugin schema in the file <<<test_input_marshalling_1_0.xsd>>>.			
+	When the plugin is built the model classes are generated in the package
+	<<<com.alpha.pineapple.plugin.test.inputmarshalling.model>>>.
+	
+** Plugin configuration file
+
+	The plugin defines a plugin configuration in the file <<<com.alpha.pineapple.plugin.inputmarshalling-config.xml>>>.		
+	The configuration file contains the definition of a JAXB unmarshaller bean, named
+	<unmarshaller> which supports unmarshalling of the model classes from the 
+	<<<com.alpha.pineapple.plugin.test.inputmarshalling.model>>> package.
+	The presence of the unmarshaller triggers activation of unmarshalling when the plugin is initialized.	
+	
+* Test Schema
+
+	The project defines a small schema at <<<src/main/resources/test.xsd>>> 
+	which can be used to test JAXB related functionality. The schema defines 
+	three entities: Root, ContainerType and ItemType. The binding classes 
+	for JAXB is provided in the package <<<com.alpha.pineapple.model.test>>>.
+	
+	The schema definition looks like:
+	
++-----
+
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://pineapple.dev.java.net/ns/test" xmlns="http://pineapple.dev.java.net/ns/test"
+	elementFormDefault="qualified" attributeFormDefault="qualified">
+	<xs:element name="root">
+		<xs:annotation>
+			<xs:documentation>Root element i schema for testing JAXB unmarshalling.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="container" type="ContainerType"
+					minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="ContainerType">
+		<xs:annotation>
+			<xs:documentation>Container</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="items" type="ItemType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ItemType">
+		<xs:annotation>
+			<xs:documentation>Item.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
+
++-----  
+
+	The content of the schema can be marshalled with JAXB:
+
++-----
+    String packageName = root.getClass().getPackage().getName();
+    System.out.println( packageName );
+    JAXBContext jaxbContext = JAXBContext.newInstance( packageName );
+    Marshaller marshaller = jaxbContext.createMarshaller();
+    os = new FileOutputStream( fileName );
+    marshaller.marshal( root, os );
+    os.close();
++-----
+
+
+	
+	

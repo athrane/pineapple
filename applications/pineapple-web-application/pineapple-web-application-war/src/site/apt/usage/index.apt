@@ -1,0 +1,71 @@
+ ------
+ Usage of the Pineapple Web Application
+ ------
+ Allan Thrane Andersen
+ ------
+April 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Usage of the Pineapple Web Application
+
+* Introduction
+
+	The web application serves to provide a browser based GUI for Pineapple which
+	can either run as standalone client or deployment in a Java web container.
+
+* Managing modules
+
+	* {{{./open-module.html}Open module}}
+	
+	* {{{./close-module.html}Close module}}	
+
+	* {{{./upload-module.html}Upload module}}	
+
+	* {{{./delete-module.html}Delete module}}	
+	
+	[]
+
+* Managing models
+
+	* {{{./create-model.html}Create model}}
+
+	* {{{./open-model.html}Open model}}
+
+	* {{{./save-model.html}Save model}}
+	
+	* {{{./delete-model.html}Delete model}}	
+	
+	[]
+
+* Executing operations
+
+	* {{{./execute-operation.html}Execute operation}}
+
+* Scheduling operations
+
+	* {{{./schedule-operation.html}Schedule operation}}
+
+	* {{{./delete-scheduled-operation.html}Delete scheduled operation}}
+
+	* {{{./delete-all-scheduled-operations.html}Delete all scheduled operations}}
+
+* Reports
+
+	Nothing here yet.
+
+* Environment configuration
+
+	* {{{./refresh-environment-configuration.html}Refresh environment configuration}}
+
+	* {{{./create-environment.html}Create environment}}
+
+	* Delete environment
+	
+	* Create resource
+	
+	* Delete resource	
+	
+	[]
+

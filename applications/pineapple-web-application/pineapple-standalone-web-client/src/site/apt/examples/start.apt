@@ -1,0 +1,80 @@
+ ------
+ How-to: Start the stand-alone web application.
+ ------
+ Allan Thrane Andersen
+ ------
+ September 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Start the stand-alone web application
+	
+	This example illustrates how to to use the stand-alone web application. 
+	
+	The unzipped client contains the directory layout:
+	
++---+
+pineapple-standalone-web-client-VERSION
+     |     
+     +--- runPineapple.cmd
+     +--- runPineapple.sh
+     |     
+     +--- bin     
+     |     +--- helper scripts     
+     |          
+     +--- conf     
+     |     +--- log4j.properties
+     |     `--- jetty.xml
+     |               
+     +--- webapps
+     |     `--- pineapple-web-application-war.war
+     |               
+     +--- lib
+           +--- pineapple-jetty-starter-1.0.jar
+           +--- jetty-*.jar
+           +--- log4j-1.2.14.jar
+           `--- servlet-api-2.5.jar
++---+	 	 
+
+* On Linux
+
+	To start the web application execute the <<<runPineapple.sh>>> script, e.g from a terminal:
+	
+	* CD to the <<<pineapple-standalone-web-client-VERSION>>> directory
+	
+	
+	* Invoke the script by typing: <<<./runPineapple.sh>>>
+	
+	[]
+
+** Make Pineapple executable
+
+	If the <<<pineapple-standalone-web-client-VERSION>>> isn't executable then:
+	
+	[[1]] Open a Linux terminal and change directory (CD) to the <<</path/to/pineapple-standalone-web-client-VERSION>>> directory.
+
+	[[2]] Execute: <<<chmod +x ./runPineapple.sh>>>
+	
+	[]
+		
+* On Windows
+
+	To start the web application execute the <<<runPineapple.cmd>>> script. 
+
+* Application URL
+
+	When the script is invoked, it will start the Jetty 7.1.x server and deploy 
+	<<<pineapple-web-application-war.war>>> with these parameters:
+	
+		* host = localhost
+		
+		* port = 8080
+		
+		[]
+	
+	The application URL is: <<{{{http://localhost:8080}http://localhost:8080}}>>
+	
+	The script will open the URL in the default browser window.
+	
+		

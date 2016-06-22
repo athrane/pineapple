@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zk>
+	<library-property>
+	    <name>org.zkoss.zk.ui.WebApp.name</name>
+	    <value>Pineapple Web Application</value>
+	</library-property>
+	<system-config>
+		<max-upload-size>-1</max-upload-size>
+	</system-config>
+	<device-config>
+		<device-type>ajax</device-type>
+		<!-- 		
+			Disabled due to PINEAPPLE-705: Fix Jetty exception: java.lang.IllegalStateException: !asyncSupported
+			<server-push-class>org.zkoss.zkmax.ui.comet.CometServerPush</server-push-class>  
+			See: http://books.zkoss.org/wiki/ZK_Installation_Guide/Setting_up_Servers/Jetty
+		-->
+		<server-push-class>org.zkoss.zkex.ui.comet.CometServerPush</server-push-class>						
+		<!-- defines session timeout in minutes -->	
+		<session-timeout>1200</session-timeout>
+	    <timeout-message>Session timed out. Please reload.</timeout-message>
+	</device-config> 
+	<listener>
+ 		<listener-class>com.alpha.pineapple.web.zk.lifecycle.LifecycleEventListener</listener-class>
+ 	</listener>
+</zk>

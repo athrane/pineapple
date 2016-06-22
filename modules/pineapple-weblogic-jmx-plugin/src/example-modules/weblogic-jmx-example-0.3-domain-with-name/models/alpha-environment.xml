@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"			
+		xmlns:wjp="http://xmlns.oracle.com/weblogic/domain" 
+		xmlns:sec="http://xmlns.oracle.com/weblogic/security" 
+		xmlns:wls="http://xmlns.oracle.com/weblogic/security/wls" 		
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 		
+		xsi:schemaLocation="http://xmlns.oracle.com/weblogic/security/xacml 
+		http://xmlns.oracle.com/weblogic/security/xacml/1.0/xacml.xsd 
+		http://xmlns.oracle.com/weblogic/security/providers/passwordvalidator 
+		http://xmlns.oracle.com/weblogic/security/providers/passwordvalidator/1.0/passwordvalidator.xsd 
+		http://xmlns.oracle.com/weblogic/domain 
+		http://xmlns.oracle.com/weblogic/1.0/domain.xsd 
+		http://xmlns.oracle.com/weblogic/security 
+		http://xmlns.oracle.com/weblogic/1.0/security.xsd 
+		http://xmlns.oracle.com/weblogic/security/wls 
+		http://xmlns.oracle.com/weblogic/security/wls/1.0/wls.xsd">
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>				
+			<wjp:domain >
+				<wjp:name>alphadomain</wjp:name>
+			</wjp:domain>			
+		</mmd:content>							
+	</mmd:model>		
+</mmd:models>		

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:context="http://www.springframework.org/schema/context"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    		http://www.springframework.org/schema/oxm 
+    		http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+    		http://www.springframework.org/schema/context 
+    		http://www.springframework.org/schema/context/spring-context-3.0.xsd" >    		
+
+	<!-- Configures pineapple-api -->
+	<import resource="classpath:com.alpha.pineapple.api-config.xml" />
+
+	<!-- Configures pineapple-commands-api -->
+	<import resource="classpath:com.alpha.pineapple.commands-api-config.xml" />
+        
+	<!-- enable annotation based configuration / dependency injection -->
+	<context:annotation-config />
+    
+	<!-- define message provider for internationalization  -->
+	<bean id="dockerMessageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">
+    	<property name="basename" value="com.alpha.pineapple.docker-messages"/>
+	</bean>	
+	    	    
+	<!-- REST template error handlers -->
+	<bean id="restResponseErrorHandler" class="com.alpha.pineapple.docker.utils.RestResponseErrorHandler" />
+	<bean id="defaultResponseErrorHandler" class="org.springframework.web.client.DefaultResponseErrorHandler" />
+
+	<!-- Spring REST template definitions -->		
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" >  
+		<property name="messageConverters">
+			<list>
+   		      <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" >   		      
+				<property name="objectMapper" ref="jacksonObjectMapper" />
+   		      </bean>
+   		      <bean class="org.springframework.http.converter.StringHttpMessageConverter" />   		      
+			</list>
+		</property>
+		<property name="errorHandler" ref="restResponseErrorHandler" />
+	</bean>
+
+	<bean id="restTemplateWithoutMessageConverters" class="org.springframework.web.client.RestTemplate" >  
+		<property name="errorHandler" ref="restResponseErrorHandler" />
+	</bean>
+
+	<!-- define Jackson JSON object mapper  -->
+	<bean id="jacksonObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
+		<property name="propertyNamingStrategy">			
+			<bean class="com.alpha.pineapple.docker.utils.UpperCaseStyleStrategy" />
+		</property>
+		<property name="serializationInclusion">
+           	<value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_DEFAULT</value>
+		</property>
+	</bean>
+
+	<!-- define command objects -->
+	<bean id="buildImageCommand" class="com.alpha.pineapple.docker.command.BuildImageCommand" />
+	<bean id="createImageCommand" class="com.alpha.pineapple.docker.command.CreateImageCommand" />
+	<bean id="createTaggedImageCommand" class="com.alpha.pineapple.docker.command.CreateTaggedImageCommand" />
+	<bean id="deleteImageCommand" class="com.alpha.pineapple.docker.command.DeleteImageCommand" />
+	<bean id="listAllImagesCommand" class="com.alpha.pineapple.docker.command.ListAllImagesCommand" />
+	<bean id="reportOnImagesCommand" class="com.alpha.pineapple.docker.command.ReportOnImagesCommand" />
+	<bean id="inspectImageCommand" class="com.alpha.pineapple.docker.command.InspectImageCommand" />
+	<bean id="createContainerCommand" class="com.alpha.pineapple.docker.command.CreateContainerCommand" />
+	<bean id="listAllContainersCommand" class="com.alpha.pineapple.docker.command.ListAllContainersCommand" />
+	<bean id="startContainerCommand" class="com.alpha.pineapple.docker.command.StartContainerCommand" />
+	<bean id="killContainerCommand" class="com.alpha.pineapple.docker.command.KillContainerCommand" />
+	<bean id="deleteContainerCommand" class="com.alpha.pineapple.docker.command.DeleteContainerCommand" />
+	<bean id="stopContainerCommand" class="com.alpha.pineapple.docker.command.StopContainerCommand" />
+	<bean id="pauseContainerCommand" class="com.alpha.pineapple.docker.command.PauseContainerCommand" />
+	<bean id="unpauseContainerCommand" class="com.alpha.pineapple.docker.command.UnpauseContainerCommand" />
+	<bean id="inspectContainerCommand" class="com.alpha.pineapple.docker.command.InspectContainerCommand" />
+	<bean id="reportOnContainersCommand" class="com.alpha.pineapple.docker.command.ReportOnContainersCommand" />
+	<bean id="testContainerCommand" class="com.alpha.pineapple.docker.command.TestContainerCommand" />
+	<bean id="createTarArchiveCommand" class="com.alpha.pineapple.docker.command.CreateTarArchiveCommand" />
+
+	<!-- Model objects -->		
+	<bean id="dockerModelObjectFactory" class="com.alpha.pineapple.docker.model.rest.ObjectFactory" scope="singleton" />
+	<bean id="dockerInfoBuilder" class="com.alpha.pineapple.docker.model.InfoBuilderImpl" />
+	<bean id="dockerJaxbGetterMethodMatcher" class="com.alpha.pineapple.docker.model.jaxb.reflection.DockerJaxbGetterMethodMatcherImpl" />
+
+	<!-- Docker client -->
+	<bean id="dockerClient" class="com.alpha.pineapple.docker.DockerClientImpl" />			    	    				
+
+	<!-- General test utilities -->
+	<bean id="dockerHelper" class="com.alpha.testutils.DockerTestHelper" />			    	    				
+	
+</beans>

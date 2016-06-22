@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="http://pineapple.dev.java.net/ns/module_1_0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	id="weblogic-jmx-example-6.2; domain with security configuration, with supported named security objects like default authenticator etc." version="0.6.2">
+	<environments>
+		<environment id="alpha-environment">
+			<model-file-name>alpha-environment.xml</model-file-name>
+		</environment>
+	</environments>
+	<variables />
+	<templates />
+</module>
+
+

@@ -1,0 +1,33 @@
+ ------
+ Delete module
+ ------
+ Allan Thrane Andersen
+ ------
+ September 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Delete module
+
+* Steps
+
+	To delete a module:
+	
+		* Open the <Module> menu and select the <Delete Module> menu item:
+
+		* Select a module from the selection window and click <Delete Module>. 
+		
+		[]
+
+* Result
+
+	The result after executing the steps is:
+	
+	* The module is now delete from disk and from Pineapple. 
+	
+	* If the deleted module is the same module as the one being open in Pineapple, then the module
+	is closed prior to deletion. 
+ 
+	[]
+	

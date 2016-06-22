@@ -1,0 +1,25 @@
+<jaxb:bindings version="2.0"	
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"	
+	jaxb:extensionBindingPrefixes="xjc" >
+
+	<jaxb:bindings schemaLocation="weblogic_scriptingtool_1_0.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.plugin.weblogic.scriptingtool.model" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="weblogic_scriptingtool_1_0.xsd" >
+		<jaxb:bindings node="//xs:element[@name='wlst']" >
+			<jaxb:class name="Wlst" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+	
+	<jaxb:bindings schemaLocation="weblogic_scriptingtool_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='scriptType']" >
+			<jaxb:class name="WlstScript" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+</jaxb:bindings>

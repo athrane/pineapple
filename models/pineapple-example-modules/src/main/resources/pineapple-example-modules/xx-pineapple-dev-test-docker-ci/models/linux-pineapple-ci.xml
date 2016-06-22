@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+	xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" 
+    xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+		
+	<mmd:variables>
+      <mmd:variable key="docker-host1" value="192.168.99.10" />        	    
+      <mmd:variable key="docker-host2" value="192.168.99.11" />        	    
+      <mmd:variable key="docker-port" value="8082" />        	    	  
+      <mmd:variable key="ci-host1" value="192.168.99.10" />        	    	  
+	</mmd:variables>
+
+   <mmd:model target-resource="{ssh-ci-node1, ssh-ci-node2}" target-operation="test" description="Test Docker service" >
+      <mmd:content>
+        <shp:ssh>        
+          <shp:assert-contains command="sudo systemctl status docker" expected-value="Daemon has completed initialization"/>                     
+          <shp:assert-contains command="sudo systemctl status docker" expected-value="API listen on /var/run/docker.sock"/>           
+          <shp:assert-contains command="sudo systemctl status docker" expected-value="API listen on [::]:8082"/>           
+        </shp:ssh>			
+      </mmd:content>
+    </mmd:model>
+	
+	<mmd:model target-resource="infrastructure-test" description="Test Docker remote API">
+		<mmd:content>
+			<itp:infrastructure>
+				<itp:tcp-connection-test host="${docker-host1}" description="Test Docker host is listening on ${docker-host1}:${docker-port}">
+					<itp:port value="8082" />
+				</itp:tcp-connection-test>
+			</itp:infrastructure>
+    		<itp:infrastructure>
+				<itp:tcp-connection-test host="${docker-host2}" description="Test Docker host is listening on ${docker-host2}:${docker-port}">
+					<itp:port value="8082" />
+				</itp:tcp-connection-test>
+			</itp:infrastructure>            
+		</mmd:content>
+	</mmd:model>	
+	<mmd:model target-resource="infrastructure-test" target-operation="test" description="Test build server services">
+		<mmd:content>
+			<itp:infrastructure>
+				<itp:tcp-connection-test 
+					host="${ci-host1}"
+					description="Validate host ${ci-host1} listens on ports: 8080, 8081">
+					<itp:port value="8080" />
+					<itp:port value="8081" />	
+				</itp:tcp-connection-test>
+				<itp:http-statuscode-test          
+					description="Validate host ${ci-host1} responds with HTTP 200 on port 8080" 
+					url="http://${ci-host1}:8080" 
+					expected="200" />								
+				<itp:http-statuscode-test          
+					description="Validate host ${ci-host1} responds with HTTP 200 on port 8081" 
+					url="http://${ci-host1}:8081" 
+					expected="200" />													
+			</itp:infrastructure>
+		</mmd:content>
+	</mmd:model>	
+	
+</mmd:models>

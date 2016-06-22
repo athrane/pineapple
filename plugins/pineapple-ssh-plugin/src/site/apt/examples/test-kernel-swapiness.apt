@@ -1,0 +1,85 @@
+ ------
+ How-to: Test Linux kernel swapiness 
+ ------
+ Allan Thrane Andersen
+ ------
+ March 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Test Linux kernel swapiness 
+
+* Overview
+
+	This example illustrates how the SSH plugin can be used to test
+	the kernel swap policy in Linux (specifically the Linux variants Centos and Red Hat). 
+ 	
+	This example modifies the {{{./configure-kernel-swapiness.html}How-to: Configure Linux kernel swapiness}} example,
+	which illustrated how to define resources for enabling usage of the SSH plugin, define credentials 
+	for authentication and create the module which configured the Linux kernel swappiness policy.	
+
+** Part of the default configuration
+
+	This example is included in the 
+	{{{../../../usage/default-configuration.html}default configuration}}	
+	created by Pineapple, so there is no need to create it by hand.
+
+* Define module
+
+	The created module in the {{{./configure-kernel-swapiness.html}How-to: Configure Linux kernel swapiness}} example was named
+	<<<ssh-001-configure-wm-swapiness>>>. In this example we will start off with a copy of that module, but 
+	naming it <<<ssh-001-test-wm-swapiness>>> and modifies the model to test instead of configuring.
+	
+** Modify the model 
+ 
+	Replace the lines:
+
++---	
+<!-- set kernel swappiness -->
+<shp:execute command="sudo sysctl -w vm.swappiness=0" />
++---
+
+	with:
+	
++---
+<!-- test kernel swappiness -->
+<shp:assert-equals command="cat /proc/sys/vm/swapiness" expected-value="0"/>		
++---
+
+	The result being:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+    xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+    <mmd:model target-resource="regex:ssh-node.*">
+        <mmd:content>
+            <shp:ssh>
+                <!-- test kernel swappiness -->
+                <shp:assert-equals command="cat /proc/sys/vm/swapiness" expected-value="0"/>		
+            </shp:ssh>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++---
+
+** The configuration details
+
+	The <<<assert-equals>>> command extends the <<<execute>>> command with the extension 
+	that it executes a shell command and then asserts whether the output from standard out 
+	matches the expected values. The <<<assert-equals>>> commands asserts that the output 
+	in standard out is contains the expected value.
+		  		 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple client of choice:
+	
+	* Select the modules named <<ssh-001-test-wm-swapiness>>
+	
+	* Select the <<linux-vagrant>> model.
+	
+	* Invoke the <<test>> operation to test kerel swapiness policy at 
+	the three nodes defines in the <<<linux-vagrant>>> environment.
+	
+	[]

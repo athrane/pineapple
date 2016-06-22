@@ -1,0 +1,109 @@
+ ------
+ Infrastructure test plugin
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<infrastructure test plugin>> implements functionality to test basic 
+	infrastructure.   
+  
+  	The plugin supports these test cases:
+
+	* <<dns-forward-resolution-test>> - tests whether a host name can be resolved to an expected IP-address.
+
+	* <<dns-reverse-resolution-test>> - tests whether an IP-address can be resolved to a expected  host name.
+
+	* <<dns-resolution-test>> - tests whether a host name can be resolved to an expected IP-address and that the IP-address can be resolved 
+	back to the host name.
+
+	* <<tcp-connection-test>> - test whether a TCP host listens on expected port(s).
+	
+	* <<http-test>> - tests the HTTP behavior of a HTTP host.
+		
+	* <<test-session-stickyness>> - tests whether a sequence of HTTP-request from the same client are routed to and handled by the same host.
+
+	* <<test-load-balancing>> - tests whether HTTP-requests from new HTTP clients are routed to and handled by different hosts.
+
+	* <<test-http-statuscode>> - test whether a host returns an expected HTTP status code.		
+
+	* <<test-http-redirect>> - test whether a host redirects a HTTP request to another URL.		
+
+	* <<test-http-header>> - test whether a host returns expected and not expected HTTP headers.
+
+	* <<test-can-access-unc-path>> - tests a Windows share can be access using a UNC path.
+
+	* <<test-active-ftp-server>> - tests whether a FTP server is active on designated host.
+
+	* <<test-ftp-server-contains-directory>> - tests whether a FTP server contains a designated directory.
+
+	* <<test-ftp-server-can-create-directory>> - tests whether a directory can be created and then deleted on FTP server.
+
+	[]
+
+* Usage
+
+	Go to the {{{./usage/index.html}Plugin Usage page}} for instructions on using the plugin. 
+
+** Supported operations
+
+	The plugin supports the default operations:
+	
+    * <<test>> (from the test workflow). When the plugin is invoked with this 
+    operation, the content of the module model which contains infrastructure 
+    test cases are executed.
+        
+	[]		
+		
+	For more information about the default operations, refer to the	
+	{{{../../usage/operations.html}Operation and workflow reference.}}
+	
+** Plugin schema
+
+	The plugin defines a schema named <<infrastructure test plugin schema>> 
+	for definition definition of models in module models files.
+	
+	The schema defines the namespace 
+	<<<http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0>>>.	
+		
+	For more information about where the schema can be found, refer to the 			
+	{{{../../usage/schemas-plugins.html}Schema locations for plugins page.}}
+
+* Examples
+
+	To provide you with better understanding on some usages of the plugin,
+	you can take a look into the following examples:
+
+  * {{{./examples/resolve-to-ip.html}How-to: Setting up the plugin for usage, including a forward and reverse DNS resolution test case.}}
+  
+  * {{{./examples/reverse-dns.html}How-to: Test reverse DNS resolution of an IP address.}}  	  	
+
+  * {{{./examples/forward-and-reverse-dns.html}How-to: Test forward and reverse DNS resolution of an host name.}}
+  
+  * {{{./examples/forward-and-reverse-dns-without-ip.html}How-to: Test forward and reverse DNS resolution of an host name without an explicit IP address.}}  	  	
+    	  	   
+  * {{{./examples/host-listen-port.html}How-to: Test whether a server listens to select ports.}}
+  
+  * {{{./examples/http-headers.html}How-to: Write HTTP header test cases.}}
+
+  * {{{./examples/http-status200.html}How-to: Write HTTP test case which tests for HTTP status code 200.}}  
+  	
+  * {{{./examples/load-balancing.html}How-to: Test the load-balancing setup in a server environment.}}
+  	
+  * {{{./examples/use-proxy.html}How-to: Use proxy server for HTTP based tests.}}
+  
+  * {{{./examples/use-https.html}How-to: Use SSL with HTTPS for load-balancing tests.}}  
+  
+  []
+
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

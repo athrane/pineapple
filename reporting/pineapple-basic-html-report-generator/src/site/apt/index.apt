@@ -1,0 +1,41 @@
+ ------
+ Pineapple basic HTML report generator project
+ ------
+ Allan Thrane Andersen 
+ ------
+ October 2009
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<Pineapple basic HTML report generator project>> implements 
+	a basic report generator which can produce single file reports 
+	in HTML format. A report documents the result of the execution 
+	of a single operation on a module.
+	      
+* Usage
+
+	Instructions on the usage of the classes in the project can be found 
+	{{{./usage/index.html}here.}}
+
+* Examples
+
+	To provide you with better understanding for using the core component,	
+	you can take a look into the following examples:
+
+  	* {{{./examples/create-generator-default-settings.html}How-to: Create the report generator with default settings.}}
+  
+  	* {{{./examples/create-generator-custom-settings.html}How-to: Create the report generator with custom settings.}}
+  	
+  	* {{{./examples/invoke-generator.html}How-to: Register and invoke the report generator to create a report.}}  	
+  
+  	[]  
+
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

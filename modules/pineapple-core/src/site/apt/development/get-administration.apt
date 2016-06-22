@@ -1,0 +1,23 @@
+ ------
+ Get administration interface
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2013
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Get administration interface
+
+* Introduction
+
+	Clients can get access to the core component administration interface which supports 
+	runtime configuration of the core component. 
+
+* Overview 
+
+	When the method <<<getAdministration()>>> is invoked, the core component returns 
+	an instance of the administration API which implements the <<<Administration>>> interface.
+

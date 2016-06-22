@@ -1,0 +1,67 @@
+ ------
+ How-to: Test containers
+ ------
+ Allan Thrane Andersen
+ ------
+ August 2015
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Control containers
+
+* Overview
+
+	This example illustrates how the Docker plugin can be used to test the runtime state of a Docker container.
+	
+** Extension of another example
+
+	This example modifies the container configuration example 	
+	{{{./configure-container-exposed-ports.html}How-to: Configure Docker containers (Exposed ports).}}
+	
+	Please consult that example for details about Pineapple configuration, modules and models		
+	describes how Pineapple can be used to install Docker on a Vagrant box for the purpose of the example.
+	
+* Define the module model
+
+	The model file for definition of the image and the container:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+    xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" continue="false" >
+  <mmd:model target-resource="docker-node" target-operation="deploy-configuration" description="Define Docker image: busybox:latest" >
+    <mmd:content>
+      <dkp:docker>
+        <dkp:image repository="busybox" tag="latest" />
+        <dkp:container name="alpha01" state="running" >
+          <dkp:image repository="docker.io/busybox" tag="latest" />
+        </dkp:container>        
+      </dkp:docker>                       
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++----	 
+
+* The configuration details
+
+** Definition of the runtime state in the model 
+
+	The container element contains an optional <<<state>>> attribute. 
+	The attribute defines which state the container should be put in when the 
+	model is invoked with a <deploy-configuration> operation, i.e. when the container
+	is created.
+	The attribute is used in this example to start the container by putting it into the
+	<running> state.	
+		
+** Testing the the runtime state	
+	
+	When the model is invoked with the <deploy-configuration> operation then the container is created.
+
+	When the model is invoked with the <test> operation then the <actual> container runtime state is 
+	validated with the <expected> runtime state in the model.
+
+	If the states match the validation succeeds.
+	If the container doesn't exist the validation fails.	
+	
+	

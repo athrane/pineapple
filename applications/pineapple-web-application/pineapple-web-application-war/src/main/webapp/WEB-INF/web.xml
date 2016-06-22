@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+    metadata-complete="true" >
+ 
+  	<display-name>Pineapple Web Application</display-name>
+
+	<!-- Configures the pineapple.home.dir system property, used by the PineappleHomeInitializer class -->	
+	<context-param>
+		<param-name>pineapple.home.dir</param-name>
+		<param-value>${user.home}/.pineapple</param-value>
+	</context-param>
+
+	<!-- Initialization of the Pineapple Home directory -->
+	<listener>
+		<description>ServletContextListener which initiates the Pineapple Home directory.</description>
+		<listener-class>com.alpha.pineapple.web.context.PineappleHomeInitializer</listener-class>
+	</listener>
+	
+	<!-- Configures logging, used by the LoggingInitializer class -->	
+	<context-param>
+		<param-name>log4jConfig</param-name>
+		<param-value>/WEB-INF/log4j/log4j.properties</param-value>
+	</context-param>
+
+	<!-- Initialization of Log4j -->
+	<listener>
+		<description>ServletContextListener which initiates log4J.</description>
+		<listener-class>com.alpha.pineapple.web.context.LoggingInitializer</listener-class>
+	</listener>
+		      
+    <!-- Location of the XML file that will be load by the ContextLoaderListener. -->
+    <context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring/webapp-config.xml</param-value>		
+    </context-param>
+      
+    <!-- Loads the root application context of this web app at startup. -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+ 
+ 	<!-- 
+ 		Experiment to resolve the error:
+		Error creating bean with name 'scopedTarget.sessionState': 
+		Scope 'session' is not active for the current thread; 
+		consider defining a scoped proxy for this bean if you intend to refer to it from a singleton; 
+		nested exception is java.lang.IllegalStateException: No thread-bound request found: 
+ 
+		links:
+		http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/beans.html#beans-factory-scopes-other
+		http://forum.springsource.org/showthread.php?t=50631				  		
+ 	 -->
+	<listener>
+    	<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  	</listener>
+     		
+	<!-- ZK session listener -->
+	<listener>
+    	<description>Used to clean up when a session is destroyed</description>
+    	<display-name>ZK Session Cleaner</display-name>
+    	<listener-class>org.zkoss.zk.ui.http.HttpSessionListener</listener-class>
+  	</listener>	
+				
+	<!-- The front controller of this Spring Web application, responsible for handling all application requests -->
+	<servlet>
+		<servlet-name>springMvcDispatcherServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value/>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>		
+	<!-- Map all requests to the DispatcherServlet for handling -->
+	<servlet-mapping>
+		<servlet-name>springMvcDispatcherServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+    <!-- ZK loader -->    
+    <servlet>
+        <description>ZK loader for ZUML pages</description>
+        <servlet-name>zkLoader</servlet-name>
+        <servlet-class>org.zkoss.zk.ui.http.DHtmlLayoutServlet</servlet-class>
+        <init-param>
+            <param-name>update-uri</param-name>
+            <param-value>/zkau</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>zkLoader</servlet-name>
+        <url-pattern>*.zul</url-pattern>
+    </servlet-mapping>
+    
+    <!-- ZK update engine -->    
+    <servlet>
+        <description>The asynchronous update engine for ZK</description>
+        <servlet-name>auEngine</servlet-name>
+        <servlet-class>org.zkoss.zk.au.http.DHtmlUpdateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>auEngine</servlet-name>
+        <url-pattern>/zkau/*</url-pattern>
+    </servlet-mapping>
+			
+	<filter>
+		<filter-name>encoding-filter</filter-name>
+		<filter-class>
+			org.springframework.web.filter.CharacterEncodingFilter
+		</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+		<param-name>forceEncoding</param-name>
+		<param-value>true</param-value>
+		</init-param>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>encoding-filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>			
+			
+	<!-- defines session timeout in minutes -->
+	<session-config>
+		<session-timeout>60</session-timeout>
+	</session-config>
+ 				
+	<welcome-file-list>
+		<welcome-file>/workspace</welcome-file>
+	</welcome-file-list>
+	<error-page>
+		<error-code>404</error-code>
+    	<location>/WEB-INF/jsp/error.zul</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+    	<location>/WEB-INF/jsp/error.zul</location>
+	</error-page>
+	<error-page>
+    	<exception-type>java.lang.Throwable</exception-type>   
+    	<location>/WEB-INF/jsp/error.zul</location>   
+	</error-page>	 				 				 				 				
+</web-app>

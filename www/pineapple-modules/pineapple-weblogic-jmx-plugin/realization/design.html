@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+<html>
+  <head>
+    <title>Pineapple WebLogic JMX plugin - Design</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+          <meta name="author" content="Allan Thrane Andersen" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <!-- TODO: move this into JavaScript to patch the skin
+      <div class="xright">  </div>
+    -->
+    <div id="leftColumn">
+      <div id="navcolumn">
+             <dl class=navgroup>
+        <dt>Project tools</dt>
+        <dd><ul>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/servlets/ProjectMemberList">Membership</a>
+        </li>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+        </li>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/servlets/ProjectForumView">Discussion forums</a>
+        </li>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/servlets/ProjectMailingListList">Mailing lists</a>
+        </li>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/servlets/ProjectDocumentList">Documents and files</a>
+        </li>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/source/browse/pineapple/">Subversion</a>
+        </li>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/servlets/ProjectIssues">Issue tracker</a>
+        </li>
+          </ul></dd>
+    </dl>
+      <dl class=navgroup>
+        <dt>Project overview</dt>
+        <dd><ul>
+              
+    <li class="none">
+              <a href="../index.html">Introduction</a>
+        </li>
+              
+    <li class="none">
+              <a href="../usage´/index.html">For users</a>
+        </li>
+              
+    <li class="none">
+              <a href="../development/index.html">For developers</a>
+        </li>
+              
+    <li class="none">
+              <a href="../faq.html">FAQ</a>
+        </li>
+          </ul></dd>
+    </dl>
+      <dl class=navgroup>
+        <dd><ul>
+          </ul></dd>
+    </dl>
+      <dl class=navgroup>
+        <dt>Project Documentation</dt>
+        <dd><ul>
+              
+                
+              
+      
+            
+      
+              
+        <li class="collapsed">
+              <a href="../project-info.html">Project Information</a>
+              </li>
+              
+                
+              
+      
+            
+      
+              
+        <li class="collapsed">
+              <a href="../project-reports.html">Project Reports</a>
+              </li>
+          </ul></dd>
+    </dl>
+        </div>
+      <script>
+        // replace the java.net project tools with the navigation bar from Maven.
+        // also get rid of "Get Involved" thingie too, while we are at it
+        var pt = document.getElementById("projecttools");
+        var nv = document.getElementById("navcolumn");
+        
+        while(pt.previousSibling!=null)
+          pt.parentNode.removeChild(pt.previousSibling);
+        
+        pt.parentNode.insertBefore(nv,pt);
+        pt.parentNode.removeChild(pt);
+      </script>
+      <script>
+        // kill "description" h3 bar
+        var ld = document.getElementById("longdescription");
+        if(ld!=null) {
+          for( n=ld.firstChild; n!=null; n=n.nextSibling ) {
+            if(n.nodeType==1 && n.innerHTML=="Description" ) {
+              n.parentNode.removeChild(n);
+              break;
+            }
+          }
+        }
+      </script>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>Design</h2>
+<div class="section"><h3>Steps for editing a WebLogic configuration</h3>
+<p><b>Start an Edit Session</b>
+</p>
+<p>Initiate a connection to the Edit MBean Server.</p>
+<p>Get the object name for ConfigurationManagerMBean.</p>
+<p>Start an edit session.</p>
+<p><b>Change Attributes or Create New MBeans</b>
+</p>
+<p>Navigate the hierarchy of the edit tree and retrieve an object name for the MBean.</p>
+<p>To change the value of an MBean attribute, invoke…</p>
+<p>Validate your changes</p>
+<p><b>Save Changes</b>
+</p>
+<p>Save your changes by invoking the <tt>ConfigurationManagerMBean</tt>
+ save() operation.</p>
+<p><b>Activate your saved changes</b>
+</p>
+<p>Invoke the <tt>ConfigurationManagerMBean</tt>
+ activate(..)</p>
+<p>Close your connection to the MBean server</p>
+</div>
+<div class="section"><h3>WebLogic MBean servers</h3>
+<div class="section"><h4>Domain Runtime MBean Server</h4>
+<p>MBeans for domain-wide services. This MBean server also acts as a single point of access for MBeans that reside on Managed Servers.</p>
+<p>Only the Administration Server hosts an instance of this MBean server.</p>
+</div>
+<div class="section"><h4>Runtime MBean Server</h4>
+<p>MBeans that expose monitoring, runtime control, and the active configuration of a specific WebLogic Server instance.</p>
+<p>Each server in the domain hosts an instance of this MBean server.</p>
+</div>
+<div class="section"><h4>Edit MBean Server</h4>
+<p>Pending configuration MBeans and operations that control the configuration of a WebLogic Server domain. </p>
+<p>It exposes a <tt>ConfigurationManagerMBean</tt>
+ for locking, saving, and activating changes.</p>
+<p>Only the Administration Server hosts an instance of this MBean server.</p>
+</div>
+<div class="section"><h4>The JVM’s platform MBean server</h4>
+<p>MBeans provided by the JDK that contain monitoring information for the JVM itself.</p>
+</div>
+</div>
+<div class="section"><h3>Service MBean</h3>
+<p>Within each MBean server, WebLogic Server registers a service MBean under a simple object name.</p>
+<p>The attributes and operations in this MBean serve as your entry point into the WebLogic Server MBean hierarchies.</p>
+<ul><li>MBean server =&gt; Service MBean</li>
+<li>Domain Runtime MBean Server =&gt; DomainRuntimeServiceMBean</li>
+<li>Runtime MBean Servers =&gt; RuntimeServiceMBean</li>
+<li>The Edit MBean Server =&gt; EditServiceMBean</li>
+</ul>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2008
+    
+          
+  
+
+  
+  
+  &nbsp;| Last Published: 02 Jul 2008
+  &nbsp;| Version: 1.0-SNAPSHOT
+</div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

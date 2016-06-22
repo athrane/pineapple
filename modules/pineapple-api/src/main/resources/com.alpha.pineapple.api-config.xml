@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    		http://www.springframework.org/schema/context 
+    		http://www.springframework.org/schema/context/spring-context-3.0.xsd" >
+    
+	<!-- enable annotation based configuration -->
+	<context:annotation-config/> 
+	
+	<!-- define message provider for internationalization  -->
+	<bean id="apiMessageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">
+    	<property name="basename" value="com.alpha.pineapple.api-messages"/>
+	</bean>	
+
+	<!--  define utilities -->	
+	<bean id="operationUtils" class="com.alpha.javautils.OperationUtilsImpl" />		
+	<bean id="systemUtils" class="com.alpha.javautils.SystemUtils" />		
+	<bean id="propertyGetter" class="com.alpha.pineapple.resource.ResourcePropertyGetter" scope="prototype" />
+
+	<!--  define execution result factory -->	    		    		    			    		    		
+	<bean id="executionResultFactory" class="com.alpha.pineapple.execution.DefaultExecutionResultFactoryImpl" />
+
+	<!--  define model mappers -->	    		    		    			    		    		
+	<bean id="executionResultMapper" class="com.alpha.pineapple.model.ExecutionResultMapperImpl" />
+
+	<!-- Pineapple model factories-->		
+	<bean id="resultModelObjectFactory" class="com.alpha.pineapple.model.execution.ObjectFactory" scope="singleton" />
+	<bean id="configurationModelObjectFactory" class="com.alpha.pineapple.model.configuration.ObjectFactory" scope="singleton" />
+	<bean id="scheduledOperationModelObjectFactory" class="com.alpha.pineapple.model.execution.scheduled.ObjectFactory" scope="singleton" />
+	<bean id="moduleModelObjectFactory" class="com.alpha.pineapple.model.module.info.ObjectFactory" scope="singleton" />
+	<bean id="reportModelObjectFactory" class="com.alpha.pineapple.model.report.ObjectFactory" scope="singleton" />
+
+</beans>

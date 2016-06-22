@@ -1,0 +1,70 @@
+ ------
+ Fusion Middleware installation plugin
+ ------
+ Allan Thrane Andersen 
+ ------
+ June 2011
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<Fusion Middleware installation plugin>> implements functionality to install the Oracle Fusion Middleware products 
+	and validate the installation. For more information about the Oracle Fusion Middleware products, please refer to the page
+	{{{http://www.oracle.com/us/products/middleware/index.html}The official Oracle Fusion Middleware home page.}}	
+	
+	The plugin supports the installation of these products:
+	
+	* Application Development Runtime (adds ADF and Enterprise Manager support to WebLogic domains).
+	
+	* WebCenter Suite.
+	
+	* SOA Suite.	
+	
+	* Oracle Service Bus (OSB)		
+	
+	[]
+		 	    
+* Usage
+
+	Go to the {{{./usage/index.html}Plugin Usage page}} for instructions on using the plugin. 
+
+** Supported operations
+
+	The plugin supports the default operations:
+	
+    * <<deploy-configuration>> (from the deployment workflow). When the plugin is invoked with this 
+    operation, the plugin installs the specified product(s).
+	
+    * <<undeploy-configuration>> (from the deployment workflow). When the plugin is invoked with this 
+    operation, the plugin uninstalls the specified product(s).
+	        
+	[]		
+		
+	For more information about the default operations, refer to the	
+	{{{../../usage/operations.html}Operation and workflow reference.}}
+
+** Plugin schema
+
+	The plugin defines a schema named <<Fusion Middleware installation plugin schema>> 
+	for definition of models in module model files.	The schema defines the namespace 
+	<<<http://pineapple.dev.java.net/ns/plugin/fusion_middleware_installation_1_0>>>. For 
+	more information about where the schema can be found, refer to the 
+	{{{../../usage/schemas-plugins.html}Schema locations for plugins page.}}
+
+* Examples
+
+	To provide you with better understanding on some usages of the plugin,
+	you can take a look into the following examples:
+
+	  * {{{./examples/example-modules.html}Overview of example modules for the Fusion Middleware installation plugin.}}
+
+	  []
+  
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

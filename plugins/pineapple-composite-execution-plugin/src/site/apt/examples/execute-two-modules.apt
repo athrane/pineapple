@@ -1,0 +1,167 @@
+ ------
+ How-to: Execute two modules in sequence
+ ------
+ Allan Thrane Andersen
+ ------
+ March 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Execute two modules in sequence
+
+* Overview
+
+	This example illustrates how the composite execution plugin can be used to 
+	execute two modules in sequence.
+ 	
+	Two steps are required to use the plugin:
+	
+	* Define resource for enabling usage of the plugin
+		 	
+	* Define the module model which defines the execution sequence.
+	
+	[]
+	
+	..And finally Pineapple should be invoked to execute the two modules.	   
+	
+	For information about how to define resource, credentials and modules, 
+	refer to the {{{../usage/index.html} plugin usage page.}}				
+
+** Part of the default configuration
+
+	This example is included in the 
+	{{{../../../usage/default-configuration.html}default configuration}}	
+	created by Pineapple, so there is no need to create it by hand.
+
+* Define resource 
+
+	To define the resource, first open the resources file at
+	<<<$\{user.home}/.pineapple/conf/resources.xml>>> and add an 
+	environment that plugin should be executed in. As described on the 
+	{{{../usage/index.html}plugin usage page}} the ideal way to define a resource for 
+	this plugin is to define the resource in the wild card environment, which will enable 
+	usage of the plugin all environments. 
+	
+	In this example we intend to use the plugin in an environment named <<<local>>>, but
+	will configure the plugin in the wild card environment since it will also enable usage in the
+	<<<local>>> environment.  
+
+	The initial environment definition for the wild card environment will look like:
+		 		
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <environments>
+    <environment id="*" />								
+  </environments>
+</configuration>  	
++--------  				 		
+
+	Then the resource is defined which enables usage of the plugin in all environments: 
+		
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <environments>
+    <environment id="*" >
+      <resources>
+        <resource id="composite-execution" plugin-id="com.alpha.pineapple.plugin.composite.execution" />                  
+      </resources>
+    </environment>								
+  </environments>
+</configuration>  	
++--------		 
+
+** Pineapple's default configuration 
+	
+	Pineapple's default configuration also creates the above configuration for the plugin, 
+	so you use the default configuration as a starting point for your configurations or 
+	just take a look at it for inspiration.
+	
+** The configuration details	 		 	
+		
+	The <<<resouce.xml>>> file uses the <<<http://pineapple.dev.java.net/ns/environment_1_0>>> 
+	schema which must be used to define the Pineapple environment configuration. 
+	
+	An environment with ID "*" is defined, which is the ID for wild card environments in Pineapple.
+	
+	The resource is defined with the ID <<<composite-execution>>> which defines a key which is 
+	used to reference the resource from any module we may define in the future. Later on when the 
+	model is defined in a module, the <<<composite-execution>>> ID is then used to tell Pineapple 
+	that this resource (and thus the composite execution plugin) should be used to parse and 
+	execute the module model which defines composite execution of modules
+
+	The <<<plugin-id>>> in the resource is the technical part of the definition which binds 
+	the resource to some plugin code. Each plugin is identified	with a Java package and the 
+	Java package for the composite execution plugin is <<<com.alpha.pineapple.plugin.composite.execution>>>. 	
+	
+* Define the module 
+
+	Pineapple's unit of work is modules. A module is a self contained unit which 
+	can contain models, scripts and binaries. Models serves to specify test cases, 
+	deployment of applications, configuration of devices or execution of scripts. 
+	
+	The default directory for modules is <<<$\{user.home\}/.pineapple/modules>>> so we will 
+	create a module named <<<composite-execution-001-two-modules>>> there. The module 
+	for this example will end up with the structure:
+
++---
+composite-execution-001-two-modules
+ |
+ +--- models	 
+       +--- local.xml 
++---
+	
+* Define the module model <<<local.xml>>> 
+
+	The model file for execution of the two modules <infrastructure-test-001-forward-dns-resolution-localhost>
+	and <infrastructure-test-004-host-listens-on-ports> looks like:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:cep="http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0" >
+    <mmd:model target-resource="composite-execution">
+        <mmd:content>
+          <cep:composite-execution>
+            <cep:module name="infrastructure-test-001-forward-dns-resolution-localhost" />
+            <cep:module name="infrastructure-test-004-host-listens-on-ports" />				
+        </cep:composite-execution>			
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++----	 
+
+** The configuration details
+
+	Two schema are used in the model file. The <<<http://pineapple.dev.java.net/ns/module_model_1_0>>> is used
+	to define the namespace <<<mmd>>> which defines the general infrastructure for models. The 
+	<<<http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0>>> schema is used to
+	define the namespace <<<cep>>> which is used to define the model for the composite execution plugin. Since 
+	multiple schemas are used to define the model file, the elements are qualified.
+	
+	The <<<target-resource>>> attribute defines a reference to the resource which is targeted when the 
+	model executed. In this case, the value <<<composite-execution>>> is a reference to resource defined 
+	previously in the example.
+	
+	The <<<composiste-execution>>> element defines the root of model for the composite-execution plugin. The
+	two <<<module>>> elements defines the sequence of modules which should be executed by the plugin.
+		 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple client of choice:
+	
+	* Select the modules named <<composite-execution-001-two-modules>>
+	
+	* Select the <<local>> model.
+	
+	* Invoke the <<test>> operation to execute the two composite modules.
+	
+	[]
+
+

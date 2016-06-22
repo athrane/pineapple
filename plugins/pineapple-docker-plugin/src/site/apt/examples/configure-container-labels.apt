@@ -1,0 +1,95 @@
+ ------
+ How-to: Configure Docker containers (Labels)
+ ------
+ Allan Thrane Andersen
+ ------
+ June 2015
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Configure Docker containers (Labels)
+
+* Overview
+
+	This example illustrates how the Docker plugin can be used to configure a Docker container,
+	more specifically labels, as part of the container creation.
+
+	The volumes used by the container can also be configured in the dockerfile
+	through usage of the LABEL command.
+	
+** Extension of another example
+
+	This example modifies the container configuration example 	
+	{{{./configure-container-exposed-ports.html}How-to: Configure Docker containers (Exposed ports).}}
+	
+	Please consult that example for details about Pineapple configuration, modules and models		
+	describes how Pineapple can be used to install Docker on a Vagrant box for the purpose of the example.
+	
+* Define the module model
+
+	The model file for definition of the image and the container:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+  xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" >
+  <mmd:model target-resource="docker-node" target-operation="deploy-configuration" description="Define Docker image: centos:latest" >
+    <mmd:content>
+      <dkp:docker>
+        <dkp:image-from-dockerfile source-directory="modulepath:dockersrc" pull-image="false" >
+          <dkp:target-image repository="pineapple/httpd" tag="1.0" />
+        </dkp:image-from-dockerfile>
+      </dkp:docker>                       
+    </mmd:content>
+  </mmd:model>
+  <mmd:model target-resource="docker-node" description="Define Docker container" >
+    <mmd:content>
+      <dkp:docker>
+        <dkp:container name="alpha01" >
+          <dkp:image repository="pineapple/httpd" tag="1.0" />   
+          <dkp:configuration>
+            <dkp:labels>
+              <dkp:label key="com.example.vendor" value="Acme" />
+              <dkp:label key="com.example.license" value="GPL" />
+              <dkp:label key="com.example.version" value="1.0" />
+            </dkp:labels>
+          </dkp:configuration>
+        </dkp:container>
+      </dkp:docker>                       
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++----	 
+
+* The configuration details
+
+** Definition of the container	
+
+	The second model contains the <<<dkp:container>>> element which defines a Docker container.
+	When the model is invoked with the <deploy-configuration> operation then the container is created.
+	When the model is invoked with the <undeploy-configuration> operation then the container is deleted.
+
+*** Configuration of the container	
+
+	The container element contains an optional <<<configuration>>> element. 
+	The element supports detailed configuration of the container.
+
+	The element is used in this example to the define labels for the container.	
+	
+	A volume is defined by a <<<labels>>> element with a sub <<<label>>> element for each label.
+	A <<<label>>> element has a <<<key>>> attribute for definition of the label key 
+	and a <<<values>>> attribute for definition of the label vales.
+	
++----
+  <dkp:configuration>
+    <dkp:volumes>
+      <dkp:label key="com.example.vendor" value="Acme" />
+      <dkp:label key="com.example.license" value="GPL" />
+      <dkp:label key="com.example.version" value="1.0" />
+    </dkp:volumes>
+  </dkp:configuration>
++----	 
+
+
+	

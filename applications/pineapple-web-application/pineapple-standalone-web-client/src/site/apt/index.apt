@@ -1,0 +1,54 @@
+ ------
+ Pineapple Stand-alone Web Application
+ ------
+ Allan Thrane Andersen 
+ ------
+ August 2010
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<Pineapple Stand-alone Web Application>> project creates a ZIP file which contains a 
+	binary release of Pineapple. The release contains the web application packaged as a stand-alone application.
+
+	The ZIP file is named <<<pineapple-standalone-web-client-VERSION.zip.>>>.
+
+	{{{../../../usage/version-info.html}Pineapple Java requirements for the stand-alone web application.}}
+			  
+* Installation
+
+	* {{{./usage/installation-linux.html}How-to: Install the Pineapple stand-alone web application on Linux.}}
+
+	* {{{./usage/installation-windows.html}How-to: Install the Pineapple stand-alone web application on Windows.}}
+
+	* {{{./usage/add-3rdparty-lib.html}How-to: Add a 3rd party library to the Pineapple stand-alone web application.}}
+
+	[]
+
+* Usage
+
+	{{{../pineapple-web-application-war/usage/index.html}The web application usage documentation.}}
+
+* Examples
+
+	To provide you with better understanding on some usages of the client,
+	take a look into the following examples:
+
+	* {{{./examples/start.html}How-to: Start the stand-alone web application.}}	
+	
+	* {{{./examples/configure-jetty-logging.html}How-to: Modify the logging configuration for the embedded Jetty server.}}
+	
+	* {{{./examples/configure-pineapple-logging.html}How-to: Modify the logging configuration for the stand-alone web application.}}
+	
+	* {{{./examples/configure-home-directory.html}How-to: Configure the home directory for the stand-alone web application.}}	
+       	            
+  []	
+	
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

@@ -1,0 +1,226 @@
+ ------
+ Development documentation
+ ------
+ Allan Thrane Andersen 
+ ------
+ October 2009
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Development documentation
+
+* Schema location
+
+	The generator defines a schema named <<Basic HTML report schema>>
+	which is used internally by the generator to serialize the output
+	of an operation to a XML file. The schema defines the namespace 
+	<<<http://pineapple.dev.java.net/ns/report/basic_html_1_0>>>.	
+
+	The schema can be found at these locations:
+	
+	* At the root of the jar file produce by the <<<pineapple-basic-html-report-generator>>>.
+	
+	* At the project website at: <<<http://pineapple.dev.java.net/ns/report/basic_html_1_0>>>.
+	
+	* At the root of the jar file produced by the <<<pineapple-basic-html-report-generator>>> project.
+	
+	[]
+
+** Adding the schemas to the main project web site
+
+	During the <<<site>>> phase (of the Maven build) the schema is copied to the main site in the 
+	<<<pineapple-project>>>. The schema is copied to the directory <<</ns/report>>>. The copy operation
+	is implemented in the <<<pom.xml>>> for the <<<pineapple-basic-html-report-generator>>> project 
+
+* Generation of classes from XML schemas
+
+	The project uses JAXB through the Maven 2 plugin <<<maven-jaxb2-plugin>>> 
+	to generate classes from XML schema.		
+	 	
+** Customized package names
+	 	
+	The generated classes are mapped into the package 
+	<<<com.alpha.pineapple.model.report.basichtml>>> by 
+	configuring the <<<maven-jaxb2-plugin>>> in the <<<pom.xml>>>. 
+
+	No JAXB bindings file are used in the project.
+
+** Customized type names
+
+	Default type names are used. No JAXB bindings file are used in the project.
+
+** JAXB Links
+
+	* {{{https://maven-jaxb2-plugin.dev.java.net/}<<<maven-jaxb2-plugin>>> information.}}
+
+	* {{{https://jaxb.dev.java.net/}JAXB Project information.}}
+	
+	* {{{https://jaxb.dev.java.net/2.1.9/docs/vendorProperties.html}JAXB RI documentation of namespace prefix mapping.}}
+	
+	* {{{http://blogs.sun.com/enterprisetechtips/entry/customizing_jaxb}How to customize namespace prefix mapping in JAXB.}}
+		
+
+* Internal configuration
+
+** Logging
+
+	The report generator uses log4j for logging. Each pineapple client 
+	must provide a Log4j configuration which is accessible at runtime 
+	as a result of the build process.
+	
+	The report generator does not provide a Log4j configuration as part of its
+	production build. A log4j configuration file is defined in the project 
+	in the directory <<<src/test/resources/log4.properties>>> for testing. 
+	
+	The test configuration configures Log4j to write to the log file 
+	to <<<$\{user.home}/.pineapple/logs/pineapple.log>>>.
+	
+** XSLT file for HTML file generation
+
+	The report generator uses a XSLT file which to transform the 
+	generated XML report file into a HTML file.	The XLST file is 
+	located in <<<src/main/resources/com.alpha.pineapple.report.basichtml.xsl>>>. 
+
+** Spring configuration file 
+
+	The report generator contains a configuration file which defines a Spring 
+	application context. The Spring application context defines dependency 
+	injection of objects as part of initialization of the report generator. 
+	The file is located in 
+	<<<src/main/resources/com.alpha.pineapple.report.basichtml-config.xml>>>.		 
+
+** Internationalization (I18N) configuration file 
+
+	The report generator uses internationalization. Messages 
+	used by classes in the project are located in the file
+	<<<src/main/resources/com.alpha.pineapple.report.basichtml-messages.properties>>>.	
+		 
+* Implementation
+
+** Report generator class
+
+	The package <<<com.alpha.pineapple.report.basichtml>>> is the root
+	package of the report generator and contains the report generator 
+	class named <<<BasicHtmlReportGeneratorImpl>>>. 
+ 	
+*** Implemented as an <<<ResultListener>>> 	
+ 	
+ 	The class implements the <<<com.alpha.pineapple.execution.ResultListener>>>
+ 	interface which listens to events from execution results during execution 
+ 	of an Pineapple operation. When the state of root execution result is 
+ 	changed from running to some completed state, the generator creates the report.
+ 	
+*** Implements the <<<ReportGeneratorInfo>>> interface
+
+	The generator implements the 
+	<<<com.alpha.pineapple.report.basichtml.ReportGeneratorInfo>>> interface which
+	provides info how the report generation process whent. 	   
+ 	
+*** The report generation process 	
+ 	
+ 	The algorithm for generating a reports is:
+ 	
+	[[1]] When <<<notifyOfResultStateChange(...)>>> is invoked, it is validated that 
+	the received event is from the root execution result and its stateis changed 
+	from running. If this is the case then  report generation process is started. 
+	Otherwise the generator exits. 	 
+
+	[[2]] An new report instance directory is created.
+	
+	[[3]] The tree with the received root execution result as root, is mapped into a tree
+	consisting of report result objects of the type 
+	<<<com.alpha.pineapple.model.report.basichtml.ExecutionResultType>>>
+	using the mapper object.
+	
+	[[4]] The tree of report result objects is marshalled into an XML file using JAXB.	
+
+	[[5]] Using the XML file as input, an HTML file is created using the XLST transformer. 
+ 	
+ 	[]
+ 	
+*** Creating report generator instances
+
+	Instances are created by using the factory methods:
+	
+	* <<<BasicHtmlReportGeneratorImpl.getInstance(File reportDirectory)>>>
+	
+	* <<<BasicHtmlReportGeneratorImpl.getInstance()>>>.
+	
+	* Looking up the bean named <<<reportGenerator>>> in the Spring configuration file. 
+	If the report directory isn't initialized afterwards by invoking 
+	<<<ReportGeneratorInfo.setReportDirectory>>> then the generator will create 
+	reports at the default location.
+	
+	[]		
+ 	 	 
+*** Customizing the location of the reports 	 
+
+	The location of reports is configurable as an argument to the factory
+	method <<<BasicHtmlReportGeneratorImpl.getInstance(File reportDirectory)>>>. 
+	The <<<reportDirectory>>> parameter defines a the root directory where 
+	the generator will generate reports.
+	
+	Alternatively, the report generator implements the interface <<<ReportGeneratorInfo>>>
+	which contains the method <<<setReportDirectory(..)>>> which can be used to set the root 
+	directory. 
+	
+	At runtime the the generator will add a new sub directory each time the
+	generator is invoked. The created directory is named 
+	<<<report-TIMESTAMP>>> where TIMESTAMP is a time stamp with the format
+	YYYY-MM-DD-HHMMSS. The time stamp marks the time when the generator starts 
+	to create the report. The two report files named <<<basic-report.xml>>> and 
+	<<<basic-report.html>>> are created in the directory.	
+	
+	If no location is defined, i.e. the no-arg factory method 
+	<<<BasicHtmlReportGeneratorImpl.getInstance()>>> is used, or the generator is looked up 
+	from the Spring context, the generator will generate reports in the root 
+	directory: <<<$\{user.home}/.pineapple/reports/>>>		   	
+ 	
+** JAXB namespace mapper class
+
+	The class <<<ReportNamespaceMapper>>> implements 
+	the <<<com.sun.xml.bind.marshaller.NamespacePrefixMapper>>> interface. 
+	The class maps entities from <<Basic HTML report schema>> namespace with a 
+	prefix during JAXB marshalling. The class defines the mapping:
+	
+	* <<<http://pineapple.dev.java.net/ns/report/basic_html_1_0>>> is mapped to <<<rbh>>>.
+	
+	[]
+	 
+** Model helper class
+	
+	The class <<<com.alpha.pineapple.report.basichtml.model.MapperImpl>>> which 
+	implements the interface <<<Mapper>>> implements mapping between <<<ExecutionResult>>>
+	objects and schema generated classes. The class is used by the generator to produce
+	the object graph which is marshalled into the XML file.
+	
+*** Mapping execution results into report results
+
+	The execution results which is mapped by the mapper object is processed 
+	differently based on their position in the result object graph:
+	
+	* The <<root execution result>> is mapped into the root report result object
+	and added directly to the report object. This report result object is tagged 
+	with the type <<<operation>>>.
+
+	* The <<execution result objects at level 1>> is mapped into a report result objects
+	and added directly to the root report object. These report result object are 
+	tagged with the type <<<model>>>.
+
+	* The <<execution result objects at level 2+>> is mapped into a report result objects
+	and added directly to their parent report object. These report result object are 
+	tagged with the type <<<default>>>.
+	
+	[]  	
+
+*** Generating unique id for HTML anchors
+
+	The mapper object adds a unique id to each report result object. These id's are
+	implemented as integers and stored in the <<<reportId>>> attribute on a report 
+	result object. The id's are used to generate HTML anchors in the HTML report file.
+
+ 	 	
+ 	
+	

@@ -1,0 +1,385 @@
+ ------
+ How-to: Define skeleton configuration for usage of WLDF  
+ ------
+ Allan Thrane Andersen
+ ------
+ April 2011
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Define skeleton configuration for usage of WLDF 
+
+* Overview
+
+	This example illustrates how to define a skeleton configuration
+	for usage with the WLDF (WebLogic Diagnostic Framework).
+	
+	The definition consist of two steps:
+	
+		* Define a model using the domain schema which contains a <<<WLDF system resource>>>.   
+		
+		* Define another model using the WLDF schema, which contains a <WLDF resource>.				 
+		
+		[]
+		
+	The first part declares the WLDF module with a unique name in the domain configuration
+	and importantly targets the module to servers. The second part is where all the details
+	goes in and it uses the WLDF schema for defining monitoring entities in the 
+	diagnostics framework. 
+		
+	
+* Define a model using the domain schema which contains a <<<WLDF system resource>>>
+
+** Creation of the skeleton domain configuration
+	
+	The <WLDF system resource> is defined as a child element to the 
+	<<<domain>>> element, so lets start with a skeleton model 
+	using the domain schema:
+     
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+		xmlns:wjp="http://www.bea.com/ns/weblogic/920/domain" 
+		xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls" 
+		xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/security/xacml 
+		http://www.bea.com/ns/weblogic/90/security/xacml.xsd 	
+		http://www.bea.com/ns/weblogic/90/security 
+		http://www.bea.com/ns/weblogic/90/security.xsd 
+		http://www.bea.com/ns/weblogic/920/domain 
+		http://www.bea.com/ns/weblogic/920/domain.xsd 
+		http://www.bea.com/ns/weblogic/90/security/wls 
+		http://www.bea.com/ns/weblogic/90/security/wls.xsd" >
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>			
+			<wjp:domain>						
+				<wjp:name>alphadomain</wjp:name>
+			</wjp:domain>			
+		</mmd:content>							
+	</mmd:model>		
+</mmd:models>			
++---
+
+	The import part is:
+
++---
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>			
+			<wjp:domain>						
++---	
+
+	Where:
+	
+	* The <<<mmd:model>>> element defines the model. 
+	
+	* Targets the model to the <<<weblogic-jmx>>> resource.
+	
+	* The model defines a content root by the <<<mmd:content>>> element.
+	
+	* The root element <<<wjp:domain>>> defines the root element in the domain schema.  
+		
+	[]  
+	 
+
+** Adding the WLDF system resource 
+
+	The <WLDF system resource> declares a WLDF module, with a unique name in the domain
+	and it defines to which servers the model should be targeted.
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+		xmlns:wjp="http://www.bea.com/ns/weblogic/920/domain" 
+		xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls" 
+		xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/security/xacml 
+		http://www.bea.com/ns/weblogic/90/security/xacml.xsd 	
+		http://www.bea.com/ns/weblogic/90/security 
+		http://www.bea.com/ns/weblogic/90/security.xsd 
+		http://www.bea.com/ns/weblogic/920/domain 
+		http://www.bea.com/ns/weblogic/920/domain.xsd 
+		http://www.bea.com/ns/weblogic/90/security/wls 
+		http://www.bea.com/ns/weblogic/90/security/wls.xsd" >
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>			
+			<wjp:domain >						
+				<wjp:name>alphadomain</wjp:name>
+				<wjp:wldf-system-resource>
+					<wjp:name>wldf-module-1</wjp:name>
+					<wjp:target>admserver</wjp:target>
+				</wjp:wldf-system-resource>		
+			</wjp:domain>			
+		</mmd:content>							
+	</mmd:model>		
+</mmd:models>			
++---
+	
+	..which defines a WLDF module named <<<wldf-module-1>>> which is targeted to <<<admserver>>>.
+	
+	If the above module model used with the JMX plugin to deploy the configuration then
+	the result will be the creation of WLDF module named <<<wldf-module-1>>> and the creation 
+	of a corresponding descriptor file in the <<<$\{domain-home\}>/config/diagnostics>>> 
+	directory named <<<wldf-module-1.xml>>>. The descriptor file will contain:
+	
++---
+<?xml version='1.0' encoding='UTF-8'?>
+<wldf-resource xmlns="http://www.bea.com/ns/weblogic/90/diagnostics" 
+xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls" 
+xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/diagnostics 
+http://www.bea.com/ns/weblogic/920/diagnostics.xsd">
+  <name>wldf-module-2</name>
+</wldf-resource>
++---	
+	
+	..the next step is to add content to this file using the plugin.
+	
+*** A note about descriptor file names
+
+	On a WLDF module it is possible to define the location of the configuration file 
+	for the module should be stored, using the element <<<descriptor-file-name>>>. If 
+	the descriptor file name is undefined then the configuration file is stored
+	in <<<$\{domain-home\}>/config/diagnostics>>> with the same name as the module. 
+		
+* Define another model using the WLDF schema, which contains a WLDF resource				 
+ 
+	Define the <<<WLDF resource>>> for the WebLogic JMX plugin by adding 
+	an extra model to the model model. To make it work there are a few
+	important points:
+	
+	* Remember to import and use the WLDF schema to bind the WLDF entities so 
+	Pineapple will know how to load and process the model.
+	
+	* Remember that the name of the <<<WLDF resource>>> defined using the WLDF schema
+	must match the name of the <<<WLDF system resource>>> defined using the domain schema.
+	
+	[]    
+	
+** Import the WLDF schema into the module model 	
+	
+	WLDF uses the schema which defines the name space:
+	 
++----
+	xmlns:wdf="http://www.bea.com/ns/weblogic/90/diagnostics"
++----		
+	
+	which in this example is using <<<wdf>>> as its name. Add the WLDF schema and location info to the model:
+	
++----
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+		xmlns:wjp="http://www.bea.com/ns/weblogic/920/domain" 
+		xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls"
+		xmlns:wdf="http://www.bea.com/ns/weblogic/90/diagnostics" 
+		xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/security/xacml 
+		http://www.bea.com/ns/weblogic/90/security/xacml.xsd 	
+		http://www.bea.com/ns/weblogic/90/security 
+		http://www.bea.com/ns/weblogic/90/security.xsd 
+		http://www.bea.com/ns/weblogic/920/domain 
+		http://www.bea.com/ns/weblogic/920/domain.xsd 
+		http://www.bea.com/ns/weblogic/90/security/wls 
+		http://www.bea.com/ns/weblogic/90/security/wls.xsd
+		http://www.bea.com/ns/weblogic/90/diagnostics	
+		http://www.bea.com/ns/weblogic/90/diagnostics.xsd" >				
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>			
+			<wjp:domain>							
+				<wjp:wldf-system-resource>
+					<wjp:name>wldf-module-1</wjp:name>
+					<wjp:target>admserver</wjp:target>
+				</wjp:wldf-system-resource>		
+			</wjp:domain>			
+		</mmd:content>							
+	</mmd:model>		
+</mmd:models>			
++----	
+	
+** Add new model to define the WLDF resource using the WLDF schema 
+	
+	The WLDF resource is defined as a new model by adding a new <<<mmd:model>>> element:   
+  	 
++----
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+		xmlns:wjp="http://www.bea.com/ns/weblogic/920/domain" 
+		xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls"
+		xmlns:wdf="http://www.bea.com/ns/weblogic/90/diagnostics" 
+		xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/security/xacml 
+		http://www.bea.com/ns/weblogic/90/security/xacml.xsd 	
+		http://www.bea.com/ns/weblogic/90/security 
+		http://www.bea.com/ns/weblogic/90/security.xsd 
+		http://www.bea.com/ns/weblogic/920/domain 
+		http://www.bea.com/ns/weblogic/920/domain.xsd 
+		http://www.bea.com/ns/weblogic/90/security/wls 
+		http://www.bea.com/ns/weblogic/90/security/wls.xsd
+		http://www.bea.com/ns/weblogic/90/diagnostics	
+		http://www.bea.com/ns/weblogic/90/diagnostics.xsd" >				
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>			
+			<wjp:domain>							
+				<wjp:wldf-system-resource>
+					<wjp:name>wldf-module-1</wjp:name>
+					<wjp:target>admserver</wjp:target>
+				</wjp:wldf-system-resource>		
+			</wjp:domain>			
+		</mmd:content>							
+	</mmd:model>
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>			
+			<wdf:wldf-resource>				
+				<wdf:name>wldf-module-1</wdf:name>				
+			</wdf:wldf-resource>			
+		</mmd:content>							
+	</mmd:model>						
+</mmd:models>			
++----	
+	
+	The model is using the same resource <<<weblogic-jmx>>> as the model defined using the
+	domain schema which is the WebLogic JMX plugin.
+	
+	The model defines the <<<wldf-resource>>> using the WLDF schema.
+
+
+** 	The name of the WLDF system resource and the WLDF resource must match
+
+	The name of the <<<wldf-resource>>> should match the name of the <<<wldf-system-resource>>>
+	because otherwise the plugin will not interpret the <<<wldf-resource>>> as part of the <<<wldf-system-resource>>>
+	but as another unrelated <<<wldf-resource>>>.  	 
+
+*** An example showing what happens when the names doesn't match	
+	  
+	if the name of the <<<wldf-resource>>> doesn't match the name of 
+	the <<<wldf-system-resource>>> then pineapple will treat the resource
+	definitions as unconnected. This is illustrated by the example below:	 	  
+	   
++----
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+		xmlns:wjp="http://www.bea.com/ns/weblogic/920/domain" 
+		xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls"
+		xmlns:wdf="http://www.bea.com/ns/weblogic/90/diagnostics" 
+		xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/security/xacml 
+		http://www.bea.com/ns/weblogic/90/security/xacml.xsd 	
+		http://www.bea.com/ns/weblogic/90/security 
+		http://www.bea.com/ns/weblogic/90/security.xsd 
+		http://www.bea.com/ns/weblogic/920/domain 
+		http://www.bea.com/ns/weblogic/920/domain.xsd 
+		http://www.bea.com/ns/weblogic/90/security/wls 
+		http://www.bea.com/ns/weblogic/90/security/wls.xsd
+		http://www.bea.com/ns/weblogic/90/diagnostics	
+		http://www.bea.com/ns/weblogic/90/diagnostics.xsd" >				
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>			
+			<wjp:domain>							
+				<wjp:wldf-system-resource>
+					<wjp:name>wldf-module-1</wjp:name>
+					<wjp:target>admserver</wjp:target>
+				</wjp:wldf-system-resource>		
+			</wjp:domain>
+			<wdf:wldf-resource>				
+				<wdf:name>wldf-module-2</wdf:name>				
+			</wdf:wldf-resource>								
+		</mmd:content>							
+	</mmd:model>						
+</mmd:models>			
++----	
+
+	The result of creating this configuration is the creation of two
+	<<<wldf-system-resource>>> objects in the domain configuration named <wldf-module-1>
+	and <wldf-module-2>. 
+	
+	The difference between the two definitions is that only one of them is targeted.  	
+	
+	Here is an extract from the resulting WebLogic configuration file:
+	
++----	 
+	</domain>
+	...
+  		<wldf-system-resource>
+    		<name>wldf-module-1</name>
+    		<target>admserver</target>
+    		<descriptor-file-name>diagnostics/wldf-module-1.xml</descriptor-file-name>
+  		</wldf-system-resource>
+  		<wldf-system-resource>
+    		<name>wldf-module-2</name>
+    		<descriptor-file-name>diagnostics/wldf-module-2.xml</descriptor-file-name>
+  		</wldf-system-resource>
+	</domain>
+	 	 
++----		          
+
+	Furthermore two <<<wldf-resource>>>> models are created in the <<</diagnostics>>> directory
+	named <<<wldf-module-1.xml>>> and <<<wldf-module-2.xml>>>. Extract from 
+	<<<wldf-module-1.xml>>> : 
+
++----
+	<?xml version='1.0' encoding='UTF-8'?>
+	<wldf-resource xmlns="http://www.bea.com/ns/weblogic/90/diagnostics" 
+	xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls" 
+	xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/diagnostics 
+	http://www.bea.com/ns/weblogic/920/diagnostics.xsd">
+  		<name>wldf-module-1</name>
+	</wldf-resource>
++----	
+		
+* An alternative way to define the skeleton	
+	  
+	This shows an alternative way to define the two models: 	  
+	   
++----
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+		xmlns:wjp="http://www.bea.com/ns/weblogic/920/domain" 
+		xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls"
+		xmlns:wdf="http://www.bea.com/ns/weblogic/90/diagnostics" 
+		xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/security/xacml 
+		http://www.bea.com/ns/weblogic/90/security/xacml.xsd 	
+		http://www.bea.com/ns/weblogic/90/security 
+		http://www.bea.com/ns/weblogic/90/security.xsd 
+		http://www.bea.com/ns/weblogic/920/domain 
+		http://www.bea.com/ns/weblogic/920/domain.xsd 
+		http://www.bea.com/ns/weblogic/90/security/wls 
+		http://www.bea.com/ns/weblogic/90/security/wls.xsd
+		http://www.bea.com/ns/weblogic/90/diagnostics	
+		http://www.bea.com/ns/weblogic/90/diagnostics.xsd" >				
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>			
+			<wjp:domain>							
+				<wjp:wldf-system-resource>
+					<wjp:name>wldf-module-1</wjp:name>
+					<wjp:target>admserver</wjp:target>
+				</wjp:wldf-system-resource>		
+			</wjp:domain>
+			<wdf:wldf-resource>				
+				<wdf:name>wldf-module-1</wdf:name>				
+			</wdf:wldf-resource>								
+		</mmd:content>							
+	</mmd:model>						
+</mmd:models>			
++----	
+	          
+	where there is only defined one model, but instead there is defined two content roots in the 
+	model: <<<wjp:domain>>> and <<<wdf:wldf-resource>>>.
+	
+	The models are equal from a semantic point of view.  		          
+		          		          

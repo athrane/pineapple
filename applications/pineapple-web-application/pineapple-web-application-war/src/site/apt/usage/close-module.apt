@@ -1,0 +1,36 @@
+ ------
+ Open module
+ ------
+ Allan Thrane Andersen
+ ------
+ September 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Close module
+
+* Steps
+
+	To close an open module:
+	
+	* Open the <Module> menu and select the <Close Module> menu item.
+	
+	[]
+	
+	Alternatively, select the <Module> tab and click the <Close Module> button.
+				
+* Result
+
+	The result after executing the steps is:
+	
+	* An open module is now closed.
+	
+	* Any unsaved changes in the open model isn't saved. You must save the model prior to closing the module.			
+	 
+	* The <Module> tab is now cleared of any module data.
+
+	* The <Workspace header> now indicates that no module or model is loaded.
+	 
+	[]
+	

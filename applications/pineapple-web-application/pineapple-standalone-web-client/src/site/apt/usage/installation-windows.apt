@@ -1,0 +1,79 @@
+ ------
+ Installation of the Pineapple standalone web application on Windows
+ ------
+ Allan Thrane Andersen
+ ------
+ June 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Installation of the Pineapple standalone web application on Windows
+
+	This guide describes how the Pineapple standalone web application is installed under a Windows OS.
+
+* Download Pineapple
+
+	Download the client <<<pineapple-gui-release-VERSION.zip>>> from the 
+	<<{{{http://java.net/projects/pineapple/downloads}Downloads page}}>>.
+
+* Unpack Pineapple
+
+	Unzip <<<pineapple-standalone-web-client-VERSION.zip>>> to any directory. Some examples are:
+	
+		* <<<C:\\Program Files>>> 
+		
+		* <<<C:\\tools>>> 		
+		
+		* <<<C:\\app\\alpha\\product>>> 
+		
+		[]
+
+** The Pineapple Installation directory
+
+	Once unpacked a directory named <<<pineapple-standalone-web-client-VERSION>>> is created. 
+	Example: <<<c:\Program Files\pineapple-standalone-web-client-1.1.0>>>. This directory is called 
+	the <<Pineapple Installation Directory>>, and refered to as <<<PINEAPPLE_INSTALL_DIR>>> 
+	in the remaining part of this guide.
+
+	The unzipped archive contains the directory layout:
+	
++---+
+pineapple-standalone-web-client-VERSION
+     |     
+     +--- runPineapple.cmd
+     +--- runPineapple.sh     
+     |     
+     +--- bin     
+     |     +--- helper scripts     
+     |     
+     +--- conf     
+     |     +--- log4j.properties
+     |     `--- jetty.xml
+     |               
+     +--- webapps
+     |     `--- pineapple-web-application-war.war
+     |               
+     +--- lib
+           +--- pineapple-jetty-starter-1.0.jar
+           +--- jetty-*.jar
+           +--- log4j-*.jar
+           `--- servlet-api-*.jar
++---+	 	 
+												
+* Start Pineapple 
+
+	Execute <<<PINEAPPLE_INSTALL_DIR\\runPineapple.cmd>>> to start Pineapple.
+
+** Creation of the default configuration
+
+	When Pineapple is started then it will look for configuration files in the 
+	<<{{{../../../../usage/runtime-directories.html}Pineapple Home Directory.}}>>
+		
+	If no configuration files are found then it will a create a 
+	<<{{{../../../../usage/default-configuration.html}default configuration}}>> which allows the
+	application to start and provides a starting point to using the supplied examples.
+	
+* Ready for usage...
+
+	Now the application is installed an ready to be used.

@@ -1,0 +1,71 @@
+/*******************************************************************************
+ * Pineapple - a tool to install, configure and test Java web applications 
+ * and infrastructure. 
+ * 
+ * Copyright (C) 2007-2013 Allan Thrane Andersen..
+ * 
+ * This file is part of Pineapple.
+ * 
+ * Pineapple is free software: you can redistribute it and/or modify it under
+ *  the terms of the GNU General Public License as published by the Free 
+ * Software Foundation, either version 3 of the License, or (at your option) 
+ * any later version.
+ * 
+ * Pineapple is distributed in the hope that it will be useful, but WITHOUT 
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public 
+ * license for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along 
+ * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
+package com.alpha.pineapple.resource;
+
+/**
+ * Interface to represent information about a environment in the resource
+ * repository.
+ */
+public interface EnvironmentInfo {
+    /**
+     * Get environment ID.
+     * 
+     * @return environment ID.
+     */
+    String getId();
+
+    /**
+     * Get description of the environment.
+     * 
+     * @return description.
+     */
+    String getDescription();
+
+    /**
+     * Return true if info contains resource info with requested ID.
+     * 
+     * @param id
+     *            resource ID.
+     * 
+     * @return true if info contains resource info with requested ID.
+     */
+    boolean containsResource(String id);
+
+    /**
+     * Get resource info. Returns null if resource isn't registered.
+     * 
+     * @param id
+     *            resource ID.
+     * 
+     * @return resource info. Returns null if resource isn't registered.
+     */
+    ResourceInfo getResource(String id);
+
+    /**
+     * Get resource info's.
+     * 
+     * @return resource info's.
+     */
+    ResourceInfo[] getResources();
+
+}

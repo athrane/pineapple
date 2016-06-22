@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:context="http://www.springframework.org/schema/context"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    		http://www.springframework.org/schema/oxm 
+    		http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+    		http://www.springframework.org/schema/context 
+    		http://www.springframework.org/schema/context/spring-context-3.0.xsd" >    		
+
+	<!-- Configures pineapple-api -->
+	<import resource="classpath:com.alpha.pineapple.api-config.xml" />
+
+	<!-- Configures pineapple-commands-api -->
+	<import resource="classpath:com.alpha.pineapple.commands-api-config.xml" />
+
+	<!-- Configures pineapple-hamcrest-matchers -->
+	<import resource="classpath:com.alpha.pineapple.hamcrest-config.xml" />
+        
+	<!-- enable annotation based configuration / dependency injection -->
+	<context:annotation-config />
+    
+	<oxm:jaxb2-marshaller id="unmarshaller" contextPath="com.alpha.pineapple.plugin.ssh.model"/>
+
+	<!-- define message provider for internationalization  -->
+	<bean id="messageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">
+    	<property name="basename" value="com.alpha.pineapple.plugin.ssh-messages"/>
+	</bean>	
+
+	<!-- define command objects -->
+	<bean id="secureCopyToCommand" class="com.alpha.pineapple.plugin.ssh.command.SecureCopyToCommand" />
+
+	<!-- define SSH runtime -->
+	<bean id="jsch" class="com.jcraft.jsch.JSch" />
+			    	    
+	<!-- define SSH helper -->
+	<bean id="sshHelper" class="com.alpha.pineapple.plugin.ssh.utils.SshHelperImpl" />		    	    
+
+	<!-- define JSCH Log4j logger and set it in the JSCH system -->
+	<bean id="jschLogger" class="com.alpha.pineapple.plugin.ssh.utils.JSchLog4JLogger" />		    	    
+
+	<!-- define model mapper -->
+	<bean id="mapper" class="com.alpha.pineapple.plugin.ssh.model.MapperImpl" />
+
+ 	<!-- 
+ 		definitions used by the integration tests. 
+ 		Only available for test with @ActiveProfiles("integration-test") 
+ 	-->
+	<beans profile="integration-test" >
+		<bean id="defaultOperation" class="com.alpha.pineapple.plugin.ssh.operation.DefaultOperation" />			    	    
+
+		<bean id="coreRuntimeDirectoryProvider" class="org.easymock.EasyMock" factory-method="createMock" primary="true" >
+			<constructor-arg value="com.alpha.pineapple.io.file.RuntimeDirectoryProvider"/>
+		</bean>
+		<bean id="coreExecutionInfoProvider" class="org.easymock.EasyMock" factory-method="createMock">
+			<constructor-arg value="com.alpha.pineapple.execution.ExecutionInfoProvider"/>
+		</bean>
+		<bean id="coreVariableSubstitutionProvider" class="org.easymock.EasyMock" factory-method="createMock">
+			<constructor-arg value="com.alpha.pineapple.substitution.VariableSubstitutionProvider"/>
+		</bean>
+				
+		<bean id="objectMotherSshSession" class="com.alpha.testutils.ObjectMotherSshSession" />			    	    				
+	</beans>
+</beans>

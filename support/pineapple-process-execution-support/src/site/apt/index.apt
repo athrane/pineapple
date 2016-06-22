@@ -1,0 +1,50 @@
+ ------
+ Process execution support for plugins
+ ------
+ Allan Thrane Andersen 
+ ------
+ October 2010
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<Process execution support project>> implements a set reusable classes for execution of external 
+	OS processes in plugins.
+	
+	The project is a wrapper around the <<<Commons Exec project>>>. Information about Commons Exec can be found 
+	{{{http://commons.apache.org/exec/}here}}.
+	
+	The project contains these classes:
+	
+	* <<<ProcessExecutionCommand>>> - Chain command which controls the execution 
+	of an external process using Commons Exec.
+	
+	* <<<ProcessExecutionSession>>> - Plugin session interface which provides 
+	access for plugins to execute external processes.
+	
+	* <<<ProcessExecutionSessionImpl>>> - Abstract session implementation which 
+	implements the <<<ProcessExecutionSession>>> interface. The process execution is
+	delegated to instances of <<<ProcessExecutionCommand>>>.
+
+	[]
+	
+* Usage
+
+	Instructions on the usage of the classes can be found {{{./usage/index.html}here.}}
+
+* Examples
+
+	* {{{./examples/use-process-execution-from-spring.html}How-to: Use the process execution support project with the Spring framework.}}
+
+	* {{{./examples/use-session-to-execute-external-processes.html}How-to: Use the process execution session to execute external processes.}}
+	
+	[]
+
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

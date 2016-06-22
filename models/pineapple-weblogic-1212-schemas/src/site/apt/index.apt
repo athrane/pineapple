@@ -1,0 +1,60 @@
+ ------
+ WebLogic 12.1.2 schemas
+ ------
+ Allan Thrane Andersen 
+ ------
+ April 2011
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+  The <<WebLogic 12.1.2 schema project>> project defines a model for configuration for WebLogic 
+  servers. The projects implements a OXM mapping from the WebLogic 12.1.2 XML schemas published by Oracle
+  to Java classes. The OXM mapping is implemented using XMLBeans. 
+  
+ {{{http://docs.oracle.com/middleware/1212/wls/DOMCF/config_files.htm#i1091725}More information about the WebLogic 12.1.2 schemas can be here.}}
+ 
+ {{{http://www.oracle.com/webfolder/technetwork/weblogic/wls_12.1.2.0.html}Oracle WebLogic Server 12.1.2.0 Schema home}}.          	 			  
+			  
+* Usage
+
+	Instructions on the usage of the project can be found {{{usage.html}here}}.
+		
+** Project schemas
+
+	The project uses multiple schemas for definition of models. The main domain schema defines the namespace:
+	
+	* <<<http://xmlns.oracle.com/weblogic/domain>>>.
+	
+	[]
+	
+	The domain schema uses three auxiliary security scehmas which defines the namespaces:
+	
+	* <<<http://xmlns.oracle.com/weblogic/security>>>.
+	
+	* <<<http://xmlns.oracle.com/weblogic/security/wls>>>.
+	
+	* <<<http://xmlns.oracle.com/weblogic/security/xacml>>>.
+			
+	[]	
+
+	Finally, the diangostics schema defines the namespace:
+	
+	* <<<http://xmlns.oracle.com/weblogic/weblogic-diagnostics>>>.
+	
+	[]
+
+	
+	For more information about where the schemas can be found, refer to the 			
+	{{{../../usage/schemas-plugins.html}Schema locations for plugins page.}}
+		 						
+
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	
+	

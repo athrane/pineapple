@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?> 
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+
+<?link rel="shortcut icon" type="image/x-icon" href="/myFavicon.ico"?>
+<?link rel="icon" type="image/x-icon" href="/myFavicon.ico"?>
+
+<?page title="Pineapple web application"?>
+
+<zk>
+
+	<!--  define styles -->
+	<style dynamic="true">
+		.moduletab .z-tab .z-tab-text {
+		    font-size: 12px;
+		}				
+	</style> 
+
+<!--
+	binder definition: binder="@init(queueName='pineapple-queue')" 
+	is required for view model to respond to global commands posted 
+	on the "pineapple-queue" queue:
+	
+	@GlobalCommand public void executeOperation() { .. }		
+	
+	The Menu controller, Menu.java posts global command using:		
+	BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, null, "executeOperation", NULL_GLOBALCOMMAND_ARGS);		     					
+ -->
+<window id="workspaceWindow" 
+	apply="org.zkoss.bind.BindComposer, com.alpha.pineapple.web.zk.controller.WorkspacePanel"
+	binder="@init(queueName='pineapple-queue',queueScope='session')"
+	viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.WorkspacePanel')" 	
+	hflex="1" vflex="1" border="none">
+		
+	<borderlayout hflex="1" vflex="1" >
+	    <north border="none" >	    	
+	    	<vlayout spacing="0" >	
+ 				<include src="menu.zul" />	    	    		    	    	
+	    		<grid sizedByContent="true" span="true" hflex="1" vflex="1" style="border:0" >
+					<columns>
+	            		<column>
+					    	<hlayout spacing="0" >
+								<space bar="false" spacing="5px" />
+								<vlayout spacing="0" height="40px" >
+									<image src="/images/logo-40x40.png" />					    	
+								</vlayout> 	
+								<space bar="false" spacing="5px" />
+								<vlayout spacing="0" style="line-height:1.2;padding:0;" >
+									<label value="Pineapple" style="font-size:20px" />
+									<hlayout >
+					            		<label value="@load(vm.userName)" style="font-size:10px;font-weight:bold" />																				
+					            		<label value="@" style="font-size:10px" />																				
+					            		<label value="@load(vm.hostName)" style="font-size:10px;font-weight:bold" />																				
+									</hlayout>
+				            	</vlayout>
+								<space bar="true" spacing="50px" />
+								<vlayout spacing="0" style="line-height:1.1;padding:0;" >
+					            	<label value="@load(vm.moduleName)" style="color:black;font-size:14px;font-weight:bold" />
+					            	<label value="Module" style="font-size:10px" />
+				            	</vlayout>
+								<space bar="true" spacing="50px" />																
+			       				<vlayout spacing="0" style="line-height:1.1;padding:0;" >
+			       					<label value="@load(vm.modelName)" style="color:black;font-size:14px;font-weight:bold" />
+			       					<label value="Model for target environment" style="font-size:10px" />	            			            			            			            				
+			       				</vlayout>            					            			            			            			
+			       				<vlayout spacing="0" >
+			       				</vlayout>            					            			            			            			
+					    	</hlayout>
+						</column>            			
+				   </columns>				        
+		    	</grid>		    	
+	    	</vlayout>	    
+	    </north>
+	    
+	    <center border="none" >
+			<tabbox id="workspaceTabbox" hflex="1" vflex="1" sclass = "moduletab" >
+        		<tabs>
+            		<tab id="moduleTab" label="Module" iconSclass="z-icon-pencil-square-o" />
+            		<tab id="executionTab" label="Execution" iconSclass="z-icon-play-circle-o" />	            			
+            		<tab id="schedulingTab" label="Scheduling" iconSclass="z-icon-clock-o" />            		            
+            		<tab id="reportTab" label="Report" iconSclass="z-icon-archive" />            		            				
+            		<tab id="configurationTab" label="Configuration" iconSclass="z-icon-cog"  />            		
+            		<tab id="debugTab" label="Debug" visible="false" iconSclass="z-icon-bug"  />            		
+        		</tabs>
+        		<tabpanels>
+            		<tabpanel id="modulePanel" hflex="1" vflex="1" >
+						<include id="modulePanelInclude" src="module-panel.zul"/>            		
+            		</tabpanel>
+            		<tabpanel id="executionPanel" hflex="1" vflex="1" >
+						<include id="executionPanelInclude" src="execution-panel.zul"/>            		
+            		</tabpanel>
+            		<tabpanel id="schedulingPanel" hflex="1" vflex="1" >
+						<include id="schedulingPanelInclude" src="scheduling-panel.zul"/>            		
+            		</tabpanel>            		
+            		<tabpanel id="reportPanel" hflex="1" vflex="1" >
+						<include id="reportPanelInclude" src="report-panel.zul"/>            		
+            		</tabpanel>
+            		<tabpanel id="environmentConfigurationPanel" hflex="1" vflex="1" >
+						<include id="environmentConfigurationPanelInclude" src="environment-configuration-panel.zul"/>            		
+            		</tabpanel>
+            		<tabpanel id="debugPanel" hflex="1" vflex="1" >
+						<include id="debugPanelInclude" src="debug-panel.zul"/>            		
+            		</tabpanel>           		            		            		
+        		</tabpanels>
+    		</tabbox>    		
+	    </center>
+	    
+	    <south size="5%" border="none" >
+			<include src="footer.zul"/>	    
+	    </south>
+	</borderlayout>
+				
+				
+</window>
+</zk>

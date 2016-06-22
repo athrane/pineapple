@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" 
+    continue="false">
+	<mmd:variables>
+		<mmd:variable key="pineapple.archive" value="pineapple-standalone-web-client-1.8.0.zip" />
+		<mmd:variable key="pineapple.tmp.installation.dir" value="/tmp/pineapple-standalone-web-client-1.8.0" />
+		<mmd:variable key="pineapple.base.dir" value="/opt" />
+		<mmd:variable key="pineapple.installation.dir" value="/opt/pineapple" />
+		<mmd:variable key="pineapple.home.dir" value="/var/pineapple" />		
+		<mmd:variable key="pineapple.user" value="pineapple" />
+		<mmd:variable key="pineapple.group" value="pineapple" />									
+	</mmd:variables>
+    <mmd:model target-resource="regex:ssh-node.*" target-operation="deploy-configuration" description="Install binaries" >
+        <mmd:content>
+            <shp:ssh>			
+                <shp:copy-to source="modulepath:bin/${pineapple.archive}" destination="/tmp/${pineapple.archive}" substitute-variables="false"/>
+                <shp:execute command="sudo unzip /tmp/${pineapple.archive} -d /tmp" />
+                <shp:execute command="sudo rm -rf /tmp/${pineapple.archive}" />    		                
+                <shp:execute command="sudo mv -f ${pineapple.tmp.installation.dir} ${pineapple.installation.dir}" />
+                <shp:execute command="sudo chmod +x ${pineapple.installation.dir}/bin/setup.sh" />                   
+                <shp:execute command="sudo ${pineapple.installation.dir}/bin/setup.sh" />
+                <shp:execute command="sudo chown -R ${pineapple.user}:${pineapple.group} ${pineapple.installation.dir}" />
+                <shp:execute command="sudo chmod -R 775 ${pineapple.installation.dir}" />
+            </shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+    <mmd:model target-resource="regex:ssh-node.*" target-operation="{test,deploy-configuration}" description="Test binaries installation" >
+        <mmd:content>
+            <shp:ssh>    		
+                <shp:assert-contains command="getent passwd ${pineapple.group}" expected-value="pineapple:x" /> <!-- Test user exists -->
+                <shp:assert-contains command="getent group ${pineapple.group}" expected-value="pineapple:x" />  <!-- Test group exists -->
+                <shp:assert-contains command="id -gn ${pineapple.user}" expected-value="${pineapple.group}" /> <!-- Test primary group for pineapple.user -->
+                <shp:assert-equals command="test -d ${pineapple.base.dir} &amp;&amp; echo &quot;Found&quot;|| echo &quot;NotFound&quot;" expected-value="Found" /> <!-- Test dir exist -->    
+                <shp:assert-equals command="test -d ${pineapple.installation.dir} &amp;&amp; echo &quot;Found&quot;|| echo &quot;NotFound&quot;" expected-value="Found" /> <!-- Test dir exist -->        		                
+                <shp:assert-equals command="stat --format &quot;%a&quot; ${pineapple.installation.dir}" expected-value="775"/> <!--test directory permissions -->
+            </shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+    <mmd:model target-resource="regex:ssh-node.*" target-operation="deploy-configuration" description="Install configuration files" >
+        <mmd:content>
+    		<shp:ssh>			
+                <shp:execute command="sudo ${pineapple.installation.dir}/bin/create-runtime-dirs.sh" />
+    			<shp:copy-to source="modulepath:bin/resources.xml" destination="/tmp/resources.xml"/>
+				<shp:copy-to source="modulepath:bin/credentials.xml" destination="/tmp/credentials.xml"/>
+				<shp:execute command="sudo cp /tmp/resources.xml ${pineapple.home.dir}/conf/resources.xml" />				
+				<shp:execute command="sudo cp /tmp/credentials.xml ${pineapple.home.dir}/conf/credentials.xml" />
+    			<shp:execute command="sudo chown ${pineapple.group}:${pineapple.user} ${pineapple.home.dir}/conf/resources.xml" />
+        		<shp:execute command="sudo chown ${pineapple.group}:${pineapple.user} ${pineapple.home.dir}/conf/credentials.xml" />
+                <shp:execute command="sudo chmod 644 ${pineapple.home.dir}/conf/resources.xml" />
+                <shp:execute command="sudo chmod 644 ${pineapple.home.dir}/conf/credentials.xml" />
+            </shp:ssh>			
+        </mmd:content>
+    </mmd:model>    
+    <mmd:model target-resource="regex:ssh-node.*" target-operation="{test,deploy-configuration}" description="Test configuration installation" >
+        <mmd:content>
+            <shp:ssh>        	
+                <shp:assert-equals command="test -d ${pineapple.home.dir} &amp;&amp; echo &quot;Found&quot;|| echo &quot;NotFound&quot;" expected-value="Found" /> <!-- Test dir exist -->    			                
+                <shp:assert-equals command="stat --format &quot;%a&quot; ${pineapple.home.dir}" expected-value="775"/> <!--test directory permissions -->                
+                <shp:assert-equals command="test -d ${pineapple.home.dir}/conf &amp;&amp; echo &quot;Found&quot;|| echo &quot;NotFound&quot;" expected-value="Found" /> <!-- Test dir exist -->        		                
+                <shp:assert-equals command="stat --format &quot;%a&quot; ${pineapple.home.dir}/conf" expected-value="775"/> <!--test directory permissions -->
+                <shp:assert-equals command="test -d ${pineapple.home.dir}/modules &amp;&amp; echo &quot;Found&quot;|| echo &quot;NotFound&quot;" expected-value="Found" /> <!-- Test dir exist -->            	                
+                <shp:assert-equals command="stat --format &quot;%a&quot; ${pineapple.home.dir}/modules" expected-value="775"/> <!--test directory permissions -->
+                <shp:assert-equals command="test -d ${pineapple.home.dir}/reports &amp;&amp; echo &quot;Found&quot;|| echo &quot;NotFound&quot;" expected-value="Found" /> <!-- Test dir exist -->                                
+                <shp:assert-equals command="stat --format &quot;%a&quot; ${pineapple.home.dir}/reports" expected-value="775"/> <!--test directory permissions -->
+                <shp:assert-equals command="test -f ${pineapple.home.dir}/conf/resources.xml &amp;&amp; echo &quot;Found&quot; || echo &quot;NotFound&quot;" expected-value="Found" />    			
+                <shp:assert-equals command="stat --format &quot;%a&quot; ${pineapple.home.dir}/conf/resources.xml" expected-value="644"/> <!--test directory permissions -->
+                <shp:assert-equals command="test -f ${pineapple.home.dir}/conf/credentials.xml &amp;&amp; echo &quot;Found&quot; || echo &quot;NotFound&quot;" expected-value="Found" />    			
+                <shp:assert-equals command="stat --format &quot;%a&quot; ${pineapple.home.dir}/conf/resources.xml" expected-value="644"/> <!--test directory permissions -->
+                <shp:assert-equals command="stat --format &quot;%U&quot; ${pineapple.home.dir}/conf/resources.xml" expected-value="${pineapple.user}"/> <!--test directory owner -->
+                <shp:assert-equals command="stat --format &quot;%G&quot; ${pineapple.home.dir}/conf/resources.xml" expected-value="${pineapple.group}"/> <!--test directory group -->
+                <shp:assert-equals command="stat --format &quot;%a&quot; ${pineapple.home.dir}/conf/credentials.xml" expected-value="644"/> <!--test directory permissions -->
+                <shp:assert-equals command="stat --format &quot;%U&quot; ${pineapple.home.dir}/conf/credentials.xml" expected-value="${pineapple.user}"/> <!--test directory owner -->
+                <shp:assert-equals command="stat --format &quot;%G&quot; ${pineapple.home.dir}/conf/credentials.xml" expected-value="${pineapple.group}"/> <!--test directory group -->
+            </shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+    <mmd:model target-resource="regex:ssh-node.*" target-operation="deploy-configuration" description="Install service" >
+        <mmd:content>
+        	<shp:ssh>			
+				<shp:execute command="sudo ${pineapple.installation.dir}/bin/install-service.sh" />				
+			</shp:ssh>			
+        </mmd:content>
+    </mmd:model>  
+    <mmd:model target-resource="regex:ssh-node.*" target-operation="{test,deploy-configuration}" description="Test service intallation" >
+        <mmd:content>
+            <shp:ssh>			
+     			<shp:assert-contains command="sudo /sbin/service pineapple status" expected-value="is running" />
+            </shp:ssh>			
+        </mmd:content>
+    </mmd:model>     
+    <mmd:model target-resource="regex:ssh-node.*" target-operation="undeploy-configuration" description="Uninstall Pineapple" >
+        <mmd:content>
+            <shp:ssh>    		
+            	<shp:execute command="sudo ${pineapple.installation.dir}/bin/uninstall-service.sh" />				                
+                <shp:execute command="sudo rm -rf /tmp/${pineapple.archive}" />    		                
+                <shp:execute command="sudo rm -rf ${pineapple.installation.dir}" />	
+                <shp:execute command="sudo rm -rf ${pineapple.home.dir}" />    
+                <shp:execute command="sudo userdel ${pineapple.user}" />               
+            </shp:ssh>			
+        </mmd:content>
+    </mmd:model>        
+</mmd:models>

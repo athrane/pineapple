@@ -1,0 +1,224 @@
+<jaxb:bindings version="2.0"	
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"	
+	jaxb:extensionBindingPrefixes="xjc" >
+
+	<jaxb:bindings schemaLocation="environment_1_0.xsd"
+		node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.model.configuration" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="environment_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='credentialsType']" >
+			<jaxb:class name="credentials" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="environment_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='credentialType']" >
+			<jaxb:class name="credential" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+	
+	<jaxb:bindings schemaLocation="environment_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='environmentsType']" >
+			<jaxb:class name="Environments" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="environment_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='environmentType']" >
+			<jaxb:class name="Environment" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="environment_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='propertyType']" >
+			<jaxb:class name="Property" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="environment_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='resourcesType']" >
+			<jaxb:class name="Resources" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="environment_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='resourceType']" >
+			<jaxb:class name="Resource" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+		
+	<jaxb:bindings schemaLocation="module_1_0.xsd"
+		node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.model.module" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='environmentsType']" >
+			<jaxb:class name="Environments" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='environmentType']" >
+			<jaxb:class name="Environment" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='templatesType']" >
+			<jaxb:class name="Templates" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='templateType']" >
+			<jaxb:class name="Template" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='variablesType']" >
+			<jaxb:class name="Variables" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='variableType']" >
+			<jaxb:class name="Variable" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='contentType']" >
+			<jaxb:class name="Content" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_model_1_0.xsd"
+		node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.model.module.model" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_model_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='modelType']" >
+			<jaxb:class name="AggregatedModel" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_model_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='contentType']" >
+			<jaxb:class name="Content" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_model_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='variablesType']" >
+			<jaxb:class name="Variables" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_model_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='variableType']" >
+			<jaxb:class name="Variable" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_model_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='triggerType']" >
+			<jaxb:class name="Trigger" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="execution_result_1_0.xsd"
+		node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.model.execution" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="execution_result_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='executionResultType']" >
+			<jaxb:class name="Result" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="execution_result_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='executionResultSequenceType']" >
+			<jaxb:class name="ResultSequence" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="execution_result_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='messagesType']" >
+			<jaxb:class name="Messages" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="execution_result_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='messageType']" >
+			<jaxb:class name="Message" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="execution_result_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='messageValueType']" >
+			<jaxb:class name="MessageValue" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="scheduled_operation_1_0.xsd"
+		node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.model.execution.scheduled" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="scheduled_operation_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='scheduledOperationType']" >
+			<jaxb:class name="ScheduledOperation" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_info_1_0.xsd"
+		node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.model.module.info" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_info_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='moduleType']" >
+			<jaxb:class name="Module" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="module_info_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='modelType']" >
+			<jaxb:class name="Model" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+	
+	<jaxb:bindings schemaLocation="report_1_0.xsd"
+		node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.model.report" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="report_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='reportType']" >
+			<jaxb:class name="Report" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+	
+</jaxb:bindings>

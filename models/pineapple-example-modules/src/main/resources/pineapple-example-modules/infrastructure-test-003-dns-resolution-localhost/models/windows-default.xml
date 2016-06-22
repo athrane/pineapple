@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+	xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+	<mmd:model target-resource="infrastructure-test">
+		<mmd:content>
+			<itp:infrastructure>
+				<itp:dns-resolution-test host="localhost" ip="127.0.0.1" description="localhost resolves to 127.0.0.1 and reverse" />						
+			</itp:infrastructure>
+		</mmd:content>
+	</mmd:model>
+</mmd:models>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+	xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+	<mmd:model target-resource="infrastructure-test">
+		<mmd:content>
+			<itp:infrastructure>
+
+				<itp:tcp-connection-test host="localhost"
+					description="Pineapple client listen on port 8080">
+					<itp:port value="8080" />
+				</itp:tcp-connection-test>
+
+				<itp:http-statuscode-test          
+					description="Pineapple client on localhost:8080" 
+					url="http://localhost:8080" 
+					expected="200" />
+
+				<itp:http-statuscode-test          
+					description="Pineapple client on localhost:8080" 
+					url="http://localhost:8080/pineapple" 
+					expected="200" />
+
+				<itp:http-statuscode-test          
+					description="Pineapple client on localhost:8080" 
+					url="http://localhost:8080/mvc/workspace" 
+					expected="200" />
+
+			</itp:infrastructure>
+		</mmd:content>
+	</mmd:model>
+</mmd:models>

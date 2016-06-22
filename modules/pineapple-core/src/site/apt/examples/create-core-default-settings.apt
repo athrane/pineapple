@@ -1,0 +1,47 @@
+ ------
+ How-to: Create the core component with default settings 
+ ------
+ Allan Thrane Andersen
+ ------
+ November 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Create the core component with default settings
+
+	Use the <<<com.alpha.pineapple.CoreFactory>>> to create an instance
+	of the core component with default settings:		
+
++---
+  // create core component
+  CoreFactory coreFactory = new CoreFactory();
+  PineappleCore core = coreFactory.createCore();    
++---
+
+* How the core component will the load environment configuration 
+
+	The location where the environment configuration is loaded from is determined by 
+	{{{../../../usage/runtime-directories.html}resolution of the runtime directories}}
+	used by the core component.
+
+** With the the system property <<<pineapple.home.dir>>> defined
+
+	The core component will:
+	
+	* load resources from <<<$\{pineapple.home.dir}/conf/resources.xml>>>.		
+	
+	* load credentials from <<<$\{pineapple.home.dir}/conf/credentials.xml>>>.	
+	
+	[]
+
+** Without the the system property <<<pineapple.home.dir>>> defined
+
+	The core component will:
+	
+	* load resources from <<<$\{user.home}/.pineapple/conf/resources.xml>>>.		
+	
+	* load credentials from <<<$\{user.home}/.pineapple/conf/credentials.xml>>>.	
+	
+	[]
+	

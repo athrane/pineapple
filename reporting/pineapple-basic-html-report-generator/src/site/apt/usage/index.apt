@@ -1,0 +1,141 @@
+ ------
+ Usage of the basic HTML report generator project 
+ ------
+ Allan Thrane Andersen
+ ------
+ October 2009
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Usage of the basic HTML report generator project 
+
+* Introduction
+
+	The report generator is intended for usage by Pineapple clients,
+	i.e. object which create and invoke operations on the Pineapple
+	core component.
+	
+	The report generator is registered as an execution result listener 
+	with the core component and when execution of an operation is 
+	completed the report generator creates a HTML report at a 
+	designated location. 	
+	
+** Getting access to the report generator
+
+	The get access to the core component, add a Maven dependency in the client 
+	project which need access to the core component. The dependency is versioned,
+	so select the appropriate version:
+
++--------	
+  <dependency>
+    <groupId>com.alpha.pineapple</groupId>
+    <artifactId>pineapple-basic-html-generator</artifactId>  
+    <version>1.0</version>      
+  </dependency>
++--------	
+	
+* Creating the report generator with default settings
+
+	Invoke the factory method <<<BasicHtmlReportGeneratorImpl.getInstance()>>>. The method 
+	creates an instance with the default settings:
+
+	* Reports are created in the directory <<<$\{user.home}/.pineapple/reports/report-$\{TIMESTAMP}>>>.
+	
+		* <<<$\{user.home}>>> is the user home directory on the computer.
+	
+		* <<<report-$\{TIMESTAMP}>>> is a unique time stamped directory created for each new report. The 
+		time stamp has the format YYYY-MM-DD-HHMMSS.
+		
+		[]
+	
+
+	* Two files are created within the time stamped directory:
+	
+		* <<<basic-report.xml>>> which is an XML version of the report.
+	
+		* <<<basic-report.html>>> which is the final product. The HTML report.
+	
+		[]
+		
+	[]			
+ 
+	<<{{{../examples/create-generator-default-settings.html}Look here for an example of how to create the report generator with default settings.}}>>	
+
+
+* Creating the report generator with customized location for reports
+
+	Invoke the factory method <<<BasicHtmlReportGeneratorImpl.getInstance(File rootDirectory)>>> where 
+	<<<rootDirectory>>> defines the root directory where report sub directories should be created in:
+
+	* Reports are created in the directory <<<$\{rootDirectory}/report-$\{TIMESTAMP}>>>.
+	
+		* <<<$\{rootDirectory}>>> is the user defined root directory.
+	
+		* <<<report-$\{TIMESTAMP}>>> is a unique time stamped directory created for each new report. The 
+		time stamp has the format YYYY-MM-DD-HHMMSS.
+		
+		[]
+	
+
+	* Two files are created within the time stamped directory:
+	
+		* <<<basic-report.xml>>> which is an XML version of the report.
+	
+		* <<<basic-report.html>>> which is the final product. The HTML report.
+	
+		[]
+
+	* A message named <<<Report>>> is added to the root execution result object which serves as input to the report 
+	generation. The value of the message is the name of generated report directory, e.g. <<<report-$\{TIMESTAMP}>>>. 
+		
+	[]			
+
+	<<{{{../examples/create-generator-custom-settings.html}Look here for an example of how to create the report generator with custom settings.}}>>
+
+* Creating the report generator from a Spring application context
+
+	Alternatively, the report generator can be looked as a bean named <<<reportGenerator>>> in the 
+	Spring configuration file. If the report directory isn't initialized afterwards by 
+	invoking <<<ReportGeneratorInfo.setReportDirectory(..)>>> then the generator will create 
+	reports at the default location.		
+				   
+
+* Registering the report generator with the core component
+
+	Invoke the method <<<PineappleCore.addListener( listener )>>> with the report generator
+	as argument to register it with the core component.	The report generator is basically 
+	registered as an observer to events in the core component due to its implementation of the 
+	<<<ResultListener>>> interface. 
+
+* Invoke an operation to generate a report
+
+	Invoke the method <<<PineappleCore.execute(..)>>> on the core component to execute an operation. 
+	At some point, the root execution result within the core component, changes state from 
+	<running> to some completed state (<failed>, <error> or <successful>). The report generator
+	is notified of this state change, due to its registration as an observer, when the core 
+	component invokes the method <<<notifyOfResultStateChange(...)>>> on the report generator. This 
+	invocation trigger the creation of the report.
+
+	<<{{{../examples/invoke-generator.html}Look here for an example of how register and invoke the report generator to create a report.}}>>
+
+* Customizing the report location	
+
+	The location of reports is configurable as an argument to the factory
+	method <<<BasicHtmlReportGeneratorImpl.getInstance(File reportDirectory)>>>. 
+	The <<<reportDirectory>>> parameter defines a the root directory where 
+	the generator will generate reports.
+	
+	Alternatively, the report generator implements the interface  <<<ReportGeneratorInfo>>>
+	which contains the method <<<setReportDirectory(..)>>> which can be used to set the root 
+	directory. 
+
+	<<{{{../examples/create-generator-custom-settings.html}Look here for an example of how to configure the root directory at runtime.}}>>	
+		
+	If no location is defined, i.e. the no-arg factory method 
+	<<<BasicHtmlReportGeneratorImpl.getInstance()>>> is used, or the generator is looked up 
+	from the Spring context, the generator will generate reports in the default root 
+	directory: <<<$\{user.home}/.pineapple/reports/>>>		   	
+
+
+	 	 									

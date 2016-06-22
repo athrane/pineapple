@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+    <mmd:model target-resource="regex:ssh-node.*" target-operation="deploy-configuration" description="Configure OS for WebLogic">
+        <mmd:content>
+			<shp:ssh>
+    			<shp:copy-to source="modulepath:bin/create-users-and-dirs.sh" destination="/tmp/create-users-and-dirs.sh"/>
+                <shp:execute command="sudo chmod +x /tmp/create-users-and-dirs.sh" />
+				<shp:execute command="sudo /tmp/create-users-and-dirs.sh" />            
+			</shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+</mmd:models>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"	
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-3.0.xsd" >
+
+	<!-- Configures Spring MVC -->
+	<import resource="mvc-config.xml" />
+
+	<!-- Configures services -->
+	<import resource="service-config.xml" />
+
+	<!-- Enable component scan of Spring MVC controller classes for REST. -->
+	<context:component-scan base-package="com.alpha.pineapple.web.spring.rest" />
+
+	<!-- define message provider for internationalization  -->
+	<bean id="webMessageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">
+    	<property name="basename" value="com.alpha.pineapple.web-messages"/>
+	</bean>	
+
+	<!-- define session state -->
+	<bean id="sessionState" class="com.alpha.pineapple.web.model.SessionStateImpl" scope="session" >
+		<!-- 
+			aop:scoped-proxy enables support for sessionState to act as scoped beans as dependency for exexutionContorller
+			http://static.springsource.org/spring/docs/2.5.x/reference/beans.html#beans-factory-scopes-other-injection
+			
+			the proxy-target-class="false" attribute forces Spring to use JDK dynamic proxies for proxy implementation.				  
+		-->
+		<aop:scoped-proxy proxy-target-class="false" /> 	
+	</bean>
+
+	<!-- define debug info model -->
+	<bean id="debugInfoModel" class="com.alpha.pineapple.web.model.DebugInfoModel" />
+
+	<!-- define system info model -->
+	<bean id="systemInfoModel" class="com.alpha.pineapple.web.model.SystemInfoModel" />
+	
+	<!-- define ZK MVVM converters -->			
+	<bean id="treeNodeStateConverter" class="com.alpha.pineapple.web.zk.converter.TreeNodeStateConverter" />
+	<bean id="treeNodeStartTimeConverter" class="com.alpha.pineapple.web.zk.converter.TreeNodeStartTimeConverter" />
+	<bean id="treeNodeDescriptionStyleConverter" class="com.alpha.pineapple.web.zk.converter.TreeNodeDescriptionStyleConverter" />
+	<bean id="executionStateStyleConverter" class="com.alpha.pineapple.web.zk.converter.ExecutionStateStyleConverter" />
+	<bean id="executionStateTextConverter" class="com.alpha.pineapple.web.zk.converter.ExecutionStateTextConverter" />
+
+	<!-- define ZK error message box helper -->
+	<bean id="errorMessageBoxHelper" class="com.alpha.pineapple.web.zk.utils.ErrorMessageBoxHelper" />
+		
+	<!-- definition of task executor used to handle the asynchronous execution of the asyncOperationTask bean. -->
+	<bean id="asyncTaskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="5" />
+		<property name="maxPoolSize" value="10" />
+		<property name="queueCapacity" value="25" />
+	</bean>
+
+	<!-- define Reactor-to-ZK event dispatcher -->
+	<bean id="eventDispatcher" class="com.alpha.pineapple.web.event.EventDispatcherImpl" />
+
+	<!-- define asynchronous task execution helper -->
+	<bean id="asyncTaskHelper" class="com.alpha.pineapple.web.zk.asynctask.AsyncTaskHelper" scope="prototype" />
+
+	<!-- define asynchronous tasks -->
+	<bean id="unpackModuleTask" class="com.alpha.pineapple.web.zk.asynctask.UnpackModuleTask" scope="session" />
+
+	<!-- define core-component to schema-generated-model mapper for REST web service results -->
+	<bean id="restResultMapper" class="com.alpha.pineapple.web.model.RestResultMapperImpl" scope="prototype" />
+
+</beans>

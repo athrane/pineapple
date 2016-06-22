@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mdl:module xmlns:mdl="http://pineapple.dev.java.net/ns/module_1_0" 
+	xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+	xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" 
+	xmlns:wtp="http://pineapple.dev.java.net/ns/plugin/wbem_1_0"
+	id="Filesystem plugin SMB example" version="1.0.0">
+    <mdl:environments>
+        <mdl:environment model-file-name="test-internal-environment.xml" id="test-internal-environment"/>
+    </mdl:environments>
+</mdl:module>

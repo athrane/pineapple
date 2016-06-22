@@ -1,0 +1,32 @@
+ ------
+ Register result listener with the core component
+ ------
+ Allan Thrane Andersen 
+ ------
+ November 2009
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Register result listener with the core component
+
+* Introduction
+
+	Clients can register result listener(s) with the core component which are notified
+	when a execution results changes state as part of execution of an operation. 
+
+* Overview 
+
+	When the method <<<addListener( ResultListener listener )>>> is invoked, 
+	the core component starts this execution sequence:
+
+	[[1]] Registers the listener with the  result repository.
+
+	[]			
+	
+* Registration of the listener with the  result repository
+
+	The core component invokes the <<<ResultRepository.addListener(ResultListener listener)>>>
+	which add the listener to the pool of result listeners.
+	

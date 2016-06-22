@@ -1,0 +1,141 @@
+ ------
+ How-to: Test the load-balancing setup in a server environment
+ ------
+ Allan Thrane Andersen
+ ------
+September 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Test the load-balancing setup in a server environment
+
+* Requirements
+
+	The example requires these preconditions to be run:
+	 	       		 
+	* A load balanced environment with a lest two servers.  
+		
+ 	[]
+
+* Overview
+ 	
+	Three steps are needed to configure the plugin to work:
+	
+	* Define <<resource>> which defines access to the plugin. 
+	
+	* Define test cases in Pineapple module.
+	
+	[]
+	
+	This example extends the last step of the 
+	{{{resolve-to-ip.html}basic example}} by adding some new test cases.	
+			
+	For information about how to define resource, credentials and modules refer to 
+	{{{../usage/index.html}the plugin usage page.}}
+	   			
+* Add the load balancing test cases to the module
+
+	Open the model file for the target environment and add the test case:
+				
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"                 
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">             
+    <mmd:content>                               
+      <itp:infrastructure>                                                                                                      
+
+        <itp:http-configuration id="default-http-config" description="My default HTTP configuration" >
+          <itp:proxy host="bigbossproxy" port="8080"/>
+        </itp:http-configuration>
+
+        <itp:test-load-balancing description="session-stickyness-test for..." requests="5" http-configuration-ref="default-http-config" > 
+          <itp:urls>
+            <itp:url>http://www.myhost.com</itp:url>
+            <itp:url>http://www.myhost.com/login</itp:url>                                                                                                                                              
+          </itp:urls>                                   
+          <itp:assert>
+            <itp:properties>
+              <itp:property name="host" value="null" />
+              <itp:property name="environment" value="null" />                                          
+              <itp:property name="location" value="null" />                                                                                             
+            </itp:properties>                                           
+            <itp:servers>
+              <itp:server>qaserver1</itp:server>
+              <itp:server>qaserver2</itp:server>
+              <itp:server>qaserver3</itp:server>                            
+            </itp:servers>
+          </itp:assert>
+        </itp:test-load-balancing>                                                                                                                          
+      </itp:infrastructure>                                                                     
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++---  
+
+** Meaning of the elements in the example 
+
+	* The <<<test-load-balancing>>> defines the load-balancing test.  
+	
+	* The <<<description>>> attribute should contain a suitable description of the test which 
+	is used by Pineapple at run time in clients and reports to show the outcome of the test.	  
+
+	* The <<<requests>>> attribute should contain the number of times the sequence of
+	URL should be invoked. In the example the defined URL sequence is invoked 5 times. 
+
+	* The <<<http-configuration-ref>>> attribute references a HTTP Configuration element
+	which configures the HTTP client with settings TCP, HTTP and proxy server. In the example the 
+	test cases uses the HTTP configuration named <default-http-config> which defines
+	a proxy server.
+
+	* The <<<urls>>> element is a container element which contains a sequence of URL's
+	which are invoked to test the load balancing. The protocol can either be HTTP or HTTPS. 
+	In the example two URLS are defined, each by their own <<<url>>> element. 
+	
+	* The <<<assert>>> element defines a container element for the expected test values. 
+	
+	* The <<<properties>>> element defines a container element for the expected property values. In the
+	example three properties are tested:
+
+		* The <<<host>>> element should contain the the expected name of the accessed host. 
+			
+		* The <<<environment>>> element should contain the the expected name of the accessed environment	
+		is returned from the load-balanced environment. This value is computed by the accessed 
+		environment or it can be null. Later in this example it is described how this value can be 
+		computed by using a simple test application. 
+
+		* The <<<location>>> element should contain the the expected name of the accessed location	
+		in the load-balanced environment. The location can be used to logical divide an environment 
+		in multiple sections. An environment can be divided into multiple clusters or network zones.
+		Later in this example it is described how this value can be computed by using a simple test 
+		application. 
+
+	* The <<<servers>>> element should contain the range of servers which is included in the
+	load balancing setup. The example expected request to be load balanced between three servers:
+	qaserver1-3. Later in this example it is described how this value can be computed by using 
+	a simple test application.
+	
+	[]
+
+* Computing values for environment, location and servers 
+
+	The values can be computed by implementing a small test application which is deployed 
+	into the environment whose load balancing setup should be tested. 
+	
+	TODO: write this..	
+	
+
+* Using Pineapple to run the test
+
+	* Copy the module to <<<$\{user.home}/.pineapple/conf/modules>>>.
+	
+	* Start the client by invoking <<<runPineapple.cmd>>>.
+	
+	* Select the module with name == <<<pineapple-loadbalancing-example>>>
+	
+	* Select the environment <<<qa-environment>>>
+	
+	* Press the button <<<Deploy configuration>>> to run the tests. 
+		

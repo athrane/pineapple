@@ -1,0 +1,42 @@
+ ------
+ Execute operation in the Pineapple web application
+ ------
+ Allan Thrane Andersen
+ ------
+ October 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Execute operation in the Pineapple web application
+
+* Requirements
+
+	It is required that a module is opened.	
+
+* Steps
+
+	To execute an operation:
+	
+		* Click on the <Module> tab.
+		
+		* Select a model in the model list. The model content will be shown in the right window.
+
+		* Select the <Execute> tab and select an operation to execute: <Deploy>, <Undeploy>, <Test> or <Report>. 				
+	
+		[]	
+		 
+[../images/execute-operation.PNG] 
+		 
+* Result
+
+	The result after executing the steps are:
+	
+	* The model has been executed.
+	
+	* The Execution tab contains a tree view which illustrates how the execution proceeded.
+	
+	* A new report has been created an can be opened in the <Report> tab.
+	
+	[]
+	

@@ -1,0 +1,201 @@
+ ------
+ Pineapple API project
+ ------
+ Allan Thrane Andersen 
+ ------
+ October 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<Pineapple API project>> contains:
+	
+	* Schemas for Pineapple.
+	
+	* Model classes for Pineapple - for unmarshalled representation of the schemas.
+	
+	* Helper classes for using model classes.
+	
+	* Model mapping classes.	
+	
+	* Interfaces for the plugin framework.
+	
+	* Interfaces and classes for the execution framework.
+	
+	* Interfaces and classes for internationalization (I18N).
+	
+	* Interfaces and classes for assertion of Hamcrest matchers
+	
+	* Miscellaneous helper classes.
+	
+* 	Schemas for Pineapple
+	
+	The project contains these schemas:
+	
+	* Environment configuration schema
+	
+	* Module schema
+	
+	* Module model schema	
+	
+	* Execution result schema
+			
+	[]
+	
+** Environment Configuration Schema
+	
+	The schema for environment configuration of Pineapple supports definition 
+	of credentials and resources.
+	
+	The schema is defined in the file <<<environment_1_0.xsd>>> and defines the namespace:
+	<<<http://pineapple.dev.java.net/ns/environment_1_0>>>
+	
+** Module Schema	
+
+	The schema for modules supports definition of Pineapple modules, e.g. input for operations.
+	
+	The schema is defined in the file <<<module_1_0.xsd>>> and defines the namespace:
+	 <<<http://pineapple.dev.java.net/ns/module_1_0>>>	
+
+** Module Model Schema	
+
+	The module model schema supports definition of models which <<aggregates>> a module. 
+	A module consist of a set of models (one for each environment) which contains
+	the actual input to operations. 
+	
+	The schema is defined in the file <<<module_model_1_0.xsd>>> and defines the namespace:
+	 <<<http://pineapple.dev.java.net/ns/module_model_1_0>>>	
+
+** Execution Result Schema	
+
+	The execution result schema supports definition of models contains a tree a execution results. The
+	model is used to transport the state of execution from agents to a controlling 
+	Pineapple instance. 
+	
+	The schema is defined in the file <<<execution_result_1_0.xsd>>> and defines the namespace:
+	 <<<http://pineapple.dev.java.net/ns/execution_result_model_1_0>>>	
+
+** Schedule Operations Schema	
+
+	The schema supports definition of scheduled operations.
+	The schema is used by the REST API to expose information about the current set of scheduled operations. 
+	The schema is used the core component to persist information about scheduled operations.	
+	
+	The schema is defined in the file <<<scheduled_operation_1_0.xsd>>> and defines the namespace:
+	 <<<http://pineapple.dev.java.net/ns/scheduled_operation_1_0.xsd>>>	
+
+** Reports Schema	
+
+	The schema supports definition of reports.
+	The schema is used by the REST API to expose information about the set of existing reports.
+	
+	The schema is defined in the file <<<report_1_0.xsd>>> and defines the namespace:
+	 <<<http://pineapple.dev.java.net/ns/report_1_0.xsd>>>	
+	
+* Model classes
+	
+	The project generates model classes from the XML schemas:
+
+	* Environment configuration, which are located in the package 
+	<<<com.alpha.pineapple.model.configuration>>>.  	
+	
+	* Modules, which are located in the package 
+	<<<com.alpha.pineapple.model.module>>>.
+
+	* Module models, which are located in the package 
+	<<<com.alpha.pineapple.model.module.model>>>.
+
+	* Transport of execution results, which are located in the package 
+	<<<com.alpha.pineapple.model.execution>>>.
+
+	* Transport of scheduled operation, which are located in the package 
+	<<<com.alpha.pineapple.model.execution.scheduled>>>.
+	
+	* Transport of reports, which are located in the package 
+	<<<com.alpha.pineapple.model.report>>>.
+	
+	[]  	
+
+* Model mapping classes
+
+	The project contain classes to map model objects to/from objects used by the core component. 
+
+* Helper classes for using models classes
+
+	The project contains the helper classes:
+	
+	* <<<com.alpha.pineapple.resource.ResourcePropertyGetter>>> 
+
+	[]
+
+	Go to the {{{./usage/index.html}usage page}} for detailed information 
+	about how to use the classes.
+      
+* Plugin framework 
+
+	The project contains the interfaces which are defined by the
+	plugin framework. 
+      
+	The plugin framework contains interfaces which are used 
+	implement plugins.	        
+
+* Execution framework 
+
+	The project contains the interfaces and classes which implements the
+	execution framework. 
+      
+	The execution framework supports monitoring and controlling the 
+	execution of operations and commands. The purpose of the framework is to:
+
+	* Control the execution of operations.
+	
+	* Gather runtime information about the execution of operations and commands.
+
+	* Deliver the information to clients in real time.
+	
+	[]
+
+* Internationalization (I18N)
+
+	The project contains the interfaces and classes which implements support for 
+	internationalization through the resolution of compound messages (e.g. messages
+	with parameters) stored in property files.
+      
+* Interfaces and classes for assertion of Hamcrest matchers
+
+	The project contains interfaces and classes which implements support for 
+	assertion of Hamcrest matchers with collection of results in execution result
+	objects.        
+	      
+* Miscellaneous utility classes.
+
+	The project contains miscellaneous utility classes which can be used across 
+	projects.  		    
+	      
+* Usage 
+
+	Instructions on the usage of the classes in the project can be found 
+	{{{./usage/index.html}here.}}
+	
+* Examples
+
+	To provide you with better understanding on some usages of the classes,
+	you can take a look into the following examples:
+
+	* {{{./examples/operation-with-execution-result.html}How-to: Write a operation whose outcome is reported using the execution framework.}}
+	
+	* {{{./examples/project-with-i18n.html}How-to: Setup a project with internalization (I18N) support.}}	
+	
+	* {{{./examples/use-api-from-spring.html}How-to: Use the API project with the Spring framework.}}	
+	
+  	[]
+	
+
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

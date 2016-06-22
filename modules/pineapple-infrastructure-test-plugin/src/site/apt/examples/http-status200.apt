@@ -1,0 +1,93 @@
+ ------
+ How-to: Write HTTP test case which tests for HTTP status code 200 
+ ------
+ Allan Thrane Andersen
+ ------
+ March 2011
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Write HTTP test case which tests for HTTP status code 200
+
+
+* Overview
+ 	
+	Two steps are needed to configure the plugin to work:
+	
+	* Define <<resource>> which defines access to the plugin.   	 	 
+	 	
+	* Add test cases to the Pineapple <<module>>.
+	
+	[] 
+	
+** A prefabricated example in the default configuration
+
+	Pineapple includes a prefabricated version of this example in the default configuration. The example is named	
+	<<infrastructure-test-004-pineapple-web-client-returns-http-200>>. The default configuration is created by starting 
+	Pineapple. The default configuration will also create the required resource in the <<local>> environment 
+	which is used to execute the test operation on the model. 
+
+* Testing that a host returns a HTTP status code 200
+
+	To test that the host which accessed by the URL: <<<http://localhost:8080>>>,
+	returns the HTTP status code 200:
+	
+	Open the model file for the target environment and add the test case:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">
+    <mmd:content>
+      <itp:infrastructure><
+
+        <itp:http-statuscode-test          
+          description="Pineapple client on localhost:8080" 
+          url="http://localhost:8080" 
+          expected="200" />
+
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------		
+	
+** Meaning of the elements in the test 
+
+	* The <<<http-statuscode-test>>> element defines the skeleton of the test case.
+	
+	* The <<<description>>> attribute should contain a suitable description of the test which 
+	is used by Pineapple at run time in clients and reports to show the outcome of the test.	  
+
+	* The <<<url>>> attribute defines the URL which is accessed by ythe test. In 
+	this case it is the <<<http://localhost:8080>>>. 
+
+	* The <<<expected>>> attribute defines the expected HTTP status code which is asserted. 
+
+	[]
+	
+* Accessing the target host through a proxy 
+
+	If the target host should be accessed through a proxy server then a proxy 
+	definition must be added to the model file and the test case must reference 
+	the proxy definition.
+	
+	For information about how to define and use proxy's in test cases, refer to the 
+	{{{../usage/index.html}plugin usage page.}} Or look at
+	{{{./use-proxy.html}the proxy example.}}  
+	
+* Run the test
+
+	[[1]] Start Pineapple.
+	
+	[[2]] Select the module <<infrastructure-test-004-pineapple-web-client-returns-http-200>> which where created above.
+	
+	[[3]] Select the model named <<local>>.
+	
+	[[4]] Execute the <<test>> operation by selecting the menu <<Execute>> | <<Test>> | <<Run Test>>.
+		
+	[]				
+	

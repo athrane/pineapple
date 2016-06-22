@@ -1,0 +1,157 @@
+ ------
+ How-to: Write HTTP header test cases 
+ ------
+ Allan Thrane Andersen
+ ------
+ March 2000
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Write HTTP header test cases
+
+
+* Overview
+ 	
+	Three steps are needed to configure the plugin to work:
+	
+	* Define <<resource>> which defines access to the plugin.   	 	 
+	 	
+	* Add http-header-test test cases to the Pineapple <<module>>.
+	
+	[] 
+	
+	This example extends the last step of the 
+	{{{resolve-to-ip.html}basic example}} by adding some new test cases.	
+			
+	For information about how to define resource, credentials and modules refer to 
+	{{{../usage/index.html}the plugin usage page.}}
+
+
+* Testing that a host returns two expected HTTP headers
+
+	To test that the host which accessed by the URL: <<<http://www.pineapple.java.dev.net>>>,
+	returns the HTTP headers:
+	
+	* <<Accept>> with value <<text/plain>>
+	
+	* <<Accept-Language>> with value <<da>>
+
+	[]
+
+	Open the model file for the target environment and add the test case:
+
++--------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>													
+        
+        <itp:http-header-test description="http-header-test for..." > 
+          <itp:url>http://www.pineapple.java.dev.net</itp:url>					
+          <itp:assert>
+            <itp:headers>
+              <itp:header name="Accept" value="text/plain" />
+              <itp:header name="Accept-Language" value="da" />                            																		
+            </itp:headers>									            
+          </itp:assert>
+        </itp:http-header-test>																												
+				                
+      </itp:infrastructure>									
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------		
+
+	The URL is added to the <<<url>>> element and the expected headers are added
+	to the <<<headers>>> section in the <<<assert>>> block. Each expected header is defined by an
+	individual <<<header>>> element.
+
+* Testing that a host doesn't returns a particular HTTP header
+
+	To test that the host which accessed by the URL: <<<http://www.pineapple.java.dev.net>>>,
+	doens't returns the HTTP header:
+	
+	* <<load-balanced-by>>
+	 
+	[]
+
+	Open the model file for the target environment and add the test case:
+
++--------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>
+
+        <itp:http-header-test description="http-header-test for..." > 
+          <itp:url>http://www.pineapple.java.dev.net</itp:url>					
+          <itp:assert>
+            <itp:nonexisting-headers>
+              <itp:header name="load-balanced-by" />
+            </itp:nonexisting-headers>
+          </itp:assert>
+        </itp:http-header-test>
+
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------
+
+	Instead of the <<<headers>>> section in the <<<assert>>> block, a 
+	<<<nonexisting-headers>>> section is used to defined the set of headers
+	which is expected not to be returned.	 	  		
+
+* Testing for no headers 
+
+	A null test can be created which doesn't test for any HTTP headers (neither
+	expected or not expected) returned by the host which accessed by the URL: 
+	<<<http://www.pineapple.java.dev.net>>>.
+
+	To do so, open the model file for the target environment and add the test case:
+
++--------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>
+      <itp:infrastructure>
+        
+        <itp:http-header-test description="http-header-test for..." > 
+          <itp:url>http://www.pineapple.java.dev.net</itp:url>
+          <itp:assert />
+        </itp:http-header-test>
+
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------		
+
+	The <<<assert>>> element is mandatory but can be left empty. The test case
+	is degenerated to test that the invoked URL results in HTTP status code 200.	
+	
+* Accessing the target host through a proxy 
+
+	If the target host should be accessed through a proxy server then a proxy 
+	definition must be added to the model file and the test case must reference 
+	the proxy definition.
+	
+	For information about how to define and use proxy's in test cases, refer to the 
+	{{{../usage/index.html}plugin usage page.}} Or look at
+	{{{./use-proxy.html}the proxy example.}}  
+	
+	
+	

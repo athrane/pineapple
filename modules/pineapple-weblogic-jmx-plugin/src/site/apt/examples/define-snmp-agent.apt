@@ -1,0 +1,93 @@
+ ------
+ How-to: Define the SNMP agent for WebLogic 
+ ------
+ Allan Thrane Andersen
+ ------
+ April 2011
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Define the SNMP agent for WebLogic 
+
+* Overview
+
+	This example illustrates how the SNMP agent in the domain configuration 
+	should be defined in an Pineapple module for usage with the WebLogic JMX plugin.  	
+	
+* Defining the SNMP agent
+
+** Creation of the skeleton domain configuration
+
+	The SNMP agent is defined as a child element to the <<<domain>>> element, so lets start with
+	a skeleton domain configuration:
+     
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+		xmlns:wjp="http://www.bea.com/ns/weblogic/920/domain" 
+		xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls" 
+		xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/security/xacml 
+		http://www.bea.com/ns/weblogic/90/security/xacml.xsd 	
+		http://www.bea.com/ns/weblogic/90/security 
+		http://www.bea.com/ns/weblogic/90/security.xsd 
+		http://www.bea.com/ns/weblogic/920/domain 
+		http://www.bea.com/ns/weblogic/920/domain.xsd 
+		http://www.bea.com/ns/weblogic/90/security/wls 
+		http://www.bea.com/ns/weblogic/90/security/wls.xsd" >
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>			
+			<wjp:domain >						
+				<wjp:name>alphadomain</wjp:name>
+			</wjp:domain>			
+		</mmd:content>							
+	</mmd:model>		
+</mmd:models>			
++---
+
+** Adding the SNMP agent
+
+	For WebLogic 9.2 the agent is running on the administration server so no targeting is
+	neccesary,  but the agent should have the same name as the domain. The definition 
+	of the agent looks like this;
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+		xmlns:wjp="http://www.bea.com/ns/weblogic/920/domain" 
+		xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls" 
+		xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/security/xacml 
+		http://www.bea.com/ns/weblogic/90/security/xacml.xsd 	
+		http://www.bea.com/ns/weblogic/90/security 
+		http://www.bea.com/ns/weblogic/90/security.xsd 
+		http://www.bea.com/ns/weblogic/920/domain 
+		http://www.bea.com/ns/weblogic/920/domain.xsd 
+		http://www.bea.com/ns/weblogic/90/security/wls 
+		http://www.bea.com/ns/weblogic/90/security/wls.xsd" >
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>			
+			<wjp:domain >						
+				<wjp:name>alphadomain</wjp:name>
+				<wjp:snmp-agent>
+					<wjp:name>alphadomain</wjp:name>
+					<wjp:enabled>true</wjp:enabled>
+					<wjp:snmp-port>161</wjp:snmp-port>
+					<wjp:community-prefix>doitnow</wjp:community-prefix>
+					<wjp:debug-level>0</wjp:debug-level>
+					<wjp:mib-data-refresh-interval>120</wjp:mib-data-refresh-interval>
+					<wjp:send-automatic-traps-enabled>true</wjp:send-automatic-traps-enabled>
+					<wjp:snmp-trap-version>1</wjp:snmp-trap-version>
+				</wjp:snmp-agent>				
+			</wjp:domain>			
+		</mmd:content>							
+	</mmd:model>		
+</mmd:models>			
++---
+	
+	..which defines a central SNMP agent running on the administration server on port 161 with community prefix <doitnow>.          

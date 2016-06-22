@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Pineapple - a tool to install, configure and test Java web 
+  applications and infrastructure. 
+  
+  Copyright (C) 2007-2013 Allan Thrane Andersen..
+  
+  This file is part of Pineapple.
+  
+  Pineapple is free software: you can redistribute it and/or modify 
+  it under the terms of the GNU General Public License as published 
+  by the Free Software Foundation, either version 3 of the License, 
+  or (at your option) any later version.
+  
+  Pineapple is distributed in the hope that it will be useful, but WITHOUT 
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License along
+   with Pineapple. If not, see <http://www.gnu.org/licenses/>.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.alpha.pineapple</groupId>
+		<artifactId>pineapple-applications</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>pineapple-maven-plugin</artifactId>
+	<packaging>maven-plugin</packaging>
+	<name>Pineapple Maven plugin</name>
+	<description>The Pineapple Maven plugin is a wrapper which enables the usage of Pineapple from Maven. </description>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+		<!-- provides access to maven plugin API -->
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>2.0.6</version>
+		</dependency>
+		<!-- provides access to plexus lifecycle interfaces -->
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-container-default</artifactId>
+			<version>1.0-alpha-9-stable-1</version>
+		</dependency>
+		<!-- provides access to maven embedder -->
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-embedder</artifactId>
+			<version>2.0.4</version>
+		</dependency>
+		<!-- provides access to DuplicateProjectException thrown maven embedder -->		
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-project</artifactId>
+			<version>2.0.4</version>
+		</dependency>
+		<!--  provides access to Commons Lang -->		
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>				
+		<!--  provides access to Pineapple core and command api -->		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>pineapple-core</artifactId>
+		</dependency>							
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>pineapple-commands-api</artifactId>			
+		</dependency>						
+		<!--  provides access to Pineapple plugins (todo: remove this hack) -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>pineapple-weblogic-jmx-plugin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>pineapple-infrastructure-test-plugin</artifactId>
+		</dependency>		
+		<!-- removed for RELEASE 1.1				
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>pineapple-weblogic-deployment-plugin</artifactId>
+		</dependency>
+		-->
+		<!--
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>pineapple-filesystem-plugin</artifactId>
+		</dependency>																																										
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>pineapple-jrockit-installation-plugin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>pineapple-weblogic-installation-plugin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>pineapple-weblogic-scripting-tool-plugin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>pineapple-fusion-middleware-installation-plugin</artifactId>
+			<version>${project.version}</version>								
+		</dependency>
+		-->
+		<!--  provides test access to AbstractMojoTestCase -->
+		<dependency>
+			<groupId>org.apache.maven.shared</groupId>
+			<artifactId>maven-plugin-testing-harness</artifactId>
+			<version>1.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!--  provides test access to JUnit -->				
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>		
+	</dependencies>
+</project>

@@ -1,0 +1,165 @@
+ ------
+ Usage of the Pineapple API project 
+ ------
+ Allan Thrane Andersen
+ ------
+ September 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Usage of the Pineapple API project 
+
+* Introduction
+
+	The model classes are primarily used in the core component 
+	(the pineapple-core project) to load configuration data
+	from schema based XML files.
+	
+	The plugin framework interfaces are implemented by plugins
+	and used by the core component at runtime to handle the 
+	execution of plugins.
+	
+* Using model classes (and related schemas)
+
+** Execution Result Schema
+
+	The schema supports transport of a sequence of execution results which represents the 
+	order of which event took place at an agent. 
+	
+	The model mapper class <<<com.alpha.pineapple.model.ExecutionResultMapperImpl>>> which
+	implements the interface <<<ExecutionResultMapper>>> supports mapping of execution results
+	to/from XML conforming to the schema.  
+	
+*** Transport of a sequence of execution results 
+
+	The element <<</<results/>/<result-sequence/>>>> can contain a list of 
+	execution results where each result describes an update to the execution result. 
+	
+	The order of results in a document represent the order of which an event occurred.  
+
+* Using the plugin framework
+
+	<<{{{../../development/plugin-framework.html}Plugin framework reference}}>>\
+	This guide describes the plugin framework and how to implement plugins.
+
+* Using the execution framework
+	
+	<<{{{../development/execution-framework.html}Execution framework reference}}>>\
+	This guide describes the execution framework and how to use it in plugins, commands and clients.	
+
+* Using the internationalization (I18N) classes
+
+	The project contains these classes for internationalization:
+	
+	* <<<com.alpha.pineapple.i18n.MessageProvider>>> 
+	
+	* <<<com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl>>>	
+
+	* <<<com.alpha.pineapple.i18n.MessageProviderInitializationException>>>
+
+	[]
+	
+** <<<MessageProvider>>>
+
+	Interface for message providers which supports resolution of resource bundle messages.
+	
+	The message provider supports resolution of compound messages. Parameters are 
+	defined in a compound text message in resource bundles by a brace which encloses 
+	an integer, starting from zero, e.g. \{0\}. When a message is resolved the parameters 
+	are supplied by an object array where the first value is substituted with \{0\} in 
+	the message and so forth. For more information abound compound messages consult the 
+	<<{{{http://java.sun.com/docs/books/tutorial/i18n/format/messageFormat.html}Java I18N documentation.}}>>
+	
+	Messages are looked up with the <<<getMessage(..)>>> methods, either no no parameters:
+	
++---	
+    String message = someProvider.getMessage( "myclass.success" );	
++---	
+	
+	or with an object array which includes the parameters which is substituted in the message:
+
++---
+    Object[] args = { "XXX", "YYY", "ZZZ"	
+    String message = someProvider.getMessage( "myclass.another_success", args );	
++---	
+	  
+ 
+** <<<PropertyFileMessageProviderImpl>>> 
+
+	Implementation of the <<<MessageProvider>>> interface which loads messages from a 
+	property file using the JDK <<<PropertyResourceBundle>>> implementation. 
+	
+	An instance is created with the no-arg constructor and the initialized with
+	the <<<setBasename(String basename)>>> method which accepts the base name of 
+	the resource bundle:
+
++---
+    MessageProvider provider = new PropertyFileMessageProviderImpl();	
+    ((PropertyFileMessageProviderImpl) provider).setBasename("advisor");
++---	
+
+	..at which point the provider will try to load the property file named 
+	<<<advisor.properties>>> from the class path.
+	
+	Another example which illustrates the recommended naming scheme for 
+	resource bundle in Pineapple: 
+	
++---	    
+    MessageProvider provider = new PropertyFileMessageProviderImpl();	
+    ((PropertyFileMessageProviderImpl) provider).setBasename("com.alpha.pineapple.plugin.wbem-messages");
++---	
+
+	..at which point the provider will try to load the property file named 
+	<<<com.alpha.pineapple.plugin.wbem-messages.properties>>> from the class path.	
+	
+** <<<MessageProviderInitializationException>>>	
+	
+	Exception which is thrown by <<<PropertyFileMessageProviderImpl>>> if
+	initialization fails.	
+
+* Using model helper classes
+
+	The project contains the helper classes:
+	
+	* <<<com.alpha.pineapple.resource.ResourcePropertyGetterTest>>> 
+
+	[]
+
+** <<<ResourcePropertyGetter>>>	
+
+	The class is used to provide map oriented access to the properties
+	defined by the <<<Resource>>> class.
+	
+	To use the class, start by creating an instance which wraps a
+	<<<Resource>>> instance:
+
++------------	  	  
+	ResourcePropertyGetter getter = new ResourcePropertyGetter();
+	getter.setResource(resource); 	
++------------
+	
+	To query whether a property exists invoke <<<containsProperty(..)>>>:
+	
++------------	
+	boolean exists = getter.containsProperty( "my-property" );
++------------	
+	
+	To get the value of a property invoke <<<getProperty(..)>>>:
+	
++------------	
+	String value = getter.getProperty( "my-property" );	
++------------	
+
+	If the property has multiple values defined, then the values are 
+	returned as a comma separated list. If a property isn't defined in the
+	Resource then invocation of <<<getProperty(..)>>> will throw 
+	a <<<ResourceException>>>.             
+	
+* Using the miscellaneous utility classes.
+
+	The miscellaneous utility classes are located in the <<<com.alpha.javautils>>> 
+	package. 
+  		    
+	
+	 	 									

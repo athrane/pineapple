@@ -1,0 +1,58 @@
+ ------
+ Schedule operation in the Pineapple web application
+ ------
+ Allan Thrane Andersen
+ ------
+ December 2015
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Schedule operation in the Pineapple web application
+
+* Requirements
+
+	No requirements.
+
+* Steps
+
+	To schedule an operation:
+	
+		* Click on the <Scheduling> tab.
+
+[../images/schedule-operation-tab.png] 
+		
+		* Click the <Create> button.
+
+		* Add a job name. Must be unique.
+
+		* Select the module to schedule execution of.
+
+		* Select the model (i.e. environment) within the module to schedule execution of.
+
+		* Select the operation to execute.
+
+		* Define a scheduling expression to set the frequency for execution.
+		 
+		* Add a human readable description.
+		
+		* Click <Confirm>.
+		
+		[]	
+		 
+[../images/schedule-operation-modal.png] 
+		 
+		 
+* Result
+
+	The result after executing the steps are:
+	
+	* A scheduled operation has been created and can be seen in the <Scheduling> tab.
+	
+	* The scheduled operation has been saved to disk in the configuration file <<<PINEAPPLE_HOME/conf/scheduled-operations.xml>>>
+	The next time Pineapple is started the operation will be reloaded and scheduled again.
+
+	* Every time the operation is executed then a report will be created and can accessed in the <Reports> tab.
+	
+	[]
+	

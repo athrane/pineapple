@@ -1,0 +1,72 @@
+ ------
+ Usage
+ ------
+ Allan Thrane Andersen
+ ------
+ October 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Introduction
+
+* Using the Hamcrest matcher asserters 
+
+	The project contains these classes for assertion of Hamcrest matcher:
+	
+	* <<<com.alpha.pineapple.test.Asserter>>> 
+	
+	* <<<com.alpha.pineapple.test.AsserterImpl>>>
+	
+	* <<<com.alpha.pineapple.test.AssertionHelper>>> 
+	
+	* <<<com.alpha.pineapple.test.AssertionHelperImpl>>>
+	
+	
+** <<<Asserter>>>
+		
+	Interface for assertion of a Hamcrest <<<Matcher>>> object where
+	the result is collected in a <<<ExecutionResult>>> object.
+
+** <<<AsserterImpl>>>
+
+	Implementation of the <<<Asserter>>> interface.
+
+** <<<AsserterHelper>>>
+		
+	Interface for assertion of a Hamcrest <<<Matcher>>> object where
+	the result is collected in a <<<ExecutionResult>>> object.
+
+** <<<AsserterHelperImpl>>>
+
+	Implementation of the <<<AsserterHelper>>> interface.
+
+* Reusable Hamcrest matchers
+
+	The project contains a collection of reusable Hamcrest matchers which extends the
+	<<<TypeSafeMatcher\<Object[]\>>>> class:
+
+	* <<<com.alpha.pineapple.test.matchers.PineappleMatchers>>> is a helper class which 
+	provides static factory methods for easy access to matcher instances.
+	
+	* <<<com.alpha.pineapple.test.matchers.IsArrayEmpty>>> which matches if a array is empty.
+
+	* <<<com.alpha.pineapple.test.matchers.IsDistributedAcrossRange>>> which matches if 
+	the values in a collection are distributed across a set of legal range of values.
+ 	
+	* <<<com.alpha.pineapple.test.matchers.IsInLegalRange>>> which matches if the values 
+	in a collection are within a legal range of values.	
+	
+	* <<<com.alpha.pineapple.test.matchers.IsMapContainingKeys>>> which matches if a map 
+	contains an expected pair of keys.	
+	
+	* <<<com.alpha.pineapple.test.matchers.IsMatchingSingleValueInRange>>> which
+	matches if the values in a collection are matching a single value in a legal range of values.
+
+	* <<<com.alpha.pineapple.test.matchers.DoesFileExist>>> which matches if a file exists on 
+	disk and it is a file.
+	
+	[]
+
+		
+	

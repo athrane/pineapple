@@ -1,0 +1,189 @@
+ ------
+ Overview of example modules for the Fusion Middleware installation plugin
+ ------
+ Allan Thrane Andersen
+ ------
+ March 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview of example modules for the Fusion Middleware installation plugin
+
+* Overview
+
+	The example modules included with Pineapple includes several modules which 
+	illustrates how Fusion Middleware installation plugin can be used.  
+
+* Overview of the included modules
+
+	The <<{{{../../../usage/default-configuration.html}default configuration}}>>
+	is created when Pineapple is started without an existing configuration 
+	(e.g. the first time Pineapple is started) will create three example modules 
+	for installation of Fusion Middlewware (WebLogic excluded).
+
+** Fusion Middleware examples 
+
+	Three modules supports out-of-the-box installation of Fusion Middleware 11g::
+	
+	* fusionmiddleware-installation-000-app-dev-runtime-r11-windows
+	
+	* fusionmiddleware-installation-001-soasuite-r11-windows
+	
+	* fusionmiddleware-installation-002-webcenter-r11-windows
+	
+	[]
+	
+* Models defined in the example modules
+
+	Let's start with a piece of Pineapple terminology: A module consist of models. 
+	A model defines input to Pineapple. Each model targets a particular environment. This
+	is reflected directly in the naming of a model, which always has the name of its target 
+	environment. 
+	
+	The modules each contains one or more models which each support installation for a 
+	different type of target environment. The supported environments are those defined in the 
+	<<{{{../../../usage/default-configuration.htm}default configuration}}>> for Pineapple.
+	
+	The environments defined in by the examples are:
+
+	* <<windows-default>> - which will install WebLogic with default values on Windows. 
+	This is for installation of the WebLogic in an developer setting.
+	
+	* <<windows-enterprise>> - which will install WebLogic with values adopted from the 
+	(missing) Oracle Enterprise Deployment documentation for Windows. This is aimed at 
+	your server installation following Oracle best practices.
+	
+	* (..for some strange I forgot to create examples for Linux. Hhhmm?)
+		
+	[]
+	
+	None of the modules supports all environments, because of the installers differs across 
+	operating system and platform architecture. Example: The modules ending with <<<*-win->>> supports 
+	installation on Windows and will support the two Windows environments: windows-default and 
+	windows-enterprise.
+	
+* Dependency to a installed JVM
+
+	The FMW products requires the presence of an installed JVM which must be specified as part of 
+	an silent installation. All of the examples modules contains a reference to an JVM which is assumed 
+	to already installed then the product is installed. Here's an example of an model 
+	(e.g. windows-enterprise.xml from module fusionmiddleware-installation-001-soasuite-r11-windows) which defines a 
+	reference to a JVM with the attribute local-jvm:
+
++----	
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:mip="http://pineapple.dev.java.net/ns/plugin/fusion_middleware_installation_1_0" >
+    <mmd:model target-resource="fusion-middleware">
+        <mmd:content>
+            <mip:fusion-middleware>              
+              <mip:soa-suite>
+                <mip:release11 installer="modulepath:bin\ofm_soa_generic_11.1.1.6.0\Disk1\setup.exe"
+                  uninstaller="C:\app\oracle\product\fmw\oracle_common\oui\bin\setup.exe"  
+                  target-directory="C:\app\oracle\product\fmw\Oracle_SOA1" 					
+                  local-jvm="C:\app\oracle\product\fmw\jrockit\R28.2.3-1.6.0_31"							
+                  oracle-inventory-directory="C:/Program Files/Oracle/Inventory" />																
+                </mip:soa-suite>
+            </mip:fusion-middleware>
+        </mmd:content>
+    </mmd:model>		
+</mmd:models>
++----
+
+	Prior to an installation, the path must modified to point to the JVM that you intend to 
+	use with the FWM product. If the path does't point to a valid JVM installation then all 
+	<<<JAVA_HOME>>> values in the generated scripts inside the product installation will be null. 	
+
+* The examples in detail
+
+** fusionmiddleware-installation-000-app-dev-runtime-r11-windows
+
+	This example will install the Application Development Runtime 11.1.1.6 on Windows. The example 
+	supports the windows-default and the windows-enterprise environments:
+
+	* Product version: Application Development Runtime 11.1.1.6
+	
+	* Platform: Windows
+	
+	* Environments:
+	
+		* windows-default which will install to: C:\Oracle\Middleware\oracle_common
+		
+		* windows-enterprise which will install to: C:\app\oracle\product\fmw\oracle_common
+	
+		[]
+	[]
+
+** fusionmiddleware-installation-001-soasuite-r11-windows
+
+	This example illustrates how to install Oracle SOA Suite 11.1.1.6.0 on Windows. The example 
+	supports the windows-default and the windows-enterprise environments:
+
+	* Product version: 11.1.1.6.0
+	
+	* Platform: Windows
+	
+	* Environments:
+
+		* windows-default which will install to: C:\Oracle\Middleware\Oracle_SOA1
+		
+		* windows-enterprise which will install to: C:\app\oracle\product\fmw\Oracle_SOA1
+		
+		[]
+		
+	[]
+
+** fusionmiddleware-installation-002-webcenter-r11-windows
+
+	This example illustrates how to install Oracle WebCenter Portal 11.1.1.6 on Windows. The example 
+	supports the windows-default and the windows-enterprise environments:
+
+	* Product version: 11.1.1.6
+	
+	* Platform: Windows
+	
+	* Environments:
+
+		* windows-default which will install to: C:\Oracle\Middleware\Oracle_WC1
+		
+		* windows-enterprise which will install to: C:\app\oracle\product\fmw\Oracle_WC1
+		
+		[]
+		
+	[]
+
+
+* Using an example module
+
+	Two steps are typically needed to configure the plugin to work:
+	
+	* Define a resource which enables the usage of the plugin in a particular environment.
+		 	
+	* Define module with a model which directs the installation.
+	
+	[]
+	
+	<<None>> of these step are required to use the example modules. The 
+	<<{{{../../../usage/default-configuration.html}default configuration}}>> already contains the
+	required environments to support usage of the example modules. There's no need to define modules
+	since the above modules can used directly, copied or modified.
+	
+	So, to use the modules you need to:
+	
+	* Download and install a Pineapple client.
+	
+	* Start Pineapple.
+	
+	* Open of the above modules.
+	
+	* Read the included README.txt and identify the required installer. Download the installer and add
+	it to the <<</bin>>> directory in the module.
+	
+	* Select a model which corresponds to the target environment that you wish to install WebLogic to (
+	e.g. developer or enterprise).
+	
+	* Install a FMW product by executing the <<Deploy Configuration>> operation. 
+	
+	[]
+	

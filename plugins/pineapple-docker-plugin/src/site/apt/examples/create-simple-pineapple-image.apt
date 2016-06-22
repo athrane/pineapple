@@ -1,0 +1,258 @@
+ ---**---
+ How-to: Create simple Pineapple Docker image
+ ------
+ Allan Thrane Andersen
+ ------
+ April 2015
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Create simple Pineapple Docker image
+
+* Overview
+
+	This example illustrates how the Docker plugin can be used to create a Docker 
+	image based on CentOS 7.0 with Java 8 and Pineapple installed.
+	
+	Pineapple is installed in the most simple fashion, basically an unzip with no 
+	consideration for the used user within the Docker image. The user <<<root>>> will be used.
+
+** Part of the default configuration
+
+	This example named <<<docker-005-pineapple-image-from-dockerfile-centos>>>, including all configuration files, 
+	is included in the {{{../../../usage/default-configuration.html}default configuration}} which is created by Pineapple, 
+	so there is no need to create it by hand.	
+
+** Installation of Docker
+
+	This example requires the presence of a Docker daemon. The example	
+	{{{../../pineapple-ssh-plugin/examples/install-docker-latest-centos7-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 7.0 using SSH.}}		
+	describes how Pineapple can be used to install Docker on a Vagrant box for the purpose of the example.
+	
+	For the remaining part of this example is assumed that Docker is installed using the above example. The assumed configuration is:
+	
+	* The Vagrant box is running CentOS 7.0 and has IP address 192.168.34.10. 
+	
+	* The Docker daemon is accessible at 192.168.34.10:8082. 
+	
+	[] 
+	 
+	This is relevant since Pineapple will be accessed using HTTP from the docker container within the Docker daemon within the Vagrant box.
+		
+* Define the module 
+
+	Pineapple's unit of work is modules. A module is a self contained unit which 
+	can contain models, scripts and binaries. Models serves to specify test cases, 
+	deployment of applications, configuration of devices or execution of scripts. 
+	
+	The default directory for modules is <<<$\{user.home\}/.pineapple/modules>>> so we will 
+	create a module named <<<docker-005-pineapple-image-from-dockerfile-centos>>> there. 
+	The module for this example will end up with the structure:
+
++---
+docker-005-pineapple-image-from-dockerfile-centos
+ |
+ +--- models	 
+ |     +--- linux-vagrant.xml 
+ +--- dockersrc	 
+       +--- Dockerfile
+       +----pineapple-standalone-web-client-1.8.0.zip       
++---
+	
+* Define the module model
+
+	The model file for definition of the image:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+    xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" >
+    <mmd:model target-resource="docker-node" description="Define tagged Docker image: pineapple/pineapple:1.8 from Dockerfile" >
+        <mmd:content>
+            <dkp:docker>
+                <dkp:image-from-dockerfile source-directory="modulepath:dockersrc" pull-image="false" >
+                    <dkp:target-image repository="pineapple/pineapple" tag="1.8" />
+                </dkp:image-from-dockerfile>
+            </dkp:docker>                       
+        </mmd:content>
+    </mmd:model>    
+</mmd:models>
++----	 
+
+** The configuration details
+
+	Two schema are used in the model file. The <<<http://pineapple.dev.java.net/ns/module_model_1_0>>> is used
+	to define the namespace <<<mmd>>> which defines the general infrastructure for models. 
+	The <<<http://pineapple.dev.java.net/ns/plugin/docker_1_0>>> schema is used to
+	define the namespace <<<dkp>>> which is used to define the model for the Docker plugin. 
+	Since multiple schemas are used to define the model file, the elements are qualified.
+	
+	The <<<target-resource>>> attribute defines a reference to the resource which is targeted when the 
+	model executed. In this case, the value <<<docker-node>>> is a reference to a resource which defines a Docker daemon.
+	
+	The <<<dkp:docker>>> element defines the root of model for the Docker plugin. 
+		
+	The <<<dkp:image-from-dockerfile>>> element defines a tagged Docker image which can be used for creation or deletion 
+	depending on the invoked operation.
+	
+	When the model is invoked with the <deploy-configuration> operation, then target image is created from the source image. 
+	The source image is defined by the DockerFile (see detail below).
+				
+	When the image is created then source directory, defined by the <<<source-directory>>> attribute on 
+	element <<<dkp:image-from-dockerfile>>>, is compressed into a TAR archive and uploaded to Docker. 
+	Please notice that source directory is defined using the variable <modulepath:dockersrc> which is resolved at runtime to the
+	directory <dockersrc> within the module.
+	
+	Docker unpacks the archive and looks for a Dockerfile in the root of the archive. 
+	The Dockerfile along with other file material in the archive is used to create the image.	
+		 		 
+	The name of the target image is defined by the <<<dkp:target-image>>> element.		
+
+** Dockerfile
+
+	The Dockerfile contains:
+	
++----	 
+# Pull base image
+# ---------------
+FROM pineapple/centos-openjdk-java:8
+
+# Maintainer
+# ----------
+MAINTAINER Allan Thrane Andersen <einheriii@gmail.com>
+
+# Define variable
+ENV PINEAPPLE_ARCHIVE pineapple-standalone-web-client-1.8.0.zip
+ENV PINEAPPLE_INSTALL_DIR /opt
+ENV PINEAPPLE_DIR $PINEAPPLE_INSTALL_DIR/pineapple-standalone-web-client-1.8.0
+ENV PINEAPPLE_HOME_DIR /var/pineapple
+ENV PINEAPPLE_USER pineapple
+ENV PINEAPPLE_GROUP pineapple
+
+# Define runtime variables to configure Pineapple
+ENV PINEAPPLE_HOME $PINEAPPLE_HOME_DIR
+ENV PINEAPPLE_HTTP_HOST 0.0.0.0
+ENV PINEAPPLE_HTTP_PORT 8080
+
+# Install unzip
+RUN yum --assumeyes install unzip
+RUN yum clean all
+
+# Install Pineapple binary 
+COPY $PINEAPPLE_ARCHIVE /tmp/
+RUN unzip /tmp/$PINEAPPLE_ARCHIVE -d $PINEAPPLE_INSTALL_DIR
+RUN rm -rf /tmp/$PINEAPPLE_ARCHIVE
+
+# Creates default user, directory and make pineapple executable  
+RUN chmod +x $PINEAPPLE_DIR/bin/setup.sh
+RUN $PINEAPPLE_DIR/bin/setup.sh $PINEAPPLE_DIR $PINEAPPLE_USER $PINEAPPLE_GROUP
+
+# Temporary solution to make logging work
+RUN mkdir -p /var/pineapple/logs
+RUN chown -R $PINEAPPLE_USER:$PINEAPPLE_GROUP /var/pineapple
+RUN chmod -R 775 /var/pineapple
+
+# Make pineapple executable
+WORKDIR $PINEAPPLE_DIR
+
+# Expose port to host
+EXPOSE $PINEAPPLE_HTTP_PORT
+
+# Define volume
+VOLUME $PINEAPPLE_HOME_DIR
+
+# set user 
+USER $PINEAPPLE_USER
+
+# Start pineapple when container is created
+ENTRYPOINT $PINEAPPLE_DIR/runPineapple.sh
++----	 
+
+	The FROM command specifies that the image <<<pineapple/centos-oracle-java:8>>> should be pulled 
+	from the local registry orDockerHub.		 		 
+
+	The MAINTAINER command declares the proud author.
+	
+	The some variables are declares using the ENV command:
+	
+	* The name of Pineapple archive which is installed in the image.
+	
+	* The parent directory relative to where Pineapple will be installed.
+
+	* The directory where Pineapple will be installed.
+
+	* The home directory where Pineapple will use to runtime files.
+		
+	* The name of the Pineapple OS user.
+	
+	* The name of the Pineapple OS group.			
+		
+	* The remaining three variables are used by the runner script <<<runPineapple.sh>>>
+	One of them defines the listen address for Pineapple, because Docker doesn't like the default Pineapple listen address localhost.
+
+	[] 
+			
+	The RUN command uses YUM to installs the unzip tool.
+	
+	The RUN clears the YUM cache.
+	
+	THE COPY command copies the Pineapple archive from the uploaded TAR archive into 
+	the <</tmp>> directory on image.
+	
+	The RUN command unzips Pineapple.
+			
+	The RUN command deletes the Pineapple archive from the <</tmp>> directory.
+	
+	The RUN command make the Pineapple setup.sh script executable.
+	
+	The RUN command executes the setup.sh script to create the user and group, set permission for 
+	the installation directory and make the main Pineapple script executable.
+		
+	The WORKDIR command defines Pineapple installation directory as the current directory.
+	
+	The RUN command ensures that the Pineapple runner script is executable.
+	
+	The EXPOSE command exposes port 8080 from the image.
+
+	The VOLUME command defines a volume for the runtime directory where Pineapple writes its files.
+	
+	The ENTRYPOINT defines the command to run when a container is started.
+	The command will start Pineapple at 0.0.0.0:8080
+
+* Add binary
+
+	The Pineapple binary <<pineapple-standalone-web-client-1.8.0.zip>> must be downloaded and added to
+	the <<<dockersrc>>> directory within the module.
+		 		 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple:
+	
+	* Select the module named <<docker-005-pineapple-image-from-dockerfile-centos>>
+	
+	* Select the <<linux-vagrant>> model.
+	
+	* Invoke the <<deploy-configuration>> to create the Docker Image named <<pineapple/pineapple:1.8>>.
+	
+	[]
+
+* Create a container	
+
+	To create a container a the command line within the Vagrant box:
+	
++----
+sudo docker run --name="pineapple" -p 8080:8080 pineapple/pineapple:1.8
++----
+	
+	Pineapple will run at http:/0.0.0.0:8080 within the Docker image as the <<<pineapple:pineapple>>> user.
+	The image defines exposure of port 8080 to the host with no port mapping.
+	Pineapple is available at: http://192.168.34.10:8080 at the hosts (Vagrant box and the host hosting the Vagrant box).
+	
+	Pineapple will be configured to use the home directory <<</var/pineapple>>>.
+	The home directory is mapped to a volume to retain data between container execution.	
+	Modules can be uploaded and run using either the GUI or the REST API.
+
+
+
+	

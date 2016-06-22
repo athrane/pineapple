@@ -1,0 +1,44 @@
+ ------
+ Installation of the Pineapple deployable web application
+ ------
+ Allan Thrane Andersen
+ ------
+ June 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Installation of the Pineapple deployable web application
+
+	This guide describes how the Pineapple deployable web application is installed.
+
+* Download the client
+
+	Download the client <<<pineapple-web-application-VERSION.war>>> 
+	from the <<{{{http://java.net/projects/pineapple/downloads}Downloads page}}>>.
+			
+* Make Pineapple executable
+
+	If the <<<pineapple-web-application-VERSION.war>>> isn't executable then:
+	
+	[[1]] Open a Linux terminal and change directory (CD) to the directory where the WAR is located.
+
+	[[2]] Execute: <<<chmod +x ./pineapple-web-application-VERSION.war>>>
+	
+	[]
+	
+* Deploy Pineapple 
+
+	Deploy the WAR to your web container of your choice and start the application.
+	
+	The application listens on the URL: <<<$\{hostname\}>>>.
+
+** Creation of the default configuration
+
+	When Pineapple is started then it will look for configuration files in the 
+	<<{{{../../../../usage/runtime-directories.html}Pineapple Home Directory.}}>>
+		
+	If no configuration files are found then it will a create a 
+	<<{{{../../../../usage/default-configuration.html}default configuration}}>> which allows the
+	application to start and provides a starting point to using the supplied examples.
+	

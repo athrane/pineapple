@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+	xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+	<mmd:model target-resource="infrastructure-test">
+		<mmd:content>
+			<itp:infrastructure>
+				<itp:dns-resolution-test host="myexalytics.alpha.net"
+					ip="192.168.1.0"
+					description="myexalytics.alpha.net resolves to 192.168.1.0 and reverse" />
+
+				<itp:tcp-connection-test host="myexalytics.alpha.net"
+					description="Exalytics Environment Listen Ports">
+					<itp:port value="22" />		<!-- SSH -->
+					<itp:port value="7001" />	<!-- HTTP acccess to the administration server -->
+					<itp:port value="6701" />	<!-- OPNM - Process Manager Remote Port -->
+					<itp:port value="9501" />	<!-- Nodemanager -->
+					<itp:port value="9700" />	<!-- Oracle BI ClusterController Monitor Port -->
+					<itp:port value="9701" />	<!-- Oracle BI Server Monitor Port -->
+					<itp:port value="9703" />	<!-- Oracle BI Server Listen Port -->
+					<itp:port value="9704" />	<!-- HTTP acccess to managed server biserver1 -->
+					<itp:port value="9705" />	<!-- Oracle BI Scheduler Listen Port -->
+					<itp:port value="9706" />	<!-- Oracle BI ClusterController Listen Port -->
+					<itp:port value="9708" />	<!-- Oracle BI Scheduler Monitor Port -->
+					<itp:port value="9710" />	<!-- Oracle BI Presentation Services ListenPort -->
+					<itp:port value="9810" />	<!-- Oracle BI JavaHost Listen Port -->
+					<itp:port value="53396" />	<!-- TimesTen -->
+					<itp:port value="53397" />	<!-- TimesTen -->
+				</itp:tcp-connection-test>
+
+				<itp:http-statuscode-test          
+					description="PROD OBIEE Application" 
+					url="http://myexalytics.alpha.net:9704/analytics" 
+					expected="200" />
+
+				<itp:http-statuscode-test          
+					description="PROD OBIEE Publisher" 
+					url="http://myexalytics.alpha.net:9704/xmlpserver" 
+					expected="200" />
+
+				<itp:http-statuscode-test          
+					description="PROD OBIEE Real-Time Decisions" 
+					url="http://myexalytics.alpha.net:9704/ui" 
+					expected="200" />
+					
+				<itp:http-statuscode-test          
+					description="PROD WebLogic Administration Console" 
+					url="http://myexalytics.alpha.net:7001/console" 
+					expected="200" />
+
+				<itp:http-statuscode-test          
+					description="PROD Enterprise Manager" 
+					url="http://myexalytics.alpha.net:7001/em" 
+					expected="200" />
+					
+			</itp:infrastructure>
+		</mmd:content>
+	</mmd:model>
+</mmd:models>

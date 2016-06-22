@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+<html>
+  <head>
+    <title>Pineapple standalone web client - How-to: Modify the environment-configuration-directory for the Swing client.</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+          <meta name="author" content="Allan Thrane Andersen" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      </head>
+  <body class="composite">
+    <!-- TODO: move this into JavaScript to patch the skin
+      <div class="xright">  </div>
+    -->
+    <div id="leftColumn">
+      <div id="navcolumn">
+             <dl class=navgroup>
+        <dt>Project Documentation</dt>
+        <dd><ul>
+              
+                
+              
+      
+            
+      
+              
+        <li class="collapsed">
+              <a href="../project-info.html">Project Information</a>
+              </li>
+              
+                
+              
+      
+              
+        <li class="collapsed">
+              <a href="../project-reports.html">Project Reports</a>
+              </li>
+          </ul></dd>
+    </dl>
+        </div>
+      <script>
+        // replace the java.net project tools with the navigation bar from Maven.
+        // also get rid of "Get Involved" thingie too, while we are at it
+        var pt = document.getElementById("projecttools");
+        var nv = document.getElementById("navcolumn");
+        
+        while(pt.previousSibling!=null)
+          pt.parentNode.removeChild(pt.previousSibling);
+        
+        pt.parentNode.insertBefore(nv,pt);
+        pt.parentNode.removeChild(pt);
+      </script>
+      <script>
+        // kill "description" h3 bar
+        var ld = document.getElementById("longdescription");
+        if(ld!=null) {
+          for( n=ld.firstChild; n!=null; n=n.nextSibling ) {
+            if(n.nodeType==1 && n.innerHTML=="Description" ) {
+              n.parentNode.removeChild(n);
+              break;
+            }
+          }
+        }
+      </script>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <!-- NOTE: For help with the syntax of this file, see: --><!-- http://maven.apache.org/guides/mini/guide-apt-format.html --><div class="section"><h2>How-to: Modify the environment-configuration-directory for the Swing client<a name="How-to:_Modify_the_environment-configuration-directory_for_the_Swing_client"></a></h2><p>The <b>environment configuration directory</b> is the directory where Pineapple will look for its environment configuration, which consists of the files <tt>resource.xml</tt> and <tt>credentials.xml</tt>.</p><p>For more information about the environment configuration for Pineapple look <a href="../../../usage/configuration-environment.html">here.</a></p><p>Two examples are included:</p><ul><li>How to change the environment-configuration-directory at runtime.</li><li>How to change the environment-configuration-directory at development time.</li></ul><div class="section"><h3>Modification of the environment-configuration-directory at runtime <a name="Modification_of_the_environment-configuration-directory_at_runtime"></a></h3><div class="section"><h4>Location of the environment-configuration-directory configuration in the Swing client<a name="Location_of_the_environment-configuration-directory_configuration_in_the_Swing_client"></a></h4><p>The unzipped client contains the directory layout:</p><div class="source"><pre>pineapple-gui-release-&lt;version&gt;
+     |     
+     +--- runPineapple.cmd
+     |     
+     +--- conf     
+     |     +--- log4j.properties
+     |     `--- swingclient.properties
+     |               
+     +--- lib
+           +--- xxx.jar
+           +--- pineapple-gui-&lt;version&gt;.jar                      
+           `--- other pineapple jars           
+</pre></div><p>The environment-configuration-directory is configured in file: <tt>pineapple-gui-release-&lt;version&gt;/conf/swingclient.properties</tt> which contains something like:</p><div class="source"><pre>#----------------------------------------------------------------------------
+# Pineapple configuration
+#---------------------------------------------------------------------------- 
+
+# &quot;Pineapple.module.rootdir&quot; defines the location of the modules
+# which are executed by Pineapple. 
+Pineapple.module.rootdir=${sys:user.home}/.pineapple/modules
+
+# &quot;Pineapple.configuration.dir&quot; defines the location of the resources.xml and
+# credentials.xml configuration files.
+Pineapple.configuration.dir=${sys:user.home}/.pineapple/conf
+
+#----------------------------------------------------------------------------
+# Logging layout in frame
+#---------------------------------------------------------------------------- 
+
+Deployer.frame.outputpanel.logging.layout=[%d{ISO8601}] %m%n 
+
+#----------------------------------------------------------------------------
+# Frame properties
+#---------------------------------------------------------------------------- 
+Deployer.version=0.13.0
+Deployer.title=Pineapple | Swing-client (pineapple-gui-release:src/main/release-dir/conf/swingclient.properties)
+
+Deployer.frame.width=800
+Deployer.frame.height=600
+
+... more GUI settings ...
+
+</pre></div><p>The environment-configuration-directory is defined by the property:</p><div class="source"><pre>Pineapple.configuration.dir=${sys:user.home}/.pineapple/conf
+</pre></div></div><div class="section"><h4>Variable interpolation<a name="Variable_interpolation"></a></h4><p>Notice that the default environment-configuration-directory was defined using the variable <tt>${sys:user.home}</tt> which is a Commons Configuration feature for variable interpolation.</p><p>Pineapple uses Commons Configuration for loading the <tt>swingclient.properties</tt> configuration file so all features for variable interpolation can be used in <tt>swingclient.properties</tt>. </p><p>For more info about variable interpolation in Commons Configuration look <a class="externalLink" href="http://commons.apache.org/configuration/index.html.">here.</a> </p></div><div class="section"><h4>Example: Change the environment-configuration-directory to c:/temp<a name="Example:_Change_the_environment-configuration-directory_to_c:temp"></a></h4><p>Change the value of property <tt>Pineapple.configuration.dir</tt> To <tt>c:/temp</tt> as shown here:</p><div class="source"><pre>Pineapple.configuration.dir=c:/temp
+</pre></div><p>The Swing client must be restarted for the change to take effect as the configuration is only read when the Swing client starts up.</p></div></div><div class="section"><h3>Modification of the environment-configuration-directory at development time<a name="Modification_of_the_environment-configuration-directory_at_development_time"></a></h3><div class="section"><h4>Location of the environment-configuration-directory configuration in the Swing client<a name="Location_of_the_environment-configuration-directory_configuration_in_the_Swing_client"></a></h4><p>The configuration of the modules-root-directory is located in the project <tt>pineapple-gui-release</tt> in the directory: <tt>src/main/release-dir/conf/swingclient.properties</tt>&gt;.</p></div><div class="section"><h4>Example: Change the environment-configuration-directory to c:/pineapple-modules<a name="Example:_Change_the_environment-configuration-directory_to_c:pineapple-modules"></a></h4><p>Change the value of property <tt>Pineapple.configuration.dir</tt> To <tt>c:/pineapple-config</tt> as shown here:</p><div class="source"><pre>Pineapple.configuration.dir=c:/pineapple-config
+</pre></div><p>The Swing client must be restarted for the change to take effect as the configuration is only read when the Swing client starts up.</p><p>The client must be built and started for the change to take effect.</p></div></div></div>
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2010
+    
+          
+  
+
+  
+  
+  &nbsp;| Last Published: 05 Oct 2010
+  &nbsp;| Version: 1.0
+</div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

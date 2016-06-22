@@ -1,0 +1,44 @@
+
+ ------
+ Pineapple Version Information
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+
+Pineapple Version Information
+
+	Information about where version information is located in
+	the project:
+
+* Pineapple Project	
+	
+	* The <<<pineapple.release.version>>> property in the pineapple-project POM.
+	
+	[]
+	
+	The version info is used to define the version in these projects:
+	
+		* Pineapple core project.		
+			
+		* Pineapple standalone web application project.		
+		
+		[]	
+	
+* Pineapple core project
+	
+	* The <<<ci.version>>> value in: <<<src/main/resources/com.alpha.pineapple.core-messages.properties>>>.
+		
+	[]
+	
+* Pineapple standalone web client project
+	
+	* The <<<PINEAPPLE_HOME>>> value in: <<<src/main/release-dir/pineapple-service.sh>>>.
+		
+	[]
+	

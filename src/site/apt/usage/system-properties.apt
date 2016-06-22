@@ -1,0 +1,40 @@
+
+ ------
+ Pineapple System Properties
+ ------
+ Allan Thrane Andersen 
+ ------
+ May 2012
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Pineapple System Properties
+
+	Pineapple define a set of Java System Properties which is used to configure the tool. 
+	
+* How Pineapple processes the system properties
+
+	The system properties are processed during 
+	{{{../pineapple-modules/pineapple-core/development/initialization.html}Initialization of the core component}}, 
+	where the different parts of the core component reads and configures themselves based on 
+	whether a relevant system property is defined and it's value.	
+	
+* Supported system properties
+	
+** The <<<pineapple.home.dir>>> system property
+
+	Defines the absolute path to the <<Pineapple home directory>> where Pineapple expects its 
+	{{{./runtime-directories.html}runtime directory structure}} to be defined. 
+
+	This is an <<optional>> system property. If this property isn't defined then it will be resolved to
+	a {{{./runtime-directories.html}OS dependent default value}}.    
+	
+** The <<<pineapple.credentialprovider.password.file>>> system property
+
+	Defines the absolute path to the file containing the master password used by Pineapple to encrypt (and
+	decrypt) credential passwords.
+	
+	This is an <<optional>> system property. If this property isn't defined then it will be resolved to:
+	<<<$\{pineapple.home.dir\}/conf/credentialprovider.password>>>.

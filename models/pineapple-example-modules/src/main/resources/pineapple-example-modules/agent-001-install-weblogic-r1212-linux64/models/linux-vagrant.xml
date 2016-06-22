@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:pap="http://pineapple.dev.java.net/ns/plugin/agent_1_0" >
+    <mmd:model target-resource="regex:agent-node.*">
+        <mmd:content>
+			<pap:agent>
+				<pap:distribute-and-execute-operation module="weblogic-installation-009-r1212-linux64" environment="linux-enterprise" operation="deploy-configuration" />
+			</pap:agent>			
+        </mmd:content>
+    </mmd:model>
+</mmd:models>

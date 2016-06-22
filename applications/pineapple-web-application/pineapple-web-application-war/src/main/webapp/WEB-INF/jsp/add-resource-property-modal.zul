@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	"forDetatchAfterOpen" and forDetatchAfterCancel are dummy attributes whose purpose is 
+	to trigger the detach converter to close the modal dialog window.
+ -->
+      
+<window title="Create Resource Property"
+	apply="org.zkoss.bind.BindComposer"
+    viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.CreateResourcePropertyModalPanel')"    
+    width="50%" border="normal"    
+ 	forDetatchAfterOpen="@load(true,after='confirmResourceProperty') @converter('com.alpha.pineapple.web.zk.utils.DetachConverter')"
+ 	forDetatchAfterCancel="@load(true,after='cancelResourceProperty') @converter('com.alpha.pineapple.web.zk.utils.DetachConverter')" >    	
+ 
+	<grid>
+	    <columns visible="false" >
+	        <column width="20%" align="right"/>
+	        <column width="30%" />
+	        <column width="50%" />				        
+	    </columns>
+	    <rows>
+	        <row>
+	        	<cell valign="top" height="100%" >
+	        		<hlayout>
+	                  	<label value="Key" />                	
+	        			<label value="*" style="color:red"  />				        	
+	        		</hlayout>        	
+	        	</cell>
+	        	<cell valign="top" >
+                   	<textbox id="propertyKey" value="@save(vm.propertyKey)" onChanging="@command('updatePropertyKey',propertyKey=event.value)" width="80%" style="font-weight:bold;" />
+	        	</cell>
+	        	<cell valign="top" >
+					<label value="Unique key among defined properties for resource. Properties are used by plugins, where each defines a set of mandatory and optional properties." style="font-size:11px" />				        	
+	        	</cell>
+	        </row>					        
+	        <row>
+	        	<cell valign="top" height="100%" >
+	        		<hlayout>
+	                  	<label value="Value" />                	
+	        			<label value="*" style="color:red"  />				        	
+	        		</hlayout>        	        	
+	        	</cell>
+	        	<cell valign="top" >
+                   	<textbox id="propertyValue" value="@save(vm.propertyValue)" onChanging="@command('updatePropertyValue', propertyValue=event.value)" width="80%" style="font-weight:bold;" />
+	        	</cell>
+	        	<cell valign="top" >
+					<label value="Property value. Value is used to configure plugins." style="font-size:11px" />				        	
+	        	</cell>
+	        </row>					        
+	        <row>
+	        	<cell valign="top" height="100%" >
+                  	<label value="Status" />                	
+	        	</cell>
+	        	<cell valign="top" colspan="2" >
+                   	<label value="@load(vm.propertyStatusAsString)" width="80%" style="@load(vm.propertyStatus eq 'true' ?'font-weight:bold;color:red;':'font-weight:bold;color:green;')" />
+	        	</cell>
+	        </row>					        
+	        <row>
+		    	<cell colspan="3" align="center">
+	            <button id="confirmButton" label="Confirm" onClick="@command('confirmResourceProperty')" disabled="@load(vm.propertyStatus)" mold="trendy" />
+	            <button id="cancelButton" label="Cancel" onClick="@command('cancelResourceProperty')" mold="trendy" />
+		    	</cell>
+		   	</row>					        		        
+	    </rows>
+	</grid>       					         						
+     
+</window>

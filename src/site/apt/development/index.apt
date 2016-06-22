@@ -1,0 +1,159 @@
+ ------
+ Development documentation
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Development documentation
+
+	This document provides an overview of the various documents and links 
+	that are part of this project's technical documentation.
+
+* Architecture
+
+	<<{{{./architecture.html}Architecture description}}>>\
+	This document describes the architecture of the project.
+		
+	<<{{{../usage/configuration.html}Configuration}}>>\
+	This document gives an overview of how the project configured.
+	 
+
+* Implementation
+
+	<<{{{./build.html}Build Pineapple from source}}>>\
+	This guide describes how to build Pineapple from the source repository.
+
+	<<{{{./implementation-maven-projects.html}Maven project organization}}>>\
+	This document describes how the project is organized in Maven projects.
+
+	<<{{{./plugin-framework.html}Plugin framework reference}}>>\
+	This guide describes the plugin framework and how to implement plugins.
+
+	<<{{{../pineapple-modules/pineapple-api/development/execution-framework.html}Execution framework reference}}>>\
+	This guide describes the execution framework and how to use it in plugins, commands and clients.
+	
+	<<{{{../pineapple-modules/pineapple-commands-api/usage/index.html}Guidelines for implementation of commands}}>>\
+	This guide describes how Chain commands should be implemented in the project.
+		
+	<<{{{./version-info.html}Pineapple version implementation}}>>\
+	This document describes where version information for the different components is defined.
+
+** Core component
+
+	<<{{{../pineapple-modules/pineapple-core/usage/index.html}Usage of the core component}}>>\
+	This document describes how to use the core component from clients.
+
+	Implementation of supported use cases in the core component:
+
+	* {{{../pineapple-modules/pineapple-core/development/initialization.html}Initialization of the core component.}}
+
+	* {{{../pineapple-modules/pineapple-core/development/execute-operation.html}Execute operation.}}
+
+	* {{{../pineapple-modules/pineapple-core/development/register-listener.html}Register result listener.}}	
+
+	* {{{../pineapple-modules/pineapple-core/development/get-administration.html}Get administration interface.}}	
+
+	[]
+	
+	Extending the core component:
+	
+	* {{{../pineapple-modules/pineapple-core/development/implement-plugin-provider.html}Implement plugin provider in the core component.}}		
+	
+	[]	
+
+* Test 
+
+	<<{{{./test-infrastructure.html}Pineapple test infrastructure}}>>\
+	This document describes the design of the test infrastructure used to test the Pineapple project.	
+	
+* Examples
+
+** Deployable web application
+
+  	* {{{../pineapple-applications/pineapple-web-application/pineapple-web-application-war/examples/run-with-jetty-maven-plugin.html}How-to: run the web application using the Jetty-maven-plugin for development and testing.}}
+
+	[]
+
+** General application infrastructure
+
+	* {{{../pineapple-modules/pineapple-api/examples/project-with-i18n.html}How-to: Setup a project with internalization (I18N) support.}}
+	
+	* {{{../pineapple-modules/pineapple-api/examples/use-api-from-spring.html}How-to: Use the API project with the Spring framework.}}	
+
+	* {{{../pineapple-support/pineapple-hamcrest-support/examples/use-matchers-from-spring.html}How-to: Use the Hamcrest support project with the Spring framework.}}	
+	
+	* {{{../pineapple-support/pineapple-hamcrest-support/examples/project-with-asserter.html}How-to: Use the Hamcrest asserter object with matchers.}}
+	
+	* {{{./pineapple-support/pineapple-process-execution-support/examples/use-process-execution-from-spring.html}How-to: Use the process execution support project with the Spring framework.}}	
+	
+	* {{{./pineapple-support/pineapple-process-execution-support/examples/use-session-to-execute-external-processes.html}How-to: Use the process execution session to execute external processes.}}	
+	
+	[] 
+
+** Writing plugins
+
+	* {{{../examples/helloworld-plugin.html}How-to: Create a hello world plugin.}}
+	
+	* {{{../pineapple-modules/pineapple-api/examples/operation-with-execution-result.html}How-to: Write a operation whose outcome is reported using the execution framework.}}
+  	
+  	[]
+  	
+** Writing and using Chain commands   	
+
+	* {{{../pineapple-modules/pineapple-commands-api/examples/use-command-from-spring.html}How-to: Use the commands API with the Spring framework.}}
+
+	* {{{../pineapple-modules/pineapple-commands-api/examples/simple-command-with-execution-result.html}How-to: Write a simple test command whose outcome is reported using the execution framework.}}	
+
+  	[]
+	
+** Core component
+
+	* {{{../pineapple-modules/pineapple-core/examples/create-core-default-settings.html}How-to: Create the core component with default settings.}}
+
+	* {{{../pineapple-modules/pineapple-core/examples/create-core-from-spring.html}How-to: Create the core component with default settings using Spring.}}
+
+	* {{{../pineapple-modules/pineapple-core/examples/create-core-custom-provider.html}How-to: Create the core component with a custom credential provider.}}
+
+	* {{{../pineapple-modules/pineapple-core/examples/create-core-alternate-resource-location.html}How-to: Create the core component which loads resources from an alternate location.}}
+
+	* {{{../pineapple-modules/pineapple-core/examples/create-core-with-listener.html}How-to: Create the core component with result listeners registered.}}  
+
+	* {{{../pineapple-modules/pineapple-core/examples/invoke-core.html}How-to: Invoke the core component from a client.}}
+
+	* {{{../pineapple-modules/pineapple-core/examples/register-listener.html}How-to: Register a result listener with the core component.}}	
+
+	[]
+
+** Create reports
+
+  	* {{{../pineapple-reporting-projects/pineapple-basic-html-report-generator/examples/create-generator-default-settings.html}How-to: Create the report generator with default settings.}}
+
+  	* {{{../pineapple-reporting-projects/pineapple-basic-html-report-generator/examples/create-generator-custom-settings.html}How-to: Create the report generator with custom settings.}}
+
+  	* {{{../pineapple-reporting-projects/pineapple-basic-html-report-generator/examples/invoke-generator.html}How-to: Register and invoke the report generator to create a report.}}  	
+
+
+** Test utilities 
+
+	* {{{../pineapple-test-projects/pineapple-test-utils/examples/write-testcase-with-directories.html}How-to: Write test cases that requires disk access.}}		
+
+	* {{{../pineapple-test-projects/pineapple-test-utils/examples/write-testcase-with-access-to-testmethod-name.html}How-to: Write test cases that requires access to the name of the test method.}}	
+
+	* {{{../pineapple-test-projects/pineapple-test-utils/examples/use-mock-messageprovider.html}How-to: Mock the <<<MessageProvider>>> in tests.}}		
+
+	* {{{../pineapple-test-projects/pineapple-test-utils/examples/writing-integration-test.html}How-to: Write integration tests in Pineapple.}}  	
+
+	* {{{../pineapple-test-projects/pineapple-test-utils/examples/writing-unit-test.html}How-to: Write unit tests in Pineapple.}}  		
+
+	* {{{../examples/generate-module-code.html}How-to: Write code to generate modules.}}	
+
+	[]
+
+		
+		
+		

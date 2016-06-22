@@ -1,0 +1,98 @@
+ ------
+ How-to: Create the core component with result listeners registered 
+ ------
+ Allan Thrane Andersen
+ ------
+ April 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Create the core component with result listeners registered
+
+	Use the <<<com.alpha.pineapple.CoreFactory>>> to create an instance
+	of the core component with result listeners registered. 
+	
+	The purpose with registration of result listeners prior to initialization
+	of the core component is to receive notifications during initialization of
+	the core component.
+	  
+* Implement a result listener 
+
+	Use an existing listener og implement the <<<com.alpha.pineapple.execution.ResultListener>>> 
+	interface which is defined in the <<<pineapple-api>>> project:
+
++---
+
+public class LoggingListenerImpl implements ResultListener
+{
+    /**
+     * Logger object.
+     */
+    Logger logger = Logger.getLogger( this.getClass().getName() );
+
+    public void notifyOfResultStateChange(ExecutionResult result) {     
+    {
+        // log debug message
+        if (logger.isDebugEnabled()) {
+            StringBuilder message = new StringBuilder();
+            message.append( "Received notification <" );
+            message.append( result.toString() );
+            message.append( ">." );            
+            logger.debug( message.toString() );
+        }
+    }
+
+}
+
++---	
+
+	
+* Register the result listener with the core component
+
+	In your client of choice, create the core component and 
+	register the listener:
+
++---
+
+  // create the listener 
+  ResultListener listener = new LoggingListenerImpl ();
+  ResultListener[] listeners = { listener };     
+
+  // create core component
+  CoreFactory coreFactory = new CoreFactory();
+  PineappleCore core = coreFactory.createCore( listeners );
+    
++---
+	
+* Invoke an operation to receive notifications
+
+	In your client of choice, invoke an operation:
+	
++---	
+  
+  // get user.home
+  String userHome = System.getProperty( "user.home" );
+        
+  // define default pineapple runtime directory
+  File runtimeDirectory = new File( userHome, ".pineapple" ); 
+         
+  // define modules directory
+  File modulesDirectory = new File( runtimeDirectory, "modules" ); 
+        
+  // setup parameters
+  String operation = "run-tests";
+  String environment =  "production-2-a"; 
+  String module = "jee-platform-infrastructure-tests" ; 
+    
+  // execute operation
+  Future<String> future;
+  future = core.execute( operation, environment, modulesDirectory, module );
+
+  // invoke get-method to block until execution is complete
+  String result = future.get();
+	
++---
+
+	And look in your Log4j log to inspect the notifications... 	
+	

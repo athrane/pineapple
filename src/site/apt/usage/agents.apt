@@ -1,0 +1,204 @@
+ ------
+ Pineapple agent architecture overview
+ ------
+ Allan Thrane Andersen 
+ ------
+ august 2013
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Pineapple agent architecture overview
+
+* Master and agents
+
+ 	The agent architecture supports the usage of Pineapple in a distributed setting. It's done through the usage 
+ 	of the Pineapple binary in two different roles as either master or agent. 
+ 	
+ 	In the role as master, a Pineapple instance is used to start and orchestrate the execution of operations on 
+ 	any number of agents. In the role as agent, a Pineapple instance executes operations on behalf of the master 
+ 	and reports back the results.
+ 	
+[../images/pineapple-agent-architecture.png]	 	
+ 	
+** The main components 	
+ 	
+ 	The two main components in the agent architecture are the agent plugin and the REST API which enables the 
+ 	communication between the master and agents. The agent plugin implements the master side of the agent architecture, 
+ 	where the plugin implements the functionality to start remote operations, communicate with agents and collect 
+ 	the results. The REST API implements the agent side of the agent architecture, where it is capable of receiving 
+ 	requests from the master, execute the request and report the results. 
+
+* Enabling "local" functionality in a distributed setting 
+
+	Through the distribution and operation of agents the functionality of all plugins can be used in a distributed
+	setting.
+	
+	The functionality of a plugin can be categorized as intended for local operation on the host where Pineapple
+	is running or for remote operation targeting one or more remote hosts through a protocol. 
+	
+	Examples of plugins which supports local operation are: 
+	
+	* <<The WebLogic installation plugin>> - which support installation of WebLogic on the host where Pineapple is executing. 
+	
+	* <<The JRockit installation plugin>> - which support installation of JRockit on the host where Pineapple is executing.
+		
+	* <<WebLogic WLST plugin>> - which supports execution of WLST script of a Fusion Middleware installation such
+	as WebLogic, SOA Suite or WebCenter. WLST scripts have a remote component to them, due to the WLST online part, 
+	which requires a connection to a running WebLogic. This remote aspect is supported by the plugin. Despite the support 
+	for WLST online, the plugin is still considered to be a plugin which support local operation because its 
+	requirement for a Fusion Middleware installation to run off. The reason for this requirement is decouple Pineapple
+	from the WLST internals and to provide support for execution for all WLST custom commands delivered by Oracle
+	with their Fusion Middleware products.        
+			
+	* <<Infrastructure test plugin>> - which support basic test of IT infrastructure.  	
+
+	* <<Composite execution plugin>> - which supports execution of bulk execution of Pineapple modules.  
+	
+	[]	 
+	    
+	Examples of plugins which supports remote operation are: 
+		    
+	* <<WebLogic JMX plugin>> -  which support configuration of a running WebLogic through its JMX API. 
+	
+	* <<SSH plugin>> - which support SSH access to remote host for copying files, execution of shell commands and
+	execution of tests.
+	
+	* <<Infrastructure test plugin>> - which support basic test of IT infrastructure.
+	
+	* <<Windows WBEM plugin>> - which support test of Windows based server through a combination of WBEM and WMI.
+	
+	* <<Agent plugin>> - which support remote invocation of functionality of Pineapple agents.
+		
+	[]			    	
+	
+	Distribution of agents enables the usage of plugins intended for local operation in a distributed setting. 	 	    	    
+
+* Controlling the agents
+
+	Agents are controlled by a central Pineapple instance which has the role of master. The master handles the 
+	distribution, configuration and usage of agents.
+
+* Agent binaries 	 
+
+	The functionality of the master and agents is contained in the same binary; the Pineapple web application 
+	(e.g. the WAR archive). This also includes the Pineapple standalone web client, since it is a 
+	packaging of the WAR archive with an embedded web server (e.g. Jetty).
+	
+	It is recommend to use the standalone web client as a basis for agents. It is easier to distribute
+	and configure because it comes with its own embedded web server. Using the WAR archive as a basis of agents 
+	requires the installation of a web server. Only the usage of the standalone client as a basis for agents
+	is documented currently.         
+
+* Installation of agents	 
+
+** Prerequisites 
+
+ 	The prerequisites for installation and execution of an agent are: 
+ 	
+ 	* Creation of the required users and directories to run the agent on the host.
+ 	
+ 	* Installation of Java on the host where the agent is installed.
+ 	
+ 	[]
+
+** Installation steps on Linux
+
+	The installation consists of three steps:
+		
+	* Distribution of the Pineapple standalone binary (e.g a ZIP archive), Pineapple 
+	configuration files and a service script to install the agent as a OS service.
+	
+	* Remote creation of users and directories used for the execution of the agent.
+	
+	* Installation and start of the agent as a OS service.
+	
+	[]
+		
+** Installed as a module
+
+	The installation steps are implemented in a module which uses the SSH plugin to do the job.
+	
+** Uninstallation of agents
+
+	Uninstallation is the reversal of the above installation steps. It is also implemented 
+	in a module which uses the SSH plugin.
+
+** Additional information:
+	
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/usage/installation-linux.html}How-to: Install the Pineapple standalone web application as an agent (i.e. a service) on Linux.}}
+	
+	* {{{../pineapple-plugins/pineapple-ssh-plugin/examples/install-pineapple-agent-linux.html}Example illustrating how use the SSH plugin to install agents on Linux}}.
+	
+	* {{{./issues-installing-agents-linux-ssh.html}Common issues during installation of Pineapple agents on Linux}}.
+	
+	[]
+
+
+* Communication between the master and agents	 
+	
+	Communication between the master and the agents is implemented through the usage of a REST API 
+	which is used by the master to:
+	
+	* Distribute modules to agents.
+	
+	* Execute operations at agents.
+	
+	* Manage the configuration of agents.
+	
+	[]
+
+	There are three ways that work can be initiated at the master:
+	
+	* Using the web application GUI.
+	
+	* Execution of a module whose model uses the agent agent plugin.
+	
+	* Invoking the REST API of the master..
+	
+	[]
+	
+** The REST API 	
+
+	The REST API implements the agent side of the communication. Agents are contacted by the 
+	master through the usage of the REST API. 		
+	
+** The agent plugin	
+
+	The agent plugin implements the master side of the communication. The agent plugin is 
+	intended to be a mirror of the services exposed by the REST API. In its current incarnation,
+	the plugin is a REST service client.
+	
+** Design of communication
+
+	Currently all communication originates from the masterand information updates during long 
+	running transactions are implemented using polling of REST resources.
+	
+	Asynchronous communication from agents to the controlling Pineapple instance is postponed to the release
+	of Spring 4.x. 
+	
+* Security
+
+** Network security
+
+	Network communication during installation of Pineapple agents is secured using SSH.
+
+	Communication between the master and agents is done in uencrypted HTTP. Support for TLS 
+	is pending resolution of issue: PINEAPPLE-447: Secure REST WS calls (through HTTPS).
+	
+	REST services are unsecured. Support for authentication of REST services is pending resolution of issue: 
+	PINEAPPLE-448: Authorization of REST WS calls.
+			
+** Security of username and password on agent hosts 
+
+	The user name and password of Pineapple resources are stored in plain text in the configuration 
+	file named <<<credentials.xml>>>. Support encryption of credentials is pending resolution 
+	of issue: PINEAPPLE-449: Encryption of credentials.
+
+** Intended usage pattern due to the current level of security
+
+	The current low level of security calls for a usage pattern when agents are installed, do their job 
+	and are removed instantly as part of an composite operation.
+	
+		 	

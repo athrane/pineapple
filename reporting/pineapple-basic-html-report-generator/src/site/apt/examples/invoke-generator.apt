@@ -1,0 +1,83 @@
+
+ ------
+ How-to: Register and invoke the report generator to create a report 
+ ------
+ Allan Thrane Andersen
+ ------
+ November 2009
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Register and invoke the report generator to create a report
+
+
+* Registering the report generator with the core component
+
+	A report generator instance have been create using the  
+	<<<BasicHtmlReportGeneratorImpl.getInstance()>>> method. 
+	
+	The next step is to register it with a core component instance to listen for 
+	events during execution of operations and produce a report when execution of 
+	an operation is complete: 		
+
++---
+    
+  // create core component
+  PineappleCore core = CoreFactory.createCore();
+  
+  // create the report generator with default settings
+  ResultListener generator = BasicHtmlReportGeneratorImpl.getInstance();  
+
+  // register the report generator
+  core.addListener(generator); 
+
++---
+
+* Invoke an operation to generate a report 
+  
+	The last step is to execute and operation and have the report generator
+	create a report when the execution of the operation is completed:    
+  
++---
+  
+  // get user.home
+  String userHome = System.getProperty( "user.home" );
+	
+  // define default pineapple runtime directory
+  File runtimeDirectory = new File( userHome, ".pineapple" ); 
+	 
+  // define modules directory
+  File modulesDirectory = new File( runtimeDirectory, "modules" ); 
+        
+  // setup parameters
+  String operation = "run-tests";
+  String environment =  "production-2-a"; 
+  String module = "jee-platform-infrastructure-tests" ; 
+    
+  // execute operation
+  Future<String> future;
+  future = core.execute( operation, environment, modulesDirectory, module );
+
+  // invoke get-method to block until execution is complete
+  String result = future.get();
+
++---
+	
+	This instance of the core component will:
+	
+	* Execute the operation named "run-tests"
+	
+	* on the module located at <<<$\{user.home}/.pineapple/modules/jee-platform-infrastructure-tests>>>
+	
+	* for at model defined for the environment named "production-2-a".
+	
+	* And create a report in the directory <<<$\{user.home}/.pineapple/reports/report-$\{TIMESTAMP}>>>.
+	
+	[]   
+			
+	The method is asynchronous and will return a <<<Future\<String\>>>> object 
+	once the operation is added to the execution queue. To wait for the 
+	operation is finished, invoke the <<<get()>>> method on the <<<Future>>> 
+	object.
+	 

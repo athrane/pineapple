@@ -1,0 +1,95 @@
+ ------
+ How-to: Schedule operation at an agent
+ ------
+ Allan Thrane Andersen
+ ------
+ April 2016
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Schedule an operation at an agent
+
+* Overview
+
+	This example illustrates how the agent plugin can be used to schedule the execution of an operation 
+	at a remote Pineapple agent. 
+
+* Define the module 
+
+	Pineapple's unit of work is modules. A module is a self contained unit which 
+	can contain models, scripts and binaries. Models serves to specify test cases, 
+	deployment of applications, configuration of devices or execution of scripts. 
+	
+	The default directory for modules is <<<$\{user.home\}/.pineapple/modules>>> so we will 
+	create a module named <<<agent-schedule-module>>> there. The module 
+	for this example will end up with the structure:
+
++---
+agent-schedule-module
+ |
+ +--- models	 
+       +--- local.xml 
++---
+	
+* Define the module model
+
+	The model file for the scheduled execution of the module <<<infrastructure-test-004-pineapple-web-client-returns-http-200>>>:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+    xmlns:pap="http://pineapple.dev.java.net/ns/plugin/agent_1_0" >
+    <mmd:model target-resource="agent-node1">
+        <mmd:content>
+            <pap:agent>
+               <pap:schedule-operation name="myjob" module="infrastructure-test-004-pineapple-web-client-returns-http-200" environment="local" operation="test" scheduling-expression="0 * * * * *" description="Test Pineapple is running, executed hourly."/>
+            </pap:agent>			
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++----	 
+
+** The configuration details
+
+	Two schema are used in the model file. The <<<http://pineapple.dev.java.net/ns/module_model_1_0>>> is used
+	to define the namespace <<<mmd>>> which defines the general infrastructure for models. 
+	The <<<http://pineapple.dev.java.net/ns/plugin/agent_1_0>>> schema is used to 
+	define the namespace <<<pap>>> which is used to define the model for the agent plugin. 
+	Since multiple schemas are used to define the model file, the elements are qualified.
+	
+	The <<<target-resource>>> attribute defines a reference to the resource which is targeted when the 
+	model executed. In this case, the value <<<agent-node1>>> is a reference to a resource which defines a Pineapple agent.
+	
+	The <<<pap:agent>>> element defines the root of model for the agent plugin. The 
+	<<<pap:schedule-operation>>> element defines command to execute the module at 
+	the remote Pineapple agent:
+
+	* The <<<name>>> attribute defines the name of scheduling job. Must be unique.
+	
+	* The <<<module>>> attribute defines the name of the module at the agent scheduled for execution.
+
+	* The <<<environment>>> attribute defines the name of the target environment, e.g. the model which is used 
+	for the operation. 	
+		
+	* The <<<operation>>> attribute defines the operation which is invoked periodically.
+
+	* The <<<scheduling-expression>>> attribute defines the scheduling expression using Cron syntax to defined the frequency of the module execution.
+
+	* The <<<description>>> attribute defines the a human readable discription of the scheduled operation.
+		
+	[]  
+		 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<agent-schedule-module>>
+	
+	* Select the <<local>> model.
+	
+	* Invoke any operation to execute the operation at the agent.
+	
+	[]
+
+	

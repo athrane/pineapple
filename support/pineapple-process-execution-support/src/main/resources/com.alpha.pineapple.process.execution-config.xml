@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+    
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    		http://www.springframework.org/schema/oxm 
+    		http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd" >
+
+	<!-- Configures pineapple-api -->
+	<import resource="classpath:com.alpha.pineapple.api-config.xml" />
+
+	<!-- Configures pineapple-commands-api -->
+	<import resource="classpath:com.alpha.pineapple.commands-api-config.xml" />
+    
+	<!-- define message provider for internationalization  -->
+	<bean id="processExecutionMessageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">	
+    	<property name="basename" value="com.alpha.pineapple.process.execution-messages"/>
+	</bean>		
+	    						  
+	<bean id="processExecutionCommand" class="com.alpha.pineapple.command.ProcessExecutionCommand" scope="prototype" />				    
+	<bean id="processExecutionSession" class="com.alpha.pineapple.session.ProcessExecutionSessionImpl" scope="prototype" />				    
+	    
+</beans>

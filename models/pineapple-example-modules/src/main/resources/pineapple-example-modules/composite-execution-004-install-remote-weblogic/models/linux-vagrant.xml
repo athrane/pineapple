@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:cep="http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0" >
+    <mmd:model target-resource="composite-execution">
+        <mmd:content>
+            <cep:composite-execution>
+                <cep:module name="ssh-002-install-yum-packages" />
+                <cep:module name="ssh-005-install-jvm-rpm-linux64" />
+                <cep:module name="ssh-006-configure-os-weblogic-linux64" />
+                <cep:module name="ssh-007-install-pineapple-agent-linux64" />
+                <cep:module name="agent-001-install-weblogic-r1212-linux64" />
+            </cep:composite-execution>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>

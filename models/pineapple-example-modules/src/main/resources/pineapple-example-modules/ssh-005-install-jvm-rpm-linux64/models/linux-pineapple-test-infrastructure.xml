@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+   xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0">
+   <mmd:model target-resource="regex:ssh-node.*" target-operation="deploy-configuration" description="Install JVM" >
+      <mmd:content>
+         <shp:ssh>
+            <shp:copy-to source="modulepath:bin/jdk-7u40-linux-x64.rpm" destination="/tmp/jdk-7u40-linux-x64.rpm" substitute-variables="false" />
+            <shp:execute command="sudo chmod a+x /tmp/jdk-7u40-linux-x64.rpm" />
+            <shp:execute command="sudo yum --assumeyes install /tmp/jdk-7u40-linux-x64.rpm" />     
+            <shp:execute command="sudo rm -rf /tmp/jdk-7u40-linux-x64.rpm" />                                               
+         </shp:ssh>
+      </mmd:content>
+   </mmd:model>
+</mmd:models>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+    xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" >
+  <mmd:model target-resource="docker-node" target-operation="deploy-configuration" description="Define Docker images" >
+    <mmd:content>
+      <dkp:docker>
+        <dkp:image-from-dockerfile source-directory="modulepath:dockersrc/httpd-loadbalancer" pull-image="false" >
+          <dkp:target-image repository="pineapple/httpd-loadbalancer" tag="1.0" />
+        </dkp:image-from-dockerfile>
+        <dkp:image-from-dockerfile source-directory="modulepath:dockersrc/httpd-backend" pull-image="false" >
+          <dkp:target-image repository="pineapple/httpd-backend" tag="1.0" />
+        </dkp:image-from-dockerfile>
+        <dkp:image-from-dockerfile source-directory="modulepath:dockersrc/httpd-backend2" pull-image="false" >
+          <dkp:target-image repository="pineapple/httpd-backend2" tag="1.0" />
+        </dkp:image-from-dockerfile>
+    </dkp:docker>                       
+    </mmd:content>
+  </mmd:model>
+  <mmd:model target-resource="docker-node" description="Define Docker containers" >
+    <mmd:content>
+      <dkp:docker>
+        <dkp:container name="backend01" >
+          <dkp:image repository="pineapple/httpd-backend" tag="1.0" />   
+        </dkp:container>
+        <dkp:container name="backend02" >
+          <dkp:image repository="pineapple/httpd-backend2" tag="1.0" />   
+        </dkp:container>
+        <dkp:container name="backend03" >
+          <dkp:image repository="pineapple/httpd-backend" tag="1.0" />                      
+        </dkp:container>
+        <dkp:container name="backend04" >
+          <dkp:image repository="pineapple/httpd-backend2" tag="1.0" />                      
+        </dkp:container>
+        <dkp:container name="loadbalancer" >
+          <dkp:image repository="pineapple/httpd-loadbalancer" tag="1.0" />   
+          <dkp:configuration>                   
+            <dkp:host-config>      
+              <dkp:port-bindings>
+                <dkp:bind container-port="80" host-port="8080" type="tcp" />
+              </dkp:port-bindings>
+              <dkp:links>backend01:httpd1 backend02:httpd2 backend03:httpd3 backend04:httpd4</dkp:links>              
+            </dkp:host-config>
+          </dkp:configuration>                   
+        </dkp:container>        
+      </dkp:docker>                       
+    </mmd:content>
+  </mmd:model>
+</mmd:models>

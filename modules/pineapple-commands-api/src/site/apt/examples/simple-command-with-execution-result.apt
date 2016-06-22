@@ -1,0 +1,256 @@
+ ------
+ How-to: Write a simple test command whose outcome is reported using the execution framework
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Write a simple test command whose outcome is reported using the execution framework
+
+* Introduction
+
+	This example illustrates how to write a simple command which uses the
+	execution framework, i.e. reports the outcome of the execution by using
+	the execution result object.
+		 
+	The class <<<com.alpha.pineapple.plugin.net.command.TestResolveNameToIPAddressCommand>>> is
+	used an example. The class is part of the infrastructure test plugin where it implements
+	a simple test which can be used to validate whether a host name can be resolved to an IP address.
+
+	
+* The full example
+
++----
+
+public class TestResolveNameToIPAddressCommand implements Command
+{
+    public static final String HOSTNAME_KEY = "hostname";
+    public static final String IP_KEY = "ip";  
+    public static final String EXECUTIONRESULT_KEY = "execution-result";
+      
+    Logger logger = Logger.getLogger( this.getClass().getName() );
+    
+    // Host name.
+    @Initialize( HOSTNAME_KEY )
+    @ValidateValue( ValidationPolicy.NOT_EMPTY )    
+    String hostname;
+
+    // Expected IP address.
+    @Initialize( IP_KEY )
+    @ValidateValue( ValidationPolicy.NOT_EMPTY )    
+    String ip;
+ 
+    // Defines execution result object.
+    @Initialize( EXECUTIONRESULT_KEY )
+    @ValidateValue( ValidationPolicy.NOT_NULL )    
+    ExecutionResult executionResult;
+    
+    // Message provider for I18N support.
+    @Resource
+    MessageProvider messageProvider;
+    
+    // Actual IP address.
+    String actualIP;
+    
+    public boolean execute( Context context ) throws Exception
+    {
+        // log debug message
+        if ( logger.isDebugEnabled() ) logger.debug( messageProvider.getMessage("trnc.start", null, null ) );        	
+        
+        // initialize command
+        CommandInitializer initializer = new CommandInitializerImpl();
+        initializer.initialize( context, this );
+        
+        // run test
+        doTest( context );
+
+        // log debug message
+        if ( logger.isDebugEnabled() ) logger.debug( messageProvider.getMessage("trnc.completed", null, null ) );        	
+        
+        return Command.CONTINUE_PROCESSING;
+    }
+      
+    /**
+     * Do test.
+     * 
+     * @param context
+     *            Command context.
+     * 
+     * @throws Exception
+     *             If test execution fails.
+     */
+    void doTest( Context context ) throws Exception
+    {
+        try
+        {
+        	// get actual IP address
+            InetAddress inetAddress = InetAddress.getByName( this.hostname );            
+            actualIP = inetAddress.getHostAddress();
+
+            // assert
+            if (ip.equalsIgnoreCase( actualIP )) {
+
+                // set successful result            	
+        		Object[] args = { this.hostname, this.ip };            	
+            	executionResult.completeAsSuccessful(messageProvider, "trnc.succeed", args);            	        		
+        		return;            	            	
+            }
+            
+            // set failed result
+    		Object[] args = { this.hostname, this.ip.toString(), this.actualIP.toString() };            
+            executionResult.completeAsFailure(messageProvider, "trnc.failed", args);
+        }
+        catch ( UnknownHostException e )
+        {
+            // set result with error
+    		Object[] args = { this.hostname, this.ip };            	
+        	executionResult.completeAsError(messageProvider, "trnc.error", args, e);            	        		
+        }    	    	
+    }         
+}
+	    
++----
+
+* Usage of the execution framework
+
+** Purpose of the execution result
+
+	The execution result object is used to report the outcome of
+	the test. The execution result is used to capture one of three outcomes:
+	
+	* The test succeeded, i.e. the name could be resolved to the expected IP address.
+	
+	* The test failed, i.e. the name could not be resolved to the expected IP address.	
+	
+	* The test terminated with an error.
+	
+	[]		
+
+** Who creates the execution result object for the command
+
+	It is the responsibility of the code which executes the command to create
+	a execution result object which can be used by the command to report the outcome of 
+	the test. 
+
+** Injection of the execution result object from the context
+
+	The execution result object for the command is injected into command from the command
+	context. The definition of the annotated field:
+
++----
+  // Defines execution result object.
+  @Initialize( EXECUTIONRESULT_KEY )
+  @ValidateValue( ValidationPolicy.NOT_NULL )    
+  ExecutionResult executionResult;
++----	
+	
+	implements injection of the value with the key <EXECUTIONRESULT_KEY> from the command context when
+	the command is invoked. The actual injection is implemented by the invocation of
+	the <<<CommandInitializer>>> in the <<<Execute(..)>>> method:
+	
++----		
+public boolean execute( Context context ) throws Exception {
+        
+  // initialize command
+  CommandInitializer initializer = new CommandInitializerImpl();
+  initializer.initialize( context, this );
+ 
+  // remaining code here...       
+}
++----
+	in the <<<Execute(..)>>> method of the command.
+
+** Implementing the successful test outcome
+
+	If the test succeeds then the state of the execution result object
+	is updated using the <<<completeAsSuccessful(...)>>> method and the 
+	command is done executing:
+   
++----
+void doTest( Context context ) throws Exception {
+  try {
+    // get actual IP address
+    InetAddress inetAddress = InetAddress.getByName( this.hostname );            
+    actualIP = inetAddress.getHostAddress();
+
+    // assert
+    if (ip.equalsIgnoreCase( actualIP )) {
+
+      // set successful result            	
+      Object[] args = { this.hostname, this.ip };            	
+      executionResult.completeAsSuccessful(messageProvider, "trnc.succeed", args);
+	
+      return;
+    }
+    
+    // handling the failed outcome here...
+    
+    {    
+    catch ( UnknownHostException e )
+    {
+        // set result with error
+    }    	    	        	            	
+}
++----
+
+** Implementing the failed test outcome
+
+	If the test fails then the state of the execution result object
+	is updated using the <<<completeAsFailure(...)>>> method and the 
+	command is done executing:
+   
++----
+void doTest( Context context ) throws Exception {
+  try {
+  
+    // assert
+    if (ip.equalsIgnoreCase( actualIP )) {
+      // set successful result and return            	
+    }
+    
+    // set failed result
+    Object[] args = { this.hostname, this.ip.toString(), this.actualIP.toString() };            
+    executionResult.completeAsFailure(messageProvider, "trnc.failed", args);
+
+    {    
+    catch ( UnknownHostException e )
+    {
+        // set result with error
+    }    	    	        	            	
+}
++----
+
+** Implementing when the test terminates with an error
+
+	If the test terminates with an error then the state of the execution result object
+	is updated using the <<<completeAsError(...)>>> method and the 
+	command is done executing:
+   
++----
+void doTest( Context context ) throws Exception {
+  try {
+  
+    // assert
+    if (ip.equalsIgnoreCase( actualIP )) {
+      // set successful result and return            	
+    }
+    
+    // set failed result
+    {
+    catch ( UnknownHostException e )
+    {
+      // set result with error
+      Object[] args = { this.hostname, this.ip };            	
+      executionResult.completeAsError(messageProvider, "trnc.error", args, e);            	        		
+    }    	    	    
+}
++----
+
+ 
+
+
+
+		

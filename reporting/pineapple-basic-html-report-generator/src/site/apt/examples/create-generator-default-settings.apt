@@ -1,0 +1,45 @@
+ ------
+ How-to: Create the report generator with default settings 
+ ------
+ Allan Thrane Andersen
+ ------
+ November 2009
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Create the report generator with default settings
+
+* Creating the report generator instance
+
+	Use the <<<com.alpha.pineapple.report.basichtml.BasicHtmlReportGeneratorImpl>>> 
+	to create an instance of the report generator with default settings:		
+
++---
+
+  // create report generator
+  ResultListener generator = BasicHtmlReportGeneratorImpl.getInstance();		
+      
++---
+
+	The report generator will:
+	
+	* reports are created in the directory <<<$\{user.home}/.pineapple/reports/report-$\{TIMESTAMP}>>>.
+	
+		* <<<$\{user.home}>>> is the user home directory on the computer.
+	
+		* <<<report-$\{TIMESTAMP}>>> is a unique time stamped directory created for each new report. The 
+		time stamp has the format YYYY-MM-DD-HHMMSS.
+		
+		[]	
+
+	* Two files are created within the time stamped directory:
+	
+		* <<<basic-report.xml>>> which is an XML version of the report.
+	
+		* <<<basic-report.html>>> which is the final product. The HTML report.
+	
+		[]
+		
+	[]			
+	

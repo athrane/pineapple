@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:sec="http://www.bea.com/ns/weblogic/90/security" xmlns:xac="http://www.bea.com/ns/weblogic/90/security/xacml" targetNamespace="http://www.bea.com/ns/weblogic/90/security/xacml" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.bea.com/ns/weblogic/90/security" schemaLocation="security_9_2.xsd"/>
+	<xs:complexType name="xacml-authorizerType">
+		<xs:complexContent>
+			<xs:extension base="sec:deployable-authorizerType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="xacml-role-mapperType">
+		<xs:complexContent>
+			<xs:extension base="sec:deployable-role-mapperType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="xacml-authorizer" type="xac:xacml-authorizerType"/>
+	<xs:element name="xacml-role-mapper" type="xac:xacml-role-mapperType"/>
+</xs:schema>

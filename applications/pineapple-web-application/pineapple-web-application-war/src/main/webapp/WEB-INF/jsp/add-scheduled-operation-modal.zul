@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- "forDetatchAfterOpen" and forDetatchAfterCancel are dummy attributes 
+	whose purpose is to trigger the detach converter to close the modal dialog 
+	window. -->
+
+<window title="Add Scheduled Operation" apply="org.zkoss.bind.BindComposer"
+	viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.CreateScheduledOperationModalPanel')"
+	width="50%" border="normal"
+	forDetatchAfterOpen="@load(true,after='confirmOperation') @converter('com.alpha.pineapple.web.zk.utils.DetachConverter')"
+	forDetatchAfterCancel="@load(true,after='cancelOperation') @converter('com.alpha.pineapple.web.zk.utils.DetachConverter')">
+
+	<grid>
+		<columns visible="false">
+			<column width="20%" align="right" />
+			<column width="30%" />
+			<column width="50%" />
+		</columns>
+		<rows>
+			<row>
+				<cell valign="top" height="100%">
+					<hlayout>
+						<label value="Name" />
+						<label value="*" style="color:red" />
+					</hlayout>
+				</cell>
+				<cell valign="top">
+					<textbox id="nameName" value="@bind(vm.name)"
+						onChanging="@command('updateName', name=event.value)"
+						style="font-weight:bold;" width="80%" />
+				</cell>
+				<cell valign="top">
+					<label value="Name of the scheduled operation." style="font-size:11px" />
+				</cell>
+			</row>		
+			<row>
+				<cell valign="top" height="100%">
+					<hlayout>
+						<label value="Module" />
+						<label value="*" style="color:red" />
+					</hlayout>
+				</cell>
+				<cell valign="top">
+					<bandbox id="moduleName" readonly="true" style="font-weight:bold;"
+						mold="rounded" autodrop="true" width="80%">
+						<bandpopup>
+							<listbox model="@load(vm.modules)" height="250px" width="450px"
+								mold="paging" autopaging="true" selectedItem="@save(vm.module)"
+								onSelect="moduleName.value=self.selectedItem.label; moduleName.close();">
+								<listhead>
+									<listheader label="Modules" />
+								</listhead>
+								<template name="model" var="module">
+									<listitem>
+										<listcell label="@load(module.id)" />
+									</listitem>
+								</template>
+							</listbox>
+						</bandpopup>
+					</bandbox>
+				</cell>
+				<cell valign="top">
+					<label value="Name of the module scheduled for execution."
+						style="font-size:11px" />
+				</cell>
+			</row>
+			<row>
+				<cell valign="top" height="100%">
+					<hlayout>
+						<label value="Model" />
+						<label value="*" style="color:red" />
+					</hlayout>
+				</cell>
+				<cell valign="top">
+					<combobox id="modelName" model="@load(vm.models)"
+						selectedItem="@save(vm.model)" style="font-weight:bold;" width="80%">
+						<template name="model" var="model">
+							<comboitem label="@load(model.id)" />
+						</template>
+					</combobox>
+				</cell>
+				<cell valign="top">
+					<label value="Model for target environment." style="font-size:11px" />
+				</cell>
+			</row>
+			<row>
+				<cell valign="top" height="100%">
+					<hlayout>
+						<label value="Operation" />
+						<label value="*" style="color:red" />
+					</hlayout>
+				</cell>
+				<cell valign="top">
+					<combobox id="operationName" model="@load(vm.operations)"
+						selectedItem="@save(vm.operation)" style="font-weight:bold;"
+						width="80%">
+						<template name="model" var="operation">
+							<comboitem label="@load(operation)" />
+						</template>
+					</combobox>
+				</cell>
+				<cell valign="top">
+					<label value="Operation scheduled to be executed." style="font-size:11px" />
+				</cell>
+			</row>
+			<row>
+				<cell valign="top" height="100%">
+					<hlayout>
+						<label value="Scheduling Expression" />
+						<label value="*" style="color:red" />
+					</hlayout>
+				</cell>
+				<cell valign="top">
+					<textbox id="cronName" value="@bind(vm.cron)"
+						onChanging="@command('updateCron', cron=event.value)" style="font-weight:bold;"
+						width="80%" />
+				</cell>
+				<cell valign="top">
+					<label
+						value="Scheduling expression using CRON syntax: min hour day month weekday"
+						style="font-size:11px" />
+				</cell>
+			</row>
+			<row>
+				<cell valign="top" height="100%">
+					<hlayout>
+						<label value="Description" />
+						<label value="*" style="color:red" />
+					</hlayout>
+				</cell>
+				<cell valign="top">
+					<textbox id="descriptionName" value="@bind(vm.description)"
+						onChanging="@command('updateDescription', description=event.value)"
+						style="font-weight:bold;" rows="3" width="80%" />
+				</cell>
+				<cell valign="top">
+					<label value="Description of the scheduled operation." style="font-size:11px" />
+				</cell>
+			</row>
+			<row>
+				<cell valign="top" height="100%">
+					<label value="Status" />
+				</cell>
+				<cell valign="top" colspan="2">
+					<label value="@load(vm.creationStatusAsString)" width="80%"
+						style="@load(vm.creationStatus eq 'true' ?'font-weight:bold;color:red;':'font-weight:bold;color:green;')" />
+				</cell>
+			</row>
+			<row>
+				<cell colspan="3" align="center">
+					<button id="confirmButton" label="Confirm"
+						onClick="@command('confirmOperation')" disabled="@load(vm.creationStatus)"
+						mold="trendy" />
+					<button id="cancelButton" label="Cancel"
+						onClick="@command('cancelOperation')" mold="trendy" />
+				</cell>
+			</row>
+		</rows>
+	</grid>
+
+</window>

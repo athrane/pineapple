@@ -1,0 +1,42 @@
+ ------
+ WebLogic deployment plugin
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+  The <<WebLogic deployment plugin>> implements functionality to deploy
+  and undeploy application in WebLogic domains.   
+  
+  The plugin is implemented as a wrapper around the <<<Weblogic.deployer>>> 
+  tool for weblogic 9.2. Information about the WebLogic.deployer tool can be 
+  found	{{{http://e-docs.bea.com/wls/docs92/deployment/wldeployer.html}here}}.
+   
+* Usage
+
+	Go to the {{{./usage/index.html}Plugin Usage page}} for instructions on using the plugin. 
+
+* Examples
+
+	To provide you with better understanding on some usages of the plugin,
+	you can take a look into the following examples:
+
+  * {{{./examples/deploy-webapp.html}How-to: Deploy a web application using the WebLogic deployment plugin.}}
+
+  * {{{./examples/deploy-to-mutiple-targets.html}How-to: Deploy a web application to multiple targets.}}
+
+  * {{{./examples/deploy-using-deployment-plan.html}How-to: Deploy a web application using a deployment plan.}}
+
+  []
+
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

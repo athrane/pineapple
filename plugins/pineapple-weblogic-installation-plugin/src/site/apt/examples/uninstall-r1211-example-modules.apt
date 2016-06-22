@@ -1,0 +1,33 @@
+ ------
+ How-to: Uninstall WebLogic 12c using the example modules
+ ------
+ Allan Thrane Andersen
+ ------
+ February 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Uninstall WebLogic 12c using the example modules
+
+* Overview
+
+	This example illustrate another usage of the modules defined in the  
+	{{{install-r1211-example-modules.apt}How-to: Uninstall WebLogic 12c using the example modules}} 
+	example to uninstall an existing WebLogic 12c installation previously installed using one of the
+	example modules.
+	 
+
+* Invoke Pineapple to uninstall WebLogic
+
+	Start your Pineapple client of choice:
+	
+	* Select the <<module>> which where used to install WebLogic.
+	
+	* Select the <<environment>> for WebLogic was installed.
+	
+	* Invoke the <<Undeploy Configuration>> operation.
+	
+	[]
+
+

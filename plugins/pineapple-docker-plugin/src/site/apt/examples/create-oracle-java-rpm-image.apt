@@ -1,0 +1,154 @@
+ ------
+ How-to: Create Oracle JDK Docker image
+ ------
+ Allan Thrane Andersen
+ ------
+ April 2015
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Create Oracle JDK Docker image
+
+* Overview
+
+	This example illustrates how the Docker plugin can be used to 
+	create a Docker image based on CentOS 7.0 with Oracle JDK (Java Development Kit) 7 or 8 installed.
+
+** Part of the default configuration
+
+	This example named <<<docker-004-java8-oraclejdk-rpm-image-centos>>>, including all configuration files, 
+	is included in the {{{../../../usage/default-configuration.html}default configuration}} which is created by Pineapple, 
+	so there is no need to create it by hand.	
+	A corresponding example for Java 7, named <<<docker-004-java7-oraclejdk-rpm-image-centos>>>, is also included in the 
+	default configuration.
+	
+* Define the module 
+
+	Pineapple's unit of work is modules. A module is a self contained unit which 
+	can contain models, scripts and binaries. Models serves to specify test cases, 
+	deployment of applications, configuration of devices or execution of scripts. 
+	
+	The default directory for modules is <<<$\{user.home\}/.pineapple/modules>>> so we will 
+	create a module named <<<docker-004-java8-oraclejdk-rpm-image-centos>>> there. 
+	The module for this example will end up with the structure:
+
++---
+docker-004-java8-oraclejdk-rpm-image-centos
+ |
+ +--- models	 
+ |     +--- linux-vagrant.xml 
+ +--- dockersrc	 
+       +--- Dockerfile
+       +----jdk-8u40-linux-x64.rpm       
++---
+	
+* Define the module model
+
+	The model file for definition of the image:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+    xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" >
+    <mmd:model target-resource="docker-node" description="Define tagged Docker image: pineapple/centos-oracle-java:8 from Dockerfile" >
+        <mmd:content>
+            <dkp:docker>
+              <dkp:image-from-dockerfile source-directory="modulepath:dockersrc" pull-image="false" >
+                <dkp:target-image repository="pineapple/centos-oracle-java" tag="8" />
+              </dkp:image-from-dockerfile>
+            </dkp:docker>                       
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++----	 
+
+** The configuration details
+
+	Two schema are used in the model file. The <<<http://pineapple.dev.java.net/ns/module_model_1_0>>> is used
+	to define the namespace <<<mmd>>> which defines the general infrastructure for models. 
+	The <<<http://pineapple.dev.java.net/ns/plugin/docker_1_0>>> schema is used to
+	define the namespace <<<dkp>>> which is used to define the model for the Docker plugin. 
+	Since multiple schemas are used to define the model file, the elements are qualified.
+	
+	The <<<target-resource>>> attribute defines a reference to the resource which is targeted when the 
+	model executed. In this case, the value <<<docker-node>>> is a reference to a resource which defines a Docker daemon.
+	
+	The <<<dkp:docker>>> element defines the root of model for the Docker plugin. 
+		
+	The <<<dkp:image-from-dockerfile>>> element defines a tagged Docker image which can be used for creation or deletion 
+	depending on the invoked operation.
+	
+	When the model is invoked with the <deploy-configuration> operation, then target image is created from the source image. 
+	The source image is defined by the DockerFile (see detail below).
+				
+	When the image is created then source directory, defined by the <<<source-directory>>> attribute on element <<<dkp:image-from-dockerfile>>>,
+	is compressed into a TAR archive and uploaded to Docker. 
+	Please notice that source directory is defined using the variable <modulepath:dockersrc> which is resolved at runtime to the
+	directory <dockersrc> within the module.
+	
+	Docker unpacks the archive and looks for a Dockerfile in the root of the archive. 
+	The Dockerfile along with other file material in the archive is used to create the image.	
+		 		 
+	The name of the target image is defined by the <<<dkp:target-image>>> element.		
+
+** Dockerfile
+
+	The Dockerfile contains:
+	
++----	 
+# Pull base image
+# ---------------
+FROM centos:latest
+
+# Maintainer
+# ----------
+MAINTAINER Allan Thrane Andersen <einheriii@gmail.com>
+
+# Define variable
+ENV JAVA_ARCHIVE jdk-8u40-linux-x64.rpm
+
+# Stage pineapple binary 
+COPY $JAVA_ARCHIVE /tmp/
+
+# install java
+WORKDIR /tmp
+RUN chmod a+x $JAVA_ARCHIVE
+RUN yum --assumeyes install $JAVA_ARCHIVE
+RUN rm -rf $/tmp/JAVA_ARCHIVE
++----	 
+
+	The FROM command specifies that the image <<<centos:latest>>> should be pulled from DockerHub.		 		 
+
+	The MAINTAINER command declares the proud author.
+	
+	The ENV command declares the name of Java archive which is installed in the image.
+	
+	THE COPY command copies the Java archive from the uploaded TAR archive into 
+	the <<</tmp>>> directory on image.
+	
+	The WORKDIR command defines the image <<</tmp>>> directory as the current directory.
+	
+	The first RUN command ensures that the Java archive is executable.
+	
+	The second RUN command installs the Java archive into the image.
+	
+	The last RUN command deletes the Java archive from the image <<</tmp>>> directory.
+
+* Add binary
+
+	The Oracle Java 8 binary <<jdk-8u40-linux-x64.rpm>> must be downloaded and added to
+	the <<<dockersrc>>> directory within the module.
+		 		 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple:
+	
+	* Select the module named <<docker-004-java8-oraclejdk-rpm-image-centos>>
+	
+	* Select the <<linux-vagrant>> model.
+	
+	* Invoke the <<deploy-configuration>> to create the tagged Docker Image named 
+	<<<pineapple/centos-oracle-java:8>>> from <<<centos:latest>>> defined in the Dockerfile.
+	
+	[]

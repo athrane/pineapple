@@ -1,0 +1,240 @@
+ ------
+ How-to: Configure Docker containers (Exposed ports)
+ ------
+ Allan Thrane Andersen
+ ------
+ June 2015
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Configure Docker containers (Exposed ports)
+
+* Overview
+
+	This example illustrates how the Docker plugin can be used to configure a Docker container,
+	more specifically exposed ports, as part of the container creation.
+
+	The exposed port(s) used by the container can also be configured in the dockerfile
+	through usage of the EXPOSE command.
+	
+** Part of the default configuration
+
+	This example named <<<docker-007-container-configuration-ports-and-bindings>>>, including all configuration files, 
+	is included in the {{{../../../usage/default-configuration.html}default configuration}} which is created by Pineapple, 
+	so there is no need to create it by hand.	
+
+** Installation of Docker
+
+	This example requires the presence of a Docker daemon. The example	
+	{{{../../pineapple-ssh-plugin/examples/install-docker-latest-centos7-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 7.0 using SSH.}}		
+	describes how Pineapple can be used to install Docker on a Vagrant box for the purpose of the example.
+	
+	For the remaining part of this example is assumed that Docker is installed using the above example. The assumed configuration is:
+	
+	* The Vagrant box is running CentOS 7.0 and has IP address 192.168.34.10. 
+	
+	* The Docker host is accessible at 192.168.34.10:8082. 
+	
+	[] 
+	 
+	This is relevant since Pineapple will access the Docker daemon to create the container.
+	
+	
+* Define the module 
+
+	Pineapple's unit of work is modules. A module is a self contained unit which 
+	can contain models, scripts and binaries. Models serves to specify test cases, 
+	deployment of applications, configuration of devices or execution of scripts. 
+	
+	The default directory for modules is <<<$\{user.home\}/.pineapple/modules>>> so we will 
+	create a module named <<<docker-007-container-configuration>>> there. The module 
+	for this example will end up with the structure:
+
++---
+docker-007-container-configuration-ports-and-bindings
+ |
+ +--- models	 
+ |     +--- linux-vagrant.xml 
+ +--- dockersrc	 
+       +--- Dockerfile
++---
+	
+* Define the module model
+
+	The model file for definition of the image and the container:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+  xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" >
+  <mmd:model target-resource="docker-node" target-operation="deploy-configuration" description="Define Docker image: pineapple/httpd" >
+    <mmd:content>
+      <dkp:docker>
+        <dkp:image-from-dockerfile source-directory="modulepath:dockersrc" pull-image="false" >
+          <dkp:target-image repository="pineapple/httpd" tag="1.0" />
+        </dkp:image-from-dockerfile>
+      </dkp:docker>                       
+    </mmd:content>
+  </mmd:model>
+  <mmd:model target-resource="docker-node" description="Define Docker container: alpha01" >
+    <mmd:content>
+      <dkp:docker>
+        <dkp:container name="alpha01" >
+          <dkp:image repository="pineapple/httpd" tag="1.0" />   
+          <dkp:configuration>
+            <dkp:exposed-ports>
+              <dkp:port value="80" type="tcp" />
+            </dkp:exposed-ports>                      
+            <dkp:host-config>      
+              <dkp:port-bindings>
+                <dkp:bind container-port="80" host-port="8080" type="tcp" />
+              </dkp:port-bindings>
+            </dkp:host-config>
+          </dkp:configuration>                   
+        </dkp:container>
+      </dkp:docker>                       
+    </mmd:content>
+  </mmd:model>    
+</mmd:models>
++----	 
+
+* The configuration details
+
+** The model file
+
+*** The used schemas
+
+	Two schema are used in the model file. The <<<http://pineapple.dev.java.net/ns/module_model_1_0>>> is used
+	to define the namespace <<<mmd>>> which defines the general infrastructure for models. 
+	The <<<http://pineapple.dev.java.net/ns/plugin/docker_1_0>>> schema is used to
+	define the namespace <<<dkp>>> which is used to define the model for the Docker plugin. 
+	Since multiple schemas are used to define the model file, the elements are qualified.
+
+*** The model file contains two models
+	
+	The model file contains two <<<model>>> elements each of which defines a model.
+	Both models defines usage of the Docker plugin:
+
+	* The first model creates an image from a Dockerfile. 
+	The image is created from a <centos:latest> image with the addition of the Apache HTTP server (HTTPD).		
+	
+	* The second models defines a container using the image create from the Dockerfile.	
+
+	[]
+
+*** Targeting the models
+		
+	The <<<target-resource>>> attribute defined on each <<<model>>> element declares a reference to the 
+	resource which is targeted when the  model executed. 
+	In this case, the value <<<docker-node>>> is a reference to a resource 
+	which defines a Docker daemon at 192.168.34.10:8082.
+
+*** The Docker root element
+
+	The <<<dkp:docker>>> element defines the root of model for the Docker plugin. 	
+	
+** Definition of the image	
+		
+	The first model is defined with <<<target-operation="deploy-configuration">>> which specifies that 
+	the model should only be executed when it is invoked with the  <deploy-configuration> operation.
+	When the model is invoked with another operation then this model is ignored, i.e. the image isn't deleted.
+		
+	The <<<dkp:image-from-dockerfile>>> element defines a tagged Docker image which can be used for creation or deletion 
+	depending on the invoked operation:
+	
+	When the model is invoked with the <deploy-configuration> operation, then target image is created from the source image. 
+	The source image is defined by the DockerFile (detail below). 
+				
+	When the image is created then source directory, defined by the <<<source-directory>>> attribute on element <<<dkp:image-from-dockerfile>>>,
+	is compressed into a TAR archive and uploaded to Docker. 
+	Please notice that source directory is defined using the variable <modulepath:dockersrc> which is resolved at runtime to the
+	directory <dockersrc> within the module.
+	
+	Docker unpacks the archive and looks for a Dockerfile in the root of the archive. 
+	The Dockerfile along with other file material in the archive is used to create the image.	
+		 		 
+	The name of the target image is defined by the <<<dkp:target-image>>> element.		
+
+** Definition of the container	
+
+	The second model contains the <<<dkp:container>>> element which defines a Docker container.
+	When the model is invoked with the <deploy-configuration> operation then the container is created.
+	When the model is invoked with the <undeploy-configuration> operation then the container is deleted.
+
+*** The container name	
+
+	The container element has a <<<name>>> attribute which is a mandatory in Pineapple.
+	After the container is created by Pineapple then it is renamed to the name specified by the attribute.
+	By default containers are primarily identified by ID in Docker, but since Pineapple is stateless,
+	then there is no way for Pineapple to maintain the container ID across invocation of a model.
+	Usage of a container name solves that problem.
+
+*** The container base image	
+
+	The container element contains a mandatory <<<image>>> element. 
+	The element defines from which image the container is created.
+	The image used by container, is the container defined in the first model.
+
+*** Configuration of the container	
+
+	The container element contains an optional <<<configuration>>> element. 
+	The element supports detailed configuration of the container.
+
+	The element is used in this example to the define exposure of TCP port 80 for the Apache server
+	and to bind the container port to a host port.
+		
+	An alternative way of configuring exposure of the port would be to have a EXPOSE 80 command in the Dockerfile.
+	An exposed port is defined by an <<<exposed-ports>>> element with a sub <<<port>>> element for each port.
+	A <<<port>>> element supports values between 1 - 65535 and the <tcp> and <udp> type:
+	
++----
+  <dkp:configuration>
+    <dkp:exposed-ports>
+      <dkp:port value="80" type="tcp" />
+    </dkp:exposed-ports>                      
+  </dkp:configuration>                   
++----	 
+
+** The Dockerfile
+
+	The Dockerfile (without an port exposure) contains:
+	
++----	 
+# Pull base image
+# ---------------
+FROM centos:latest
+
+# Maintainer
+# ----------
+MAINTAINER Allan Thrane Andersen <einheriii@gmail.com>
+
+RUN yum -y install httpd
+RUN echo "Hello HTTPD" > /var/www/html/index.html
+#EXPOSE 80 - exposed in model
+CMD /usr/sbin/httpd -D FOREGROUND
++----	 
+
+	The FROM command specifies that the image <<centos:latest>> should be pulled from DockerHub.		 		 
+
+	The MAINTAINER command declares the proud author.
+
+	The first RUN command installs the Apache HTTP server.
+
+	The second RUN command installs a "Hello HTTPD" page into the HTTP server.
+	
+	The CMD command declare that the HTTP server should be started when a container is started.
+			 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<docker-007-container-configuration-ports-and-bindings>>
+	
+	* Select the <<linux-vagrant>> model.
+	
+	* Invoke the <<deploy-configuration>> to create the container.
+	
+	[]
+
+	

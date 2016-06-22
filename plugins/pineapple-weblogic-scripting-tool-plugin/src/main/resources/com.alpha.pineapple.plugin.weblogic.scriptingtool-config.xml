@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:context="http://www.springframework.org/schema/context"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    		http://www.springframework.org/schema/oxm 
+    		http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+    		http://www.springframework.org/schema/context 
+    		http://www.springframework.org/schema/context/spring-context-3.0.xsd" >    		
+
+	<!-- Configures pineapple-api -->
+	<import resource="classpath:com.alpha.pineapple.api-config.xml" />
+
+	<!-- Configures pineapple-commands-api -->
+	<import resource="classpath:com.alpha.pineapple.commands-api-config.xml" />
+
+	<!-- Configures pineapple-process-execution-plugin-support -->
+	<import resource="classpath:com.alpha.pineapple.process.execution-config.xml" />
+
+	<!-- Configures pineapple-hamcrest-matchers -->
+	<import resource="classpath:com.alpha.pineapple.hamcrest-config.xml" />
+                                
+	<!-- enable annotation based configuration / dependency injection -->
+	<context:annotation-config />
+    
+	<oxm:jaxb2-marshaller id="unmarshaller" contextPath="com.alpha.pineapple.plugin.weblogic.scriptingtool.model"/>
+                                                         
+	<!-- define message provider for internationalization  -->
+	<bean id="messageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">		
+    	<property name="basename" value="com.alpha.pineapple.plugin.weblogic.scriptingtool-messages"/>
+	</bean>	
+
+	<!-- definition of system properties to support injection of properties in runtime directory provider to testing -->	
+	<bean id="systemProperties" class="java.lang.System" factory-method="getProperties" />
+
+	<!-- define script helper -->
+	<bean id="scriptHelper" class="com.alpha.pineapple.plugin.weblogic.scriptingtool.utils.ScriptHelperImpl" />		    	    
+	    	    
+	<!-- define argument builders -->
+	<bean id="argumentBuilder" class="com.alpha.pineapple.plugin.weblogic.scriptingtool.argument.ArgumentBuilder" />										 	    	    	    	    	<!-- define argument builder -->
+	<bean id="systemPropertiesArgumentBuilder" class="com.alpha.pineapple.plugin.weblogic.scriptingtool.argument.SystemPropertiesArgumentBuilder" />
+										 	    	    	    	    
+	<!-- definition used by the integration tests.  -->			
+	<bean id="deployConfiguration" class="com.alpha.pineapple.plugin.weblogic.scriptingtool.operation.DeployConfiguration" />	
+				    	    	    
+</beans>

@@ -1,0 +1,55 @@
+ ------
+ How-to: Use the Hamcrest support project with the Spring framework
+ ------
+ Allan Thrane Andersen
+ ------
+ November 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Use the Hamcrest support project with the Spring framework
+
+	The content of the project should be configured with Spring by
+	importing the Spring configuration file from Hamcrest support project.
+	
+* Use Spring configuration file from the Hamcrest support project 
+
+	The Hamcrest support project contains a Spring configuration file 
+	which can be imported into a Spring configuration file
+	which wishes to use the classes from Hamcrest support project.
+	 
+	To import the beans, add an <import> tag which imports the file
+	<<com.alpha.pineapple.hamcrest-config.xml>>:
+	
++---
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- import pineapple hamcrest bean definitions. -->
+	<import resource="com.alpha.pineapple.api-config.xml"/>
+				
+	<!-- all remaining bean definitions. -->
+	    	    
+</beans>    
++---
+
+** Content of the <<<com.alpha.pineapple.Hamcrest-config.xml>>> file
+
+	Currently the <<<com.alpha.pineapple.Hamcrest-config.xml>>> contains 
+	the definition of these beans:
+	
+	* <<<hamcrestMessageProvider>>> which is an prototype instance of the message provider for internal
+	by the objects in the Hamcrest support project.	
+
+	* <<<asserter>>> which is an prototype instance of the Hamcrest asserter object.
+	
+	[] 
+
+	 
+

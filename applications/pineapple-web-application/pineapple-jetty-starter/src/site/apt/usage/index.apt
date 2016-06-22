@@ -1,0 +1,69 @@
+ ------
+ Usage of the Jetty starter project 
+ ------
+ Allan Thrane Andersen
+ ------
+ September 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Usage of the Jetty starter project
+
+
+* Introduction
+
+** Role of the Jetty starter project  
+	
+	The Jetty starter project contains a single Java class which is used by 
+	the <<<pineapple-standalone-web-client>>> project  to start the Jetty 
+	web server and deploy the Pineapple web application to the server. 
+
+**  Building the class path for the Jetty server
+
+	Besides implementing logic to start Jetty the project also server the important
+	purpose of defining the runtime class path for the started Jetty server. 
+	
+	The class path is defined through the dependencies of the Jetty starter project.
+
+* Invoking the <<<JettyStarter>>> class
+
+	The <<<JettyStarter>>> must be invoked with these mandatory system properties:
+	
+		* <<<pineapple.jettystarter.home>>> defines home directory for Jetty.
+		
+		* <<<pineapple.jettystarter.host>>> defines the host name on which Jetty listens.		
+		
+		* <<<pineapple.jettystarter.port>>> defines the port number on which Jetty listens.		
+
+	[]	
+
+	and this optional system property:
+	
+		* <<<pineapple.jettystarter.stdoutlogging>>> defines whether the Jetty Start will log to standard out.
+	[]	
+		
+	..as shown here:	
+	
++---	
+cls
+setlocal 
+
+set CURR_DIR=%~dp0
+set JVM_OPTS=-Dsun.lang.ClassLoader.allowArraySyntax=true 
+set PINEAPPLE_OPTS=-Dpineapple.jettystarter.home=%CURR_DIR% 
+set PINEAPPLE_OPTS=%PINEAPPLE_OPTS% -Dpineapple.jettystarter.host=localhost 
+set PINEAPPLE_OPTS=%PINEAPPLE_OPTS% -Dpineapple.jettystarter.port=8080
+set PINEAPPLE_OPTS=%PINEAPPLE_OPTS% -Dpineapple.home.dir="%USERPROFILE%\\.pineapple" 
+set PINEAPPLE_OPTS=%PINEAPPLE_OPTS% -Dpineapple.jettystarter.stdoutlogging=true
+set LOG4J_OPTS=-Dlog4j.configuration=file:.\\conf\\log4j.properties 
+set PINAPPLE_JAR=./lib/pineapple-jetty-starter-1.0.0.jar
+
+java %JVM_OPTS% %PINEAPPLE_OPTS% %LOG4J_OPTS% -jar %PINAPPLE_JAR% 
+endlocal
++---	
+								
+	
+	 
+								
+								

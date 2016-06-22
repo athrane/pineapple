@@ -1,0 +1,50 @@
+ ------
+ How-to: Control variable substitution for file copy
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2015
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Control variable substitution for file copy
+
+* Overview
+
+	This example illustrates how variable substitution can be controlled when using the remote file copy command in the SSH plugin.
+	
+** Variable substitution during file copy
+
+	The <<<copy-to>>> command is used to copy a local file to a remote host (i.e. the target resource).
+	Prior to copying a file, Pineapple will perform variable substitution on the content of the file.
+	The purpose is to support parameterization of property files prior to provisioning them.
+	The <<<copy-to>>> command contains the optional attribute <<<substitute-variables>>>.
+	This boolean attribute can be used to disable variable substitution to support copying binaries file whose content shouldn't be processed for variables. 	
+	
+	Variable substitution is enabled by default.	
+	If enabled then Pineapple will validate that the source file exists and that it isn't larger than 1 MB which is the default 
+	maximum size for files processed in this manner. 
+	The restriction is imposed to avoid processing large binary files by accident. 
+
+	In this example the file <<<big-binary.zip>>> is copied to the remote <<</tmp>>> directory 
+	and variable substitution is disabled:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+  <mmd:variables>
+    <mmd:variable key="big-binary" value="big-binary.zip" />          
+  </mmd:variables>
+	
+  <mmd:model target-resource="ssh-node" target-operation="deploy-configuration" description="Copy big binary" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:copy-to source="modulepath:bin/${big-binary}" destination="/tmp/${big-binary}" substitute-variables="false" />
+      </shp:ssh>			
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++---	
+

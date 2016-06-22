@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+   xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0">
+   <mmd:model target-resource="regex:ssh-node.*" target-operation="deploy-configuration" description="Install JVM" >
+      <mmd:content>
+         <shp:ssh>
+            <shp:copy-to source="modulepath:bin/jdk-7u40-linux-x64.gz" destination="/tmp/jdk-7u40-linux-x64.gz" substitute-variables="false"/>
+            <shp:execute command="sudo chmod +x /tmp/jdk-7u40-linux-x64.gz" />
+            <shp:execute command="sudo tar -zxvf /tmp/jdk-7u40-linux-x64.gz -C /u01/app/oracle/product/fmw > /tmp/ssh-004-install-jvm.log 2>&amp;1 &amp;" />
+            <shp:execute command="sudo chown -R weblogic:oinstall /u01/app/oracle/product/fmw/jdk1.7.0_25" />
+            <shp:execute command="sudo rm -rf /tmp/jdk-7u40-linux-x64.gz" />                            
+         </shp:ssh>
+      </mmd:content>
+   </mmd:model>
+</mmd:models>

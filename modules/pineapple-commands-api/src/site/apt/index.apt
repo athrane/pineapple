@@ -1,0 +1,75 @@
+ ------
+ Commands API
+ ------
+ Allan Thrane Andersen 
+ ------
+ May 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<Commands API project>> contains functionality which extends the 
+	Commons Chain project and which makes usage of Chain commands easier. 
+	
+	The <<Commons Chain project>> is an open source Java implementation of the 
+	Command design pattern described by Gamma et al. in "Design Patterns". 
+	Information about the Commons Chain project can be found 
+	{{{http://java.sun.com/j2ee/tools/deployment/index.jsp}here}}.  
+     
+  	The Commands API project contains:
+
+  	* <<Guideline>> for implementation of Chain commands in the Pineapple 
+  	project using the classes in the commands API project.
+
+  	* <<Command runner>> which is used to execute commands.
+  	  
+  	* <<Command initializer>> which initialize the fields of commands with 
+  	values from the command context using annotations on the command fields. 
+  	The annotation supports specification of runtime validation of the context 
+  	values.
+
+  	* <<Exception class>> for Chain commands implemented in the Pineapple project.
+  	
+  	* <<Command dispatcher>> which implements execution queues which supports asynchronous 
+  	and synchronous execution of commands.  	
+  	
+	[]
+	
+	Deprecated stuff:
+	
+  	* <<Chain factory>> which supports loading of Chain catalogs, lookup of 
+  	commands from loaded catalogs and a simple interface to run commands. 
+  	
+  	* <<Test command marker interface>> which is implemented by Chain commands 
+  	in the Pineapple project which implements a command which tests something on a 
+  	resource.
+	
+  	* <<Test runner>> which is specialized command runner which is 
+  	used to execute test commands and collect and report the result.   	   	
+	  	
+	[]
+      
+* Usage
+
+	Instructions on the usage of the classes in the project can be found 
+	{{{./usage/index.html}here.}}
+
+* Examples
+
+	To provide you with better understanding on some usages of the classes,
+	you can take a look into the following examples:
+
+	* {{{./examples/use-command-from-spring.html}How-to: Use the commands API with the Spring framework.}}
+
+	* {{{./examples/simple-command-with-execution-result.html}How-to: Write a simple test command whose outcome is reported using the execution framework.}}
+	
+  	[]
+
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

@@ -1,0 +1,76 @@
+ ------
+ How-to: Test reverse DNS resolution of an IP address
+ ------
+ Allan Thrane Andersen
+ ------
+June 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Test reverse DNS resolution of an IP address
+
+* Overview
+ 	
+	Two steps are needed to configure the plugin to work:
+	
+	* Define <<resource>> which defines access to the plugin. 
+	
+	* Define test cases in Pineapple module.
+	
+	[]
+			
+** A prefabricated example in the default configuration
+
+	Pineapple includes a prefabricated version of this example in the default configuration. The example is named	
+	<<infrastructure-test-002-reverse-dns-resolution-localhost>>. The default configuration is created by starting 
+	Pineapple. The default configuration will also create the required resource in the <<local>> environment 
+	which is used to execute the test operation on the model. 
+	
+* Add reverse DNS resolution test cases to Pineapple module	
+
+	Open the model file for the target environment and add the test case:
+				
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"                 
+  xmlns:ifp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">             
+    <mmd:content>                               
+      <itp:infrastructure>                                                                                                      
+        
+        <itp:dns-reverse-resolution-test host="garuda" ip="10.20.30.1" description="10.20.30.1 resolves to garuda" />
+                                                        
+      </itp:infrastructure>                                                                     
+    </mmd:content>
+  </mmd:model>
+</mmd:models>  	 
++---  
+
+** Meaning of the elements in the test 
+
+	* The <<<dns-reverse-resolution-test>>> element defines the skeleton of the test case.
+	
+	* The <<<description>>> attribute should contain a suitable description of the test which 
+	is used by Pineapple at run time in clients and reports to show the outcome of the test.	  
+
+	* The <<<host>>> attribute defines the expected host name that 
+	the IP address should be resolved to. 
+
+	* The <<<ip >>> attribute defines the IP address which should be resolved 
+	to an host name. 
+
+	[]
+
+* Run the test
+
+	[[1]] Start Pineapple.
+	
+	[[2]] Select the module <<infrastructure-test-002-reverse-dns-resolution-localhost>> which where created above.
+	
+	[[3]] Select the model named <<local>>.
+	
+	[[4]] Execute the <<test>> operation by selecting the menu <<Execute>> | <<Test>> | <<Run Test>>.
+		
+	[]				

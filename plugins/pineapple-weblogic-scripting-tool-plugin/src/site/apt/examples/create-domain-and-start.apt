@@ -1,0 +1,273 @@
+ ------
+ How-to: Create model which executes two scripts, e.g. creates a WebLogic domain and starts the server
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Create model which executes two scripts, e.g. creates a WebLogic domain and starts the server
+
+* Overview
+
+	This example describes how to define and execute a script which creates a WebLogc 10.3.5 
+	domain from a domain template and then starts the server. The example extends the 
+	{{{./create-wls1035-domain-from-template.html} create domain from template example}} by:
+
+	* Modifying the module model to run two scripts:
+	
+		* A script which creates the domain 
+		
+		* A script which starts the administration server.	
+		
+	* Add a start server script to the module.
+		
+	[]		  	
+
+* Modify WLST script to invoke two scripts
+
+	The model is extended with an additional model which executes the second script:
+		
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:wsp="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0"  />
+  
+  <mmd:model target-resource="weblogic-r1035-scriptingtool">
+      <mmd:content>
+          <wsp:wlst>              
+            <wsp:wlst-script file="modulepath:bin\create-domain.py" properties-file="modulepath:bin\script.properties" />
+          </wsp:wlst>
+      </mmd:content>
+  </mmd:model>
+  <mmd:model target-resource="weblogic-r1035-scriptingtool">
+      <mmd:content>
+          <wsp:wlst>              
+            <wsp:wlst-script file="modulepath:bin\start-admserver.py" properties-file="modulepath:bin\script.properties" />
+          </wsp:wlst>
+      </mmd:content>
+  </mmd:model>			
+</mmd:models>  	 
++--------		
+
+	
+* Add WLST scripts to the module
+
+	Two script modifications are implemented:
+
+	* The domain creation script is renamed from <<<script.py>>> to <<<create-domain.py>>>, 
+	but the content is the same.
+	
+	* A new script named <<<start-admserver.py>>> is added to the module in 
+	<<<$\{module-dir\}/bin/start-admserver.py>>>.
+		
+	[]
+	
+	The content of the <<<create-domain.py>>> script:
+	
++--------
+
+import os
+import java
+
+#=======================================================================================
+# Set System User
+#=======================================================================================
+def setSystemUser():
+    # navigate to domain root
+    cd('/')
+    sysUser = cd('/Security/%s/User/weblogic' % domainName)
+    sysUser.setName(systemUser)
+    sysUser.setPassword(systemPassword)
+
+#=======================================================================================
+# Configure administration server
+#=======================================================================================
+def configureAdmServer():
+    # navigate to domain root
+    cd('/')
+    cd('Servers/AdminServer')
+    set('ListenAddress',adminListenAddress)
+    set('ListenPort', adminListenPort)
+		
+def main():   
+
+    try:
+        # system argument contains pineappleModulePath
+        pineappleModulePath = java.lang.System.getProperty('pineapple.module.path')
+        templateFile = str(pineappleModulePath) + '/bin/' + templateName
+        print ("Template file: " + templateFile + "\n")
+
+        readTemplate(templateFile)
+        domain = create(domainName, 'Domain')
+        setSystemUser()    
+        domainDirectory = domainsDirectory + '/' + domainName
+        setOption('OverwriteDomain', 'true')
+        writeDomain(domainDirectory)
+        closeTemplate()   
+
+    except:
+        dumpStack()
+
+main()
++--------		
+	
+	The content of the <<<start-admserver.py>>> script:
+	
++--------
+
+import os
+import java
+
+#=======================================================================================
+# Get domain directory
+#=======================================================================================
+def getDomainDirectory():
+    return domainsDirectory + '/' + domainName	
+	
+#=======================================================================================
+# start and connect to adm server outside node manager process
+#=======================================================================================
+def startAdmServer():
+
+    url = 't3://' + adminListenAddress + ':' + adminListenPort    
+    block = 'true'
+    timeout = 90000
+	
+    startServer(serverName, domainName, url, systemUser, systemPassword, getDomainDirectory(), block, timeout)
+    connect(systemUser, systemPassword, url)
+    shutdown()
+
+def main():   
+
+    try:
+        # start amdserver
+        startAdmServer()
+
+    except:
+        dumpStack()
+
+main()
++--------		
+	
+	
+* Add property file to the module
+
+	Same as in the Create Domain From Template example:
+	
++--------
+domainsDirectory=c:/domains
+domainName=alphadomain-wls1035
+systemUser=weblogic
+systemPassword=Weblogic11g
+adminListenAddress=127.0.0.1
+adminListenPort=7001
+templateName=domain-template-wls1035.jar
++--------		
+	
+	
+* A look at the module and the Pineapple configuration 
+
+	The module looks like:
+
++---
+weblogic-wlst-example-create-wls1035-domain-and-start-server
+ |
+ +--- module.xml (optional)
+ |    
+ +--- bin
+ |     +--- create-domain.py
+ |     +--- start-admserver.py 
+ |     +--- script.properties 
+ |     +--- domain-template-wls1035.jar 
+ |
+ +--- models	 
+       +--- local-environment.xml 
++---
+
+
+** <<<Module.xml>>> (optional)
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="http://pineapple.dev.java.net/ns/module_1_0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	
+    id="weblogic-wlst-example" version="1.0.0">
+</module>
++---
+
+** <<<local-environment.xml>>>
+
+	Module model for the environment <local-environment> which is targeted at 
+	the resource <<<weblogic-r1035-scriptingtool>>> and invokes the scripts <<<create-domain.py>>>
+	and <<<start-admserver.py>>>:
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:wsp="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0"  />
+  
+  <mmd:model target-resource="weblogic-r1035-scriptingtool">
+      <mmd:content>
+          <wsp:wlst>              
+            <wsp:wlst-script file="modulepath:bin\create-domain.py" properties-file="modulepath:bin\script.properties" />
+          </wsp:wlst>
+      </mmd:content>
+  </mmd:model>
+  <mmd:model target-resource="weblogic-r1035-scriptingtool">
+      <mmd:content>
+          <wsp:wlst>              
+            <wsp:wlst-script file="modulepath:bin\start-admserver.py" properties-file="modulepath:bin\script.properties" />
+          </wsp:wlst>
+      </mmd:content>
+  </mmd:model>			
+</mmd:models>  
++---
+
+** <<<create-domain.py>>>
+
+	Listed above.
+
+** <<<start-admserver.py>>>
+
+	Listed above.
+	
+** <<<script.properties>>>
+
+	Listed above.
+
+** <<<domain-template-wls1035.jar>>>
+
+	The most basic WebLogic template will do. Make a copy of the template 
+	<<<wls.jar>>> which is part of the WebLogic 10.3.5 installation. 
+	The template can be found at <<<WEBLOGIC_HOME\common\templates\domains\wls.jar>>>
+	
+	Copy and rename the file to ${module-dir}/bin/domain-template-wls1035.jar. 
+	
+
+** The <<<weblogic-r1035-scriptingtool>>> resource definition
+
+	Same as in the Load Properties example.
+
+** The <<<weblogic-r1035-scriptingtool>>> credential definition
+     	 
+	Same as in the Load Properties example.
+
+* Invoke Pineapple to execute the script 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<<weblogic-wlst-example-create-wls1035-domain-and-start-server>>>.
+	
+	* Select the environment named <<<local-environment>>>.   	  
+	
+	* Invoke the <<deploy-configuration>> operation.
+	
+	[]
+
+
+ 	 	

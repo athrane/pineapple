@@ -1,0 +1,41 @@
+ ------
+ Download and install Pineapple
+ ------
+ Allan Thrane Andersen
+ ------
+ June 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Download and install Pineapple
+		  
+	Look at the {{{../development/clients.html}Pineapple clients overview}} for information about 
+	available clients. Follow the instructions for your client of choice:
+	 				
+	
+* Standalone web application
+
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/usage/installation-linux.html}How-to: Install the Pineapple standalone web application on Linux.}}
+
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/usage/installation-windows.html}How-to: Install the Pineapple standalone web application on Windows.}}
+
+	[]
+
+** Standalone web application as an agent
+
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/usage/installation-linux.html}How-to: Install the Pineapple standalone web application as an agent (i.e. a service) on Linux.}}
+
+	[]
+	
+* Docker image 
+	
+	* {{{./installation-docker.html}Download and install the Pineapple Docker image.}}
+	
+	[]
+	
+* Deployable web application
+	
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-web-application-war/usage/installation.html}How-to: Install the Pineapple deployable web application.}}
+	
+	[]	

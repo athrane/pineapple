@@ -1,0 +1,96 @@
+ ------
+ How-to: Set file permissions and ownership for file copy
+ ------
+ Allan Thrane Andersen
+ ------
+ November 2014
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Set file permissions and ownership for file copy
+
+* Overview
+
+	This example illustrates how file permissions can be set when using the remote file copy command in the SSH plugin.
+	
+** Setting the file permissions
+
+	The <<<copy-to>>> command contain the optional attribute <<<chmod>>>.
+	The value of the attribute sets the file permissions of the destination file.
+	The value is defined using an octal representation of OGW (e.g. owner, group and world).
+	In this example the file <<<create-docker-user.sh>>> is copied to the remote <<</tmp>>> directory 
+	and the file permission is set to 775:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+    <mmd:variables>
+      <mmd:variable key="create-user-script" value="create-docker-user.sh" />          
+    </mmd:variables>
+	
+      <mmd:model target-resource="ssh-ci-node" target-operation="deploy-configuration" description="Create and add Docker user to sudoers" >
+        <mmd:content>
+        <shp:ssh>
+          <shp:copy-to source="modulepath:bin/${create-user-script}" destination="/tmp/${create-user-script}" chmod="775" />
+          <shp:execute command="sudo /tmp/${create-user-script}" />            
+        </shp:ssh>			
+      </mmd:content>
+    </mmd:model>
++---	
+
+** Setting the file ownership
+
+	The <<<copy-to>>> command contain the optional attribute <<<chown>>>.
+	The value of the attribute sets the ownership of the destination file.
+	The value is defined using the user identifier (defined as a integer).
+	In this example the file <<<create-docker-user.sh>>> is copied to the remote <<</tmp>>> directory 
+	and the file ownership is set to 512:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+    <mmd:variables>
+      <mmd:variable key="create-user-script" value="create-docker-user.sh" />          
+    </mmd:variables>
+	
+      <mmd:model target-resource="ssh-ci-node" target-operation="deploy-configuration" description="Create and add Docker user to sudoers" >
+        <mmd:content>
+        <shp:ssh>
+          <shp:copy-to source="modulepath:bin/${create-user-script}" destination="/tmp/${create-user-script}" chown="512" />
+          <shp:execute command="sudo /tmp/${create-user-script}" />            
+        </shp:ssh>			
+      </mmd:content>
+    </mmd:model>
++---	
+
+** Setting the group ownership
+
+	The <<<copy-to>>> command contain the optional attribute <<<chgrp>>>.
+	The value of the attribute sets the group ownership of the destination file.
+	The value is defined using the group identifier (defined as a integer).
+	In this example the file <<<create-docker-user.sh>>> is copied to the remote <<</tmp>>> directory 
+	and the group ownership is set to 513:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+    <mmd:variables>
+      <mmd:variable key="create-user-script" value="create-docker-user.sh" />          
+    </mmd:variables>
+	
+      <mmd:model target-resource="ssh-ci-node" target-operation="deploy-configuration" description="Create and add Docker user to sudoers" >
+        <mmd:content>
+        <shp:ssh>
+          <shp:copy-to source="modulepath:bin/${create-user-script}" destination="/tmp/${create-user-script}" chgrp="513" />
+          <shp:execute command="sudo /tmp/${create-user-script}" />            
+        </shp:ssh>			
+      </mmd:content>
+    </mmd:model>
+
++---	
+
+

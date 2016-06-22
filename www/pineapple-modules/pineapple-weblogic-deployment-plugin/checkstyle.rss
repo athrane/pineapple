@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>Pineapple WebLogic deployment plugin - Checkstyle report</title>
+    <link>https://pineapple.dev.java.net</link>
+    <description>Pineapple WebLogic deployment plugin - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2011</copyright>
+    <item>
+      <title>File: 10,
+             Errors: 1560,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>https://pineapple.dev.java.net/checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://pineapple.dev.java.net/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/checkstyle.html#com.alpha.pineapple.plugin.weblogic.deployment.traversal.DeployApplicationVisitorImpl.java">com/alpha/pineapple/plugin/weblogic/deployment/traversal/DeployApplicationVisitorImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  128
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/checkstyle.html#com.alpha.pineapple.plugin.weblogic.deployment.traversal.DeployApplicationTestVisitorImpl.java">com/alpha/pineapple/plugin/weblogic/deployment/traversal/DeployApplicationTestVisitorImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  97
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/checkstyle.html#com.alpha.pineapple.plugin.weblogic.deployment.argument.FileLocatorImpl.java">com/alpha/pineapple/plugin/weblogic/deployment/argument/FileLocatorImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  132
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/checkstyle.html#com.alpha.pineapple.plugin.weblogic.deployment.traversal.UndeployApplicationTestVisitorImpl.java">com/alpha/pineapple/plugin/weblogic/deployment/traversal/UndeployApplicationTestVisitorImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  99
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/checkstyle.html#com.alpha.pineapple.plugin.weblogic.deployment.argument.FileLocator.java">com/alpha/pineapple/plugin/weblogic/deployment/argument/FileLocator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  20
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/checkstyle.html#com.alpha.pineapple.plugin.weblogic.deployment.argument.ArgumentBuilderException.java">com/alpha/pineapple/plugin/weblogic/deployment/argument/ArgumentBuilderException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  17
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/checkstyle.html#com.alpha.pineapple.plugin.weblogic.deployment.argument.ArgumentBuilder.java">com/alpha/pineapple/plugin/weblogic/deployment/argument/ArgumentBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  576
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/checkstyle.html#com.alpha.pineapple.plugin.weblogic.deployment.traversal.UndeployApplicationVisitorImpl.java">com/alpha/pineapple/plugin/weblogic/deployment/traversal/UndeployApplicationVisitorImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  85
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/checkstyle.html#com.alpha.pineapple.plugin.weblogic.deployment.session.WeblogicDeploymentSessionImpl.java">com/alpha/pineapple/plugin/weblogic/deployment/session/WeblogicDeploymentSessionImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  373
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://pineapple.dev.java.net/checkstyle.html#com.alpha.pineapple.plugin.weblogic.deployment.session.WeblogicDeploymentSession.java">com/alpha/pineapple/plugin/weblogic/deployment/session/WeblogicDeploymentSession.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  33
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

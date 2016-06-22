@@ -1,0 +1,66 @@
+<window id="systemInfoPanelWindow" 
+	apply="org.zkoss.bind.BindComposer" 
+	viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.SystemInfoPanel')" 
+	hflex="1" vflex="1" border="none">
+
+	<grid>
+		<auxhead>
+			<auxheader label="System Information" colspan="2" style="font-size:16px; "  />
+		</auxhead>	
+	    <columns visible="false" >
+	        <column width="15%" align="right"/>
+	        <column width="85%" />
+	    </columns>
+	    <rows>
+	        <row>
+	        	<cell valign="top" height="100%" >
+                  	<label value="Initialization Status:" />                	
+	        	</cell>
+	        	<cell valign="top" >
+                   	<label value="@load(vm.status)" style="font-weight: bold;" />
+	        	</cell>
+	        </row>					        
+	        <row>
+	        	<cell valign="top" height="100%" >
+                  	<label value="Version:" />                	
+	        	</cell>
+	        	<cell valign="top" >
+                   	<label value="@load(vm.version)" style="font-weight: bold;" />
+	        	</cell>
+	        </row>					        
+	        <row>
+	        	<cell valign="top" height="100%" >
+                  	<label value="Home directory:" />                	
+	        	</cell>
+	        	<cell valign="top" >
+                   	<label value="@load(vm.homeDirectory)" style="font-weight: bold;" />
+	        	</cell>
+	        </row>					        
+	        <row>
+	        	<cell valign="top" height="100%" >
+                  	<label value="Modules directory:" />                	
+	        	</cell>
+	        	<cell valign="top" >
+                   	<label value="@load(vm.modulesDirectory)" style="font-weight: bold;" />
+	        	</cell>
+	        </row>					        
+	        <row>
+	        	<cell valign="top" height="100%" >
+                  	<label value="Reports directory:" />                	
+	        	</cell>
+	        	<cell valign="top" >
+                   	<label value="@load(vm.reportsDirectory)" style="font-weight: bold;" />
+	        	</cell>
+	        </row>					        
+	        <row>
+	        	<cell valign="top" height="100%" >
+                  	<label value="Temporary directory:" />                	
+	        	</cell>
+	        	<cell valign="top" >
+                   	<label value="@load(vm.tempDirectory)" style="font-weight: bold;" />
+	        	</cell>
+	        </row>					        
+	    </rows>
+	</grid>       					         						
+
+</window>

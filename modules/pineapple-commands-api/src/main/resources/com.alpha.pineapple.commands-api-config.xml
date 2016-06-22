@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+    
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    		http://www.springframework.org/schema/oxm 
+    		http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd" >
+    
+	<!-- define message provider for internationalization  -->
+	<bean id="commandApiMessageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">	
+    	<property name="basename" value="com.alpha.pineapple.command-api-messages"/>
+	</bean>		
+	    		
+	<!-- defintion of command runner. -->	    				
+	<bean id="commandRunner" class="com.alpha.pineapple.command.execution.CommandRunnerImpl" scope="prototype" />
+	
+	<!-- defintion of command context. -->													
+	<bean id="commandContext" factory-bean="commandRunner" factory-method="createContext" scope="prototype" />
+	
+	<!-- defintion of command initializer. -->		
+	<bean id="commandInitializer" class="com.alpha.pineapple.command.initialization.CommandInitializer" scope="prototype" />
+	
+</beans>

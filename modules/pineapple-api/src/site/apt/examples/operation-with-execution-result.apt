@@ -1,0 +1,311 @@
+ ------
+ How-to: Write a operation whose outcome is reported using the execution framework
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Write a operation whose outcome is reported using the execution framework
+
+* Introduction
+
+	This example illustrates how to write a operation class which uses the
+	execution framework, i.e. reports the outcome of the execution by using
+	the execution result object.
+		 
+	The class <<<com.alpha.pineapple.plugin.net.operation.TestDeployedConfiguration>>> is
+	used an example. The class is part of the infrastructure test plugin where it implements
+	the <test-deployed-configuration> operation.
+	
+* The full example
+
++----
+
+@PluginOperation( OperationNames.TEST_DEPLOYED_CONFIGURATION )
+public class TestDeployedConfiguration implements Operation
+{
+    Logger logger = Logger.getLogger( this.getClass().getName() );
+    
+    /**
+     * Commands
+     */
+    @Resource
+    Command testResolveNameToIpAddressCommand;
+
+    @Resource
+    Command testHostListenPortCommand;
+
+    @Resource
+    Command testLoadBalancingCommand;
+
+    @Resource
+    Command testStickynessCommand;
+
+    @Resource    
+    Command testHttpRedirectCommand;
+
+    @Resource        
+    Command testHttpHeaderCommand;
+
+    @Resource        
+    Command testUncPathCommand;
+    
+    // Command runner
+    @Resource
+    CommandRunner commandRunner;   
+    
+    // Model mapper object.
+    @Resource    
+    Mapper mapper;
+    
+    // Message provider for I18N support.
+    @Resource
+    MessageProvider messageProvider;
+       
+    public void execute( Object content, Session session, ExecutionResult executionResult ) throws PluginExecutionFailedException
+    {    	
+        // validate parameters
+        Validate.notNull( content, "content is undefined." );
+        Validate.notNull( session, "session is undefined." );
+        Validate.notNull( executionResult, "executionResult is undefined." );        
+    	
+        // log debug message
+        if ( logger.isDebugEnabled() ) 
+        {
+        	Object[] args = { content.getClass().getName(), content };    	        	
+        	String message = messageProvider.getMessage("tdc.start", args );
+        	logger.debug( message );
+        }
+
+        // throw exception if required type isn't available
+        if ( !( content instanceof Infrastructure ) )
+        {
+        	Object[] args = { Infrastructure.class };    	        	
+        	String message = messageProvider.getMessage("tdc.content_typecast_failed", args );
+            throw new PluginExecutionFailedException( message );
+        }
+        
+        // configure command runner with execution result
+        commandRunner.setExecutionResult( executionResult );
+        
+        try
+        {
+            // type cast to infrastructure model object
+            Infrastructure model = (Infrastructure) content;
+
+            // put proxies into a map
+            HashMap<String, Proxy> proxyMap = new HashMap<String, Proxy>();
+            for ( Proxy proxy : model.getProxy() )
+            {
+                proxyMap.put( proxy.getId(), proxy );
+            }
+
+            // run tests
+            runResolveToIpTests( model );
+            runHostListenPortTests( model );
+            runStickynessTests( model, proxyMap );            
+            runLoadBalancingTests( model, proxyMap );
+            runHttpRedirectTests( model, proxyMap );
+            runHttpHeaderTests( model, proxyMap );
+            runFtpServerActiveTests( model );        
+            runFtpServerContainsDirectoryTests( model );
+            runFtpServerCreateDirectoryTests( model );
+            runAccessUncPathTests( model );
+            
+            // compute execution state from children
+            executionResult.completeAsComputed(messageProvider, "tdc.completed", null, "tdc.failed", null );    		    		
+        }
+        catch ( CommandException e )
+        {
+        	Object[] args = { StackTraceHelper.getStrackTrace( e ) };    	        	
+        	String message = messageProvider.getMessage("tdc.error", args );
+            throw new PluginExecutionFailedException( message, e );
+        }
+    }	    
+ 
+ 	// all of the test methods goes here...    
+}    
+    
++----
+
+* Usage of the execution framework
+
+** Purpose of the execution result
+
+	The execution result object is used to report the outcome of the operation.
+	The result execution is used to capture one of three outcomes:
+	
+	* The operation succeeded, i.e. all executed child tests succeeded.
+	
+	* The operation failed, i.e. all least one executed child test failed or terminated with an error.	
+	
+	* The operation terminated with an error.
+	
+	[]		
+
+** Who creates the execution result object for the command
+
+	It is the responsibility of the code which executes the operation to create
+	a execution result object which can be used by the operation to report the outcome 
+	of it execution. 
+	
+	The execution result for the operation is created by the Pineapple core component 
+	in the class <<<com.alpha.pineapple.command.InvokePluginsCommand>>>.  
+
+** Injection of the execution result object into the operation
+
+	The execution result object is the 3rd argument in the 
+	<<<Execute(Object content, Session session, ExecutionResult executionResult)>>> method in the
+	<<<com.alpha.pineapple.plugin.Operation>>> interface which is implemented by all operations.  
+
+** Injection of the command runner into the operation
+
+	The operation uses a command runner object to execute test commands and capture the outcome of
+	the execution of each command in a separate execution result object.
+	
+	The command runner is defined as a annotated field on the operation and injects using the Spring 
+	dependency injection mechanism:
+	
++----
+    /**
+     * Command runner
+     */
+    @Resource
+    CommandRunner commandRunner;   	
++----
+
+** Setting up the command runner to capture the results of test commands
+
+	The command runner is configured with the execution result for the operation prior to running any 
+	commands:
+
++----
+    // configure command runner with execution result
+    commandRunner.setExecutionResult( executionResult );
++----
+
+	Afterwards when the runner invoked to run a command, it will create a child execution object from
+	the operation execution result object and use the child to capture the execution of the commands:
+	
++----
+  void runHostListenPortTests( Infrastructure model ) throws CommandException
+    {
+        for ( HostListenPortTest test : model.getHostListenPortTest() )
+        {
+        	// create description
+        	String description = "..some description...."
+        	
+            // create context
+            Context context = commandRunner.createContext();
+        	
+            // map model content to context
+            mapper.mapHostListenPortTest( test, context );
+        	
+            // run test            
+            commandRunner.run(testHostListenPortCommand, description, context);
+        }
+    }	
++----	
+
+** Implementing the successful and failed operation outcome
+
+	Whether the operation succeeds or fails depends on the outcome of the tests which are executed by the
+	operation. The tests are implemented as Chain commands and the outcome of their execution is captured
+	in child execution results which are created by the command runner when each test is run.
+
+	After all tests are run the operation computes its final state by invoking the <<<completeAsComputed(...)>>> 
+	method and the operation is done executing:
+	
++----
+  public void execute( Object content, Session session, ExecutionResult executionResult ) throws PluginExecutionFailedException
+    {    	
+    	// some sanity tests and logging here 
+        	        
+        // configure command runner with execution result
+        commandRunner.setExecutionResult( executionResult );
+        
+        try
+        {
+            // type cast to infrastructure model object
+            Infrastructure model = (Infrastructure) content;
+
+            // put proxies into a map
+            HashMap<String, Proxy> proxyMap = .....;
+
+            // run tests
+            runResolveToIpTests( model );
+            runHostListenPortTests( model );
+            runStickynessTests( model, proxyMap );            
+            runLoadBalancingTests( model, proxyMap );
+            runHttpRedirectTests( model, proxyMap );
+            runHttpHeaderTests( model, proxyMap );
+            runFtpServerActiveTests( model );        
+            runFtpServerContainsDirectoryTests( model );
+            runFtpServerCreateDirectoryTests( model );
+            runAccessUncPathTests( model );
+            
+            // compute execution state from children
+            executionResult.completeAsComputed(messageProvider, "tdc.completed", null, "tdc.failed", null );    		
+        }
+        catch ( CommandException e )
+        {
+        	Object[] args = { StackTraceHelper.getStrackTrace( e ) };    	        	
+        	String message = messageProvider.getMessage("tdc.error", args );
+            throw new PluginExecutionFailedException( message, e );
+        }
+    }
++----
+	 
+** Implementing when the operation terminates with an error
+
+	If the operation terminates with an error then the state of the execution result object
+	<isn't> updated. 
+	
+	The operation should catch any exception it knows could occur in its code and then
+	rethrow it as an <<<PluginExecutionFailedException>>>:
+	
++----
+public void execute( Object content, Session session, ExecutionResult executionResult ) throws PluginExecutionFailedException
+    {    	        
+        try
+        {
+            // logic, logic 
+                        
+            // compute execution state from children
+            executionResult.completeAsComputed(messageProvider, "tdc.completed", null, "tdc.failed", null );    		
+        }
+        catch ( CommandException e )
+        {
+        	Object[] args = { StackTraceHelper.getStrackTrace( e ) };    	        	
+        	String message = messageProvider.getMessage("tdc.error", args );
+            throw new PluginExecutionFailedException( message, e );
+        }
+    }
+
++----	
+	
+	The <<<PluginExecutionFailedException>>> and any other exception will be caught by Pineapple in the 
+	class <<<InvokePluginsCommand>>> which will update the state of the operation execution result object 
+	to <error>. The error handling in Pineapple could code look something like like:   
+   
++----
+
+  try {
+    // invoke operation
+    operation.execute( moduleModel, session, modelResult );    
+        		
+  } catch (Exception e) {
+
+    // set result with error
+    modelResult.completeAsError(messageProvider, "ipc.error", null, e)
+}
++----
+
+ 
+
+
+
+		

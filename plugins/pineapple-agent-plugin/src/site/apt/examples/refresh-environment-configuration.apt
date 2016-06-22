@@ -1,0 +1,80 @@
+ ------
+ How-to: Refresh the environment configuration at an agent
+ ------
+ Allan Thrane Andersen
+ ------
+ March 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Refresh the environment configuration at an agent
+
+* Overview
+
+	This example illustrates how the agent plugin can be used to the refresh the environment
+	configuration at an remote Pineapple agent. 
+
+* Define the module 
+
+	Pineapple's unit of work is modules. A module is a self contained unit which 
+	can contain models, scripts and binaries. Models serves to specify test cases, 
+	deployment of applications, configuration of devices or execution of scripts. 
+	
+	The default directory for modules is <<<$\{user.home\}/.pineapple/modules>>> so we will 
+	create a module named <<<agent-refresh-environment-configuration>>> there. The module 
+	for this example will end up with the structure:
+
++---
+agent-refresh-environment-configuration
+ |
+ +--- models	 
+       +--- local.xml 
++---
+	
+* Define the module model
+
+	The model file for refresh at agent <<<agent-node1>>>:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+    xmlns:pap="http://pineapple.dev.java.net/ns/plugin/agent_1_0" >
+    <mmd:model target-resource="agent-node1">
+        <mmd:content>
+            <pap:agent>
+                <pap:refresh-environment-configuration />
+            </pap:agent>			
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++----	 
+
+** The configuration details
+
+	Two schema are used in the model file. The <<<http://pineapple.dev.java.net/ns/module_model_1_0>>> is used
+	to define the namespace <<<mmd>>> which defines the general infrastructure for models. 
+	The <<<http://pineapple.dev.java.net/ns/plugin/agent_1_0>>> schema is used to 
+	define the namespace <<<pap>>> which is used to define the model for the agent plugin. 
+	Since multiple schemas are used to define the model file, the elements are qualified.
+	
+	The <<<target-resource>>> attribute defines a reference to the resource which is targeted when the 
+	model executed. In this case, the value <<<agent-node1>>> is a reference to a resource which defines a Pineapple agent.
+	
+	The <<<pap:agent>>> element defines the root of model for the agent plugin. The 
+	<<<pap:refresh-environment-configuration>>> element defines the environment configuration 
+	refresh command.
+		 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<agent-refresh-environment-configuration>>
+	
+	* Select the <<local>> model.
+	
+	* Invoke any operation to execute the refesh command.
+	
+	[]
+
+

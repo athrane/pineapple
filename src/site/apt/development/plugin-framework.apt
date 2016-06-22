@@ -1,0 +1,1627 @@
+ ------
+ Plugin framework reference
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Plugin framework reference
+
+* Introduction
+
+	Pineapple defines a framework for implementation of new plugins. The purpose 
+	of the framework is make it possible to extend Pineapple with new functionality.  
+	
+** Structure of this document
+
+	The basics:
+	
+	* An introductory example - the hello world plugin.
+	
+	* Plugin class.
+	
+	* Operation classes.
+	
+	* Exception handling in plugins. (TODO)
+	
+	[]
+	
+	Advanced features:			
+	
+	* Enabling input unmarshalling for plugins.
+	
+	* Enabling session handling for plugins.	  
+
+	* Using execution results to report how the execution proceeds in details. (TODO)	
+	
+	* Inject execution info provider to gain access to execution info.
+	
+	* Inject runtime directory provider to gain access information about used runtime directories.	
+
+	* Using the runtime directory provider to resolve model element paths 
+
+	* Inject administration provider to gain access to administration API.
+
+	* Inject variable substitution provider resolve variables.
+
+	* Implement an wild card operation.
+	
+	[]
+	
+	Implementation related issues:
+	
+	* Enabling annotation based dependency injection in Spring
+	
+	* Implementing internationalization (I18N) support in plugins
+		
+	* Writing testable operation classes	
+	
+	* Implement plugins using command objects. (TODO)
+	 
+	* Setting up a Maven project for plugin development. (TODO)
+	
+	* Known issues 
+	 
+	[]	 
+	
+
+* An introductory example 	
+
+	A plugin can written with two classes: 
+	
+	* The plugin class.
+	 
+	* A class implementing an operation.	
+	
+	[] 
+	
+	First, the plugin class:
+		
++----
+package com.alpha.pineapple.plugin.helloworld;
+
+import com.alpha.pineapple.plugin.Plugin;
+
+@Plugin() 
+public class PluginImpl {}
++----		 
+
+	..and the operation class:
+	
++----
+package com.alpha.pineapple.plugin.helloworld;
+
+import com.alpha.pineapple.plugin.Operation;
+import com.alpha.pineapple.plugin.PluginOperation;
+import com.alpha.pineapple.session.Session;
+
+@PluginOperation("hello-world") 
+public class HelloWorldOperation implements Operation {
+
+  public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+  	System.out.println("Hello world");
+}
++----		 
+
+* The plugin class
+
+** Purpose of the plugin class
+
+	The purpose of the plugin class is to <define meta data> about a plugin. 
+	The	plugin class implicit defines the plugin id which is the most 
+	important meta data attribute for a plugin. It will later be described 
+	how the plugin class can be used to explicit define additional meta data 
+	attributes to control <input unmarshalling> for a plugin.	  
+	
+** The plugin id	
+	
+	The plugin id is defined as the Java package where the plugin class is 
+	located in. The plugin class for the hello world plugin shown above, is 
+	located in the package <<<com.alpha.pineapple.plugin.helloworld>>>. As a 
+	result the plugin id for hello world plugin is 
+	<<<com.alpha.pineapple.plugin.helloworld>>>.      
+	
+ 	The plugin id must be unique for each plugin and only a single plugin class
+ 	 is allowed to be implemented in each package.
+ 	
+ 	The plugin id used in the environment configuration to defined which plugin
+ 	a resource is bound to at runtime. The plugin id is defined as part of the 
+ 	definition of a resource. The plugin id is defined in the resource attribute 
+ 	named <<<plugin>>>. For information on definition of resources, 
+	refer to the {{{../usage/configuration-environment.html}Environment configuration reference.}}
+
+** Implementation of a plugin class		
+
+	A plugin class is implemented by creating a class and annotating it with
+	the <<<@Plugin>>> annotation. 
+
+	<<Example:>> The plugin class for the Pineapple WebLogic JMX plugin (with 
+	plugin id = com.alpha.pineapple.plugin.weblogic.jmx) is implemented as: 	 
+
++---	
+package com.alpha.pineapple.plugin.weblogic.jmx;
+
+import com.alpha.pineapple.plugin.Plugin;
+
+@Plugin()
+public class PluginImpl {}
++---	
+	 	
+	As the plugin class only serves to define meta data there is no 
+	requirements or need for implementation of any interfaces or methods.		 
+
+** Finding plugins a runtime
+
+	When Pineapple is started it scans the entire class path
+	for classes which are annotated with the <<<@Plugin>>> annotation. If
+	an annotated class is found then Pineapple registers the plugin and 
+	starts to scan the package (and sub packages) where the plugin class is 
+	found for operation classes. This results in a small overhead at startup 
+	but it eliminates the need for configuration files which configures plugins.
+	For information on what happens during Pineapple startup, refer to the
+	{{{../pineapple-modules/pineapple-core/development/initialization.html} Initialization of the core component.}}
+
+* Operation classes  
+
+** Purpose of a operation class
+
+	The purpose of a operation class is to <implement a single Pineapple 
+	operation> in a plugin. A plugin implements an operation class for each 
+	supported operation. Pineapple can be used to execute operations of 
+	any name and each plugin only implements operation classes for each of 
+	operations that it wishes to support.			 	
+	
+** Implementation of a operation class
+
+	Steps required to implement an operation class:
+
+	* The operation class must be located i the same package (or sub 
+	packages) as the plugin class.
+	
+	* The class must implement the <<<Operation>>> interface.
+		
+	* The class must be annotated with the <<<@PluginOperation>>> annotation. 
+	
+	* The <<<@PluginOperation>>> annotation must be defined with a unique 
+	id which defines the name of operation that the operation class 
+	implements. The id must unique within that package (or sub packages) 
+	defined by the plugin class.
+		
+	[]		  
+	
+*** Location of operation classes
+
+	The operation class must be located i the same package (or sub packages)
+	as the plugin class. Pineapple considers the package where the plugin 
+	class is found as the root package of the plugin. Pineapple will limit 
+	its search to the root package and sub packages for operations classes.   
+		 	   
+** The <<<Operation>>> interface
+	
+	The <<<Operation>>> interface is defined as:
+	
++---
+package com.alpha.pineapple.plugin;
+
+import com.alpha.pineapple.session.Session;
+
+public interface Operation {
+	
+  public void execute( Object content, Session session, ExecutionResult result ) throws PluginExecutionFailedException;
+	
+}	
++---
+	
+	The interface contains a single <<<execute(Object content, Session session, ExecutionResult result)>>> 
+	method which will invoked by Pineapple at runtime if the environment 
+	configuration and the module given as input to the operation specifies it. 
+	The arguments values will contain:
+
+	* The <<<content>>> argument is typed <<<java.lang.Object>>>. If <input 
+	unmarshalling> (described below) is configured for the plugin then it will 
+	contain the root of the object graph which is unmarshalled	from the module
+	model given as input to the operation. If <input 
+	marshalling> isn't configured then argument will be null. 
+	
+	* If <session handling> (also described below) is configured for the plugin
+	then the <<<session>>> argument will contain a configured session object 
+	which can used to access the entity which is managed by the plugin. If 
+	<session handling> isn't configured then argument will contain a null 
+	session object.  
+
+	* The <<<result>>> argument contains an execution result object which is used to describe how the
+	execution of the operation proceeds. The object is created by Pineapple before the operation is 
+	invoked. The operation can use the execution result to add additional runtime information about the 
+	operation and add child execution result objects which describes the outcome of its execution 
+	in more detail.
+	
+	[]
+	
+	The concepts of <input unmarshalling> and <session handling> for plugins are 
+	described in details below.  			 
+
+** The operation id
+
+	An operation class must be annotated with the <<<@PluginOperation>>> 
+	annotation, which defines a single meta data attribute: 
+	<the operation id>. The operation id defines which the operation class 
+	implements. The operation id must be unique within the root package (or 
+	sub packages) defined by the plugin class. If multiple operations is found 
+	with an identical id then Pineapple's plugin scan fails. The 
+	<<<@PluginOperation>>> doesn't define any default values, so a value is 
+	mandatory. Null values isn't allowed, operations with a null or empty id 
+	are discarded when Pineapple scans for plugins.   			   	
+	
+	TODO: handle multiple identical operation ids
+	  
+	TODO: handle empty operation id
+		
+	TODO: handle null operation id
+	
+	<<Example:>> The skeletion of the operation class for the Pineapple 
+	WebLogic JMX plugin,which is defined with the operation id 
+	<deploy-configuration> : 	 
+
++---	
+package com.alpha.pineapple.plugin.weblogic.jmx.operation;
+
+import com.alpha.pineapple.plugin.Operation;
+import com.alpha.pineapple.plugin.PluginOperation;
+
+@PluginOperation("deploy-configuration")
+public class DeployConfiguration implements Operation
+{
+  public void execute( Object content, Session session ) throws PluginExecutionFailedException
+  {
+    // logic goes here..    
+  }
+}
++---			
+	
+** Handling unsupported operations
+	
+	If a plugin is invoked with a operation that it doesn't support then 
+	Pineapple delegates the execution to a null operation. The result is
+	that in practice a plugin doesn't need to implement any operations 
+	at all. A plugin without any operations wouldn't be of any use.      
+		
+	TODO: implement.			
+
+* Exception handling in plugins
+
+	There are two places to implement exception handling in plugins:
+	
+	* Operations classes
+	
+	* Session classes.
+	
+	[]
+	
+** Exception handling in operation classes
+
+	..there are two ways to handle exceptions in operations;
+	.. 1) catch and update the execution result
+	.. 2) throw an PluginExecutionFailedException and let Pineapple catch and update the execution result
+
+***	catch and update the execution result
+
+	..the preferred way to handle exceptions in operations is to catch them within the operation
+	code and update the execution result accordingly.
+	
+***	throw an PluginExecutionFailedException and....
+	
+	..the operation interface defines trowing of PluginExecutionFailedException
+	in the execute method, so an operation could throw an exception of this type  an error occours.		
+	..the throw execution will be caught by Pineapple and used to determine update the state of the 
+	execution result object for the operation. A thrown exection will result in a execution state == failed.
+		..the detais of the thrown execption, e.g. error message and stack trace, will be added as detail to 
+	the execution result object for operation:
+	
++---
+
+        catch ( Exception e )
+        {
+        	Object[] args = { StackTraceHelper.getStrackTrace( e ) };    	        	
+        	String message = messageProvider.getMessage("to.error", args );
+            throw new PluginExecutionFailedException( message, e );
+        }
+
++---	
+	
+
+** Exception handling in session classes
+
+	The Session interface defines two methods which throws typed exceptions:
+
++---
+package com.alpha.pineapple.session;
+
+public interface Session
+{
+  public void connect(Resource resource, Credential credential) throws SessionConnectException;   
+  public void disconnect() throws SessionDisconnectException;
+}
++---	 		
+
+	The <<<connect(..)>>> methods should throw a <<<SessionConnectException>>> when establishing a
+	connecting to a resource fails.
+	
+	The <<<disconnect(..)>>> methods should throw a <<<SessionDisconnectException>>> when terminating a
+	connection to a resource fails.
+	
+	If a plugin extends the <<<Session>>> interface then added methods should throw 
+	<<<SessionException>>> to signal errors during operation of a connected session.
+
+** The exception hierarchy 
+
+	..PluginException is the root exception for plugins..
+	
+	..PluginExecutionFailedException and PluginInitializationFailedException are subclasses
+	of PluginException.
+	
+	..PluginInitializationFailedException is thrown internal by Pineapple when plugin activation 
+	and invocation fails.	
+	      
+* Enabling input unmarshalling for plugins   	
+
+	<Input unmarshalling> is the process of binding schema-based XML from a 
+	module model file to objects and delivering the objects to an invoked 
+	operation class. For information on module models, refer to the 
+	{{{../usage/configuration-modules.html}Module configuration reference.}}	 
+	
+** Define the plugin schema 	
+
+	The first step is to define the data model for the plugin. The model is 
+	defined in XML schema. The schema can either be defined as part of the 
+	implementation of the plugin or an existing shcema can be used.
+	
+*** Recommended plugin schema namespace
+		
+	The recommended namespace for plugin is: 
+	
+	<<<http://pineapple.dev.java.net/ns/plugin/$\{plugin-name\}>>> where 
+	$\{plugin-name\} is substituted with the plugin name.
+	
+	<<<Example:>>> The namespace for the infrastructure plugin is 
+	<<<http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0>>>	
+
+	<<<Example:>>> The Weblogic JMX plugin uses a schema which was defined 
+	by BEA (r.i.p.). The namespace of this schema is 
+	<<<http://www.bea.com/ns/weblogic/920/domain>>>	
+
+** Define OXM binding from schema to objects
+
+	A XML binding technology such a JAXB or XMLBeans should be used to 
+	generate the model classes. The model classes should be in included 
+	in the plugin build. 
+	
+	If the plugin schema is defined as part of the plugin then it is.... 
+	TODO: write...
+	
+	If the model classes already exists because the an existing schema is
+	used, then reference the classes in the Maven build to ensure that they
+	are included in the build.
+	
+** Unmarshalling is based on Spring-OXM 
+
+	Pineapple uses the OXM (object-to-XML) portion of the Spring framewok 
+	for unmarshalling of schema-based module models in XML file to objects.	
+	Spring-OXM is used because it provide a unifying interface for accessing 
+	different OXM frameworks. The core part of the Spring-OXM framework is 
+	the <<<Marshaller>>> and <<<Unmarshaller>>> interface. Pineapple uses 
+	the <<<Unmarshaller>>> interface for binding XML to objects. For information 
+	on Spring OXM, refer to the 
+	{{{http://static.springframework.org/spring-ws/sites/1.5/reference/html/oxm.html}Spring OXM site.}}					
+  	     
+** Configuring unmarshalling on the plugin class 	
+
+	Input unmarshalling is configured on the <<<@Plugin>>> annotation on a 
+	plugin class. The <<<@Plugin>>> annotation supports two	optional meta 
+	data attributes for configuring input unmarshalling:   	
+	
+	* <<<configFile>>>
+	
+	* <<<unmarshaller>>> 			
+	
+	[]
+		
+	The two attributes is used in conjuction to setup unmarshalling.
+	 	
+** The <<<configFile>>> attribute  
+
+	Defines the name of an XML file which contain the definition of a Spring 
+	application context. The purpose of the application context is to 
+	configure a Spring-OXM unmarshaller. When Pineapple is started it will 
+	attempt to load the file from the classpath, so any path information 
+	in the attribute must be relative to the classpath.
+	
+	<<Example>>: The plugin class for the blue dream plugin defines a value for the 
+	<<<configFile>>> attribute:
+	
++---
+package com.alpha.pineapple.plugin.bluedream;
+
+import com.alpha.pineapple.plugin.Plugin;
+
+@Plugin(configFile="dreaming-context.xml", unmarshaller="blueUnmarshaller")
+public class PluginImpl {}	
++---			
+
+	..during startup Pineapple will attempt to load the configuration file named 
+	<<<dreaming-context.xml>>> from the root of the classpath. 									  
+	
+*** Recommended default value is <<<${pluginId}-config.xml>>> 	
+
+	If no value is provided for the <<<configFile>>> attribute then the default 
+	value is used: <<<$\{pluginId\}-config.xml>>>. The $\{pluginId\} is 
+	the plugin id from plugin class, i.e. the package where the plugin class 
+	is located in. It is recommended to use the default value. 
+	
+	If the recommended default value is used, then the 
+	<<<$\{pluginId\}-config.xml>>> file should be placed in the 
+	<<<src/resources>>> folder of the Maven project which implements the plugin.
+
+	<<Example>>: The plugin class for the Pineapple WebLogic JMX plugin doesn't 
+	explicitly define a value for the <<<configFile>>> attribute: 
+		
++---
+package com.alpha.pineapple.plugin.weblogic.jmx;
+
+import com.alpha.pineapple.plugin.Plugin;
+
+@Plugin()
+public class PluginImpl {}	
++---			
+	
+	..instead Pineapple will use the default value 
+	<<<com.alpha.pineapple.plugin.weblogic.jmx-config.xml>>>. 
+
+*** Unmarshalling is disabled if configuration file can't found	
+	 
+	If Pineapple can't find the configuration file with the application context
+	then marshalling is disabled and the operation is invoked with a null value.
+	
+	Refering back to the initial hello world example, it didn't define any 
+	Spring configuration file for unmarshalling,  so it that case the input 
+	unmarshalling was disabled.   
+
+	TODO: implement.	 				      	
+		
+** The <<<unmarshaller>>> attribute
+	     
+	The <<<unmarshaller>>> attribute on the <<<@Plugin>>> annotation defines 
+	the id of the unmarshaller in the Spring application context which should used
+	to unmarshall the module model XML to objects. The Spring application context 
+	was previously defined by the <<<configFile>>> attribute. Pineapple will look up
+	a marshaller with the id defined by the <<<unmarshaller>>> attribute and then use
+	the returned unmarshaller object to unmarshall the XML at hand.  		
+	
+	TODO: handle if no bean is found
+	
+	TODO: handle if found bean isnt a marshaller
+	
+	<<Example>>: The plugin class for the blue dream plugin defines a value for the 
+	<<<unmarshaller>>> attribute:
+	
++---
+package com.alpha.pineapple.plugin.bluedream;
+
+import com.alpha.pineapple.plugin.Plugin;
+
+@Plugin(configFile="dreaming-context.xml", unmarshaller="blueUnmarshaller")
+public class PluginImpl {}	
++---			
+
+	..during startup Pineapple will load the configuration file named 
+	<<<dreaming-context.xml>>> and use the unmarshaller named 
+	<<<blueUnmarshaller>>> in the application context. 									  
+	
+	
+*** Recommended default value is <<<unmarshaller>>> 	
+
+	If no value is provided for the <<<unmarshaller>>> attribute then the default 
+	value is used: <<<unmarshaller>>>. It is recommended to use the default value.
+
+	<<Example>>: The plugin class for the Pineapple WebLogic JMX plugin doesn't
+	explicitly define a value for the <<<unmarshaller>>> attribute:
+	
++---
+package com.alpha.pineapple.plugin.weblogic.jmx;
+
+import com.alpha.pineapple.plugin.Plugin;
+
+@Plugin()
+public class PluginImpl {}	
++---			
+	
+	..instead Pineapple will use the default value <<<unmarshaller>>> to 
+	look for a unmarshaller in the Spring application context.
+
+** Writting the Spring configuration file for the plugin 
+
+	The purpose of the configuration file is to define a unmarshaller bean. The 
+	id of the unmarshaller must correspond to the value of the unmarshaller 
+	attribute in the <<<@Plugin>>> annotation.	
+
+*** Spring schemas
+
+	Use the Spring schema and the Spring-OXM schema to write the configuration 
+	file. The used schemas are:
+	
+	* Spring: http://www.springframework.org/schema/beans
+	
+	* Spring-OXM: http://www.springframework.org/schema/oxm
+	
+	[]
+	
+	The minimal configuration file without a unmashaller definition looks like:	 
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:oxm="http://www.springframework.org/schema/oxm"
+      
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd" >	
+	
+  <!-- insert unmarshaller definition here -->  
+	    
+</beans>	
++---		    
+	
+	TODO: upgrade the spring-context-2.5.xsd (Spring 3.0.0.M3) to spring-context-3.0.xsd when it is fixed in Spring 3.0.0.  
+	
+** Using Spring-OXM with JAXB2	
+
+ 	To define a unmarshaller, add the stanza:	
+
++---
+	<oxm:jaxb2-marshaller id="unmarshaller" contextPath="com.alpha.pineapple.plugin.infrastructure.model"/>
++---	 
+
+	where the value if the <<<id>>> attribute must match the value of the 
+	<<<unmarshaller>>> in the <<<@Plugin>>> annotation. The value of <<<contextPath>>> 
+	attribute should match the package name which contains the model classes 
+	used by the plugin and which should be unmarshalled.
+
+	<<Example>>: The plugin infrastructure test plugin uses JABX for unmarshalling. The model classses 
+	for the plugin are located in the package <<<com.alpha.pineapple.plugin.infrastructure.model>>>. The
+	configuration looks like:
+
++---	
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd" >	
+
+	<oxm:jaxb2-marshaller id="unmarshaller" contextPath="com.alpha.pineapple.plugin.infrastructure.model"/>	    
+</beans>	
++---
+	
+	
+** Using Spring-OXM with XMLBeans
+
+	To define a unmarshaller, add the stanza:
+	
++---
+  <oxm:xmlbeans-marshaller id="unmarshaller"/>
++---	 
+
+	where the value if the <<<id>>> attribute must match the value of the 
+	<<<unmarshaller>>> in the <<<@Plugin>>> annotation.  
+
+	<<Example>>: The application context file for the Pineapple WebLogic JMX 
+	plugin is named <<<com.alpha.pineapple.plugin.weblogic.jmx-config.xml>>>. The plugin uses
+	XMLBeans for unmarshalling, so the configuration file contains the 
+	definition of a <<<xmlbeans-unmarshaller>>> with the id <<<unmarshaller>>>:  	 
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:oxm="http://www.springframework.org/schema/oxm"
+    
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd" >	
+
+  <oxm:xmlbeans-marshaller id="unmarshaller"/>
+	    
+</beans>	
++---		    
+
+	<<Example #2>>: The plugin class for the blue dream plugin is defined as: 
+	
++---
+package com.alpha.pineapple.plugin.bluedream;
+
+import com.alpha.pineapple.plugin.Plugin;
+
+@Plugin(configFile="dreaming-context.xml", unmarshaller="blueUnmarshaller")
+public class PluginImpl {}	
++---			
+
+	..which configures Pineapple to look for a configuration file named 
+	<<<dreaming-context.xml>>>. The configuration file contains: 	
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:oxm="http://www.springframework.org/schema/oxm"
+    
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd" >	
+
+  <oxm:xmlbeans-marshaller id="blueUnmarshaller"/>
+	    
+</beans>	
++---		    
+	
+	..after the file is loaded, Pineapple will use the unmarshaller named 
+	<<<blueUnmarshaller>>> based on the value of the <<<unmarshaller>>> 
+	attribute from the <<<@Plugin>>> annotation.	 
+
+		
+* Enabling session handling for plugins    
+	
+	<Session handling> is the process using a session object to connect to
+	a remote device accessed by a plugin. So, if a plugin needs to connect 
+	to a remote device then a plugin must implement a session class.   
+		
+** Implementation of a session class
+
+	Steps required to implement an session class:
+
+	* Extend the <<<com.alpha.pineapple.Session>>> interface with the 
+	additional methods required by the operation classes.					
+	
+	* Implement the session class by implementing the extened session interface.
+	
+	* The session class must be located i the same package (or sub 
+	packages) as the plugin class.
+
+	* It must be annotated with the 
+	<<<com.alpha.pineapple.plugin.PluginSession>>> annotation. 	 
+	
+	[]
+	
+** The <<<Session>>> interface
+
+	Plugins use the <<<com.alpha.pineapple.session.Session>>> interface to 
+	implement session handling code:
+	
++---
+package com.alpha.pineapple.session;
+
+import com.alpha.pineapple.model.configuration.Credential;
+import com.alpha.pineapple.model.configuration.Resource;
+
+public interface Session
+{
+  public void connect(Resource resource, Credential credential) throws SessionConnectException;   
+  public void disconnect() throws SessionDisconnectException;
+}
++---	 		
+
+	The interface should be extended if the operation classes in the plugin
+	need additional methods to communicate which the session.
+	
+** The <<<PluginSession>>> annotation
+
+	The purpose of the <<<@PluginSession>>> annotation it mark the class as the 
+	session class which should be used by the plugin for session handling. 		 		 
+	
+** Usage of the session class in operation classes
+
+	Prior to invoking an operation, Pineapple will create a session instance
+	and connect to the targeted resource using the <<<connect(..)>>> method on the session.	
+	The point is that a operation class will only be invoked will a connected session. 
+	
+	If connecting/disconnecting fails, Pineapple contain 
+	<<{{{../pineapple-modules/pineapple-core/usage/session-retry-support.html}session retry logic}}>>
+	which will retry to connect/disconnect a session several times prior to failing.
+	
+** Operation classes should never invoke connection methods on sessions 
+
+	The <<<connect(..)>>> method is invoked by Pineapple prior to injecting 
+	the session object into an operation.
+	
+	The <<<disconnect(..)>>> method is invoked by Pineapple after execution 
+	of the operation into which the session was injected.
+	
+	An operation class should never invoke the <<<connect(..)>>> and the 
+	<<<disconnect()>>> methods of the session object.
+	
+	It is fine to invoke all other methods to use the session logic in implemented 
+	in the session class. 
+
+** Operation classes which requires access to the resource and credetial used to initialize the session
+
+	Plugin operations can get access to the resource or crdential objects which is used to initialize
+	the sessions in two ways:
+	
+	* Provide <<<Session>>> implementation in the plugin and configure the plugin to use session 
+	handling. The session interface provides getters to access the resource and the credential.
+	
+	* Extend the <<<DefaultSessionImpl>>> class, and include it in the plugin and configure the plugin to 
+	use session handling. The session interface provides getters to access the resource and the credential.	
+	
+	[]	
+	
+** Value of the session parameter in operations in plugins which doesn't support session handling
+
+	If the plugin doesn't define session handling then the <<<session>>> parameter in the <<<execute(...)>>> 
+	method will invoked with a null session object which implements the <<<Session>>> interface. 
+	
+	Currently Pineapple will use the class <<<NullSessionImpl>>> but this is subject to change.	
+						
+* Using execution results to report how the execution proceeds in details
+
+** Operation class is invoked with an execution result
+
+	When an operation is invoked with <<<public void execute( Object content, Session session, ExecutionResult result)>>> then
+	result contains an execution result object which is created by Pineapple with the state:
+	
+	* ExecutionState = <<<Running>>>
+	
+	* Description = <<<Module model on target resource....>>>
+		
+	[]
+	
+** Operation class is responsible for setting the final execution state
+
+	It is the responsibility of the operation class to set the execution state
+	prior to completing its execution:
+	
+*** Simple operations should set the state explict
+
+	If the operation is an simple operation which doesn't invokes any commands 
+	then the operation should explicit set the state to either <successful>, <failed>,
+	or <error> illustrated by this code fragment:
+	
++----	
+	
+  try { 	
+	
+    if (somethingImportantSucceeeded) {
+
+      // set successful result
+      executionResult.setState(ExecutionState.SUCCESS);     
+	
+      // create message
+      Object[] args = { this.hostname, this.ip };
+      String message = messageSource.getMessage("operation_i18n_id.succeed", args, null );              
+      executionResult.addMessage("Message", message );   
+	
+      return;					
+    }
+            
+    // set failed result
+    executionResult.setState(ExecutionState.FAILURE);        
+
+    // create message        		  
+    String message = messageSource.getMessage("operation_i18n_id.failed", null, null );              
+    executionResult.addMessage("Message", message );                  	        		            
+
+  } catch ( SomeException e ) {
+
+    // set result with error
+    executionResult.setState(ExecutionState.ERROR);
+
+    // create messages        		    		
+    executionResult.addMessage("Message", messageSource.getMessage("operation_i18n_id.error", args, null ) );        	
+    executionResult.addMessage("StackTrace", StackTraceHelper.getStrackTrace( e ));    		
+  }    	    	
+	
++----	
+	
+*** Composite operations can use the computed state
+
+	If the operation is implemented using command which add child execution result objects
+	to the execution result supplied by Pineapple, then the operation can set the state using
+	the <computed> as illustrated by the code fragment:
+	
++----	
+
+  // compute execution state from children
+  executionResult.setState(ExecutionState.COMPUTED);
+
+  // declare message 
+  String message;
+
+  // handle test outcome
+  if (executionResult.getState() == ExecutionState.SUCCESS ) {
+    message = messageSource.getMessage("operation_i18n_id.completed", null, null );
+  } else {
+    ExecutionResult[] failedTests = executionResult.getChildrenWithState( ExecutionState.FAILURE );
+    ExecutionResult[] errorTests = executionResult.getChildrenWithState( ExecutionState.ERROR );
+    Object[] args = { failedTests.length, errorTests.length };    	        	
+    message = messageSource.getMessage("operation_i18n_id.failed", args, null );
+  }
+
+  // store the message        
+  executionResult.addMessage("Message", message );    
+
++----	
+	
+** Pineapple throws an exception if an operation dosen't sets its execution state
+
+	When the invocation of <<<public void execute( Object content, Session session, ExecutionResult result)>>> returns
+	then Pineapple validates that the execution result isn't <running>. If the state is still <running> then Pinapple sets 
+	the state as <failed> with the message <Operation failed.......>. TODO: implement..	
+
+
+* Inject execution info provider to gain access to execution info
+
+	This feature requires the 	
+	{{{Enabling_annotation_based_dependency_injection_in_Spring}Enabling annotation based dependency injection in Spring}} 
+	to be enabled first. 
+	
+	An operation can gain access to a <<<ExecutionInfo>>> object which contains runtime information about the operation
+	and the module. Two steps are required to implement access to the execution info object in an operation:
+	
+	First, define a dependency injected field in the operation class:
+	
++-----
+    /**
+     * Execution info provider.
+     */
+    @Resource
+    ExecutionInfoProvider coreExecutionInfoProvider;
++-----	
+
+	or alternatively:
+
++-----
+    /**
+     * Execution info provider.
+     */
+    @Resource(name="coreExecutionInfoProvider" )
+    ExecutionInfoProvider executionInfoProvider;
++-----	
+		
+	Second, resolve the execution info object at runtime using the execution result object
+	for the operation as key:
+	
++-----
+
+    // lookup execution info
+    ExecutionInfo info = coreExecutionInfoProvider.get(result);
+
++-----	
+
+** The name "coreExecutionInfoProvider" is reserved in plugin application contexts
+
+	The execution info provider object is resolved from the name <<<coreExecutionInfoProvider>>>. 
+	
+	The name <<<coreExecutionInfoProvider>>> is reserved by Pineapple in plugin application contexts.
+	If an plugin defines a bean with this name then the definition will overridden at runtime by
+	Pineapple and the bean will be resolved to the execution info provider object instead.
+	 	     			
+* Inject runtime directory provider to gain access information about used runtime directories
+
+	This feature requires the 	
+	{{{Enabling_annotation_based_dependency_injection_in_Spring}Enabling annotation based dependency injection in Spring}} 
+	to be enabled first. 
+	
+	An operation can gain access to a <<<RuntimeDirectoryProvider>>> object which contains runtime information about which
+	runtime directories Pineapple is using. One step is required to implement access to the provider object in 
+	an operation:
+	
+	First, define a dependency injected field in the operation class:
+	
++-----
+    /**
+     * Runtime directory provider.
+     */
+    @Resource
+    RuntimeDirectoryProvider coreRuntimeDirectoryProvider;
++-----	
+
+	or alternatively:
+
++-----
+    /**
+     * Runtime directory provider.
+     */
+    @Resource(name="coreRuntimeDirectoryProvider" )
+    RuntimeDirectoryProvider provider;
++-----	
+		
+	Use the provider at runtime:
+	
++-----
+    // get modules directory
+    File modulesDirectory = coreRuntimeDirectoryProvider.getModulesDirectory();
++-----	
+
+** The name "coreRuntimeDirectoryProvider" is reserved in plugin application contexts
+
+	The runtime directory provider object is resolved from the name <<<coreRuntimeDirectoryProvider>>>. 
+	
+	The name <<<coreRuntimeDirectoryProvider>>> is reserved by Pineapple in plugin application contexts.
+	If an plugin defines a bean with this name then the definition will overridden at runtime by
+	Pineapple and the bean will be resolved to the runtime directory provider object instead.
+
+* Using the runtime directory provider to resolve model element paths 
+
+	A <model element path> (MEP) is a path definition which occurs in a module model which defines directories or 
+	files to be processed as part of the execution of an operation.
+	
+	To support <location independent> model element paths, plugins can choose to support the <<<modulepath:>>> 
+	path prefix, which enabled users of plugin to define path such as:
+
++-----
+		<some-path>modulepath:some/resource/path/myfile.txt</some-path>
++-----	
+
+	The runtime directory provider interface <<<RuntimeDirectoryProvider>>> provides two methods which can be 
+	used by plugins to resolve model element paths:
+
++-----	
+	File resolvModelElementPath(String path, ModuleInfo info);	
+	boolean startsWithModulePathPrefix(String path);
++-----		
+	
+	If <<<resolvModelElementPath>>> is invoked with a path with starts with <modulepath:> then the path is resolved 
+	to the path <<<\${module-directory}/\${remaining-parh}>>>. 
+	
+	Example: If the module <<<alpha-module>>> is located physically at
+
++-----	
+	c:/pineapple/modules/alpha-module
++-----	
+	
+	then will the path
+	
++-----	
+	modulepath:some/resource/path/myfile.txt
++-----	
+
+	be resolved to:
+	
++-----	
+	c:/pineapple/modules/alpha-module/some/resource/path/myfile.txt
++-----	
+
+* Inject administration provider to gain access to administration API
+
+	This feature requires the 	
+	{{{Enabling_annotation_based_dependency_injection_in_Spring}Enabling annotation based dependency injection in Spring}} 
+	to be enabled first. 
+	
+	An operation can gain access to a <<<AdministrationProvider>>> object which provides access to
+	runtime administration of the core component. Two steps are required to implement access to 
+	the provider in an operation:
+	
+	First, define a dependency injected field in the operation class:
+	
++-----
+    /**
+     * Administration provider.
+     */
+    @Resource
+    AdministrationProvider coreAdministrationProvider;
++-----	
+
+	or alternatively:
+
++-----
+    /**
+     * Administration provider.
+     */
+    @Resource(name="coreAdministrationProvider" )
+    AdministrationProvider administrationProvider;
++-----	
+		
+	Use the provider at runtime:
+	
++-----
+    // get resource repository 
+    ResourceRepository resourceRepository = coreAdministrationProvider.getResourceRepository();
++-----	
+
+** The name "coreAdministrationProvider" is reserved in plugin application contexts
+
+	The administration provider object is resolved from the name <<<coreAdministrationProvider>>>. 
+	
+	The name <<<coreAdministrationProvider>>> is reserved by Pineapple in plugin application contexts.
+	If an plugin defines a bean with this name then the definition will overridden at runtime by
+	Pineapple and the bean will be resolved to the administration provider object instead.
+
+* Inject variable substitution provider resolve variables
+
+	This feature requires the 	
+	{{{Enabling_annotation_based_dependency_injection_in_Spring}Enabling annotation based dependency injection in Spring}} 
+	to be enabled first. 
+	
+	An operation can gain access to a <<<VariablesubstitutionProvider>>> object which support substittion
+	of variables from multitple source into text or files. Two steps are required to implement access to 
+	the provider in an operation:
+	
+	First, define a dependency injected field in the operation class:
+	
++-----
+    /**
+     * Variable substitution provider.
+     */
+    @Resource                
+    VariableSubstitutionProvider coreVariableSubstitutionProvider;
++-----	
+
+	or alternatively:
+
++-----
+    /**
+     * Administration provider.
+     */
+    @Resource(name="coreVariableSubstitutionProvider" )
+    VariableSubstitutionProvider variableSubstitutionProvider;
++-----	
+		
+	Use the provider at runtime to resolve variables:
+	
++-----
+    String processed = coreVariableSubstitutionProvider.substitute(source, session, result);
++-----	
+
+	Or create a new (temporary file) with variables processed:
+
++-----
+    File processedFile = coreVariableSubstitutionProvider.createSubstitutedFile(sourceFile, session, result);
++-----	
+
+	If the provider is invoked with a session as argument then the provider will resolve the variables from the
+	properties defined on the resource that the session is created. 
+	
+	When an operation targetes multiple resources (through a list or a regular expression) then Pineapple will iterate
+	over the resources and execute the plugin for each target resource. If the the pluign substitutes text or files
+	using the session-resource-properties as input then each artifact will have the variables substituted in from that 
+	particular set of session-resource-properties. The result is that each artifact will have a different substituted
+	in depending on the value of the variable in each resource. 
+
+** The name "coreVariableSubstitutionProvider" is reserved in plugin application contexts
+
+	The variable substitution provider object is resolved from the name <<<coreVariableSubstitutionProvider>>>. 
+	
+	The name <<<coreVariableSubstitutionProvider>>> is reserved by Pineapple in plugin application contexts.
+	If an plugin defines a bean with this name then the definition will overridden at runtime by
+	Pineapple and the bean will be resolved to the variable substitution provider object instead.
+
+* Implement an wild card operation
+
+	An operation can annotated with the <<*>> operation ID which defines an wild card operation:
+
++---	
+package com.alpha.pineapple.plugin.something.operation;
+
+import com.alpha.pineapple.plugin.Operation;
+import com.alpha.pineapple.plugin.PluginOperation;
+
+@PluginOperation("*")
+public class DefaultOperation implements Operation
+{
+  public void execute( Object content, Session session ) throws PluginExecutionFailedException
+  {
+      result.setState(ExecutionState.SUCCESS); // complete as success                
+  }
+}
++---			
+
+	When a plugin is invoked and it implements an operation with the wild card operation ID, then Pineapple
+	will resolve any operation to the wild operation. The result is that the plugin supports any operation that 
+	Pineapple might be invoked with.
+	
+	There is one exception. If a plugin implements one operation for operation "A" and an operation with the wild
+	card operation ID "*":  
+	
++---	
+package com.alpha.pineapple.plugin.something.operation;
+
+import com.alpha.pineapple.plugin.Operation;
+import com.alpha.pineapple.plugin.PluginOperation;
+
+@PluginOperation("*")
+public class WildcardOperationImpl implements Operation
+{
+  public void execute( Object content, Session session ) throws PluginExecutionFailedException
+  {
+      system.out.println("Operation *";
+      result.setState(ExecutionState.SUCCESS); // complete as success                
+  }
+}
+
+@PluginOperation("A")
+public class OperationAImpl implements Operation
+{
+  public void execute( Object content, Session session ) throws PluginExecutionFailedException
+  {
+      system.out.println("Operation A";
+      result.setState(ExecutionState.SUCCESS); // complete as success                
+  }
+}
+
++---			
+
+	When Pineapple is invoked with operation "A" then it will resolve the operation to "A", e.g.
+    <<<OperationAImpl>>> in the example code above and print "Operation A". The named operation 
+    takes presence over the the wild card operation. 
+    
+    If Pineapple is invoked with any other operation, e.g. "ljewhf" or "test" or.., then it will 
+    resolve the operation to "*", e.g. <<<WildcardOperationImpl>>> in the example code above 
+    and print "Operation *". 
+	
+						
+* {Enabling annotation based dependency injection in Spring}
+
+	Support for pojo in the plugin to use Springs annotation based dependency injection:
+	
++-----
+
+    /**
+     * Message source I18N support.
+     */
+    @Resource
+    MessageSource messageSource;
+
++-----	
+
+	..can be implemented by:
+	
+	* Add Spring dependency.
+	
+	* Add JSR 250 dependency.
+	
+	* Define a <<<annotation-config>>> tag  in the Spring configuration file for the plugin.
+
+	* Implement class fields in pojos		 
+
+** Add Spring dependency	
+
+	The configuration of annotation based dependency injection is defined in the Spring context project, so add this
+	dependency to the plugin project:
+	
++-----
+  <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>org.springframework.context</artifactId>
+  </dependency>					  
++-----		
+
+** Add JSR-250 dependency
+
+	The configuration of the @Resource annotation is defined in the JSR-250 api project, so add this
+	dependency to the plugin project:
+	
++-----
+  <dependency>
+    <groupId>javax.annotation</groupId>
+    <artifactId>jsr250-api</artifactId>    		
+  </dependency> 				
++-----		
+
+** Define a <<<annotation-config>>> tag  in the Spring configuration file for the plugin
+
+	Add the context schema header to the plugin configuration file:
+	
+	* Define namespace for the context schema: <<<xmlns:context="http://www.springframework.org/schema/context>>>
+		
+	* Define schema location for the context schema: <<<xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">>>
+	
+	[]
+	
+	Example:
+	
++-----		
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:context="http://www.springframework.org/schema/context"
+    
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    		http://www.springframework.org/schema/oxm 
+    		http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+    		http://www.springframework.org/schema/context 
+    		http://www.springframework.org/schema/context/spring-context-3.0.xsd" >
+
+
+</beans>			
++-----		
+
+    Add tag to enabled annotation dependency injection when Spring initializes the context:
+	
++-----		
+  <!-- enable annotation based configuration / dependency injection -->
+  <context:annotation-config />
++-----		
+
+
+** Implement class fields in pojos		 
+
+	
+	
+* Implementing internationalization (I18N) support in plugins	
+
+	Support for internationalization (I18N) can be implemented using interfaces and classes
+	from the <<<pineapple-api>>> project by:
+	
+	* Add Maven dependency to plugin project
+	
+	* Define a message file for the plugin.
+	
+	* Define a <<<messageProvider>>> bean in the Spring configuration file for the plugin.
+	
+	* Define a field in each class which need access to the message provider.
+	
+	* Resolve messages at runtime from the messages file.
+		
+	[]
+
+** Add Maven dependency to plugin project
+
+	The I18N classes are defined in the <<<pineapple-api>>> project, and any plugin project
+	will define a dependency to the API project because this project also contains the plugin 
+	interfaces and annotations. Verify that this Maven dependency to the api project is defined 
+	in the plugin project POM:
+ 
++----	
+  <dependency>
+    <groupId>com.alpha.pineapple</groupId>
+    <artifactId>pineapple-api</artifactId>                       
+  </dependency>   			
++----	 
+	
+** Define a message file for the plugin
+		
+    Create a text file in the Maven project which contains the messages for the plugin. 
+
+*** Recommended location for the messages file <<<src/main/resources>>>
+
+	Place the message file in the directory <<<src/main/resources>>>
+	in the plugin project.
+
+*** Recommended file name is  <<<$\{pluginId\}-messages.xml>>> 		
+
+	Name the message file <<<$\{pluginId\}-messages.properties>>> where 
+	$\{pluginId\} is the plugin id from plugin class, i.e. the package 
+	where the plugin class is located in.
+	
+	<<Example>>: The message file for infrastructure test plugin is
+	<<<com.alpha.pineapple.plugin.net-messages.properties>>>.
+		
+** Define a <<<messageProvider>>> bean in the Spring configuration file for the plugin
+
+	If the plugin contain a Spring configuration file for definition of the 
+	unmarshaller bean used for for <input unmarshalling> then add an additional 
+	bean definition to the configuration file which defines the message provider:
+	
+	Example:
+	
++-----		
+	<!-- define message provider for internationalization  -->
+	<bean id="messageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">
+    	<property name="basename" value="com.alpha.pineapple.plugin.net-messages"/>
+	</bean>	
++-----			
+	
+	The id of the bean should be <<<messageProvider>>>.
+	
+** Handling plugins who doesn't support input marshalling  
+
+	If the plugin doesn't support input marshalling then the plugin class doesn't
+	define the attribute the <<<configFile>>> and <<<unmarshaller>>> on <<<@Plugin>>> annotation.
+	
+	In this situation add the <<<configFile>>> attribute to the <<<@Plugin>>> annotation and
+	use the application	context file to define a message provider bean for the plugin which
+	can be injected into all objects which are part of the plugin.     		
+	
+** Message provider implementation is <<<PropertyFileMessageProviderImpl>>> 
+	
+	Pineapple only support a single implementation of the <<<MessageProvider>>> 
+	interface which is named <<<com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl>>>.
+	 
+	The <<<PropertyFileMessageProviderImpl>>> class supports usage of dots in the name of 
+	message file. This enables usage of the naming scheme with the plugin id for message 
+	file: <<<$\{pluginId\}-messages.properties>>>.
+	
+** Define a field in each class which need access to the message provider
+
+	To get access to the message provider bean from a class in the plugin, 
+	declare a field in a class and let Spring inject the message provider
+	when the class is initialized.
+
+	Example:
+	
++-----		
+
+    /**
+     * Message provider I18N support.
+     */
+    @Resource
+    MessageProvider messageProvider;
+	
++-----			
+
+** Resolve messages at runtime from the messages file
+
+	To use the message provider, first define a key-value pair in the message file:
+	
+	Example: <<<com.alpha.pineapple.plugin.net-messages.properties>>> contains:
+	
++-----		
+
+good_message=This a good message from [{0}] and [{1}].
+	
++-----
+
+	And resolve the message in the class:
+	
++-----		
+
+	// log debug message
+	if ( logger.isDebugEnabled() )
+	{
+		Object[] args = { "Titus", "Ed Chianese" };
+		String message = messageProvider.getMessage("good_message", args );
+		logger.debug(message);
+	}                        
+	
++-----
+																
+* Writing testable operation classes 
+
+** The operation no-arg constructor is registered during Pineapple initialization	
+	
+	During initialization of a plugin, the operation classes are located using 
+	the component scanning from in the Spring framework. Pineapple will register
+	each operation with its no-arg constructor.
+
+** Make operation classes dependency injection enabled using field injection	
+      		
+	Pineapple only uses the no-arg construction on operation classes to create 
+	instances. Implement operation classes which support dependency injection 
+	by annotating the fields on operation classes with the <<<@Resource>>>
+	annotation.    		
+
+	Dependent objects will then be injected at runtime doing either:
+	
+	* Declaring the dependent objects as bean definitions in the plugin 
+	application context file.
+		
+	* Enabling component-scan in the plugin application context.           		
+      		
+	[]      		
+
+** Integration testable
+
+	Pineapple is using the no-arg constructor to create operation objects, so it
+	is perfered to implement dependency injection using annotated fields.
+	
+	Implement integration tests by using:
+	
+	* The Spring <<<@RunWith>>> annotation.
+	
+	* The Spring <<<@ContextConfiguration>>> annotation.    
+	
+	* Define the object under test (i.e the operation) as a field annoteated with @Resource on the
+	test class.
+	
+	[]
+	
+	Example:
+	
++-----		
+
+@RunWith( SpringJUnit4ClassRunner.class )
+@ContextConfiguration( locations = { "/com.alpha.pineapple.plugin.weblogic.jmx-test-config.xml" } )
+public class TestDeployedConfigurationTest
+{
+
+    /**
+     * Object under test
+     */
+    @Resource
+    TestDeployedConfiguration operation;
+
+    @Before
+    public void setUp() throws Exception
+    {
+    }
+
+    @After
+    public void tearDown() throws Exception
+    {
+    }
+
+    /**
+     * Test that TestDeployedConfiguration can be looked up from the context.
+     */
+    @Test
+    public void testCanGetTestDeployedConfigurationFromContext()
+    {
+        assertNotNull( operation );
+    }
+	
+}	  	  
++-----	   
+
+	For info about setting up integration test projects refer to,
+	{{{../pineapple-modules/pineapple-test-utils/examples/writing-integration-test-html}How-to: Write integration tests in Pineapple.}}
+
+
+** Unit testable
+
+*** Provde N-arg constructor for dependency injection
+
+	Provide a N-arg constructor which can be used to inject mock objects 
+	into the operation instance.
+
+*** Using Spring's ReflectionTestUtils to do field injection
+
+	Use the <<<org.springframework.test.util.ReflectionTestUtils>>> to
+	inject mock object into the operation fields.	 		
+
+
+* Implement plugins using command objects
+	 
+	TODO: Write..
+
+	<<<DefaulChainFactoryImpl::ChainFactory>>> is used by visitors to access commands.
+	
+	<<<ParametersInitializerImpl::ParametersInitializer>>> is used map node values 
+	into command contexts.  
+
+	* If the visitor implements a test operation then use the test runner classes in
+	<<<com.alpha.pineapple.command.test>>> to run tests and collect test data.
+
+** Implementing  visitors which executes tests
+ 	
+	TODO: rewrite...
+	
+	Pineapple defines operation which tests the state of the managed resources.
+	the resources should be be tested by <<test commands>> which test a single 
+	aspect of remote resource. Execution of test commands should be initiated 
+	and controlled from a test visitor.	
+		
+	The package <<<com.alpha.pineapple.command.test>>> contains classes to
+	implement test commands and to run the from a test visitor.
+	
+	The <<<TestCommand>>> interface is a marker interface which should be 
+	extended by all commands which implements a test case. The interface defines
+	context keys which are expected by the test runner.
+	
+	The <<<TestRunner>>> interface defines the interface for test runners. The
+	interface is implemented by the class <<<TestRunnerImpl>>> which should
+	used by visitors to run test commands and collect test data. 
+		
+** Mapping arguments to commands
+
+	A visitor is invoked with the <<<visitAfterChildren( ConfigurationNode node )>>> and/or the
+	<<<visitBeforeChildren( ConfigurationNode node )>>> method. Both of which is invoked with 
+	a <<<ConfigurationNode>>> argument.
+	
+	The child nodes of the node argument will often contains input to commands. The class 
+	<<<ParametersInitializerImpl::ParametersInitializer>>> in the pineapple-commands-api 
+	project should be used to map node values into command contexts.
+	
+*** Algorithm for initializing parameters	
+	
+	The <<<ParametersInitializerImpl::ParametersInitializer>>> implements the algorithm:
+	
+	* The mapping is controlled by the <<<@Initialize>>> annotation on the target command. The 
+	target command is scanned and every field which defines the <<<@Initialize>>> is 
+	tagged for parameter initialization. 
+	
+	* The child nodes is traversed. When the name of a child node matches the value of a 
+	<<<@Initialize>>> annotation, then value(s) of the child node is added to the context 
+	under the matched name (.e.g. name of the child node == <<<@Initialize>>> annotation value).   
+	
+	[]
+	
+ *** Value conversion 
+ 	
+	The class performs two types of value conversion:
+	
+	* Nodes with multiple String values -> String[]
+	
+	* Nodes with single String value -> String
+	
+	[]
+	
+	Mapping to the field types defined in the target command is handled internally
+	by the commands during execution by using the <<<CommandInitializerImpl::CommandInitializer>>>.
+	
+
+
+	 
+* Setting up a Maven project for plugin development
+
+	TODO: Write..
+
+	Define new Maven project for the plugin. Use the JAR archetype to create the 
+	project as the packaging type must be JAR. 
+	
+** Maven GroupID	
+	
+	Name the GroupID the same as the package (or a part of 
+	the package name) used for the plugin. 
+	
+	Plugins which are developed as part of the Pineapple project are
+	using the GroupId: <<<com.alpha.pineapple.>>>
+	
+** Maven ArtifactID	
+	
+	Name the ArtifactId the same as the identified name of the project.
+		 
+	Plugins which are developed as part of the Pineapple project are
+	named: <<<pineapple-\<plugin-name\>-plugin.>>>
+	
+	The ArtifactId for the WebLogic deployment plugin is:
+	<<<pineapple-weblogic-deployment-plugin>>>
+	
+** Required dependencies
+
+	* pineapple-api
+	
+	* spring
+	
+	* spring-oxm
+	
+	* spring-oxm-tiger
+	
+	[]				
+	
+** Plugin package layout example
+	
++---+
+
+com.alpha.pineapple.plugin.weblogic.deployment
+     |
+     +--- WeblogicDeploymentFactoryImpl.java
+     |          
+     +--- session
+     |     +--- WeblogicDeploymentSession.java
+     |     `--- WeblogicDeploymentSessionImpl.java
+     |               
+     +--- traversal
+           +--- InstallApplicationVisitorImpl.java
+           +--- UninstallApplicationVisitorImpl.java           
+           `--- ....
+           
++---+	 
+
+* Known issues
+
+** JAXB2 unmharshalls attribute to null values
+
+	When using JAXB2 for unmarshalling, JAXB2 doens't unmarshall attribute 
+	values correctly. The objects are initialized with null or default values.
+	
+	This issue can be avoided by setting the schema attribute 
+	<<<attributeFormDefault="unqualified">>> as shown:	
+
++---	
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   xmlns="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" 
+		   targetNamespace="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" 
+		   elementFormDefault="qualified" 
+		   attributeFormDefault="unqualified">
+	   
+
++---
+
+	

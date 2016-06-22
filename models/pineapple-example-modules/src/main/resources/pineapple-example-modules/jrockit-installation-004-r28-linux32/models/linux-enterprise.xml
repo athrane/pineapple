@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:jip="http://pineapple.dev.java.net/ns/plugin/jrockit_installation_1_0" >
+    <mmd:model target-resource="jrockit-r28">
+        <mmd:content>
+            <jip:jrockit>					
+				<jip:r28 installer="modulepath:bin/jrockit-jdk1.6.0_31-R28.2.3-4.1.0-linux-ia32.bin" 
+					uninstaller="..." 
+					target-directory="/u01/app/oracle/product/fmw/jrockit-jdk1.6.0_31-R28.2.3-4.1.0"
+					install-public-jre="false" />							
+            </jip:jrockit>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
+
+	
+

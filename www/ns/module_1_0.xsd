@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://pineapple.dev.java.net/ns/module_1_0" xmlns="http://pineapple.dev.java.net/ns/module_1_0"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="module">
+		<xs:annotation>
+			<xs:documentation>Pineapple module.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="variables" type="variablesType" minOccurs="0" maxOccurs="1"/>
+				<!-- 
+				<xs:element name="environments" type="environmentsType" minOccurs="0" />					
+				<xs:element name="templates" type="templatesType" minOccurs="0" />
+				-->
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:ID" use="required"/>		
+			<xs:attribute name="version" type="xs:string" use="required"/>					
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="environmentsType">
+		<xs:annotation>
+			<xs:documentation>List of environments.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="environment" type="environmentType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="environmentType">
+		<xs:annotation>
+			<xs:documentation>
+			Target environment for Pineapple operation. If the model file name is undefined 
+			then it is assumed that the model has the same name as the environment identifier. 
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="id" type="xs:ID" use="required"/>		
+		<xs:attribute name="model-file-name" type="xs:string" use="optional"/>							
+	</xs:complexType>
+	
+	<xs:complexType name="variablesType">
+		<xs:annotation>
+			<xs:documentation>Set of variable declarations in the module descriptor.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="variable" type="variableType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="variableType">
+		<xs:annotation>
+			<xs:documentation>Key-value variable definition.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="key" type="xs:ID" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>				
+	</xs:complexType>	
+		
+	<xs:complexType name="templatesType">
+		<xs:annotation>
+			<xs:documentation>Set of templates declarations to used in a module.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="template" type="templateType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="templateType">
+		<xs:annotation>
+			<xs:documentation>Template definition.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="content" type="contentType" />						
+		</xs:sequence>
+		<xs:attribute name="key" type="xs:ID" use="required"/>		
+	</xs:complexType>
+	<xs:complexType name="contentType">
+		<xs:annotation>
+			<xs:documentation>Template content holder.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>	
+</xs:schema>

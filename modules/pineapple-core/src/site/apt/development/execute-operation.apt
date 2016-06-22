@@ -1,0 +1,435 @@
+ ------
+ Execution operation
+ ------
+ Allan Thrane Andersen 
+ ------
+ November 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Execution operation
+
+	The execution takes place when a client invokes the core component to execute a operation.	
+
+* Overview
+
+	When the method <<<public ExecutionInfo executeOperation(String operation, String environment, String module)>>> 
+	is invoked, the core component starts this execution sequence:
+
+	[[1]] Validate the method arguments.
+	
+	[[2]] Resolves a <<<ModuleInfo>>> object from the module repository based on the module id and environment.
+
+	[[2]] Creates a <<<ExecutionInfo>>> object using the module info, environment and operation id as input.
+
+	[[3]] Start the asynchronous task execution by invoking the method <<<execute( executionInfo, pluginActivator )>>> on an instance
+	of <<<AsyncOperationTaskImpl>>>.
+
+	[]
+
+* Execution of the the asynchronous task 
+
+	The execution of <<<AsyncOperationTaskImpl>>> delegates the execution to the <<<OperationTaskImpl>>>. 
+
+* Execution of the the synchronous task 
+
+	The execution of <<<OperationTaskImpl>>> proceeds as:
+
+	[[1]] The command runner is configured with the execution result object.
+	
+	[[2]] A new execution result is created. The purpose of the result 
+	is to capture the outcome of the commands which sets up the execution of the 
+	operation. The result is considered <detached> because it isn't child of the
+	main execution result for the operation which is contain by the execution 
+	info object.		
+	
+	[[3]] The command runner is configured with the <detached> execution result.
+				
+	[[4]] A new Chain context is created. 
+	
+	[[5]] The context is registered with the execution context repository (for access by plugin providers).	
+
+	[[6]] The method <<<initializeOperation(info, context)>>> is invoked which add 
+	the property to the context as input for the command:
+	 
+		* the execution info object is added under the key <<<execution-info>>>
+					
+		[]
+		
+		[[6.1]] ...then the <<<InitializeOperationCommand>>> is run. The command add these 
+		properties to the context as input for the subsequent commands:
+		
+			* <module file name> is added under the key <<<module-file>>>
+			
+			* <module model file name> is added under the key <<<module-model-file>>>
+			
+			[]
+
+		[[6.2]] The message describing the outcome of the command execution is copied 
+		from the command result to the operation result. The command result is a 
+		child result of the <detached> result described above. 
+	
+		[[6.3]] If the command execution failed then:
+		
+			* The operation result is completed as failed.
+			
+			* Any stack trace stored in the command result is copied to the operation result.
+			
+			* Execution of the operation is aborted.			  
+			
+			[]
+			
+		[]			
+	
+	[[7]] It is queried from the module info whether the module descriptor (module.xml)
+	is defined. If the descriptor is defined then the method <<<loadModule(info, context)>>> 
+	is invoked which runs the <<<UnmarshallJAXBObjectsCommand>>> command. The command 
+	loads the module and adds it to this property to the context:
+	
+			* <module> is added under the key <<<unmarshalling-result>>>
+			
+			[]
+								
+		[[7.1]] If the command execution was successful then:
+		
+			* The object stored under the context key <<<unmarshalling-result>>>
+			is type cast to <<<com.alpha.pineapple.model.module.Module>>>.
+			
+			* The object is stored in the context under the key <<<module>>>.
+			
+			[]
+
+		[[7.2]] The message describing the outcome of the command execution is copied 
+		from the command result to the operation result. The command result is a 
+		child result of the <detached> result described above. 
+			
+		[[7.3]] If the command execution failed then:
+		
+			* The operation result is completed as failed.
+			
+			* Any stack trace stored in the command result is copied to the operation result.
+			
+			* Execution of the operation is aborted.  
+			
+			[]
+			
+		[]			
+			
+	[[8]] If the descriptor isn't defined then the method <<<handleUndefinedModule(info, context)>>> 
+	is invoked which creates a null module with the module directory name as module name and with 
+	default version 1.0.0.
+	
+		* The object is stored in the context under the key <<<module>>>.
+		
+		[]
+		 				
+			
+	[[9]] The method <<<loadModuleModel(info, context)>>> is invoked which runs the 
+	<<<UnmarshallJAXBObjectsCommand>>> command. If The command loads the module 
+	and adds it to this property to the context:
+	
+		* <module model> is added under the key <<<unmarshalling-result>>>
+		
+		[]
+
+		[[9.1]] If the command execution was successful then:
+		
+			* The object stored under the context key <<<unmarshalling-result>>>
+			is type cast to <<<com.alpha.pineapple.model.module.model.Models>>>.
+			
+			* The object is stored in the context under the key <<<module-model>>>.
+			
+			[]
+
+		[[9.2]] The message describing the outcome of the command execution is copied 
+		from the command result to the operation result. The command result is a 
+		child result of the <detached> result described above. 
+	
+		[[9.3]] If the command execution failed then:
+		
+			* The operation result is completed as failed.
+			
+			* Any stack trace stored in the command result is copied to the operation result.
+			
+			* Execution of the operation is aborted.  
+			
+			[]
+			
+		[]			
+
+	[[10]] The method <<<invokePlugins(info, context)>>> is invoked 
+	which runs the <<<InvokePluginsCommand>>> command. The command starts execution
+	of the models contained in module model document.
+
+		[[10.1]] If the command execution failed then:
+		
+			* The operation result is completed as failed.
+			
+			* Any stack trace stored in the command result is copied to the operation result.
+			
+			* Execution of the operation is aborted.  
+			
+			[]
+			
+		[]			
+
+	[[11]] The context is unregistered with the context repository.	
+	
+	[]		
+
+
+* Execution of the initialize operation command
+
+	The command reads these values from the context::
+	
+	* <execution-info> - the execution info object. 
+	
+	[]
+	
+	The command initializes a operation by: 	
+
+	[[1]] Test for existence of module file <<<module.xml>>> at <<<$\{modules-directory\}/$\{module\}/module.xml>>>.
+	
+	[[2]] The location of the module file <<<module.xml>>> is added to the context under the key <<<module-file>>>. 	
+
+	[[3]] Test for existence of module model file <<<$\{environment\}.xml>>> at <<<$\{modules-directory\}/$\{module\}/models/$\{module\}>>>.
+
+	[[4]] The location of the module model <<<$\{environment\}.xml>>> is added to the context under the key <<<module-model-file>>>.
+
+	[]
+		  
+
+* Execution of the invoke plugins command
+
+	The command reads these values from the context::
+	 
+	* <module> - The module object.
+		 	
+	* <module-model> - The module model object. 		
+	
+	* <execution-info> - meta information about the operation being executed.	
+	
+	* <plugin-activator> - The plugin activator object.		
+	
+	[]
+
+	[[1]] Meta data about the operation is from the execution info and added to the root 
+	execution result. These fields are added:
+
+		* Operation name.
+		
+		* Environment name.
+		
+		* Module name
+		
+		* Module file name.
+		
+		[]
+		
+	[[2]] Read the root execution result read from the execution info object. 
+	
+	[[3]] Read the continuation policy from the model and update the root result.
+		
+	[[4]] The list of aggregated models is read from the from the module model and
+	an iteration is done over each of them:		
+
+		[[4.1]] {{{Step_4.1:_Enforce_continuation_policy}Enforce continuation policy}}.	
+
+		[[4.2]] A new child execution result is created to track the execution of 
+		the aggregated model by invoking: <<<rootResult.addChild( "...a description of the aggregated model..." )>>>		
+
+		[[4.3]] The target-resource is read from the model.
+
+		[[4.4]] If the plugin doesn't support input marshalling then the plugin is executed by:
+
+				[[4.4.3]] The operation class is looked up in the plugin-activator using
+				the environment, the target-resource and the operation-id.
+				
+				[[4.4.4]] The session class is looked up in the plugin-activator using
+				the environment and the target-resource.
+		
+				[[4.4.5]] The operation class invoked with NULL content. 
+				
+				[[4.4.6]] {{{Step_4.4.6:_Execute_triggers}Execute trigger(s)}}. 				
+		
+		[[4.5]] A unmarshaller is looked up in the plugin activator using
+		the <<<environment>>> and the <<<target resource>>>.
+
+		[[4.6]] The content-root is read from the model.
+	
+		[[4.7]] Iteration over each of the sub elements contained by the content-root:
+	
+			[[4.7.1]] A DOMSource is created with the element as argument.
+		
+			[[4.7.2]] The element is unmarshalled using the unmarshaller from step 4.5.
+			
+			[[4.7.3]] {{{Step_4.7.3:_Resolution_of_the_plugin_operation}Resolution of the plugin operation}}.	
+						
+			[[4.7.4]] The session class is looked up in the plugin activator using
+			the <<<environment>>> and the <<<target resource>>>.
+
+			[[4.7.5]] The element is proxied to support runtime manipulation of he model context, including 
+			variable substitution.
+	
+			[[4.7.6]] The operation class invoked using the unmarshalled content from 
+			step 4.7.2.
+
+			[[4.7.7]] {{{Step_4.7.7:_Execute_triggers}Execute trigger(s)}}.
+			
+			[[4.7.8]] If the state of the operation result is still <executing> after execution
+			of the operation, then the state is forced to <failure> due to he failure of
+			the plugin to set the state properly.
+	
+			[]		
+			
+		[]
+		
+	[[5]] A message describing the aggregated result of the execution of the aggregated models is added
+	to the root execution result. 
+
+	[[6]] The state of the root execution result is set to <computed> to trigger a computation
+	of its state based on the results of its children, i.e. the aggregated models.
+				
+	[]	
+
+	<<Please notice:>>
+	
+	* The state of the execution results for the aggregated models is set by the plugins in 
+	the invoked operation in step 4.7.7. 	
+	
+	[] 
+
+** Step 4.1: Enforce continuation policy
+
+	The continuation policy of the root result is read.
+	
+	If the policy state signal that execution should be aborted then execution of the aggregated model
+	is aborted before it is even begun.
+
+** Step 4.4.6: Execute triggers	
+	
+	See section 4.7.7
+
+** Step 4.7.1 - 4.7.7: Error handling
+
+	If any exception is thrown during the execution of a single model 
+	then two types of exceptions are caught:
+	
+	* <<<RuntimeException>>> - use to tunnel exceptions from the <<<SessionHandler>>>.
+	
+	* <<<Exception>>> - unexpected errors.
+	
+	[]
+
+** Tunneling exceptions from the session handler
+
+	The purpose of the session handler is to connect the plugin session prior 
+	to invoking the operation and to disconnect afterwards.
+	The session handler achieves its goal by proxying all plugin operations 
+	which supports input marshalling.
+
+	When an exception occurs in the session handler then the exception is caught and rethrown 
+	immediately in a <<<RuntimeException>>>. The purpose of the runtime exception is to channel
+	the exception to the invoking <<<InvokePluginsCommand>>>, see step 3.6.6. 
+	The <<<InvokePluginsCommand>>> will catch the exception and process the 
+	embedded exception appropriately by setting an error message and completing the operation 
+	result with the <Error> state.
+
+	The <<<SessionHandlerImpl>>> supports tunneling of these exceptions:
+	
+	* <<<SessionConnectException>>> thrown when an error occurs during connecting to a 
+	plugin session.
+
+	* <<<SessionDisconnectException>>> thrown when an error occurs during disconnecting 
+	from a plugin session.
+
+	* <<<PluginExecutionFailedException>>> thrown when an error occurs during execution
+	of a plugin.
+	
+	* <<<IllegalArgumentException>>> thrown when validation of a method argument fails within 
+	some plugin code.
+	
+	[]
+
+** Step 4.7.3: Resolution of the plugin operation
+
+	The operation class is looked up in the plugin activator using
+	the <<<environment>>>, the <<<target resource>>> and the <<<operation ID>>>:
+
+	The plugin operation is resolved using <<<PluginActivator.getOperation(..)>>>
+	which uses this algorithm for resolution of the operation:
+	
+	[[1]] Resolve the plugin ID from the <<<environment>>> and the <<<target resource>>> in
+	the <<<ResourceRepository>>>.
+	
+	[[2]] Lookup the operation from the <<<PluginRepository>>>.
+
+	[[3]] Lookup the <<<PluginInfo>>> from the <<<PluginRepository>>>.
+	
+	[[4]] If the plugin doesn't support session handling then return the operation.
+
+	[[5]] Otherwise, get the resource and credential for the operation.
+	
+	[[6]] Create a <<<SessionHandler>>> to proxy the operation. 
+
+	[[7]] Return the session handler.
+	
+	[]
+	
+	
+** Step 4.7.4: Resolving the plugin session
+
+	The plugin session is resolved using <<<PluginActivator.getSession(..)>>>.
+	
+	The resolution of the session is done in two steps:
+	
+	[[1]] Resolve the plugin ID from the <<<environment>>> and the <<<target resource>>> in
+	the <<<ResourceRepository>>>.
+	
+	[[2]] Lookup the session from the <<<PluginRepository>>>
+	
+	[]
+	
+** Step 4.7.5: Proxying the model to support variable substitution
+
+	TODO:...
+	
+** Step 4.7.7: Execute triggers	
+
+	The algorithm for execution of the triggers are:	
+	
+	[[1]] Resolve which triggers to run using the rules:
+	
+		* The value of the <<<on-target-operation>>> attribute is null.
+		
+		* The value of the <<<on-target-operation>>> attribute is empty.
+		
+		* The value of the <<<on-target-operation>>> attribute is the wild card value "*".
+		
+		* The value of the <<<on-target-operation>>> attribute is identical to the operation that the model was invoked with.
+		
+		* The value of the <<<on-target-operation>>> attribute is a list value and one of the values in the 
+		list is identical to the operation that the model was invoked with.
+		
+		[]
+		
+		and:
+		
+		* The value of the <<<on-result>>> attribute is the wild card value "*".
+	
+		* The value of the <<<on-result>>> attribute is identical to the result that the model execution concluded with.
+
+		* The value of the <<<on-result>>> attribute is a list value and one of the values in the 
+		list is identical to the result that the model execution concluded with.
+			
+		[]
+	
+	[[2]] Get the synchronous operation task for the administration API.
+	
+	[[3]] Execute the trigger using attached execution <<<operationTask.executeComposite(..)>>>.
+	
+	
+	
+	

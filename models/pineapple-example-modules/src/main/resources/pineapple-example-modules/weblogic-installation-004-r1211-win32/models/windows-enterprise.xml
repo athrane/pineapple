@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:wip="http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0" >
+    <mmd:model target-resource="weblogic-r121">
+        <mmd:content>
+            <wip:weblogic>              
+				<wip:release12 installer="modulepath:bin\wls1211_win32.exe"
+					uninstaller="C:\app\oracle\product\fmw\utils\uninstall\uninstall.cmd"  
+					target-directory="C:\app\oracle\product\fmw\wlserver_12.1"
+					local-jvm="C:\app\oracle\product\fmw\jrockit\R28.2.3-1.6.0_31"	/>												
+            </wip:weblogic>
+        </mmd:content>
+    </mmd:model>		
+</mmd:models>
+
+	
+

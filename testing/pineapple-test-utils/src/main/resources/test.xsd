@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://pineapple.dev.java.net/ns/test" xmlns="http://pineapple.dev.java.net/ns/test"
+	elementFormDefault="qualified" attributeFormDefault="qualified">
+	<xs:element name="root">
+		<xs:annotation>
+			<xs:documentation>Root element i schema for testing JAXB unmarshalling.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="container" type="ContainerType"
+					minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="ContainerType">
+		<xs:annotation>
+			<xs:documentation>Container</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="items" type="ItemType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ItemType">
+		<xs:annotation>
+			<xs:documentation>Item.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

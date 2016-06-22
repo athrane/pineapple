@@ -1,0 +1,227 @@
+ ------
+ How-to: Install WebLogic 12c using the example modules
+ ------
+ Allan Thrane Andersen
+ ------
+ February 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Install WebLogic 12c using the example modules
+
+* Overview
+
+	This example will describe the set of example modules included with Pineapple 
+	and describe how to install WebLogic 12c using the example modules.
+
+* Overview of the included modules
+
+	The <<{{{../../../usage/default-configuration.html}default configuration}}>>
+	is created when Pineapple is started without an existing configuration 
+	(e.g. the first time Pineapple is started) will create eight example modules 
+	for installation of WebLogic.
+
+** WebLogic 11g examples 
+
+	Four modules supports out-of-the-box installation of WebLogic 10.3.6:
+	
+	* weblogic-installation-000-r1036-win32
+	
+	* weblogic-installation-001-r1036-win64
+	
+	* weblogic-installation-002-r1036-linux32
+	
+	* weblogic-installation-003-r1036-linux64
+	
+	[]
+	
+** WebLogic 12c examples 
+	
+	Four modules supports out-of-the-box installation of WebLogic 12c and will be the focus
+	of this example:
+
+	* weblogic-installation-004-r1211-win32
+	
+	* weblogic-installation-005-r1211-win64
+	
+	* weblogic-installation-006-r1211-linux32 
+	
+	* weblogic-installation-007-r1211-linux64
+	
+	[] 
+
+* Models defined in the example modules
+
+	Let's start with a piece of Pineapple terminology: A module consist of models. 
+	A model defines input to Pineapple. Each model targets a particular environment. This
+	is reflected directly in the naming of a model, which always has the name of its target 
+	environment. 
+	
+	The modules each contains one or more models which each support installation for a 
+	different type of target environment. The supported environments are those defined in the 
+	<<{{{../../../usage/default-configuration.htm}default configuration}}>> for Pineapple.
+	
+	The environments defined in by the examples are:
+
+	* <<windows-default>> - which will install WebLogic with default values on Windows. 
+	This is for installation of the WebLogic in an developer setting.
+	
+	* <<windows-enterprise>> - which will install WebLogic with values adopted from the 
+	(missing) Oracle Enterprise Deployment documentation for Windows. This is aimed at 
+	your server installation following Oracle best practices.
+	
+	* <<linux-default>> - which will install WebLogic with default values on Linux. This 
+	is for installation of the WebLogic in an developer setting.
+	
+	* <<linux-enterprise>> - which will install WebLogic with values from the Oracle 
+	Enterprise Deployment documentation. This is aimed at your server installation 
+	following Oracle best practices.
+	
+	* <<linux-exalogic>> - which will install WebLogic with values from the Oracle Enterprise 
+	Deployment documentation for Exalogic. This is basically yet-another server installation 
+	following Oracle best practices for Exalogic.
+	
+	[]
+	
+	None of the modules supports all environments, because of the installers differs across 
+	operating system and platform architecture. Example: The modules ending with <<<*-win->>> supports 
+	installation on Windows and will support the two Windows environments: windows-default and 
+	windows-enterprise.
+	
+* Dependency to a installed JVM
+
+	WebLogic 10 and 12 requires the presence of an installed JVM which must be specified as part of 
+	an silent installation. All of the examples modules contains a reference to an JVM which is assumed 
+	to already installed then WebLogic is installed. Here's an example of an model 
+	(e.g. linux-enterprise from module weblogic-installation-007-r1211-linux64) which defines a 
+	reference to a JVM with the attribute local-jvm:
+
++----	
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+  xmlns:wip="http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0">
+  <mmd:model target-resource="weblogic-r121">
+    <mmd:content>
+      <wip:weblogic>
+        <wip:release12 installer="modulepath:bin/wls1211_generic.jar"
+          uninstaller="/u01/app/oracle/product/fmw/utils/uninstall/uninstall.sh"
+          target-directory="/u01/app/oracle/product/fmw/wlserver_12.1"
+          local-jvm="/u01/app/oracle/product/fmw/jrockit-jdk1.6.0_31-R28.2.3-4.1.0" />
+      </wip:weblogic>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++----
+
+	Prior to an installation, the path must modified to point to the JVM that you intend to 
+	use with WebLogic. If the path does't point to a valid JVM installation then all 
+	<<<JAVA_HOME>>> values in the generated scripts inside the WebLogic installation will be null. 	
+
+* The Weblogic 12c examples in detail
+
+** weblogic-installation-004-r1211-win32
+
+	This example will install the WebLogic 12.1.1 on a 32-bit Windows platform. The example 
+	supports the windows-default and the windows-enterprise environments:
+
+	* WebLogic version: 12.1.1
+	
+	* Platform: 32-bit Windows
+	
+	* Environments:
+	
+		* windows-default which will install to: C:\Oracle\Middleware\wlserver_12.1
+		
+		* windows-enterprise which will install to: C:\app\oracle\product\fmw\wlserver_12.1
+	
+		[]
+	[]
+
+** weblogic-installation-005-r1211-win64
+
+	* WebLogic version: 12.1.1
+	
+	* Platform: 64-bit Windows
+	
+	* Environments:
+
+		* windows-default which will install to: C:\Oracle\Middleware\wlserver_12.1
+		
+		* windows-enterprise which will install to: C:\app\oracle\product\fmw\wlserver_12.1
+		
+		[]
+		
+	[]
+
+** weblogic-installation-006-r1211-linux32
+
+	This example assumes that the software is to be run under a Linux user named weblogic:
+
+	
+	* WebLogic version: 12.1.1
+	
+	* Platform: 32-bit Linux
+	
+	* Environments:
+
+		* linux-default which will install to: /home/weblogic/Oracle/Middleware/wlserver_12.1
+		
+		* linux-enterprise which will install to: /u01/app/oracle/product/fmw/wlserver_12.1
+		
+		[]
+	[]
+	
+** weblogic-installation-007-r1211-linux64
+
+	This example assumes that the software is to be run under a Linux user named weblogic:
+
+	* WebLogic version: 12.1.1
+	
+	* Platform: 64-bit Linux
+	
+	* Environments:
+
+		* linux-default which will install to: /home/weblogic/Oracle/Middleware/wlserver_12.1
+		
+		* linux-enterprise which will install to: /u01/app/oracle/product/fmw/wlserver_12.1
+		
+		* linux-exalogic which will install to: /u01/app/FMW_Product1/Oracle/Middleware/wlserver_12.1
+		
+		[]
+		
+	[]
+
+* Using an example module
+
+	Two steps are typically needed to configure the plugin to work:
+	
+	* Define a resource which enables the usage of the plugin in a particular environment.
+		 	
+	* Define module with a model which directs the installation.
+	
+	[]
+	
+	<<None>> of these step are required to use the example modules. The 
+	<<{{{../../../usage/default-configuration.html}default configuration}}>> already contains the
+	required environments to support usage of the example modules. There's no need to define modules
+	since the above modules can used directly, copied or modified.
+	
+	So, to use the modules you need to:
+	
+	* Download and install a Pineapple client.
+	
+	* Start Pineapple.
+	
+	* Open of the above modules.
+	
+	* Read the included README.txt and identify the required installer. Download the installer and add
+	it to the <<</bin>>> directory in the module.
+	
+	* Select a model which corresponds to the target environment that you wish to install WebLogic to (
+	e.g. developer or enterprise).
+	
+	* Install WebLogic by executing the <<Deploy Configuration>> operation. 
+	
+	[]
+	

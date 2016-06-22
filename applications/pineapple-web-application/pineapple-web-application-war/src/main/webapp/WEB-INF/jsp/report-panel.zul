@@ -1,0 +1,78 @@
+
+<!--
+	binder definition: binder="@init(queueName='pineapple-queue',queueScope='application')" 
+	is required for view model to respond to global commands posted 
+	on the ZK Application queue:
+	
+	@GlobalCommand public void completedReportCreation() { .. }		
+	
+	The create report notifier CreatedReportNotifierImpl.java posts global command using:
+		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, 
+				EventQueues.APPLICATION,
+				COMPLETED_REPORT_CREATION_GLOBALCOMMAND,
+				NULL_GLOBALCOMMAND_ARGS);	
+ -->	
+<window apply="org.zkoss.bind.BindComposer" 
+	binder="@init(queueName='pineapple-queue',queueScope='application')"
+	viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.ReportPanel')" 
+	hflex="1" vflex="1" border="none" >
+	
+	<borderlayout>	
+		<north size="30%" 
+			border="none" 
+			splittable="true">
+			
+				<vbox hflex="1" vflex="1" >	    		    
+					<hbox hflex="1" pack="right" >
+						<button tooltiptext="Dowload selected report"  
+							label="Download"
+							onClick="@global-command('saveReport')"
+							disabled="@load(vm.selectedReport eq null)" 							 
+							mold="trendy" 
+							iconSclass="z-icon-download" />						    													    	
+						<button tooltiptext="Delete all reports"  
+							label="Delete All"
+							onClick="@global-command('deleteAllReports')" 							 
+							mold="trendy" 														
+							iconSclass="z-icon-trash-o" />						    													    	
+					</hbox>
+			
+				<listbox id="reportListbox"					 	
+				 	model="@load(vm.reports)" 
+				 	selectedItem="@save(vm.selectedReport)" 
+					onSelect="@command('loadSelectedReport')" 
+					hflex="1" vflex="1" >
+					
+					<listhead>            
+						<listheader label="Module" width="40%" />					
+						<listheader label="Environment" width="15%" />
+						<listheader label="Operation" width="15%" />																		
+						<listheader label="Result" width="10%" />												
+						<listheader label="Start" width="10%" />
+						<listheader label="Duration (ms)" width="10%" />						
+			        </listhead>				
+					
+					<template name="model" var="report">
+	            		<listitem >
+	                		<listcell label="@load(report.module)" />
+	                		<listcell label="@load(report.model)" />
+	                		<listcell label="@load(report.operation)" />
+	                		<listcell label="@load(report.result) @converter(vm.executionStateTextConverter)" style="@load(report.result) @converter(vm.executionStateStyleConverter)"/>
+	                		<listcell label="@load(report.start)" />	            			                		
+	                		<listcell label="@load(report.duration)" />	            			                			                		
+	            		</listitem>
+	        		</template>				
+				</listbox>
+
+			</vbox>
+		</north>
+		
+		<center border="none"
+			autoscroll="true" >			
+			<iframe id="reportIframe" 
+				content="@load(vm.media, after='loadSelectedReport')" 
+				hflex="1" vflex="1" />
+		</center>
+		
+	</borderlayout>
+</window>

@@ -1,0 +1,120 @@
+ ------
+ How-to: Use the Hamcrest asserter object with matchers
+ ------
+ Allan Thrane Andersen
+ ------
+ November 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Use the Hamcrest asserter object with matchers
+
+* Introduction
+
+	This example illustrates how to setup a project to use the
+	asserter object which can be use to assert Hamcrest matchers 
+	and capture the result in execution result objects.
+		 
+	To setup a project to use the asserter follow these steps:
+
+	* Add Maven dependency to the project.
+	
+	* Import the spring configuration file 
+	
+	* Define a field in each class which need access to the asserter.
+	
+	* Define a field in each class which need access to the matcher factory.	
+	
+	* Create matchers using the factory method. 
+	
+	* Assert matchers using the asserter.	
+		
+	[]
+
+* Add Maven dependency to the project
+
+	The asserter is defined in the <<<pineapple-hamcrest-support>>> project, so add a Maven dependency 
+	to the project POM:
+ 
++----	
+  <dependency>
+    <groupId>com.alpha.pineapple</groupId>
+    <artifactId>pineapple-hamcrest-support</artifactId>                       
+  </dependency>   			
++----	 
+	
+* Import the spring configuration file
+
+	If the project contain a Spring configuration file for definition of the 
+	beans used by the project then add an <<<import>>> directive to import
+	the Spring configuration file from the Hamcrest matchers project:
+		
++-----		
+	<!-- Configures pineapple-hamcrest-matchers -->
+	<import resource="classpath:com.alpha.pineapple.hamcrest-config.xml" />
++-----
+
+	Now the asserter is available in the project with the bean id <<<asserter>>>. The
+	asserter is defined with the prototype scope. 			
+	
+* Define a field in each class which need access to the asserter	
+ 	
+	To get access to the asserter bean from a class in the project, 
+	declare a field in a class and let Spring inject the asserter
+	when the class is initialized:
+	
++-----		
+
+    /**
+     * Hamcrest asserter.
+     */
+    @Resource
+    Asserter asserter;
+	
++-----			
+
+* Define a field in each class which need access to the matcher factory.
+	
+	To get access to the matchers implemented in the Hamcrest matchers project,
+	declare a field in a class and let Spring inject the matcher factory 
+	when the class is initialized:
+	
++-----		
+
+    /**
+     * Pineapple matcher factory.
+     */
+    @Resource
+    PineappleMatchers pineappleMatchers;
+	
++-----			
+	
+* Create matchers using the factory method
+
+	To use the matchers implemented in the Hamcrest matchers project,
+	create them using the matcher factory:
+	
++-----		
+
+    Matcher emptyArrayMatcher = pineappleMatchers.isArrayEmpty();
+	
++-----			
+		
+* Assert matchers using the asserter
+	
+	Use to asserter to assert matchers and capture the result in 
+	execution results:	
+		
++-----		
+
+    // set parent execution result
+    asserter.setExecutionResult(parent);
+
+   // assert array is empty    
+   asserter.assertObject(array, emptyArrayMatcher, "..asserting that the array is empty..");
+	
++-----	
+		
+		
+		

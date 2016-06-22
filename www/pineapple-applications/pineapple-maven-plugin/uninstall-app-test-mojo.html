@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+<html>
+  <head>
+    <title>Pineapple Maven plugin - 
+    pineapple:uninstall-app-test</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      </head>
+  <body class="composite">
+    <!-- TODO: move this into JavaScript to patch the skin
+      <div class="xright">  </div>
+    -->
+    <div id="leftColumn">
+      <div id="navcolumn">
+             <dl class=navgroup>
+        <dt>Examples</dt>
+        <dd><ul>
+              
+    <li class="none">
+              <a href="examples/skipping-clean.html">some example (todo)</a>
+        </li>
+          </ul></dd>
+    </dl>
+      <dl class=navgroup>
+        <dt>Project Documentation</dt>
+        <dd><ul>
+              
+                
+              
+      
+            
+      
+              
+        <li class="collapsed">
+              <a href="project-info.html">Project Information</a>
+              </li>
+              
+                
+              
+      
+            
+      
+              
+        <li class="collapsed">
+              <a href="project-reports.html">Project Reports</a>
+              </li>
+          </ul></dd>
+    </dl>
+        </div>
+      <script>
+        // replace the java.net project tools with the navigation bar from Maven.
+        // also get rid of "Get Involved" thingie too, while we are at it
+        var pt = document.getElementById("projecttools");
+        var nv = document.getElementById("navcolumn");
+        
+        while(pt.previousSibling!=null)
+          pt.parentNode.removeChild(pt.previousSibling);
+        
+        pt.parentNode.insertBefore(nv,pt);
+        pt.parentNode.removeChild(pt);
+      </script>
+      <script>
+        // kill "description" h3 bar
+        var ld = document.getElementById("longdescription");
+        if(ld!=null) {
+          for( n=ld.firstChild; n!=null; n=n.nextSibling ) {
+            if(n.nodeType==1 && n.innerHTML=="Description" ) {
+              n.parentNode.removeChild(n);
+              break;
+            }
+          }
+        }
+      </script>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        
+  
+    <div class="section"><h2>pineapple:uninstall-app-test<a name="pineapple:uninstall-app-test"></a></h2>
+      <p><b>Full name</b>:</p>
+      <p>com.alpha.pineapple:pineapple-maven-plugin:1.0-SNAPSHOT:uninstall-app-test</p>
+      <p><b>Description</b>:</p>
+      <div>Goal which executes a Pineapple uninstall-application-test
+operation on the Maven project which is defined by the input
+parameters. 
+
+<p>If no parameters are supplied the goal will attempt to discover
+a project in the current runtime directory and execute the
+operation on the discovered project.</p></div>
+      <p><b>Attributes</b>:</p>
+      <ul>
+        <li>Requires a Maven 2.0 project to be executed.</li>
+      </ul>
+      <div class="section"><h3>Required Parameters<a name="Required_Parameters"></a></h3>
+        <table class="bodyTable" border="0" align="left">
+          <tr class="a">
+            <th>Name</th>
+            <th>Type</th>
+            <th>Since</th>
+            <th>Description</th>
+          </tr>
+          <tr class="b">
+            <td><b><a href="#buildDirectory">buildDirectory</a></b></td>
+            <td><tt>File</tt></td>
+            <td><tt>-</tt></td>
+            <td>This is where build results go.<br /></td>
+          </tr>
+          <tr class="a">
+            <td><b><a href="#environment">environment</a></b></td>
+            <td><tt>String</tt></td>
+            <td><tt>-</tt></td>
+            <td>Environment for target project.<br /></td>
+          </tr>
+          <tr class="b">
+            <td><b><a href="#finalName">finalName</a></b></td>
+            <td><tt>String</tt></td>
+            <td><tt>-</tt></td>
+            <td>The Maven Project Object<br /></td>
+          </tr>
+          <tr class="a">
+            <td><b><a href="#session">session</a></b></td>
+            <td><tt>MavenSession</tt></td>
+            <td><tt>-</tt></td>
+            <td>Maven session object.<br /></td>
+          </tr>
+          <tr class="b">
+            <td><b><a href="#settings">settings</a></b></td>
+            <td><tt>Settings</tt></td>
+            <td><tt>-</tt></td>
+            <td>Maven settings object.<br /></td>
+          </tr>
+        </table>
+      </div>
+      <div class="section"><h3>Parameter Details<a name="Parameter_Details"></a></h3>
+        <p><b><a name="buildDirectory">buildDirectory</a>:</b></p>
+        <div>This is where build results go.</div>
+        <ul>
+          <li><b>Type</b>: <tt>java.io.File</tt></li>
+          <li><b>Required</b>: <tt>Yes</tt></li>
+          <li><b>Expression</b>: <tt>${project.build.directory}</tt></li>
+        </ul><hr /><p><b><a name="environment">environment</a>:</b></p>
+        <div>Environment for target project.</div>
+        <ul>
+          <li><b>Type</b>: <tt>java.lang.String</tt></li>
+          <li><b>Required</b>: <tt>Yes</tt></li>
+          <li><b>Expression</b>: <tt>${pineapple.environment}</tt></li>
+        </ul><hr /><p><b><a name="finalName">finalName</a>:</b></p>
+        <div>The Maven Project Object</div>
+        <ul>
+          <li><b>Type</b>: <tt>java.lang.String</tt></li>
+          <li><b>Required</b>: <tt>Yes</tt></li>
+          <li><b>Expression</b>: <tt>${project.build.finalName}</tt></li>
+        </ul><hr /><p><b><a name="session">session</a>:</b></p>
+        <div>Maven session object.</div>
+        <ul>
+          <li><b>Type</b>: <tt>org.apache.maven.execution.MavenSession</tt></li>
+          <li><b>Required</b>: <tt>Yes</tt></li>
+          <li><b>Expression</b>: <tt>${session}</tt></li>
+        </ul><hr /><p><b><a name="settings">settings</a>:</b></p>
+        <div>Maven settings object.</div>
+        <ul>
+          <li><b>Type</b>: <tt>org.apache.maven.settings.Settings</tt></li>
+          <li><b>Required</b>: <tt>Yes</tt></li>
+          <li><b>Expression</b>: <tt>${settings}</tt></li>
+        </ul>
+      </div>
+    </div>
+  
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2010
+    
+          
+  
+
+  
+  
+  &nbsp;| Last Published: 05 Oct 2010
+  &nbsp;| Version: 1.0-SNAPSHOT
+</div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

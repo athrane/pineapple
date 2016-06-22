@@ -1,0 +1,172 @@
+ ------
+ Configuration Overview
+ ------
+ Allan Thrane Andersen 
+ ------
+ May 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+
+Configuration Overview
+
+	Pineapple requires three sets of configuration data to run:
+	
+	* <<Internal configuration:>> Defines runtime behavior of the Pineapple components.  
+	
+	* <<Environment configuration:>> Definition of resources which constitutes 
+	the manageable parts of a platform.   
+	
+	* <<Module configuration:>> Applications and configurations to create, 
+	manage and test a platform by accessing resources.  
+	
+	[]
+
+* Internal Configuration
+
+	The internal configuration files are used to configure the internal runtime 
+	behavior of the different components which constitutes the tool. Internal 
+	configuration data consists of:
+	
+	* <<Configuration files for a single component:>> The core component and the 
+	clients are examples of components which uses internal configuration
+	files to configure themselves. Configuration files can be found in the 
+	<<<src/main/resources>>> folder of the component source. After the component 
+	is built the configuration files are packaged inside the JAR file which 
+	contains the component. 
+			
+	* <<Logging configuration:>> The core component and all the plugins uses 
+	log4j for logging. Each pineapple client must provide a Log4j configuration 
+	which is accessible at runtime as a result of the build process. The core 
+	component or any of the plugins does not provide a Log4j configuration as 
+	part of their production build.	
+
+	[]
+	
+	A detailed list of internal configuration files are documented in the 
+	development documentation for each component.
+	
+** Location of these files
+
+	Inside the jar that constitutes the component and accessible on the 
+	application class path.
+	
+** Update frequency
+
+	These files only change with a new release of Pineapple.
+
+* Environment Configuration
+
+	The environmental configuration files are used to define two types of
+	entities: 
+	
+	* resources
+	
+	* security credentials used to access resources. 
+
+	[] 
+
+** Definition of resources
+
+	The notion of a resource is one of the three central concepts in Pineapple 
+	(plugins and modules being the other two). A resource is any manageable 
+	entity which is part of the JEE platform that the tool is used to manage. 
+	A resource can be anything as long as there can be written an API to 
+	interface the thing and manage it. Examples are: operating systems, 
+	FTP-servers, JEE containers, load balancers... 
+
+	Resources are by default defined in a file named <<<resources.xml>>> which
+	must adhere to the environment configuration schema.
+
+	For more information about resources and the environment configuration schema go to the 
+	{{{./configuration-environment.html}Environment configuration reference.}}	
+		 	
+** Definition of security credentials		
+
+	A security credential defines security information used to access a resource.
+
+	Credentials are by default defined in a file named <<<credentials.xml>>>
+	which must adhere to the environment configuration schema.
+
+	For more information about credentials and the environment configuration schema go to the 
+	{{{./configuration-environment.html}Environment configuration reference.}}	
+ 	
+** Location of these files
+
+	A directory whose location is defined by a Pineapple client. Consult the 
+	documentation for the Pineapples clients for the exact location of the 
+	directory. The web application and the Maven plugin both uses the directory 
+	<<<$\{user.home\}/.pineapple/conf>>> as default directory for the environment 
+	configuration files.  
+	
+** Update frequency	
+
+	These files change when an organization changes its platform environments 
+	or its security credentials.
+	
+** Implementation notes for developers	
+	
+	<<Providing security credentials to the core component:>>	
+	
+	A client is required to supply a CredentialProvider to create 
+	an instance of the core component. The credentials.xml file can be used if 
+	a client uses a file based credential provider. The file is loaded by a 
+	file-based credential provider prior to usage of the provider by the core component.
+
+	<<Loading of resources by the core component:>>	
+		
+	Loaded by core component (by the class <<<CoreImpl>>>) during 
+	its initialization. During execution of an operation the 
+	resource configuration is held by the core component.
+
+** Additional configuration files
+
+	Pineapple furthermore generates two additional configuration files:
+	
+	* The master password used to encrypt credential password. For more information:
+	{{{../pineapple-modules/pineapple-core/usage/encrypting-credential-passwords.html}Encrypting credential passwords.}}\
+	The location of this property file is configurable using the system property <<<pineapple.credentialprovider.password.file>>>. 
+	If the system property isn't defined then the file will be generated in the <<<PINEAPPLE_HOME/conf>>> directory.
+
+	* The set of scheduled operations. The scheduled operations are defined in a file named <<<scheduled-operations.xml>>>
+	which must adhere to the scheduled operations schema.
+	The file will be generated in the <<<PINEAPPLE_HOME/conf>>> directory.
+
+	[]
+
+	
+* Modules 
+
+	A module defines the input used by Pineapple when an operation is executed to do some 
+	testing, information retrieval or configuration on resources. 
+
+	A module contains a managed artifact, i.e. an application and/or model data to 
+	test/configure a computing environment. The module contains all information to 
+	manage the artifact except for platform specific information and security 
+	information which are located in the environment configuration. 		
+
+	The content of a module depends on its purpose. A module may contain: 	
+		* The configuration data for configuration of resources. 
+		
+		* Application which should be deployed to resources (in form of servers).
+		
+		* Scripts which should be executed.
+		
+		* Applications should be installed or uninstalled.
+		
+		* Test cases for testing resources.
+				 	 				 	
+		[]	
+
+** Location of these files
+
+	Provided locally as an directory structure or or loaded from 
+	a Maven repository. 
+	
+** Update frequency	
+
+	Each time a platform environment is changed or an application 
+	(and/or its configuration) is changed.
+	

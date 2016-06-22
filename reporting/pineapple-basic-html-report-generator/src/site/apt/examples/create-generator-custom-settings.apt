@@ -1,0 +1,75 @@
+ ------
+ How-to: Create the report generator with custom settings 
+ ------
+ Allan Thrane Andersen
+ ------
+ November 2009
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Create the report generator with custom settings
+
+* Creating the report generator instance
+
+	Use the <<<com.alpha.pineapple.report.basichtml.BasicHtmlReportGeneratorImpl>>> 
+	to create an instance of the report generator with custom settings:		
+
++---
+	
+  // create custom root directory	
+  File rootDirectory = new File("c:\my-pineapple-reports" );				
+
+  // create report generator
+  ResultListener generator;
+  generator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);		
+      
++---
+
+	The report generator will:
+	
+	* Reports are created in the directory <<<$\{rootDirectory}/report-$\{TIMESTAMP}>>>.
+	
+		* <<<$\{rootDirectory}>>> is the user defined root directory.
+	
+		* <<<report-$\{TIMESTAMP}>>> is a unique time stamped directory created for each new report. The 
+		time stamp has the format YYYY-MM-DD-HHMMSS.
+		
+		[]
+	
+
+	* Two files are created within the time stamped directory:
+	
+		* <<<basic-report.xml>>> which is an XML version of the report.
+	
+		* <<<basic-report.html>>> which is the final product. The HTML report.
+	
+		[]
+		
+	[]			
+			
+* Changing the report root directory at runtime 
+
+	An alternative way to (re)define the the report root directory is to invoke
+	the method <<<setReportDirectory(..)>>> on the interface <<<ReportGeneratorInfo>>>
+	which is implemented by the report generator:
+	
++---
+
+  // create report generator with default settings
+  ResultListener generator = BasicHtmlReportGeneratorImpl.getInstance();		
+	
+  // type cast report generator 
+  ReportGeneratorInfo generatorInfo = (ReportGeneratorInfo) generator;
+  
+  // create root directory	
+  File rootDirectory = new File("c:\my-pineapple-reports");				
+  
+  // set the root directory 
+  generatorInfo.setReportDirectory(generatorInfo);
+      
++---
+
+ 
+
+	

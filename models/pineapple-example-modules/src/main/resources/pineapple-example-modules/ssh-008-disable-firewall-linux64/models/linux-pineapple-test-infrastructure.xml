@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+    <mmd:model target-resource="regex:ssh-node.*" target-operation="deploy-configuration" description="Disable firewall">
+        <mmd:content>
+            <shp:ssh>
+				<shp:execute command="sudo service iptables stop"/>
+				<shp:execute command="sudo /sbin/chkconfig iptables off"/>			
+            </shp:ssh>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>

@@ -1,0 +1,422 @@
+ ------
+ Core component initialization
+ ------
+ Allan Thrane Andersen 
+ ------
+ November 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Core component initialization
+
+	The initialization takes place when a client creates a new instance of the core component.
+
+* How the core component is created and initialized 
+
+	The core component is created by clients through a factory method on the 
+	<<<CoreFactory>>> class to create an instance of the core component 
+	with its dependencies initialized and injected by Spring.
+
+* Two execution paths for initialization of the core component
+	
+	Two general execution paths are implemented for initialization of the core component:
+	
+		[[1]] The core component is created with no parameters other than Java system properties.
+		
+		[[2]] The core component is created with parameters besides Java system properties. The parameters are
+
+			* The <<<provider>>> defines the supplied credential provider object, which 
+			is used by the core component during operation execution to lookup security 
+			credentials for accessed resources. 
+			
+			* The <<<resources>>> argument defines the file where the core component will load resources
+			from the environment configuration.
+			
+			[]
+			
+	The reason for using the term <two general execution paths> is because the second path comes in three variants:
+	
+		[[2a]] Credential provider + absolute path to resources file. 	 					
+		
+		[[2b]] Credential provider + resources file name with no path.		
+		
+		[[2c]] Credential provider, no resource file parameter.		
+		
+		[]
+		
+** Doesn't result listeners count as parameters?
+
+	Inspection of the core factory API reveals that it contain factory methods
+	with additional parameters, i.e the result listener array.
+	
+	This parameter is ignored in the above explanation since they are applied to the core component
+	prior to its actual initialization to support the publisher-subscribe pattern for clients to subscribe
+	to events which describes how the initialization proceeds.				
+
+** Note about numbering of steps in the execution paths
+
+	The numbering of steps is identical in the two execution paths to be able to reference and document a particular
+	step in both execution paths.  
+
+** Execution path for initialization of the core component with no parameters
+
+	[[1]] The client invokes one of:
+	
+		* <<<CoreFactory.createCore()>>> 
+		
+		* <<<CoreFactory.createCore(ResultListener[] listeners)>>>
+		
+		[] 
+			
+	[[2]] The core component is looked up from the core component 
+	Spring application context:
+
+		[[2.1]] The core component Spring application context 
+		<<<com.alpha.pineapple.core-config.xml>>> is loaded.
+
+		[[2.2]] The initialization of the context triggers 
+		the creation of an <<uninitialized>> core component and 
+		the initialization of is its main dependencies
+
+			[[2.2.1]] The runtime directory provider is initialized.
+	
+			[[2.2.2]] The result repository is injected.
+		
+			[[2.2.3]] The module repository is injected.	
+			  
+			[[2.2.4]] A uninitialized core component instance is created.
+					  
+			[]
+		 		
+		[[2.3]] A uninitialized core component instance is
+		looked up from the application context.
+
+		[[2.4]] if the factory was invoked with an array of result listeners then
+		they are registered with the core component.
+		
+		[]
+		
+	[[3]] The <<uninitialized>> core component is initialized by 
+	invoking <<<CoreImpl.initialize()>>> which:
+
+		[[3.1]] Initialize the home directory.
+		
+		[[3.2]] Create default environment configuration.
+	
+		[[3.3]] Load the resources configuration.
+				
+		[[3.4]] Initialize plugin activator.
+
+		[[3.5]] Initialize the administration API.
+		
+		[[3.6]] Initialize the module repository.		
+
+		[[3.7]] Initialize the scheduled operation repository.		
+
+		[]  	
+ 	[] 
+				
+** Execution path for initialization of the core component with parameters	
+
+	[[1]] The client invokes one of:
+	
+		* <<<CoreFactory.createCore(CredentialProvider provider)>>> 
+		
+		* <<<CoreFactory.createCore(CredentialProvider provider, ResultListener[] listeners)>>>
+		
+		* <<<CoreFactory.createCore(CredentialProvider provider, File resources)>>>		
+		
+		* <<<CoreFactory.createCore(CredentialProvider provider, File resources, ResultListener[] listeners)>>>		
+				
+		[] 
+			
+	[[2]] The core component is looked up from the core component 
+	Spring application context:
+
+		[[2.1]] The core component Spring application context 
+		<<<com.alpha.pineapple.core-config.xml>>> is loaded.
+
+		[[2.2]] The initialization of the context triggers 
+		the creation of an <<uninitialized>> core component and 
+		the initialization of is its main dependencies
+
+			[[2.2.1]] The runtime directory provider is initialized.
+	
+			[[2.2.2]] The result repository is injected.
+		
+			[[2.2.3]] The module repository is injected.	
+			  
+			[[2.2.4]] A uninitialized core component instance is created.
+					  
+			[]
+		 		
+		[[2.3]] A uninitialized core component instance is
+		looked up from the application context.
+
+		[[2.4]] if the factory was invoked with an array of result listeners then
+		they are registered with the core component.
+		
+		[]
+		
+	[[3]] The <<uninitialized>> core component is initialized by 
+	invoking either <<<CoreImpl.initialize(provider)>>> or <<<CoreImpl.initialize(provider, resources)>>> which:
+	
+		[[3.3]] Load the resources configuration.
+				
+		[[3.4]] Initialize plugin activator.
+
+		[[3.5]] Initialize the administration API.
+		
+		[[3.6]] Initialize the module repository.		
+
+		[[3.7]] Initialize the scheduled operation repository.		
+		
+		[]  	
+ 	[] 
+
+* Step 2.2.1: Initialization of the runtime directory provider
+
+	The runtime directory provider use this algorithm to resolve the <<Pineapple Home Directory>>:
+
+		[[1]] If the system property {{{./system-properties.html}<<<pineapple.home.dir>>>}}	is set then the home directory 
+		is resolved to this directory.
+	
+		[[2]] If the system property isn't defined then Pineapple will resolve to its home directory to
+		either one of these:
+		
+			* On Windows: <<<C:\\Document and Settings\\$\{user.name\}\\.pineapple>>>  	
+			
+			* Others: <<<$\{user.home\}/.pineapple>>>
+			
+			[]
+			
+		[]
+
+	The operating system is determined on the value of the <<<os.name>>> system property. 		
+	
+	<<<$\{user.home\}>>> is the value of the <<<user.home>>> system property. 
+	
+* Step 2.2.2: Injection of result repository
+
+	The core component is injected with an instance of <<<ResultRepositoryImpl>>> which implements the
+	<<<ResultRepository>>> interface. The result repository implements the role of subject
+	in the observer pattern where interested parties can register themselves for notification
+	when operations are executed. 	
+
+* Step 2.2.3: Injection of module repository
+
+	The core component is injected with an instance of <<<DirectoryBasedModuleRepositoryImpl>>> which 
+	implements the <<<ModuleRepository>>> interface. 
+	
+	The repository administers a set of available modules resolved from the modules directory. The 
+	modules directory is resolved from the runtime directory provider. 	
+	
+	The injected module repository isn't initialized yet at this point. The repository is initialized with
+	the set of available modules in step 3.5.
+
+* Step 3: Initialization of the core component proper 
+
+** Two different execution paths 
+
+	The <<<CoreImpl.initialize(..)>>> method is where the two different execution paths are implemented:
+	
+		[[1]] The core component is created with no parameters other than Java system properties.
+		
+		[[2]] The core component is created with parameters besides Java system properties. The parameters are
+		
+			* A credential provider instance.		 
+			
+			* A file defining where the resources should be loaded from.
+			
+			[]
+
+** The difference between the two executions path 	
+		
+	 The difference between the two paths is that creation of runtime directories and default configuration 
+	 (e.g. step 3.1 and 3.2) is <<omitted>> when the client invokes the core component with parameters since it 
+	 it assumed that the client have taken the required steps to ensure that the resource configuration file and 
+	 directories are present prior to initialization.      	 
+	
+** Details about the supported <<<CoreImpl.initialize(..)>>> methods
+	
+*** <<<CoreImpl.initialize()>>>
+
+	This method is the execution path with no parameters.		
+	
+*** <<<CoreImpl.initialize(provider)>>> 
+
+	This method is part of the execution path with parameters.
+
+	When <<<CoreImpl.initialize(provider)>>> is invoked then the core component assumes:
+	
+		* The resources file is named <<<resources.xml>>>
+		
+		* The resources file is located on the class path.
+		
+		[]		
+		 
+	..and thus invokes <<<CoreImpl.initialize(provider, resources)>>> with a file object
+	with no absolute path but only the file name <<<resources.xml>>>.
+
+*** <<<CoreImpl.initialize(provider, resource)>>> 
+
+	This method is the main entrance to the execution path with parameters.
+	
+* Step 3.1: Initialization of the home directory 
+
+	The core component uses the chain command <<<InitializeHomeDirectoriesCommand>>> process the directories. The 
+	command use the runtime directory provider for resolution of all directories. The runtime directory provider
+	was initialized in step 2.2.1.
+	
+	The command creates the home directory and sub directories:
+	
+	* The home directory
+	
+	* The configuration directory	
+	
+	* The modules directory		
+	
+	* The reports directory			
+	
+	[]
+
+* Step 3.2: Create default environment configuration
+
+	The core component uses the chain command <<<CreateDefaultEnvironmentConfigurationCommand>>> to create
+	a default configuration if no home directory, sub directories and environment configuration files exists.
+	
+	The command performs the initialization:
+	
+	* If an resources file exists (i.e. <<<resources.xml>>>) then the command exits.
+	
+	* If an credentials file exists (i.e. the <<<credential.xml>>>) then the command exits.	
+	
+	* If an credentials file exists (i.e. the <<<credential.xml>>>) then the command exits.		
+	
+	* A default resources file is created in the configuration directory.
+	
+	* A default credentials file is created in the configuration directory.	
+	
+	[]
+
+* Step 3.3: Load the resources configuration
+
+	The core component attempts to load the resources from the environment 
+	configuration using the <<<resources>>> argument supplied as argument to 
+	the constructor. The core component uses the chain command 
+	<<<LoadEnvironmentConfigurationCommand>>> to load the file and bind it to
+	the schema defined in the pineapple-api project.
+	
+	For more information about the used schema and the environment 
+	configuration in general,
+	{{{../../../usage/configuration-environment.html}refer to environment configuration reference.}} 	 	
+
+
+* Step 3.4: Initialize plugin activator
+		
+	The core component uses the chain command <<<InitializePluginActivatorCommand>>> to 
+	initialize the plugin activator object. The command uses the resources and the 
+	credential provider to initialize the activator object. The returned plugin 
+	activator implements the interface <<<PluginActivator>>>.  		
+ 
+** Step 3.4.1: Initialization of the resource repository
+
+	<<<ResourceRepository.initialize( environment configuration );>>>.
+
+** Step 3.4.2: Initialization of the plugin repository
+
+	The initialization of repository is done by invoking:
+	
+	<<<PluginRepository.initialize( list of plugin id's );>>>.
+		
+	The <<<initialize( list of plugin id's )>>> performs these steps to initialize the 
+	repository:
+		
+	[[1]] All registered plugin id's are requested from the resources cache
+	and resolved with the class loader. The class loader resolution is required,
+	otherwise can't the Spring component scanner find the plugin classes. 
+	Afterwards the plugins id's are used to perform a component scan of 
+	classes which is annotated with the <<<@Plugin>>> annotation. 
+	All found classes are named using a custom bean 
+	naming generator <<<com.alpha.pineapple.plugin.repository.PluginNameGeneratorImpl>>>
+	which generate bean names for plugins with the syntax: 
+	<<<plugin:$\{package-name\}>>> where $\{package-name\} is the package of 
+	the found <<<@Plugin>>> annotated class. 
+		
+	[[2]] Creates an map of <<<PluginInfo>>> objects. <<<PluginInfo>>> 
+	contains meta data about a plugin which where found during the plugin 
+	scanning.  
+	
+	[[3]] Start iteration over all found plugin classes.
+	
+	[[4]] Creates <<<PluginInfo>>> object
+
+	[[5]] Creates application context object for plugin. 
+
+	[[6]] Adds plugin providers to the plugin application context. 
+	These providers are initialized:
+	
+		* The execution info provider under the bean id "coreExecutionInfoProvider".
+		
+		* The runtime directory provider under the bean id "coreRuntimeDirectoryProvider".
+
+		* The administration provider under the bean id "coreAdministrationProvider".
+
+		* The variable substitution provider under the bean id "coreVariableSubstitutionProvider".
+		
+		[]
+	  
+	  	  	
+	[[7]] Enables input marshalling if Spring configuration file can found 
+	for the plugin. Add state to <<<PluginInfo>>>.
+			 
+	[[8]] Executes a Spring component-scan for <<<@PluginOperation>>> 
+	annotated classes with base in package where the plugin class is located. 
+	The found operation classes are added to the plugin application context. 
+	
+	[[9]] Executes a Spring component-scan for <<<@PluginSession>>>
+	annotated classes with base in package where the plugin class is located. 
+	The found session class are added to the plugin application context. 
+	
+	[[10]] Enables session handling if a session class was found during 
+	component-scan (in step 9). 
+	
+	[[11]] The plugin info object is added to the map and the next plugin 
+	class is processed from step 4 
+	
+	[]	 						 		
+
+** Step 3.4.3: Creation of <<<PluginActivatorImpl>>> instance 
+ 
+	A <<<PluginActivatorImpl>>> instance is created with three arguments:
+	
+	* The credential provider 
+	
+	* The resources repository
+	
+	* The plugin repository
+	
+	[]  
+
+* Step 3.5: Initialize administration API
+		
+	The core component initializes the administration API by setting the
+	initialized credential provider to support access by clients and plugins 
+	through the API to credential provider.   		
+
+* Step 3.6: Initialize module repository
+		
+	The core component initializes the module repository by invoking the
+	<<<initialize()>>> method which re-initializes the set of registered 
+	modules.   		
+
+* Step 3.7: Initialize scheduled operation repository
+		
+	The core component initializes the scheduled operation repository by invoking the
+	<<<initialize()>>> method which re-initializes the set of registered 
+	scheduled operation.
+	
+	The set of scheduled operations are loaded from the file:<<<PINEAPPLE_HOME/conf/scheduled-operations.xml>>>.   			
+	

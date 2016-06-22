@@ -1,0 +1,127 @@
+ ------
+ How-to: Create a hello world plugin 
+ ------
+ Allan Thrane Andersen
+ ------
+ December 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Create a hello world plugin
+
+* The hello world plugin
+
+	Implement two classes: 
+	
+	* The plugin class.
+	 
+	* A class implementing an operation.	
+	
+	[] 
+
+** Implement the plugin class	
+
+	The minimal plugin class can be implemented as:
+		
++----
+package com.alpha.pineapple.plugin.helloworld;
+
+import com.alpha.pineapple.plugin.Plugin;
+
+@Plugin() 
+public class PluginImpl {}
++----		 
+
+** Implement the operation class
+
+	The plugin only support a single operation, "hello-world" which
+	greets the world. The minimal plugin class can be implement as:
+
++----
+package com.alpha.pineapple.plugin.helloworld;
+
+import com.alpha.pineapple.plugin.Operation;
+import com.alpha.pineapple.plugin.PluginOperation;
+import com.alpha.pineapple.session.Session;
+
+@PluginOperation("hello-world") 
+public class HelloWorldOperation implements Operation {
+
+  public void execute(Object content, Session session, ExecutionResult result) {
+  	System.out.println("Hello world");
+}
++----		 
+
+
+* An extended hello world example
+
+	The pineapple-test-utils project contains an extended hello-world
+	plugin. The plugin is located in the package
+	<<<com.alpha.pineapple.plugin.helloworld>>> and is indented to be used for
+	testing purposes.   
+	
+** The plugin class 	
+
+	The plugin is minimal, just a simple POJO with a single <<<@Plugin>>> annotation.
+		
++----
+package com.alpha.pineapple.plugin.helloworld;
+
+import com.alpha.pineapple.plugin.Plugin;
+
+@Plugin() 
+public class PluginImpl {}
++----		 
+	
+** The operation class
+
+	The plugin only support a single operation, "hello-world" which
+	greets the world. The class is implemented as:
+
++----
+/**
+ * Simple hello world operation.
+ */
+@PluginOperation(TestUtilsTestConstants.helloWorldOperation)
+public class HelloWorldOperationImpl implements Operation
+{
+    /**
+     * Logger object.
+     */
+    Logger logger = Logger.getLogger( this.getClass().getName() );
+
+    public void execute( Object content, Session session, ExecutionResult result ) throws PluginExecutionFailedException
+    {
+        // log debug message
+        if (logger.isDebugEnabled()) {
+            StringBuilder message = new StringBuilder();
+            message.append( "Operation invoked with content <" );
+            message.append( content.toString() );
+            message.append( "> and session <" );
+            message.append( session.toString() );
+            message.append( ">." );            
+            logger.debug( message.toString() );
+        }
+    }
+
+}
++----		 
+
+	The operation class extends the initial example with these trivial points:
+
+	* The operation id is defined by a constant: 
+	<<<TestUtilsTestConstants.helloWorldOperation>>>. 
+	
+	* It uses Log4j to print out the message.		
+	
+	[]
+	
+	 
+	
+	
+	
+	
+
+
+

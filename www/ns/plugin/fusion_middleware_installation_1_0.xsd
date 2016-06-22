@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   xmlns="http://pineapple.dev.java.net/ns/plugin/fusion_middleware_installation_1_0" 
+		   targetNamespace="http://pineapple.dev.java.net/ns/plugin/fusion_middleware_installation_1_0" 
+		   elementFormDefault="qualified" 
+		   attributeFormDefault="unqualified">
+	<xs:element name="fusion-middleware">
+		<xs:annotation>
+			<xs:documentation>Fusion middleware installation specification</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>							
+				<xs:element name="application-development-runtime" type="appDevRuntimeType" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="webcenter" type="webCenterType" minOccurs="0" maxOccurs="1"/>				
+				<xs:element name="soa-suite" type="soaSuiteType" minOccurs="0" maxOccurs="1"/>				
+				<xs:element name="soa-osb" type="soaOracleServiceBusType" minOccurs="0" maxOccurs="1"/>				
+			</xs:sequence>			
+		</xs:complexType>
+	</xs:element>
+				
+	<xs:complexType name="appDevRuntimeType">
+		<xs:annotation>
+			<xs:documentation>Application Development Runtime installation specification</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>							
+			<xs:element name="release11" type="appDevRuntimeRelease11Type" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>			
+	</xs:complexType>
+
+	<xs:complexType name="appDevRuntimeRelease11Type">
+		<xs:annotation>
+			<xs:documentation>Application Development Runtime Release 11.x specification.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="installer" type="xs:string" use="required"/>
+		<xs:attribute name="uninstaller" type="xs:string" use="required"/>		
+		<xs:attribute name="target-directory" type="xs:string" use="required"/>
+		<xs:attribute name="local-jvm" type="xs:string" use="required"/>																						
+	</xs:complexType>
+
+	<xs:complexType name="webCenterType">
+		<xs:annotation>
+			<xs:documentation>WebCenter installation specification</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>							
+			<xs:element name="release11" type="webCenterRelease11Type" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>			
+	</xs:complexType>
+
+	<xs:complexType name="webCenterRelease11Type">
+		<xs:annotation>
+			<xs:documentation>WebCenter Release 11.x specification.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="installer" type="xs:string" use="required"/>
+		<xs:attribute name="uninstaller" type="xs:string" use="required"/>		
+		<xs:attribute name="target-directory" type="xs:string" use="required"/>
+		<xs:attribute name="local-jvm" type="xs:string" use="required"/>																						
+	</xs:complexType>
+
+	<xs:complexType name="soaSuiteType">
+		<xs:annotation>
+			<xs:documentation>SOA Suite installation specification</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>							
+			<xs:element name="release11" type="soaSuiteRelease11Type" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>			
+	</xs:complexType>
+
+	<xs:complexType name="soaSuiteRelease11Type">
+		<xs:annotation>
+			<xs:documentation>SOA Suite Release 11.x specification.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="installer" type="xs:string" use="required"/>
+		<xs:attribute name="uninstaller" type="xs:string" use="required"/>		
+		<xs:attribute name="target-directory" type="xs:string" use="required"/>
+		<xs:attribute name="local-jvm" type="xs:string" use="required"/>																						
+	</xs:complexType>
+
+	<xs:complexType name="soaOracleServiceBusType">
+		<xs:annotation>
+			<xs:documentation>Oracle Service Bus (OSB) installation specification</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>							
+			<xs:element name="release11" type="soaOracleServiceBusRelease11Type" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>			
+	</xs:complexType>
+
+	<xs:complexType name="soaOracleServiceBusRelease11Type">
+		<xs:annotation>
+			<xs:documentation>Oracle Service Bus (OSB) 11.x specification.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="installer" type="xs:string" use="required"/>
+		<xs:attribute name="uninstaller" type="xs:string" use="required"/>		
+		<xs:attribute name="target-directory" type="xs:string" use="required"/>
+		<xs:attribute name="local-jvm" type="xs:string" use="required"/>																						
+	</xs:complexType>
+	
+</xs:schema>

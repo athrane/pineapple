@@ -1,0 +1,91 @@
+ ------
+ SSH plugin
+ ------
+ Allan Thrane Andersen 
+ ------
+ March 2013
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<SSH plugin>> implements functionality to remote access using the SSH-2 protocol. The plugin is implemented on 
+	top of the JSCH library which is a Java based SSH-2 implementation.
+	
+	The plugin supports these SSH commands:
+	
+	* <<Execute shell command at remote host>>. A a single OS command or a shell script is
+	execution at remote host.
+	
+	* <<Secure file copy to host>>. A single file is copied from Pineapple to a remote host.
+	
+	* <<Test equals>>. Extension of the execution shell command which executes a shell command or
+	script and then validates whether the returned output from standard out is equal to the expected value.
+		
+	* <<Test contains>>. Extension of the execution shell command which executes a shell command or
+	script and then validates whether the returned output from standard out contains the expected value.
+			
+	[]
+	 	    
+* Usage
+
+	Go to the {{{./usage/index.html}Plugin Usage page}} for instructions on using the plugin. 
+
+** Supported operations
+
+	The plugin supports all operations.
+	
+	When the plugin is invoked with an operation, it will execute the SSH commands (e.g. execute or secure copy).
+			
+** Plugin schema
+
+	The plugin defines a schema named <<SSH plugin schema>> 
+	for definition of models in module model files.	The schema defines the namespace 
+	<<<http://pineapple.dev.java.net/ns/plugin/ssh_1_0>>>.	For more information about 
+	where the schema can be found, refer to the 
+	{{{../../usage/schemas-plugins.html}Schema locations for plugins page.}}
+
+* Examples
+
+	To provide you with better understanding on some usages of the plugin,
+	you can take a look into the following examples:
+
+	* {{{./examples/sercurecopy-filepermissions.html}How-to: Set file permissions and ownership for file copy}}
+
+	* {{{./examples/sercurecopy-control-variable-substitution.html}How-to: Control variable substitution for file copy}}
+
+	* {{{./examples/configure-kernel-swapiness.html}How-to: Configure Linux kernel swapiness.}}
+
+	* {{{./examples/test-kernel-swapiness.html}How-to: Test Linux kernel swapiness.}}
+	
+	* {{{./examples/yum-packages-vagrant.html}How-to: Install YUM packages.}}
+
+	* {{{./examples/yum-proxy-vagrant.html}How-to: Configure proxy settings for YUM.}}
+
+	* {{{./examples/install-jvm-vagrant.html}How-to: Install Java in Linux from a archive binary file.}}
+	
+	* {{{./examples/install-jvm-rpm-vagrant.html}How-to: Install Java in Linux using a RPM package.}}
+
+	* {{{./examples/configure-os-weblogic-vagrant.html}How-to: Configure Linux to support Weblogic usage.}}		
+
+	* {{{./examples/install-pineapple-agent-linux.html}How-to: Install a Pineapple agent on Linux using SSH.}}
+
+	* {{{./examples/install-jenkins-linux-vagrant.html}How-to: Install Jenkins in a Linux Vagrant box using SSH.}}
+
+	* {{{./examples/install-jenkins-artifactory-linux-vagrant.html}How-to: Install Jenkins and Artifactory in a Linux Vagrant box using SSH.}}
+
+	* {{{./examples/install-docker-latest-linux-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 6.5 using SSH.}}		
+
+	* {{{./examples/install-docker-latest-centos7-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 7.0 using SSH.}}		
+						
+	* {{{./examples/install-docker-fixed-version-centos7-vagrant.html}How-to: Install specific version of Docker in a Vagrant box with CentOS 7.0 using SSH.}}		
+															
+  	[]
+  
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

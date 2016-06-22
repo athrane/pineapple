@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
+
+<!-- =============================================================== -->
+<!-- Configure the Jetty Server -->
+<!-- -->
+<!-- Documentation of this file format can be found at: -->
+<!-- http://wiki.eclipse.org/Jetty/Reference/jetty.xml_syntax -->
+<!-- -->
+<!-- Additional configuration files are available in $JETTY_HOME/etc -->
+<!-- and can be mixed in. For example: -->
+<!-- java -jar start.jar etc/jetty.xml etc/jetty-ssl.xml -->
+<!-- -->
+<!-- See start.ini file for the default configuraton files -->
+<!-- =============================================================== -->
+
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+
+	<!-- =========================================================== -->
+	<!-- Server Thread Pool -->
+	<!-- =========================================================== -->
+	<Get name="ThreadPool">
+		<Set name="minThreads" type="int">10</Set>
+		<Set name="maxThreads" type="int">200</Set>
+		<Set name="idleTimeout" type="int">1000</Set>
+		<Set name="detailedDump">false</Set>
+	</Get>
+
+	<!-- =========================================================== -->
+	<!-- Set handler Collection Structure -->
+	<!-- StatisticsHandler which is required to use the server -->
+	<!-- property StopTimeout. -->
+	<!-- =========================================================== -->
+	<Set name="handler">
+		<New class="org.eclipse.jetty.server.handler.StatisticsHandler">
+			<Set name="handler">
+				<New id="Handlers" class="org.eclipse.jetty.server.handler.HandlerCollection">
+					<Set name="handlers">
+						<Array type="org.eclipse.jetty.server.Handler">
+							<Item>
+								<New id="Contexts"
+									class="org.eclipse.jetty.server.handler.ContextHandlerCollection" />
+							</Item>
+							<Item>
+								<New id="DefaultHandler" class="org.eclipse.jetty.server.handler.DefaultHandler" />
+							</Item>
+							<Item>
+								<New id="RequestLog" class="org.eclipse.jetty.server.handler.RequestLogHandler" />
+							</Item>
+						</Array>
+					</Set>
+				</New>
+			</Set>
+		</New>
+	</Set>
+
+	<!-- =========================================================== -->
+	<!-- extra options -->
+	<!-- =========================================================== -->
+	<Set name="stopAtShutdown">true</Set>
+	<Set name="stopTimeout">1000</Set>
+
+</Configure>

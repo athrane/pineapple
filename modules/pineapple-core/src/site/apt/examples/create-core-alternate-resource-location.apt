@@ -1,0 +1,87 @@
+ ------
+ How-to: Create the core component which loads resources from an alternate location 
+ ------
+ Allan Thrane Andersen
+ ------
+ November 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Create the core component which loads resources from an alternate location
+
+	This example extends the example with {{{./create-core-custom-provider.html}creation of the core component with the custom provider.}}	
+
+	As described in the previous example, start by creating the custom provider: 	
+	 
++---
+  // create core factory
+  CoreFactory coreFactory = new CoreFactory();
+
+  // get user.home
+  String userHome = System.getProperty( "user.home" );
+	
+  // define directory where credentials file is located	
+  File credDirectory = new File( userHome, "yuna" ); 
+	 
+  // initialize credential file
+  File credentialsFile = new File( creadDirectory, "creds.xml" );
+
+  // create credential provider
+  CredentialProvider provider = coreFactory.createCredentialProvider(credentialsFile);                
++---		  		
+
+	Then create a <<<File>>> object with the location of the resources file:
+	
++---
+  // get user.home
+  String userHome = System.getProperty( "user.home" );
+	
+  // define directory where resources file is located
+  File someDirectory = new File( userHome, "belias" ); 
+
+
+  // initialize resources file
+  File resourcesfile = new File( someDirectory, "res.xml" );            
++---
+
+	Finally an instance of the core component is created using the 
+	core factory:		
+
++---
+  // create core component
+  PineappleCore core = coreFactory.createCore( provider, resourcesfile );    
++---
+
+* How the core component will the load environment configuration 
+
+	The location where the environment configuration is loaded from is determined by 
+	{{{../../../usage/runtime-directories.html}resolution the of runtime directories}}
+	used by the core component.
+
+** With the the system property <<<pineapple.home.dir>>> defined
+
+	The core component will:
+	
+	* load resources from <<<$\{user.home}/belias/res.xml>>>.		
+	
+	* load credentials from <<<$\{user.home}/yuna/creds.xml>>>.
+		
+	[]
+
+** Without the the system property <<<pineapple.home.dir>>> defined
+
+	The core component will:
+	
+	* load resources from <<<$\{user.home}/belias/res.xml>>>.		
+	
+	* load credentials from <<<$\{user.home}/yuna/creds.xml>>>.	
+	
+	[]
+		
+	<<Please notice:>> The location where the credentials is loaded from
+	can be customized by the <<<credentialsFile>>> argument to the
+	<<<CoreFactory.createCredentialProvider(credentialsFile)>>> factory method.
+	
+		
+	

@@ -1,0 +1,58 @@
+ ------
+ How-to: List Docker images and containers
+ ------
+ Allan Thrane Andersen
+ ------
+ Decmeber 2014
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: List Docker images and containers
+
+* Overview
+
+	This example illustrates how the Docker plugin can be used to create a report 
+	which lists the set of created Docker images and containers with a Docker daemon.
+	
+* Module requirements 
+
+	Any module which defines use of the Docker plugin will do.
+	An example of a suitable module is the one used in the example:	
+	{{{./create-image.html}How-to: Create Docker image.}}
+
+	Otherwise the example module named <<<docker-009-get-report-docker-host>>> is created 
+	for this purpose since the Docker model is deliberately is defined to be null
+	and disabled of all other operations that the <create-report> operation:
+	
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+    xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" continue="false" >
+  <mmd:model target-resource="regex:docker-node" target-operation="create-report" description="List Docker images and containers" >
+    <mmd:content>
+      <dkp:docker />
+    </mmd:content>
+	</mmd:model>	
+</mmd:models>	
++---
+
+	To create a report from the state of the defined Docker resources, 
+	invoke the module with <create-report> command.
+	
+	The report will list the defined Docker images and containers in each
+	of the targeted Docker resources.
+		 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<docker-009-get-report-docker-host>>
+	
+	* Select the <<linux-vagrant>> model.
+	
+	* Invoke the <<create-report>> to create the report.
+	
+	[]
+
+	

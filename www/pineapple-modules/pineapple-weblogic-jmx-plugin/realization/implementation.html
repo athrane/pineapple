@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+<html>
+  <head>
+    <title>Pineapple WebLogic JMX plugin - Implementation</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+          <meta name="author" content="Allan Thrane Andersen" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <!-- TODO: move this into JavaScript to patch the skin
+      <div class="xright">  </div>
+    -->
+    <div id="leftColumn">
+      <div id="navcolumn">
+             <dl class=navgroup>
+        <dt>Project tools</dt>
+        <dd><ul>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/servlets/ProjectMemberList">Membership</a>
+        </li>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+        </li>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/servlets/ProjectForumView">Discussion forums</a>
+        </li>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/servlets/ProjectMailingListList">Mailing lists</a>
+        </li>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/servlets/ProjectDocumentList">Documents and files</a>
+        </li>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/source/browse/pineapple/">Subversion</a>
+        </li>
+              
+    <li class="none">
+              <a href="https://pineapple.dev.java.net/servlets/ProjectIssues">Issue tracker</a>
+        </li>
+          </ul></dd>
+    </dl>
+      <dl class=navgroup>
+        <dt>Project overview</dt>
+        <dd><ul>
+              
+    <li class="none">
+              <a href="../index.html">Introduction</a>
+        </li>
+              
+    <li class="none">
+              <a href="../usage´/index.html">For users</a>
+        </li>
+              
+    <li class="none">
+              <a href="../development/index.html">For developers</a>
+        </li>
+              
+    <li class="none">
+              <a href="../faq.html">FAQ</a>
+        </li>
+          </ul></dd>
+    </dl>
+      <dl class=navgroup>
+        <dd><ul>
+          </ul></dd>
+    </dl>
+      <dl class=navgroup>
+        <dt>Project Documentation</dt>
+        <dd><ul>
+              
+                
+              
+      
+            
+      
+              
+        <li class="collapsed">
+              <a href="../project-info.html">Project Information</a>
+              </li>
+              
+                
+              
+      
+            
+      
+              
+        <li class="collapsed">
+              <a href="../project-reports.html">Project Reports</a>
+              </li>
+          </ul></dd>
+    </dl>
+        </div>
+      <script>
+        // replace the java.net project tools with the navigation bar from Maven.
+        // also get rid of "Get Involved" thingie too, while we are at it
+        var pt = document.getElementById("projecttools");
+        var nv = document.getElementById("navcolumn");
+        
+        while(pt.previousSibling!=null)
+          pt.parentNode.removeChild(pt.previousSibling);
+        
+        pt.parentNode.insertBefore(nv,pt);
+        pt.parentNode.removeChild(pt);
+      </script>
+      <script>
+        // kill "description" h3 bar
+        var ld = document.getElementById("longdescription");
+        if(ld!=null) {
+          for( n=ld.firstChild; n!=null; n=n.nextSibling ) {
+            if(n.nodeType==1 && n.innerHTML=="Description" ) {
+              n.parentNode.removeChild(n);
+              break;
+            }
+          }
+        }
+      </script>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>Implementation</h2>
+<div class="section"><h3>com.alpha.pineapple.command package</h3>
+<div class="section"><h4>Content</h4>
+<ul><li>Generic Chain commands to manage JMX MBeans.</li>
+</ul>
+</div>
+<div class="section"><h4>Interfaces and classes</h4>
+<div class="section"><h5>SetMBeanAttributeCommand</h5>
+<p>Chain command, implements <tt>Command</tt>
+ interface.</p>
+<p>The command sets an attribute on MBean. </p>
+<p><b>Precondition:</b>
+ * <tt>SetMBeanAttributeCommand.JMXSESSION</tt>
+ is defined in context defines the JMX session to access the MBean with.</p>
+<ul><li><tt>SetMBeanAttributeCommand.MBEAN</tt>
+ is defined in context defines the object name of the MBean to set the attribute on.</li>
+<li><tt>SetMBeanAttributeCommand.ATTRIBUTE_ID</tt>
+ is defined in context defines the name of the attribute on the MBean.</li>
+<li><tt>SetMBeanAttributeCommand.ATTRIBUTE_VALUE</tt>
+ is defined in context defines the value of the attribute. Must be of the type <tt>java.lang.String</tt>
+.</li>
+</ul>
+<p><b>Postcondition:</b>
+ …. TO-DO</p>
+<p>The command queries the attribute on the MBean, to get its type and then converts the value (supplied as a String) to the returned type. Type conversion is implemented using <tt>ConvertUtils</tt>
+ from the Apache Commons project.</p>
+</div>
+<div class="section"><h5>GetMBeanAttributeCommand</h5>
+<p>Chain command, implements <tt>Command</tt>
+ interface.</p>
+<p>The command reads an attribute on MBean.</p>
+<p><b>Precondition:</b>
+ </p>
+<ul><li><tt>GetMBeanAttributeCommand.JMXSESSION</tt>
+ is defined in context. Defines the JMX session to access the MBean with.</li>
+<li><tt>GetMBeanAttributeCommand.MBEAN</tt>
+ is defined in context. Defines the object name of the MBean to get the attribute from.</li>
+<li><tt>GetMBeanAttributeCommand.ATTRIBUTE_ID</tt>
+ is defined in context. Defines the name of the attribute on the MBean.</li>
+</ul>
+<p><b>Postcondition:</b>
+</p>
+<ul><li><tt>GetMBeanAttributeCommand.ATTRIBUTE_VALUE</tt>
+ is defined in context. Contains the value of the attribute. Is converted to <tt>java.lang.String</tt>
+</li>
+<li><tt>GetMBeanAttributeCommand.ATTRIBUTE_TYPE</tt>
+ is defined in context. Contains the type of the attribute. Is converted to java.lang.String</li>
+</ul>
+</div>
+<div class="section"><h5>CreateMBeanCommand</h5>
+<p>Chain command, implements <tt>Command</tt>
+ interface.</p>
+<p>The command can create an child MBean in a WebLogic Edit Mbean server from a reference to a MBean (i.e. an object name).</p>
+<p>Requires that the MBean provides creation-methods, i.e. createXX(..) whose existence is determined using reflection </p>
+<p><b>Precondition:</b>
+ </p>
+<p>TODO: document...</p>
+<p><b>Postcondition:</b>
+</p>
+<p>TODO: document...</p>
+</div>
+<div class="section"><h5>GetMBeanCommand</h5>
+<p>Chain command, implements <tt>Command</tt>
+ interface.</p>
+<p>The command can retrieve an child MBean in a WebLogic Edit MBean server from a object name.</p>
+<p>Requires that the MBean provides certain accessor methods, either getXX(..) or lookupXX(..), whose existence is determined using reflection </p>
+<p><b>Precondition:</b>
+ </p>
+<ul><li><tt>GetMBeanCommand.JMXSESSION_KEY</tt>
+ is defined in context. Defines WebLogic JMX session to operate on.</li>
+<li><tt>GetMBeanCommand.MBEAN_KEY</tt>
+ is defined in context. Name of the existing MBean on which the command retrieves a child MBean.</li>
+<li><tt>GetMBeanCommand.CHILD_ID_KEY</tt>
+ is defined in context. Name of the child MBean which is retrieved.</li>
+<li><tt>GetMBeanCommand.CHILD_TYPE_KEY</tt>
+ is defined in context. Type of the child MBean which is retrieved.</li>
+</ul>
+<p><b>Postcondition:</b>
+</p>
+<ul><li><tt>GetMBeanCommand.RETRIEVED_MBEAN_KEY</tt>
+ is defined in context. ObjectName of the retrieved MBean.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section"><h3>Internal configuration</h3>
+<p>TODO: document internal configuration.</p>
+</div>
+<div class="section"><h3>Logging</h3>
+<p>The plugin uses Log4j for logging. Each pineapple client must provide a Log4j configuration which is accessible at runtime as a result of the build process.</p>
+<p>The plugin component does not provide a Log4j configuration as part of its production build. A log4j configuration file is defined in the project in the directory <tt>src/test/resources/log4.properties</tt>
+ for testing. </p>
+<p>The test configuration configures Log4j to write these log files to c:/temp/pineapple-runtime/logs/:</p>
+<ul><li>pineapple-test.log – unit test log from pineapple classes</li>
+<li>pineapple-root-test.log – unit test log from all packages</li>
+</ul>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2008
+    
+          
+  
+
+  
+  
+  &nbsp;| Last Published: 02 Jul 2008
+  &nbsp;| Version: 1.0-SNAPSHOT
+</div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+    <mmd:model target-resource="regex:ssh-node.*" target-operation="deploy-configuration" description="Test WM swapiness" >
+        <mmd:content>
+            <shp:ssh>
+                <!-- test kernel swappiness -->
+                <shp:assert-equals command="cat /proc/sys/vm/swapiness" expected-value="0"/>
+                </shp:ssh>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>

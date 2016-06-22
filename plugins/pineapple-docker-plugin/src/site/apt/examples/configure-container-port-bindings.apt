@@ -1,0 +1,111 @@
+ ------
+ How-to: Configure Docker containers (Port bindings)
+ ------
+ Allan Thrane Andersen
+ ------
+ June 2015
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Configure Docker containers (Port bindings)
+
+* Overview
+
+	This example illustrates how the Docker plugin can be used to configure a Docker container,
+	more specifically port bindings, as part of the container creation.
+
+	The port bindings exposes and binds container ports to host ports.
+	
+** Extension of another example
+
+	This example extends the container configuration example 	
+	{{{./configure-container-exposed-ports.html}How-to: Configure Docker containers (Exposed ports).}}
+	
+	Please consult that example for details about Pineapple configuration, modules and models		
+	describes how Pineapple can be used to install Docker on a Vagrant box for the purpose of the example.
+	
+* Define the module model
+
+	The model file for definition of the image and the container:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+  xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" >
+  <mmd:model target-resource="docker-node" target-operation="deploy-configuration" description="Define Docker image: pineapple/httpd" >
+    <mmd:content>
+      <dkp:docker>
+        <dkp:image-from-dockerfile source-directory="modulepath:dockersrc" pull-image="false" >
+          <dkp:target-image repository="pineapple/httpd" tag="1.0" />
+        </dkp:image-from-dockerfile>
+      </dkp:docker>                       
+    </mmd:content>
+  </mmd:model>
+  <mmd:model target-resource="docker-node" description="Define Docker container: alpha01" >
+    <mmd:content>
+      <dkp:docker>
+        <dkp:container name="alpha01" >
+          <dkp:image repository="pineapple/httpd" tag="1.0" />   
+          <dkp:configuration>
+            <dkp:exposed-ports>
+              <dkp:port value="80" type="tcp" />
+            </dkp:exposed-ports>                      
+            <dkp:host-config>      
+              <dkp:port-bindings>
+                <dkp:bind container-port="80" host-port="8080" type="tcp" />
+              </dkp:port-bindings>
+            </dkp:host-config>
+          </dkp:configuration>                   
+        </dkp:container>
+      </dkp:docker>                       
+    </mmd:content>
+  </mmd:model>    
+</mmd:models>
++----	 
+
+* The configuration details
+
+** Definition of the container	
+
+	The second model contains the <<<dkp:container>>> element which defines a Docker container.
+	When the model is invoked with the <deploy-configuration> operation then the container is created.
+	When the model is invoked with the <undeploy-configuration> operation then the container is deleted.
+
+*** Configuration of the container	
+
+	The container element contains an optional <<<configuration>>> element. 
+	The element supports detailed configuration of the container.
+
+	The element is used in this example to the define port bindings for the container.	
+
+	The configuration element contains an optional <<<hostConfig>>> element.
+	The element supports configuration of the container host properties.
+
+	A port binding is defined by a <<<port-bindings>>> element with a sub <<<bind>>> element for each binding.
+	A <<<bind>>> element has a mandatory <<<host-port>>> attribute for definition of the host port to which 
+	the container port should be bound. Finally the bind element has a mandatory <<<type>>> attribute which
+	support the <tcp> and <udp> type:
+	
+	In this example, the exposed port 80 is bound to port 8080 on the docker host.
+	Since the IP address of the docker initially was set to 192.168.34.10, then 
+	the Apache server can be accessed at HTTP://192.168.34.10:host IP 
+
+*** Bounding multiple ports	
+	
+	Example of multiple bound ports:
+	
++----
+  <dkp:configuration>
+    <dkp:host-config>      
+      <dkp:port-bindings>
+        <dkp:bind container-port="8080" host-port="18080" type="tcp" />
+        <dkp:bind container-port="8433" host-port="18433" type="tcp" />        
+      </dkp:port-bindings>
+    </dkp:host-config>
+  </dkp:configuration>
++----	 
+
+
+
+	

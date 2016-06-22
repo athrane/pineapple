@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+    <mmd:model target-resource="ssh-node1"  target-operation="undeploy-configuration" description="Delete all Docker containers" >
+        <mmd:content>
+            <shp:ssh>
+                <shp:execute command="sudo docker rm $(sudo docker ps -a -q)"/>
+            </shp:ssh>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>

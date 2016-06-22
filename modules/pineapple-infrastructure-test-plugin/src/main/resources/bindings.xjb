@@ -1,0 +1,196 @@
+<jaxb:bindings version="2.0"	
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"	
+	jaxb:extensionBindingPrefixes="xjc" >
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd"
+		node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.plugin.infrastructure.model" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+	
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='dnsResolutionType']" >
+			<jaxb:class name="DnsResolutionTest" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='tcpConnectionType']" >
+			<jaxb:class name="TcpConnectionTest" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='portType']" >
+			<jaxb:class name="TcpPort" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='sessionStickynessType']" >
+			<jaxb:class name="SessionStickynessTest" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='loadBalancingType']" >
+			<jaxb:class name="LoadBalancingTest" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='assertType']" >
+			<jaxb:class name="AssertionValues" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='propertiesType']" >
+			<jaxb:class name="Properties" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='propertyType']" >
+			<jaxb:class name="Property" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='urlsType']" >
+			<jaxb:class name="Urls" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='serversType']" >
+			<jaxb:class name="Servers" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='httpConfigurationType']" >
+			<jaxb:class name="HttpConfiguration" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='httpFollowRedirectsType']" >
+			<jaxb:class name="HttpFollowRedirect" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='tcpConfigurationType']" >
+			<jaxb:class name="TcpConfiguration" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='httpRedirectType']" >
+			<jaxb:class name="HttpRedirectTest" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='httpStatusCodeType']" >
+			<jaxb:class name="HttpStatusCodeTest" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='httpRedirectAssertType']" >
+			<jaxb:class name="HttpRedirectAssertionValues" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='httpHeaderType']" >
+			<jaxb:class name="HttpHeaderTest" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='httpHeaderAssertType']" >
+			<jaxb:class name="HttpHeaderAssertionValues" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='headersType']" >
+			<jaxb:class name="Headers" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='headerType']" >
+			<jaxb:class name="Header" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='nonExistingHeadersType']" >
+			<jaxb:class name="NonExistingHeaders" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='nonExistingHeaderType']" >
+			<jaxb:class name="NonExistingHeader" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='ftpServerActiveType']" >
+			<jaxb:class name="FtpServerActiveTest" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='ftpServerContainsDirectoryType']" >
+			<jaxb:class name="FtpServerContainsDirectoryTest" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='ftpServerCreateDirectoryType']" >
+			<jaxb:class name="FtpServerCreateDirectoryTest" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='accessUncPathType']" >
+			<jaxb:class name="AccessUncPathTest" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='httpTestType']" >
+			<jaxb:class name="HttpTest" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='httpAssertionsType']" >
+			<jaxb:class name="HttpAssertions" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='httpAssertionType']" >
+			<jaxb:class name="HttpAssertion" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="infrastructure_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='httpAssertionValueType']" >
+			<jaxb:class name="HttpAssertionValue" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+
+</jaxb:bindings>

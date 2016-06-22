@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+    xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" >
+    <mmd:model target-resource="docker-node" target-operation="deploy-configuration" description="Define Docker image: pineapple/httpd" >
+        <mmd:content>
+            <dkp:docker>
+                <dkp:image-from-dockerfile source-directory="modulepath:dockersrc" pull-image="false" >
+                    <dkp:target-image repository="pineapple/httpd" tag="1.0" />
+                </dkp:image-from-dockerfile>
+            </dkp:docker>                       
+        </mmd:content>
+    </mmd:model>
+    <mmd:model target-resource="docker-node" description="Define Docker container: alpha01" >
+        <mmd:content>
+            <dkp:docker>
+               <dkp:container name="alpha01" >
+                   <dkp:image repository="pineapple/httpd" tag="1.0" />   
+                    <dkp:configuration>
+                        <dkp:exposed-ports>
+                            <dkp:port value="80" type="tcp" />
+                        </dkp:exposed-ports>                      
+                        <dkp:host-config>      
+                            <dkp:port-bindings>
+                                <dkp:bind container-port="80" host-port="8080" type="tcp" />
+                            </dkp:port-bindings>
+                        </dkp:host-config>
+                  </dkp:configuration>                   
+               </dkp:container>
+            </dkp:docker>                       
+        </mmd:content>
+    </mmd:model>    
+</mmd:models>

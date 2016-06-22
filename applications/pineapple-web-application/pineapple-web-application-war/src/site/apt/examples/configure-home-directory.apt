@@ -1,0 +1,137 @@
+ ------
+ How-to: Configure the home directory for the deployable web application
+ ------
+ Allan Thrane Andersen
+ ------
+ May 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Configure the home directory for the deployable web application
+
+	The <<home directory>> is the root directory for the 
+	{{{../../../../usage/runtime-directories.html}runtime directory structure}}	 
+	used by Pineapple. The directory structure contains:
+	
+		* {{{../../../../usage/configuration-environment.html}The environment configuration}}
+		
+		* Modules 
+		
+		* Reports 
+		
+		* Log files
+		
+		[]
+	
+	Two examples are included:
+	
+	* How to configure the home directory at runtime.
+	
+	* How to configure the home directory at development time.
+	
+	[]	
+	
+* Configuration of the home directory at runtime 
+
+** Where the home directory is configured in the deployable web application
+
+	The unzipped client contains the directory layout:
+	
++---+
+pineapple-web-application-VERSION.war
+     |     
+     +--- META-INF
+     |               
+     +--- WEB-INF
+     |     +--- classes
+     |     |     +--- stufff 
+     |     |     	 
+     |     +--- images
+     |     |     +--- stufff 
+     |     |     	 
+     |     +--- jsp
+     |     |     +--- stufff 
+     |     |     	 
+     |     +--- lib
+     |     |     +--- stufff 
+     |     |     	 
+     |     +--- log4j
+     |     |     +--- stufff 
+     |     |     	 
+     |     +--- spring	 
+     |     |     +--- stufff 
+     |     |     	 
+     |     |--- web.xml
+     |     `--- weblogic.xml	 
+     |               
+	 
++---+
+
+	The home directory is configured in the <<<web.xml>>> file
+	where it is defined by the context parameter <<<pineapple.home.dir>>>.
+	
+**	<<<web.xml>>>
+
+	<<<web.xml>>> looks something like this;
+	  			
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	
+  	<display-name>Pineapple web application</display-name>
+
+	<!-- Configures the pineapple.home.dir system property, used by the PineappleHomeInitializer class -->	
+	<context-param>
+		<param-name>pineapple.home.dir</param-name>
+		<param-value>${user.home}/.pineapple</param-value>
+	</context-param>
+
+	<!-- Initialization of the Pineapple Home directory -->
+	<listener>
+		<description>ServletContextListener which initiates the Pineapple Home directory.</description>
+		<listener-class>com.alpha.pineapple.web.context.PineappleHomeInitializer</listener-class>
+	</listener>
+	
+	.......
+	
++---
+	   	
+	The home directory is defined by the property:
+	
++---	
+	<!-- Configures the pineapple.home.dir system property, used by the PineappleHomeInitializer class -->	
+	<context-param>
+		<param-name>pineapple.home.dir</param-name>
+		<param-value>${user.home}/.pineapple</param-value>
+	</context-param>
++---		   	
+
+	The value of the home directory is resolved from the JVM system property <<<user.home>>> which
+	defines the Home directory for the current user.
+	   	
+*** Example: Change the home directory to c:/temp
+ 
+	Change the value of property <<<pineapple.home.dir>>>:
+	
++---
+	<param-value>c:/temp</param-value>
++---	
+	
+	The web application must be ZIP'ed and redeployed for the change to take effect as the 
+	configuration is only read when the web application starts up.
+	
+* Configuration of the home directory at development time
+
+**	<<<web.xml>>>
+
+	The configuration of the home directory is located in the project 
+	<<<pineapple-web-application-war>>> in the directory: 
+	<<<src/main/webapp/WEB-INF/web.xml>>>.
+	
+	Modify the property as shown above.
+		
+	The WAR must be built and deployed for the change to take effect.
+		

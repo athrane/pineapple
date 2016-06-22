@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Pineapple - a tool to install, configure and test Java web 
+  applications and infrastructure. 
+  
+  Copyright (C) 2007-2013 Allan Thrane Andersen..
+  
+  This file is part of Pineapple.
+  
+  Pineapple is free software: you can redistribute it and/or modify 
+  it under the terms of the GNU General Public License as published 
+  by the Free Software Foundation, either version 3 of the License, 
+  or (at your option) any later version.
+  
+  Pineapple is distributed in the hope that it will be useful, but WITHOUT 
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License along
+   with Pineapple. If not, see <http://www.gnu.org/licenses/>.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.alpha.pineapple</groupId>
+		<artifactId>pineapple-models</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>pineapple-weblogic-920-schemas</artifactId>
+	<version>${pineapple.schema.projects.version}</version>
+	<packaging>jar</packaging>
+	<name>Pineapple WebLogic 9.2 schemas</name>
+	<url>https://pineapple.dev.java.net</url>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.xmlbeans</groupId>
+			<artifactId>xmlbeans</artifactId>			
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>xmlbeans-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>xmlbeans</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<memoryMaximumSize>512m</memoryMaximumSize>
+					<quiet>false</quiet>
+					<verbose>false</verbose> 
+					<schemaDirectory>src/main/resources</schemaDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>			
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>Copy schemas to main web site in pineapple-project.....</id>
+						<phase>site</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>../../target/site/ns/plugin</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+									<includes>
+          								<include>domain_9_2.xsd</include>
+          								<include>security_9_2.xsd</include>          								
+          								<include>wls_9_2.xsd</include>          								
+          								<include>xacml_9_2.xsd</include>          								
+										<include>diagnostics_9_2.xsd</include>          								
+        							</includes>									
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>									
+		</plugins>
+	</build>
+</project>

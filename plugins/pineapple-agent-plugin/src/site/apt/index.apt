@@ -1,0 +1,101 @@
+ ------
+ Agent plugin
+ ------
+ Allan Thrane Andersen 
+ ------
+ June 2013
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<Agent plugin>> is part of the {{{../../usage/agents.html}agent architecture}} which supports the usage of Pineapple in a
+	distributed setting. The agent architecture achieves the goal through the usage of the Pineapple binary in two different 
+	roles: master and agent. In the role as master, a Pineapple instance is used to start and orchestrate the execution of 
+	operations on any number of agents. In the role as agent, a Pineapple instance executes operations on behalf of the master 
+	and reports back the results. 
+	
+	The two main components in the agent architecture are the agent plugin and the REST API in the web application which 
+	combined enables the communication between the master and agents. The agent plugin implements the master side of the agent architecture, 
+	where the plugin implements the functionality to start remote operations, communicate with agents and collect the results through 
+	the REST services at remote Pineapple agents.
+
+	The plugin supports these commands:
+		
+	* <<Distribute module>> distributes a module to a remote remote agent. 
+
+	* <<Delete module>> deletes a module from a remote remote agent. 
+
+	* <<Execute operation>> executes an operation at a remote agent. 
+
+	* <<Distribute, execute and delete>> distributes a module to a remote agent,
+	executes an operation and then delete the module after execution. 
+
+	* <<Create environment>> creates a new environment at a remote agent. 
+
+	* <<Refresh environment configuration>> refreshes the environment configuration at a remote agent. 
+		
+	* <<Schedule operation>> schedules the execution of an operation at a remote agent.
+	
+	* <<Delete scheduled operation>> deletes the scheduled execution of an operation at a remote agent.
+	
+	* <<Delete all scheduled operations>> deletes all scheduled executions at a remote agent.
+		
+	[]
+
+
+* Usage
+
+	Go to the {{{./usage/index.html}Plugin Usage page}} for instructions on using the plugin. 
+
+** Supported operations
+
+	The plugin supports all operations.
+
+	The operation used to invoke the plugin is ignored. The operation is ignored since it isn't relevant in the 
+	context of invoking services. The only exception is remote invocation of an operation. In the case of remote 
+	invocation of operations, the current implementation of the plugin ignores the operation used to invoke 
+	the plugin. The operation used for remote invocation of a operation is defined explicit in the agent model.
+	
+** Plugin schema
+
+	The plugin defines a schema named <<Agent plugin schema>> 
+	for definition of models in module model files.	The schema defines the namespace 
+	<<<http://pineapple.dev.java.net/ns/plugin/agent_1_0>>>.	
+	For more information about where the schema can be found, refer to the 
+	{{{../../usage/schemas-plugins.html}Schema locations for plugins page.}}
+
+* Examples
+
+	To provide you with better understanding on some usages of the plugin,
+	you can take a look into the following examples:
+
+** Installation of agents
+
+	* {{{../pineapple-ssh-plugin/examples/install-pineapple-agent-linux.html}How-to: Install a Pineapple agent on Linux using SSH.}}
+	
+	[]
+
+** Usage of agents
+
+	* {{{./examples/distribute-module.html}How-to: Distribute a module to an agent.}}
+  
+	* {{{./examples/delete-module.html}How-to: Delete a module from an agent.}}
+  
+	* {{{./examples/invoke-operation.html}How-to: Invoke operation at an agent.}}
+
+	* {{{./examples/distribute-and-execute-module.html}How-to: Distribute, execute and delete a module from an agent.}}
+  
+	* {{{./examples/refresh-environment-configuration.html}How-to: Refresh the environment configuration at an agent.}}
+
+	* {{{./examples/schedule-operation.html}How-to: Schedule operation at an agent.}}
+
+  	[]
+  
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

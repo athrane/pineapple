@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- "forDetatchAfterOpen" and forDetatchAfterCancel are dummy attributes 
+	whose purpose is to trigger the detach converter to close the model dialog 
+	window. -->
+<window title="Confirm Deletion" apply="org.zkoss.bind.BindComposer"
+	viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.DeleteScheduledOperationModalPanel')"
+	width="25%" border="normal"
+	forDetatchAfterOpen="@load(true,after='delete') @converter('com.alpha.pineapple.web.zk.utils.DetachConverter')"
+	forDetatchAfterCancel="@load(true,after='cancel') @converter('com.alpha.pineapple.web.zk.utils.DetachConverter')">
+
+	<vbox hflex="true">
+		<hlayout height="15%" />
+		<hlayout height="70px">
+			<label value="Are you sure you want to delete the scheduled operation?" />
+		</hlayout>
+		<hbox pack="center" hflex="true">
+			<button label="Delete" onClick="@command('delete')"
+				mold="trendy" iconSclass="z-icon-check" />
+			<button label="Cancel" onClick="@command('cancel')"
+				mold="trendy" iconSclass="z-icon-times" />
+		</hbox>
+		<hlayout height="15%" />
+	</vbox>
+</window>

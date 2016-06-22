@@ -1,0 +1,76 @@
+ ------
+ Pineapple clients overview
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Pineapple clients overview
+
+	A client provides a user interface and uses the core component 
+	to execute operations.
+	
+	Three clients exists for Pineapple:
+
+	* Deployable web application 
+	
+	* Standalone web application	
+	
+	* Maven 2 plugin
+
+* Deployable web application 
+	
+	The deployable web application is a web application (WAR) which provides
+	a GUI for Pineapple. The deployable web application is implemented by the Maven project:
+
+	* <<pineapple-web-application-war>> - this project implements the web application through
+	the usage of Spring Web MVC and the ZK framework. 
+
+	[]
+	
+	Project links:
+
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-web-application-war/index.html}pineapple-web-application-war}}.
+
+	[]
+
+		
+* Standalone web application
+	
+	The standalone web application is a packaging of the web application together with the Jetty web server. When the Jetty web server is started
+	then the web application is deployed into Jetty and thus the client is available as a standlone desktop application accessed locally
+	from a browser. The standalone web application is implemented in three Maven projects:
+
+	* <<pineapple-web-application-war>> - this project implements the web application through
+	the usage of Spring Web MVC and the ZK framework. 
+
+	* <<pineapple-jetty-starter>> - this project implements single Java class which is used 
+	to start the Jetty web server and deploys the Pineapple web application to the server. 
+
+	* <<pineapple-standalone-web-client>> - this projects bundles the web application (WAR) together 
+	with the Jetty starter project and all nessecary dependecies and creates a simple Java 
+	desktop application which have no other requirements than a JDK on the machine where it
+	is installed.  
+
+	[]
+
+	Project links:
+	
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-web-application-war/index.html}pineapple-web-application-war}}.
+
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-jetty-starter/index.html}pineapple-jetty-starter}}.	
+
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/index.html}pineapple-standalone-web-client}}. 		  	
+   
+    []
+
+* Maven 3 plugin
+
+	The plugin provides the functionality of Pineapple within the 
+	Maven 3 environment. A link to the project documentation can be found 
+	{{{../pineapple-applications/pineapple-maven-plugin/index.html}here}}.
+		 		

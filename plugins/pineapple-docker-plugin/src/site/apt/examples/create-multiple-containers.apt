@@ -1,0 +1,88 @@
+ ------
+ How-to: Create multiple Docker containers in one Docker instance
+ ------
+ Allan Thrane Andersen
+ ------
+ June 2015
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Create multiple Docker containers in one Docker instance
+
+* Overview
+
+	This example illustrates how the Docker plugin can be used to create multiple  Docker containers.
+	
+** Expands an existing example
+
+	This example expands the example for creation of a single container:
+	{{{./create-container.html}How-to: Create Docker container}}.
+		
+* Extend the  module model
+
+	Expand the model file with an extra <<<container>>> element named <alpha02>>:
+		
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+    xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" >
+    <mmd:model target-resource="docker-node" 
+        target-operation="deploy-configuration" description="Define Docker image: centos:latest" >
+        <mmd:content>
+            <dkp:docker>
+              <dkp:image repository="centos" tag="latest" />            
+            </dkp:docker>                       
+        </mmd:content>
+    </mmd:model>
+    <mmd:model target-resource="docker-node" description="Define Docker containers" >
+        <mmd:content>
+            <dkp:docker>
+               <dkp:container name="alpha01" >
+                   <dkp:image repository="centos" tag="latest" />                    
+               </dkp:container>
+               <dkp:container name="alpha02" >
+                   <dkp:image repository="centos" tag="latest" />                    
+               </dkp:container>
+            </dkp:docker>                       
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++----	 
+
+* The configuration details
+
+
+** Definition of the container
+
+	The extra container is added through definition of an extra <<<dkp:container>>> element with the 
+	name <alpha02>.
+	
+*** The container name	
+
+	The container element has a <<<name>>> attribute which is a mandatory in Pineapple.
+	After the container is created by Pineapple then it is renamed to the name specified by the attribute.	
+	The container names must be unique within the Docker instance.
+	
+	The added container is named <alpha02> to observe the requirement.
+
+*** The container base image	
+	
+	The container element contains a mandatory <image> element. 
+	The element defines from which image the container is created.
+
+	The <alpha02> container is using the same image as the <alpha01> container.
+			 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<docker-002-container-centos>>
+	
+	* Select the <<linux-vagrant>> model.
+	
+	* Invoke the <<deploy-configuration>> to create the container.
+	
+	[]
+
+	

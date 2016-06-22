@@ -1,0 +1,69 @@
+
+ ------
+ How-to: Invoke the core component from a client 
+ ------
+ Allan Thrane Andersen
+ ------
+ November 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Invoke the core component from a client
+
+	A core component instance have been create using the  
+	<<<com.alpha.pineapple.CoreFactory>>>:		
+
++---
+
+  // create core component
+  CoreFactory coreFactory = new CoreFactory();
+  PineappleCore core = coreFactory.createCore();
+    
++---
+
+	This instance of the core component is created with default settings and will:
+	
+	* load resources from <<<$\{user.home}/.pineapple/conf/resources.xml>>>.		
+	
+	* load credentials from <<<$\{user.home}/.pineapple/conf/credentials.xml>>>.	
+	
+	[]
+
+	To execute an operation, invoke the method <<<executeOperation(..)>>>:
+		
++---
+    
+  // get user.home
+  String userHome = System.getProperty( "user.home" );
+	
+  // define default pineapple runtime directory
+  File runtimeDirectory = new File( userHome, ".pineapple" ); 
+	 
+  // define modules directory
+  File modulesDirectory = new File( runtimeDirectory, "modules" ); 
+        
+  // setup parameters
+  String operation = "run-tests";
+  String environment =  "production-2-a"; 
+  String module = "jee-platform-infrastructure-tests" ; 
+    
+  // execute operation
+  
+  ExecutionInfo info;
+  info = core.executeOperation( operation, environment, module );
+
++---
+	
+	This instance of the core component will:
+	
+	* Execute the operation named "run-tests"
+	
+	* on the module located at <<<$\{user.home}/.pineapple/modules/jee-platform-infrastructure-tests>>>
+	
+	* for at model defined for the environment named "production-2-a".
+			
+	The method is asynchronous and will return a <<<ExecutionInfo>>> object. To inspect whether operation 
+	is finished, invoke the <<<getResult()>>> method and test whether the execution state differs
+	from <<EXECUTING>>.
+	 

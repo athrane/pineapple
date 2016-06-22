@@ -1,0 +1,153 @@
+ ------
+ How-to: Install WebLogic 10.3.5
+ ------
+ Allan Thrane Andersen
+ ------
+ June 2011
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Install WebLogic 10.3.5
+
+* Overview
+
+	This example defines the installation instructions for installation of 
+	WebLogic 10.3.5 on a local machine.  
+ 	
+	Two steps are needed to configure the plugin to work:
+	
+	* Define <<resource>> for installation on the local machine. The resource is named "weblogic-r1035".
+		 	
+	* Define the installation instruction stanza which directs the installation.		
+	
+	[]
+	
+	..And finally Pineapple should be invoked to install the product using the module.	   
+	
+	For information about how to define resource, credentials and modules, 
+	refer to the {{{../usage/index.html} plugin usage page.}}				
+
+* Defining the installation instructions
+
+** Starting the installation instructions definition
+
+	The basic module module file looks like:
+	
++----
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:jip="http://pineapple.dev.java.net/ns/plugin/jrockit_installation_1_0" />
+  
+  <mmd:model target-resource="weblogic-r1035">		
+    <mmd:content>
+    </mmd:content>      													    								
+  </mmd:model>
+</mmd:models>  	 
++----	 
+  
+  	..here is the assumption that the defined resource is named 
+  	<<<weblogic-r1035>>>. Then the skeleton of the installation instruction is added:
+	
++----
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+  xmlns:wip="http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0" >
+  <mmd:model target-resource="weblogic-r1035">		
+    <mmd:content>
+      <wip:weblogic>
+      </wip:weblogic>      
+    </mmd:content>      													    								
+  </mmd:model>
+</mmd:models>  	 
++----	 	   
+  
+** Adding the WebLogic 10.3.5 instructions on Windows
+
+	The final step is to define <<<release10>>> installation instruction: 
+		
++--------
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:wip="http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0" >
+    <mmd:model target-resource="weblogic-r1035">
+        <mmd:content>
+            <wip:weblogic>              
+                <wip:release10 installer="modulepath:bin\wls1035_win32.exe"
+                    uninstaller="C:\alphabea\utils\uninstall\uninstall.cmd"  
+                    target-directory="c:\alphabea\weblogic1035"
+                    local-jvm="c:\jrockit\R28.0.0-1.6.0_17"	/>												
+            </wip:weblogic>
+        </mmd:content>
+    </mmd:model>		
+</mmd:models>
++--------		
+
+	with the mandatory attributes:
+	
+    * <<<installer>>> which defines where the installer is located. The <modulepath:> 
+    expression is resolved to the root directory of the module. 
+	
+    * <<<target-directory>>> which defines where the product should be installed.
+	
+    * <<<uninstaller>>> which defines where the uninstaller is located after the
+    product is installed. The value of this attribute should correspond to the 
+    value of the <<<target-directory>>> attribute with the path <<</uninstall/uninstall.sh>>> 
+    appended.  
+        
+    * <<<local-jvm>>> defines the location of the JVM which should be used by the product. 
+	
+	[]
+
+** Adding the WebLogic 10.3.5 instructions on Linux
+
+	The final step is to define <<<release10>>> installation instruction: 
+		
++--------
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:wip="http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0" >
+    <mmd:model target-resource="weblogic-r1035">
+        <mmd:content>
+            <wip:weblogic>              
+                <wip:release10 installer="modulepath:modulepath:bin/wls1035_generic.jar"  
+                    target-directory="app/oracle/middleware/weblogic1035"
+                    uninstaller="app/oracle/middleware/weblogic1035/uninstall/uninstall.sh"                    
+                    local-jvm="/app/oracle/jrockit/R28.2.2-4.1.0"	/>												
+            </wip:weblogic>
+        </mmd:content>
+    </mmd:model>		
+</mmd:models>
++--------		
+
+	with the mandatory attributes:
+	
+    * <<<installer>>> which defines where the installer is located. The <modulepath:> 
+    expression is resolved to the root directory of the module. 
+	        
+    * <<<target-directory>>> which defines where the product should be installed.
+    
+    * <<<uninstaller>>> which defines where the uninstaller is located after the
+    product is installed. The value of this attribute should correspond to the 
+    value of the <<<target-directory>>> attribute with the path <<</uninstall/uninstall.sh>>> 
+    appended.  
+        
+    * <<<local-jvm>>> defines the location of the JVM which should be used by the product. 
+	
+	[]
+	 
+
+* Invoke Pineapple to install WebLogic 
+
+	Start your Pineapple client of choice:
+	
+	* Select the <<module>> containing the installation specification defined above.
+	
+	* Select the <<environment>> for the model containing the installation specification defined.
+	
+	* Invoke the <<deploy-configuration>> operation.
+	
+	[]
+

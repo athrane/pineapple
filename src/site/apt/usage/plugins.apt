@@ -1,0 +1,107 @@
+ ------
+ Pineapple plugins overview
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Pineapple plugins overview
+
+	A plugin provides access to a manageable resource and contains the actual
+	functionality of Pineapple.
+	
+	These plugins exists for Pineapple:
+
+	* Agent plugin
+	
+	* Composite execution plugin
+	
+	* SSH plugin
+		
+	* Docker plugin
+
+	* Infrastructure test plugin
+	
+	* JRockit installation plugin
+	
+	* WebLogic installation plugin
+	
+	* WebLogic deployment plugin
+	
+	* WebLogic scripting tool (WLST) plugin	
+	
+	* WebLogic JMX plugin	
+	
+	[]
+
+* Agent plugin 	
+	
+	Plugin for remote invocation of services at Pineapple agents.
+	
+	{{{../pineapple-plugins/pineapple-agent-plugin/index.html}Plugin documentation.}}			
+
+* Composite execution plugin	
+	
+	Plugin for composite execution of multiple modules.
+	
+	{{{../pineapple-plugins/pineapple-composite-execution-plugin/index.html}Plugin documentation.}}			
+
+* SSH plugin	
+	
+	Plugin for remote access to hosts using SSH.
+	
+	{{{../pineapple-plugins/pineapple-ssh-plugin/index.html}Plugin documentation.}}			
+
+* Docker plugin	
+	
+	Plugin for administration of Docker using it's REST API.
+	
+	{{{../pineapple-plugins/pineapple-docker-plugin/index.html}Plugin documentation.}}			
+	
+* Infrastructure test plugin
+
+	Plugin for testing basic network infrastructure.
+	 
+	{{{../pineapple-modules/pineapple-infrastructure-test-plugin/index.html}Plugin documentation.}}			
+
+* JRockit installation plugin
+
+	Plugin for installation of the JRockit JVM.
+	 
+	{{{../pineapple-plugins/pineapple-jrockit-installation-plugin/index.html}Plugin documentation.}}			
+
+* Fusion Middleware installation plugin
+
+	Plugin for installation of Fusion Middlewar, e.g. SOA Suite, WebCenter and Application Runtime.
+	 
+	{{{../pineapple-plugins/pineapple-fusion-middleware-installation-plugin/index.html}Plugin documentation.}}			
+
+* WebLogic installation plugin
+
+	Plugin for installation of the WebLogic server.
+	 
+	{{{../pineapple-plugins/pineapple-weblogic-installation-plugin/index.html}Plugin documentation.}}			
+
+* WebLogic deployment plugin
+
+	Plugin for deployment of application to WebLogic Servers.
+
+	{{{../pineapple-modules/pineapple-weblogic-deployment-plugin/index.html}Plugin documentation.}}				 
+
+* WebLogic scripting tool (WLST) plugin
+
+	Plugin for execution of WLST scripts to manage or configure WebLogic Servers.
+	 
+	{{{../pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html}Plugin documentation.}}			
+
+* WebLogic JMX plugin	
+	
+	Plugin for management of WebLogic Servers through JMX.
+	
+	{{{../pineapple-modules/pineapple-weblogic-jmx-plugin/index.html}Plugin documentation.}}			
+	
+	

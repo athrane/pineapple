@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	binder definition: binder="@init(queueName='pineapple-queue')" 
+	is required for view model to respond to global commands posted 
+	on the "pineapple-queue" queue:
+	
+	@GlobalCommand public void saveModel() { .. }		
+	
+	The Menu controller, Menu.java posts global command using:		
+	BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, null, SAVEMODEL_GLOBALCOMMAND, NULL_GLOBALCOMMAND_ARGS);		     					    	
+ -->	
+<!-- 
+	"forDetatchAfterClose" is a dummy attribute whose purpose is to trigger the detach converter to
+	close the model dialog window.
+	
+	The attribute is only used after invocation of the close button, since the upload process
+	is visualized in the modal window after pressing the select button. 	
+ -->
+<window title="Upload Module" 
+	apply="org.zkoss.bind.BindComposer, com.alpha.pineapple.web.zk.controller.UploadModuleModalPanel"
+	binder="@init(queueName='pineapple-queue',queueScope='session')"	
+    viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.UploadModuleModalPanel')" 	 
+	border="normal" width="50%" height="75%" closable="false"  sizable="true"		
+ 	forDetatchAfterClose="@load(true,after='close') @converter('com.alpha.pineapple.web.zk.utils.DetachConverter')" >    												
+
+   	<borderlayout>
+	    <north size="30%" border="none" >
+			<grid hflex="1" vflex="1" >
+			    <columns>
+			        <column width="20%" align="right"/>
+			        <column width="80%" />
+			    </columns>
+			    <rows>
+			        <row>
+		    			<label value="Module:" style="font-weight:bold;" />
+    					<label value="@load(vm.moduleName)"/>
+			        </row>
+			        <row>
+    					<label value="Destination Directory:" style="font-weight:bold;" />
+    					<label value ="@load(vm.destinationDirectory)" />	    				    		
+			        </row>
+			        <row>
+    					<label value="Installation progress:" style="font-weight:bold;" />	    					
+						<hlayout>
+               				<progressmeter id="zipProgress" width="300px" value="@load(vm.zipProgress)" />
+               				<label value="@load(vm.zipCurrentEntry)" />
+               				/
+               				<label value="@load(vm.zipTotalEntries)" />
+           				</hlayout>	    						    				    		
+			        </row>
+			        <row>				        
+    					<label value="File progress:" style="font-weight:bold;" />
+						<hlayout>
+               				<progressmeter id="fileProgress" width="300px" value="@load(vm.fileProgress)" />
+               				<label value="@load(vm.fileCurrentEntry)" />
+               				/
+               				<label value="@load(vm.fileTotalEntries)" />
+               				KB.
+           				</hlayout>	    						    				    		
+			        </row>				        				        				        
+			    </rows>
+			</grid>	    		    	
+	    </north>   	
+	    <center border="none" >
+			<grid model="@load(vm.unpackedEntries)"
+				hflex="1" vflex="1" >
+			    <columns>
+			        <column label="Unpacked entries" width="75%"  style="font-weight:bold;"/>
+			        <column label="Type" width="10%" style="font-weight:bold;"/>
+			        <column label="Size (KB)" width="15%" style="font-weight:bold;"/>			        			        
+			    </columns>			    
+				<template name="model" var="item">
+               		<row>
+                		<label value="@load(item.name)" />
+                		<label value="@load(item.type)" />                		
+                		<label value="@load(item.size)" />                			                		                		
+               		</row>
+        		</template>									
+			    
+			    <rows id="unpackedEntriesRows" />
+			</grid>	    		    	
+	    </center>				   	
+   		<south size="10%" border="none" >
+	        <hbox pack="end" align="center" spacing="10px" hflex="1" vflex="1" >
+	        	<fileupload id="uploadButton" label="Select zipped module to upload" upload="true" onUpload="@command('uploadModule', upEvent=event)" />      
+	            <button id="closeButton" label="Close" onClick="@command('close')" /> 
+	        </hbox>        	   		
+   		</south >
+   	</borderlayout>
+</window>

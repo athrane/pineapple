@@ -1,0 +1,147 @@
+ ------
+ Development documentation
+ ------
+ Allan Thrane Andersen 
+ ------
+ August 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Development documentation
+
+
+* Schema location
+
+	The plugin uses multiple schemas for definition of models in module 
+	models files. The schemas are defined in the 
+	<<<pineapple-weblogic-103-schemas>>> project which also defines a
+	XMLBeans based OXM mapping.	
+
+* Internal configuration
+
+** Logging
+
+	The plugin uses Log4j for logging. Each project which links 
+	to this project must provide a Log4j configuration which is accessible at 
+	runtime as a result of the build process.
+	
+	The plugin component does not provide a Log4j configuration as part of its
+	production build. A log4j configuration file is defined in the project 
+	in the directory <<<src/test/resources/log4.properties>>> for testing. 
+	
+	The test configuration configures Log4j to write to the log file 
+	to <<<$\{user.home}/.pineapple/logs/pineapple.log>>>.
+	
+** Spring configuration file 
+
+	The plugin contains a configuration file which defines a Spring 
+	application context. The Spring application context defines the 
+	input unmarshalling for the plugin. The file is located in 
+	<<<src/main/resources/com.alpha.pineapple.plugin.weblogic.jmx-config.xml>>>. 
+	
+** Internationalization (I18N) configuration file 
+
+	The plugin uses internationalization. Messages 
+	used by classes in the plugin are located in the file
+	<<<src/main/resources/com.alpha.pineapple.plugin.weblogic.jmx-messages.properties>>>.		
+
+* Test 
+
+** Unit test
+
+	Commonly used constants in the unit tests are defined in the class
+	<<<com.alpha.testutils.WJPPluginTestConstants>>>.
+
+*** Helper classes
+
+	Helper classes:
+	
+	* <<<com.alpha.testutils.ResolvedTypeAnswer>>>
+	
+	* <<<com.alpha.testutils.ObjectMotherContent>>>	
+	
+	* <<<com.alpha.testutils.ObjectMotherWebLogicJMX>>>
+	
+	* <<<com.alpha.testutils.ObjectMotherWeblogicJMXSession>>>
+	
+	* <<<com.alpha.testutils.WJPIntTestConstants>>>
+	
+	* <<<com.alpha.testutils.JmxPath>>>	
+
+	[]			
+
+*** ResolvedTypeAnswer
+
+	The helper class <<<com.alpha.testutils.ResolvedTypeAnswer>>>
+	is used to inspect values from methods which returns resolved model types. 		
+
+*** ObjectMotherContent
+
+	<<<com.alpha.testutils.ObjectMotherContent>>> is an implementation 
+	of the ObjectMother pattern. The class provides helper functions 
+	for creating XMLBeans models which is used in unit tests.
+
+*** ObjectMotherWebLogicJMX
+
+	<<<com.alpha.testutils.ObjectMotherWebLogicJMX>>> is an implementation 
+	of the ObjectMother pattern. The class provides helper functions 
+	for creating and deleting WebLogic MBeans in a live domain, querying the 
+	state of  alive domain and manipulating the state of a live domain.
+
+*** ObjectMotherWeblogicJMXSession
+
+	<<<com.alpha.testutils.ObjectMotherWeblogicJMXSession>>> is an implementation 
+	of the ObjectMother pattern. The class provides helper functions 
+	for creating a JMX session to a live WebLogic domain.
+
+*** WJPIntTestConstants
+
+	Contains constants used in unit tests.
+
+*** JmxPath
+
+	Utility class for accessing MBeans using XPath expressions. 
+
+** Integration test
+
+	Commonly used constants in the integration tests are defined in the class
+	<<<com.alpha.testutils.WJPIntTestConstants>>>.
+
+	Integration tests for the project are placed in the same packages as 
+	the unit tests. The integration tests are postfixed with 
+	<<<IntegrationTest>>> where the unit test have the postfix <<<Test>>>.
+		
+*** The alphadomain integration test domain
+	
+	The integration tests requires the existence of a WebLogic domain
+	named <alphadomain> with an administration server named <<<admserver>> 
+	running at <<<127.0.0.1:7001>>>.		
+
+	A Pineapple module named <<<create-alphadomain-for-jmxplugin-test>>>
+	is included in the default configuration. The module should be used to create 
+	WebLogic domain for integration tests. After execution of the module the 
+	WebLogic administration must be started.
+	
+	A copy of the configuration file from <alphadomain> is located	
+	in <<<src/test/resources/alphadomain-config.xml>>> which is read
+	by integration tests.	 			
+	
+* Construction and traversal of resolved models
+
+	{{{./resolved-models.html}Construction and traversal of resolved models}}.
+	
+* XMLBeans Model
+
+	{{{./xmlbeans-model.html}XMLBeans Model}}.
+	
+* MBeans Model
+
+	{{{./mbeans-model.html}MBeans Model}}.
+
+* Implementation
+
+	{{{./implementation.html}Implementation}}.
+	
+			

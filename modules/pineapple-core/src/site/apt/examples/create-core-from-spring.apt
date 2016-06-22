@@ -1,0 +1,86 @@
+ ------
+ How-to: Create the core component with default settings using Spring 
+ ------
+ Allan Thrane Andersen
+ ------
+ August 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Create the core component with default settings using Spring
+
+	Import the spring configuration for the core component into the application
+	context for a project where the core component should be used:
+
++---
+
+  <beans xmlns="...">
+
+    <!-- Configures core component -->
+    <import resource="classpath:com.alpha.pineapple.core-config.xml" />
+
+  </beans>
+    
++---
+
+	Add a core component bean in the context where the core component
+	Spring configuration is imported into. Use the <<<com.alpha.pineapple.CoreFactory>>>
+	as factory method to create the core component instance: 
+
+
++---
+
+  <beans xmlns="...">
+
+    <!-- Configures core component -->
+    <import resource="classpath:com.alpha.pineapple.core-config.xml" />
+
+    <!--  define credentials provider -->
+    <bean id="credentialsProvider" factory-bean="coreFactory" factory-method="createCredentialProvider">
+      <constructor-arg>
+        <bean id="credentialsXml" class="java.io.File">
+          <constructor-arg type="java.lang.String" value="$\{user.home}/.pineapple/conf/credentials.xml"/>
+        </bean>		
+      </constructor-arg>		
+    </bean>
+	
+    <!--  define pineapple core component -->
+    <bean id="pineappleCore" factory-bean="coreFactory" factory-method="createCore">
+      <constructor-arg index="0" ref="credentialsProvider" />
+      <constructor-arg index="1" >
+        <bean id="resourcesXml" class="java.io.File">
+          <constructor-arg type="java.lang.String" value="/resources.xml"/>
+        </bean>		
+      </constructor-arg>					
+    </bean>
+	
+  </beans>
++---
+
+* How the core component will the load environment configuration 
+
+	The location where the environment configuration is loaded from is determined by 
+	{{{../../../usage/runtime-directories.html}resolution of the runtime directories}}
+	used by the core component.
+
+** With the the system property <<<pineapple.home.dir>>> defined
+
+	The core component will:
+	
+	* load resources from <<<$\{pineapple.home.dir}/conf/resources.xml>>>.		
+	
+	* load credentials from <<<$\{pineapple.home.dir}/conf/credentials.xml>>>.	
+	
+	[]
+
+** Without the the system property <<<pineapple.home.dir>>> defined
+
+	The core component will:
+	
+	* load resources from <<<$\{user.home}/.pineapple/conf/resources.xml>>>.		
+	
+	* load credentials from <<<$\{user.home}/.pineapple/conf/credentials.xml>>>.	
+	
+	[]
+		

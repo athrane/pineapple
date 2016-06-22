@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+	<command name="null-command"
+		className="com.alpha.pineapple.command.NullCommand">
+	</command>	
+</catalog>

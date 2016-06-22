@@ -1,0 +1,363 @@
+ ------
+ How-to: Install Jenkins in a Linux Vagrant box using SSH
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2014
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Install Jenkins in a Linux Vagrant box using SSH
+
+* Overview
+
+	This example illustrates how the SSH plugin can be used to install Jenkins on Linux (CentOS and Red Hat). 
+	The example installs Jenkins and creates a build job.  
+ 	
+	Two steps are required to install Jenkins:
+	
+	* Create a VM which serves as build server. Vagrant is used for this purpose.
+	
+	* Start Pineapple and execute the module.
+	
+	* (When the installation is completed, start the created build job at Jenkins.)	
+	
+	[]
+
+** Part of the default configuration
+
+	This example named <<<ssh-009-ssh-install-jenkins>>>, including all configuration files, is included in the 
+	{{{../../../usage/default-configuration.html}default configuration}} which is created by Pineapple, 
+	so there is no need to create it by hand.
+
+* The steps
+
+** Build a Vagrant box
+
+ 	[[1]] Install VirtualBox and Vagrant.
+ 	
+ 	[[2]] Create a Vagrant project directory <<<jenkins-ci>>>.
+ 	
+ 	[[3]] Copy the example Vagrant configuration file from <$\{user.home\}/.pineapple/modules/ssh-010-ssh-install-jenkins-artifactory/vagrant/Vagrantfile> 
+ 	directory to the Vagrant project directory: 	
+
++---
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+BOX_NAME = ENV.fetch("BOX_NAME", "pineapple-box") 
+BOX_URI = ENV.fetch("BOX_URI", "http://puppet-vagrant-boxes.puppetlabs.com/centos-65-x64-virtualbox-puppet.box") 
+BOX_IP = ENV.fetch("BOX_IP", "192.168.34.10") 
+BOX_MEM = ENV.fetch("BOX_MEM", "2048") 
+BOX_CPUS = ENV.fetch("BOX_CPUS", "2") 
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+	# virtual box provider specific settings
+	config.vm.provider :virtualbox do |vb|    				
+		vb.customize ["modifyvm", :id, "--ioapic", "on"]    
+		vb.customize ["modifyvm", :id, "--memory", BOX_MEM]    
+		vb.customize ["modifyvm", :id, "--cpus", BOX_CPUS]	
+	end	
+
+	config.vm.define :pineapple_ci do |ci_config|
+		ci_config.vm.box = BOX_NAME    
+		ci_config.vm.box_url = BOX_URI    
+		ci_config.vm.network "private_network", ip: BOX_IP	
+	end
+		
+end	
++---	
+ 	
+ 	[[4]] Open a prompt, CD into the Vagrant project directory and create the box with the command: <<<vagrant up>>>. 
+ 	It will download a CentOS 6.5 image and start the VM with the IP address 192.168.34.10.
+ 	
+ 	[] 
+ 	
+		  		 
+** Invoke Pineapple to install Jenkins
+
+	Start your Pineapple client of choice:
+	
+	[[1]] Select the module named <<ssh-010-ssh-install-jenkins-artifactory>>
+	
+	[[2]] Select the <<linux-vagrant>> model.
+	
+	[[3]] Invoke the <<deploy-configuration>> operation to install Jenkins.	
+	
+	[]
+
+** Start the build job
+
+	[[1]] Access Jenkins at: http://192.168.34.10:8080
+	
+	[[2]] Select the installed job <pineapple-build> and build it. 	
+
+* The details
+
+	The details of the module, model and the Pineapple resources are described in the following sections.
+
+** The resources
+
+	A resource defines a entity in a IT environment which is manageable by Pineapple
+	through some protocol. In this example, the entity is a Linux OS and the used protocol 
+	is SSH. One resource is defined for each Linux host where the YUM packages should be installed.
+	
+	In this example we will use the <<<linux-vagrant>>> environment defined as part of the 
+	default configuration. The environment defines a network with three hosts: 
+
+	* <Node1> with IP Address: 192.168.34.10
+
+	* <Node2> with IP Address: 192.168.34.11
+	
+	* <Node3> with IP Address: 192.168.34.12
+	
+	[] 
+
+	To enable SSH usage for these hosts, three resources are defined within the <<<linux-vagrant>>> environment
+	in the resources file located at <<<$\{user.home}/.pineapple/conf/resources.xml>>>:	
+	
++---	
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pineapple.dev.java.net/ns/environment_1_0
+    http://pineapple.dev.java.net/ns/environment_1_0.xsd">
+     
+    <environments>
+        <environment description="Vagrant multi-machine Linux environment" id="linux-vagrant">
+            <resources>
+                <resource plugin-id="com.alpha.pineapple.plugin.ssh" credential-id-ref="ssh-node1" id="ssh-node1" >
+                    <property value="192.168.34.10" key="host"/>
+                    <property value="22" key="port"/>
+                    <property value="1000" key="timeout"/>
+                </resource>
+                <resource plugin-id="com.alpha.pineapple.plugin.ssh" credential-id-ref="ssh-node2" id="ssh-node2" >
+                    <property value="192.168.34.11" key="host"/>
+                    <property value="22" key="port"/>
+                    <property value="1000" key="timeout"/>
+                </resource>
+                <resource plugin-id="com.alpha.pineapple.plugin.ssh" credential-id-ref="ssh-node3" id="ssh-node3" >
+                    <property value="192.168.34.12" key="host"/>
+                    <property value="22" key="port"/>
+                    <property value="1000" key="timeout"/>
+                </resource>
+            </resources>
+        </environment>
+    </environments>
+</configuration> 
++---
+
+	Each resource is defined with a different ID and IP address. All other properties are identical. The role of the 
+	attribute <<<plugin-id>>> is to bind the resource definition to the plugin code at runtime which implements
+	the SSH plugin.
+	
+	<<Please notice:>> Only the VM for <<<ssh-node1>>> is created by Vagrant. 
+	Even though the <<<linux-vagrant>>> environment defines three resource, only the <<<ssh-node1>>> resource is used in the example.	
+
+** The credentials
+
+	Since SSH requires authentication, each resource defines a reference to a credential. A credential defines the 
+	user name and password used for authentication when a SSH session is created to a host.
+	
+	Three credentials are created within the <<<linux-vagrant>>> environment to support authentication. The credentials
+	are defined in the credentials file located at <<<$\{user.home\}/.pineapple/conf/credentials.xml>>>: 
+	
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0">
+    <environments>
+        <environment description="Vagrant multi-machine Linux environment" id="linux-vagrant">
+            <credentials>
+                <credential password="vagrant" user="vagrant" id="ssh-node1"/>
+                <credential password="vagrant" user="vagrant" id="ssh-node2"/>
+                <credential password="vagrant" user="vagrant" id="ssh-node3"/>
+            </credentials>
+        </environment>
+    </environments>     
+</configuration>
++---	
+
+	<<Please notice:>> Only the VM for <<<ssh-node1>>> is created by Vagrant. 
+	Even though the <<<linux-vagrant>>> environment defines three credentials, only the <<<ssh-node1>>> credential is used in the example.	
+
+
+** The module	  
+
+	A module defines input to Pineapple and consists in its minimal form of a single XML file containing a model:
+	
+[../images/module-directory-layout.jpg]		 
+
+	The directory: <<<$\{user.home\}/.pineapple/modules/ssh-009-ssh-install-jenkins>>> contains the module.
+	The module in this example have the structure:
+
++---
+ssh-009-ssh-install-jenkins
+ |
+ +--- bin	 
+ |     +--- config.xml
+ |     +--- hudson.tasks.Maven.xml 
+ |     +--- pineapple-build.config.xml
+ |
+ +--- models	 
+ |     +--- linux-vagrant.xml
+ +--- vagrant	 
+ |     +--- Vagrantfile
++---
+	
+*** Module files
+	
+	The module consists of the these files:
+	
+	* <<<config.xml>>> is the main Jenkins configuration file which is installed at
+	<<</var/lib/jenkins/config.xml>>>. 	 
+	It defines the path to OpenJDK used for compiling build job.
+	
+	* <<<hudson.tasks.Maven.xml>>> is Jenkins Maven configuration which is installed at
+	<<</var/lib/jenkins/hudson.tasks.Maven.xml>>>. 
+	It the version of Maven to be installed and used by Jenkins for build jobs.	
+	
+	* <<<pineapple-build.config.xml>>> is a build job named <pineapple-build> which
+	is installed at <<</var/lib/jenkins/jobs/pineapple-build>>>.
+
+	* <<<linux-vagrant.xml>>> is the Pineapple model file for the environment 
+	<linux-vagrant> which installs Jenkins.
+
+	* <<<Vagrantfile>>> is a Vagrant file which can build the VM
+	where Jenkins is installed.
+	
+	[]
+	
+	
+** The model file
+	
+	The model file named <<<linux-vagrant.xml>>> has the content:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+    xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+    <mmd:variables>
+        <mmd:variable key="ci-usergroup" value="jenkins:jenkins" />
+        <mmd:variable key="ci-temp-dir" value="/tmp/jenkins" />    
+
+        <mmd:variable key="base-jdk" value="java-1.7.0-openjdk-devel" />
+        <mmd:variable key="ci-usergroup" value="jenkins:jenkins" />
+        <mmd:variable key="ci-temp-dir" value="/tmp/jenkins" />    
+        <mmd:variable key="ci-home" value="/var/lib/jenkins" />
+        <mmd:variable key="ci-jobs-home" value="/var/lib/jenkins/jobs" />
+        <mmd:variable key="ci-config" value="config.xml" />
+        <mmd:variable key="ci-maven-config" value="hudson.tasks.Maven.xml" />
+        <mmd:variable key="ci-job" value="pineapple-build" />
+        <mmd:variable key="ci-job-source-config" value="pineapple-build.config.xml" />
+        <mmd:variable key="ci-job-target-config" value="config.xml" />
+    </mmd:variables>
+	
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Install JVM for CI server" >
+        <mmd:content>
+            <shp:ssh>
+                <shp:execute command="sudo sudo yum --assumeyes install ${base-jdk}" />
+            </shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Install Jenkins packages" >
+        <mmd:content>
+            <shp:ssh>
+                <shp:execute command="sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo" />
+                <shp:execute command="sudo rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key" />
+                <shp:execute command="sudo yum --assumeyes install jenkins" />				
+            </shp:ssh>			
+        </mmd:content>
+    </mmd:model>	
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Validate Jenkins user configuration" >
+        <mmd:content>
+            <shp:ssh>
+                <shp:assert-contains command="getent group jenkins" expected-value="jenkins:x:498:" />
+                <shp:assert-contains command="id -gn jenkins" expected-value="jenkins" /> <!-- primary group for user jenkins -->
+                <shp:assert-contains command="id -u jenkins" expected-value="497" /> <!-- id  for user jenkins -->
+            </shp:ssh>			
+        </mmd:content>
+    </mmd:model>	
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Install Jenkins job files" >
+        <mmd:content>
+            <shp:ssh>
+                <shp:execute command="mkdir ${ci-temp-dir}" />				
+                <shp:execute command="sudo mkdir -p ${ci-jobs-home}/${ci-job}" />				
+                <shp:execute command="sudo chmod -R 775 ${ci-jobs-home}/${ci-job}" />				
+                <shp:execute command="sudo chown -R ${ci-usergroup} ${ci-jobs-home}/${ci-job}" />				
+
+                <shp:copy-to source="modulepath:bin/${ci-config}" destination="${ci-temp-dir}/${ci-config}" chmod="775" />				
+                <shp:execute command="sudo chown ${ci-usergroup} ${ci-temp-dir}/${ci-config}" />								
+                <shp:execute command="sudo mv ${ci-temp-dir}/${ci-config} ${ci-home}/${ci-config}" />								
+
+                <shp:copy-to source="modulepath:bin/${ci-maven-config}" destination="${ci-temp-dir}/${ci-maven-config}" chmod="775" />
+                <shp:execute command="sudo chown ${ci-usergroup} ${ci-temp-dir}/${ci-maven-config}" />								
+                <shp:execute command="sudo mv ${ci-temp-dir}/${ci-maven-config} ${ci-home}/${ci-maven-config}" />								
+
+                <shp:copy-to source="modulepath:bin/${ci-job-source-config}" destination="${ci-temp-dir}/${ci-job-source-config}" chmod="775" />
+                <shp:execute command="sudo chown ${ci-usergroup} ${ci-temp-dir}/${ci-job-source-config}" />								
+                <shp:execute command="sudo mv ${ci-temp-dir}/${ci-job-source-config} ${ci-jobs-home}/${ci-job}/${ci-job-target-config}" />								
+
+                <shp:execute command="rmdir ${ci-temp-dir}" />								
+            </shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Start Jenkins" >
+        <mmd:content>
+            <shp:ssh>
+                <shp:execute command="sudo service jenkins start" />            
+            </shp:ssh>			
+        </mmd:content>
+    </mmd:model>	
+</mmd:models>
++---	
+
+*** The configuration details
+
+	Two schema are used in the model file. The <<<http://pineapple.dev.java.net/ns/module_model_1_0>>> is used
+	to define the namespace <<<mmd>>> which defines the general infrastructure for models. The 
+	<<<http://pineapple.dev.java.net/ns/plugin/ssh_1_0>>> schema is used to define the namespace 
+	<<<shp>>> which is used to define the model for the SSH plugin. Since multiple schemas are used 
+	to define the model file, the elements are qualified.
+
+	Initially in the model a set of variables are defined within the <<<variables>>> stanza. 
+	The variables are referenced from the remaining part of the model file.  
+	 
+	The <<<target-resource>>> attribute defines a reference to the resource which is targeted when the 
+	model executed. In this case, the value <<<ssh-node1>>> targets the model to a single resource.
+	The two other nodes in the <<<linux-vagrant>>> environment isn't used in this example. 
+
+	The model file is divided into five sub-models, which performs the tasks:
+	
+		* <<Install JVM>>. The OpenJDK 1.7.0 package is installed. The package with the postfix "devel" is 
+		installed to get the JDK and not just the JRE. The JDK is used from build jobs in Jenkins. 
+		An alternative would be to configure Jenkins to download the JDK from Oracle. 
+		Oracle downloads require authentication which is avoided when using the OpenJDK.	
+		
+		* <<Install Jenkins packages>>. The Jenkins package repository is added to the local YUM configuration. 
+		YUM is used to install Jenkins as an OS service.
+		
+		* <<Validate Jenkins user configuration>>. Its validate that the Jenkins packages create the <<<jenkins>>>
+		user and group with the expected ID's.
+		
+		* <<Install Jenkins job files>>. The main Jenkins configuration file <<<config.xml>>> is installed on
+		the server in the Jenkins configuration directory at <<</var/lib/jenkins>>>. The Maven configuration
+		file <<<hudson.tasks.Maven.xml>>> is alos installed in <<</var/lib/jenkins>>>. Finally, a build job
+		name <build-pineapple> is installed in <<</var/lib/jenkins/jobs>>>.
+		
+		* <<Start Jenkins>>. Starts Jenkins as an OS service.
+		
+		[]
+
+	The <<<target-operation>>> attribute is used to restrict that the sub-models are only executed when Pineapple
+	is invoked with the <deploy-configuration> operation. This allows for the definition of a set
+	of sub-models which only responds to the <undeploy-configuration> which implements the inverse semantics,
+	e.g. uninstallation of Jenkins from the target server.   
+
+	Finally, the execute commands in the models is executed using sudo. The requirement for sudo depends on 
+	the privileges of the user used by the SSH plugin to connect to a given host. The users was defined in 
+	credentials file in the previous section.
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+	xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+	<mmd:variables>
+      <mmd:variable key="docker-host" value="192.168.34.10" />        	    
+      <mmd:variable key="docker-port" value="8082" />        	    	  
+	</mmd:variables>
+		
+	<mmd:model target-resource="infrastructure-test" description="Test (and restart) Docker">
+		<mmd:content>
+			<itp:infrastructure>
+				<itp:tcp-connection-test host="${docker-host}" description="Test Docker host is listening on ${docker-host}:${docker-port}">
+					<itp:port value="8082" />
+				</itp:tcp-connection-test>
+			</itp:infrastructure>
+		</mmd:content>
+		<mmd:trigger name="Restart Docker host" on-target-operation="test" on-result="{failure,error}" module="ssh-013-start-docker-host" environment="linux-vagrant" operation="deploy-configuration" />					
+	</mmd:model>
+</mmd:models>

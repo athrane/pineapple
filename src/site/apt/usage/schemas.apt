@@ -1,0 +1,81 @@
+ ------
+ Schema locations for configuration files
+ ------
+ Allan Thrane Andersen 
+ ------
+ November 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+
+Schema locations for configuration files
+	
+	The schemas can be found in two locations:
+	
+	* The project website.	
+	
+	* The pineapple-api jar file.
+		
+	[]
+	
+		
+* The Project Website	
+	
+** Environment Configuration Schema
+
+	The schema can be found at <<{{{../ns/environment_1_0.xsd}http://pineapple.dev.java.net/ns/environment_1_0.xsd}}>>
+	
+	<<{{{./configuration-environment.html}Link to the environment configuration reference documentation.}}>>
+		
+** Module Schema		
+		
+	The schema can be found at <<{{{../ns/module_1_0.xsd}http://pineapple.dev.java.net/ns/module_1_0.xsd}}>>
+	 	
+	<<{{{./configuration-modules.html}Link to the module reference documentation.}}>>	
+
+** Module Model Schema		
+		
+	The schema can be found at <<{{{../ns/module_model_1_0.xsd}http://pineapple.dev.java.net/ns/module_model_1_0.xsd}}>>
+	 	
+	<<{{{./configuration-modules.html}Link to the module reference documentation.}}>>	
+
+** Module Info Schema		
+		
+	The schema can be found at <<{{{../ns/module_model_1_0.xsd}http://pineapple.dev.java.net/ns/module_info_1_0.xsd}}>>
+
+	The schema is used by the REST API to expose information about the current set of registered modules.
+
+** Execution Result Schema		
+		
+	The schema can be found at <<{{{../ns/execution_result_1_0.xsd}http://pineapple.dev.java.net/ns/execution_result_1_0.xsd}}>>
+
+	The schema is used by the REST API and agent architecture to transport information regarding the state of executions.
+
+** Scheduled Operations Schema		
+		
+	The schema can be found at <<{{{../ns/scheduled_operation_1_0.xsd}http://pineapple.dev.java.net/ns/scheduled_operation_1_0.xsd}}>>
+
+	The schema is used by the REST API to expose information about the current set of scheduled operations.
+	The schema is used the core component to persist information about scheduled operations.
+
+** Reports Schema	
+
+	The schema supports definition of reports.
+	The schema is used by the REST API to expose information about the set of existing reports.
+	
+	The schema is defined in the file <<<report_1_0.xsd>>> and defines the namespace:
+	 <<<http://pineapple.dev.java.net/ns/report_1_0.xsd>>>	
+
+* The pineapple-api JAR File
+
+	The schemas are located in the root of the jar file created by the
+	{{{../pineapple-modules/pineapple-api/index.html}pineapple-api project.}}
+ 	
+	 
+	
+
+	
+	 	
+ 

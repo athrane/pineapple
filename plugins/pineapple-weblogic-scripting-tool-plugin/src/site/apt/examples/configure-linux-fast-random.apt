@@ -1,0 +1,76 @@
+ ------
+ How-to: Avoid WLST hangs on Linux - configure fast random generator
+ ------
+ Allan Thrane Andersen
+ ------
+ April 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Avoid WLST hangs on Linux - configure fast random generator
+
+* Overview
+
+	This example illustrates how the WLST plugin can be configured use a fast random number
+	generator on Linux to avoid WLST execution on to hang occasionally. 
+
+* Observable behavior on Linux
+	
+	The observable behavior is that the WLST script never completes its execution and the 
+	process is killed by Pineapple after its internal process time out has been reached. 
+	
+	The problem is caused by the configured random generator in the <<<java.security>>> file 
+	on Linux, which reads 'randomness' from /dev/random which is slow. 	
+
+* The implemented workaround
+
+	The solution is enable a flag on the resource definition for the WLST plugin. When
+	the plugin is subsequently is invoked, WLSt will be invoked with the system property 
+	<<<-Djava.security.egd=file:/dev/./urandom>>> which generates random numbers faster.		
+		
+* How to enable the workaround 
+		
+	For information about how to define resource, credentials and modules, 
+	refer to the {{{../usage/index.html} plugin usage page.}}				
+
+	Consider a resource which defines usage of the WLST plugin:
+		 		
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <environments>
+    <environment id="local-environment" >
+      <resources>
+        <resource id="weblogic-r1035-scriptingtool" plugin-id="com.alpha.pineapple.plugin.weblogic.scriptingtool" >
+          <property key="weblogic-home" value="/home/weblogic/Oracle/Middleware/wlserver_12.1" />
+        </resource>
+      </resources>
+    </environment>								
+  </environments>
+</configuration>  	
++--------		 
+
+	To enable the fast random generator add the property <<<enable-linux-fast-random-generator>>> with
+	the value <<<true>>> to the resource:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <environments>
+    <environment id="local-environment" >
+      <resources>
+        <resource id="weblogic-r1035-scriptingtool" plugin-id="com.alpha.pineapple.plugin.weblogic.scriptingtool" >
+          <property key="weblogic-home" value="/home/weblogic/Oracle/Middleware/wlserver_12.1" />
+          <property key="enable-linux-fast-random-generator" value="true" />
+        </resource>
+      </resources>
+    </environment>								
+  </environments>
+</configuration>  	
++--------		 
+	

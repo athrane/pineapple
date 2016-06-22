@@ -1,0 +1,69 @@
+ ------
+ How-to: Modify the logging configuration for the stand-alone web application
+ ------
+ Allan Thrane Andersen
+ ------
+ September 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Modify the logging configuration for the stand-alone web application
+	
+	The Pineapple web application is running in an Jetty web server. The logging for
+	the web application and all Pineapple code is configured in a single Log4J
+	configuration file.
+	
+	The unzipped client contains the directory layout:
+	
++---
+pineapple-standalone-web-client-VERSION
+     |     
+     +--- runPineapple.cmd
+     +--- runPineapple.sh     
+     |     
+     +--- bin     
+     |     +--- helper scripts     
+     |               
+     +--- conf     
+     |     +--- log4j.properties
+     |     `--- jetty.xml
+     |               
+     +--- resources
+     |     `--- jetty-logging.properties
+     |               
+     +--- webapps
+     |     `--- pineapple-web-application-war.war
+     |               
+     +--- lib
+           +--- pineapple-jetty-starter-1.0.jar
+           +--- jetty-*.jar
+           +--- log4j-1.2.14.jar
+           +--- slf4j-api-1.7.7.jar           
+           +--- slf4j-log4j12-1.7.7.jar           
+           `--- servlet-api-3.1.0.jar
++---
+
+	The <<Pineapple log configuration >> is configured in the 
+	<<<pineapple-standalone-web-client-$\{pineapple.release.version}/conf/log4j.properties>>> file:
+	
++---	
+# Set root logger to DEBUG and add an appender called PINEAPPLE_FILE
+log4j.rootLogger=INFO, PINEAPPLE_FILE
+
+# PINEAPPLE_FILE is set to be a file appender
+log4j.appender.PINEAPPLE_FILE=org.apache.log4j.RollingFileAppender
+log4j.appender.PINEAPPLE_FILE.file=${pineapple.home.dir}/logs/pineapple-web-application.log
+log4j.appender.PINEAPPLE_FILE.MaxFileSize=10MB
+log4j.appender.PINEAPPLE_FILE.MaxBackupIndex=5
+log4j.appender.PINEAPPLE_FILE.layout=org.apache.log4j.PatternLayout
+log4j.appender.PINEAPPLE_FILE.layout.ConversionPattern=<%d{ISO8601}> <%p> <%C{1}> <%m>%n
++---	
+
+	The Pineapple log is configured to log in <<<$\{pineapple.home.dir}/logs/pineapple-web-application.log>>>. 
+
+	To change the logging configuration, modify any of the logging attributes. 
+	The application must be restarted for the reconfiguration to take effect.
+
+	
+

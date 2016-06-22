@@ -1,0 +1,154 @@
+ ------
+ How-to: Setup Linux users and directories for Pineapple clients
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2012
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Setup Linux users and directories for Pineapple clients
+
+	Pineapple contains plugins which starts processes in the OS for execution of silent 
+	installation of software etc. The following setup ensures that a Pineapple client has 
+	the required OS privileges to execute,  e.g. starting OS processes, without 
+	resorting to running the client as <<<root>>>.
+	
+	Two setups are described:
+	
+	* <<Default installation>>. 
+	This setup defines a dedicated user, group and directories for Pineapple.
+	
+	* <<The Fusion Middleware piggy back installation>>. 
+	This setup installs Pineapple into the standard user and directory setup used to install and run FMW. 
+	The main purpose of this setup is to support the installation and management of Fusion Middleware 
+	software (especially JRockit, WebLogic, SOA Suite etc.). 	
+	If you are using the Pineapple with the Fusion Middleware stuff then the this basic user setup can of 
+	course be modified to your purposes or standards. 
+	This setup mainly serves to illustrate a setup that will work and one to base examples on.   
+			
+	[]
+
+* Default installation
+
+** Users and groups
+
+	Create as <<<root>>>:
+	
+	* The group <<<pineapple>>> which will be used as the group for executing Pineapple.
+	
+	* The user <<<pineapple>>> which will be used as the user for executing Pineapple. 
+	The user should be member of the <<<pineapple>>> group.
+	
+	[]		
+
+	Example:
+
++---
+/usr/sbin/groupadd pineapple
+/usr/sbin/useradd -g pineapple pineapple	
++---
+
+** Directories
+
+	Create as <<<root>>>:
+	
+	* The directory <<</opt/pineapple>>> for installation of Pineapple.  	
+
+	* The directory <<</var/pineapple>>> as the Pineapple home directory 
+	for placement of runtime files (configuration, modules, reports etc.).  	
+
+	* The directory <<</var/log/pineapple>>> for placement of Pineapple log files.  	
+	
+	[]		
+
+	All directories should be owned by <<<pineapple:pineapple>>> with access rights 775.
+
+	Example:
+
++---
+mkdir -p /opt/pineapple
+chown -R pineapple:pineapple /opt/pineapple
+chmod -R 775 /opt/pineapple
+
+mkdir -p /var/pineapple
+chown -R pineapple:pineapple /var/pineapple
+chmod -R 775 /var/pineapple
+
+mkdir -p /var/log/pineapple
+chown -R pineapple:pineapple /var/log/pineapple
+chmod -R 775 /var/log/pineapple
++---	
+
+* The Fusion Middleware piggy back installation 
+		
+** Users and groups
+
+	Create as <<<root>>>:
+	
+	* The group <<<oinstall>>> for installation of Fusion Middleware software.  	
+	
+	* The group <<<oracle>>> which will the run time group for the Fusion Middleware software.
+	
+	* The user <<<weblogic>>> which will the run time user for Pineapple (and future
+	user for executing WebLogic in examples).
+	
+	[]		
+
+	Example:
+	 		
++---
+/usr/sbin/groupadd oinstall
+/usr/sbin/groupadd oracle
+/usr/sbin/useradd -g oinstall -G oracle weblogic	
++---	
+
+** Directories
+
+	Create as <<<root>>>:
+	
+	* The directory <<</opt/pineapple>>> for installation of Pineapple clients.  	
+	
+	* The directory <<</var/log/fmw>>> for placement of Fusion Middleware log files.  	
+
+	* The directory <<</u01/app/oracle/product/fmw>>> for installation of Fusion Middleware software.  	
+
+	* The directory <<</u01/app/oracle/admin>>> for creation of WebLogic domains.  	
+	
+	[]		
+
+	All directories should be owned by <<<weblogic:oinstall>>> with access rights 775.
+
+	Example:
+
++---
+mkdir -p /opt/pineapple
+chown -R weblogic:oinstall /opt/pineapple
+chmod -R 775 /opt/pineapple
+
+mkdir -p /var/log/fmw
+chown -R weblogic:oinstall /var/log/fmw
+chmod -R 775 /var/log/fmw
+
+# create MW_HOME directory at ORACLE_BASE/product/fmw
+mkdir -p /u01/app/oracle/product/fmw
+chown -R weblogic:oinstall /u01/app/oracle/product/fmw
+chmod -R 775 /u01/app/oracle/product/fmw
+
+# create domain directory at ORACLE_BASE/admin/MY_DOMAIN
+mkdir -p /u01/app/oracle/admin
+chown -R weblogic:oinstall /u01/app/oracle/admin
+chmod -R 775 /u01/app/oracle/admin
++---	
+
+** Conclusion
+
+	Pineapple can now be run under the user <<<weblogic>>> and it will have 
+	adequate rights to execute plugins which installs and configures Fusion 
+	Middleware software in the in directory <<</u01/app/oracle/product/fmw>>>. 	
+	The reason for using the <<<weblogic>>> user and not a <<<pineapple>>>
+	user is to minimize the amount of users since this setup will also 
+	support the execution of WebLogic server. 
+

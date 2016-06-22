@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   xmlns="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" 
+		   targetNamespace="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" 
+		   elementFormDefault="qualified" 
+		   attributeFormDefault="unqualified">
+
+	<xs:element name="ssh" >
+		<xs:annotation>
+			<xs:documentation>SSH model.</xs:documentation>
+		</xs:annotation>	
+		<xs:complexType >
+			<xs:sequence>
+				<xs:choice  minOccurs="0" maxOccurs="unbounded" >							
+					<xs:element name="copy-to" type="secureCopyType" />
+					<xs:element name="execute" type="executeType" />
+					<xs:element name="assert-equals" type="assertEqualsType" />				
+					<xs:element name="assert-contains" type="assertContainsType" />				
+				 </xs:choice>
+			</xs:sequence>								
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType abstract="true" name="commandType">
+		<xs:annotation>
+			<xs:documentation>Abstract SSH command</xs:documentation>
+		</xs:annotation>				
+	</xs:complexType>
+				
+	<xs:complexType name="executeType">
+		<xs:annotation>
+			<xs:documentation>SSH Remote Execution</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="command" type="xs:string" use="required"/>
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+	<xs:complexType name="secureCopyType">
+		<xs:annotation>
+			<xs:documentation>SSH Remote Copy</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="source" type="xs:string" use="required"/>
+				<xs:attribute name="destination" type="xs:string" use="required"/>		
+				<xs:attribute name="chmod" type="xs:integer" use="optional"/>		
+				<xs:attribute name="chown" type="xs:integer" use="optional"/>		
+				<xs:attribute name="chgrp" type="xs:integer" use="optional"/>		
+				<xs:attribute name="substitute-variables" type="xs:boolean" use="optional" default="true" />				
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+	<xs:complexType name="assertEqualsType">
+		<xs:annotation>
+			<xs:documentation>assertEquals test command</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="command" type="xs:string" use="required"/>
+				<xs:attribute name="expected-value" type="xs:string" use="required"/>
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+	<xs:complexType name="assertContainsType">
+		<xs:annotation>
+			<xs:documentation>assertContains test command</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="command" type="xs:string" use="required"/>
+				<xs:attribute name="expected-value" type="xs:string" use="required"/>
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+			
+</xs:schema>

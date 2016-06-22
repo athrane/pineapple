@@ -1,0 +1,333 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+<html>
+  <head>
+    <title>Pineapple project - Notes on Command implementation</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+          <meta name="author" content="Allan Thrane Andersen" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <!-- TODO: move this into JavaScript to patch the skin
+      <div class="xright">  </div>
+    -->
+    <div id="leftColumn">
+      <div id="navcolumn">
+             <dl class=navgroup>
+        <dt>Project tools</dt>
+        <dd><ul>
+              
+    <li class="none">
+              <a href="../servlets/ProjectMemberList">Membership</a>
+        </li>
+              
+    <li class="none">
+              <a href="../servlets/ProjectNewsList">Announcements</a>
+        </li>
+              
+    <li class="none">
+              <a href="../servlets/ProjectForumView">Discussion forums</a>
+        </li>
+              
+    <li class="none">
+              <a href="../servlets/ProjectMailingListList">Mailing lists</a>
+        </li>
+              
+    <li class="none">
+              <a href="../servlets/ProjectDocumentList">Documents and files</a>
+        </li>
+              
+    <li class="none">
+              <a href="../source/browse/pineapple/">Subversion</a>
+        </li>
+              
+    <li class="none">
+              <a href="../servlets/ProjectIssues">Issue tracker</a>
+        </li>
+          </ul></dd>
+    </dl>
+      <dl class=navgroup>
+        <dt>Project overview</dt>
+        <dd><ul>
+              
+    <li class="none">
+              <a href="../index.html">Introduction</a>
+        </li>
+              
+    <li class="none">
+              <a href="../usage´/index.html">For users</a>
+        </li>
+              
+    <li class="none">
+              <a href="../development/index.html">For developers</a>
+        </li>
+              
+    <li class="none">
+              <a href="../faq.html">FAQ</a>
+        </li>
+          </ul></dd>
+    </dl>
+      <dl class=navgroup>
+        <dt>Project Documentation</dt>
+        <dd><ul>
+              
+                
+              
+      
+            
+      
+              
+        <li class="collapsed">
+              <a href="../project-info.html">Project Information</a>
+              </li>
+              
+                
+              
+      
+            
+      
+              
+        <li class="collapsed">
+              <a href="../project-reports.html">Project Reports</a>
+              </li>
+          </ul></dd>
+    </dl>
+        </div>
+      <script>
+        // replace the java.net project tools with the navigation bar from Maven.
+        // also get rid of "Get Involved" thingie too, while we are at it
+        var pt = document.getElementById("projecttools");
+        var nv = document.getElementById("navcolumn");
+        
+        while(pt.previousSibling!=null)
+          pt.parentNode.removeChild(pt.previousSibling);
+        
+        pt.parentNode.insertBefore(nv,pt);
+        pt.parentNode.removeChild(pt);
+      </script>
+      <script>
+        // kill "description" h3 bar
+        var ld = document.getElementById("longdescription");
+        if(ld!=null) {
+          for( n=ld.firstChild; n!=null; n=n.nextSibling ) {
+            if(n.nodeType==1 && n.innerHTML=="Description" ) {
+              n.parentNode.removeChild(n);
+              break;
+            }
+          }
+        }
+      </script>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>Notes on Command implementation</h2>
+<p>Implementation of command involves these issues:</p>
+<ul><li>Implementation - interface and classes to implement.</li>
+<li>Invocation - legal outcomes of command execution.</li>
+<li>Context validation - validation of the command context before the command is executed. </li>
+</ul>
+<div class="section"><h3>Command implementation</h3>
+<p>Two type of commands exists in Pineapple:</p>
+<ul><li>Test commands - commands that tests the state of resources. </li>
+<li>Regular commands - commands that don't tests anything but serves another purpose, e.g. initiating the system, loading data or executing stuff.</li>
+</ul>
+<div class="section"><h4>Implementation of regular commands </h4>
+<p>A regular command should implement the command interface from Commons Chain: <tt>org.apache.commons.chain.Command</tt>
+.</p>
+</div>
+<div class="section"><h4>Implementation of test commands </h4>
+<p>Pineapple defines operations which tests the state of managed resources. The resources are tested by the usage of <b>test commands</b>
+ which test a single aspect of a managed resource. Execution of test commands should be initiated and controlled from a plugin visitor using a <b>test runner</b>
+ class. The package <tt>com.alpha.pineapple.command.test</tt>
+ contains interfaces for test commands and test runner classes.</p>
+<p>The <tt>com.alpha.pineapple.command.test.TestCommand</tt>
+ interface is a marker interface which should be implemented by test commands. The interface extends the Commons Chain command interface: <tt>org.apache.commons.chain.Command</tt>
+.</p>
+<p>The <tt>TestCommand</tt>
+ interface defines two context keys which are expected by test runner instances which controls the execution of test commands: </p>
+<ul><li><tt>com.alpha.pineapple.command.test.TestCommand.MESSAGE</tt>
+ </li>
+<li><tt>com.alpha.pineapple.command.test.TestCommand.RESULT</tt>
+</li>
+</ul>
+<p>The semantics of the context keys is explained in the section describing command invocation.</p>
+</div>
+</div>
+<div class="section"><h3>Command invocation for regular commands</h3>
+<p>Commands are invoked with the main method:</p>
+<div class="source"><pre>        public boolean execute(Context context) throws Exception        </pre>
+</div>
+<p>There is three legal outcomes for execution of a regular command:</p>
+<ol type="1"><li>Command succeeded, continue chain. </li>
+<li>Command succeeded, discontinue chain.</li>
+<li>Command failed. </li>
+</ol>
+<div class="section"><h4>Command succeeded, continue chain </h4>
+<p>Successful command execution with continued chain is signaled by:</p>
+<ul><li>The <tt>execute(..)</tt>
+ method returns <tt>false</tt>
+.</li>
+</ul>
+<p>If the command resides in a chain then returning <tt>false</tt>
+ signals that execution should continue on the next command in the chain.</p>
+<p><i>Regarding command chains:</i>
+<br />
+If no process returns true, before reaching the end of the command sequence, the chain is assumed to have completed normally. </p>
+</div>
+<div class="section"><h4>Command succeeded, discontinue chain </h4>
+<p>Successful command execution with discontinued chain is signaled by:</p>
+<ul><li>The <tt>execute(..)</tt>
+ method returns <tt>true</tt>
+.</li>
+</ul>
+<p>If the command resides in a chain then returning <tt>true</tt>
+ signals that execution shouldn't continue on the next command in the chain.</p>
+<p><i>Regarding command chains:</i>
+<br />
+A command should return true if the chain has completely handled the process. This notion is the basis of the Chain of Responsibility. Processing is handed off from command to command, until a command handles the command. </p>
+</div>
+<div class="section"><h4>Command failed </h4>
+<p>Failed command execution is signaled by:</p>
+<ul><li>A command throws a <tt>com.alpha.pineapple.command.CommandException</tt>
+.</li>
+</ul>
+<p><i>Regarding command chains:</i>
+<br />
+A chain ends abnormally when any exception is thrown by a command. </p>
+<p>With Commons Chain, if a command throws an exception, the chain is broken. The exception, be it a runtime exception or application exception, will bubble up to the original caller of the chain. </p>
+</div>
+</div>
+<div class="section"><h3>Command invocation for test commands </h3>
+<p>Test commands are invoked with the method:</p>
+<div class="source"><pre>        public boolean execute(Context context) throws Exception        </pre>
+</div>
+<p>The legal outcomes for test command execution is an extension of the legal outcomes for regular commands. There is three legal outcomes for execution of a test command:</p>
+<ol type="1"><li>Test succeeded. </li>
+<li>Test failed.</li>
+<li>Test terminated due to an error. </li>
+</ol>
+<div class="section"><h4>Test succeeded </h4>
+<p>A successful test is signaled by:</p>
+<ul><li>The <tt>execute(..)</tt>
+ method returns <tt>false</tt>
+.</li>
+<li>The key <tt>com.alpha.pineapple.command.test.TestCommand.RESULT</tt>
+ is added to the command context. The value of the key is a <tt>Boolean</tt>
+ with the value <tt>true</tt>
+.</li>
+<li>The key <tt>com.alpha.pineapple.command.test.TestCommand.MESSAGE</tt>
+ is added to the command context. The value of the key is a <tt>String</tt>
+ describing the successful outcome of the test.</li>
+</ul>
+</div>
+<div class="section"><h4>Test failed </h4>
+<p>A failed test is signaled by:</p>
+<ul><li>The <tt>execute(..)</tt>
+ method returns <tt>false</tt>
+.</li>
+<li>The key <tt>com.alpha.pineapple.command.test.TestCommand.RESULT</tt>
+ is added to the command context. The value of the key is a <tt>Boolean</tt>
+ with the value <tt>false</tt>
+.</li>
+<li>The key <tt>com.alpha.pineapple.command.test.TestCommand.MESSAGE</tt>
+ is added to the command context. The value of the key is a <tt>String</tt>
+ describing the failed outcome of the test.</li>
+</ul>
+<p>For failed tests the returned message should list the expected values and actual values which made the test fail. Listing the actual and expected values makes it easy to spot why the test failed. </p>
+</div>
+<div class="section"><h4>Test terminated due to an error </h4>
+<p>A terminated test is signaled by:</p>
+<ul><li>The <tt>execute(..)</tt>
+ method do not return any return value. Instead an unexpected exception is thrown in the test. </li>
+<li>The key <tt>com.alpha.pineapple.command.test.TestCommand.RESULT</tt>
+ is not defined by the test command in the command context.</li>
+<li>The key <tt>com.alpha.pineapple.command.test.TestCommand.MESSAGE</tt>
+ is not defined by the test command in the command context.</li>
+</ul>
+<p>The thrown exception will be caught by the test runner which controls the test command execution. </p>
+<p>If the command context is reused across test command invocation then the context will/can contain RESULT and MESSAGE keys from the previous invoked test commands. There is no need for terminating commands to clear the context of existing RESULT and MESSAGE keys in the context. The keys will be ignored by the test runner if an exception is thrown during command execution.</p>
+<p><i>Why a CommandExecution shouldn't be thrown when a test is terminated due to an error:</i>
+<br />
+Regular commands should catch expected exceptions and throw a <tt>CommandException</tt>
+ to signal an error. Test commands should catch expected exceptions and then signal the test as failed. Unexpected exceptions shouldn't be caught and rethrown as a <tt>CommandException</tt>
+. Instead they should be caught by then test runner. </p>
+</div>
+</div>
+<div class="section"><h3>Context validation in commands</h3>
+<p>Before a command is accessing the context the command should validate that the required properties exits in the context.</p>
+<p>Use the class <tt>com.alpha.pineapple.context.ContextValidatorImpl</tt>
+ to validate the context. </p>
+<p>Example of how to implement context validation in a command:</p>
+<div class="source"><pre>   public boolean execute(Context context) throws Exception
+   {
+
+      // validate context
+      validateContext(context);
+
+     // remaining command execution here....
+     ...
+     
+   }
+      
+  ...
+  
+   void validateContext(Context context) throws CommandException()
+   {
+      // create validator
+      ContextValidator validator;
+      validator = new ContextValidatorImpl();
+
+      // add rules
+      validator.addRule(Rule.KEY_DEFINED, SomeCommand.CONFIGURATION_KEY);
+      validator.addRule(Rule.VALUE_NOT_NULL, SomeCommand.CONFIGURATION_KEY);
+
+      // validate rules
+      validator.validate(context);
+   }                    </pre>
+</div>
+</div>
+<div class="section"><h3>Filtering to catch exceptions </h3>
+<p>Many applications need explicit exception handling that is defined external to any commands. Commons Chain provides a facility for this using the Filter interface. Filter extends Command, adding a postprocess method.</p>
+<p><b>Source</b>
+ <a href="http://www.onjava.com/lpt/a/5671" class="externalLink">OnJava article</a>
+. </p>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2008
+    
+          
+  
+
+  
+  
+  &nbsp;| Last Published: 02 Jul 2008
+  &nbsp;| Version: 1.0-SNAPSHOT
+</div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

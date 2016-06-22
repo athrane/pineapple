@@ -1,0 +1,403 @@
+ ------
+ How-to: Write code to generate modules 
+ ------
+ Allan Thrane Andersen
+ ------
+ February 2009
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Write code to generate modules
+
+
+	To code needed to create a Pineapple module: 
+	
+	* Generate the module directory
+	
+	* Generate the module file <<<module.xml>>>	
+	
+	* a <<<NamespacePrefixMapper>>>
+	 
+	* Generate the model file(s) <<<$\{env\}.xml>>>	
+	
+	[] 
+	
+	Links:
+
+	* {{{https://jaxb.dev.java.net/2.1.9/docs/vendorProperties.html}JAXB RI documentation of namespace prefix mapping.}}
+	
+	* {{{http://blogs.sun.com/enterprisetechtips/entry/customizing_jaxb}How to customize namespace prefix mapping in JAXB.}}
+		
+	[]
+
+
+* Generate the module directory	
+	
+	To create the module directory, invoke:
+	
++----	  
+
+  // get user.home
+  String userHome = System.getProperty( "user.home" );
+
+  // define default pineapple runtime directory
+  File runtimeDirectory = new File( userHome, ".pineapple" ); 
+	 
+  // define modules directory
+  File modulesDirectory = new File( runtimeDirectory, "modules" ); 
+
+  // define my moduel directory 	
+  String moduleId = "my-generated-module";
+  File moduleDirectory = new File( modulesDirectory, moduleId );
+	
+  // create the directory		
+  if(!moduleDirectory.exists()) moduleDirectory.mkdirs();
+  
++----
+
+	The <<<pineapple-test-utils>> project contains a utility
+	named <<<ObjectMotherModule>>> which can be used to
+	create modules. To create the directory, invoke:
+
++----
+
+  // create the module mother 
+  ObjectMotherModule moduleMother = new ObjectMotherModule();
+
+  // create module directory 
+  moduleMother.createNullModule( moduleId, moduleDirectory );
+  
++----
+
+* Generate the module file <<<module.xml>>>
+
+	Pineapple modules are defined in the <<module schema>>. The project
+	<<<pineapple-api>>> contains JAXB generated classes which
+	are generated from the schema. The module classes are located in the
+	<<<com.alpha.pineapple.model.module>>> package.
+	
+	To create and marshall a module, implement: 
+
++----
+
+  // create module factory
+  com.alpha.pineapple.model.module.ObjectFactory moduleFactory;
+  moduleFactory = new com.alpha.pineapple.model.module.ObjectFactory();
+
+  // create module object
+  moduleFactory = new com.alpha.pineapple.model.module.ObjectFactory();
+  Module module = moduleFactory.createModule();         
+
+  // define environment for the module
+  String environmentId = "some-test-environment";
+
+  // add a single environment to the module  
+  Environment environment = moduleFactory.createEnvironment();
+  environment.setId( environmentId );        
+  module.setEnvironments( moduleFactory.createEnvironments() );
+  module.getEnvironments().getEnvironment().add( environment );  
+
+  // set file name
+  StringBuilder fileName;
+  fileName = new StringBuilder();
+  fileName.append( moduleDir.getAbsolutePath() );
+  fileName.append( File.separatorChar );
+  fileName.append( "module.xml" );
+            
+  // define stream for exception handling
+  OutputStream os = null;
+
+  try {
+            
+    // get package name
+    String packageName = Module.class.getPackage().getName();
+
+    // marshall the module
+    JAXBContext jaxbContext = JAXBContext.newInstance( packageName );
+    Marshaller marshaller = jaxbContext.createMarshaller();
+    os = new FileOutputStream( file );
+    marshaller.marshal( rootObject, os );
+    os.close();
+  } catch ( Exception e ) {
+    // do exception handling
+  } finally {
+  
+    // close OS
+    if ( os != null ) {
+      try {
+        os.close();
+      }
+      catch ( IOException e ) {
+        // do exception handling      
+      }
+    }
+  }
+
++----	
+
+	Again the <<<ObjectMotherModule>>> can help:
+	
++----
+
+  // create module file
+  Module module = moduleMother.createModuleObject();
+  Environment environment = moduleFactory.createEnvironment();
+  environment.setId( environmentId );        
+  module.setEnvironments( moduleFactory.createEnvironments() );
+  module.getEnvironments().getEnvironment().add( environment );
+  moduleMother.addModuleFile( module );
+  
++----
+
+* Implement a <<<NamespacePrefixMapper>>>
+
+	A model file in a Pineapple module uses minimum two schemas:
+	
+	* It uses the <<module module schema>> which is defined in the
+	<<<pineapple-api>>> project. The project also contains JAXB 
+	generated classes which are generated from the schema. 
+	The model classes are located in the
+	<<<com.alpha.pineapple.model.module.model>>> package. 
+	
+	* It uses the schemas from the plugins whose model data it 
+	contains. In this example the schema from the 
+	infrastructure test plugin will be used. The plugin
+	is located in the project <<<infrastructure-test-plugin>>>
+	and it contains the plugin schema, named  
+	<<<infrastructure_1_0.xsd>>>. The plugin project contains JAXB 
+	generated classes which are generated from the schema. The 
+	classes are located in the 
+	<<<com.alpha.pineapple.plugin.infrastructure.model>>> package. 
+	
+	[]
+	
+	When JAXB marshall the model to an XML file it is recommended
+	that the file is marshalled with the elements prefixed with		
+	the their namespaces.
+	
+	To enable this behavior in JAXB a <<<NamespacePrefixMapper>>>
+	must be implemented which:
+	
+	* Declares the used name spaces
+	
+	* Defines mappings between each used namespace and a prefix.
+	
+	[]
+		
+	In this example these schemas are used:
+	
+	* <<<http://pineapple.dev.java.net/ns/module_1_0>>>
+	
+    * <<<http://pineapple.dev.java.net/ns/module_model_1_0>>>
+    
+    * <<<http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0>>>
+    
+    []
+    
+    The use prefixes:
+    
+    * <<<mdl>>> for <<<http://pineapple.dev.java.net/ns/module_1_0>>>
+    
+    * <<<mmd>>> for <<<http://pineapple.dev.java.net/ns/module_model_1_0>>>
+    
+    * <<<itp>>> for <<<http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0>>>
+
+	[]
+	
+	The implemented mapper class:
+	
++----
+	 	
+class ModelNamespaceMapper extends NamespacePrefixMapper {
+
+  @Override
+  public String[] getPreDeclaredNamespaceUris() {
+    return new String[]{ "http://pineapple.dev.java.net/ns/module_1_0",
+                         "http://pineapple.dev.java.net/ns/module_model_1_0",
+                         "http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" };
+    }
+
+  @Override
+  public String getPreferredPrefix( String namespaceUri, String arg1, boolean arg2 ) {
+    if ( namespaceUri.equals( "http://pineapple.dev.java.net/ns/module_1_0"  )) return  "mdl";            
+    if ( namespaceUri.equals( "http://pineapple.dev.java.net/ns/module_model_1_0"  )) return "mmd";
+    if ( namespaceUri.equals( "http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0"  )) return "itp";
+    return null; // use default namespace
+  }
+}
+	  	
++----	  				
+	
+
+* Generate the model file(s) <<<$\{env\}.xml>>>	
+ 
+	Three steps are involved in the creating the model file:
+	
+	* Creating module model objects 
+	
+	* Add test cases from the infrastructure test plugin
+	
+	* Marshal the model to XML file  
+	
+	[]	
+			
+** Creating module model objects
+			
++----
+
+  // create model file
+  Models models = modelFactory.createModels();
+  AggregatedModel aggregatedModel = modelFactory.createAggregatedModel();
+  aggregatedModel.setTargetResource( resourceId );
+  aggregatedModel.setContent( modelFactory.createContent() );
+  models.getModel().add( aggregatedModel );
+  
++----
+
+** Add test cases from the infrastructure test plugin
+     
++----
+
+  com.alpha.pineapple.plugin.infrastructure.model.ObjectFactory pluginFactory;
+  pluginFactory = new com.alpha.pineapple.plugin.infrastructure.model.ObjectFactory();
+        
+  // create infrastructure model
+  Infrastructure infrastruture = pluginFactory.createInfrastructure();        
+        
+  // resolve to ip test container
+  List<ResolveNameToIpTest> resolveToIpTests = infrastruture.getResolveToIpTest();
+                
+  // create test case
+  String host = // get host for test case.                                
+  String description = // get description for test case.
+  ResolveNameToIpTest resolveIP = pluginFactory.createResolveNameToIpTest();
+  resolveIP.setDescription(description);
+  resolveIP.setHost( host );
+  ResolveNameToIpAssertionValues assertValues = pluginFactory.createResolveNameToIpAssertionValues();
+  assertValues.setIp( host );
+  resolveIP.setAssert( assertValues );
+                
+  // add test to container
+  resolveToIpTests.add( resolveIP );                                                 
+
++----
+
+** Marshal the model to XML file  
+
+	The marshalling is done in two steps. First the objects from the 
+	intrastructure test plugin is marshalled into a DOM document.
+	
+	Then the DOM document is then inserted into the model. 
+	
+	The reason for the intermediate marshalling to DOM is caused
+	by the usage of the <<any>> type in the module model schema.
+	The resulting JAXB classes represents the <<<any>>> type as a
+	list of <<<org.w3c.dom.Element>>>, so it is needed to convert
+	the infrastructure objects to something that can be inserted
+	as DOM Elements.
+	
+	Marshalling the infrastructures object to DOM, using the prefix mapper: 		 	   
+
++----
+  
+  // get package name
+  String packageName = Infrastructure.class.getPackage().getName();  
+
+  // create the prefix mapper
+  NamespacePrefixMapper prefixMapper = new ModelNamespaceMapper()
+        
+  // create JAXB context   
+  JAXBContext jaxbContext = JAXBContext.newInstance( packageName );
+  
+  // create marsahller with mapper  
+  Marshaller marshaller = jaxbContext.createMarshaller();
+  marshaller.setProperty( "com.sun.xml.bind.namespacePrefixMapper", mapper );
+        
+  // create DOM document
+  DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+  dbf.setNamespaceAware(true);
+  DocumentBuilder db = dbf.newDocumentBuilder();
+  Document doc = db.newDocument();
+  
+  // marshall  JAXB object into DOM document          
+  marshaller.marshal( rootObject, doc );
+  
++----
+
+	Then the DOM document is added to the model object:
+
++----
+
+  // get content root
+  Content contentRoot = aggregatedModel.getContent();
+                
+  // add test cases from infrastructure model to aggregated model 
+  // Any is defined with processContents="skip" which maps to org.w3c.dom.Element or List<Element>
+  List<Element> domElements = contentRoot.getAny();                        
+  domElements.add( (Element) doc.getDocumentElement() );
+  
++----
+
+	Finally, the model is marshalled to XML:
+
++----
+
+  // define the models directory in the module 	
+  File modelsDirectory = new File( modulesDirectory, "models" );
+
+  // create the directory		
+  if(!modelsDirectory.exists()) modelsDirectory.mkdirs();
+
+  // set file name
+  StringBuilder fileName;
+  fileName = new StringBuilder();
+  fileName.append( environmentId );
+  fileName.append( ".xml" );
+
+  // create models file object 
+  File modelFile = new File (modelsDirectory, fileName.toString());            
+
+  // define stream for exception handling
+  OutputStream os = null;
+
+  try {
+            
+    // get package name
+    String packageName = Models.class.getPackage().getName();
+
+    // marshall the model 
+    JAXBContext jaxbContext = JAXBContext.newInstance( packageName );
+    Marshaller marshaller = jaxbContext.createMarshaller();
+    os = new FileOutputStream( file );
+    marshaller.marshal( rootObject, os );
+    os.close();
+  } catch ( Exception e ) {
+    // do exception handling
+  } finally {
+  
+    // close OS
+    if ( os != null ) {
+      try {
+        os.close();
+      }
+      catch ( IOException e ) {
+        // do exception handling      
+      }
+    }
+  }
+    
++----
+
+	Again the <<<ObjectMotherModule>>> can help:
+	
++----
+
+  // marshal model 
+  moduleMother.addModelFile( environmentId, models );
+    
++----
+	
+
+
+

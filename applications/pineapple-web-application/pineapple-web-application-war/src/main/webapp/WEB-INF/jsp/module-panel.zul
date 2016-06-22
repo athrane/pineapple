@@ -1,0 +1,124 @@
+<zk xmlns:w="http://www.zkoss.org/2005/zk/client" >
+
+	<script src="/js/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8" />
+	<script src="/js/module-panel.js" type="text/javascript" charset="utf-8" />	
+	<script src="/js/ace/src-min-noconflict/mode-xml.js" type="text/javascript" charset="utf-8" />
+	<script src="/js/ace/src-min-noconflict/theme-chrome.js" type="text/javascript" charset="utf-8" />
+
+	<!--
+		binder definition: binder="@init(queueName='pineapple-queue')" 
+		is required for view model to respond to global commands posted 
+		on the "pineapple-queue" queue:
+		
+		@GlobalCommand public void saveModel() { .. }		
+		
+		The Menu controller, Menu.java posts global command using:		
+		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, null, SAVEMODEL_GLOBALCOMMAND, NULL_GLOBALCOMMAND_ARGS);		     					    	
+	 -->	
+	<window id="modulePanelWindow"
+		apply="org.zkoss.bind.BindComposer, com.alpha.pineapple.web.zk.controller.ModulePanel"
+		binder="@init(queueName='pineapple-queue',queueScope='session')"
+		viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.ModulePanel')" 
+		hflex="1" vflex="1" border="none" 		
+		ctrlKeys="^s" onCtrlKey="@global-command('saveModel')" >
+	
+		<!-- Modal window for model deletion -->
+		<window title="Confirm Deletion" mode="modal" border="normal" width="25%" visible="@load(vm.confirmModelDeletion)">
+	        <vbox hflex="true">
+	            <hlayout height="15%" />        
+	            <hlayout height="70px">
+	                <label value="Are you sure you want to delete the model?"/>
+	            </hlayout>
+	            <hbox pack="center" hflex="true">
+	                <button label="Delete" onClick="@global-command('deleteModelConfirmed')" width="80px" mold="trendy" />
+	                <button label="Cancel" onClick="@command('deleteModelCancelled')" width="80px" mold="trendy" />
+	            </hbox>
+	            <hlayout height="15%" />
+	        </vbox>
+	    </window>
+		
+		<borderlayout>		
+			<north size="15%" 
+				border="none" >
+
+				<vbox hflex="1" vflex="1"  >	    		    
+					<hbox hflex="1" pack="right" >
+						<button tooltiptext="Open module"  
+							label="Open Module"
+							onClick="@global-command('openModule')" 
+							mold="trendy" 
+							iconSclass="z-icon-folder-open-o" />						    													    	
+						<button tooltiptext="Close module"  
+							label="Close Module"
+							onClick="@global-command('closeModule')" 
+							disabled="@load(vm.moduleIsOpen eq false)" 
+							mold="trendy" 
+							iconSclass="z-icon-times" />
+						<space bar="false"/>
+						<button tooltiptext="Create a new empty model"  
+							label="Create Model"
+							onClick="@global-command('createModel')" 
+							disabled="@load(vm.selectedModel eq null)" 
+							mold="trendy" 
+							iconSclass="z-icon-file-text-o" />						    													    	
+						<button tooltiptext="Save selected model"  
+							label="Save Model"
+							onClick="@global-command('saveModel')"
+							disabled="@load(vm.selectedModel eq null)" 							 
+							mold="trendy" 
+							iconSclass="z-icon-save" />						    													    	
+						<button tooltiptext="Dowload selected model"  
+							label="Download Model"
+							onClick="@global-command('downloadModel')"
+							disabled="@load(vm.selectedModel eq null)" 							 
+							mold="trendy" 
+							iconSclass="z-icon-download" />						    													    	
+						<button tooltiptext="Delete selected model"  
+							label="Delete Model"
+							onClick="@global-command('deleteModel')" 
+							disabled="@load(vm.selectedModel eq null)" 
+							mold="trendy" 														
+							iconSclass="z-icon-trash-o" />						    													    	
+					</hbox>
+
+					<groupbox mold="3d" >
+					 	<caption label="Info" />
+						<hlayout>
+							<label value="Module Directory: " style="font-weight: bold;" />
+							<label value="@load(vm.moduleDirectory)" />										
+						</hlayout>				
+					</groupbox>				
+
+				</vbox> 
+			</north>
+	
+			<west title="Models" 
+				size="15%" 
+				border="none" 
+				splittable="true" >
+				
+				<listbox id="modelListbox"
+					model="@load(vm.models)" 				 
+					selectedItem="@bind(vm.selectedModel)"
+					onSelect="@command('loadSelectedModel') @global-command('loadModel')" 			
+					w:onSelect="onSelectInListbox()"
+					hflex="1" vflex="1" >
+					
+					<template name="model" var="item">
+	            		<listitem >
+	                		<listcell label="@load(item.environment)" />
+	            		</listitem>
+	        		</template>									
+				</listbox>	
+			</west>
+					
+			<center title="Selected Model" 
+				autoscroll="true"
+				border="none" >								
+				<div id="aceEditor" hflex="1" vflex="1" />
+			</center>
+			
+		</borderlayout>
+	</window>
+</zk>
+

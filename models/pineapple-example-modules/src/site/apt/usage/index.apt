@@ -1,0 +1,17 @@
+ ------
+ Usage
+ ------
+ Allan Thrane Andersen
+ ------
+ June 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Introduction
+
+	The content of the archive will be unpacked into the modules directory when
+	Pineapple is run without an existing configuration.
+	
+	Alternatively the the archive can be downloaded and unpacked.
+					

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+    xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" continue="false" >
+  <mmd:model target-resource="docker-node" target-operation="deploy-configuration" description="Define Docker image: busybox:latest" >
+    <mmd:content>
+      <dkp:docker>
+        <dkp:image repository="busybox" tag="latest" />
+      </dkp:docker>                       
+    </mmd:content>
+  </mmd:model>
+  <mmd:model target-resource="docker-node" description="Define Docker container alpha01" >
+    <mmd:content>
+      <dkp:docker>
+        <dkp:container name="alpha01" state="running" >
+          <dkp:image repository="docker.io/busybox" tag="latest" />
+        </dkp:container>        
+      </dkp:docker>                       
+    </mmd:content>
+  </mmd:model>
+</mmd:models>

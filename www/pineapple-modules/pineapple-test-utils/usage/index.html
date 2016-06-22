@@ -1,0 +1,347 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+<html>
+  <head>
+    <title>Pineapple test utilities - Usage</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+          <meta name="author" content="Allan Thrane Andersen" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <!-- TODO: move this into JavaScript to patch the skin
+      <div class="xright">  </div>
+    -->
+    <div id="leftColumn">
+      <div id="navcolumn">
+             <dl class=navgroup>
+        <dt>Project tools</dt>
+        <dd><ul>
+              
+    <li class="none">
+              <a href="../servlets/ProjectMemberList">Membership</a>
+        </li>
+              
+    <li class="none">
+              <a href="../servlets/ProjectNewsList">Announcements</a>
+        </li>
+              
+    <li class="none">
+              <a href="../servlets/ProjectForumView">Discussion forums</a>
+        </li>
+              
+    <li class="none">
+              <a href="../servlets/ProjectMailingListList">Mailing lists</a>
+        </li>
+              
+    <li class="none">
+              <a href="../servlets/ProjectDocumentList">Documents and files</a>
+        </li>
+              
+    <li class="none">
+              <a href="../source/browse/pineapple/">Subversion</a>
+        </li>
+              
+    <li class="none">
+              <a href="../servlets/ProjectIssues">Issue tracker</a>
+        </li>
+          </ul></dd>
+    </dl>
+      <dl class=navgroup>
+        <dt>Project overview</dt>
+        <dd><ul>
+              
+    <li class="none">
+              <a href="../index.html">Introduction</a>
+        </li>
+              
+    <li class="none">
+              <a href="../usage´/index.html">For users</a>
+        </li>
+              
+    <li class="none">
+              <a href="../development/index.html">For developers</a>
+        </li>
+              
+    <li class="none">
+              <a href="../faq.html">FAQ</a>
+        </li>
+          </ul></dd>
+    </dl>
+      <dl class=navgroup>
+        <dd><ul>
+          </ul></dd>
+    </dl>
+      <dl class=navgroup>
+        <dt>Project Documentation</dt>
+        <dd><ul>
+              
+                
+              
+      
+              
+        <li class="collapsed">
+              <a href="../project-info.html">Project Information</a>
+              </li>
+              
+                
+              
+      
+              
+        <li class="collapsed">
+              <a href="../project-reports.html">Project Reports</a>
+              </li>
+          </ul></dd>
+    </dl>
+        </div>
+      <script>
+        // replace the java.net project tools with the navigation bar from Maven.
+        // also get rid of "Get Involved" thingie too, while we are at it
+        var pt = document.getElementById("projecttools");
+        var nv = document.getElementById("navcolumn");
+        
+        while(pt.previousSibling!=null)
+          pt.parentNode.removeChild(pt.previousSibling);
+        
+        pt.parentNode.insertBefore(nv,pt);
+        pt.parentNode.removeChild(pt);
+      </script>
+      <script>
+        // kill "description" h3 bar
+        var ld = document.getElementById("longdescription");
+        if(ld!=null) {
+          for( n=ld.firstChild; n!=null; n=n.nextSibling ) {
+            if(n.nodeType==1 && n.innerHTML=="Description" ) {
+              n.parentNode.removeChild(n);
+              break;
+            }
+          }
+        }
+      </script>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>Introduction</h2>
+<div class="section"><h3>Configuration</h3>
+<p>The get access to the test utilities, add a dependency with <b>test</b>
+ scope to the project which need access to the test utilities.</p>
+<p>To use the test utilities, the pineapple-core project has defined this dependency in the POM:</p>
+<div class="source"><pre>  &lt;!-- pineapple internal dependencies --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;${pom.groupId}&lt;/groupId&gt;
+    &lt;artifactId&gt;pineapple-test-utils&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;    
+  &lt;/dependency&gt;</pre>
+</div>
+<p><b>Notice:</b>
+ The test utilities project contains a dependency to the pineapple-core project to get access to all the main interfaces/classes like session, resource etc. Any project linking to the test utilities project will also get access to these interfaces/classes at test time.</p>
+</div>
+<div class="section"><h3>JUnit helper classes</h3>
+<div class="section"><h4>AbstractDirectoryTestCase</h4>
+<p><tt>com.alpha.testutils.AbstractDirectoryTestCase</tt>
+ is an abstract test case class which create runtime directory for each method and cleans up afterwards (can be turned off for debugging purposes).</p>
+<p>Unit test classes must inherit this class to use it and invoke the <tt>super.setup()</tt>
+ and <tt>super.teardown()</tt>
+ to create and delete the runtime directory for each method: </p>
+<div class="source"><pre>
+public class BansheeTest extends AbstractDirectoryTestCase {
+
+  @Before
+  public void setUp() throws Exception {
+    super.setUp();
+    
+    // remaining setup
+  }    
+    
+  @After
+  public void tearDown() throws Exception {
+    // clean up
+    
+    super.tearDown();
+  
+  }
+
+  @Test
+  public void testUsingDirectory() {
+  
+        // printing the current test directory
+        System.out.println( this.testDir );
+        
+        // printing the current test method
+        System.out.println( this.this.testMethodName );
+
+        // do the test  
+  }      
+
+}</pre>
+</div>
+<p>The class contains these fields which is accisble by subclasses:</p>
+<ul><li><tt>testDir</tt>
+ - The current directory where the test is run.</li>
+<li><tt>testMethodName</tt>
+ - The name of the current test method.</li>
+<li><tt>deleteDirectories</tt>
+ - Set to <tt>false</tt>
+ to disable deletion of directories.</li>
+</ul>
+</div>
+<div class="section"><h4>NameAwareTestClassRunner</h4>
+<p><tt>com.alpha.testutils.AbstractDirectoryTestCase</tt>
+ is an JUnit 4.x TestClassRunner extension.</p>
+<p>The class exposes the name of the current test method at runtime. Indented to be used by test cases who uses the test method name to create files and directories at runtime.</p>
+<p>Used by test classes by adding the annotation <tt>@RunWith.</tt>
+</p>
+<p>Two methods is exposed for accessing the name: </p>
+<ul><li><tt>getTestName()</tt>
+</li>
+<li><tt>getFQTestName()</tt>
+ This method have the fully qualified class name prefixed to the test method name.</li>
+</ul>
+<p>Example:</p>
+<div class="source"><pre>  @RunWith(NameAwareTestClassRunner.class)
+  public class someTest {
+
+    @Before
+    public void setUp() throws Exception {
+    
+          // access test method name in setup()
+          String testName = NameAwareTestClassRunner.getTestName();
+    }
+
+        // rest of the class goes here...
+
+  }      </pre>
+</div>
+</div>
+</div>
+<div class="section"><h3>Object mothers</h3>
+<p>the object mothers are implementations of the ObjectMother pattern which can manufacture complete objects used in tests. </p>
+<p>Object mother classes:</p>
+<ul><li><tt>com.alpha.testutils.ObjectMotherResource</tt>
+</li>
+<li><tt>com.alpha.testutils.ObjectMotherConfiguration</tt>
+ </li>
+<li><tt>com.alpha.testutils.ObjectMotherIO</tt>
+ </li>
+</ul>
+<div class="section"><h4>ObjectMotherResource </h4>
+<p><tt>com.alpha.testutils.ObjectMotherResource</tt>
+ provides helper functions for testing the <tt>Resource</tt>
+ class or using resources in tests. </p>
+</div>
+<div class="section"><h4>ObjectMotherConfiguration </h4>
+<p><tt>com.alpha.testutils.ObjectMotherConfiguration</tt>
+ provides helper functions for accessing Commons Configuration objects. </p>
+</div>
+<div class="section"><h4>ObjectMotherIO </h4>
+<p><tt>com.alpha.testutils.ObjectMotherIO</tt>
+ provides helper functions for creating and deleting directories. </p>
+</div>
+</div>
+<div class="section"><h3>Test constants</h3>
+<p>The class <tt>com.alpha.testutils.TestUtilsTestConstants</tt>
+ contains constants which are used in the unit tests. </p>
+<p>The class defines the location of unit test output in the constant <tt>TestUtilsTestConstants.runtimeDirectory</tt>
+. </p>
+</div>
+<div class="section"><h3>TestResource plugin</h3>
+<p>A test plugin named <b>TestResource</b>
+ is defined in the package <tt>com.alpha.pineapple.plugin.test</tt>
+ and sub packages.</p>
+<p>The plugin contains two plugin factories:</p>
+<ul><li><tt>com.alpha.pineapple.plugin.test.TestFactoryImpl</tt>
+ which returns defined session and visitors. </li>
+<li><tt>com.alpha.pineapple.plugin.test.NullFactoryImpl</tt>
+ which returns undefined session and visitors, e.g. null.</li>
+</ul>
+</div>
+<div class="section"><h3>Test Schema</h3>
+<p>The project defines a small schema at <tt>src/main/resources/test.xsd</tt>
+ which can be used to test JAXB related functionality. The schema defines three entities: Root, ContainerType and ItemType. The binding classes for JAXB is provided in the package <tt>com.alpha.pineapple.model.test</tt>
+.</p>
+<p>The schema definition looks like:</p>
+<div class="source"><pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;
+        targetNamespace=&quot;http://pineapple.dev.java.net/ns/test&quot; xmlns=&quot;http://pineapple.dev.java.net/ns/test&quot;
+        elementFormDefault=&quot;qualified&quot; attributeFormDefault=&quot;qualified&quot;&gt;
+        &lt;xs:element name=&quot;root&quot;&gt;
+                &lt;xs:annotation&gt;
+                        &lt;xs:documentation&gt;Root element i schema for testing JAXB unmarshalling.&lt;/xs:documentation&gt;
+                &lt;/xs:annotation&gt;
+                &lt;xs:complexType&gt;
+                        &lt;xs:sequence&gt;
+                                &lt;xs:element name=&quot;container&quot; type=&quot;ContainerType&quot;
+                                        minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; /&gt;
+                        &lt;/xs:sequence&gt;
+                &lt;/xs:complexType&gt;
+        &lt;/xs:element&gt;
+        &lt;xs:complexType name=&quot;ContainerType&quot;&gt;
+                &lt;xs:annotation&gt;
+                        &lt;xs:documentation&gt;Container&lt;/xs:documentation&gt;
+                &lt;/xs:annotation&gt;
+                &lt;xs:sequence&gt;
+                        &lt;xs:element name=&quot;items&quot; type=&quot;ItemType&quot;
+                                minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; /&gt;
+                &lt;/xs:sequence&gt;
+        &lt;/xs:complexType&gt;
+        &lt;xs:complexType name=&quot;ItemType&quot;&gt;
+                &lt;xs:annotation&gt;
+                        &lt;xs:documentation&gt;Item.&lt;/xs:documentation&gt;
+                &lt;/xs:annotation&gt;
+                &lt;xs:sequence&gt;
+                        &lt;xs:element name=&quot;name&quot; type=&quot;xs:string&quot; /&gt;
+                &lt;/xs:sequence&gt;
+        &lt;/xs:complexType&gt;
+&lt;/xs:schema&gt;
+</pre>
+</div>
+<p>The content of the schema can be marshalled with JAXB:</p>
+<div class="source"><pre>    String packageName = root.getClass().getPackage().getName();
+    System.out.println( packageName );
+    JAXBContext jaxbContext = JAXBContext.newInstance( packageName );
+    Marshaller marshaller = jaxbContext.createMarshaller();
+    os = new FileOutputStream( fileName );
+    marshaller.marshal( root, os );
+    os.close();</pre>
+</div>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2008
+    
+          
+  
+
+  
+  
+  &nbsp;| Last Published: 28 Oct 2008
+  &nbsp;| Version: 1.0-SNAPSHOT
+</div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

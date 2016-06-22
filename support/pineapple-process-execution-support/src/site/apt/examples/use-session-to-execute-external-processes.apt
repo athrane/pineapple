@@ -1,0 +1,173 @@
+ ------
+ How-to: Use the process execution session to execute external processes
+ ------
+ Allan Thrane Andersen
+ ------
+ December 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Use the process execution session to execute external processes
+
+* Introduction
+
+	This example illustrates how to setup a project to use the
+	<<<ProcessExecutionSessionImpl>>> class in a plugin to execute external 
+	OS processes and capture the result in execution result objects.
+		 
+	To setup a project to use the asserter follow these steps:
+
+	* Add Maven dependency to the project.
+	
+	* Import the spring configuration file 
+	
+	* Subclass <<<ProcessExecutionSessionImpl>>> into a plugin specific session class.	
+	
+	* Annotate the plugin specific session class.	
+	
+	* Use the session object in operations. 
+			
+	[]
+
+* Add Maven dependency to the project
+
+	The <<<ProcessExecutionSessionImpl>>> class is defined in the 
+	<<<pineapple-process-execution-support>>> project, so add a Maven dependency 
+	to the project POM:
+ 
++----	
+  <dependency>
+    <groupId>com.alpha.pineapple</groupId>
+    <artifactId>pineapple-process-execution-support</artifactId>                       
+  </dependency>   			
++----	 
+	
+* Import the spring configuration file
+
+	If the project contain a Spring configuration file for definition of the 
+	beans used by the project then add an <<<import>>> directive to import
+	the Spring configuration file from the process execution project:
+		
++-----		
+	<!-- Configures pineapple-process-execution-plugin-support -->
+	<import resource="classpath:com.alpha.pineapple.process.execution-config.xml" />
++-----
+
+	Now the session class and other command class is available in the project with the 
+	bean id's:
+		
+	* <<<processExecutionCommand>>> which is an prototype instance of a process execution command.
+	
+	* <<<processExecutionSession>>> which is an prototype instance of a process execution session.	
+
+	[]
+	
+	<<Please notice:>> that the purpose isn't to get access to the session class through Spring, but
+	to enable the session class to access the process execution command through Spring.  		 		  			
+	
+* Subclass <<<ProcessExecutionSessionImpl>>> into a plugin specific session class	
+
+	Subclass the  <<<ProcessExecutionSessionImpl>>> into a plugin specific session class to reuse
+	the functionality of the class. 
+	
+	Example: in the JRockit installation plugion the <<<ProcessExecutionSessionImpl>>> class
+	is subclasses into <<<JRockitInstallationSessionImpl>>>  
+	
++-----		
+
+package com.alpha.pineapple.plugin.jrockit.installation.session;
+
+import com.alpha.pineapple.plugin.PluginSession;
+import com.alpha.pineapple.session.ProcessExecutionSessionImpl;
+
+/**
+ * Subclass of {@link ProcessExecutionSessionImpl} to reuse it.   
+ */
+@PluginSession
+public class JRockitInstallationSessionImpl extends ProcessExecutionSessionImpl {
+}
+	
++-----			
+
+
+* Annotate the plugin specific session class	
+
+	To enable the usage of the session class at runtime , annotate it with the
+	<<<@PluginSession>>> annotation.
+	
+	Example: From the JRockit installation plugin:  
+	
++-----		
+
+package com.alpha.pineapple.plugin.jrockit.installation.session;
+
+import com.alpha.pineapple.plugin.PluginSession;
+import com.alpha.pineapple.session.ProcessExecutionSessionImpl;
+
+/**
+ * Subclass of {@link ProcessExecutionSessionImpl} to reuse it.   
+ */
+@PluginSession
+public class JRockitInstallationSessionImpl extends ProcessExecutionSessionImpl {
+}
+	
++-----			
+	
+* Use the session object in operations
+
+	The session object will now be initialized by Pineapple when an operation is executed. The 
+	session object is available to any operation since it is passed as any argument to operations
+	in the plugin. 
+	
+	Example: From the JRockit installation plugin: 
+		
++-----		
+
+@PluginOperation( OperationNames.DEPLOY_CONFIGURATION )
+public class DeployConfiguration implements Operation
+{
+
+    public void execute( Object content, Session session, ExecutionResult executionResult ) throws PluginExecutionFailedException
+    {
+        // validate parameters
+        Validate.notNull( content, "content is undefined." );
+        Validate.notNull( session, "session is undefined." );
+        Validate.notNull( executionResult, "executionResult is undefined." );        
+    	
+        // throw exception if required type isn't available
+        if ( !( session instanceof ProcessExecutionSession ) )
+        {
+        	Object[] args = { ProcessExecutionSession.class };    	        	
+        	String message = messageProvider.getMessage("dc.session_typecast_failed", args );
+            throw new PluginExecutionFailedException( message );
+        }
+                
+        try
+        {        	
+            // type cast to JRockit installation model object
+        	JRockitInstallation model = (JRockitInstallation) content;
+            
+            // type cast to process execution session 
+            ProcessExecutionSession externalProcessSession = (ProcessExecutionSession) session; 
+
+			//.. more code goes here...
+			
+			// execute external process    	
+			session.execute(installer , arguments, DEFAULT_PROCESS_TIMEOUT, description2, result);
+			
+        }
+        catch ( Exception e )
+        {
+        	Object[] args = { e.toString() };    	        	
+        	String message = messageProvider.getMessage("dc.error", args );
+            throw new PluginExecutionFailedException( message, e );
+        }					
+        
+	}
+
+}
+	
++-----			
+				
+		

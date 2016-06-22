@@ -1,0 +1,89 @@
+ ------
+ How-to: Use the API project with the Spring framework
+ ------
+ Allan Thrane Andersen
+ ------
+ November 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Use the API project with the Spring framework
+
+	The content of the API project can configured with Spring in two ways:
+	
+	* Use Spring configuration file from the API project.
+	
+	* Define the beans manually.	
+	
+	[] 
+
+* Use Spring configuration file from the API project 
+
+	The API project contains a Spring configuration file 
+	which can be imported into a Spring configuration file
+	which wishes to use the classes in the API project.
+	 
+	To use the Spring configuration file from the API project, 
+	add an <import> tag which imports the file
+	<<com.alpha.pineapple.api-config.xml>> into the bean definitions:
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- import pineapple-command-api bean definitions. -->
+	<import resource="com.alpha.pineapple.api-config.xml"/>
+				
+	<!-- all remaining bean definitions. -->
+	    	    
+</beans>    
++---
+
+** Content of the <<<com.alpha.pineapple.api-config.xml>>> file
+
+	Currently the <<<com.alpha.pineapple.api-config.xml>>> contains 
+	the definition of these beans:
+	
+	* <<<apiMessageProvider>>> which is an prototype instance of the message provider for internal
+	by the objects in the API project.	
+
+	* <<<propertyGetter>>> which is an prototype instance of the <<<ResourcePropertyGetter>>>.
+		
+	[] 
+
+* Define the beans manually
+
+	Some classes are not suitable for a general (reusable) bean definition in 
+	<<<com.alpha.pineapple.api-config.xml>>>. Examples are:
+	
+	* <<<ExecutionResultImpl>>> which is created by instances of <<<ExecutionResultImpl>>>.
+	
+	* <<<PropertyFileMessageProviderImpl>>> which need to configured individually for each
+	usage in a project with a property file containing I18N messages.
+		
+	[]
+	
+	To enable usage of the classes in the API project, add these bean definition 
+	to the Spring application context in the project where the API project should 
+	be used from:
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- define message provider for internationalization  -->
+	<bean id="messageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">
+    	<property name="basename" value="com.alpha.pineapple.xzy-messages"/>
+	</bean>	
+		    	    
+</beans>    
++---		

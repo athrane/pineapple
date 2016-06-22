@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Pineapple - a tool to install, configure and test Java web 
+  applications and infrastructure. 
+  
+  Copyright (C) 2007-2013 Allan Thrane Andersen..
+  
+  This file is part of Pineapple.
+  
+  Pineapple is free software: you can redistribute it and/or modify 
+  it under the terms of the GNU General Public License as published 
+  by the Free Software Foundation, either version 3 of the License, 
+  or (at your option) any later version.
+  
+  Pineapple is distributed in the hope that it will be useful, but WITHOUT 
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License along
+   with Pineapple. If not, see <http://www.gnu.org/licenses/>.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+  	<groupId>com.alpha.pineapple</groupId>	
+		<artifactId>pineapple-web-application</artifactId>
+		<version>1.0-SNAPSHOT</version>
+  </parent>  
+  
+  <artifactId>pineapple-web-application-war</artifactId>    	
+  <packaging>war</packaging>
+  <name>Pineapple web application war</name>
+  <description>WAR packaging of the Pineapple web application</description>  
+  <dependencies>
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-test-utils</artifactId>
+		<scope>test</scope>
+	</dependency>   
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-api</artifactId>
+	</dependency>		  		
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-core</artifactId>
+		<exclusions>		
+			<exclusion>
+				<artifactId>xml-apis</artifactId>
+				<groupId>xml-apis</groupId>
+			</exclusion>
+    		<exclusion>
+    			<artifactId>xerces</artifactId>
+    			<groupId>xerces</groupId>
+    		</exclusion>			
+		</exclusions>
+	</dependency>
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-commands-api</artifactId>			
+	</dependency>
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-basic-html-report-generator</artifactId>				
+	</dependency>
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-weblogic-jmx-plugin</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-infrastructure-test-plugin</artifactId>
+	</dependency>			
+	<!-- removed for RELEASE 1.1
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-weblogic-deployment-plugin</artifactId>
+	</dependency>
+	-->
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-filesystem-plugin</artifactId>
+	</dependency>																																										
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-jrockit-installation-plugin</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-weblogic-installation-plugin</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-weblogic-scripting-tool-plugin</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-fusion-middleware-installation-plugin</artifactId>
+	</dependency>																																																																																																																																																																																					
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-ssh-plugin</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-composite-execution-plugin</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-agent-plugin</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-docker-plugin</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-hamcrest-support</artifactId>                       
+	</dependency>   							
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId> 
+		<artifactId>spring-test</artifactId> 
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.easymock</groupId>  
+		<artifactId>easymock</artifactId>  
+		<scope>test</scope>  		
+	</dependency>
+	<dependency>
+		<groupId>org.easymock</groupId>  
+		<artifactId>easymockclassextension</artifactId>  
+		<scope>test</scope>  		  				
+	</dependency>																	  	 		 		 					    																																 		 		
+	<dependency>
+		<groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+	</dependency>	
+	<dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>javax.servlet-api</artifactId>
+         <scope>provided</scope>
+    </dependency>    
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-web</artifactId>				
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-webmvc</artifactId>				
+	</dependency>	
+    <!-- Spring Reactor -->
+    <dependency>
+        <groupId>org.projectreactor</groupId>
+        <artifactId>reactor-core</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.projectreactor.spring</groupId>
+        <artifactId>reactor-spring-context</artifactId>
+    </dependency>				
+	<!-- provides access to @resource annotation  -->		
+	<dependency>
+ 		<groupId>javax.annotation</groupId>
+ 		<artifactId>jsr250-api</artifactId>    		
+	</dependency>
+  	<dependency>
+  		<groupId>xalan</groupId>
+  		<artifactId>xalan</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>xerces</groupId>
+  		<artifactId>xercesImpl</artifactId>
+  	</dependency>		
+	<!-- provides access to ZK -->		  	
+	<dependency>
+		<groupId>org.zkoss.zk</groupId>
+		<artifactId>zk</artifactId>
+	</dependency>
+    <dependency>
+		<groupId>org.zkoss.zk</groupId>
+		<artifactId>zul</artifactId>
+    </dependency>
+    <dependency>
+		<groupId>org.zkoss.zk</groupId>
+		<artifactId>zkplus</artifactId>
+    </dependency>					
+	<dependency>
+		<groupId>org.zkoss.zk</groupId>
+		<artifactId>zkmax</artifactId>
+	</dependency>			    	    
+    <dependency>
+		<groupId>com.google.code.gson</groupId>
+		<artifactId>gson</artifactId>
+    </dependency>
+    <!--  for reconfiguration of the SLF4J backend used by ZK -->			
+	<dependency>
+	    <groupId>org.zkoss.common</groupId>
+	    <artifactId>zcommon</artifactId>
+	    <exclusions>
+	        <exclusion>
+	            <groupId>org.slf4j</groupId>
+	            <artifactId>slf4j-jdk14</artifactId>
+	        </exclusion>
+	    </exclusions>
+	</dependency>
+	<!-- Jetty and ZK SLF4J logging backend -->    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <!--  for ZK zscript support -->		
+	<dependency>
+		<groupId>org.beanshell</groupId>
+		<artifactId>bsh</artifactId>
+	</dependency>	
+    <!--  for ZK upload support -->			
+	<dependency>
+		<groupId>commons-fileupload</groupId>
+		<artifactId>commons-fileupload</artifactId>
+	</dependency>		
+    <!-- 
+    	To bypass error during creation of org.springframework.format.support.FormattingConversionServiceFactoryBean#0  
+    	due to exception: tjava.lang.TypeNotPresentException: Type org.joda.time.LocalDate not present
+	-->			
+	<dependency>
+		<groupId>joda-time</groupId>
+		<artifactId>joda-time</artifactId>
+	</dependency>   
+	<dependency>
+    	<groupId>cglib</groupId>
+    	<artifactId>cglib</artifactId>
+	</dependency>
+  </dependencies>
+  <build>
+    	<finalName>pineapple-web-application-${project.version}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<configuration>
+					<extension>true</extension>					
+					<bindingIncludes>
+						<include>*.xjb</include>
+					</bindingIncludes>					
+				</configuration>
+			</plugin>		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>			
+				<artifactId>maven-war-plugin</artifactId>
+				<!-- 
+					Exclude XML-API's and stax API's
+					http://www.frommyworkshop.blogspot.com/2010/07/configure-apache-cxf-project-to-deploy.html  
+				-->
+				<configuration>
+          			<packagingExcludes>WEB-INF/lib/xml-apis-*.jar, WEB-INF/lib/stax-api-*.jar</packagingExcludes>
+				</configuration>				
+			</plugin>				
+		
+            <!-- Run the application using "mvn jetty:run" -->
+            <plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>                
+				<configuration>
+ 					<connectors>
+       					<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+          					<host>localhost</host>
+          					<port>8080</port>
+       					</connector>
+     				</connectors>				
+				    <systemProperties>
+				      <systemProperty>
+				        <name>pineapple.home.dir</name>
+				        <value>${user.home}/.pineapple</value>
+				      </systemProperty>				    
+				      <systemProperty>
+				        <name>log4j.configuration</name>
+				        <value>file:./target/test-classes/log4j.properties</value>
+				      </systemProperty>
+				    </systemProperties>
+  				</configuration>
+  				<dependencies> 
+					<dependency>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>
+						<version>${jetty.slf4j.version}</version>
+					</dependency>		
+					<dependency>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-log4j12</artifactId>
+						<version>${jetty.slf4j.version}</version>				
+					</dependency>						
+			        <dependency>
+			          <groupId>log4j</groupId>
+			          <artifactId>log4j</artifactId>
+					  <version>${log4j.version}</version>
+			        </dependency>			        
+       			</dependencies>
+  			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>			
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>Copy schemas to main web site in pineapple-project.....</id>
+						<phase>site</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>../../../target/site/ns/app</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+									<includes>
+          								<include>webapplication_1_0.xsd</include>
+        							</includes>									
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>						  			
+		</plugins>
+	</build>  
+</project>

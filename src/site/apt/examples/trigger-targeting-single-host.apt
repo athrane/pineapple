@@ -1,0 +1,85 @@
+ ------
+ How-to: Define a trigger to monitor and restart a service
+ ------
+ Allan Thrane Andersen
+ ------
+ May 2016 
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Define a trigger to monitor and restart a service
+
+	A trigger can be defined as part of a plugin specific model.
+	A trigger is configured to executed based on some condition.
+	The condition(s) can either be the result of targeting the model to a resource
+	and/or the operation used to invoke the operation.
+		
+	In this example, we define a trigger which based on the result and the operation.
+
+* Creating a trigger to run when a test fails.
+
+	Two modules are used. 
+	One module <<<infrastructure-test-005-monitor-docker-host>>> contains a test. 
+	The other module <<<ssh-013-start-docker-host>>> contains a corrective action if the test fails.
+
+** The test module
+	
+	<linux-vagrant> is used as the target environment.
+	A model named <<<linux-vagrant.xml>>> is defined in the <<<infrastructure-test-005-monitor-docker-host>>> module. 
+	The model defines a test to verify whether a Docker host listens on 192.168.34.10:8082.
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+	xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+	<mmd:model target-resource="infrastructure-test" description="Test (and restart) Docker">
+		<mmd:content>
+			<itp:infrastructure>
+				<itp:tcp-connection-test host="192.168.34.10" description="Test Docker host is listening on 192.168.34.10:8082">
+					<itp:port value="8082" />
+				</itp:tcp-connection-test>
+			</itp:infrastructure>
+		</mmd:content>
+		<mmd:trigger name="Restart Docker host" on-target-operation="test" on-result="{failure,error}" module="ssh-013-start-docker-host" environment="linux-vagrant" operation="deploy-configuration" />					
+	</mmd:model>
+</mmd:models>
++---
+ 
+ 	The model defines a trigger which is executed if the model is executed with the <<<test>>> operation and the model execution concludes with 
+ 	either a <<<failure>>> or an <<<error>>>.
+ 	
+ 	The trigger is defined to invoke the module named <<<ssh-013-start-docker-host>>> with the model for the <<<linux-vagrant>>> environment 
+ 	and the operation <<<deploy-configuration>>> to execute the corrective action.
+ 	
+** The corrective action module
+ 	
+	A model named <<<linux-vagrant.xml>>> for the target environment <linux-vagrant> is defined in the <<<ssh-013-start-docker-host>>> module. 
+	The model defines a corrective action to be taken using SSH.
+	The action is targeted to the host <ssh-host1>.
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+   <mmd:model target-resource="ssh-node1"  target-operation="deploy-configuration" description="Restart Docker host" >   
+        <mmd:content>
+            <shp:ssh>
+                <shp:execute command="sudo service docker start"/>
+            </shp:ssh>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++---
+
+* Execution of the test
+
+	When the <<<infrastructure-test-005-monitor-docker-host>>> module (and the <<<linux-vagrant>>> environment) is executed with the <<<test>>> 
+	operation then the test is executed at the targeted hosts. 
+
+	If the test fails at the targeted host then the trigger is executed. 
+	
+	The trigger will the invoke <<<ssh-013-start-docker-host>>> module (in the <<<linux-vagrant>>> environment) with the <<<deploy-configuration>>> operation.
+	The module is targeted to the same host as the test module. 
+	The module will (re)start the Docker host.
+	

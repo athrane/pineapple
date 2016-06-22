@@ -1,0 +1,99 @@
+ ------
+ How-to: Distribute, execute and delete a module from an agent
+ ------
+ Allan Thrane Andersen
+ ------
+ September 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Distribute, execute and delete a module from an agent
+
+* Overview
+
+	This example illustrates how the agent plugin can be used to distribute to remote a Pineapple agent,
+	execute the module and the delete the module after execution. 
+
+* Define the module 
+
+	Pineapple's unit of work is modules. A module is a self contained unit which 
+	can contain models, scripts and binaries. Models serves to specify test cases, 
+	deployment of applications, configuration of devices or execution of scripts. 
+	
+	The default directory for modules is <<<$\{user.home\}/.pineapple/modules>>> so we will 
+	create a module named <<<agent-distribute-and-execute-module>>> there. The module 
+	for this example will end up with the structure:
+
++---
+agent-distribute-and-execute-module
+ |
+ +--- models	 
+       +--- local.xml 
++---
+	
+* Define the module model
+
+	The model file for deletion of the model <planet-violet-001>:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+    xmlns:pap="http://pineapple.dev.java.net/ns/plugin/agent_1_0" >
+    <mmd:model target-resource="agent-node1">
+        <mmd:content>
+            <pap:agent>
+                <pap:distribute-and-execute-operation module="planet-violet-001" operation"deploy-configuration" environment="linux-vagrant" />
+            </pap:agent>			
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++----	 
+
+** The configuration details
+
+	Two schema are used in the model file. The <<<http://pineapple.dev.java.net/ns/module_model_1_0>>> is used
+	to define the namespace <<<mmd>>> which defines the general infrastructure for models. 
+	The <<<http://pineapple.dev.java.net/ns/plugin/agent_1_0>>> schema is used to 
+	define the namespace <<<pap>>> which is used to define the model for the agent plugin. 
+	Since multiple schemas are used to define the model file, the elements are qualified.
+	
+	The <<<target-resource>>> attribute defines a reference to the resource which is targeted when the 
+	model executed. In this case, the value <<<agent-node1>>> is a reference to a resource which defines a Pineapple agent.
+	
+	The <<<pap:agent>>> element defines the root of model for the agent plugin. The 
+	<<<pap:distribute-and-execute-operation>>> element defines the three steps:
+	
+	* Distribute the module to a remote Pineapple agent.
+	
+	* Execute the module at the remote Pineapple agent.	
+	
+	* Delete the module at at the remote Pineapple agent..
+	
+	[]  
+	
+	The <<<pap:distribute-and-execute-operation>>> defines these attributes::
+	
+	* <<<module>>> defines the name of the module, which must already be present at the agent.
+
+	* <<<environment>>> defines the name of the target environment, e.g. the model which is used 
+	for the operation. 	
+		
+	* <<<operation>>> defines the name of the operation to invoke.	
+		
+	[]  
+	
+		 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<agent-distribute-and-execute-module>>
+	
+	* Select the <<local>> model.
+	
+	* Invoke any operation to distribute, execute and delete.
+	
+	[]
+
+	

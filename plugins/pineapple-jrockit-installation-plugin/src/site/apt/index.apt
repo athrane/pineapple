@@ -1,0 +1,75 @@
+ ------
+ JRockit installation plugin
+ ------
+ Allan Thrane Andersen 
+ ------
+ November 2010
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<JRockit installation plugin>> implements functionality to install the JRockit JVM and validate 
+	the installation. For more information about the JRockit JVM, please refer to the page
+	{{{http://www.oracle.com/technetwork/middleware/jrockit/overview/index.html}The official Oracle JRockit JVM home page.}}	
+	
+	The plugin supports the installation of these releases of JRockit:
+	
+	* R27
+	
+	* R28
+	
+	[]
+	 	    
+* Usage
+
+	Go to the {{{./usage/index.html}Plugin Usage page}} for instructions on using the plugin. 
+
+** Supported operations
+
+	The plugin supports the default operations:
+	
+    * <<deploy-configuration>> (from the deployment workflow). When the plugin is invoked with this 
+    operation, the plugin installs the JRockit JVM.
+	
+    * <<undeploy-configuration>> (from the deployment workflow). When the plugin is invoked with this 
+    operation, the plugin uninstalls the JRockit JVM.
+	
+    * <<test>> (from the test workflow). When the plugin is invoked with this operation, the plugin 
+	validates the whether the specified JVM is installed.
+        
+	[]		
+		
+	For more information about the default operations, refer to the	
+	{{{../../usage/operations.html}Operation and workflow reference.}}
+
+** Plugin schema
+
+	The plugin defines a schema named <<JRockit installation plugin schema>> 
+	for definition of models in module model files.	The schema defines the namespace 
+	<<<http://pineapple.dev.java.net/ns/plugin/jrockit_installation_1_0>>>.	For more information about 
+	where the schema can be found, refer to the 
+	{{{../../usage/schemas-plugins.html}Schema locations for plugins page.}}
+
+* Examples
+
+	To provide you with better understanding on some usages of the plugin,
+	you can take a look into the following examples:
+
+  * {{{./examples/install-r27.html}How-to: Install JRockit R27.}}
+  
+  * {{{./examples/install-r28.html}How-to: Install JRockit R28.}}
+  
+  * {{{./examples/uninstall-r27.html}How-to: Uninstall JRockit R27.}}
+  
+  * {{{./examples/uninstall-r28.html}How-to: Uninstall JRockit R28.}}
+        
+  []
+  
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	

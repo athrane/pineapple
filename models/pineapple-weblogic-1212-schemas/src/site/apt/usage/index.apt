@@ -1,0 +1,25 @@
+ ------
+ Usage
+ ------
+ Allan Thrane Andersen
+ ------
+ April 2011
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Introduction
+	
+* Configuration
+
+	To use the OXM classes include a Maven dependency to this project:
+	
++----	
+  <dependency>
+    <groupId>com.alpha.pineapple</groupId>
+    <artifactId>pineapple-weblogic-1212-schemas</artifactId>
+	<version>1.0.0</version>
+  </dependency>
++----		
+
+

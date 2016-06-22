@@ -1,0 +1,69 @@
+ ------
+ How-to: Configure usage of the wildcard environment for resources 
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2013
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Configure usage of the wildcard environment for resources
+
+* Define the wildcard environment
+
+	Define the wildcard environment in the the environment configuration by adding a
+	new environment named <<<"*">>> to the <<<resources.xml>>> file:
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/environment_1_0 
+                      http://pineapple.dev.java.net/ns/environment_1_0.xsd">
+
+  <environments>
+    <environment description="Wildcard environment." id="*">
+      <resources>
+      </resource>
+    </resources>
+    </environment>
+
+    ....
+
+  </environments>
+</configuration> 
++---
+
+* Define resources in the wildcard environment
+
+	Add resource a definition to the wildcard environment to enable usage of the 
+	resource in ALL defined and UNDEFINED environments:
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/environment_1_0 
+                      http://pineapple.dev.java.net/ns/environment_1_0.xsd">
+
+  <environments>
+    <environment description="Wildcard environment." id="*">
+      <resources>
+        <resource plugin-id="com.alpha.pineapple.plugin.net" id="infrastructure-test"/>      
+      </resource>
+    </resources>
+  </environment>
+
+    ....
+
+  </environments>
+</configuration> 
++---
+ 
+	The resource named <<<infrastructure-test>>> is now available in all environments. 
+	
+	
+
+
+

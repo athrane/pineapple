@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- "forDetatchAfterOpen" and forDetatchAfterCancel are dummy attributes 
+	whose purpose is to trigger the detach converter to close the modal dialog 
+	window. -->
+<window title="Error Message" apply="org.zkoss.bind.BindComposer"
+	viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.ErrorMessageBoxModalPanel')"
+	width="50%" border="normal"
+	forDetatchAfterOpen="@load(true,after='confirm') @converter('com.alpha.pineapple.web.zk.utils.DetachConverter')">
+	<grid>
+		<columns visible="false">
+			<column width="20%" align="right" />
+			<column width="80%" />
+		</columns>
+		<rows>
+			<row>
+				<cell valign="top" height="100%">
+					<label value="Description" />
+				</cell>
+				<cell valign="top">
+					<textbox id="description" value="@load(vm.description)"
+						readonly="true" style="font-weight:bold;" width="90%" />
+				</cell>
+			</row>
+			<row>
+				<cell valign="top" height="100%">
+					<label value="Strack Trace" />
+				</cell>
+				<cell valign="top">
+					<textbox id="stacktrace" value="@load(vm.stacktrace)" rows="10"
+						style="font-weight:bold;overflow:auto;" width="90%" height="200px" />
+				</cell>
+			</row>
+			<row>
+				<cell colspan="2" align="center">
+					<button id="confirmButton" label="OK" onClick="@command('confirm')"
+						mold="trendy" />
+				</cell>
+			</row>
+		</rows>
+	</grid>
+</window>

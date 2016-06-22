@@ -1,0 +1,517 @@
+ ------
+ The WebLogic MBeans model
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2012
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+The WebLogic MBeans model
+		
+	The MBeans model is implemented in the WebLogic MBean API which is located in the
+	packages <<<weblogic.management.configuration.*>>>.
+
+	Subjects regarding the MBeans model are:
+	
+	* The model layers.
+	
+		* MBeans types in in WebLogic.
+	
+		* MBean servers in WebLogic.
+	
+		* JMX domains in WebLogic.		
+		
+		* Steps for editing a WebLogic configuration.
+		
+		* WebLogic MBeans links.		
+		
+		[]		
+	
+	* Searching for MBeans in WebLogic.
+	
+	* Creation and deletion of MBeans in WebLogic.
+	
+		* Resolution of create and destroy methods.
+		
+		[]
+		
+	* Mapping from attribute names in the XMLBeans model to the MBeans model.
+	
+		* Different casing for acronyms.		
+		
+		* Plural forms are used for nouns in the MBeans model.
+		
+		[]		
+				
+	* Used type information in traversal of an MBean model.
+		
+		* Representation of simple types.	
+	
+		* Representation of enumerations.	
+
+		* Representation of collections.
+				
+		[]	
+		
+	* Handling default values.		
+	
+	* Resolution of attribute types.
+	
+	* Resolution of attribute values	
+	
+	* Resolution of collection attribute values.	
+		
+	[] 		
+
+* The model layers
+
+	The WebLogic MBeans can be accessed in the two different ways:
+	
+	* Using the JMX API, i.e. operations like <<<mbeanServer.getAttribute(...)>>>
+	
+	* Using dynamic proxies.	
+
+	[]
+
+	The plugin uses the JMX API to discover information and access MBeans..
+	 
+** MBeans types in in WebLogic
+
+	There are two types of MBeans in WebLogic: 
+	
+		* <<Configuration MBeans>> - which configures servers and resources. 
+		There are three sub types of <<Configuration MBeans>> in WebLogic:
+	
+			* <<Domain Configuration MBeans>> - configures server, containers and 
+			other services that the server provide to applications.
+		
+			* <<System Module MBeans>> - configures modules that have been deployed 
+			independently of applications. System modules are available to all 
+			applications. 
+		
+			* <<Security MBeans>> - configures WebLogic security providers and 
+			provide security-related services.
+		
+			[]
+		
+		* <<Runtime MBeans>> -  which contains information about the runtime 
+		state of servers and its resources. 
+	
+		[]
+		
+** MBean servers in WebLogic
+
+	MBean Servers in a WebLogic Server Domain:
+	
+	* <<Domain Runtime MBean Server>> - contains MBeans for domain-wide services. 
+	This MBean server also acts as a single point of access for MBeans that reside 
+	on Managed Servers. Only the Administration Server hosts an instance of this MBean server.
+
+	* <<Runtime MBean Server>> - contains <<Runtime MBeans>>. Each server in the domain 
+	hosts an instance of this MBean server. 
+	
+	* <<Edit MBean Server>> - contains <<Configuration MBeans>> and operations that control 
+	the configuration of a WebLogic Server domain. It exposes a <<<ConfigurationManagerMBean>>> 
+	for locking, saving, and activating changes. Only the Administration Server hosts an instance 
+	of this MBean server.
+	
+	[]
+	
+	Please notice: When working with security MBeans, two different MBean servers are used:
+
+		* <<Domain Runtime MBean Server>> (or <<Runtime MBean Server>>) for 
+		adding users, groups, roles, and policies, or to invoke other operations 
+		in a security provider MBean.
+		
+		* <<Edit MBean Server>> for setting the value of a security MBean attribute.	
+				
+	Within each MBean server, WebLogic Server registers a service MBean 
+	under a simple object name. The attributes and operations in this MBean 
+	serve as your entry point into the WebLogic Server MBean hierarchies:
+
+	* MBean server => Service MBean
+	
+	* Domain Runtime MBean Server => DomainRuntimeServiceMBean
+	
+	* Runtime MBean Servers	=> RuntimeServiceMBean
+
+	* The Edit MBean Server	=> EditServiceMBean
+
+	[]	
+
+	Links: 
+	
+	MBean Servers: http://edocs.beasys.com/wls/docs103/jmx/understandWLS.html#wp1127769	
+	Choosing an MBean Server to Manage Security Realms: http://e-docs.bea.com/wls/docs100/jmx/editsecurity.html#wp1131738	
+		
+		
+** JMX domains in WebLogic
+
+	* <<<com.bea:>>> is the JMX domain name for <<Domain Configuration MBeans>> and <<System Module MBeans>>>.
+	
+	* <<<Security:>>> is the JMX domain name for some <<Security MBeans>>, like...
+	
+	[] 
+		
+** Steps for editing a WebLogic configuration
+ 
+	<<Start an Edit Session>>
+
+	Initiate a connection to the Edit MBean Server.
+
+	Get the object name for ConfigurationManagerMBean.
+
+	Start an edit session.
+	
+	<<Change Attributes or Create New MBeans>>
+
+	Navigate the hierarchy of the edit tree and retrieve an object name for 
+	the MBean.
+	
+	To change the value of an MBean attribute, invoke…
+	
+	Validate your changes
+	
+	<<Save Changes>>
+
+	Save your changes by invoking the <<<ConfigurationManagerMBean>>> save() 
+	operation.
+
+	<<Activate your saved changes>>
+
+	Invoke the <<<ConfigurationManagerMBean>>> activate(..)
+
+	Close your connection to the MBean server
+
+
+** WebLogic MBeans links
+	
+	* The WebLogic Server® MBean Reference: http://edocs.beasys.com/wls/docs103/wlsmbeanref/core/index.html
+	
+	* WebLogic Server MBean Data Model: http://edocs.beasys.com/wls/docs103/jmx/understandWLS.html#wp1081116
+	
+	* Containment and Reference Relationships: http://edocs.beasys.com/wls/docs103/jmx/understandWLS.html#wp1127244
+		
+	* WebLogic Server MBean Object Names: http://edocs.beasys.com/wls/docs103/jmx/understandWLS.html#wp1116185
+		
+	* Managing Security Realms with JMX: http://e-docs.bea.com/wls/docs100/jmx/editsecurity.html
+	
+	[] 
+
+* Searching for MBeans in WebLogic
+
+	The convention of registration of WebLogic MBeans is:
+	
++----
+com.bea:Name=name,Type=type[,TypeOfParentMBean=NameOfParentMBean]
+[,TypeOfParentMBean1=NameOfParentMBean1]...
++----
+
+	where:
+
+    * <<<com.bea:>>> is the JMX domain name. For WebLogic Server MBeans, the JMX domain is always <<<com.bea>>>.
+     
+    * Name=<name>,Type=<type[,TypeOfParentMBean=NameOfParentMBean]
+      [,TypeOfParentMBean1=NameOfParentMBean1]>... is a set of JMX key properties.
+
+	Object name properties:
+	
+	* Name=<name> : The string that you provided when you created the resource that the MBean represents. 
+	For example, when you create a server, you must provide a name for the server, such as MS1. 
+	The ServerMBean that represents MS1 uses Name=MS1 in its JMX object name. If you create an MBean, 
+	you must specify a value for this Name component that is unique amongst all other MBeans in a domain. 
+	
+	* Type=<type> : For configuration MBeans and runtime MBeans, the short name of the MBean’s type. 
+	The short name is the unqualified type name without the MBean suffix. For example, for an MBean 
+	that is an instance of the ServerRuntimeMBean, use ServerRuntime. For MBeans that manage services 
+	targeted at the system level, the fully qualified name of the MBean’s type including any Bean or 
+	MBean suffix. For example, for an MBean that manages a system-level JDBC data source, 
+	use weblogic.j2ee.descriptor.wl.JDBCDataSourceBean. 
+
+	* <TypeOfParentMBean=NameOfParentMBean> : To create a hierarchical namespace, WebLogic Server MBeans 
+	use one or more instances of this attribute in their object names. The levels of the hierarchy are 
+	used to indicate scope. For example, a LogMBean at the domain level of the hierarchy manages the 
+	domain-wide message log, while a LogMBean at a server level manages a server-specific message log.
+	
+		* WebLogic Server child MBeans with implicit creator methods use the same value for the Name 
+		property as the parent MBean. For example, the LogMBean that is a child of the MedRecServer 
+		Server MBean uses Name=MedRecServer in its object name: 
+		medrec:Name=MedRecServer,Type=Log,Server=MedRecServer
+		
+		* WebLogic Server cannot follow this convention when a parent MBean 
+		has multiple children of the same type. 
+
+		[]
+
+	[]
+
+* Creation and deletion of MBeans in WebLogic
+
+	The WebLogic MBeans Model doesn't follow the normal conventions in regard to creation and deletion 
+	of MBeans where instances are created and destroyed using the <<<createMBean(..)>>> methods on the 
+	<<<MBeanServer>>>. 	
+
+	In the WebLogic MBeans Model a new MBean is created by invoking <<<createXXX()>>> and 
+	destroyed by invoking <<<destroyXXX>>> on the MBean where the new MBean is an attribute.
+	
+	Example: The <<<Server>>> MBean is an attribute of <<<Domain>>> by the name <<<Servers>>> which
+	contains all servers in the domain. A new <<<Server>>> MBean is created by invoking 
+	<<<createServer(name)>>>.
+	
+** Resolution of create and destroy methods
+
+	When a new MBean should be created (either by <<<CreateMBeanCommand>>> or <<<ResolvedModelIntializerImpl>>>)
+	then there is mismatch between the attribute naming in the WebLogic XML schemas represented by the XMLBeans 
+	model and the corresponding attribute name in the MBeans model.
+	
+	This mismatch resolved during model resolution where the repository <<<MetadataRepositoryImpl>>> computes 
+	the required mapping as described in the next section.
+	
+	Furthermore, the repository also supports
+	{{{./implementation.html#Looking_up_the_create_method_for_an_MBean}lookup of the create method}} 
+	(and destroy method) for an MBean if it can be created manually.       
+
+* Mapping from attribute names in the XMLBeans model to the MBeans model 
+
+	The {{{./resolved-models.html#Handling_different_naming standards}Construction and traversal of resolved models}} 
+	page describes the mismatch between the attribute naming in the WebLogic XML schemas represented by the XMLBeans 
+	model and the corresponding attribute name in the MBeans model.
+	
+	This mismatch is resolved during model resolution by the call chain:
+	
+		[[1]] <<<MBeansObjectNameBasedModelResolverImpl.resolveAttribute(  attributeName, participant )>>> 
+		where the <<<attributeName>>> is the attribute from XMLBeans model.
+		
+		[[2]] A part of the attribute resolution is to get the meta data for the MBean attribute by invoking 
+		<<<session.getAttributeInfo(objName, attributeName)>>>.
+		
+		[[3]] The session delegates the call to <<<MetadataRepositoryImpl.getAttributeInfo(mbeanInfo, attributeName)>>>.
+		
+		[[4]] The <<<MetadataRepositoryImpl>>> serves to act as a cache for meta data and to support the mapping
+		of attribute names from the XMLBeans model to the MBeans model. The mapping is done by searching for the
+		attribute name in a pool of all registered attribute names for the MBean.   
+				
+		[]
+		
+** Different casing for acronyms
+
+	The <<<MBeanMetadataImpl>>> resolves differences in casing by storing all attribute names 
+	internally in lower case.		
+		 	  	
+** Plural forms are used for nouns in the MBeans model		 	  	
+	 		 	  	
+	The <<<AttributeMetadataImpl>>> class handles the difference between singular and plural forms for nouns by computing 
+	an alternate name for each MBean attribute. As a result each attribute can be accessed using one of two names::
+	
+	* <<Name>> - The MBean attribute name discovered from the MBean meta data at runtime, e.g <<<MBeanAttributeInfo>>>.   
+	
+	* <<Alternate name>> - Computed name generated by <<<AttributeMetadataImpl>>> (see
+	{{{./implementation.html#Computation_of_alternate_attribute_name}Computation of alternate name for each attribute}})	
+	and stored by <<<MBeanMetadataImpl>>>
+	(see {{{./implementation.html#Algorithm_for_storage_of_attributes}Algorithm for storage of attributes}}).
+	
+	[] 
+
+** Attributes which are aliases 
+	
+	Examples of cases with aliases:
+	
+		* The MBeans model defines <<<DomainMBean.AppDeployments>>> and <<<DomainMBean.InternalAppDeployments>>> and the 
+		XMLBeans models defines <<<Domain.AppDeployment>>>.    
+	
+		* The MBeans model defines <<<DomainMBean.Libraries>>> and <<<DomainMBean.InternalLibraries>>> and the 
+		XMLBeans models defines <<<Domain.Library>>>.    
+
+	[]
+	
+	The general idea for resolution of aliases is that the the alias is the name not exposed in the XMLBeans model:
+	
+		* Of the two attributes <<<DomainMBean.AppDeployments>>> and <<<DomainMBean.InternalAppDeployments>>> then
+		<<<DomainMBean.AppDeployments>>> have a corresponding attribute in the XMLBeans model <<<Domain.Library>>>.
+		
+		* <<<DomainMBean.AppDeployments>>> is the primary name for the attribute.		
+		
+		* <<<DomainMBean.InternalAppDeployments>>> is the alias for the attribute.		
+		
+	[]
+	
+	The algorithm is implemented in <<<MBeanMetadataImpl>>>
+	{{{./implementation.html#Algorithm_for_storage_of_attributes}as part of the storage of attributes}}, and it handles the case by:
+	
+	* Compute a common prefix from the attribute name and the alternate name (see: 
+	{{{./implementation.html#Computation_of_alternate_attribute_name}Computation of alternate name for each attribute}}).
+		
+	* If the names share a common prefix (which is non zero) then the attribute is considered the primary and is stored. 
+	Overwrite the existing one, since it will have defined by an alias.
+	
+	* If the names doesn't share a common prefix then we have an alias and it is only stored if name isn't already in use.  	
+	
+	[]
+						
+***	Example of resolution 
+	
+	Step 1: Resolution of the  <<<Library>>> attribute (from med XMLBeans model).			
+						
++---
+<name=libraries>
+<altname=library>
++---
+
+	Since the alternate name isn't in use then attribute is stored under the two above names. 
+	
+	Step 2: Resolution of the  <<<InternalLibraries>>> attribute (from med MBeans model). 	
+
++---
+<name=internallibraries>
+<altname=library>
++---
+
+	The attribute is stored under the name <<<internallibraries>>>. 
+	
+	Since the name <<<library>>> is already in use and the names doesn't share a common prefix then the 
+	attribute isn't stored under an alternate name.
+	
+	The result is:
+	
+	* <<<libraries>>> maps to the meta data for the MBean attribute <<<Libraries>>>.
+	
+	* <<<library>>> maps to the meta data for the MBean attribute <<<Libraries>>>.	
+		 
+	* <<<internallibraries>>> maps to the meta data for the MBean attribute <<<InternalLibraries>>>.
+	
+	[]	
+
+	Step 3: Resolution of the  <<<InternalAppDeployments>>> attribute (from med MBeans model).	
+
++---
+<name=internalappdeployments>
+<altname=appdeployment>
++---
+	
+	Since the alternate name isn't in use then attribute is stored under the two above names.	
+	The attribute is stored under two above names.
+
+	Step 4: Resolution of the  <<<AppDeployment>>> attribute (from med XMLBeans model)..	
+
++---
+<name=appdeployments>
+<altname=appdeployment>
++---
+
+	The attribute is stored under the name <<<appdeployments>>>
+	
+	Since the altetnate is already in use and the two names share a common prefix <<<appdeployment>>> 
+	then this is considered the primary attribute and it overwrites the value of the alternate 
+	name <<<appdeployment>>>.  
+
+	The result is:
+	
+	* <<<internalappdeployments>>> maps to the meta data for the MBean attribute <<<InternalAppDeployments>>>.
+	
+	* <<<appdeployments>>> maps to the meta data for the MBean attribute <<<AppDeployments>>>.	
+		 
+	* <<<appdeployment>>> maps to the meta data for the MBean attribute <<<AppDeployments>>>.
+	
+	[]	
+
+	  		 	  			 	  			 	  	 			
+* Used type information in traversal of an MBeans model
+		
+** Representation of simple types in the MBeans model
+
+	Attributes which contains simple types are implemented using
+	primitive Java types, e.g. <<<boolean>>>, <<<int>>>. 
+		
+** Representation of enumerations in the MBeans model
+	
+	Attributes which contains enumerated values is implemented with 
+	primitive types either <<<java.lang.String>>> or <<<int>>> which 
+	have a range of legal values.
+	
+	<Example:> 	In the MBeans model the <<<AdministrationProtocol>>> attribute defined 
+	on the <<<DomainMBean>>> is implemented as a <<<java.lang.String>>> with have 
+	a range of legal values.		
+
+	<Example:> 	In the MBeans model the <<<DebugLevel>>> attribute defined 
+	on the <<<SNMPAgent>>> is implemented as a <<<int>>> with have 
+	a range of legal values.		
+
+** Representation of collections in the MBeans model
+
+*** Representation of collections in the resolved model
+
+	During creation of the resolved model, two type of object needs to be considered:
+	
+	* The type of the collection, e.g. collection of XX, which is represented as an array of <<<ObjectName>>>, such as <<ObjectName[]>>.
+	
+	* The type for the content of the collection, e.g. <<ObjectName>>.
+	
+	[]
+		
+	When the resolved model is created, a resolved model node is created to represent the container. 
+	Furthermore multiple model nodes are created as child nodes to the container node to represent 
+	each entry in the collection. The container model node is represented by the 
+	<<<ResolvedCollection>>>. The child nodes are (typical) represented by <<<ResolvedObject>>>.  
+		
+*** Type information for collections
+
+	The MBeans model defines meta data about MBean collections in different ways:
+	
+	* Each collection is a attribute on an MBean. An example is <<<Domain.Servers>>>. As such meta data is 
+	defined about the attribute in the form of an <<<MBeanAttributeInfo>>>> object which describes the attribute.
+	
+	* Each value in the collection is an <<<MBean>>>. An example is <<<Domain.Servers>>> where the content of 
+	the collection is an <<<Server>>> MBean represented by an <<<ObjectName>>> in the collection. For a <<<Server>>> 
+	MBean, meta data exist in the form of an <<<MBeanInfo>>> object.    
+     	 	
+	[]
+	 
+	
+*** Representing collections and collection content in the resolved model	
+	
+	During resolution of the MBeans model, the <<<MBeanAttributeInfo>>>> is stored as type for attributes
+	since it is useful during creation and deletion of MBeans.
+
+	The <<<MBeanAttributeInfo>>> is also as type for <<both>> the container type and the
+	content of the collection:
+	
+	* When the MBeans model resolver resolves a attribute to collection then the type is stored as 
+	<<<MBeanAttributeInfo>>> by the <<<MBeansObjectNameBasedModelResolverImpl.resolveAttribute()>>> where
+	the attribute info is resolved from the MBean which contains the attribute. 
+	
+	* When the MBeans model resolver resolves the content of the collection then the type from the collection,
+	i.e. the <<<MBeanAttributeInfo>>>, also is stored as type for each individual entry in the collection by 
+	the <<<MBeansObjectNameBasedModelResolverImpl.resolveCollectionAttributeValue()>>>.
+
+	[]	    
+	
+* Handling default values		
+	
+	TODO: write..
+		
+* Resolution of attribute types
+
+	The MBeans model defines meta data about MBeans and attributes in different ways:
+	
+	* Meta data is defined for each attribute on an MBean in the form an <<<MBeanAttributeInfo>>>> which 
+	describes the attribute. An example is <<<Domain.Servers>>>. For attributes which is an MBean, the 
+	attribute info also describe the name of the methods to create and delete MBean instances (.
+	
+	* Each value in the collection is an <<<MBean>>>. An example is <<<Domain.Servers>>> where the content of 
+	the collection is an <<<Server>>> MBean represented by an <<<ObjectName>>> in the collection. For a <<<Server>>> 
+	MBean, meta data exist in the form of an <<<MBeanInfo>>> object.    
+     	 	
+	[]
+	
+		
+* Resolution of attribute values	
+	
+	TODO: write..
+		
+* Resolution of collection attribute values	
+
+	TODO: write..
+

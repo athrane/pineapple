@@ -1,0 +1,134 @@
+ ------
+ How-to: Configure the home directory for the stand-alone web application
+ ------
+ Allan Thrane Andersen
+ ------
+ May 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Configure the home directory for the stand-alone web application
+
+	The <<home directory>> is the root directory for the 
+	{{{../../../../usage/runtime-directories.html}runtime directory structure}}	 
+	used by Pineapple. The directory structure contains:
+	
+		* {{{../../../../usage/configuration-environment.html}The environment configuration}}
+		
+		* Modules 
+		
+		* Reports 
+		
+		* Log files
+		
+		[]
+	
+	Two examples are included:
+	
+	* How to configure the home directory at runtime.
+	
+	* How to configure the home directory at development time.
+	
+	[]	
+	
+* Configuration of the home directory at runtime 
+
+** Where the home directory is configured in the stand-alone web application
+
+	The unzipped client contains the directory layout:
+	
++---+
+pineapple-standalone-web-client-VERSION
+     |     
+     +--- runPineapple.cmd
+     +--- runPineapple.sh     
+     |     
+     +--- bin     
+     |     +--- helper scripts     
+     |          
+     +--- conf     
+     |     +--- log4j.properties
+     |     `--- jetty.xml
+     |               
+     +--- webapps
+     |     `--- pineapple-web-application-war.war
+     |               
+     +--- lib
+           +--- pineapple-jetty-starter-1.0.jar
+           +--- jetty-*.jar
+           +--- log4j-1.2.14.jar
+           `--- servlet-api-2.5.jar
++---+
+
+	The home directory is configured in the <<<runPineapple>>> scripts
+	where it is defined by the system property <<<pineapple.home.dir>>>.
+	
+**	On Windows: runPineapple.cmd
+
+	In the <<<runPineapple.sh>>> script, the home directory is defined by the property:
+	  			
++---
+if not defined PINEAPPLE_HOME      set PINEAPPLE_HOME=%USERPROFILE%\.pineapple
++---
+
+	If the environment variable <<<PINEAPPLE_HOME>>> isn't defined when the script is invoked, 
+	then the value of the home directory is resolved from the variable <<<USERPROFILE>>> which
+	defines the Windows Home directory for the current user.
+	   	
+*** Example: Change the home directory to c:/temp
+ 
+	Change the value of property <<<pineapple.home.dir>>>:
+	
++---
+if not defined PINEAPPLE_HOME      set PINEAPPLE_HOME=c:/temp
++---	
+	
+	The client must be restarted for the change to take effect as the 
+	configuration is only read when the client starts up.
+
+**	On Linux: runPineapple.sh
+
+	In the <<<runPineapple.sh>>> script, the home directory is defined by the property:
+	  			
++---
+PINEAPPLE_HOME="${PINEAPPLE_HOME:-${HOME}/.pineapple}"
++---
+
+	If the environment variable <<<PINEAPPLE_HOME>>> isn't defined when the script is invoked, 
+	then the value of the home directory is resolved from the variable <<<$\{HOME\}>>> which
+	defines the home directory for the current user.
+	   	
+*** Example: Change the home directory to /var/pineapple
+ 
+	Change the value of property <<<PINEAPPLE_HOME>>>:
+	
++---
+PINEAPPLE_HOME="${PINEAPPLE_HOME:-/var/pineapple}"
++---	
+	
+	The client must be restarted for the change to take effect as the 
+	configuration is only read when the client starts up.
+	
+* Configuration of the home directory at development time
+
+**	On Windows: runPineapple.cmd
+
+	The configuration of the home directory is located in the project 
+	<<<pineapple-standalone-web-client-$\{pineapple.release.version}>>> in the directory: 
+	<<<src/main/release-dir/runPineapple.cmd>>>.
+	
+	Modify the property as shown above.
+		
+	The client must be built and started for the change to take effect.
+		
+**	On Linux: runPineapple.sh
+
+	The configuration of the home directory is located in the project 
+	<<<pineapple-standalone-web-client-$\{pineapple.release.version}>>> in the directory: 
+	<<<src/main/release-dir/runPineapple.sh>>>.
+	
+	Modify the property as shown above.
+		
+	The client must be built and started for the change to take effect.
+	

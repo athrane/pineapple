@@ -1,0 +1,120 @@
+ ------
+ Schema locations for plugins
+ ------
+ Allan Thrane Andersen 
+ ------
+ Jnauary 2009
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+
+Schema locations for plugins
+	
+	The schemas can be found in two locations:
+	
+	* The project website.	
+	
+	* The jar files for each for plugin.
+		
+	[]
+
+* Agent plugin
+
+	The schema can be found at <<{{{../ns/plugin/agent_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/agent_1_0.xsd}}>>
+
+	The schema can be found in the root of the jar created by the
+	{{{../pineapple-plugins/pineapple-agent-plugin/index.html}pineapple-agent-plugin project.}}	
+	The jar file is named <<<pineapple-agent-plugin-$\{version\}.jar>>>.	
+
+* Composite execution plugin
+
+	The schema can be found at <<{{{../ns/plugin/composite_execution_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0.xsd}}>>
+
+	The schema can be found in the root of the jar created by the
+	{{{../pineapple-plugins/pineapple-composite-execution-plugin/index.html}pineapple-composite-execution-plugin project.}}	
+	The jar file is named <<<pineapple-composite-execution-plugin-$\{version\}.jar>>>.	
+
+* Docker plugin
+
+	The schema can be found at <<{{{../ns/plugin/docker_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/docker_1_0.xsd}}>>
+
+	The schema can be found in the root of the jar created by the
+	{{{../pineapple-plugins/pineapple-docker-plugin/index.html}pineapple-docker-plugin project.}}	
+	The jar file is named <<<pineapple-docker-plugin-$\{version\}.jar>>>.	
+			
+* Infrastructure test plugin
+
+	The schema can be found at <<{{{../ns/plugin/infrastructure_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0.xsd}}>>
+
+	The schema can be found in the root of the jar created by the
+	{{{../pineapple-modules/pineapple-infrastructure-test-plugin/index.html}pineapple-infrastructure-test-plugin project.}}	
+	The jar file is named <<<pineapple-infrastructure-test-plugin-$\{version\}.jar>>>.	
+	
+* WBEM plugin
+
+	The schema can be found at <<{{{../ns/plugin/wbem_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/wbem_1_0.xsd}}>>
+
+	The schema can be found in the root of the jar created by the
+	{{{../pineapple-modules/pineapple-wbem-plugin/index.html}pineapple-wbem-plugin project.}}	
+	The jar file is named <<<pineapple-wbem-plugin-$\{version\}.jar>>>.
+
+* JRockit installation plugin
+
+	The schema can be found at <<{{{../ns/plugin/jrockit_installation_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/jrockit_installation_1_0.xsd}}>>
+
+	The schema can be found in the root of the jar created by the
+	{{{../pineapple-plugins/pineapple-jrockit-installation-plugin/index.html}pineapple-jrockit-installation-plugin project.}}	
+	The jar file is named <<<pineapple-jrockit-installation-plugin-$\{version\}.jar>>>.
+
+* WebLogic installation plugin
+
+	The schema can be found at <<{{{../ns/plugin/weblogic_installation_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0.xsd}}>>
+
+	The schema can be found in the root of the jar created by the
+	{{{../pineapple-plugins/pineapple-weblogic-installation-plugin/index.html}pineapple-weblogic-installation-plugin project.}}	
+	The jar file is named <<<pineapple-weblogic-installation-plugin-$\{version\}.jar>>>.
+
+* WebLogic scripting tool (WLST) plugin
+
+	The schema can be found at <<{{{../ns/plugin/weblogic_scriptingtool_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0.xsd}}>>
+
+	The schema can be found in the root of the jar created by the
+	{{{../pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html}pineapple-weblogic-scripting-tool-plugin project.}}	
+	The jar file is named <<<pineapple-weblogic-scripting-tool-plugin-$\{version\}.jar>>>.
+		
+* WebLogic JMX plugin	 
+
+	The schemas are defined by Oracle at:
+	
+	*	<<{{{http://xmlns.oracle.com/weblogic/domain/1.0/domain.xsd}http://xmlns.oracle.com/weblogic/domain/1.0/domain.xsd}}>>	
+	
+	*	<<{{{http://xmlns.oracle.com/weblogic/security/1.0/security.xsd}http://xmlns.oracle.com/weblogic/security/1.0/security.xsd}}>>	
+
+	*	<<{{{http://xmlns.oracle.com/weblogic/security/wls/1.0/wls.xsd}http://xmlns.oracle.com/weblogic/security/wls/1.0/wls.xsd}}>>
+	
+	*	<<{{{http://xmlns.oracle.com/weblogic/security/xacml/1.0/xacml.xsd}http://xmlns.oracle.com/weblogic/security/xacml/1.0/xacml.xsd}}>>	
+
+	*	<<{{{http://xmlns.oracle.com/weblogic/weblogic-diagnostics/1.0/weblogic-diagnostics.xsd}http://xmlns.oracle.com/weblogic/weblogic-diagnostics/1.0/weblogic-diagnostics.xsd}}>>	
+		
+	[]
+	
+	The schema can be found in the root of the jar created by the 
+	{{{../pineapple-models/pineapple-weblogic-1212-schemas/index.html}pineapple-weblogic-1212-schemas project.}}	
+	The jar file is named <<<pineapple-weblogic-1212-schemas-1.0.0.jar>>>.
+	
+	Also of note is the 
+	{{{http://www.oracle.com/webfolder/technetwork/weblogic/index.html}Oracle WebLogic Server Schema home}}	
+	where schemas for different version can be found.
+
+* Fusion Middleware installation plugin
+
+	The schema can be found at <<{{{../ns/plugin/fusion_middleware_installation_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/fusion_middleware_installation_1_0.xsd}}>>
+
+	The schema can be found in the root of the jar created by the
+	{{{../pineapple-plugins/pineapple-fusion-middleware-installation-plugin/index.html}pineapple-fusion-middleware-installation-plugin project.}}	
+	The jar file is named <<<pineapple-fusion-middleware-installation-plugin-$\{version\}.jar>>>.
+	
+	 	
+ 

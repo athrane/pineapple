@@ -1,0 +1,160 @@
+ ------
+ How-to: Define the SNMP agent with a trap destination
+ ------
+ Allan Thrane Andersen
+ ------
+ April 2011
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Define the SNMP agent with a trap destination 
+
+* Overview
+
+	This example illustrates how the SNMP agent with a trap destination 
+	in the domain configuration should be defined in an Pineapple module 
+	for usage with the WebLogic JMX plugin.  	
+	
+* Defining the SNMP agent
+
+** Creation of the skeleton domain configuration
+
+	The SNMP agent is defined as a child element to the <<<domain>>> element, so lets start with
+	a skeleton domain configuration:
+     
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+		xmlns:wjp="http://www.bea.com/ns/weblogic/920/domain" 
+		xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls" 
+		xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/security/xacml 
+		http://www.bea.com/ns/weblogic/90/security/xacml.xsd 	
+		http://www.bea.com/ns/weblogic/90/security 
+		http://www.bea.com/ns/weblogic/90/security.xsd 
+		http://www.bea.com/ns/weblogic/920/domain 
+		http://www.bea.com/ns/weblogic/920/domain.xsd 
+		http://www.bea.com/ns/weblogic/90/security/wls 
+		http://www.bea.com/ns/weblogic/90/security/wls.xsd" >
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>			
+			<wjp:domain >						
+				<wjp:name>alphadomain</wjp:name>
+			</wjp:domain>			
+		</mmd:content>							
+	</mmd:model>		
+</mmd:models>			
++---
+
+** Adding the SNMP agent
+
+	Just add the agent:
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+		xmlns:wjp="http://www.bea.com/ns/weblogic/920/domain" 
+		xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls" 
+		xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/security/xacml 
+		http://www.bea.com/ns/weblogic/90/security/xacml.xsd 	
+		http://www.bea.com/ns/weblogic/90/security 
+		http://www.bea.com/ns/weblogic/90/security.xsd 
+		http://www.bea.com/ns/weblogic/920/domain 
+		http://www.bea.com/ns/weblogic/920/domain.xsd 
+		http://www.bea.com/ns/weblogic/90/security/wls 
+		http://www.bea.com/ns/weblogic/90/security/wls.xsd" >
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>			
+			<wjp:domain >						
+				<wjp:name>alphadomain</wjp:name>
+				<wjp:snmp-agent>
+					<wjp:name>alphadomain</wjp:name>
+					<wjp:enabled>true</wjp:enabled>
+					<wjp:snmp-port>161</wjp:snmp-port>
+					<wjp:community-prefix>doitnow</wjp:community-prefix>
+					<wjp:debug-level>0</wjp:debug-level>
+					<wjp:mib-data-refresh-interval>120</wjp:mib-data-refresh-interval>
+					<wjp:send-automatic-traps-enabled>true</wjp:send-automatic-traps-enabled>
+					<wjp:snmp-trap-version>1</wjp:snmp-trap-version>
+				</wjp:snmp-agent>				
+			</wjp:domain>			
+		</mmd:content>							
+	</mmd:model>		
+</mmd:models>			
++---
+	
+** Define the trap destination
+
+	Just add the agent:
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+		xmlns:wjp="http://www.bea.com/ns/weblogic/920/domain" 
+		xmlns:sec="http://www.bea.com/ns/weblogic/90/security" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:wls="http://www.bea.com/ns/weblogic/90/security/wls" 
+		xsi:schemaLocation="http://www.bea.com/ns/weblogic/90/security/xacml 
+		http://www.bea.com/ns/weblogic/90/security/xacml.xsd 	
+		http://www.bea.com/ns/weblogic/90/security 
+		http://www.bea.com/ns/weblogic/90/security.xsd 
+		http://www.bea.com/ns/weblogic/920/domain 
+		http://www.bea.com/ns/weblogic/920/domain.xsd 
+		http://www.bea.com/ns/weblogic/90/security/wls 
+		http://www.bea.com/ns/weblogic/90/security/wls.xsd" >
+	<mmd:model target-resource="weblogic-jmx">		
+		<mmd:content>			
+			<wjp:domain >						
+				<wjp:name>alphadomain</wjp:name>
+				<wjp:snmp-agent>
+					<wjp:name>alphadomain</wjp:name>
+					<wjp:enabled>true</wjp:enabled>
+					<wjp:snmp-port>161</wjp:snmp-port>
+					<wjp:community-prefix>doitnow</wjp:community-prefix>
+					<wjp:debug-level>0</wjp:debug-level>
+					<wjp:mib-data-refresh-interval>120</wjp:mib-data-refresh-interval>
+					<wjp:send-automatic-traps-enabled>true</wjp:send-automatic-traps-enabled>
+					<wjp:snmp-trap-version>1</wjp:snmp-trap-version>
+					
+					<!-- define trap destinations  -->
+					<wjp:snmp-trap-destination>
+						<wjp:name>local-trap-tester</wjp:name>
+						<wjp:host>127.0.0.1</wjp:host>
+						<wjp:port>171</wjp:port>
+						<wjp:community>doitnow</wjp:community>
+					</wjp:snmp-trap-destination>
+					
+				</wjp:snmp-agent>				
+			</wjp:domain>			
+		</mmd:content>							
+	</mmd:model>		
+</mmd:models>			
++---
+	          
+	.. which defines a local trap destination running at 127.0.0.1 on port 171. This could
+	be used for debugging purposes.          
+
+** Implementing a trap destination for debugging purposes
+
+	Use this script to implement a trap destination for debugging 
+	purposes on WebLogic 9.2
+
++---
+set classpath=%classpath%;WL_HOME\weblogic92\server\lib\weblogic.jar
+JROCKIT_HOME\bin\java snmptrapd -p 171 -c doitnow >  snmptraptest.log
++---          
+
+	..or on WebLogic 10.3.x:
+	
++---
+set classpath=%classpath%;WL_HOME\weblogic1034\server\lib\weblogic.jar
+JROCKIT_HOME\bin\java weblogic.diagnostics.snmp.cmdline.Manager SnmpTrapMonitor -p 171 -c doitnow >  snmptraptest.log
++---          
+	

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:context="http://www.springframework.org/schema/context"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    		http://www.springframework.org/schema/oxm 
+    		http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+    		http://www.springframework.org/schema/context 
+    		http://www.springframework.org/schema/context/spring-context-3.0.xsd" >    		
+
+	<!-- Configures pineapple-api -->
+	<import resource="classpath:com.alpha.pineapple.api-config.xml" />
+
+	<!-- Configures pineapple-commands-api -->
+	<import resource="classpath:com.alpha.pineapple.commands-api-config.xml" />
+
+	<!-- Configures pineapple-process-execution-plugin-support -->
+	<import resource="classpath:com.alpha.pineapple.process.execution-config.xml" />
+
+	<!-- Configures pineapple-hamcrest-matchers -->
+	<import resource="classpath:com.alpha.pineapple.hamcrest-config.xml" />
+                                
+	<!-- enable annotation based configuration / dependency injection -->
+	<context:annotation-config />
+    
+	<oxm:jaxb2-marshaller id="unmarshaller" contextPath="com.alpha.pineapple.plugin.fusion.installation.model"/>
+
+	<!-- define message provider for internationalization  -->
+	<bean id="messageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">		
+    	<property name="basename" value="com.alpha.pineapple.plugin.fusion.installation-messages"/>
+	</bean>	
+	    	    
+	<!-- define installation helper -->
+	<bean id="installationHelper" class="com.alpha.pineapple.plugin.fusion.installation.utils.InstallationHelperImpl" />		    	    
+	    	    
+	<!-- define argument builder -->
+	<bean id="r11ArgumentBuilder" class="com.alpha.pineapple.plugin.fusion.installation.argument.R11ArgumentBuilder" />	
+
+	<!-- define response file builders -->
+	<bean id="appDevRuntimeR11ResponseFileBuilder" class="com.alpha.pineapple.plugin.fusion.installation.response.AppDevRuntimeR11ResponseFileBuilder" />		
+	<bean id="webCenterR11ResponseFileBuilder" class="com.alpha.pineapple.plugin.fusion.installation.response.WebCenterR11ResponseFileBuilder" />		
+	<bean id="soaSuiteR11ResponseFileBuilder" class="com.alpha.pineapple.plugin.fusion.installation.response.SoaSuiteR11ResponseFileBuilder" />
+	<bean id="serviceBusR11ResponseFileBuilder" class="com.alpha.pineapple.plugin.fusion.installation.response.ServiceBusR11ResponseFileBuilder" />
+
+	<!-- define commands -->		
+	<bean id="createAppDevRuntimeR11InstallResponseFileCommand" class="com.alpha.pineapple.plugin.fusion.installation.command.CreateR11InstallResponseFileCommand" scope="prototype" >
+		<property name="responseFileBuilder" ref="appDevRuntimeR11ResponseFileBuilder"/>
+	</bean>			
+	<bean id="createAppDevRuntimeR11UninstallResponseFileCommand" class="com.alpha.pineapple.plugin.fusion.installation.command.CreateR11UninstallResponseFileCommand" scope="prototype" >
+		<property name="responseFileBuilder" ref="appDevRuntimeR11ResponseFileBuilder"/>
+	</bean>			
+	<bean id="createWebCenterR11InstallResponseFileCommand" class="com.alpha.pineapple.plugin.fusion.installation.command.CreateR11InstallResponseFileCommand" scope="prototype">
+		<property name="responseFileBuilder" ref="webCenterR11ResponseFileBuilder"/>
+	</bean>			
+	<bean id="createWebCenterR11UninstallResponseFileCommand" class="com.alpha.pineapple.plugin.fusion.installation.command.CreateR11UninstallResponseFileCommand" scope="prototype" >
+		<property name="responseFileBuilder" ref="webCenterR11ResponseFileBuilder"/>
+	</bean>			
+	<bean id="createSoaSuiteR11InstallResponseFileCommand" class="com.alpha.pineapple.plugin.fusion.installation.command.CreateR11InstallResponseFileCommand" scope="prototype">
+		<property name="responseFileBuilder" ref="soaSuiteR11ResponseFileBuilder"/>
+	</bean>			
+	<bean id="createSoaSuiteR11UninstallResponseFileCommand" class="com.alpha.pineapple.plugin.fusion.installation.command.CreateR11UninstallResponseFileCommand" scope="prototype" >
+		<property name="responseFileBuilder" ref="soaSuiteR11ResponseFileBuilder"/>
+	</bean>			
+	<bean id="createServiceBusR11InstallResponseFileCommand" class="com.alpha.pineapple.plugin.fusion.installation.command.CreateR11InstallResponseFileCommand" scope="prototype">
+		<property name="responseFileBuilder" ref="serviceBusR11ResponseFileBuilder"/>
+	</bean>			
+	<bean id="createServiceBusR11UninstallResponseFileCommand" class="com.alpha.pineapple.plugin.fusion.installation.command.CreateR11UninstallResponseFileCommand" scope="prototype" >
+		<property name="responseFileBuilder" ref="serviceBusR11ResponseFileBuilder"/>
+	</bean>			
+	
+	<!-- define mapper objects-->
+	<bean id="mapperFactory" class="com.alpha.pineapple.plugin.fusion.installation.model.MapperFactoryImpl" />		
+	<bean id="appDevRuntimeR11Mapper" class="com.alpha.pineapple.plugin.fusion.installation.model.AppDevRuntimeR11MapperImpl" />	
+	<bean id="webCenterR11Mapper" class="com.alpha.pineapple.plugin.fusion.installation.model.WebCenterR11MapperImpl" />	
+	<bean id="soaSuiteR11Mapper" class="com.alpha.pineapple.plugin.fusion.installation.model.SoaSuiteR11MapperImpl" />	
+	<bean id="serviceBusR11Mapper" class="com.alpha.pineapple.plugin.fusion.installation.model.ServiceBusR11MapperImpl" />	
+	    	    
+	<!-- definition used by the integration tests.  -->			
+	<bean id="deployConfiguration" class="com.alpha.pineapple.plugin.fusion.installation.operation.DeployConfiguration" />	
+	<bean id="undeployConfiguration" class="com.alpha.pineapple.plugin.fusion.installation.operation.UndeployConfiguration" />	
+				    	    	    
+</beans>

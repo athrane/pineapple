@@ -1,0 +1,586 @@
+ ------
+ Construction and traversal of resolved models
+ ------
+ Allan Thrane Andersen 
+ ------
+ March 2012
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Construction and traversal of resolved models
+	
+	The plugin does two things:
+	
+	* Construction of a resolved model from two large models.
+	 	 
+	* Traversal of the resolved model and simultaneously executing logic on the 
+	resolved model.  
+	
+	[]
+	
+* Construction of a resolved model from two large models
+
+	The resolved model is created from two models:
+	
+		* <<Source model>>. This model is defined by the JMX plugin and is it used to 
+		express the indented state of WebLogic when the plugin is executed. This model 
+		is defined by the WebLogic domain XML schemas. XMLBeans is used to create a 
+		OXM binding from the schemas to Java. The plugin thus contains a set of generated 
+		XMLBeans classes which is the Java representation of the WebLogic domain model. 
+		Throughout the documentation of the plugin, this model is referred to as the
+		<<XMLBeans model>>. 
+		  				
+		* <<Target model>> This model is defined by the WebLogic server and it contains
+		the runtime state of an WebLogic domain. This model is defined by the MBean object 
+		model which is part of the WebLogic server.	Throughout the documentation of the 
+		plugin, this model is referred to as the <<MBean model>>. 
+				   
+		[]	   
+
+	The resolved model <<defines a mapping from the source model to the target model>> where
+	the source model contains the intended state and the target model contains the actual state.  
+
+	The model construction step is identical for all Pineapple operations invoked on the plugin.
+
+* Traversal of the resolved model 				
+				
+	Each operation implemented by the plugin, uses the same traversal logic to process
+	the resolved model. The traversal logic delegates the execution of management logic
+	to operation specific classes which are implemented as visitors. 
+	
+* Introduction to resolved models 
+
+	The traversal is done on a tree based data structure which represent a resolution of 
+	two (different) models. The resolution process consists of identifying model nodes in 
+	the two models which correspond to each other. 
+	
+	When two model nodes is resolved, i.e. identified as each others representation in 
+	the two models, then result is collected in a resolved model node.
+			
+** A resolved model node contains two resolved participants	
+	
+	A resolved model node consist of two objects, a primary and a secondary participant. The 
+	only difference between the primary and secondary participant is, that most classes 
+	support traversal and model resolution based on the content encountered in the model
+	nodes which are stored as primary participants. But it is equally possible to 
+	implement classes which can traverse and resolve models based on the content of the 
+	secondary participant.
+	
+	In short, a resolved model node simply <<defines a mapping>> between two model nodes from two
+	different models, which share the characteristic that they correspond to each other.
+	
+	The package <<<com.alpha.pineapple.resolvedmodel>>> contains 
+	the interface <<<ResolvedParticipant>>> the class <<<ResolvedParticipantImpl>>> which 
+	is used to store the resolved (i.e. primary and secondary) participants, before they 
+	are added to a resolved mode node.
+
+** Information contained by resolved participants 
+	
+	A resolved participant contains three pieces of information:
+	
+		* Value - contains the actual mode entity from the model if
+		the participant could be resolved to a value. 
+		
+		* Type - contain type of the resolved participant. Any type 
+		can be stored, it depends of which type the resolved model builder
+		deems most useful to store as type. 
+		
+		* Name - contains name of the resolved participant.   
+
+	[]	
+	
+	<Example where a meta type is used as participant type:> During construction of a resolved model from 
+	a XMLBeans model, it is more useful to store the schema property as type, than 
+	it is to store the actual type of the XMLBean. This is because the schema property 
+	is a meta type and it contains a lot of useful information used during model resolution, 
+	traversal and processing XMLBeans models. Also the actual XMLBean type can always 
+	inferred from the schema property. 
+	
+	<Another example where the meta type of the model entity is used as participant type:> During 
+	construction of a resolved model from a WebLogic MBean model, the <<<MBeanAttributeInfo>>> is used 
+	to represent the type of MBeans and attributes.
+
+** A resolved model contains different types
+
+	During resolved model construction, it is the responsibility of the model builder 
+	to decide which language type that the resolved model node should have. The legal 
+	types are:
+	
+	* Object -  the type of the model entity is an object with attributes.
+	
+	* Primitive - the type of the model entity is an simple type. Examples of 
+	simple type are integers, chars and booleans.  
+	
+	* Enum - the type of the model entity is an enumeration type, i.e a type with a fixed 
+	set of legal values. 
+	
+	* Collection - the type of the model entity is a container type which can contains 
+	multiple values. Examples of collection are arrays and collections. 
+	
+	* Unresolved type - used to represent a failure during the resolution of a model node. 
+		
+	* Resolved type - abstract base type for all other resolved types. Used to represent 
+	a type which is resolved from both model where the exact type couldn't be identified.  	 
+	
+	[]
+	
+	The package <<<com.alpha.pineapple.resolvedmodel>>> contains 
+	the interfaces and classes which implements the resolved model.
+		
+** Who creates a resolved model?
+
+	Resolved models are created by classes who acts a model builders. Examples of model 
+	builders in the project are: 
+	
+	* The Spring bean <<<xmlBeansModelBuilder>>> which can build a resolved model 
+	from an XMLBeans model and an MBean model. The bean is an instance of
+	the class <<<ModelTraversalDirectorImpl>>> which is configured with the resolved 
+	model visitor <<<ResolvedModelBuilderVisitorImpl>>> who constructs an resolved model from the 
+	visited model parts.
+		
+	[]   
+
+** Traversal of resolved models	
+
+	Traversal of an resolved model is implemented by the class 
+	<<<ModelTraversalDirectorImpl>>> which implements a recursive depth-first traversal
+	of a resolved model. The traversal director is configured with:
+
+	* a resolved model visitor - which contains a logic which should be executed 
+	during traversal of the individual model nodes.
+	
+	*  a traversal strategy - which controls the traversal, by deciding when the 
+	traversal of model nodes should continue or be terminated.
+	
+	[]   		 
+
+	The constituents of an resolved model can be visited using a resolved model 
+	visitor which implements the interface <<<ResolvedModelVisitor>>>. Examples
+	 of resolved model visitors are:
+	 
+	 * <<<ResolvedModelBuilderVisitorImpl>>> which can build an resolved model.
+
+	 * <<<ResolvedModelTesterVisitorImpl>>> which can test the contents of the two models
+	 contained by a resolved model.  
+	  
+	 * <<<XmlBeansDescriptionGeneratorImpl>>> which can create a description of
+	 an resolved model node.   
+
+	 * <<<MBeansDescriptionGeneratorImpl>>> which can create a description of
+	 an resolved model node where the secondary participants contains MBeans.   
+
+	 
+	 []	
+	
+
+* Creation of a resolved model to manage WebLogic  
+
+	The plugin creates a resolved model from the two models:
+
+		* <<Source model>>. This model is defined by the JMX plugin and is it used to 
+		express the indented state of WebLogic when the plugin is executed. This model 
+		is defined by the WebLogic domain XML schemas. XMLBeans is used to create a 
+		OXM binding from the schemas to Java. The plugin thus contains a set of generated 
+		XMLBeans classes which is the Java representation of the WebLogic domain model. 
+		Throughout the documentation for the plugin, this model is referred to as the
+		<<XMLBeans model>>. 
+		  				
+		* <<Target model>> This model is defined by the WebLogic server and it contains
+		the runtime state of an WebLogic domain. This model is defined by the MBean object 
+		model which is part of the WebLogic server.	Throughout the documentation for the 
+		plugin, this model is referred to as the <<MBean model>>. 
+				   
+		[]	   
+
+** Mapping from the two models to resolved model types
+	
+	During model construction in the <<<ResolvedModelBuilderVisitorImpl>>> class, it invokes
+	the <<<createResolvedType(..)>>> on its primary resolver which inspects type of object
+	and creates a resolved model object based on some heuristics.
+	
+	Currently the only resolver which implements such an algorithm is the class
+	<<<XmlBeansModelResolvedImpl>>>.	  
+		   
+** Similarity and differences between the models
+
+	The models are similar in most respects but not identical. They are 
+	similar regarding:
+
+		* Defines the same objects with the same attributes.
+		
+		* Uses the same naming standards.
+	 		   
+		[]
+	
+	The differences which needs to be addressed are:
+
+	* <<Features which doesn't exist in the MBeans model>>
+	
+	* <<Features which doesn't exist in the XMLBeans model>>	 
+			
+	* <<Depreated features exists in both models>>
+	
+	* <<Attributes which are aliases>>		
+		
+	* <<Different naming standards>> 
+	
+		* Different naming syntax for getter methods    	
+	
+		* Acronyms are written with camel case in the XMLBeans model and with upper 
+		case in the MBean model
+				 				
+		* Plural forms are used for nouns in the MBean model 
+		
+		[]
+					
+	* <<Mapping MBeans text references to object name references.>>  		
+		
+	* {{{Handling_different_representation_of_enums}Handling different representation of enums}}.
+					 		
+	[]
+	
+	
+	<<TODO: Handle this case:>> The attribute <<<Domain.DomainLibrary>>>
+	 			
+
+*** Example of the differences on a single type
+	
+	An example of the differences is the Domain type in the XML Beans model which defines 91 attributes 
+	while the corresponding MBean defines 97 attributes.
+		
+
+** Features which doesn't exist in the MBeans model 
+ 	
+	The XMLBeans model contains attributes which isn't defined in the MBean model:
+	
+		 * The object is deprecated and removed from MBeans model.
+		 
+		 * The object is a new features which defined in the XMLBeans model but not yet implemented
+		 in the MBeans model.
+		 
+		 []
+		  
+	
+	Examples: 
+	
+	* The attribute <<<Domain.Active>>> is defined in the XMLBeans model but not on the Domain MBean. 
+	Querying the Domain MBean for attribute info about the <<<Active>>> attribute fails.
+
+	* The attribute <<<Domain.MsgIdPrefixCompatibilityEnabled>>> is defined in the domain schema 
+	(i.e the XMLBeans model) but not on the Domain MBean. Querying the Domain MBean for attribute 
+	info about the <<<MsgIdPrefixCompatibilityEnabled>>> attribute fails. 
+
+	[]
+
+	Deprecated features are documented in two ways:
+	
+	* In the XMLBeans model deprecated features are documented in the <<<documentation>>> elements
+	for the individual attributes in the schema which makes it impossible to determine 
+	at runtime whether an attribute is deprecated. 
+	
+	* In the MBeans model deprecated features are documented in the <<<Descriptor>>> for the 
+	individual attributes  which makes it possible to determine at runtime whether an 
+	attribute is deprecated.  	
+	
+	[]	
+
+*** The solution
+	
+	<<It is the users responsibility not to use deprecated features in the schema>> because
+	this solution eliminates the need for logic to handle all of the special cases.
+	
+	If an deprecated attribute is encountered during model resolution then the MBeans model
+	resolver <<<MBeansObjectNameBasedModelResolverImpl>>> will during resolution of an
+	attribute in <<<resolveAttribute(..)>>> fail to get meta data attribute in the form of
+	<<<MBeanAttributeInfo>>> and then throw an <<<ModelResolutionFailedException>>> with the 
+	error message: 
+
++----	
+	Failed to resolve attribute [oKjwClIjTp] on MBean
+	[com.bea:Name=alphadomain-wls1035-jmxplugin-inttest,Type=Domain] 
+	because it did not define meta data for the attribute.
++----	
+
+** Handling features which doesn't exist in the XMLBeans model	 
+
+	The MBeans model contains attributes which isn't defined in the XMLBeans model.
+	
+	Examples:
+	
+	* The attribute <<<Domain.InternalAppDeployments>>> is defined in the MBean model but not in the XMLBeans model.
+	
+	* The attribute <<<Domain.InternalLibraries>>> is defined in the MBean model but not in the XMLBeans model.
+	
+	[]
+
+*** The solution
+	
+	It depends on the semantics of the individual operation whether how the case of the <MBeans-only> 
+	attributes attributes will handled. 
+	
+	The difference in handling will depend on the used traversal strategy used for an operation (see
+	{{{./implementation.html#Configured_ModelTraversalDirector_instances}Configured ModelTraversalDirector instances}}
+	for info about used traversal strategies).	 			
+	
+	Examples:  
+	
+		* Construction of the resolved model uses the <<<traverseExplicitSetNodesStrategy>>> which means
+		that the <MBeans-only> attributes will be resolved if they are set in the MBean model. 
+		
+		* Traversals which use <<<traverseExplicitSetPrimaryNodesStrategy>>> will never attempt to resolve
+		the attribute on MBeans model, since the attribute doesn't exist in the XMLBeans model and never 
+		fulfill requirement that it is set.  		
+		
+		[]				 			
+	
+** Handling deprecated features which exists in both models
+
+	The XMLBeans model contains attributes which is deprecated in the MBean model, but not yet removed 
+	from either model.		  
+	
+	Examples: 
+
+	* The attribute <<<Machine.Address>>> is defined in the XMLBeans model and on in the MBeans model 
+	as <<<Machine.Addresses>>>.
+	
+	[] 
+
+*** The solution
+
+	<<It is the users responsibility not to use deprecated features in the schema>> because
+	this solution eliminates the need for logic to handle all of the special cases.
+	
+	Deprecated features c	 	
+	
+**	Handling attributes which are aliases 
+
+	The MBeans model contains attributes which map to the same values.
+	
+	Examples:
+	
+		* <<<DomainMBean.AppDeployments>>> and <<<DomainMBean.InternalAppDeployments>>>
+		both returns the same value(s).  
+	
+		* <<<DomainMBean.Libraries>>> and <<<DomainMBean.InternalLibraries>>>
+		both returns the same value(s).
+		
+	[]		  	
+
+*** The solution
+
+	Since this feature only appears in the MBeans model, it is handled during 		
+	{{{./mbeans-model.html#Attributes_which_are_aliases}resolution of MBeans attributes}}.				
+	
+** Handling different naming standards: Different casing for acronyms
+ 
+	Acronyms are written with camel case in the XMLBeans model and with upper case in the 
+	MBean model. Example:
+
+		* The attribute <<<WtcServer>>> is accessible in the XMLBeans model
+		with the getter <<<DomainType.getWtcServerArray()>>>. In the MBean
+		model it is accessible with the getter <<<DomainMBean.getWTCServers()>>>.
+				
+		[]		 
+	
+	Acronyms are written with camel case in the XMLBeans model:
+	
+		* <<XmlRegistry>> 
+		
+		* <<WtcServer>>
+		
+		[]
+	
+	The class <<<XmlBeansGetterMethodMatcherImpl>>> implements the logic to decide whether
+	a method on an MBean is a getter method and thus contains the heuristics to handle the
+	casing in the XMLBeans model.		
+	
+	Acronyms are written with upper case in the MBean model:
+	
+		* <<XMLRegistry>> 
+		
+		* <<WTCServer>>
+		
+		[]
+
+*** The solution
+	
+	The mapping from the naming standard of XMLBeans model to the MBeans model is 
+	{{{./mbeans-model.html#Mapping_from_attribute_names_in_the_XMLBeans_model_to_the_MBeans_model}done during the resolution of MBeans attributes.}}
+
+	Examples from the <<<Domain>>> where the casing is different between the two models:	
+
+	* The attribute <<<Domain.EjbContainer>>>	
+	
+	* The attribute <<<Domain.EmbeddedLdap>>>	
+	
+	* The attribute <<<Domain.ForeignJndiProvider>>>	
+	 
+	* The attribute <<<Domain.JdbcDataSourceFactory>>>
+	
+	* The attribute <<<Domain.JdbcStore>>>	
+
+	* The attribute <<<Domain.JdbcSystemResource>>>	
+	
+	* The attribute <<<Domain.JmsBridgeDestination>>>
+
+	* The attribute <<<Domain.JmsConnectionConsumer>>>
+	
+	* The attribute <<<Domain.JmsInteropModule>>>
+		
+	* The attribute <<<Domain.JmsServer>>>
+	
+	* The attribute <<<Domain.JmsSystemResource>>>	
+
+	* The attribute <<<Domain.Jmx>>>
+
+	* The attribute <<<Domain.Jpa>>>
+
+	* The attribute <<<Domain.Jta>>>
+
+	* The attribute <<<Domain.LdapRealm>>>
+
+	* The attribute <<<Domain.MigratableRmiService>>>
+	
+	* The attribute <<<Domain.NtRealm>>>
+
+	* The attribute <<<Domain.OcmEnabled>>>
+
+	* The attribute <<<Domain.RdbmsRealm>>>
+
+	* The attribute <<<Domain.RemoteSafContext>>>
+
+	* The attribute <<<Domain.SafAgent>>>
+
+	* The attribute <<<Domain.SnmpAgent>>>
+
+	* The attribute <<<Domain.SnmpAgentDeployment>>>
+
+	* The attribute <<<Domain.WldfSystemResource>>>
+	
+	* The attribute <<<Domain.WlecConnectionPool>>>
+	
+	* The attribute <<<Domain.WsReliableDeliveryPolicy>>>	
+
+	* The attribute <<<Domain.WtcServer>>>
+	
+	* The attribute <<<Domain.XmlEntityCache>>>
+	
+	* The attribute <<<Domain.XmlRegistry>>>
+	
+	[]	
+
+** Handling different naming standards: Plural forms are used for nouns in the MBeans model 
+
+	Plural forms are used for nouns in the MBean model. Nouns ending with 'y' 
+	are replaced by 'ies' and for all others cases 's' is added. Example: 
+
+		* The attribute <<<Domain.AppDeployment>>> is defined in the XMLBeans model
+		and in the MBeans model it is defined as <<<DomainMBean.AppDeployments>>>.
+
+		* The attribute <<<Domain.DomainLibrary>>> is defined in the XMLBeans model
+		and in the MBeans model it is defined as <<<DomainMBean.DomainLibraries>>>.
+
+		* The attribute <<<Domain.Server>>> is defined in the XMLBeans model
+		and in the MBeans model it is defined as <<<DomainMBean.Servers>>>.
+ 							
+		[]		
+	 	
+	The XMLBeans model contains getter methods with the syntax:
+		
+		* <<getXXArray>> if the method returns a multiple attribute values.
+		
+		[]	
+	The class <<<XmlBeansGetterMethodMatcherImpl>>> implements the logic to decide whether
+	a method on an MBean is a getter method and thus contains the heuristics to handle the
+	naming syntax in the XMLBeans model.		
+	
+	The MBeans model contains attributes with the syntax:
+	
+		* <<XXs>> if the attribute contains multiple values.
+	
+		* <<XXies>> if the attribute contains multiple values and the noun XX ends with 'y'.
+		
+		[]
+						
+*** The solution
+			
+	The mapping from the naming standard of XMLBeans model to the MBeans model is 
+	{{{./mbeans-model.html#Mapping_from_attribute_names_in_the_XMLBeans_model_to_the_MBeans_model}done during the resolution of MBeans attributes.}}			
+
+** Mapping MBeans text references to object name references
+
+	The XMLBeans model contains attributes whose type is an reference to an MBean. An example is targeting information for virtual hosts and 
+	other entities which can..........
+	
+	The XMLBeans model contains attributes whose value is an MBean reference. For good reason the references in the 
+	XMLBeans can't be object name references since the model is text based.
+	
+	During resolution the textual references are converted from text to object names.
+	
+	The conversion requires information about which MBean types an attribute can contain a reference to.
+	 
+	TODO: write where this is used....	
+	TODO: use link {{{./implementation.html#Resolve_candidate_MBean_types}xxxxxx.}}
+	
+	
+
+** {Handling different representation of enums}
+
+	Description of the how attributes with enumerated values are represented in the two models can be found here:
+	 
+	* {{{./xmlbeans-model.html#Representation_of_enumerations_in_the_XMLBeans_model}Representation of enumerations in the XMLBeans model}}.
+	
+	* {{{./mbeans-model.htmlRepresentation_of_enumerations_in_the_MBeans_model}Representation of enumerations in the MBeans model}}.	
+	
+	[]
+
+	Example of how an attribute with enumerated values is represented in the two models:
+
+	* Schema enums are represented in XMLBeans by a generated type which extends the 
+	<<<StringEnumAbstractBase>>> type. The generated XMLBeans model type <<<DomainType>>> contains the attribute 
+	<<<AdministrationProtocol>>> which has the generated enum type 
+	<<<com.bea.ns.weblogic.x920.domain.DomainType.AdministrationProtocol.Enum>>>:
+	
+	* In the MBeans model the <<<AdministrationProtocol>>> attribute is 
+	implemented as a <<<java.lang.String>>> with have a range of 
+	legal values which corresponds to the string values in the 
+	XMLBeans enum.
+	
+	[]		
+	
+*** Implementation of enum handling
+
+	TODO: rewrite....
+
+	During traversal the traversal directory <<<XmlBeansTraversaldirectorImpl>>>
+	inspects traversal pairs in step 4) to determine whether the primary participant
+	contains an XMLBean enum. If this is the case then the actual processing of the 
+	pair is delegated to the model visitor. The model visitor on its part delegates 
+	its processing to command objects.
+	
+	The <<<TestDeployedConfigurationVisitorImpl>>> invokes the <<<TestEnumValueCommand>>>
+	which tests the values of two enums.		   
+
+** {Handling different representation of collections}
+
+	Description of the how attributes with mutiple values are represented in the two models can be found here:
+	 
+	* {{{./xmlbeans-model.html#Representation_of_collections_in_the_XMLBeans_model}Representation of collections in the XMLBeans model}}.
+	
+	* {{{./mbeans-model.html#Representation_of_collections_in_the_MBeans_model}Representation of collections in the MBeans model}}.	
+	
+	[]
+
+	TODO: write about representation...			
+	
+*** Implementation of collection handling
+
+	TODO: rewrite....
+
+	During traversal the traversal directory .... to determine whether the primary participant
+	contains an XMLBean collection...... If this is the case then the actual processing of the 
+	pair is delegated to the model visitor. The model visitor on its part delegates 
+	its processing to command objects.
+	

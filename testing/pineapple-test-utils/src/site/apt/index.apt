@@ -1,0 +1,66 @@
+ ------
+ Pineapple test utilities
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<Pineapple test utilities>> project contains test classes which are 
+	reusable in tests of the Pineapple project.
+  
+	The projects contains:
+	
+	* Test code:	
+
+		* Spring  test execution listener classes which supports creation of test 
+		directories and accessing the names of executing test methods.
+		  
+		* EasyMock class for mocking Spring <<<MessageSource>>> which logs requested messages.
+		  
+		* Object mothers - factory classes which produces configured objects ready to 
+		be used in tests.
+		  
+		* A plugin to be used in unit tests.
+		
+		[]
+	
+	[]	
+			
+	* Test configurations:
+	
+		* Spring application context configuration which contains mock plugin providers.
+				
+		* Log4j configuration for unit and integration tests.
+		
+		* A test schema.
+		
+		[]
+		
+	[]				
+       
+* Usage
+
+	Instructions on the usage of the project can be found {{{./usage/index.html}here}}.
+
+* Examples
+
+	To provide you with better understanding on some usages of the project,
+	you can take a look into the following examples:
+	
+	* {{{./examples/write-testcase-with-directories.html}How-to: Write test cases that requires disk access.}}		
+	
+	* {{{./examples/write-testcase-with-access-to-testmethod-name.html}How-to: Write test cases that requires access to the name of the test method.}}	
+
+	* {{{./examples/use-mock-messageprovider.html}How-to: Mock the <<<MessageProvider>>> in tests.}}		
+	
+	* {{{./examples/writing-integration-test.html}How-to: Write integration tests in Pineapple.}}
+	
+	* {{{./examples/writing-unit-test.html}How-to: Write unit tests in Pineapple.}}
+	
+	[]  

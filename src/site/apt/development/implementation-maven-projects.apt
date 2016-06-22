@@ -1,0 +1,496 @@
+ ------
+ Maven project organization
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Maven project organization
+	
+* Maven project organization
+
+	Pineapple is organized into at set of Maven 2.0 projects.
+	
+	The top Maven project is named <<pineapple-project>> (this project). 
+	Sub project are organized into these groups: 
+	
+	* <<Module sub projects>> contains components of the pineapple application
+	
+	* <<Application sub projects>> contain applications, i.e component 
+	collected to complete binaries intended for release.
+
+	* <<Reporting sub projects>> report generators which can generate output
+	from execution of operations.	
+
+	* <<Test sub projects>> contains test utilities.
+	
+	[]
+
+	Overview:
+
++---+
+
+pineapple-project
+     |
+     +--- applications
+     |     +--- pineapple-maven-plugin
+     |     +--- pineapple-web-application	 
+     |           +--- pineapple-jetty-starter
+     |           +--- pineapple-standalone-web-client
+     |           +--- pineapple-web-application-war
+     |               
+     +--- modules
+     |     +--- pineapple-api          
+     |     +--- pineapple-commands-api     
+     |     +--- pineapple-core
+     |     +--- pineapple-weblogic-deployment-plugin
+     |     +--- pineapple-weblogic-jmx-plugin
+     |     +--- pineapple-infrastructure-test-plugin
+     |     +--- pineapple-jsr88-commands
+     |                
+     +--- models
+     |     +--- pineapple-weblogic-920-schemas          
+     |     +--- pineapple-weblogic-103-schemas          
+     |     +--- pineapple-weblogic-1212-schemas
+     |     +--- pineapple-example-modules
+     |                	 
+     +--- plugins
+     |     +--- pineapple-agent-plugin          
+     |     +--- pineapple-composite-execution-plugin     
+     |     +--- pineapple-ssh-plugin     
+     |     +--- pineapple-docker-plugin     
+     |     +--- pineapple-filesystem-plugin     
+     |     +--- pineapple-fusion-middleware-installation-plugin     
+     |     +--- pineapple-jrockit-installation-plugin
+     |     +--- pineapple-weblogic-installation-plugin     
+     |     +--- pineapple-weblogic-scripting-tool-plugin     
+     |                	 
+     +--- support
+     |     +--- pineapple-hamcrest-support          
+     |     +--- pineapple-process-execution-support          	 
+     |     +--- pineapple-docker-support          	 
+     |                	 
+     +--- reporting
+     |     +--- pineapple-basic-html-report-generator
+     |                     
+     +--- testing
+           +--- pineapple-test-utils     
+           
++---+	 
+
+
+* POM projects
+
+** pineapple-project
+
+	POM-type project which serves to organize build order for sub projects.
+
+	
+** applications project
+
+	Location: pineapple-project/applications
+
+	POM-type project which serves to organize build order for application projects.
+	
+** modules project
+
+	Location: pineapple-project/modules
+
+	POM-type project which serves to organize build order for core projects.	
+
+** models project
+
+	Location: pineapple-project/models
+
+	POM-type project which serves to organize build order for model projects.	
+	
+** plugins project
+
+	Location: pineapple-project/plugins
+
+	POM-type project which serves to organize build order for plugin projects.	
+	
+** support project
+
+	Location: pineapple-project/support
+
+	POM-type project which serves to organize build order for support projects.	
+	
+** reporting project
+
+	Location: pineapple-project/reporting
+
+	POM-type project which serves to organize build order for reporting projects.	
+
+** test project
+
+	Location: pineapple-project/testing
+
+	POM-type project which serves to organize build order for test projects.	
+
+** pineapple-web-application
+
+	Location: pineapple-project/applications/pineapple-web-application
+
+	POM-type project which serves to organize build order for web application projects.
+	
+	
+* Application projects	
+	
+** pineapple-maven-plugin
+	
+	Location: pineapple-project/applications/pineapple-maven-plugin
+	
+	POM-type project which produces a JAR file which contains a Maven 2.0 plugin.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-applications/pineapple-maven-plugin/index.html}here}}.		
+
+** pineapple-web-application
+	
+	Location: pineapple-project/applications/pineapple-web-application
+	
+	POM-type project which is an umbrella project for the web application.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-applications/pineapple-web-application/index.html}here}}.		
+
+
+* Modules projects				
+
+** pineapple-api
+
+	Location: pineapple-project/modules/pineapple-api
+
+	JAR-type project which produces a JAR file which contains:
+	
+	* Schemas for Pineapple.
+	
+	* Model classes for Pineapple - for unmarshalled representation of the schemas.
+	
+	* Helper classes for using model classes.
+	
+	* Interfaces for the plugin framework.
+		
+	[]		
+
+	All pineapple-projects should link to this project as they usually needs either
+	the model classes or the plugin interfaces.
+	
+	A link to the project documentation for the core component can be found 
+	{{{../pineapple-modules/pineapple-api/index.html}here}}.	
+
+** pineapple-commands-api
+
+	Location: pineapple-project/modules/pineapple-commands-api
+
+	JAR-type project which produces a JAR file which contains reusable 
+	functionality which extends the Commons Chain project and which makes usage 
+	of Chain commands easier.
+		
+	[]		
+
+	Pineapple-projects should link to this project if they implements Chain 
+	commands.
+	
+	A link to the project documentation for the core component can be found 
+	{{{../pineapple-modules/pineapple-commands-api/index.html}here}}.	
+
+
+** pineapple-core
+
+	Location: pineapple-project/modules/pineapple-core
+
+	JAR-type project which produces a JAR file which contains:
+
+	* The pineapple core classes.
+	
+	* Reusable functionality, e.g.:
+		
+		* Generic commands
+		
+		* Framework classes for implementation of resources
+		
+		[]
+		
+	[]		
+
+	Pineapple-projects should link to this project if they need to use the reusable classes.
+	
+	A link to the project documentation for the core component can be found 
+	{{{../pineapple-modules/pineapple-core/index.html}here}}.	
+		
+** pineapple-weblogic-jmx-plugin
+
+	Location: pineapple-project/modules/pineapple-weblogic-jmx-plugin
+
+	JAR-type project which produces a JAR file which implements a plugin for 
+	management of WebLogic Servers through JMX.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-modules/pineapple-weblogic-jmx-plugin/index.html}here}}.		
+
+** pineapple-weblogic-deployment-plugin
+
+	Location: pineapple-project/modules/pineapple-weblogic-deployment-plugin
+
+	JAR-type project which produces a JAR file which implements a plugin for 
+	deployment on WebLogic Server.
+
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-modules/pineapple-weblogic-deployment-plugin/index.html}here}}.		
+
+** pineapple-infrastructure-test-plugin
+
+	Location: pineapple-project/modules/pineapple-infrastructure-test-plugin
+
+	JAR-type project which produces a JAR file which contains a plugin for testing 
+	basic network infrastructure.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-modules/pineapple-infrastructure-test-plugin/index.html}here}}.		
+
+** pineapple-jsr88-commands
+
+	Location: pineapple-project/modules/pineapple-jsr88-commands
+
+	JAR-type project which produces a JAR file which contains a set of Chain 
+	commands with J2EE deployment functionality.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-modules/pineapple-jsr88-commands/index.html}here}}.		
+
+	
+* Model projects				
+
+** pineapple-weblogic-920-schemas
+
+	Location: pineapple-project/models/pineapple-weblogic-920-schemas
+
+	JAR-type project which produces a JAR file which contains the WebLogic 9.2
+	schemas and a XMLBeans based OXM mapping of the schemas.
+	
+	A link to the project documentation for the project can be found 
+	{{{../pineapple-models/pineapple-weblogic-920-schemas/index.html}here}}.		
+
+** pineapple-weblogic-103-schemas
+
+	Location: pineapple-project/models/pineapple-weblogic-103-schemas
+
+	JAR-type project which produces a JAR file which contains the WebLogic 10.3
+	schemas and a XMLBeans based OXM mapping of the schemas.
+	
+	A link to the project documentation for the project can be found 
+	{{{../pineapple-models/pineapple-weblogic-103-schemas/index.html}here}}.		
+
+** pineapple-weblogic-1212-schemas
+
+	Location: pineapple-project/models/pineapple-weblogic-1212-schemas
+
+	JAR-type project which produces a JAR file which contains the WebLogic 12.1.2
+	schemas and a XMLBeans based OXM mapping of the schemas.
+	
+	A link to the project documentation for the project can be found 
+	{{{../pineapple-models/pineapple-weblogic-1212-schemas/index.html}here}}.		
+
+** pineapple-example-modules
+
+	Location: pineapple-project/models/pineapple-example-modules
+
+	JAR-type project which produces a JAR file which contains a compendium 
+	of example modules.
+	
+	A link to the project documentation for the project can be found 
+	{{{../pineapple-models/pineapple-example-modules/index.html}here}}.				
+	
+* Plugin projects					
+
+** pineapple-filesystem-plugin
+
+	N/A.
+
+** pineapple-agent-plugin
+
+	Location: pineapple-project/plugins/pineapple-agent-plugin
+
+	JAR-type project which can supports remote communication with Pineapple agents 
+	using REST web services.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-plugins/pineapple-agent-plugin/index.html}here}}.		
+
+
+** pineapple-composite-execution-plugin
+
+	Location: pineapple-project/plugins/pineapple-composite-execution-plugin
+
+	JAR-type project which produces a JAR file which implements a plugin for 
+	composite execution of modules.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-plugins/pineapple-composite-execution-plugin/index.html}here}}.		
+
+** pineapple-ssh-plugin
+
+	Location: pineapple-project/plugins/pineapple-composite-execution-plugin
+
+	JAR-type project which produces a JAR file which implements a plugin for 
+	SSH access to remote hosts.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-plugins/pineapple-ssh-plugin/index.html}here}}.		
+
+** pineapple-docker-plugin
+
+	Location: pineapple-project/plugins/pineapple-docker-execution-plugin
+
+	JAR-type project which produces a JAR file which implements a plugin 
+	for remote management of Docker.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-plugins/pineapple-docker-plugin/index.html}here}}.		
+
+** pineapple-fusion-middleware-installation-plugin
+
+	Location: pineapple-project/plugins/pineapple-fusion-middleware-installation-plugin
+
+	JAR-type project which produces a JAR file which implements a plugin for 
+	to installation and uninstallation of Oracle Fusion Middleware.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-plugins/pineapple-fusion-middleware-installation-plugin/index.html}here}}.		
+
+** pineapple-jrockit-installation-plugin
+
+	Location: pineapple-project/plugins/pineapple-jrockit-installation-plugin
+
+	JAR-type project which produces a JAR file which implements a plugin for 
+	to installation and uninstallation of the JRockit JVM.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-plugins/pineapple-jrockit-installation-plugin/index.html}here}}.		
+
+** pineapple-weblogic-installation-plugin
+
+	Location: pineapple-project/plugins/pineapple-weblogic-installation-plugin
+
+	JAR-type project which produces a JAR file which implements a plugin for 
+	to installation and uninstallation of the WebLogic server.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-plugins/pineapple-weblogic-installation-plugin/index.html}here}}.		
+
+** pineapple-weblogic-scripting-tool-plugin
+
+	Location: pineapple-project/plugins/pineapple-weblogic-scripting-tool-plugin
+
+	JAR-type project which produces a JAR file which implements a plugin for 
+	to installation and uninstallation of the WebLogic server.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html}here}}.		
+	
+* Support projects				
+
+** pineapple-hamcrest-support
+
+	Location: pineapple-project/support/pineapple-hamcrest-support
+
+	JAR-type project which produces a JAR file which contains a Hamcrest asserter
+	object and a collection of reusable Hamcrest matchers.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-support/pineapple-hamcrest-support/index.html}here}}.		
+
+** pineapple-process-execution-support
+
+	Location: pineapple-project/supportpineapple-process-execution-support
+
+	JAR-type project which produces a JAR file which contains a classes for 
+	execution of external OS processes for plugins.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-support/pineapple-process-execution-support/index.html}here}}.			
+
+** pineapple-docker-support
+
+	Location: pineapple-project/support/pineapple-docker-support
+
+	JAR-type project which produces a JAR file which contains a 
+	Docker session and a Docker client for general test purposes
+	and a set of reusable Chain commands which implements 
+	Docker management tasks.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-support/pineapple-hamcrest-support/index.html}here}}.		
+	
+* Web application projects			
+
+** pineapple-web-application-war
+
+	Location: pineapple-project/applications/pineapple-web-application/pineapple-web-application-war
+
+	WAR-type project which produces a WAR file which implements the web application through
+	the usage of Spring Web MVC and the ZK framework. 
+	
+	A link to the project documentation can be found 
+	{{{../pineapple-applications/pineapple-web-application/pineapple-web-application-war/index.html}here}}. 		  	
+
+** pineapple-jetty-starter
+
+	Location: pineapple-project/applications/pineapple-web-application/pineapple-jetty-starter
+
+	JAR-type project which produces a JAR file which contain a single Java class which is used 
+	to start the Jetty web server and deploys the Pineapple web application to the server.
+	
+	A link to the project documentation can be found 
+	{{{../pineapple-applications/pineapple-web-application/pineapple-jetty-starter/index.html}here}}. 		  	
+
+** pineapple-standalone-web-client
+
+	Location: pineapple-project/applications/pineapple-web-application/pineapple-standalone-web-client
+
+	POM-type project which produces a ZIP file which bundles the web application (WAR) together 
+	with the Jetty starter project and all nessecary dependecies and creates a simple Java 
+	desktop application which have no other requirements than a JDK on the machine where it
+	is installed.
+	
+	A link to the project documentation can be found 
+	{{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/index.html}here}}. 		  	
+	
+	
+* Reporting projects	
+
+** pineapple-basic-html-report-generator
+
+	Location: pineapple-project/reporting/pineapple-basic-html-report-generator
+
+	JAR-type project which contains a reporting generator which generate
+	HTML based reports documenting how execution of operations proceeds.
+	
+	A link to the project documentation for the report generator can be found	
+	{{{../pineapple-reporting-projects/pineapple-basic-html-report-generator/index.html}here}}.				
+	
+* Test projects	
+
+** pineapple-test-utils
+
+	Location: pineapple-project/testing/pineapple-test-utils
+
+	JAR-type project which contains test utilities for developing Pineapple.
+	
+	A link to the project documentation for the test utillities can be found	
+	{{{../pineapple-test-projects/pineapple-test-utils/index.html}here}}.				
+	
+	
+* Dependencies between project binaries
+
+	A graph of the project dependencies can be found
+	{{{../images/overview.png}here}}.	
+		
+
+

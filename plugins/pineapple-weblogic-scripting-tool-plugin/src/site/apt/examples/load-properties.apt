@@ -1,0 +1,181 @@
+ ------
+ How-to: Execute script with property file  
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Execute script with property file  
+
+* Overview
+
+	This example describes how to define and execute a script which
+	loads properties for the script from a properties file. The example 
+	extends the {{{./execute-hello-world-script.html}Hello World script example}} 
+	by:
+
+	* Activate loading of property file in the module model.
+	
+	* Modifying the WLST script to use the loaded properties. 
+	
+	* Adding a property file to the module.
+		
+	[]		  	
+
+
+* Enable loading of properties in the module model 
+
+	The model is extended with <<<properties-file>>> attribute
+	which is added to the <<<wlst-script>>> element:  
+		
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:wsp="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0"  />
+  
+  <mmd:model target-resource="weblogic-r1035-scriptingtool">
+    <mmd:content>
+      <wsp:wlst>              
+        <wsp:wlst-script file="modulepath:bin\script.py" properties-file="modulepath:bin\script.properties" />
+      </wsp:wlst>
+    </mmd:content>
+  </mmd:model>	
+</mmd:models>  	 
++--------		
+
+	When the <<<properties-file>>> attribute is defined the plugin will load the specified
+	property file and make the properties available as variables when the scrip is run.
+	 
+* Modify WLST script to use loaded properties
+
+	The script is modified to use
+	the loaded properties as Jython variables:
+
++--------
+import java.util.Date as Date
+
+def main():   
+    print ("Starting: " + Date().toString() + "\n")
+	
+	# the key named 'key1' is instantiated with the value 'value1' from the property file name 'script.properties'	
+    print ("key=key1, value=:" + key1 )
+	
+    print ("Completed:: " + Date().toString() + "\n")
+
+main()
++--------		
+	
+* Add property file to the module
+
+	The property file <<<script.properties>>> is placed in the directory:
+	 <<<$\{module-dir\}/bin/script.properties>>> where <<<$\{module-dir\}>>> 
+	 is the module root directory which identifies the module with a unique name and version.
+
+	The content of the property file:
+
++--------
+key1=value1
+key2=value2
++--------		
+	
+	
+* A look at the module and the Pineapple configuration 
+
+	The module looks like:
+
++---
+weblogic-wlst-example-load-properties
+ |
+ +--- module.xml (optional)
+ |    
+ +--- bin
+ |     +--- script.py
+ |     +--- script.properties 
+ |
+ +--- models	 
+       +--- local-environment.xml 
++---
+
+
+** <<<Module.xml>>> (optional)
+
+	The content of the <<<module.xml>>>:
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="http://pineapple.dev.java.net/ns/module_1_0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	
+    id="weblogic-wlst-example" version="1.0.0">
+</module>
++---
+
+
+** <<<local-environment.xml>>>
+
+	Module model for the environment <local-environment> which is targeted at 
+	the resource <<<weblogic-r1035-scriptingtool>>> and invokes the script <<<script.py>>>:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:wsp="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0" >
+    <mmd:model target-resource="weblogic-r1035-scriptingtool">
+        <mmd:content>
+            <wsp:wlst>              
+                <wsp:wlst-script file="modulepath:bin\script.py" properties-file="modulepath:bin\script.properties" />
+            </wsp:wlst>
+        </mmd:content>
+    </mmd:model>		
+</mmd:models>	
++---
+
+** <<<script.py>>>
+
++---
+import java.util.Date as Date
+
+def main():   
+    print ("Starting: " + Date().toString() + "\n")
+	
+    # the key named 'key1' is instantiated with the value 'value1' from the property file name 'script.properties'	
+    print ("key=key1, value=:" + key1 )
+	
+    print ("Completed:: " + Date().toString() + "\n")
+
+main()
++---	
+
+** <<<script.properties>>>
+
++---
+key1=value1
+key2=value2
++---
+	
+
+** The <<<weblogic-r1035-scriptingtool>>> resource definition
+
+	Same as in the Hello World example.
+
+** The <<<weblogic-r1035-scriptingtool>>> credential definition
+     	 
+	Same as in the Hello World example.     	 
+
+* Invoke Pineapple to execute the script 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<<weblogic-wlst-example-load-properties>>>.
+	
+	* Select the environment named <<<local-environment>>>.   	  
+	
+	* Invoke the <<deploy-configuration>> operation.
+	
+	[]
+
+
+ 	

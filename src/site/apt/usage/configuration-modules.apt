@@ -1,0 +1,1842 @@
+ ------
+ Module Configuration Reference
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Module Configuration Reference
+
+	* {{{Introduction}Introduction}}
+	
+	* {{{Module_overview}Module overview}}
+	
+	* {{{Model_overview}Model overview}}
+	
+	* {{{Module_configuration_details}Module configuration details}}
+
+	* {{{Controlling_execution}Controlling execution}}
+
+	* {{{Variable_support_in_modules}Variable support in modules}}
+
+	* {{{Trigger_support_in_modules}Trigger support in modules}}
+	
+	[]
+
+* Introduction
+	
+	A module defines the input used by Pineapple when an operation is executed to 
+	do some work. 
+	
+	A module contains a managed artifact. Examples of managed artifacts are:
+	
+	* A web application which is deployed (or undeployed) to a target environment.
+	
+	* An installer which installs( or uninstalls) a software product to a target environment.
+	
+	* A model which defines test cases to test some IT infrastructure.
+	
+	* A model which defines commands to configure or test an operating system.
+	
+	* A model which defines the configuration of an application server.
+
+	[]
+	
+	The module contains all information to manage the artifact except:
+	
+	* Platform specific information. 
+	
+	* Security information. 
+	
+	[]
+	
+	Platform and security information are defined in the environment configuration. The environment 
+	configuration is a small CMDB which is divided into logical environments. 
+	
+	Modules are used to define targeted updates of the computing environment modelled by the environment configuration.		        
+
+* Module overview
+
+** Entities defined in a module
+
+	The entities defined in the module configuration:
+	
+	* <<module directory>> - the directory structure which defines a module.
+	
+	* <<module descriptor>> - optional module descriptor file which defines meta data and variables.		
+	
+	* <<model>> - contains data which directs the actions of the plugins.			
+	
+	[]
+
+** A module is defined in a directory 
+
+	A module is defined by a directory. The name of directory should reflect 
+	the content of directory but there are no strict requirements. 
+	
+	The individual module directories are by default located as sub directories
+	in the <<Modules Directory>>. The default location of the Modules 
+	Directory is <<<$\{pineapple.home.dir}/modules>>> which by default is resolved to
+	<<<$\{user.home}/.pineapple/modules>>>. 	 
+
+[../images/module-directory-layout.jpg]		
+
+** A module can contain a module descriptor file named <<<module.xml>>>
+
+	The module directory can contain a file named <<<module.xml>>> which
+	must adhere to the <<module schema>> whose content is described in the 
+	details section below.   
+	
+	The purposes of the module descriptor are:
+	
+	* <<Define meta data>>. The descriptor file can define the <<<id>>> and <<<version>>>
+	meta data. If the a module doesn't contain the descriptor file then the name of the directory is used 
+	as <<<id>>> and the version will be set to the default version <<<1.0.0>>>. The meta data is
+	used in the human readable output generated at runtime, i.e the GUI and reports.
+
+	* <<Define variables>>. the descriptor file can variables which then are available in the models.
+	
+	[]	 
+
+** A module is self contained package - but for security information
+
+	A module contains a managed artifact to test or configure a computing environment. 
+	
+	The module contains all information to manage the artifact except for
+	platform specific information and security information which are located 
+	in the environment configuration.  
+
+** The content of a module are grouped by environment	
+
+	The models which are defined in a module are grouped by environment as a 
+	module often will different configuration for each environments. An example 
+	could be a module which contains an application. The deployment targets will
+	differ in each environment.
+		 					
+* Model overview
+
+** Models are located in the <<<models>>> directory within a module
+
+	The models which are part of a module are located in the <<mandatory>> <<<models>>> 
+	directory within the module directory.
+	
+** The model name defines the target environment
+
+	The model file name defines the target environment for which the model defines input. 	
+	For this to work, the environment must be defined in environment configuration. Otherwise
+	execution of the model will fail since Pineapple wouldn't know which resource(s) to
+	target for the execution.
+	
+** 	A model file can contains multiple plugin specific models
+
+	The simple scenario is define one plugin specific model in a model file. The plugin specific model 
+	is then targeted to a set of target resources, i.e getting some work done at the targeted resources.
+	A model file can contain multiple plugin specific models. One purpose is to separate a plugin specific model 
+	into smaller manageable parts, e.g. a precondition test, a configuration part and a postcondition test.	
+	An alternate reason for having multiple plugin specific models within a model is to target different plugins
+	in sequence. 
+	
+** A model is bound to one or more target resource(s)
+
+[../images/model-resource-ref.jpg]
+	
+	To identify the resource within an environment which should be invoked with 
+	the model, each model defines a <<target resource>> whose value must be
+	a valid ID of a resource defined in the environment. 
+	The target resource also supports targeting of multiple resources, either through
+	lists or regular expressions as described in the 
+	{{{Module_configuration_details}Module configuration details}} section.	 
+	
+	The <<target resource>> binds a model to one or more resource(s) at runtime. The reason for 
+	this design is to implement a <decoupling> of platform specific 
+	information and security information from the modules (hence the models). 
+	
+[../images/model-resource-ref2.jpg]	
+		
+	Resource definitions can be fairly static as longs as they represent the 
+	computing environment and they are intended to be reused across the models used
+	to manage that particular computing environment.
+
+* Module configuration details	
+
+	This section is a detailed description of how to define module configuration files 
+	which adheres to the <<module schema>> and <<module model schema>> .
+
+** The module configuration schemas
+
+*** Why two schemas to define a module
+
+	Two schemas are used to define the content of a module. One schema is used to define the content of
+	module descriptor and one schema is used to defined the content of module models:
+	
+	* <<Module schema.>> The schema defines the namespace 
+	<<<http://pineapple.dev.java.net/ns/module_1_0>>>
+
+	* <<Module model schema.>> The schema defines the namespace 
+	<<<http://pineapple.dev.java.net/ns/module_model_1_0>>>
+	
+	[]
+			
+	<<{{{./schemas.html}Link to information about the location of the schemas.}}>>	
+
+*** Element and attribute qualification for the module schema 
+
+	The schema is defined with:
+	
+	* elementFormDefault="qualified" 
+	
+	* attributeFormDefault="unqualified"
+	
+	[]
+	
+	The module configuration documents using the schema will only use a single 
+	namespace and hence there is no need for qualified attributes.  
+
+*** Element and attribute qualification for the module model schema 
+
+	The schema is defined with:
+	
+	* elementFormDefault="qualified" 
+	
+	* attributeFormDefault="unqualified"
+	
+	[]
+	
+	The module model configuration documents using the schema will use multiple
+	schemas so the attribute/element qualification settings is intended to 
+	promote documents where ALL elements are prefix with their namespace. 
+
+** The minimal module descriptor (optional)
+ 
+	The minimal file for <<<module.xml>>> looks like:
+  
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="http://pineapple.dev.java.net/ns/module_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_1_0 
+                      http://pineapple.dev.java.net/ns/module_1_0.xsd"
+                       
+  id="my-first-module" 
+  version="1.0.0" />
++---
+
+	The <<<?xml>>> element defines an XML file with UTF-8 encoding.															
+														
+	The top level element for a module file is <<<module>>>. The element 
+	contains attributes which defines the used XML schemas and the two
+	module attributes <<<id>>> and <<<version>>>.
+	
+	Usage of the module schema as the main schema is defined with the 
+	<<<xmlns>>> attribute:
+	  
++---
+  xmlns="http://pineapple.dev.java.net/ns/module_1_0
++---	
+	 	
+	Inclusion of the XML-Schema schema with namespace <<<xsi>>> is defined by:
+	
++---
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++---	
+		 	
+	Specification of the schema location for the module schema is defined by:
+	
++---
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_1_0 
+                      http://pineapple.dev.java.net/ns/module_1_0.xsd"
++---	
+
+	The id of the module is defined by the <<id>> attribute, in this case the 
+	module is named "my-first-module":		
+
++---
+  id="my-first-module"
++---	
+
+	The version information of the module is defined by the <<version>> attribute, 
+	in this case the version is 1.0.0:		
+
++---
+  version="1.0.0"
++---	
+		 		 		 					
+** The minimal model file
+ 
+	The minimal model file looks like:
+		
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model__1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model__1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" />
++---
+
+	The <<<?xml>>> element defines an XML file with UTF-8 encoding.															
+														
+	The top level element for a model file is <<<mmd:models>>>. The element 
+	contains attributes which defines the used XML schemas. The element (and 
+	all other elements in a model file ) should be qualified as a model of 
+	any usage will contains elements from multiple name spaces. Such documents
+	will contain elements from the module model namespace and from the 
+	namespaces of the used plugins. 
+	
+	Usage of the module model schema is defined with the <<<xmlns:mmd>>> attribute:
+	  
++---
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_1_0
++---		 		 	
+	
+	..but any prefix could have been used, e.g. mm, m, mod. Anything that 
+	signifies that the element belongs to the module model schema.  
+	 	
+	Inclusion of the XML-Schema schema with namespace <<<xsi>>> is defined by:
+	
++---
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++---	
+		 	
+	Specification of the schema location for the module model schema is defined by:
+	
++---
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd"
++---	
+		
+** Defining plugin specific models						 
+
+	A model file can consist of any number of plugin specific models. A plugin specific model is
+	defined by a <<<model>>> element.
+		
+***	Defining the model container	
+	
+	The <<<model>>> element defines a plugin specific model. The element contains:
+	
+	* <<Meta data.>> The element attributes defines how the model is applied to the targeted resource(s).
+
+	* <<Model content.>> The model content defines the input to a plugin which interprets
+	the content and performs some action one the targeted resource(s) depending on the invoked 
+	operation. 
+	
+	[]
+
+	The minimal plugin specific model contains: 
+	
+	* One mandatory attribute <<<target-resource>>> which defines the resource(s) that the model
+	content should be targeted to. 
+	
+	* One mandatory sub element <<<content>>> which defines root of the input to the invoked plugin.	
+	
+	[]  
+
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" >
+
+  <mmd:model target-resource="ssh-node1" >
+    <mmd:content />
+  </mmd:model>
+</mmd:models>
++---
+	
+***	Targeting a model to resources
+
+	The mandatory <<<target-resource>>> attribute defines the resource(s) in the environment configuration that 
+	the model content should be targeted to.
+	
+	The attribute supports three options for targeting resources:
+	
+		* <<Single resource>>. A single resource can be targeted by setting the attribute value to the resource name, 
+		e.g. target-resource="ssh-node1". 
+				
+		* <<List>>. Any number of resources can be targeted through the usage of a list notation. The value enclosed by \{ \} 
+		is interpreted as a comma-separated list and the resources defined in the list will be targeted. Example: 
+		target-resource="\{ssh-node1, ssh-node2, ssh-node3\}". 
+		
+		* <<Regular expression>>. Any number of resources can be targeted through the usage of a regular expression notation. 
+		The value which follow the regex: prefix is interpreted as a regular expression. Any resource which match the regular 
+		expression will will be targeted. The java.util.regex API is used to match the resources against the regular expression, 
+		so the syntax of this API must be observed. Example: target-resource="regex:ssh-node.*"		
+		
+		[]
+		
+	Example illustrating the three targeting options:
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" >
+
+  <!-- will target ssh-node1 only -->
+  <mmd:model target-resource="ssh-node1" >
+    <mmd:content />
+  </mmd:model>
+
+  <!-- will target ssh-node1 to ssh-node3 -->
+  <mmd:model target-resource="{ssh-node1, ssh-node2, ssh-node3}" >
+    <mmd:content />
+  </mmd:model>
+
+  <!-- will target ssh-node1 to ssh-node9 -->
+  <mmd:model target-resource="regex:ssh-node.*" >
+    <mmd:content />
+  </mmd:model>
+
+</mmd:models>
++---
+
+***	Defining the operations when a model is executed
+
+	The optional <<<target-operation>>> attribute defines the operation(s) when the model should be applied to the 
+	target resources.
+	
+	<(A science bit):> The main idea with Pineapple in regard to the trinity of models, plugins and operation is 
+	that the same model applied to a plugin with different operations results in the execution of different semantics. 
+	The semantics of a model depends on the operation that it is invoked with.		
+	The idea holds true for some plugins. An example is the installation plugins where a model invoked with a <deploy-configuration> 
+	operation installs a product and the same model invoked with the <undeploy-configuration> uninstalls the installed product. 
+	The idea doesn't hold true all plugins though. An example is the SSH plugin, whose models tends to be very specific in regard
+	to either deploy some configuration (e.g. <mkdir> stuff) or delete it (e.g. <rm -rf> stuff). 	
+	To realize the idea, and support different semantics for a model, then Pineapple must abstract the domain and provide a domain 
+	specific language and then implement the semantics for the support operations (e.g. create, destroy, test, report etc). 
+	In this perspective, the SSH plugin can be considered to be too low level to fit into the overall design of Pineapple.		
+
+	But the SSH plugin has proven to be very handy in provisioning scenarios, so a practical solution is introduced. 
+	The solution is the addition of support for targeting a model to one or more operations.	
+	The <<<target-operation>>> attribute support this requirement and as a result a single model file can contain two plugin 
+	specific models, one which deploy some configuration (e.g. <mkdir> stuff) and one which delete it (e.g. <rm -rf> stuff). 
+	
+	When the model is invoked with the <deploy-configuration> operation then first model is executed 
+	(the one with: <<<target-operation="deploy-configuration">>>) and some configuration is deployed (e.g. <mkdir> stuff). 
+	When the model is invoked with the <undeploy-configuration> operation then second model is executed (the one with: 
+	<<<target-operation="undeploy-configuration">>>) and some configuration is undeployed (e.g. <rm -rf> stuff):	  
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" >
+
+  <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="mkdir stuff" />
+      </shp:ssh>
+    </mmd:content>
+  </mmd:model>
+  <mmd:model target-resource="ssh-node1" target-operation="undeploy-configuration" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="rm -rf stuff" />
+      </shp:ssh>
+    </mmd:content>
+  </mmd:model>  
+</mmd:models>
++---
+	 
+	The attribute supports three options for targeting operations:
+
+		* <<* (The wildcard identifier)>>. The model is targeted for any operation. This is the default value.
+	
+		* <<Single operation>>. A single operation can be targeted by setting the attribute value to the operation name, 
+		e.g. target-operation="deploy-configuration".
+				
+		* <<List>>. Any number of operations can be targeted through the usage of a list notation. The value enclosed by \{ \} 
+		is interpreted as a comma-separated list and the model will be executed if the operation match one of the names in the list. 
+		Example: target-operation="\{deploy-configuration, test\}". 
+		
+		[]
+		
+	Example illustrating the targeting options:
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" >
+
+  <!-- will only execute model when module is invoked with the "deploy-configuration" operation -->
+  <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="mkdir stuff" />
+      </shp:ssh>
+    </mmd:content>
+  </mmd:model>
+
+  <!-- will only execute model when module is invoked with the "undeploy-configuration" operation -->  
+  <mmd:model target-resource="ssh-node1" target-operation="undeploy-configuration" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="rm -rf stuff" />
+      </shp:ssh>
+    </mmd:content>
+  </mmd:model>  
+
+  <!-- will execute model when module is invoked with either the "undeploy-configuration" or the "deploy-configuration" operation -->
+  <mmd:model target-resource="ssh-node1" target-operation="{deploy-configuration, undeploy-configuration}" >
+    <mmd:content>
+      <shp:ssh>
+        <!-- more stuff here -->
+      </shp:ssh>
+    </mmd:content>
+  </mmd:model>  
+
+  <!-- will execute model when module is invoked with any operation -->
+  <mmd:model target-resource="ssh-node1" target-operation="*" >
+    <mmd:content>
+      <shp:ssh>
+        <!-- more stuff here -->
+      </shp:ssh>
+    </mmd:content>
+  </mmd:model>  
+
+</mmd:models>
++---
+
+	If the attribute isn't defined then default value is the wildcard identifier "*", where the model will be executed for any operation. 
+
+***	Describing the model
+
+	The optional <<<description>>> attribute support definition of a human readable description which is used in the GUI and generated reports..
+	
+	If the attribute isn't defined then default value is "Description n/a".	
+		
+	Example illustrating the usage of the attribute:
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" >
+
+  <mmd:model target-resource="ssh-node1" description="Model targeted to ssh-node1 only" >
+    <mmd:content />
+  </mmd:model>
+
+  <mmd:model target-resource="{ssh-node1, ssh-node2, ssh-node3}" description="Model targeted to ssh-node1 to ssh-node3" >
+    <mmd:content />
+  </mmd:model>
+
+  <mmd:model target-resource="regex:ssh-node.*" description="Model targeted to ssh-node1 to ssh-node9" >
+    <mmd:content />
+  </mmd:model>
+
+</mmd:models>
++---			
+
+***	Controlling variable substitution
+
+	The optional <<<substitute-variables>>> attribute controls whether variable substitution is enabled
+	or disabled for the content of the plugin specific model.
+	
+	If the attribute isn't defined then default value is <<<true>>>, i.e. variable substitution is enabled.	
+		
+	Example illustrating the usage of the attribute whose execution will fail due to the variable <<<$\{host\}>>> not being 
+	resolved in the model:
+	
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+  xmlns:mdl="http://pineapple.dev.java.net/ns/module_1_0" 
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:variables>
+    <mmd:variable key="host" value="10.15.100.20" />
+  </mmd:variables>
+  <mmd:model target-resource="infrastructure-test" substitute-variables="false">
+    <mmd:content>
+      <itp:infrastructure>
+        <itp:tcp-connection-test host="${host}" description="WebLogic Adm Server:7001,7091">
+          <itp:port value="7001" />					
+          <itp:port value="7091" />
+        </itp:tcp-connection-test>
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++---
+
+		
+*** Defining the model content  		
+			 	
+	The mandatory <<<content>>> element defines the root of the model content.
+	 
+	Everything under the <<<content>>> element is bound to the schema of the plugin which is used by the resource 
+	and used as input to the plugin at runtime. 
+
+	The plugin specific model elements below the <<<content>>> element can (should) be specified using fully qualified elements.	
+	Example illustrating the model content with fully qualified elements (using the <<<shp>>> prefix): 
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" >
+
+  <mmd:model target-resource="ssh-node1" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="sudo yum --assumeyes install unzip" />
+      </shp:ssh>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++---
+	
+***	A model file can contain multiple plugin specfic models
+	
+	A model file can contain multiple models. The models can either target the same resource(s);
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" >
+
+  <mmd:model target-resource="ssh-node1" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="sudo yum --assumeyes install unzip" />
+      </shp:ssh>
+    </mmd:content>
+  </mmd:model>
+  <mmd:model target-resource="ssh-node1" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="sudo yum --assumeyes install chkconfig" />
+      </shp:ssh>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++---
+		
+ 	or different resources as shown here:		
+		
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xmlns:pap="http://pineapple.dev.java.net/ns/plugin/agent_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" >
+
+  <mmd:model target-resource="ssh-node1" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="sudo yum --assumeyes install unzip" />
+        <shp:execute command="sudo yum --assumeyes install chkconfig" />
+      </shp:ssh>
+    </mmd:content>
+  </mmd:model>
+  <mmd:model target-resource="agent-node1" >
+    <mmd:content>  
+      <pap:agent>
+        <pap:distribute-and-execute-operation module="my-testsuite" environment="local" operation="test" />
+      </pap:agent>			
+    </mmd:content>
+  </mmd:model>  	      	
+</mmd:models>
++---
+
+* Controlling execution 			
+			
+	Pineapple supports the concept of <continuation policy> which controls how it reacts 
+	when an error or failure occurs executing an operation. 	
+	The continuation policy can be used in two different ways:
+
+	* {{{Defining_a_continuation_policy_to_control_execution_on_failure_or_error}Defining a continuation policy to control execution on failure or error}}. 
+	It can be declared in modules to control how Pineapple should react when an error or failure occurs executing an operation.
+	
+	* 	{{{Cancelling_an_operation_during_execution}Cancelling an operation during execution}}. 
+	The continuation policy can also be used by a user at runtime to interrupt the execution of an operation:
+
+	[]
+
+	Furthermore, the execution of an operation can be controlled declaratively by:
+
+	* {{{Targeting_a_model_to_resources}Targeting a model to resources}}. 
+
+	* {{{Defining_the_operations_when_a_model_is_executed}Defining the operations when a model is executed}}.
+
+	[]
+
+** Defining a continuation policy to control execution on failure or error
+	
+	The optional model <<<continue>>> attribute defines a <continuation policy>encountered
+	which controls how Pineapple reacts when an error or failure occurs executing an operation.
+		
+	The attribute supports these options for controlling the execution:	
+
+	* <<true>>. Execution will continue when an failure or error is encountered during execution. 
+	
+	* <<false>>. Execution is aborted when an failure or error is encountered during execution.
+
+	[]
+
+	If the attribute isn't defined then default value is <<<true>>>, i.e. continuation is enabled. 
+
+	The <<<continue>>> attribute is defined on the top level element 
+	for a model file <<<mmd:models>>>:
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" 
+  continue="false" >
+
+  <mmd:model target-resource="ssh-node1" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="sudo yum --assumeyes install unzip" />
+      </shp:ssh>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++---
+
+** Continuation policy behaviour in different contexts
+
+	There are several aspects to how the continuation policy operates (i.e. the semantics of the
+	policy across the different model parts and execution units):
+
+	* {{{Continuation_behaviour_in_a_model_file}Continuation behaviour in a model file}}.
+		
+	* {{{Continuation_behaviour_in_a_plugin}Continuation behaviour in a plugin}}.
+
+	* {{{Continuation_behaviour_in_a_composite_model}Continuation behaviour in a composite model}}.
+	 
+	* {{{Continuation_behaviour_in_an_agent}Continuation behaviour in an agent}}.
+
+	* {{{Continuation_behaviour_in_the_agent_plugin}Continuation behaviour in the agent plugin}}.
+
+	[]
+	
+** Continuation behaviour in a model file
+	
+	Within a model file the attribute is global for all models.
+	The value (defined in the <models> element) will control the execution of all models in the model file.
+
+*** With continuation enabled
+
+	If the continuation policy is set to <true>, then Pineapple will ignore any failures or errors
+	during the execution of a model and continue with the execution in these phases:
+	
+	[[1]] <Plugin execution:> 
+	Handle the failure/error within the invoked plugin as described in the paragraph: 
+	{{{Continuation_behaviour_in_a_plugin}Continuation behaviour in a plugin}}.
+	
+	[[2]] <Target resources:> 
+	Pineapple will continue to execute the model with the next resolved resource defined by the <target-resource> attribute
+	as in the paragraph: {{{Targeting_a_model_to_resources}Targeting a model to resources}}. 
+
+	[[3]] <Next model execution:> 
+	Pineapple will start execution of the next model defined in the model file.
+	
+	[]
+
+	Here is an example with two models (M1 and M2) targeted to one resource (R1). 
+	Despite a failure or error during execution of model M1, model M2 will be executed:
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" 
+  continue="true" >
+
+  <mmd:model target-resource="R1" description="Model M1" >
+    <mmd:content>
+      <!-- actual model content here -->
+    </mmd:content>
+  </mmd:model>
+  
+  <mmd:model target-resource="R1" description="Model M2" >
+    <mmd:content>
+      <!-- actual model content here -->
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++---
+
+	Here is an example with two models (M1 and M2) each targeted to two resources (R1, R2). 
+	Despite a failure or error during execution of model M1 when targeted to R1, model M1 targeted to R2 will be executed.
+	And model M2 targeted to R1. And model M2 targeted to R2:
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" 
+  continue="true" >
+
+  <mmd:model target-resource="R1, R2" description="Model M1" >
+    <mmd:content>
+      <!-- actual model content here -->
+    </mmd:content>
+  </mmd:model>
+  
+  <mmd:model target-resource="R1, R2" description="Model M2" >
+    <mmd:content>
+      <!-- actual model content here -->
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++---
+
+		
+*** With continuation disabled
+
+	If the continuation policy is set to <false>, then Pineapple will abort the execution of 
+	a model and continue through execution of these phases:
+	
+	[[1]] <Plugin execution:> 
+	Handle the failure/error within the invoked plugin as described in the paragraph: 
+	{{{Continuation_behaviour_in_a_plugin}Continuation behaviour in a plugin}}.
+	
+	[[2]] <Target resources:> 
+	Pineapple will skip execution of the model with the next resolved resource 
+	(and any subsequent resolved resources) defined by the <target-resource> attribute.
+
+	[[3]] <Next model execution:> 
+	Pineapple will skip execution of the next model (and any subsequent models) defined in the model file.
+	
+	[]
+
+	Here is an example with two models (M1 and M2) targeted to one resource (R1). 	
+	An error during execution of model M1 will abort the execution 
+	and the execution of model M2 will never be attempted: 
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" 
+  continue="false" >
+
+  <mmd:model target-resource="ssh-node1" description="Model M1" >
+    <mmd:content>
+      <!-- actual model content here -->
+    </mmd:content>
+  </mmd:model>
+  
+  <mmd:model target-resource="ssh-node1" description="Model M2" >
+    <mmd:content>
+      <!-- actual model content here -->
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++---
+
+	Here is an example with two models (M1 and M2) each targeted to two resources (R1, R2). 
+	An error during execution of model M1 when targeted to R1 will abort the execution 
+	and execution is skipped for model M1 targeted to R2.	
+	And model M2 targeted to R1 is skipped. And model M2 targeted to R2 is skipped:
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" 
+  continue="true" >
+
+  <mmd:model target-resource="R1, R2" description="Model M1" >
+    <mmd:content>
+      <!-- actual model content here -->
+    </mmd:content>
+  </mmd:model>
+  
+  <mmd:model target-resource="R1, R2" description="Model M2" >
+    <mmd:content>
+      <!-- actual model content here -->
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++---
+
+** Continuation behaviour in a plugin
+
+	The value (defined in the <<<models>>> element) should control the execution of a model but the behaviour
+	depends on the implementation of the invoked plugin.
+	Some plugins might continue execution despite failures/errors when invoked with a <test> operation.	
+	Other plugins might abort execution during failures/errors when invoked with a <deploy> operation if some
+	prerequisite isn't fulfilled. 
+	
+*** With continuation enabled
+
+	The behaviour is individual for each plugin and depends on the invoked operation.
+	
+	The behaviour for two plugin specifically are described since they are used to define execution flows:
+
+	* The behaviour for {{{../pineapple-plugins/pineapple-composite-execution-plugin/index.html}Pineapple composite execution plugin}}
+	is described in the paragraph: {{{Continuation_behaviour_in_a_composite_model}Continuation behaviour in a composite model}}.
+	
+	* The behaviour for {{{../pineapple-plugins/pineapple-agent-plugin/index.html}Pineapple Agent plugin}}	
+	is described in the paragraph: {{{Continuation_behaviour_in_the_agent_plugin}Continuation behaviour in the agent plugin}}.
+
+	[]
+
+*** With continuation disabled
+
+	See previous paragraph.
+ 	
+**	Continuation behaviour in a composite model
+
+	Execution of composite models is handled by the 
+	{{{../pineapple-plugins/pineapple-composite-execution-plugin/index.html}Pineapple composite execution plugin}}. 
+	The behaviour of the plugin is based on the continuation policy value defined in the model file 
+	where usage of the plugin is defined.
+	Once set the value is considered global and overrides any value set by a model in a referenced composite module. 
+
+	Here is an example with a model (the parent).
+	The model defines usage of a composite model with two composite modules. 
+	The composites are module C1 and C2. 
+	The continuation policy is set to <false> in the parent model. 
+	When the composite module C1 is executed then the continuation policy defined in its model is ignored. 
+	The continuation policy set in the parent model overrides the policy value defined i C1. 
+	This goes for C2 as well.
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+  xmlns:cep="http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0" 
+  continue="false" >
+
+    <mmd:model target-resource="composite-execution">
+        <mmd:content>
+          <cep:composite-execution>
+            <cep:module name="C1" />
+            <cep:module name="C2" />                         
+        </cep:composite-execution>                      
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++---		
+	
+*** With continuation enabled
+
+	If the continuation policy is set to <true>, then the plugin will ignore any failures or errors
+	and continue with the execution in these phases:
+	
+	[[1]] <Model execution:> 
+	Handle the failure or error within the model as described in the paragraph: 
+	{{{Continuation_behaviour_in_a_model_file}Continuation behaviour in a model file}}.
+	
+	[[2]] <Next model execution:> 
+	The plugin will start execution of the model defined in the next referenced composite module.
+	
+	[]
+
+	Here is an example with a model which defines usage of a composite model with two composite modules. 
+	The composites are module C1 and C2. 
+	Despite a failure or error during execution of the model in composite module C1, the model in composite module C2 will be executed.
+	This will happen even if the continuation policy is set to <false> in the model in composite module C1:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+  xmlns:cep="http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0" 
+  continue="true" >
+
+    <mmd:model target-resource="composite-execution">
+        <mmd:content>
+          <cep:composite-execution>
+            <cep:module name="C1" />
+            <cep:module name="C2" />                         
+        </cep:composite-execution>                      
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++---		
+
+*** With continuation disabled
+
+	If the continuation policy is set to <false>, the plugin will react to failure or errors
+	and stop the execution. The process of stopping is done through execution of these phases:
+	
+	[[1]] <Model execution:> 
+	Handle the failure or error within the model as described in the paragraph: 
+	{{{Continuation_behaviour_in_a_model_file}Continuation behaviour in a model file}}.
+	
+	[[2]] <Next model execution:> 
+	The plugin will skip execution of the model defined in the next referenced composite module (and any subsequent composite modules) .
+	
+	[]
+
+	Here is an example with a model which defines usage of a composite model with two composite modules. 
+	The composites are module C1 and C2. 
+	If a failure or error during execution of the model in composite module C1, then execution of the model is aborted. 
+	Execution of the module in composite module C2 is skipped.
+	This will happen even if the continuation policy is set to <true> in the model in composite module C1:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+  xmlns:cep="http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0" 
+  continue="false" >
+
+    <mmd:model target-resource="composite-execution">
+        <mmd:content>
+          <cep:composite-execution>
+            <cep:module name="C1" />
+            <cep:module name="C2" />                         
+        </cep:composite-execution>                      
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++---		
+
+** Continuation behaviour in an agent
+	
+	Invocation of an agent is done through the 
+	{{{../pineapple-applications/pineapple-web-application/pineapple-web-application-war/usage/rest.html}Pineapple REST API}}.
+	When a client invokes an operation at an agent, then the continuation policy is set from the model in the invoked module.			
+	Any continuation policy set at the the client (e.g. the 
+	{{{../pineapple-plugins/pineapple-agent-plugin/index.html}Pineapple agent plugin}})	
+	is ignored.
+
+	All errors or failures can be reported back to the client using the REST API.
+	Clients can use this information to control the execution of its operation using the the continuation policy
+	defined in the model in the invoked module.
+
+*** With continuation enabled
+
+	The agent implements the same continuation behaviour as 
+	{{{Continuation_behaviour_in_a_model_file}Continuation behaviour in a model file}}.
+
+*** With continuation disabled
+
+	The agent implements the same continuation behaviour as 
+	{{{Continuation_behaviour_in_a_model_file}Continuation behaviour in a model file}}.
+
+** Continuation behaviour in the agent plugin
+	
+	The {{{../pineapple-plugins/pineapple-agent-plugin/index.html}Pineapple Agent plugin}}
+	supports invocation of agents through the 
+	{{{../pineapple-applications/pineapple-web-application/pineapple-web-application-war/usage/rest.html}Pineapple REST API}}.
+	When the agent plugin is used to invoke an agent then the continuation policy from the model isn't carried across to the agent.
+
+	Information about errors or failures in an agent is reported back to the agent plugin (also using the REST API). 
+	Pineapple and the agent plugin uses this information to control the continuation behaviour exactly as if it was a local execution.
+
+*** With continuation enabled
+
+	If the continuation policy is set to <true>, then the plugin will ignore any failures or errors
+	and continue with the execution in these phases:
+
+	[[1]] <Agent service execution:> 
+	Let the agent handle the failure or error and report the result to the plugin. 
+	If an operation was invoked at the agent, it is handled by the agent as described in the paragraph: 
+	{{{Continuation_behaviour_in_an_agent}Continuation behaviour in an agent}}.
+		
+	[[2]] <Next model element execution:> 
+	The plugin will start execution of the next defined model element (and invoke the agent using an agent service).
+
+	[]
+		
+*** With continuation disabled
+
+	If the continuation policy is set to <false>, the plugin will react to failure or errors
+	and stop the execution. The process of stopping is done through execution of these phases:
+
+	[[1]] <Agent service execution:> 
+	Let the agent handle the failure or error and report the result to the plugin. 
+	If an operation was invoked at the agent, it is handled by the agent as described in the paragraph: 
+	{{{Continuation_behaviour_in_an_agent}Continuation behaviour in an agent}}.
+		
+	[[2]] <Next model element execution:> 
+	The plugin will skip execution of the next defined model element (and subsequent model elements).
+
+	[]
+	
+	Here is an example with three models to illustrate the behaviour in the agent plugin and an agent.
+	A model file contains two models M1 and M2.
+	The first model M1 defines usage of the agent plugin to invoke an operation at an agent. 
+	The model M1 will invoke the operation <test> on module <ModuleAtAgent> at the target resource <TheAgent> (e.g. the agent).	
+ 	The second model M2 resides in the same model file as M1 and just do some stuff.
+ 	The continuation policy for the model file which contains the models M1 and M2 is set to skip execution if an error or failure occurs:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+  xmlns:pap="http://pineapple.dev.java.net/ns/plugin/agent_1_0" 
+  continue="false" >
+
+  <mmd:model target-resource="TheAgent" description="Model M1. Invokes Model M3 in the module ModuleAtAgent at the agent named TheAgent">
+    <mmd:content>
+      <pap:agent>
+        <pap:execute-operation module="ModuleAtAgent" operation"test" environment="E" />
+      </pap:agent>                        
+    </mmd:content>
+  </mmd:model>
+    
+  <mmd:model target-resource="R1" description="Model M2" >
+    <mmd:content>
+      <!-- actual model content here -->
+    </mmd:content>
+  </mmd:model>
+    
+</mmd:models>
++---		
+
+	At the agent a module named <ModuleAtAgent> exists.
+	The module contains the third model M3. 
+ 	The continuation policy for the third model is set to skip execution if an error or failure occurs:
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  continue="false" >
+
+  <mmd:model target-resource="AR1" description="Model M3 in module ModuleAtAgent" >
+    <mmd:content>
+      <!-- actual model content here -->
+    </mmd:content>
+  </mmd:model>  
+
+</mmd:models>
++---
+
+	When the module is executed which contains the model file with the models M1 and M2, then execution of M1 is started. 
+	The model M1 will invoke the module name <ModuleAtAgent> with the operation <test> at the agent.
+	This will trigger execution of model M3.
+	If a failure or error occurs during execution of model M3, then execution of model M3 will stop since its continuation policy is set to <false>.	
+	The failure or error is reported back to the agent plugin. 
+	The runtime information for model M3 will be added to the runtime information for model M1.
+	Execution of model M2 is skipped, because the continuation policy for model file which contains M1 and M2 is set to stop execution if an error or failure occurs.
+	
+* Cancelling an operation during execution
+
+	The is an experimental feature under development. Will be release in Pineapple 1.7+
+	
+	The keywords are..
+
+	..one part of the continuation support
+	
+	..cooperative interruption..
+	
+	..cancellation behaviour in plugins
+	
+	..cancellation behaviour in composite executions
+
+	..cancellation behaviour in agents
+		
+	..no configurations
+			
+* Variable support in modules  			
+	
+	Variables can be declared and referenced from within a model.
+	
+** An introductory example
+
+	A variable can be declared in the <<<variables>>> section in a model:
+	
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+  xmlns:mdl="http://pineapple.dev.java.net/ns/module_1_0" 
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:variables>
+    <mmd:variable key="host" value="10.15.100.20" />
+  </mmd:variables>
+  <mmd:model target-resource="infrastructure-test">
+    <mmd:content>
+      <itp:infrastructure>
+        <itp:tcp-connection-test host="${host}" description="WebLogic Adm Server:7001,7091">
+          <itp:port value="7001" />					
+          <itp:port value="7091" />
+        </itp:tcp-connection-test>
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++---
+
+	A variable is declared with a key and a value:
+	
++---
+  <mmd:variable key="host" value="10.15.100.20" />
++---	
+
+	The variable can then be reference from any plugin model elements. This will all sub elements of the
+	<<<content>>> element which are those bound to the schema of a particular plugin. The variable
+	is referenced using the syntax: <<<$\{key\}>>>, where <key> should match the key of a defined variable. Here is
+	the variable with the key <host> is referenced:
+	
++---
+ <itp:tcp-connection-test host="${host}" description="WebLogic Adm Server:7001,7091">
++---	
+		
+	
+** Declaration of variables
+	
+	Variables can be declared at different levels:
+	
+	* <<At the module level>>. The (optional) module descriptor <<<module.xml>>> located at the root of 
+	the module directory supports declaration of variables. A <<<variables>>> section can be defined in
+	the module descriptor where variables can be defined. A variable declared in the module descriptor 
+	is available in all models within the module.     
+
+	* <<At the model level>>. Variables can be defined in each model in a module. A <<<variables>>> section 
+	can be defined in a model where variables can be defined. A variable declared in a model is available 
+	within the model alone.
+	
+	* <<At the resource level>>. Resources support definition of properties. A property defined on a resource
+	is also a variable declaration. A variable declared as a resource property is only available when the model
+	is targeted to the particular resource. 	
+
+	[]
+
+*** Declaration of a variable in the module descriptor
+
+	The module descriptor supports definition of a <<<variables>>> section where variables can be defined:
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="http://pineapple.dev.java.net/ns/module_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_1_0 
+                      http://pineapple.dev.java.net/ns/module_1_0.xsd"
+                       
+  id="my-first-module" 
+  version="1.0.0" >
+    <variables>
+      <variable key="host" value="10.33.33.33" />
+    </variables>
+  </module>
++---
+	 
+	A variable is declared with a key and a value:
+	
++---
+  <variable key="host" value="10.33.33.33" />
++---	
+
+*** Declaration of a variable in a model
+
+	A model supports definition of a <<<variables>>> section where variables can be defined:
+	
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+  xmlns:mdl="http://pineapple.dev.java.net/ns/module_1_0" 
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:variables>
+    <mmd:variable key="host" value="10.22.22.22" />
+  </mmd:variables>
+  
+  <!-- more stuff here -->
+  
+</mmd:models>
++---
+	 
+	A variable is declared with a key and a value:
+	
++---
+  <variable key="host" value="10.22.22.22" />
++---	
+
+*** Declaration of a variable as a resource property
+
+	A resource defined in the environment configuration supports definition of properties:
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/environment_1_0 
+                      http://pineapple.dev.java.net/ns/environment_1_0.xsd">
+ 
+  <environments>
+    <environment id="local-development" description="my local development environment" >
+      <resources>
+        <resource id="weblogic-deployment" 
+                  credential-id-ref="weblogic-deployment-credential" 
+                  plugin-id="com.alpha.pineapple.plugin.weblogic.deployment" >
+                        <property key="adminserver-protocol" value="t3" />
+                        <property key="adminserver-listenaddress" value="127.0.0.1" />
+                        <property key="adminserver-listenport" value="7001" />
+       </resource>              
+      <resources>      
+    </environment>    
+  </environments>  
+</configuration> 
++---
+	 
+	A property is declared with a key and a value in the same way as variables are defined in the module descriptor 
+	and models:
+
++---
+  <property key="adminserver-protocol" value="t3" />
++---	
+
+** Referencing variables in models
+
+*** Syntax for referencing a variable
+
+	A variable is referenced from a model using the syntax: <<<$\{key\}>>> where <<<key>>> must match 
+	the key of a defined variable.
+
+*** Unmatched references are ignored
+
+	If a referenced variable can't resolved, i.e. no match is found amoung the set of defined variables, then the reference
+	is ignored because it can mean one of two things:
+	
+	* It's an error that it isn't resolved.
+	
+	* The expression serves another purpose in the plugin model.
+	
+	[] 
+	
+*** Support for forced resolution 
+
+	Resolution can be forced to a particular definition by adding a prefix to the variable reference: 
+	
+	* <<<$\{module.key\}>>> only attempts to resolve the variable named <<<key>>> from the variables defined
+	in the module descriptor.
+
+	* <<<$\{model.key\}>>> only attempts to resolve the variable named <<<key>>> from the variables defined
+	in the model.
+	
+	* <<<$\{resource.key\}>>> only attempts to resolve the variable named <<<key>>> from the properties
+	of the targeted resource.
+	
+	[]   
+	  
+*** Variables can be referenced from plugin specfic models 
+
+	Variables can be referenced in plugin specific models, i.e all the elements below the <<<\<content\>>>> elements in 
+	a model. 
+		
+	Below is a model which consists of two plugin specific models. The first model uses the SSH plugin (the elements prefixed 
+	with <<<shp>>>). The second model uses the Agent plugin (the elements prefixed with <<<pap>>>). References to variables are 
+	supported in all elements prefixed with <<<shp>>> and <<<pap>>>:
+		
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xmlns:pap="http://pineapple.dev.java.net/ns/plugin/agent_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" >
+  <mmd:variables>
+    <variable key="yum-install-command" value="sudo yum --assumeyes install" />  
+    <variable key="remote-environment" value="local" />  
+    <variable key="remote-operation" value="test" />          
+  </mmd:variables>  
+  <mmd:model target-resource="ssh-node1" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="${yum-install-command} unzip" />
+        <shp:execute command="${yum-install-command} chkconfig" />
+      </shp:ssh>
+    </mmd:content>
+  </mmd:model>
+  <mmd:model target-resource="agent-node1" >
+    <mmd:content>  
+      <pap:agent>
+        <pap:distribute-and-execute-operation module="my-testsuite" environment="${remote-environment}" operation="${remote-operation}" />
+      </pap:agent>			
+    </mmd:content>
+  </mmd:model>  	      	
+</mmd:models>
++---
+
+*** Variables aren't supported in the module model schema
+
+	References to variables aren't supported in the elements defined by the module model schema, i.e. the elements 
+	prefixed by <<<mmd>>> in the model below. The variable reference <<<$\{agent-node\}>>> in the <<<target-resource>>> 
+	attribute will not be resolved:
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:pap="http://pineapple.dev.java.net/ns/plugin/agent_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" >
+  <mmd:variables>
+    <variable key="agent-node" value="agent-node1" />  
+    <variable key="remote-environment" value="local" />  
+    <variable key="remote-operation" value="test" />          
+  </mmd:variables>  
+  <mmd:model target-resource="${agent-node}" >
+    <mmd:content>  
+      <pap:agent>
+        <pap:distribute-and-execute-operation module="my-testsuite" environment="${remote-environment}" operation="${remote-operation}" />
+      </pap:agent>			
+    </mmd:content>
+  </mmd:model>  	      	
+</mmd:models>
++---
+	  		
+
+** Resolution of variables
+
+	The value of a variable is resolved using the algorithm:
+
+	* If <<forced variable reference>>: If the variable reference is prefixed with either a <module:>, <model:> or <resource:> prefix then
+	attempt to resolve the value from the targeted set of variables. If the variable isn't defined in the targeted set then ignore
+	the variable reference and quit the resolution.
+		
+	* Resolve at <<resource level>>: If the variable is declared at resource level then value is resolved to this value. 
+	
+	* Resolve at <<model level>>: If the variable is declared at model level then value is resolved to this value.
+	
+	* Resolve at <<module level>>: If the variable is declared at module level then value is resolved to this value.
+	
+	* <<Ignore undeclared variables>>: If the variable isn't found to be declared then the variable reference is ignored. 
+	
+	[]  
+	
+	Example 1: If a variable named <dave> is defined at the model level with value <10> and at the module level with
+	the value <20> then the <dave> variable will be resolved to the value <10>.
+	
+	Example 2: If a variable named <jill> is defined as resource property with value <10> and at the module level with
+	the value <20> then the <jill> variable will be resolved to the value <10>.
+	
+	Example 3: If the variable named <jim> isn't defined, but referenced from a model with <<<$\{jim\}>>> then the variable
+	isn't resolved and the model will contain the expression <<<$\{jim\}>>> when it is processed by the targeted plugin. This
+	can make perfect sense if this type of expression make sense within the domain of the targeted plugin, e.g. shell scripts. 	
+	
+** Regarding resolution of variables at runtime
+
+	Variables are resolved after the target resource have been resolved to be able to support variables defined as resource properties.
+
+	Since a model can be targeted to multiple resources, either using a list or a regular expression, then the variables are re-resolved
+	for each targeted resource to be able to support variables defined as resource properties.
+	
+** Regarding resource properties
+
+	Special care must be taken when resource properties are used.
+	
+	When a variable is defined in the module descriptor or in a model then the variable will be defined for all targeted resources.
+	
+	If a variable is defined as a resource property then the variable will only be available for that particular resource. One must keep this
+	this in mind to avoid errors when using variables which are resolved from resource properties. 
+	
+	Here's an example to illustrate the case:
+	
+	* A module is defined, with a single model.
+	
+	* Within the model a plugin specfic model is defined which uses the Agent plugin. The model should be targeted to three target nodes named
+	<<<agent-node1>>>, <<<agent-node2>>> and <<<agent-node3>>>. This is defined in the model using a list expression for 
+	the <<<target-resource>>> attribute.
+	
+	* A variable named <<<$\{mymodule\}>>> is referenced from the model. The variable should be defined as a resource property.   
+	
+	[]
+	
+	The model looks like:
+	
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:pap="http://pineapple.dev.java.net/ns/plugin/agent_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" >
+  <mmd:variables />
+  <mmd:model target-resource="{agent-node1, agent-node2, agent-node3}" >
+    <mmd:content>  
+      <pap:agent>
+        <pap:distribute-and-execute-operation module="${mymodule}" environment="local" operation="test" />
+      </pap:agent>			
+    </mmd:content>
+  </mmd:model>  	      	
+</mmd:models>
++---
+	
+	To support resolution of the <<<$\{mymodule\}>>> variable from resource properties, then the variable 
+	must be defined on alle three targeted resource properties for the resolution to succeed. If it is only 
+	defined on one, e.g. <<<agent-node1>>> then the value can be resolved when the model is targeted to that resource. 
+	For the other two resources the variable resolution will fail, and the <<<$\{mymodule\}>>> expression will be passed 
+	on when the model is executed by the Agent plugin.    	 
+	
+* Trigger support in modules  			
+	
+	Triggers can be declared for a plugin specific model and they are executed after a plugin specific model have been targeted to a resource.
+	
+** An introductory example
+
+	A trigger can be declared in the <<<model>>> section of a model file:
+	
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+  xmlns:mdl="http://pineapple.dev.java.net/ns/module_1_0" 
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">
+    <mmd:content>
+      <itp:infrastructure>
+        <itp:tcp-connection-test host="10.15.100.20" description="WebLogic Adm Server:7001,7091">
+          <itp:port value="7001" />					
+          <itp:port value="7091" />
+        </itp:tcp-connection-test>
+      </itp:infrastructure>
+    </mmd:content>
+    <mmd:trigger on-target-operation="test" on-result="failure" module="restart-weblogic" environment="local" operation="deploy-configuration" />
+  </mmd:model>
+</mmd:models>
++---
+
+	A trigger is declared with two directives. The directives determine if the trigger should be executed.
+	The two directive are named <<<on-target-operation>>> and <<<on-result>>>:
+	
++---
+  <mmd:trigger on-target-operation="test" on-result="failure" ... />
++---	
+
+	If evaluation of the directives determines that the trigger should be executed then the remaining attributes declares
+	another module which is invoked:
+		
++---
+  <mmd:trigger ... module="restart-weblogic" environment="local" operation="deploy" />
++---	
+		
+** Declaration of triggers
+	
+	A trigger can be declared as part of a plugin specific model in a model file. 
+	A trigger is defined within the <model> element:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+  xmlns:mdl="http://pineapple.dev.java.net/ns/module_1_0" 
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">
+    <mmd:content>
+      ...
+    </mmd:content>
+    <mmd:trigger on-target-operation="test" on-result="failure" module="activate-something" environment="local" operation="deploy-configuration" />
+  </mmd:model>
+</mmd:models>
++---
+
+	Declaration of a trigger consists of two parts:
+	
+	* <<Trigger directives>>. The directives controls whether a trigger should be executed.
+	
+	* <<Target module>>. Definition of the module which is invoked when the trigger is executed.
+	
+	[]
+			
+*** Trigger directives
+
+	The two trigger directives are:
+	
+	* The <<<on-target-operation>>> is an optional directive. 
+	The directive is resolved against the operation used to invoke the model file.
+
+	* The <<<on-result>>> is a optional directive. 
+	The directive is resolved against the execution result generated when the plugin specific model (containing the trigger) is targeted to a resource.
+			
+	[]
+	
+*** The operation directive	
+		
+	The <<<on-target-operation>>> attribute supports three options for defining the condition for the trigger to run:
+
+	* <<* (The wildcard identifier)>>. The trigger is executed for any operation. This is the default value.
+
+	* <<Single operation>>. The trigger is only executed when the operation name defined by the attribute value is identical to the invoked operation.
+			
+	* <<List>>. Multiple operations can be defined using a list notation. The value enclosed by \{ \} 
+	is interpreted as a comma-separated list and the trigger is executed if the invoked operation matches one of the names in the list. 
+	
+	[]
+	
+	The directive is optional. If the directive isn't defined or is empty then it is interpreted as the default value (the wildcard identifier). 
+	
+	Example illustrating the configuration options. 
+	As mentioned above, the trigger resolution is based on an AND-based resolution of both directives. 	
+	The value of the other directive, <<<on-result>>>, isn't defined which corresponds to its wildcard value:
+		
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" >
+
+  <!-- will only execute trigger when module is invoked with the "deploy-configuration" operation -->
+  <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="mkdir stuff" />
+      </shp:ssh>
+    </mmd:content>
+    <mmd:trigger on-target-operation="deploy-configuration" module="trigger-module-1" environment="alpha" operation="test" />    
+  </mmd:model>
+
+  <!-- will only execute trigger when module is invoked with the "undeploy-configuration" operation -->  
+  <mmd:model target-resource="ssh-node1" target-operation="undeploy-configuration" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="rm -rf stuff" />
+      </shp:ssh>
+    </mmd:content>
+    <mmd:trigger on-target-operation="undeploy-configuration" module="trigger-module-2" environment="alpha" operation="test" />        
+  </mmd:model>  
+
+  <!-- will execute trigger when module is invoked with either the "undeploy-configuration" or the "deploy-configuration" operation -->
+  <mmd:model target-resource="ssh-node1" target-operation="{deploy-configuration, undeploy-configuration}" >
+    <mmd:content>
+      <shp:ssh>
+        <!-- more stuff here -->
+      </shp:ssh>
+    </mmd:content>
+    <mmd:trigger on-target-operation="{deploy-configuration, undeploy-configuration}" module="trigger-module-3" environment="alpha" operation="test" />            
+  </mmd:model>  
+
+  <!-- will execute trigger when module is invoked with any operation -->
+  <mmd:model target-resource="ssh-node1" target-operation="*" >
+    <mmd:content>
+      <shp:ssh>
+        <!-- more stuff here -->
+      </shp:ssh>
+    </mmd:content>
+    <mmd:trigger on-target-operation="*" module="trigger-module-4" environment="alpha" operation="test" />                
+  </mmd:model>  
+
+  <!-- operation directive isn't defined,
+      defaults to the wild card identifier. Will execute trigger when module is invoked with any operation -->
+  <mmd:model target-resource="ssh-node1" target-operation="*" >
+    <mmd:content>
+      <shp:ssh>
+        <!-- more stuff here -->
+      </shp:ssh>
+    </mmd:content>
+    <mmd:trigger module="trigger-module-4" environment="alpha" operation="test" />                
+  </mmd:model>  
+
+</mmd:models>
++---
+		
+*** The result directive	
+				
+	The <<<on-result>>> attribute supports three options for defining when the condition for the trigger to run:
+
+	* <<* (The wildcard identifier)>>. The trigger is executed for any execution result generated when the plugin specific model (containing the trigger) is targeted to a resource.
+	This is the default value.
+
+	* <<Single result>>. The trigger is only executed when the execution result defined by the attribute value is identical to the execution result generated from the plugin specific model.	
+			
+	* <<List>>. Multiple results can be defined the using a list notation. The value enclosed by \{ \} 
+	is interpreted as a comma-separated list and the trigger is executed if the execution result, generated from the plugin specific model, matches one of the names in the list. 
+	
+	[]
+	
+	The directive is optional. If the directive isn't defined or is empty then it is interpreted as the default value (the wildcard identifier). 
+	
+	Example illustrating the configuration options. 
+	As mentioned above, the trigger resolution is based on an AND-based resolution of both directives. 	
+	The value of the other directive, <<<on-target-operation>>>, is set to its wildcard value in the example.
+		
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0"
+  xsi:schemaLocation="http://pineapple.dev.java.net/ns/module_model_1_0 
+                      http://pineapple.dev.java.net/ns/module_model_1_0.xsd" >
+
+  <!-- will only execute trigger when model execution result was a success -->
+  <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="mkdir stuff" />
+      </shp:ssh>
+    </mmd:content>
+    <mmd:trigger on-result="success" module="trigger-module-1" environment="alpha" operation="test" />    
+  </mmd:model>
+
+  <!-- will only execute trigger when model execution result was an error -->
+  <mmd:model target-resource="ssh-node1" target-operation="undeploy-configuration" >
+    <mmd:content>
+      <shp:ssh>
+        <shp:execute command="rm -rf stuff" />
+      </shp:ssh>
+    </mmd:content>
+    <mmd:trigger on-result="Error" module="trigger-module-2" environment="alpha" operation="test" />        
+  </mmd:model>  
+
+  <!-- will execute trigger when model execution result is either "failure" or "error" -->
+  <mmd:model target-resource="ssh-node1" target-operation="{deploy-configuration, undeploy-configuration}" >
+    <mmd:content>
+      <shp:ssh>
+        <!-- more stuff here -->
+      </shp:ssh>
+    </mmd:content>
+    <mmd:trigger on-result="{failure, error}" module="trigger-module-3" environment="alpha" operation="test" />            
+  </mmd:model>  
+
+  <!-- will execute trigger whatever the when model execution result is -->
+  <mmd:model target-resource="ssh-node1" target-operation="*" >
+    <mmd:content>
+      <shp:ssh>
+        <!-- more stuff here -->
+      </shp:ssh>
+    </mmd:content>
+    <mmd:trigger on-result="*" module="trigger-module-4" environment="alpha" operation="test" />                
+  </mmd:model>  
+
+  <!-- result directive isn't defined,
+      defaults to the wild card identifier. Will execute trigger whatever the model execution result is -->
+  <mmd:model target-resource="ssh-node1" target-operation="*" >
+    <mmd:content>
+      <shp:ssh>
+        <!-- more stuff here -->
+      </shp:ssh>
+    </mmd:content>
+    <mmd:trigger module="trigger-module-4" environment="alpha" operation="test" />                
+  </mmd:model>  
+
+</mmd:models>
++---
+
+*** Target module 	
+
+	The only action supported by a trigger is the invocation of another module.
+	For this purpose the remaining mandatory attributes in the trigger defines the target module, 
+	environment and the operation to invoke:
+	
++---
+  <mmd:trigger module="activate-something" environment="local" operation="deploy-configuration" />
++---
+	
+	To support execution of multiple modules, either define multiple triggers or 
+	define the target module to use the composite execution plugin.
+
+	TODO: make environment optional. inherit.
+	
+	TODO: make operation optional. inherit.
+
+*** Multiple triggers can be declared for a plugin specific model
+
+	Any number of triggers can be defined for a plugin specific model:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+  xmlns:mdl="http://pineapple.dev.java.net/ns/module_1_0" 
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">
+    <mmd:content>
+      ...
+    </mmd:content>
+    <mmd:trigger on-target-operation="test" on-result="success" module="report-something" environment="local" operation="deploy" />
+    <mmd:trigger on-target-operation="test" on-result="failure" module="activate-something" environment="local" operation="deploy" />
+    <mmd:trigger on-target-operation="test" on-result="error" module="activate-something" environment="local" operation="deploy" />
+    <mmd:trigger on-target-operation="test" on-result="error" module="report-something-else" environment="local" operation="deploy" />    
+  </mmd:model>
+</mmd:models>
++---
+
+	.. ordering of triggers???
+
+*** A trigger is local a to plugin specific model
+
+	A trigger is local to the plugin specific model. 
+	If a model file contains multiple plugin specific models then triggers must be declared for each plugin specific model. 
+	Triggers can't be declared globally within a model file and neither can they be referenced:
+		
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+  xmlns:mdl="http://pineapple.dev.java.net/ns/module_1_0" 
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">
+    <mmd:content>
+      ...
+    </mmd:content>
+    <mmd:trigger on-target-operation="test" on-result="success" module="report-something" environment="local" operation="deploy" />
+    <mmd:trigger on-target-operation="test" on-result="failure" module="activate-something" environment="local" operation="deploy" />
+    <mmd:trigger on-target-operation="test" on-result="error" module="activate-something" environment="local" operation="deploy" />
+  </mmd:model>
+  
+  <mmd:model target-resource="infrastructure-test">
+    <mmd:content>
+      ...
+    </mmd:content>
+    <mmd:trigger on-target-operation="test" on-result="success" module="report-something" environment="local" operation="deploy" />
+    <mmd:trigger on-target-operation="test" on-result="failure" module="activate-something" environment="local" operation="deploy" />
+    <mmd:trigger on-target-operation="test" on-result="error" module="activate-something" environment="local" operation="deploy" />
+  </mmd:model>
+  
+</mmd:models>
++---
+
+** Resolution of triggers
+
+	The two directives has a different set of rules. 
+	The directives are resolved using a logical AND.
+	For a trigger to execute, both directives must resolve the trigger for execution.
+	
+	The rules used to resolve whether a trigger should run:
+
+	[[1.1]] The value of the <<<on-target-operation>>> attribute is null.
+	
+	[[1.2]] The value of the <<<on-target-operation>>> attribute is empty.
+	
+	[[1.3]] The value of the <<<on-target-operation>>> attribute is the wildcard value "*".
+	
+	[[1.4]] The value of the <<<on-target-operation>>> attribute is identical to the operation that the model was invoked with.
+	
+	[[1.5]] The value of the <<<on-target-operation>>> attribute is a list value and one of the values in the list is identical to the operation that the model was invoked with.
+	
+	[] 
+	
+	<<and>>:
+
+	[[2.1]] The value of the <<<on-result >>> attribute is null.
+	
+	[[2.2]] The value of the <<<on-result >>> attribute is empty.
+	
+	[[2.3]] The value of the <<<on-result>>> attribute is the wildcard value "*"
+
+	[[2.4]] The value of the <<<on-result>>> attribute is identical to the result that the execution of the plugin specific model concluded with.
+	
+	[[2.5]] The value of the <<<on-result>>> attribute is a list value and one of the values in the list is identical to the result that execution of the plugin specific model concluded with.
+
+	[]
+	
+		

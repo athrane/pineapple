@@ -1,0 +1,33 @@
+ ------
+ Delete model
+ ------
+ Allan Thrane Andersen
+ ------
+ May 2014
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Delete model
+
+* Steps
+
+	To delete a model:
+
+		* If not open, open the module which contains the model to be deleted.
+
+		* Select the model in the <Module> tab.
+		
+		* Press the <Delete Model> button in the <Module> tab.
+		Or open the <Model> menu and select the <Delete Model> menu item.
+		
+		[]
+
+* Result
+
+	The result after executing the steps is:
+	
+	* The model is now delete from disk and from Pineapple. 
+	 
+	[]
+	

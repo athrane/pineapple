@@ -1,0 +1,63 @@
+ ------
+ How-to: Use SSL with HTTPS for load-balancing tests 
+ ------
+ Allan Thrane Andersen
+ ------
+ September 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Use SSL with HTTPS for load-balancing tests
+
+* Defining usage of SSL / HTTTPS
+
+	To enable a load-balancing or stickiness test case to use HTTPS, 
+	simply specify the URL's starting with https://...
+	 
++--------
+
+  <itp:session-stickyness-test description="session-stickyness-test for..." requests="10" proxy-id="myproxy8080" > 
+    <itp:urls>
+      <itp:url>https://www.myhost.com</itp:url>
+      <itp:url>https://www.myhost.com/login</itp:url>
+    </itp:urls>
+
++--------	
+	
+* Example	
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:itp="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" >
+  <mmd:model target-resource="infrastructure-test">		
+    <mmd:content>				
+      <itp:infrastructure>			
+        <itp:http-configuration id="myproxy8080" description="My default HTTP configuration" >
+          <itp:proxy host="myproxy" port="8080"/>
+        </itp:http-configuration>
+
+        <itp:session-stickyness-test description="session-stickyness-test for..." requests="5" http-configuration-ref="myproxy8080" > 
+          <itp:urls>
+            <itp:url>https://www.myhost.com</itp:url>
+            <itp:url>https://www.myhost.com/login</itp:url>
+          </itp:urls>
+          <itp:assert>
+            <itp:properties>
+              <itp:property name="host" value="null" />
+              <itp:property name="environment" value="null" />
+              <itp:property name="location" value="null" />
+            </itp:properties>
+            <itp:servers>
+              <itp:server>null</itp:server>
+            </itp:servers>
+          </itp:assert>
+        </itp:session-stickyness-test>
+      </itp:infrastructure>
+    </mmd:content>
+  </mmd:model>
+</mmd:models>
++--------	
+

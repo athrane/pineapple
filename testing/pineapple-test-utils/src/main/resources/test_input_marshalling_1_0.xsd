@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   xmlns="http://pineapple.dev.java.net/ns/plugin/test/input_marshalling_1_0" 
+		   targetNamespace="http://pineapple.dev.java.net/ns/plugin/test/input_marshalling_1_0" 
+		   elementFormDefault="qualified" 
+		   attributeFormDefault="unqualified">
+
+	<xs:element name="test" type="testType" />
+
+	<xs:complexType name="testType" >
+		<xs:annotation>
+			<xs:documentation>Some test type..</xs:documentation>
+		</xs:annotation>	
+	</xs:complexType>
+			
+</xs:schema>

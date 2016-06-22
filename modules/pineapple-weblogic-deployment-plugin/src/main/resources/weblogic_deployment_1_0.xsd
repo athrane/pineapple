@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   xmlns="http://pineapple.dev.java.net/ns/plugin/weblogic_deployment_1_0" 
+		   targetNamespace="http://pineapple.dev.java.net/ns/plugin/weblogic_deployment_1_0" 
+		   elementFormDefault="qualified" 
+		   attributeFormDefault="unqualified">
+	<xs:element name="deployment">
+		<xs:annotation>
+			<xs:documentation>WebLogic deployment</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>							
+				<xs:element name="artifact" type="deploymentArtifactType" minOccurs="0" maxOccurs="1"/>				
+			</xs:sequence>			
+		</xs:complexType>
+	</xs:element>
+				
+	<xs:complexType name="deploymentArtifactType">
+		<xs:annotation>
+			<xs:documentation>Deployment artifact specification.</xs:documentation>
+		</xs:annotation>				
+		<xs:sequence>
+			<xs:element name="targets" type="targetsType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="optional"/>																		
+		<xs:attribute name="file" type="xs:string" use="optional"/>
+		<xs:attribute name="plan" type="xs:string" use="optional"/>				
+	</xs:complexType>
+		
+	<xs:complexType name="targetsType">
+		<xs:annotation>
+			<xs:documentation>Deployment targets.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="value" type="xs:string" use="required"/>		
+	</xs:complexType>		
+	
+</xs:schema>

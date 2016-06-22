@@ -1,0 +1,93 @@
+ ------
+ com.alpha.pineapple.configuration package description
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+com.alpha.pineapple.configuration description
+	
+* Content
+	
+	* Commons Configuration (pre)processing
+		
+		* Contains implementation of <<<TemplateProcesser>>> interface which does 
+		preprocessing of XMLConfiguration content 
+
+		[]
+		
+	[]
+
+* Class diagram
+	
+[../images/configuration-classdiagram.png] com.alpha.pineapple.configuration classdiagram 			
+		
+* Interfaces and classes
+
+** ConfigurationNames
+
+	Interface which defines the names of configurations used internally by Pineapple. .
+
+** TemplateProcessor
+	
+	Interface for template processor object. 
+
+	Can scan a XMLConfiguration which contains a Pineapple-Unit-Configuration and 
+	identify usage of templates. Identified templates is then instantiated with 
+	support for arguments and nested templates.
+
+** TemplateProcessorImpl
+
+	Implementation of <<<TemplateProcessor>>> interface.
+
+	Used by <<<TemplateProcessorVisitor>>> which, which delegates template identification 
+	and instantiation to this object.
+
+** TemplateProcessorVisitor
+
+	Interface for template processor visitor object. 
+
+	Extends Commons Configuration <<<ConfigurationNodeVisitor>>> interface for traversal 
+	of hierarchical configurations.
+
+** TemplateProcessorImpl
+
+	Implementation of <<<TemplateProcessorVisitor>>> interface.
+
+	Used by <<<PreprocessConfigurationCommand>>> to implement traversal of 
+	Pineapple-Unit-Configuration and modify the PUC accordingly to encountered meta 
+	data attributes.
+
+** TemplateProcessingException
+
+	Used to signal errors during template processing.
+	
+** ArgumentResolver
+
+	Helper class for <<<TemplateProcessorImpl>>> which contains functions for 
+	identification of template arguments and resolution of computed values in templates.
+
+** ConfigurationHelper
+
+	Helper class for all classes in the package.
+	 
+	Contains functions for accessing and manipulating Common Configuration objects.
+
+** XPathHelper
+
+	Helper class for all classes in the package.
+
+	Contains functions for creation of XPath expressions and execution of XPath queries 
+	on a Commons Configuration object.
+
+** ConfigurationAccessException
+
+	Used to signal errors during access to Commons Configuration objects
+	
+	
+	
+	

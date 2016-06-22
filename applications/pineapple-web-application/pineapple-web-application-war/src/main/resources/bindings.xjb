@@ -1,0 +1,61 @@
+<jaxb:bindings version="2.0"	
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"	
+	jaxb:extensionBindingPrefixes="xjc" >
+  
+  	<jaxb:globalBindings choiceContentProperty="true"/> 
+  
+ 	<jaxb:bindings schemaLocation="webapplication_1_0.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.web.model" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="webapplication_1_0.xsd" >
+		<jaxb:bindings node="//xs:element[@name='webapplication']" >
+			<jaxb:class name="WebApplication" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="webapplication_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='activitiesSequenceType']" >
+			<jaxb:class name="ActivitiesSequence" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="webapplication_1_0.xsd" node="//xs:complexType[@name='activitiesSequenceType']/xs:sequence/xs:choice">
+		<jaxb:property name="Activities"/>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="webapplication_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='activityType']" >
+			<jaxb:class name="Activity" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="webapplication_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='openModuleType']" >
+			<jaxb:class name="OpenModuleActivity" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="webapplication_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='executeOperationType']" >
+			<jaxb:class name="ExecuteOperationActivity" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="webapplication_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='refreshConfigurationType']" >
+			<jaxb:class name="RefreshConfigurationActivity" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="webapplication_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='activityInfoType']" >
+			<jaxb:class name="ActivityInfo" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+	
+</jaxb:bindings>

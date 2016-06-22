@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+        xmlns:cep="http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0" >
+    <mmd:model target-resource="composite-execution">
+        <mmd:content>
+          <cep:composite-execution>
+            <cep:module name="jrockit-installation-003-r28-win64" />
+            <cep:module name="weblogic-installation-005-r1211-win64" />
+            <cep:module name="weblogic-wlst-003-r121-create-domain-from-template" />                                            
+        </cep:composite-execution>                      
+        </mmd:content>
+    </mmd:model>
+</mmd:models>

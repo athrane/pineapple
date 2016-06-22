@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zk>
+<!--
+	binder definition: binder="@init(queueName='pineapple-queue',queueScope='application')" 
+	is required for view model to respond to global commands posted 
+	on the ZK Application queue:
+	
+	@GlobalCommand public void completedReportCreation() { .. }		
+	
+	The create report notifier CreatedReportNotifierImpl.java posts global command using:
+		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, 
+				EventQueues.APPLICATION,
+				COMPLETED_ACTIVITY_CREATION_CREATION_GLOBALCOMMAND,
+				NULL_GLOBALCOMMAND_ARGS);	
+ -->	
+<window id="activityPanelWindow" 
+	apply="org.zkoss.bind.BindComposer" 
+	binder="@init(queueName='pineapple-queue',queueScope='application')"
+	viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.ActivityPanelPopup')" 
+	hflex="1" vflex="1" border="none">
+	    
+	<listbox model="@load(vm.activities)"
+		selectedItem="@save(vm.selectedActivity)" 
+		onSelect="@command('performActivity')"					
+		hflex="1" vflex="1" >
+		<auxhead>
+    		<auxheader label="Activity History" 
+    			colspan="2" 
+    			style="font-size:16px;"  />
+		</auxhead>
+		<listhead>            
+			<listheader width="15%" style="display:none;" />
+			<listheader width="85%" style="display:none;" />
+        </listhead>				
+		<template name="model" var="activity">
+          		<listitem>
+              		<listcell label="@load(activity.info.startTime)" />	            		
+              		<listcell label="@load(activity.info.description)" />
+          		</listitem>
+      		</template>				
+	</listbox>	    	
+</window>
+
+</zk>

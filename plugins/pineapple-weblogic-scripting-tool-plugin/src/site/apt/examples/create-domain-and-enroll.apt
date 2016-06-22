@@ -1,0 +1,497 @@
+ ------
+ How-to: Create a WebLogic domain, start the server and enroll the server in NodeManager
+ ------
+ Allan Thrane Andersen
+ ------
+ January 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Create a WebLogic domain, start the server and enroll the server in NodeManager
+
+* Overview
+
+	This example describes how to define and execute a script which creates a WebLogc 10.3.5 
+	domain from a domain template. The example extends the 
+	{{{./create-wls1035-domain-from-template.html} create domain from template example}} by:
+
+	* Modifying the module model to run three scripts:
+	
+		* A script which creates the domain and performs offline configuration.
+		
+		* A script which starts the administration server, and performs online configuration.	
+		
+		* A script which enrolls the server in the NodeManager and restarts the server under NodeManager control.		
+		
+	* Add a start server script to the module.
+	
+	* Add a NodeManager enrollment script to the module.	
+		
+	[]		  	
+
+* Modify WLST script to invoke three scripts
+
+	The model is extended with an additional model which executes the extra scripts:
+		
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:wsp="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0"  />
+
+    <mmd:model target-resource="weblogic-r1035-scriptingtool">
+        <mmd:content>
+            <wsp:wlst>              
+                <wsp:wlst-script file="modulepath:bin\create-domain.py" properties-file="modulepath:bin\script.properties" />
+            </wsp:wlst>
+        </mmd:content>
+    </mmd:model>
+    <mmd:model target-resource="weblogic-r1035-scriptingtool">
+        <mmd:content>
+            <wsp:wlst>
+                <wsp:wlst-script file="modulepath:bin\start-and-configure-admserver.py" properties-file="modulepath:bin\script.properties" />
+            </wsp:wlst>
+        </mmd:content>
+    </mmd:model>			
+    <mmd:model target-resource="weblogic-r1035-scriptingtool">
+        <mmd:content>
+            <wsp:wlst>
+                <wsp:wlst-script file="modulepath:bin\enroll-admserver.py" properties-file="modulepath:bin\script.properties" />
+            </wsp:wlst>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>  	 
++--------		
+
+	
+* Add WLST scripts to the module
+
+	Three script modifications are implemented:
+
+	* The domain creation script is renamed from <<<script.py>>> to <<<create-domain.py>>>
+	and more offline configurations are added.
+	
+	* A new script named <<<start-and-configure-admserver.py>>> is added to the module in 
+	<<<$\{module-dir\}/bin/start-and-configure-admserver.py>>>.
+
+	* A new script named <<<enroll-admserver.py>>> is added to the module in 
+	<<<$\{module-dir\}/bin/enroll-admserver.py>>>.
+		
+	[]
+	
+	The content of the <<<create-domain.py>>> script:
+	
++--------
+import sys
+import traceback
+
+import os
+import java
+
+#=======================================================================================
+# Get domain directory
+#=======================================================================================
+def getDomainDirectory():
+    return domainsDirectory + '/' + domainName	
+
+#=======================================================================================
+# Get node manager home
+#=======================================================================================
+def getNmHomeDirectory():
+    wlsHome = str(java.lang.System.getProperty('pineapple.weblogic.home.path'))
+    return wlsHome + '/common/nodemanager'
+	
+#=======================================================================================
+# Return which type of machine should be created
+#=======================================================================================	
+def getMachineCreateType():
+    # On Unix, machine type is 'UnixMachine' on Windows it is 'Machine'
+    if os.pathsep == ':':
+        return 'UnixMachine'
+    else:
+        return 'Machine'
+
+#=======================================================================================
+# Set System User
+#=======================================================================================
+def setSystemUser():
+    cd('/')
+    sysUser = cd('/Security/%s/User/weblogic' % domainName)
+    sysUser.setName(systemUser)
+    sysUser.setPassword(systemPassword)
+
+#=======================================================================================
+# Configure adm server
+#=======================================================================================
+def configureAdmServer():
+    cd('/')
+    cd('Servers/AdminServer')
+    set('ListenAddress',adminListenAddress)
+    set('ListenPort', adminListenPort)
+
+		
+#=======================================================================================
+# create managed server
+#=======================================================================================
+def createManagedServer(serverName, listenAddress, listenPort):
+    cd('/')
+    server = create(serverName, 'Server')
+    server.setListenAddress(listenAddress)
+    server.setListenPort(int(listenPort))
+
+#=======================================================================================
+# Create Machine
+# - creates also node manager for machine
+#=======================================================================================
+def createMachine(machineName, machineListenAddress):
+    cd('/')
+    machine = create(machineName, getMachineCreateType())
+    cd('/Machine/' + machineName)
+    nodeMgr = create(machineName, 'NodeManager')
+    nodeMgr.setListenAddress(machineListenAddress)
+    nodeMgr.setListenPort(int(nmPort))
+    nodeMgr.setDebugEnabled(True)
+    nodeMgr.setNodeManagerHome(getNmHomeDirectory())
+    return machine
+
+#=======================================================================================
+# Map server to machine
+#=======================================================================================
+def setMachine(machineName, serverName):
+    cd('/')
+    cd('/Servers/')
+    cd(serverName)
+    currentServer = cmo;
+    cd('/Machine/' + machineName)
+    currentServer.setMachine(cmo)
+
+def main():   
+
+    try:
+       pineappleModulePath = java.lang.System.getProperty('pineapple.module.path')
+       templateFile = str(pineappleModulePath) + '/bin/' + templateName
+
+       # configure domain		
+       readTemplate(templateFile)
+       domain = create(domainName, 'Domain')
+       setSystemUser()    
+       domainDirectory = domainsDirectory + '/' + domainName
+       setOption('OverwriteDomain', 'true')
+		
+       # create servers
+       createManagedServer('server1',managedServer1_listenAddress,managedServer1_listenPort)
+       createManagedServer('server2',managedServer1_listenAddress,managedServer2_listenPort)
+		
+       # create machine
+       createMachine('machine1',adminListenAddress)
+
+       # bind to machine
+       setMachine('machine1', adminServerName)
+       setMachine('machine1', 'server1')
+       setMachine('machine1', 'server2')
+
+       setOption('OverwriteDomain', 'true')
+       writeDomain(domainDirectory)
+       closeTemplate()
+
+    except:
+       dumpStack()
+
+main()
++--------
+
+	The content of the <<<start-and-configure-admserver.py>>> script:
+
++--------
+
+import os
+import java
+
+#=======================================================================================
+# Get domain directory
+#=======================================================================================
+def getDomainDirectory():
+    return domainsDirectory + '/' + domainName	
+
+#=======================================================================================
+# Return which type of machine should be created
+#=======================================================================================	
+def getMachineCreateType():
+    # On Unix, machine type is 'UnixMachine' on Windows it is 'Machine'
+    if os.pathsep == ':':
+        return 'UnixMachine'
+    else:
+        return 'Machine'
+
+#=======================================================================================
+# Get node manager home
+#=======================================================================================
+def getNmHomeDirectory():
+    wlsHome = str(java.lang.System.getProperty('pineapple.weblogic.home.path'))
+    return wlsHome + '/common/nodemanager'
+
+#=======================================================================================
+# start and connect to adm server outside node manager process
+#=======================================================================================
+def startAdmServer():
+    url = 't3://' + adminListenAddress + ':' + adminListenPort    
+    block = 'true'
+    timeout = 60000
+    startServer(serverName, domainName, url, systemUser, systemPassword, getDomainDirectory(), block, timeout)
+    connect(systemUser, systemPassword, url)
+
+#=======================================================================================
+# shutdown adm server outside node manager process
+#=======================================================================================
+def shutdownAdmServer():
+    shutdown()
+
+#=======================================================================================
+# Configure node manager security
+#=======================================================================================
+def configureNodeManagerSecurity():
+    cd('/')
+    securityConfiguration = getMBean('/SecurityConfiguration/' + domainName)
+    if securityConfiguration == None:
+        securityConfiguration = create(domainName, 'SecurityConfiguration')
+    cd('/SecurityConfiguration/' + domainName)
+    cmo.setNodeManagerUsername(nmUserName)
+    cmo.setNodeManagerPassword(nmPassword)
+
+def main():   
+
+    try:
+        startAdmServer()
+
+        # set online edit mode
+        edit()
+        startEdit()
+        # configure node manager
+        configureNodeManagerSecurity()
+
+        #store wlst online change
+        showChanges()
+        save()
+        activate(block='true')
+
+        # shutdown admserver
+        shutdownAdmServer()
+
+    except:
+        dumpStack()
+
+main()
++--------
+
+	The content of the <<<enroll-admserver.py>>> script:
+
++--------
+
+import os
+import java
+
+#=======================================================================================
+# Get WebLogic home
+#=======================================================================================	
+def getWeblogicHome():
+   return str(java.lang.System.getProperty('pineapple.weblogic.home.path'))
+
+   
+#=======================================================================================
+# Get domain directory
+#=======================================================================================
+def getDomainDirectory():
+    return domainsDirectory + '/' + domainName
+	
+#=======================================================================================
+# Get node manager home
+#=======================================================================================
+def getNmHomeDirectory():
+    return getWeblogicHome() + '/common/nodemanager'
+
+#=======================================================================================
+# start and connect to adm server outside node manager process
+#=======================================================================================
+def startAdmServer():
+    url = 't3://' + adminListenAddress + ':' + adminListenPort
+    block = 'true'
+    timeout = 60000
+    startServer(serverName, domainName, url, systemUser, systemPassword, getDomainDirectory(), block, timeout)
+    connect(systemUser, systemPassword, url)
+
+def main():   
+
+    try:
+
+        # BUG, if domainName is used then is NONE by the time nmConnect is invoked??
+        name=domainName
+        domainDirectory=getDomainDirectory() 
+
+        # start amdserver
+        startAdmServer()
+
+        # enroll server
+        nmEnroll(domainDirectory, getNmHomeDirectory())
+
+        # shutdown adm server outside node manager process
+        shutdown()
+
+        # connect to node manager
+        nmConnect(nmUserName,nmPassword,adminListenAddress,nmPort,name,domainDirectory)
+
+        # start amdserver in nm process
+        nmStart(adminServerName, domainDirectory)
+
+    except:
+        dumpStack()
+
+main()
+exit()
++--------
+
+* Add property file to the module
+
+	Same as in the Create Domain From Template example:
+
++--------
+domainsDirectory=c:/domains
+domainName=alphadomain-wls1035
+templateName=domain-template-wls1035.jar
+
+# admin server properties 
+adminServerName=AdminServer
+adminListenAddress=127.0.0.1
+adminListenPort=7001
+
+# admin user 
+systemUser=weblogic
+systemPassword=Weblogic11g
+
+# managed server properties 
+managedServer1_listenAddress=127.0.0.1
+managedServer1_listenPort=80
+managedServer2_listenAddress=127.0.0.1
+managedServer2_listenPort=81
+
+# node manager properties 
+nmUserName=nmweblogic
+nmPassword=Weblogic11g
+nmPort=5556
++--------		
+	
+	
+* A look at the module and the Pineapple configuration 
+
+	The module looks like:
+
++---
+weblogic-wlst-example-create-wls1035-domain-and-enroll-server
+ |
+ +--- module.xml (optional)
+ |    
+ +--- bin
+ |     +--- create-domain.py
+ |     +--- start-and-configure-admserver.py
+ |     +--- enroll-admserver.py
+ |     +--- script.properties 
+ |     +--- domain-template-wls1035.jar 
+ |
+ +--- models	 
+       +--- local-environment.xml 
++---
+
+
+** <<<Module.xml>>> (optional)
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="http://pineapple.dev.java.net/ns/module_1_0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	
+    id="weblogic-wlst-example" version="1.0.0">
+</module>
++---
+
+** <<<local-environment.xml>>>
+
+	Module model for the environment <local-environment> which is targeted at 
+	the resource <<<weblogic-r1035-scriptingtool>>> and invokes the scripts <<<create-domain.py>>>
+	and <<<start-admserver.py>>>:
+
++---
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:wsp="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0"  />
+
+    <mmd:model target-resource="weblogic-r1035-scriptingtool">
+        <mmd:content>
+            <wsp:wlst>              
+				<wsp:wlst-script file="modulepath:bin\create-domain.py" properties-file="modulepath:bin\script.properties" />
+            </wsp:wlst>
+        </mmd:content>
+    </mmd:model>
+    <mmd:model target-resource="weblogic-r1035-scriptingtool">
+        <mmd:content>
+            <wsp:wlst>              
+				<wsp:wlst-script file="modulepath:bin\start-and-configure-admserver.py" properties-file="modulepath:bin\script.properties" />
+            </wsp:wlst>
+        </mmd:content>
+    </mmd:model>			
+    <mmd:model target-resource="weblogic-r1035-scriptingtool">
+        <mmd:content>
+            <wsp:wlst>              
+				<wsp:wlst-script file="modulepath:bin\enroll-admserver.py" properties-file="modulepath:bin\script.properties" />
+            </wsp:wlst>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>  	 
++---
+
+** <<<create-domain.py>>>
+
+	Listed above.
+
+** <<<start-and-configure-admserver.py>>>
+
+	Listed above.
+
+** <<<enroll-admserver.py>>>
+
+	Listed above.
+	
+** <<<script.properties>>>
+
+	Listed above.
+
+** <<<domain-template-wls1035.jar>>>
+
+	The most basic WebLogic template will do. Make a copy of the template 
+	<<<wls.jar>>> which is part of the WebLogic 10.3.5 installation. 
+	The template can be found at <<<WEBLOGIC_HOME\common\templates\domains\wls.jar>>>
+	
+	Copy and rename the file to ${module-dir}/bin/domain-template-wls1035.jar. 
+	
+
+** The <<<weblogic-r1035-scriptingtool>>> resource definition
+
+	Same as in the Load Properties example.
+
+** The <<<weblogic-r1035-scriptingtool>>> credential definition
+     	 
+	Same as in the Load Properties example.
+
+* Invoke Pineapple to execute the script 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<<weblogic-wlst-example-create-wls1035-domain-and-enroll-server>>>.
+	
+	* Select the environment named <<<local-environment>>>.   	  
+	
+	* Invoke the <<deploy-configuration>> operation.
+	
+	[]
+
+
+ 	 	

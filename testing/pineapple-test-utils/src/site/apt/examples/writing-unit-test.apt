@@ -1,0 +1,342 @@
+ ------
+ How-to: Write unit tests in Pineapple  
+ ------
+ Allan Thrane Andersen
+ ------
+ July 2009
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Write unit tests in Pineapple
+
+	To write unit test do:
+	
+	* Add Maven test dependencies to the project
+	
+	* Write tests.
+	
+	* Inspect log files.		
+	
+	[]		  
+		 
+* Add Maven test dependencies to the project	
+	 	 
+** Add pineapple-test-utils dependency	 
+	 
+	To use the functionality of the <<<pineapple-test-utils>>> project,
+	add the Maven dependency to the project POM:
+	
++-----
+  <dependency>
+    <groupId>${pom.groupId}</groupId>
+    <artifactId>pineapple-test-utils</artifactId>			
+   </dependency>	 	 
++-----
+
+	Version information is located in the <<<pineapple-project/pom.xml>>>. The dependency
+	should be scoped with <<<test>>> as we will only use it to write unit tests.  	 
+	 	
+** Add JUnit dependency	 	
+
+	To use JUnit to write test cases, add the Maven dependency to 
+	the project POM:
+
++-----
+  <dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <scope>test</scope>
+  </dependency>
++-----	
+
+	Version information is located in the <<<pineapple-project/pom.xml>>>. The dependency
+	should be scoped with <<<test>>> as we will only use it to write unit tests.  	 
+
+** Add EasyMock dependency	 	
+
+	To use EasyMock to write mock objects, add the Maven dependency to 
+	the project POM:
+
++-----
+  <dependency>
+    <groupId>org.easymock</groupId>  
+    <artifactId>easymock</artifactId>  
+    <scope>test</scope>  		
+  </dependency>				
++-----	
+
+	Version information is located in the <<<pineapple-project/pom.xml>>>. The dependency
+	should be scoped with <<<test>>> as we will only use it to write unit tests.  	 
+
+** Add Spring-test dependency
+
+	The Spring-test jar gives access to:
+	
+	* The <<<org.springframework.test.util.ReflectionTestUtils>>> helper class.
+	
+	[]	
+	 	
+	To use the Spring framework test facilities, add the Maven dependency to 
+	the project POM:
+
++-----
+  <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>org.springframework.test</artifactId>
+    <scope>test</scope>		
+  </dependency>					
++-----
+
+	Version information is located in the <<<pineapple-project/pom.xml>>>. The dependency
+	should be scoped with <<<test>>> as we will only use it to write unit tests.  	 
+	 			 		 	
+** Example: pineapple-weblogic-jmx-plugin dependencies
+		
++-----
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.alpha.pineapple</groupId>
+		<artifactId>pineapple-modules</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>pineapple-weblogic-jmx-plugin</artifactId>
+	<packaging>jar</packaging>
+	<name>Pineapple WebLogic JMX plugin</name>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+		<!-- pineapple internal dependencies -->
+		<dependency>
+			<groupId>${pom.groupId}</groupId>
+			<artifactId>pineapple-test-utils</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>${pom.groupId}</groupId>
+			<artifactId>pineapple-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${pom.groupId}</groupId>
+			<artifactId>pineapple-commands-api</artifactId>
+		</dependency>						
+		<!-- external dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>  
+			<artifactId>easymock</artifactId>  
+			<scope>test</scope>  		
+		</dependency>				
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.test</artifactId>
+			<scope>test</scope>		
+		</dependency>		
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>weblogic</groupId>
+			<artifactId>weblogic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+		</dependency>
+		<!-- provides access to @resource annotation  -->		
+  		<dependency>
+    		<groupId>javax.annotation</groupId>
+    		<artifactId>jsr250-api</artifactId>    		
+  		</dependency> 				
+		<dependency>
+			<groupId>org.apache.xmlbeans</groupId>
+			<artifactId>xmlbeans</artifactId>			
+		</dependency>  												
+	</dependencies>
+	
+	<!-- a lot of other stuff here.... -->
+</project>
++-----		
+		
+* Write tests
+
+** Locate the classes in test source folder
+		
+	The unnit test cases are placed in the <<<src/test/java>>> folder. 
+	
+** Postfix the class names with <<<Test>>>
+	
+	Test classes are named <<<XxxTest>>> where <<<Xxx>>> is the 
+	name of the class which is integration tested. 
+	
+	Example: The integration test class for the class <<<TestDeployedConfiguration>>> 
+	should be named <<<TestDeployedConfigurationTest>>>.
+		
+** Use the Spring ReflectionTestUtils to inject annotated dependencies into the class under test
+
+	Classes under test which uses annotation based dependency injection from Spring, should use 
+	the <<<ReflectionTestUtils>>> class to initialize annotated fields before tests are run.
+	
+	Examples of annotations which is used for annotation based dependency injection in
+	conjunction with the Spring framework are <<<@Autowired>>> and <<<@Resource>>>. The annotations 
+	are defined on class fields and directs Spring to inject dependencies when objects are 
+	initialized by the framework. To use the <<<ReflectionTestUtils>>> helper to initialize the 
+	annotated fields:
+	
+	* In find an annotated field in the class under test.
+	
+	* In the <<<setUp()>>> method in the unit test class, use the <<<ReflectionTestUtils.setField(..) >>>
+	to inject a mock object into the field.
+	
+	[]
+	
+	Example: The class <<<TestDeployedConfiguration>>> in
+	the <<<pineapple-weblogic-jmx-plugin>>> project, has a field named <<<director>>>
+	which is which is annotated with the <<<@Resource>>> annotation:
+	
++-----
+package com.alpha.pineapple.plugin.weblogic.jmx.operation;
+
+import javax.annotation.Resource;
+
+@PluginOperation( OperationNames.TEST_DEPLOYED_CONFIGURATION )
+public class TestDeployedConfiguration implements Operation
+{
+
+    /**
+     * XMLBeans model traversal object for this operation.
+     */
+    @Resource( name = "testDeployedConfigurationTraversalDirector" )
+    TraversalDirector director;
+
+    // remaining implementation here 
+}
++-----	
+
+	The field is initialized in the <<<setUp()>>> method in the unit test class:
+
++-----
+public class TestDeployedConfigurationTest
+{    
+    /**
+     * Object under test.
+     */
+    TestDeployedConfiguration operation;
+
+    /**
+     * mock traversal director.
+     */
+    TraversalDirector director;
+
+    @Before
+    public void setUp() throws Exception
+    {
+        // create mock director
+        director = EasyMock.createMock( TraversalDirector.class );
+
+        // inject context visitor into operation
+        ReflectionTestUtils.setField( operation, "director", director, TraversalDirector.class );
+    }
+    
+    // test methods goes here
+}    
++-----	 
+	
+** Complete specification of mock object behavior	
+
+	The behavior of a used mock object should specified either in the <<<setUp()>>>
+	method or in the individual test method. Specify the behavior in the <<<setUp()>>>
+	method is the object behaves the same in all tests.  
+
+	Below is an example showing the specification of a <<<TraversalDirector>>> mock object
+	in a test method:
+	
+	* Define the expected interactions and the return values.
+	
+	* Invoke <<<EasyMock.replay( myMockobject )>>> on the mock object
+	to activate it.
+	
+	* Finally invoke <<<EasyMock.verify( myMockobject )>>> on the mock object
+	to verify the expected behavior.
+	
+	[]
+ 
+
++-----
+@Test
+public void testSomething()
+{
+    // some test setup goes here
+                
+    // complete director mock object setup           
+    EasyMock.expect( director.getVisitor()).andReturn( visitor );
+    EasyMock.expect( director.getVisitor()).andReturn( visitor );            
+    director.traverse( (TraversalPair) EasyMock.isA( TraversalPair.class ) );
+    EasyMock.expectLastCall().andAnswer(answer);
+    EasyMock.expect( director.getVisitor()).andReturn( visitor );            
+    EasyMock.replay( director );
+    
+    // complete another mock object setup  
+    
+    // invoke the object under test
+    operation.execute( content, session, null );
+    
+    // test
+
+    // verify mock objects
+    EasyMock.verify( director );
+    EasyMock.verify( session );            
+    EasyMock.verify( domainMbean );                    
+}
++-----
+	
+	
+** Mock objects with no interface
+
+	To mock objects with no interface:
+	
+	* Add Maven dependency to the EasyMock Class Extension project.
+	
+	* Mock object using the Easy mock Object in the package <<<org.easymock.classextension.EasyMock>>>.  
+
+	[]
+	
+	First, add this stanza to the Maven project:	
+
++-----
+  <dependency>
+    <groupId>org.easymock</groupId>  
+    <artifactId>easymockclassextension</artifactId>  
+    <scope>test</scope>  		
+  </dependency>				
++-----	
+	 	 
+	Second, use the EasyMock class in <<<org.easymock.classextension>>> instead of
+	<<<org.easymock>>>. If you need to mock interfaces and objects in the same test class
+	then use a fully qualified package name to mock objects: 	 	 	 
+
++-----
+    // create mock director
+    director = org.easymock.classextension.EasyMock.createMock( TraversalDirector.class );
++-----	 
+
+	{{{http://easymock.org/EasyMock2_4_ClassExtension_Documentation.html}Link to the EasyMock Class Extension documentation.}}	
+	
+* Inspect log files
+
+	If the projects doesn't define any <<<log4j.properties>> in 
+	<<<src/java/resources/log4.properties>>> then the <<<pineapple-test-utils>>> project
+	contains a log4j configuration file defined in the directory 
+	<<<src/java/resources/log4.properties>>> for use by dependent projects as 
+	part of their test configuration. 
+	
+	The test configuration configures Log4j to write log files 
+	to <<<$\{user.home}/.pineapple/logs/pineapple-.log>>>.
+	
+	

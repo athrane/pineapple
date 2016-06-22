@@ -1,0 +1,53 @@
+ ------
+ Pineapple core component
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+  The <<Pineapple core component>> implements functionality to orchestrate
+  execution of operations on resources.    
+   
+* Usage
+
+	* {{{./usage/encrypting-credential-passwords.html}Encrypting credential passwords.}}
+	
+	* {{{./usage/session-retry-support.html}Session retry support.}}
+	
+	[]
+
+	Instructions on the usage of the component can be found {{{./usage/index.html}here}}.
+
+* Examples
+
+	To provide you with better understanding for using the core component,	
+	you can take a look into the following examples:
+
+  * {{{./examples/create-core-default-settings.html}How-to: Create the core component with default settings.}}
+
+  * {{{./examples/create-core-from-spring.html}How-to: Create the core component with default settings using Spring.}}
+
+  * {{{./examples/create-core-custom-provider.html}How-to: Create the core component with a custom credential provider.}}
+
+  * {{{./examples/create-core-alternate-resource-location.html}How-to: Create the core component which loads resources from an alternate location.}}
+
+  * {{{./examples/create-core-with-listener.html}How-to: Create the core component with result listeners registered.}}  
+
+  * {{{./examples/invoke-core.html}How-to: Invoke the core component from a client.}}
+
+  * {{{./examples/register-listener.html}How-to: Register a result listener with the core component.}}  
+
+  []	
+
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+
+	

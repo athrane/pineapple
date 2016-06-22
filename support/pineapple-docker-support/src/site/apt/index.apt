@@ -1,0 +1,85 @@
+ ------
+ Docker support
+ ------
+ Allan Thrane Andersen 
+ ------
+ March 2014
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Overview
+
+	The <<Docker support>> project implements a set reusable classes for managing a Docker through its REST interface.	
+	
+	The project implements a REST client for this purpose.
+	
+	The project contains these classes:
+			 	
+	* <<<BuildImageCommand>>> creates a new Docker image from a source directory containing a Dockerfile.
+
+	* <<<CreateImageCommand>>> creates a new Docker image either by pulling it from the registry or by importing it.
+	
+	* <<<CreateTaggedImageCommand>>> creates a tagged Docker image from an existing image. 
+
+	* <<<DeleteImageCommand>>> deletes a Docker image. 
+
+	* <<<ListAllImagesCommand>>> list all images in a Docker host. 
+
+	* <<<CreateContainerCommand>>> creates a Docker container from an base image. 
+
+	* <<<DeleteContainerCommand>>> deletes a Docker container. 
+
+	* <<<KillContainerCommand>>> kills a running Docker container. 
+
+	* <<<InspectsContainerCommand>>> returns information about a Docker container. 
+
+	* <<<StartContainerCommand>>> starts a Docker container. 
+
+	* <<<StopContainerCommand>>> stops a Docker container. 
+
+	* <<<PauseContainerCommand>>> pauses a running container. 
+
+	* <<<TestContainerCommand>>> validates the container definition in a model with a container in a Docker host.
+	
+	* <<<ListAllContainersCommand>>> list all containers in a Docker host. 
+
+	* <<<ReportOnImagesCommand>>> creates a report of all images in a Docker host.
+	
+	* <<<ReportOnContainersCommand>>> creates a report of all containers in a Docker host.
+	
+	* <<<CreateTarArchiveCommand>>> creates a TAR from as source directory.
+	
+	* <<<DockerSession>>> defines Plugin session interface which provides access for plugins to manage Docker.
+	
+	* <<<DockerSessionImpl>>> implements the <<<DockerSession>>> interface. 
+
+	* <<<DockerHelper>>> a Docker client which is intended for usage in system integration tests 
+	for  management of Docker images and containers.
+
+	[]
+	
+* Usage
+
+	Instructions on the usage of the classes can be found {{{./usage/index.html}here.}}
+
+* Examples
+
+	No yet.
+	
+	[]
+
+** Project schema
+
+	The project defines a schema named <<Docker schema>> 
+	for definition of models used for communication with Docker through its REST interface.
+	The schema defines the namespace 
+	<<<http://pineapple.dev.java.net/ns/support/docker_1_0>>>.	
+
+* Development documentation
+
+	Technical documentation for developers about the architecture, design and 
+	implementation of the project can be found {{{./development/index.html}here}}.
+	
+	

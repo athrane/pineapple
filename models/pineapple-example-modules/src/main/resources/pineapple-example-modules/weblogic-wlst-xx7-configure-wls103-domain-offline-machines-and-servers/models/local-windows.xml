@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:wsp="http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0" >
+    <mmd:model target-resource="weblogic-wlst-r103">
+        <mmd:content>
+            <wsp:wlst>              
+				<wsp:wlst-script file="modulepath:bin\create-domain.py" properties-file="modulepath:bin\script.properties" />
+            </wsp:wlst>
+        </mmd:content>
+    </mmd:model>
+    <mmd:model target-resource="weblogic-wlst-r103">
+        <mmd:content>
+            <wsp:wlst>              
+				<wsp:wlst-script file="modulepath:bin\configure-domain.py" properties-file="modulepath:bin\script.properties" />
+            </wsp:wlst>
+        </mmd:content>
+    </mmd:model>			
+</mmd:models>
+
+	
+

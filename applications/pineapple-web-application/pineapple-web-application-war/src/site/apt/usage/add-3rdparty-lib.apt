@@ -1,0 +1,58 @@
+ ------
+ How-to: Add a 3rd party library to the Pineapple deployable web application
+ ------
+ Allan Thrane Andersen
+ ------
+ October 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Add a 3rd party library to the Pineapple deployable web application
+
+* Introduction
+
+	This guide describes how to add a 3rd party library to the 
+	Pineapple deployable web application:
+	
+	* The directory layout of the application is described.
+	
+	* The location where the library should placed is described.  
+	
+	[]
+
+* Directory layout of of the application
+
+	The WAR contains the directory layout:
+	
++---+
+pineapple-web-application-VERSION.war
+     |     
+     +--- META-INF
+     |               
+     +--- WEB-INF
+     |     +--- classes
+     |     +--- images
+     |     +--- jsp
+     |     +--- lib
+     |     +--- log4j
+     |     +--- spring	 
+     |     |     	 
+     |     |--- web.xml
+     |     `--- weblogic.xml	 
+     |               
+	 
++---+	 	 
+
+* Add 3rd party library
+
+	Please execute the steps:
+	
+	* Unpack the web application <<<pineapple-web-application-VERSION.war>>>.
+	
+	* Copy the 3rd party library into the directory <<<pineapple-web-application-VERSION.war/WEB-INF/lib>>>.
+	
+	* Pack the web application again.
+	
+	[]
+ 

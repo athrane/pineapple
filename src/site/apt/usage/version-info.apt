@@ -1,0 +1,25 @@
+
+ ------
+ Pineapple version information
+ ------
+ Allan Thrane Andersen 
+ ------
+ January 2012
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+
+Pineapple version information
+
+	Information about required and supported software versions.
+
+* Supported Java version 
+	
+	Pineapple is implemented to require Java version 1.8. 
+	
+	
+* Supported WebLogic Version 
+
+	The WebLogic oriented plugins currently support WebLogic 10.3.x - 12.1.2.

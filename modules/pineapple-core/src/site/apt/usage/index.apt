@@ -1,0 +1,276 @@
+  ------
+ Usage of the core component
+ ------
+ Allan Thrane Andersen
+ ------
+ November 2008
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Usage of the core component
+
+* Introduction
+
+** Role of the core component
+
+	The core component is the entry point into Pineapple. The core component 
+	is invoked by Pineapple clients such as Maven plugins, command line interface 
+	or web applications. The core component is used by 
+	creating an instance and then invoking operations which triggers the 
+	execution of zero or more plugins.  
+	
+	The core component implements these public methods:
+	
+	* A method which starts the asynchronous execution of operations.
+	
+	* Methods for registration of result listeners.
+	
+	* A method for retrieving the set of registered result listeners.
+	
+	* A method removal of a registered result listener.
+	
+	* A method for accessing the administration API.
+			
+	[]
+	
+
+** Getting access to the core component
+
+	The get access to the core component, add a Maven dependency in the client 
+	project which need access to the core component. The dependency is versioned,
+	so select the appropriate version:
+
++--------	
+  <dependency>
+    <groupId>com.alpha.pineapple</groupId>
+    <artifactId>pineapple-core</artifactId>  
+    <version>1.0</version>      
+  </dependency>
++--------
+
+* Creating the core component with default settings
+
+	An instance of the core component is created using the factory 
+	<<<com.alpha.pineapple.CoreFactory>>> which provides methods for creating
+	instances. The easiest way to create an instance is to invoke the method 
+	<<<createCore()>>> with no parameters. The method creates an instance with default 
+	settings:
+	
+	* resources are loaded from	<<<$\{user.home}/.pineapple/conf/resources.xml>>>. 
+	
+	* credentials are loaded from <<<$\{user.home}/.pineapple/conf/credentials.xml>>>.
+	
+	[]
+	
+	Both the <<<resources.xml>>> and the <<<credentials.xml>>> file must 
+	adhere to the {{{../../../usage/configuration-environment.html}environment configuration schema.}} 
+
+	{{{../examples/create-core-default-settings.html}Look here for an example of how to create the core component with default settings.}}
+
+* Creating the core component with a custom credential provider	
+ 
+** Purpose of a credential provider	
+
+	The purpose of a credential provider is to deliver security credentials
+	to the core component on request. The provided credentials are used to 
+	access resources defined in the environment configuration.
+	
+** Implementation of credential providers
+
+	A credential provider implements the <<<com.alpha.pineapple.credential.CredentialProvider>>>
+	interface which is defined in the pineapple-api project.
+
+	The <<<get(..)>>> method is invoked by the core component when it requests 
+	a <<<Credential>>> object for a resource in a specific environment. The 
+	<<<com.alpha.pineapple.model.configuration.Credential>>> object is defined 
+	in the pineapple-api project.
+	
+	The package <<<com.alpha.pineapple.credential>>> in the pineapple-core project contains 
+	implementations which can be used by clients:
+	
+	* <<<FileBasedCredentialProviderImpl>>> which can load credentials from an XML file which 
+	adheres to the environment configuration schema. It is <<recommended>> to use this 
+	implementation as it provides schema support.	
+			
+	[]
+	
+	Otherwise the client is free to provide its own implementation.
+
+** Invoking the factory
+
+	To create the core component with a custom credential provider invoke the method 
+	<<<createCore(CredentialProvider provider)>>> on the <<<CoreFactory>>>. The settings are:
+	
+	* resources are loaded from the default location at <<<$\{user.home}/.pineapple/conf/resources.xml>>>. 
+	
+	* credentials are requested from the custom provider (and possibly loaded 
+	from an alternate location if a file based provider is used).
+	
+	[]
+	
+	The <<<resources.xml>>> file must 
+	adhere to the {{{../../../usage/configuration-environment.html}environment configuration schema.}}
+
+	{{{../examples/create-core-custom-provider.html}Look here for an example of how to create the core component with a custom provider.}}
+
+* Creating the core component which loads resources from an alternate location
+
+	To create the core component with a custom credential provider and a 
+	alternative location for the resources file invoke the method 
+	<<<createCore(CredentialProvider provider, File resources )>>> on the 
+	<<<CoreFactory>>>. The settings are:
+	
+	* resources are loaded from	an alternate location which are specified by 
+	the <<<File>>> object in the second argumen to the factory method. 
+	
+	* credentials are requested from the custom provider (and possibly loaded 
+	from an alternate location if a file based provider is used). 
+	
+	[]
+	
+	The resources file must adhere to the 
+	{{{../../../usage/configuration-environment.html}environment configuration schema.}}
+
+	{{{../examples/create-core-alternate-resource-location.html}Look here for an example of how to create the core component which loads resources from an alternate location.}}
+	
+* Executing operations	
+
+	The core component implements the interface <<<com.alpha.pineapple.PineappleCore>>> 
+	which defines a single method for execution of operations:
+	
++--------
+	
+  public interface PineappleCore
+  {
+    ExecutionInfo executeOperation( String operation, String environment, String module );  
+    
+    // remaining methods here    
+  }    
+		
++--------
+	
+	To execute an operation, invoke the method <<<execute(..)>>> 
+	with the arguments:
+		
+	* operation
+	
+	* environment 
+	
+	* module 
+	
+	[]
+	
+** Execution is asynchronous 	
+	
+	The <<<execute(..)>>> method is asynchronous and will return a initialized 
+	<<<ExecutionInfo>>> object which contains a <<<ExecutonResult>>> object which 
+	reflects the state of the executing operation.	
+		
+* Register result listeners
+	
+** Observing the outcome of execution of operations
+
+	The core component implements the <observer> pattern to provide a facility for 
+	clients to be notified in real time of how the execution of an operation proceeds. 
+	
+	The core component has the role of <subject> in the observer pattern. To support
+	the role, it provides the <<<addListener( ResultListener listener )>>> method 
+	which should be used by observers to register themselves. The core component contain 
+	logic which notifies all registered observers during execution of an operation.
+	 
+	Clients should implement objects with the role of <observer> and register them with 
+	the core component to be notified of how the execution an operation proceeds. The client 
+	should use the feedback to provide appropriate feedback to the user. An example is the 
+	<<<pineapple-application-war>>> project which registers one observer:
+	
+	* <<<com.alpha.pineapple.report.basichtml.BasicHtmlReportGeneratorImpl>>> which listens for 
+	notifications and produces a HTML report when the execution of an operation is complete.
+	The <<<BasicHtmlReportGeneratorImpl>>> is the main class in the 
+	<<<pineapple-basic-html-report-generator>>> project.
+
+	[]		
+	     			
+	An observer must implement the <<<com.alpha.pineapple.execution.ResultListener>>> interface:
+	
++--------
+
+public interface ResultListener {
+
+  void notify(ExecutionResultNotification notification);
+}
+
++--------	
+
+	{{{../examples/register-listener.html}Look here for an example of implement and register a result listener with the core component.}}	
+	
+** Using execution results to track the execution of an operation 	
+	
+	When Pineapple start execution of an operation then it internally builds a hierarchy of 
+	execution result objects which documents the execution of the operation. Execution result object
+	implements the <<<ExecutionResult>>> interface. As the execution proceeds new execution 
+	results object are created and added to the hierarchy. When an execution path is completed 
+	the tracking execution result object has it state updated and it execution time stored. 
+	
+*** Supported states for execution result objects	
+	
+	The execution result object support these life cycle states:
+		
+	* <executing> - the initial state when the execution result is created.
+	
+	* <success> - the execution completed as expected. 
+	
+	* <failure> - the execution completed with an expected failure. This state is used is
+	tests to report an failed assertion. 
+	
+	* <error> - the execution completed with an unexpected error. This state is used is
+	report an runtime error.
+			
+	* <computed> - the execution result is requested to compute is state based on the results
+	of its children. Computation will result in one of the states: <success>, <failure>, <error> 
+	based on these prioritized rules:
+	
+		* If any of the children has state <error> then the state is computed as <error>.  
+
+		* If any of the children has state <failed> then the state is computed as <failed>.  
+		
+		* The state is computed as <success>.
+		
+		[]		
+	
+	[]
+
+*** Execution result objects are mutable
+
+	The state of an execution result object is mutable during execution of an operation. The state 
+	of an execution object changes as a result of the execution, a least it will change state 
+	from <executing> to either <success>, <failure> or <error>. 
+
+*** State is propagated up in the hierarchy
+
+	The state of execution results in the hierarchy are propagated up, in such a way that the state
+	of an execution always reflects the aggregated state of it children.           
+		
+** Notification of observers
+	
+	Each time an execution result object changes it state, all registered observers are notified 
+	of the change.The notification is implemented by invoking 
+	<<<notify(ExecutionResultNotification notification)>>> on the each registered observer.
+	
+	The argument is a notification object which contains:
+	
+		* Execution result object which have changed state. 
+		
+		* The new recorded state of the execution result object.
+		
+		[]
+			
+	To capture the state when listeners are notified the state is recorded separately in the notification. 
+	Since the state of an execution result is mutable, the recorded state in the notification might 
+	not match the state of the execution result since its state can have changed since the creation of the 
+	notification and the notification of the observers.
+			
+	An observer can query the the execution result about its new state and additional info.       
+			   				  	 
+	{{{../../../pineapple-reporting-projects/pineapple-basic-html-report-generator/examples/invoke-generator.html}Look here for an example of how to register and invoke the report generator to create a report.}}  	
+		

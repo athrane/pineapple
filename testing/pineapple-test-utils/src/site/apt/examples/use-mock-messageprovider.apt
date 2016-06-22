@@ -1,0 +1,144 @@
+ ------
+ How-to: Mock the <<<MessageProvider>>> in tests.  
+ ------
+ Allan Thrane Andersen
+ ------
+ April 2010
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Mock the <<<MessageProvider>>> in tests.
+
+	If a class, which is unit tested, have a dependency to the 
+	<<<com.alpha.pineapple.i18n.MessageProvider>>> interface, then 
+	the Pineapple test utilities contains an EasyMock answer class which 
+	can be use to configure a Mock <<<MessageProvider>>> to:
+	
+	* log the requested messages.
+	
+	* provide a response to a requested message.
+	
+	[]  	 
+	
+	To use the EasyMock answer class follow these steps:
+				
+	* Setup the mock <<<MessageProvider>>> in the test case.
+	
+	* Setup the EasyMock <<<MessageProviderAnswerImpl>>> in the test case.	
+	
+	* Write your test methods. 
+	
+	[]		 
+
+* Setup the mock <<<MessageProvider>>> in the test case
+
+	Create the JUnit test class which should contain the tests which needs access to 
+	the test methods.
+	
+	Define a field in the test class with the message provider:
+											
++-----
+	
+   /**
+     * Mock message provider.
+     */
+    MessageProvider messageProvider;
+
++-----
+	
+	Create the mock message source in the JUnit <<<setUp()>>> method and inject it
+	into the class under test:
+
++-----
+	
+    // create mock provider
+    messageProvider = EasyMock.createMock( MessageProvider.class );
+            
+    // inject message provider
+    ReflectionTestUtils.setField( classUnderTest, "messageProvider", messageProvider, MessageProvider.class );
+
++-----
+		
+* Setup the EasyMock <<<MessagePRoviderAnswerImpl>>> in the test case		
+
+	Define how the mock message source should react during test execution:  		
+
++-----
+	
+    // complete mock provider initialization        
+    IAnswer<String> answer = new MessageProviderAnswerImpl(); 
+    
+    EasyMock.expect( messageProvider.getMessage(
+    		(String) EasyMock.isA( String.class ), 
+    		(Object[]) EasyMock.anyObject()));
+    EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+    
+    EasyMock.replay(messageProvider);
+                
++-----		
+		
+
+* Example
+
++-----
+
+public class TestResolveNameToIPAddressCommandTest
+{
+
+    /**
+     * Command under test.
+     */
+    Command command;
+
+    /**
+     * Chain context.
+     */
+    Context context;
+
+	/**
+	 * Mock execution result.
+	 */
+	ExecutionResult executionResult; 
+	
+    /**
+     * Mock message provider.
+     */
+    MessageProvider messageProvider;
+	        
+    @Before
+    public void setUp() throws Exception
+    {
+        // create command
+        command = new TestResolveNameToIPAddressCommand();
+
+        // create context
+        context = new ContextBase();
+        
+        // create mock result
+        executionResult = EasyMock.createMock( ExecutionResult.class );   
+        
+        // create mock provider
+        messageProvider = EasyMock.createMock( MessageProvider.class );
+                
+        // inject message source
+        ReflectionTestUtils.setField( command, "messageProvider", messageProvider, MessageProvider.class );
+        
+        // complete mock source initialization        
+        IAnswer<String> answer = new MessageProviderAnswerImpl(); 
+        
+        EasyMock.expect( messageProvider.getMessage(
+        		(String) EasyMock.isA( String.class ), 
+        		(Object[]) EasyMock.anyObject()));
+        EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+        
+        EasyMock.replay(messageProvider);        
+    }
+
+	// remaining part of the test class goes here...
+		
+}                
++-----	
+		
+		
+		

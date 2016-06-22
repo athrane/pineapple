@@ -1,0 +1,90 @@
+ ------
+ How-to: Add a 3rd party library to the Pineapple stand-alone web application
+ ------
+ Allan Thrane Andersen
+ ------
+ October 2012
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Add a 3rd party library to the Pineapple stand-alone web application
+
+* Introduction
+
+	This guide describes how to add a 3rd party library to the 
+	Pineapple stand-alone web application:
+	
+	* The directory layout of the client is described.
+	
+	* The location where the library should placed is described.  
+	
+	[]
+
+* Directory layout of of the Pineapple stand-alone web application
+
+	Once the application is installed (e.g. unpacked) a directory named 
+	<<<pineapple-standalone-web-client-VERSION>>> is created. Example: 
+	<<<opt/pineapple/pineapple-standalone-web-client-1.1.0>>>. 
+
+	The unzipped client contains the directory layout:
+	
++---+
+pineapple-standalone-web-client-VERSION
+     |     
+     +--- runPineapple.cmd
+     +--- runPineapple.sh
+     |     
+     +--- bin     
+     |     +--- helper scripts     
+     |     
+     +--- conf     
+     |     +--- log4j.properties
+     |     `--- jetty.xml
+     |               
+     +--- webapps
+     |     `--- pineapple-web-application-war.war
+     |               
+     +--- lib
+           +--- pineapple-jetty-starter-1.0.jar
+           +--- jetty-*.jar
+           +--- log4j-*.jar
+           `--- servlet-api-*.jar
++---+	 	 
+
+	The client WAR contains the directory layout:
+	
++---+
+pineapple-web-application-war.war
+     |     
+     +--- META-INF
+     |               
+     +--- WEB-INF
+     |     +--- classes
+     |     +--- images
+     |     +--- jsp
+     |     +--- lib
+     |     +--- log4j
+     |     +--- spring	 
+     |     |     	 
+     |     |--- web.xml
+     |     `--- weblogic.xml	 
+     |               
+	 
++---+	 	 
+
+
+* Add 3rd party library
+
+	Please execute the steps:
+	
+	* Unzip the web application <<<pineapple-web-application-war.war>>>.
+	
+	* Copy the 3rd party library into the directory <<<pineapple-web-application-war/WEB-INF/lib>>>.
+	
+	* Zip the web application again.
+	
+	[]
+	
+	Restart the client for the change to take effect.   
+ 

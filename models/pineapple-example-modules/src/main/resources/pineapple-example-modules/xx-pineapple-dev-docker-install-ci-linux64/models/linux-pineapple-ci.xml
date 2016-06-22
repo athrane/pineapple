@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+    xmlns:cep="http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0"
+	xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0"
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0">
+	<mmd:variables>
+		<mmd:variable key="artifactory-home" value="/var/opt/jfrog/artifactory" />
+		<!-- repository manager variables -->
+		<mmd:variable key="repo-config" value="artifactory.config.xml" />
+		<mmd:variable key="repo-user" value="admin" />
+		<mmd:variable key="repo-password" value="password" />
+		<mmd:variable key="repo-port" value="8081" />
+
+		<!-- Docker variables -->
+		<mmd:variable key="tmp-dir" value="/tmp" />
+ 		<mmd:variable key="docker-version" value="1.9.0" />				
+		<mmd:variable key="docker-source-config" value="docker.service" />    
+      	<mmd:variable key="docker-target-config" value="/usr/lib/systemd/system/docker.service" />    
+      	<mmd:variable key="docker-source-config.d" value="docker.conf" />    
+      	<mmd:variable key="docker-target-config-dir" value="/etc/systemd/system/docker.service.d" />          
+      	<mmd:variable key="docker-target-config.d" value="docker.conf" />                
+      	<mmd:variable key="docker-source-yum-config" value="docker.repo" />    
+      	<mmd:variable key="docker-target-yum-config" value="/etc/yum.repos.d/docker.repo" />    
+      	<mmd:variable key="create-user-script" value="create-docker-user.sh" />          
+
+		<!-- 3rd party libraries variables -->
+        <mmd:variable key="weblogic-client-1212-jar" value="weblogic-full-client-12.1.2.jar" />
+        <mmd:variable key="weblogic-client-1212-pom" value="weblogic-full-client-12.1.2.pom" />
+        <mmd:variable key="zcommon-702-jar" value="zcommon-7.0.2.jar" />
+        <mmd:variable key="zcommon-702-pom" value="zcommon-7.0.2.pom" />
+        <mmd:variable key="zel-702-jar" value="zel-7.0.2.jar" />
+        <mmd:variable key="zel-702-pom" value="zel-7.0.2.pom" />
+        <mmd:variable key="zk-702-jar" value="zk-7.0.2.jar" />
+        <mmd:variable key="zk-702-pom" value="zk-7.0.2.pom" />
+        <mmd:variable key="zkmax-702-jar" value="zkmax-7.0.2.jar" />
+        <mmd:variable key="zkmax-702-pom" value="zkmax-7.0.2.pom" />
+        <mmd:variable key="zkplus-702-jar" value="zkplus-7.0.2.jar" />
+        <mmd:variable key="zkplus-702-pom" value="zkplus-7.0.2.pom" />
+        <mmd:variable key="zul-702-jar" value="zul-7.0.2.jar" />
+        <mmd:variable key="zul-702-pom" value="zul-7.0.2.pom" />
+        <mmd:variable key="zweb-702-jar" value="zweb-7.0.2.jar" />
+        <mmd:variable key="zweb-702-pom" value="zweb-7.0.2.pom" />
+        <mmd:variable key="zkex-702-jar" value="zkex-7.0.2.jar" />
+        <mmd:variable key="zkex-702-pom" value="zkex-7.0.2.pom" />
+
+		</mmd:variables>
+
+	<mmd:model target-resource="{ssh-ci-node1, ssh-ci-node2}" target-operation="deploy-configuration"
+		description="Create and add Docker user to sudoers">
+		<mmd:content>
+			<shp:ssh>
+				<shp:copy-to source="modulepath:bin/${create-user-script}"
+					destination="/tmp/${create-user-script}" chmod="775 " />
+				<shp:execute command="sudo /tmp/${create-user-script}" />
+			</shp:ssh>
+		</mmd:content>
+	</mmd:model>
+
+   <mmd:model target-resource="{ssh-ci-node1, ssh-ci-node2}" target-operation="deploy-configuration" description="Update YUM (can take some time)" >
+      <mmd:content>
+        <shp:ssh>
+        <shp:execute command="sudo yum --assumeyes update" />
+        </shp:ssh>    		
+      </mmd:content>
+    </mmd:model>
+
+   <mmd:model target-resource="{ssh-ci-node1, ssh-ci-node2}" target-operation="deploy-configuration" description="Add Docker repository to YUM" >
+      <mmd:content>
+        <shp:ssh>
+          <shp:copy-to source="modulepath:bin/${docker-source-yum-config}" destination="${tmp-dir}/${docker-source-yum-config}" chmod="775" />
+          <shp:execute command="sudo mv ${tmp-dir}/${docker-source-yum-config} ${docker-target-yum-config}" />    							                    
+        </shp:ssh>    		
+      </mmd:content>
+    </mmd:model>
+
+	<mmd:model target-resource="{ssh-ci-node1, ssh-ci-node2}" target-operation="deploy-configuration"
+		description="Install Docker">
+		<mmd:content>
+			<shp:ssh>
+	           <shp:execute command="sudo yum --assumeyes install http://yum.dockerproject.org/repo/main/centos/7/Packages/docker-engine-${docker-version}-1.el7.centos.x86_64.rpm" />  
+	           <shp:copy-to source="modulepath:bin/${docker-source-config}" destination="${tmp-dir}/${docker-source-config}" chmod="775" />
+	           <shp:execute command="sudo mv ${tmp-dir}/${docker-source-config} ${docker-target-config}" />    							          
+	           <shp:execute command="sudo mkdir ${docker-target-config-dir}" />        						                    
+	           <shp:copy-to source="modulepath:bin/${docker-source-config.d}" destination="${tmp-dir}/${docker-source-config.d}" chmod="775" />
+	           <shp:execute command="sudo mv ${tmp-dir}/${docker-source-config.d} ${docker-target-config-dir}/${docker-target-config.d}" />    							          
+	           <shp:execute command="sudo systemctl enable docker" />           
+	           <shp:execute command="sudo systemctl start docker" /> 
+			</shp:ssh>
+		</mmd:content>
+	</mmd:model>
+	<mmd:model target-resource="docker-ci-node1" description="Install Artifactory Docker container"
+		target-operation="deploy-configuration">
+		<mmd:content>
+			<dkp:docker>
+				<dkp:image-from-dockerfile
+					source-directory="modulepath:dockersrc/repo" pull-image="false">
+					<dkp:target-image repository="pineapple/repo" tag="1.0" />
+				</dkp:image-from-dockerfile>
+				<dkp:container name="repo">
+					<dkp:image repository="jfrog-docker-registry.bintray.io/jfrog/artifactory-oss"
+						tag="latest" />
+					<dkp:configuration>
+						<dkp:host-config>
+							<dkp:port-bindings>
+								<dkp:bind container-port="8081" host-port="8081" type="tcp" />
+							</dkp:port-bindings>
+						</dkp:host-config>
+						<dkp:volumes>
+							<dkp:volume mountpoint="${artifactory-home}/data" />
+							<dkp:volume mountpoint="${artifactory-home}/logs" />
+							<dkp:volume mountpoint="${artifactory-home}/backup" />
+							<dkp:volume mountpoint="${artifactory-home}/etc" />
+						</dkp:volumes>
+					</dkp:configuration>
+				</dkp:container>
+			</dkp:docker>
+		</mmd:content>
+	</mmd:model>
+	<mmd:model target-resource="docker-ci-node1" description="Install Jenkins Docker container"
+		target-operation="deploy-configuration">
+		<mmd:content>
+			<dkp:docker>
+				<dkp:image-from-dockerfile
+					source-directory="modulepath:dockersrc/ci" pull-image="false">
+					<dkp:target-image repository="pineapple/ci" tag="1.0" />
+				</dkp:image-from-dockerfile>
+				<dkp:container name="ci">
+					<dkp:image repository="pineapple/ci" tag="1.0" />
+					<dkp:configuration>
+						<dkp:host-config>
+							<dkp:port-bindings>
+								<dkp:bind container-port="8080" host-port="8080" type="tcp" />
+							</dkp:port-bindings>
+							<dkp:links>repo:repository</dkp:links>
+						</dkp:host-config>
+					</dkp:configuration>
+				</dkp:container>
+			</dkp:docker>
+		</mmd:content>
+	</mmd:model>
+	<mmd:model target-resource="ssh-ci-node1" target-operation="deploy-configuration"
+		description="Invoke Artifactory Web service to trigger initialization">
+		<mmd:content>
+			<shp:ssh>
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X GET http://${resource.host}:${repo-port}/artifactory/api/system/configuration" />
+			</shp:ssh>
+		</mmd:content>
+	</mmd:model>
+	<mmd:model target-resource="ssh-ci-node1" target-operation="deploy-configuration"
+		description="Install of Artifactory configuration and artifacts">
+		<mmd:content>
+			<shp:ssh>
+
+				<!-- install Artifactory system configuration -->
+				<shp:copy-to source="modulepath:bin/${repo-config}"
+					destination="${tmp-dir}/${repo-config}" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X POST -H &quot;Content-type:application/xml&quot; --data-binary @${tmp-dir}/${repo-config} http://${resource.host}:${repo-port}/artifactory/api/system/configuration" />
+				<shp:execute command="rm -f ${tmp-dir}/${repo-config}" />
+
+				<!-- deploy Pineapple 3rd party libraries -->
+				<!-- weblogic -->				
+				<shp:copy-to source="modulepath:bin/${weblogic-client-1212-jar}"
+					destination="${tmp-dir}/${weblogic-client-1212-jar}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${weblogic-client-1212-jar} http://${resource.host}:${repo-port}/artifactory/ext-release-local/oracle/weblogic-full-client/12.1.2/${weblogic-client-1212-jar}" />
+				<shp:execute command="rm -f ${tmp-dir}/${weblogic-client-1212-jar}" />
+				<shp:copy-to source="modulepath:bin/${weblogic-client-1212-pom}"
+					destination="${tmp-dir}/${weblogic-client-1212-pom}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${weblogic-client-1212-pom} http://${resource.host}:${repo-port}/artifactory/ext-release-local/oracle/weblogic-full-client/12.1.2/${weblogic-client-1212-pom}" />
+				<shp:execute command="rm -f ${tmp-dir}/${weblogic-client-1212-pom}" />
+
+				<!-- zcommon -->
+				<shp:copy-to source="modulepath:bin/${zcommon-702-jar}"
+					destination="${tmp-dir}/${zcommon-702-jar}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zcommon-702-jar} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/common/zcommon/7.0.2/${zcommon-702-jar}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zcommon-702-jar}" />
+				<shp:copy-to source="modulepath:bin/${zcommon-702-pom}"
+					destination="${tmp-dir}/${zcommon-702-pom}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zcommon-702-pom} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/common/zcommon/7.0.2/${zcommon-702-pom}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zcommon-702-pom}" />
+
+				<!-- zel -->
+				<shp:copy-to source="modulepath:bin/${zel-702-jar}"
+					destination="${tmp-dir}/${zel-702-jar}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zel-702-jar} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/common/zel/7.0.2/${zel-702-jar}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zel-702-jar}" />
+				<shp:copy-to source="modulepath:bin/${zel-702-pom}"
+					destination="${tmp-dir}/${zel-702-pom}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zel-702-pom} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/common/zel/7.0.2/${zel-702-pom}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zel-702-jar}" />
+
+				<!-- zk -->
+				<shp:copy-to source="modulepath:bin/${zk-702-jar}"
+					destination="${tmp-dir}/${zk-702-jar}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zk-702-jar} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/zk/zk/7.0.2/${zk-702-jar}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zk-702-jar}" />
+				<shp:copy-to source="modulepath:bin/${zk-702-pom}"
+					destination="${tmp-dir}/${zk-702-pom}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zk-702-pom} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/zk/zk/7.0.2/${zk-702-pom}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zk-702-jar}" />
+
+				<!-- zkmax -->
+				<shp:copy-to source="modulepath:bin/${zkmax-702-jar}"
+					destination="${tmp-dir}/${zkmax-702-jar}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zkmax-702-jar} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/zk/zkmax/7.0.2/${zkmax-702-jar}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zkmax-702-jar}" />
+				<shp:copy-to source="modulepath:bin/${zkmax-702-pom}"
+					destination="${tmp-dir}/${zkmax-702-pom}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zkmax-702-pom} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/zk/zkmax/7.0.2/${zkmax-702-pom}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zkmax-702-jar}" />
+
+				<!-- zkplus -->
+				<shp:copy-to source="modulepath:bin/${zkplus-702-jar}"
+					destination="${tmp-dir}/${zkplus-702-jar}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zkplus-702-jar} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/zk/zkplus/7.0.2/${zkplus-702-jar}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zkplus-702-jar}" />
+				<shp:copy-to source="modulepath:bin/${zkplus-702-pom}"
+					destination="${tmp-dir}/${zkplus-702-pom}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zkplus-702-pom} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/zk/zkplus/7.0.2/${zkplus-702-pom}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zkplus-702-jar}" />
+
+				<!-- zul  -->
+				<shp:copy-to source="modulepath:bin/${zul-702-jar}"
+					destination="${tmp-dir}/${zul-702-jar}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zul-702-jar} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/zk/zul/7.0.2/${zul-702-jar}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zul-702-jar}" />
+				<shp:copy-to source="modulepath:bin/${zul-702-pom}"
+					destination="${tmp-dir}/${zul-702-pom}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zul-702-pom} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/zk/zul/7.0.2/${zul-702-pom}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zul-702-jar}" />
+
+				<!-- zweb  -->
+				<shp:copy-to source="modulepath:bin/${zweb-702-jar}"
+					destination="${tmp-dir}/${zweb-702-jar}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zweb-702-jar} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/common/zweb/7.0.2/${zweb-702-jar}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zweb-702-jar}" />
+				<shp:copy-to source="modulepath:bin/${zweb-702-pom}"
+					destination="${tmp-dir}/${zweb-702-pom}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zweb-702-pom} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/common/zweb/7.0.2/${zweb-702-pom}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zweb-702-jar}" />				
+
+				<!-- zkex -->
+				<shp:copy-to source="modulepath:bin/${zkex-702-jar}"
+					destination="${tmp-dir}/${zkex-702-jar}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zkex-702-jar} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/zk/zkex/7.0.2/${zkex-702-jar}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zkex-702-jar}" />
+				<shp:copy-to source="modulepath:bin/${zkex-702-pom}"
+					destination="${tmp-dir}/${zkex-702-pom}"
+					substitute-variables="false" chmod="775" />
+				<shp:execute
+					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${zkex-702-pom} http://${resource.host}:${repo-port}/artifactory/ext-release-local/org/zkoss/zk/zkex/7.0.2/${zkex-702-pom}" />
+				<shp:execute command="rm -f ${tmp-dir}/${zkex-702-jar}" />				
+			</shp:ssh>
+		</mmd:content>
+	</mmd:model>
+
+	<mmd:model target-resource="docker-ci-node1" description="Install Docker registry container"
+		target-operation="deploy-configuration">
+		<mmd:content>
+			<dkp:docker>
+				<dkp:image-from-dockerfile
+					source-directory="modulepath:dockersrc/registry" pull-image="false">
+					<dkp:target-image repository="pineapple/registry" tag="1.0" />
+				</dkp:image-from-dockerfile>
+				<dkp:container name="registry">
+					<dkp:image repository="pineapple/registry" tag="1.0" />
+					<dkp:configuration>
+						<dkp:host-config>
+							<dkp:port-bindings>
+								<dkp:bind container-port="5000" host-port="8083" type="tcp" />
+							</dkp:port-bindings>
+						</dkp:host-config>
+					</dkp:configuration>
+				</dkp:container>
+			</dkp:docker>
+		</mmd:content>
+	</mmd:model>
+		
+	<mmd:model target-resource="docker-ci-node1"
+		description="Delete Docker containers and images" target-operation="undeploy-configuration">
+		<mmd:content>
+			<dkp:docker>
+				<dkp:container name="ci">
+					<dkp:image repository="pineapple/ci" tag="1.0" />
+				</dkp:container>
+				<dkp:image repository="pineapple/ci" tag="1.0" />
+				<dkp:container name="repo">
+					<dkp:image repository="pineapple/repo" tag="1.0" />
+				</dkp:container>
+				<dkp:image repository="pineapple/repo" tag="1.0" />
+				<dkp:container name="repo">
+					<dkp:image repository="pineapple/registry" tag="1.0" />
+				</dkp:container>
+				<dkp:image repository="pineapple/registry" tag="1.0" />				
+			</dkp:docker>
+		</mmd:content>
+	</mmd:model>
+
+   <mmd:model target-resource="{ssh-ci-node1, ssh-ci-node2}" target-operation="undeploy-configuration" description="Uninstall Docker" >
+      <mmd:content>
+        <shp:ssh>        
+          <shp:execute command="sudo systemctl stop docker" /> 
+          <shp:execute command="sudo yum -y remove docker-engine.x86_64 " /> 
+          <shp:execute command="sudo rm -rf /var/lib/docker" /> 
+        </shp:ssh>			
+      </mmd:content>
+    </mmd:model>
+	
+</mmd:models>

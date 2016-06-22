@@ -1,0 +1,36 @@
+
+ ------
+ Scheduled operation support
+ ------
+ Allan Thrane Andersen 
+ ------
+ May 2016
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Scheduled operation support
+
+* Purpose
+
+	<Scheduled operations> adds support for automatic execution of operations at a fixed frequency.
+	
+	A scheduled operation can be defined using either the GUI, the REST API or the Agent plugin:
+
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-web-application-war/usage/schedule-operation.html}Schedule operation in the Pineapple web application}}.
+	
+	* {{{../pineapple-applications/pineapple-web-application/pineapple-web-application-war/usage/rest.html#Schedule_Operation}Schedule operation using the REST API}}.
+	
+	* {{{../pineapple-plugins/pineapple-agent-plugin/examples/schedule-operation.html}Schedule operation using the Agent plugin}}.
+	
+	[]
+	
+	Once scheduled an operation can also be deleted or all scheduled operations can be deleted at once.
+    	        
+* Configuration
+	
+	Configuration of the number of retries is only possible by modifying the internal configuration file for the core component.
+	
+	The value is defined the core configuration file <<<com.alpha.pineapple.core-config.xml>>> in the XML element named 
+	<<<simpleRetryPolicy>>> where the attribute <<<maxAttempts>>> defines  the number of retries.	

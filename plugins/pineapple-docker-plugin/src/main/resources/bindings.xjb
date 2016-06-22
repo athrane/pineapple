@@ -1,0 +1,157 @@
+<jaxb:bindings version="2.0"	
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"	
+	jaxb:extensionBindingPrefixes="xjc" >
+  
+  	<jaxb:globalBindings choiceContentProperty="true"/> 
+  
+ 	<jaxb:bindings schemaLocation="docker_1_0.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.plugin.docker.model" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:element[@name='docker']" >
+			<jaxb:class name="Docker" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" node="//xs:element[@name='docker']/xs:complexType/xs:sequence/xs:choice">
+		<jaxb:property name="Commands"/>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='commandType']" >
+			<jaxb:class name="DockerCommand" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='imageType']" >
+			<jaxb:class name="Image" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='taggedImageType']" >
+			<jaxb:class name="TaggedImage" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='imageFromDockerfileType']" >
+			<jaxb:class name="ImageFromDockerfile" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerType']" >
+			<jaxb:class name="Container" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='abstractContainerConfigurationType']" >
+			<jaxb:class name="AbstractContainerConfiguration" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationEnvironmentVariablesType']" >
+			<jaxb:class name="ContainerConfigurationEnvironmentVariables" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationEnvironmentVariableType']" >
+			<jaxb:class name="ContainerConfigurationEnvironmentVariable" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationLabelsType']" >
+			<jaxb:class name="ContainerConfigurationLabels" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationLabelType']" >
+			<jaxb:class name="ContainerConfigurationLabel" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationExposedPortsType']" >
+			<jaxb:class name="ContainerConfigurationExposedPorts" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationExposedPortType']" >
+			<jaxb:class name="ContainerConfigurationExposedPort" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationVolumesType']" >
+			<jaxb:class name="ContainerConfigurationVolumes" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationVolumeType']" >
+			<jaxb:class name="ContainerConfigurationVolume" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationHostConfigType']" >
+			<jaxb:class name="ContainerConfigurationHostConfig" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationHostConfigLogConfigType']" >
+			<jaxb:class name="ContainerConfigurationHostConfigLogConfig" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationHostConfigLogConfigConfigType']" >
+			<jaxb:class name="ContainerConfigurationHostConfigLogConfigConfig" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationHostConfigRestartPolicyType']" >
+			<jaxb:class name="ContainerConfigurationHostConfigRestartPolicy" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationHostConfigPortBindingsType']" >
+			<jaxb:class name="ContainerConfigurationHostConfigPortBindings" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationHostConfigPortBindingType']" >
+			<jaxb:class name="ContainerConfigurationHostConfigPortBinding" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationType']" >
+			<jaxb:class name="ContainerConfiguration" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='embeddedContainerConfigurationType']" >
+			<jaxb:class name="EmbeddedContainerConfiguration" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+	
+</jaxb:bindings>

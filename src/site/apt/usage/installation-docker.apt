@@ -1,0 +1,38 @@
+ ------
+ Download and install the Pineapple Docker image
+ ------
+ Allan Thrane Andersen
+ ------
+ May 2016
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Download and install the Pineapple Docker image
+		  
+	Pineapple is available for download as a Docker image from the 
+	{{{https://hub.docker.com/r/pineapple/pineapple/}Pineapple repository at DockerHub}}.
+	
+* Create a container
+
+	Issue this command to run a container with the name <pineapple>:
+
++---
+docker run -p 8080:8080 --name=pineapple pineapple/pineapple:1.7
++---
+
+* Details
+
+	Pineapple will run at http:/0.0.0.0:8080 within the container.	
+	The image defines exposure of port 8080 to the Docker host.
+	
+	Pineapple will run under the <pineapple> user.
+	
+	Pineapple is configured to use </pineapple> as home directory.
+	the </pineapple> directory is placed on a data volume.
+
+* How to create the image using Pineapple
+
+	A description of how Pineapple is used to create the image can be found at:
+	{{{https://pineapple.java.net/pineapple-plugins/pineapple-docker-plugin/examples/create-simple-pineapple-image.html}How-to: Create simple Pineapple Docker image}}.
+		

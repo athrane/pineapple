@@ -1,0 +1,142 @@
+ ------
+ Operation and workflow reference 
+ ------
+ Allan Thrane Andersen 
+ ------
+ November 2008
+ ------
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+
+Operation and workflow reference
+		
+* Operations
+
+	A operation defines a directive that a collection of targeted Pineapple plugins should execute on.
+
+	Pineapple supports any operation, it only depends one whether a  plugin
+	implements operations which responds to a particular operation.	
+  
+* Workflows
+
+	A workflow is a sequence of operations which supports solving a task.
+	
+* Default workflows
+
+	The default workflows is just a set for workflows which have proven useful to the creator during
+	the development and usage of Pineapple. The following default workflows is defined:
+	
+	* Test workflow
+	
+	* Deployment workflow
+	
+	* Create report workflow		
+	
+	[]
+
+** Test workflow
+
+	The test workflow is used to invoke plugins which supports testing the state and configuration of
+	resources. The workflow consist of a single operation:
+
+	* test 
+	
+	[]
+	
+*** Test operation
+
+		The test operation directs plugins to use module models as input to test the state and configuration 
+		of the targeted resources in the model(s). 
+	
+** Deployment workflow
+
+	This workflow was the original inspiration for Pineapple; deployment of JEE application with configuration
+	of any appropriate resources.
+	
+	The workflow defines the steps in deployment of a application including any required resources in the
+	runtime environment where the application should run. The workflow consist of a these operations: 
+
+	* deploy-configuration
+		
+	* deploy-application
+	
+	* start-application
+	
+	* stop-application
+	
+	* undeploy-application
+		
+	* undeploy-configuration
+		
+	[]
+
+*** Deploy configuration 
+
+	Deploy the configuration into target resources in a computing environment. 
+
+	If the configuration already exists at a target resource, then the target resource
+	is updated with the configuration in the model.
+	
+	If used protocol or target resource doesn't support update of an existing configuration
+	then model execution is considered successful even with no update of the target resource.
+	The intention with the model execution is to reach a situation where the configuration
+	is created. This goal is reached, because it was already reached prior to model execution.
+	The executing plugin a should log a warning in such a situation to notify the user of
+	the non-update.
+
+	This approach support idempotent execution of models.
+	
+	Examples of resources are JEE resources like data sources, queues and virtual hosts. 
+	Examples of other resources are the provisioning Docker images and containers.	
+
+*** Deploy application
+
+	Deploys the application into runtime environment and starts the application.
+	
+*** Start application
+
+	Starts a deployed application which is stopped.
+	
+*** stop application
+	
+	Stops a deployed application which is running.	
+	
+*** Undeploy application
+		
+	Stop and undeploys an application from the runtime environment.
+		
+*** Undeploy configuration
+
+	Stops any running resources and removes them from the computing environment.
+				
+	If the configuration doesn't exist at a target resource, then model execution 
+	is considered successful.
+	The intention with the model execution is to reach a situation where the configuration
+	is deleted. The goal is reached, because it was already reached prior to model execution.
+	The executing plugin a should log a warning in such a situation to notify the user of
+	the non-update.
+
+	This approach support idempotent execution of models.
+				
+** Create report workflow
+
+	The create report workflow is used to invoke plugins which supports the creation of reports. The workflow consist 
+	of a single operation:
+
+	* create-report 
+	
+	[]
+	
+*** Create report operation
+
+		The operation directs plugins to use module models as input to access the targeted resources in the model(s)
+		and create a report from the state of the resources.	
+	
+* Implementation
+
+	The project pineapple-api contains defined constants for all the defined
+	operations names in the default workflows.
+	
+	The constants are defined in the interface <<<com.alpha.pineapple.OperationNames>>>.		

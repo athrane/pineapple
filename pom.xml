@@ -45,8 +45,10 @@
 		</developer>
 	</developers>
 	<scm>
-		<url>http://java.net/projects/pineapple/sources/svn/show</url>
-	</scm>
+		<connection>scm:git:git@github.com:athrane/pineapple.git</connection>
+		<url>scm:git:git@github.com:athrane/pineapple.git</url>
+		<developerConnection>scm:git:git@github.com:athrane/pineapple.git</developerConnection>
+	</scm>	
 	<issueManagement>
 		<system>JIRA</system>
 		<url>http://java.net/jira/browse/PINEAPPLE</url>

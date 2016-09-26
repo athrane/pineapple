@@ -5,7 +5,7 @@ NOTES ON SETTING UP IDE + CHECKING OUT THE PROJECT
 1) Eclipse
 -----------
 
-1.1) Download Eclipse 4.4 (Luna) and install it.
+1.1) Download Eclipse 4.6 (Neon) and install it.
 
 1.2) Configure proxy settings in Eclipse by going to Windows -> Preferences
 -> General -> Network Connections -> Manual Proxy Settings 

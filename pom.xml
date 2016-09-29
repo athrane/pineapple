@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Pineapple - a tool to install, configure and test Java web 
-  applications and infrastructure. 
-  
-  Copyright (C) 2007-2015 Allan Thrane Andersen..
-  
-  This file is part of Pineapple.
-  
-  Pineapple is free software: you can redistribute it and/or modify 
-  it under the terms of the GNU General Public License as published 
-  by the Free Software Foundation, either version 3 of the License, 
-  or (at your option) any later version.
-  
-  Pineapple is distributed in the hope that it will be useful, but WITHOUT 
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
-  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License along
-   with Pineapple. If not, see <http://www.gnu.org/licenses/>.
--->
+<!-- Pineapple - a tool to install, configure and test Java web applications 
+	and infrastructure. Copyright (C) 2007-2015 Allan Thrane Andersen.. This 
+	file is part of Pineapple. Pineapple is free software: you can redistribute 
+	it and/or modify it under the terms of the GNU General Public License as 
+	published by the Free Software Foundation, either version 3 of the License, 
+	or (at your option) any later version. Pineapple is distributed in the hope 
+	that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+	warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+	GNU General Public License for more details. You should have received a copy 
+	of the GNU General Public License along with Pineapple. If not, see <http://www.gnu.org/licenses/>. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -45,22 +35,22 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:git:git@github.com:athrane/pineapple.git</connection>
-		<url>scm:git:git@github.com:athrane/pineapple.git</url>
+		<connection>scm:git:https://github.com/athrane/pineapple.git</connection>
 		<developerConnection>scm:git:git@github.com:athrane/pineapple.git</developerConnection>
-	</scm>	
+		<url>https://github.com/athrane/pineapple</url>
+	</scm>
 	<issueManagement>
-		<system>GitHub Issues</system>	
+		<system>GitHub Issues</system>
 		<url>https://github.com/athrane/pineapple/issues</url>
 	</issueManagement>
-	
+
 	<properties>
 		<cglib.version>2.2.2</cglib.version>
 		<junit.version>4.11</junit.version>
 		<log4j.version>1.2.17</log4j.version>
 		<spring.version>4.1.5.RELEASE</spring.version>
 		<spring.retry.version>1.1.0.RELEASE</spring.retry.version>
-	    <reactor.version>1.1.3.RELEASE</reactor.version>
+		<reactor.version>1.1.3.RELEASE</reactor.version>
 		<weblogic.version>12.1.2</weblogic.version>
 		<jetty.version>9.2.3.v20140905</jetty.version>
 		<jetty.slf4j.version>1.7.7</jetty.slf4j.version>
@@ -69,9 +59,11 @@
 		<zk.version>7.0.2</zk.version>
 		<zkspring.version>3.1</zkspring.version>
 		<pineapple.schema.projects.version>1.0.0</pineapple.schema.projects.version>
-		<pineapple.examplemodules.project.version>1.0.0</pineapple.examplemodules.project.version>		
+		<pineapple.examplemodules.project.version>1.0.0</pineapple.examplemodules.project.version>
 		<pineapple.webapp.jettystarter.version>1.0.0</pineapple.webapp.jettystarter.version>
-
+	
+		<!-- GitHub -->
+	
 		<!-- Pineapple release version -->
 		<pineapple.release.version>1.9.0</pineapple.release.version>
 
@@ -162,7 +154,7 @@
 				<groupId>${project.groupId}</groupId>
 				<artifactId>pineapple-docker-plugin</artifactId>
 				<version>${project.version}</version>
-			</dependency>					
+			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>pineapple-test-utils</artifactId>
@@ -187,17 +179,17 @@
 				<groupId>${project.groupId}</groupId>
 				<artifactId>pineapple-docker-support</artifactId>
 				<version>${project.version}</version>
-			</dependency>					
+			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>pineapple-weblogic-1212-schemas</artifactId>
 				<version>${pineapple.schema.projects.version}</version>
-			</dependency>			
+			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>pineapple-example-modules</artifactId>
 				<version>${pineapple.examplemodules.project.version}</version>
-			</dependency>			
+			</dependency>
 			<!-- external dependencies -->
 			<dependency>
 				<groupId>junit</groupId>
@@ -234,23 +226,23 @@
 				<artifactId>jetty-jsp-2.1</artifactId>
 				<version>${jetty.version}</version>
 			</dependency>
-			<!--  for Jetty logging -->
+			<!-- for Jetty logging -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${jetty.slf4j.version}</version>
-			</dependency>		
+			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>${jetty.slf4j.version}</version>				
-			</dependency>						
+				<version>${jetty.slf4j.version}</version>
+			</dependency>
 			<!-- Servlet API -->
 			<dependency>
-		         <groupId>javax.servlet</groupId>
-		         <artifactId>javax.servlet-api</artifactId>
-				 <version>${servlet.version}</version>
-		    </dependency>    			
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${servlet.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
@@ -287,11 +279,11 @@
 				<version>1.4.1</version>
 			</dependency>
 			<dependency>
-      			<groupId>commons-beanutils</groupId>
-      			<artifactId>commons-beanutils-core</artifactId>
-      			<version>1.8.3</version>
-    		</dependency>
-    		<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils-core</artifactId>
+				<version>1.8.3</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
 				<version>4.0</version>
@@ -300,12 +292,12 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-vfs2</artifactId>
 				<version>2.0</version>
-			</dependency>            
+			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-compress</artifactId>
 				<version>1.9</version>
-			</dependency>			
+			</dependency>
 			<dependency>
 				<groupId>org.samba.jcifs</groupId>
 				<artifactId>jcifs</artifactId>
@@ -320,13 +312,13 @@
 				<groupId>commons-fileupload</groupId>
 				<artifactId>commons-fileupload</artifactId>
 				<version>1.2.2</version>
-			</dependency>			
+			</dependency>
 			<dependency>
 				<groupId>javaee</groupId>
 				<artifactId>javaee-api</artifactId>
 				<version>5</version>
 			</dependency>
-			<!-- used by the JSR88 project -->			 
+			<!-- used by the JSR88 project -->
 			<dependency>
 				<groupId>geronimo-spec</groupId>
 				<artifactId>geronimo-spec-j2ee</artifactId>
@@ -392,42 +384,42 @@
 				<groupId>org.springframework.retry</groupId>
 				<artifactId>spring-retry</artifactId>
 				<version>${spring.retry.version}</version>
-			</dependency>			
-			<!-- Spring AOP support -->			
+			</dependency>
+			<!-- Spring AOP support -->
 			<dependency>
 				<groupId>aopalliance</groupId>
 				<artifactId>aopalliance</artifactId>
 				<version>1.0</version>
-			</dependency>   			
-	        <!-- Spring Reactor -->
-	        <dependency>
-	            <groupId>org.projectreactor</groupId>
-	            <artifactId>reactor-core</artifactId>
-	            <version>${reactor.version}</version>
-	        </dependency>
-	        <dependency>
-	            <groupId>org.projectreactor.spring</groupId>
-	            <artifactId>reactor-spring-context</artifactId>
-	            <version>${reactor.version}</version>
-	        </dependency>									         			  			
+			</dependency>
+			<!-- Spring Reactor -->
+			<dependency>
+				<groupId>org.projectreactor</groupId>
+				<artifactId>reactor-core</artifactId>
+				<version>${reactor.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.projectreactor.spring</groupId>
+				<artifactId>reactor-spring-context</artifactId>
+				<version>${reactor.version}</version>
+			</dependency>
 			<!-- spring-oxm dependecy to xmlbean -->
 			<dependency>
 				<groupId>org.apache.xmlbeans</groupId>
 				<artifactId>xmlbeans</artifactId>
 				<version>2.4.0</version>
-			</dependency>					
+			</dependency>
 			<!-- password encryption -->
 			<dependency>
 				<groupId>org.jasypt</groupId>
-		    	<artifactId>jasypt</artifactId>
-		    	<version>1.9.1</version>
-			</dependency>		
+				<artifactId>jasypt</artifactId>
+				<version>1.9.1</version>
+			</dependency>
 			<!-- JSON marshalling -->
-	 		<dependency>
-	      		<groupId>com.fasterxml.jackson.core</groupId>
-	      		<artifactId>jackson-databind</artifactId>
-	      		<version>2.3.1</version>
-	   		</dependency>					
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>2.3.1</version>
+			</dependency>
 			<dependency>
 				<groupId>org.hamcrest</groupId>
 				<artifactId>hamcrest-core</artifactId>
@@ -453,28 +445,28 @@
 				<artifactId>dnsjava</artifactId>
 				<version>2.0.8</version>
 			</dependency>
-		  	<dependency>
-		  		<groupId>xalan</groupId>
-		  		<artifactId>xalan</artifactId>
-		  		<version>2.7.0</version>
-		  		<exclusions>
-		  			<exclusion>
-		  				<artifactId>xml-apis</artifactId>
-		  				<groupId>xml-apis</groupId>
-		  			</exclusion>
-		  		</exclusions>
-		  	</dependency>
-		 	<dependency>
-		 		<groupId>xerces</groupId>
-		 		<artifactId>xercesImpl</artifactId>
-		 		<version>2.9.1</version>
-		 		<exclusions>
-		 			<exclusion>
-		 				<artifactId>xml-apis</artifactId>
-		 				<groupId>xml-apis</groupId>
-		 			</exclusion>
-		 		</exclusions>  		
-		 	</dependency>					
+			<dependency>
+				<groupId>xalan</groupId>
+				<artifactId>xalan</artifactId>
+				<version>2.7.0</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>xml-apis</artifactId>
+						<groupId>xml-apis</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>2.9.1</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>xml-apis</artifactId>
+						<groupId>xml-apis</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 			<!-- ZK framework -->
 			<dependency>
 				<groupId>org.zkoss.zk</groupId>
@@ -509,25 +501,25 @@
 						<artifactId>jasperreports</artifactId>
 					</exclusion>
 				</exclusions>
-			</dependency>			
-    		<!--  for reconfiguration of the SLF4J backend used by ZK -->						
+			</dependency>
+			<!-- for reconfiguration of the SLF4J backend used by ZK -->
 			<dependency>
-			    <groupId>org.zkoss.common</groupId>
-			    <artifactId>zcommon</artifactId>
+				<groupId>org.zkoss.common</groupId>
+				<artifactId>zcommon</artifactId>
 				<version>${zk.version}</version>
-			    <exclusions>
-			        <exclusion>
-			            <groupId>org.slf4j</groupId>
-			            <artifactId>slf4j-jdk14</artifactId>
-			        </exclusion>
-			    </exclusions>
-			</dependency>			
-			<!-- JSON marshalling -->			
-		    <dependency>
+				<exclusions>
+					<exclusion>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-jdk14</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<!-- JSON marshalling -->
+			<dependency>
 				<groupId>com.google.code.gson</groupId>
 				<artifactId>gson</artifactId>
 				<version>1.4</version>
-		    </dependency>			
+			</dependency>
 			<dependency>
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
@@ -549,13 +541,13 @@
 				<groupId>org.objenesis</groupId>
 				<artifactId>objenesis</artifactId>
 				<version>2.1</version>
-			</dependency>            			
+			</dependency>
 			<!-- for ssh plugin -->
-	  		<dependency>
+			<dependency>
 				<groupId>com.jcraft</groupId>
 				<artifactId>jsch</artifactId>
 				<version>0.1.49</version>
-			</dependency>			
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<modules>
@@ -653,7 +645,8 @@
 					<artifactId>jetty-maven-plugin</artifactId>
 					<version>${jetty.version}</version>
 				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -677,7 +670,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -711,20 +704,20 @@
 		</repository>
 		<!-- Spring Source repository -->
 		<repository>
-		    <id>repository.springsource.snapshot</id>
-		    <name>SpringSource Snapshot Repository</name>
-		    <url>http://repo.springsource.org/snapshot</url>
+			<id>repository.springsource.snapshot</id>
+			<name>SpringSource Snapshot Repository</name>
+			<url>http://repo.springsource.org/snapshot</url>
 		</repository>
 		<repository>
-		    <id>repository.springsource.milestone</id>
-		    <name>SpringSource Milestone Repository</name>
-		    <url>http://repo.springsource.org/milestone</url>
-		</repository>		
+			<id>repository.springsource.milestone</id>
+			<name>SpringSource Milestone Repository</name>
+			<url>http://repo.springsource.org/milestone</url>
+		</repository>
 		<repository>
-		    <id>repository.springsource.release</id>
-		    <name>SpringSource GA Repository</name>
-		    <url>http://repo.springsource.org/release</url>
-		</repository>						
+			<id>repository.springsource.release</id>
+			<name>SpringSource GA Repository</name>
+			<url>http://repo.springsource.org/release</url>
+		</repository>
 		<!-- ZK repositories -->
 		<repository>
 			<id>ZK CE</id>
@@ -734,12 +727,8 @@
 			<id>ZK EE</id>
 			<url>https://maven.zkoss.org/repo/zk/ee</url>
 		</repository>
-		<!-- 
- 		<repository>
-     		<id>ZK PE/EE Evaluation</id>
-     		<url>http://mavensync.zkoss.org/eval/</url>
-   		</repository>
-   		 -->
+		<!-- <repository> <id>ZK PE/EE Evaluation</id> <url>http://mavensync.zkoss.org/eval/</url> 
+			</repository> -->
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -772,8 +761,8 @@
 		<profile>
 			<id>SkipTests</id>
 			<activation>
-      			<activeByDefault>true</activeByDefault>
-    		</activation>			
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<build>
 				<plugins>
 					<plugin>
@@ -801,6 +790,6 @@
 					</plugin>
 				</plugins>
 			</build>
-		</profile>		
+		</profile>
 	</profiles>
 </project>

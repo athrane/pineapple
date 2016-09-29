@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://pineapple.dev.java.net/ns/execution_result_1_0"
+	xmlns="http://pineapple.dev.java.net/ns/execution_result_1_0"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xs:annotation>
+		<xs:documentation>XML Schema for transport of execution results.
+		</xs:documentation>
+	</xs:annotation>
+
+	<xs:element name="results">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="result-sequence" type="executionResultSequenceType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="executionResultType">
+		<xs:sequence>
+			<xs:element name="result" type="executionResultType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="messages" type="messagesType" />
+		</xs:sequence>
+		<xs:attribute name="description" type="xs:string" />
+		<xs:attribute name="time" type="xs:long" />
+		<xs:attribute name="startTime" type="xs:long" />
+		<xs:attribute name="state" type="xs:string" />
+		<xs:attribute name="parentCorrelationId" type="xs:int" />
+		<xs:attribute name="correlationId" type="xs:int" />
+	</xs:complexType>
+
+	<xs:complexType name="messagesType">
+		<xs:sequence>
+			<xs:element name="message" type="messageType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="messageType">
+		<xs:sequence>
+			<xs:element name="value" type="messageValueType" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="messageValueType">
+		<xs:attribute name="value" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="executionResultSequenceType">
+		<xs:sequence>
+			<xs:element name="result" type="executionResultType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

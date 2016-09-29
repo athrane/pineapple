@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://pineapple.dev.java.net/ns/report_1_0"
+	xmlns="http://pineapple.dev.java.net/ns/report_1_0"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xs:annotation>
+		<xs:documentation>XML Schema for transport of reports.
+		</xs:documentation>
+	</xs:annotation>
+
+	<xs:element name="reports">
+		<xs:annotation>
+			<xs:documentation>Container for reports.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="report" type="reportType" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="reportType">
+		<xs:annotation>
+			<xs:documentation>Pineapple report info.
+			</xs:documentation>
+		</xs:annotation>	
+		<xs:attribute name="id" type="xs:string" />		
+		<xs:attribute name="module" type="xs:string" />
+		<xs:attribute name="model" type="xs:string" />				
+		<xs:attribute name="operation" type="xs:string" />
+		<xs:attribute name="result" type="xs:string" />		
+		<xs:attribute name="start" type="xs:string" />				
+		<xs:attribute name="duration" type="xs:long" />				
+		<xs:attribute name="directory" type="xs:string" />
+		<xs:attribute name="isScheduled" type="xs:boolean" />		
+	</xs:complexType>
+
+</xs:schema>

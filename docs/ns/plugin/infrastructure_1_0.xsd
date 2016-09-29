@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   xmlns="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" 
+		   targetNamespace="http://pineapple.dev.java.net/ns/plugin/infrastructure_1_0" 
+		   elementFormDefault="qualified" 
+		   attributeFormDefault="unqualified">
+	<xs:element name="infrastructure">
+		<xs:annotation>
+			<xs:documentation>Set of infrastructure test cases.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="http-configuration" type="httpConfigurationType" minOccurs="0" maxOccurs="unbounded"/>										
+				<xs:element name="tcp-connection-test" type="tcpConnectionType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="dns-resolution-test" type="dnsResolutionType" minOccurs="0" maxOccurs="unbounded"/>												
+				<xs:element name="dns-forward-resolution-test" type="dnsResolutionType" minOccurs="0" maxOccurs="unbounded"/>				
+				<xs:element name="dns-reverse-resolution-test" type="dnsResolutionType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="http-test" type="httpTestType" minOccurs="0" maxOccurs="unbounded"/>								
+				<xs:element name="session-stickyness-test" type="sessionStickynessType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="http-redirect-test" type="httpRedirectType" minOccurs="0" maxOccurs="unbounded"/>	
+				<xs:element name="http-statuscode-test" type="httpStatusCodeType" minOccurs="0" maxOccurs="unbounded"/>	
+				<xs:element name="http-header-test" type="httpHeaderType" minOccurs="0" maxOccurs="unbounded"/>							
+				<xs:element name="load-balancing-test" type="loadBalancingType" minOccurs="0" maxOccurs="unbounded"/>	
+				<xs:element name="ftp-server-active-test" type="ftpServerActiveType" minOccurs="0" maxOccurs="unbounded"/>							
+				<xs:element name="ftp-server-contains-directory-test" type="ftpServerContainsDirectoryType" minOccurs="0" maxOccurs="unbounded"/>				
+				<xs:element name="ftp-server-create-directory-test" type="ftpServerCreateDirectoryType" minOccurs="0" maxOccurs="unbounded"/>				
+				<xs:element name="access-unc-path-test" type="accessUncPathType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="dnsResolutionType">
+		<xs:annotation>
+			<xs:documentation>Test case which tests DNS resolution of IP address versus a host name.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="host" type="xs:string" use="required"/>
+		<xs:attribute name="ip" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="httpTestType">
+		<xs:annotation>
+			<xs:documentation>Test case which test the HTTP/HTTPS layer</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="urls" type="urlsType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="assertions" type="httpAssertionsType" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="description" type="xs:string" use="required"/>
+		<xs:attribute name="requests" type="xs:int" use="required"/>
+		<xs:attribute name="reset" type="xs:boolean" use="required"/>
+		<xs:attribute name="http-configuration-ref" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="httpAssertionsType">
+		<xs:annotation>
+			<xs:documentation>HTTP assertions container</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="assertion" type="httpAssertionType" minOccurs="0" maxOccurs="unbounded" />                           
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:complexType name="httpAssertionType">
+		<xs:annotation>
+			<xs:documentation>HTTP assertion which defines a single aspect of the HTTP host which should be asserted.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="value" type="httpAssertionValueType" minOccurs="1" maxOccurs="unbounded" />				
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>		
+		<xs:attribute name="xpath" type="xs:string" use="required"/>						
+		<xs:attribute name="intra-strategy" type="xs:string" use="required"/>				
+		<xs:attribute name="inter-strategy" type="xs:string" use="required"/>
+	</xs:complexType>	
+	<xs:complexType name="httpAssertionValueType">
+		<xs:annotation>
+			<xs:documentation>HTTP assertion value.</xs:documentation>
+		</xs:annotation>		
+		<xs:attribute name="v" type="xs:string" use="required"/>		
+	</xs:complexType>
+			
+	<xs:complexType name="sessionStickynessType">
+		<xs:annotation>
+			<xs:documentation>Test case which tests the stickyness of a HTTP/HTTPS session.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="urls" type="urlsType"/>
+			<xs:element name="assert" type="assertType"/>
+		</xs:sequence>
+		<xs:attribute name="description" type="xs:string" use="required"/>
+		<xs:attribute name="requests" type="xs:int" use="required"/>
+		<xs:attribute name="http-configuration-ref" type="xs:string" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="loadBalancingType">
+		<xs:annotation>
+			<xs:documentation>Test case which tests the load balancing of a HTTP/HTTPS session.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="urls" type="urlsType"/>
+			<xs:element name="assert" type="assertType" />
+		</xs:sequence>
+		<xs:attribute name="description" type="xs:string" use="required"/>
+		<xs:attribute name="requests" type="xs:int" use="required"/>
+		<xs:attribute name="http-configuration-ref" type="xs:string" use="optional"/>
+	</xs:complexType>
+		
+	<xs:complexType name="assertType">
+		<xs:annotation>
+			<xs:documentation>The values which are asserted after execution of a test case</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="properties" type="propertiesType" minOccurs="0" />                           
+			<xs:element name="servers" type="serversType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>	
+	
+	<xs:complexType name="propertiesType">
+		<xs:annotation>
+			<xs:documentation>Properties container.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:complexType name="propertyType">
+		<xs:annotation>
+			<xs:documentation>Name-Value property.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:string" use="required"/>		
+		<xs:attribute name="value" type="xs:string" use="required"/>		
+	</xs:complexType>
+		
+	<xs:complexType name="urlsType">
+		<xs:annotation>
+			<xs:documentation>URL container.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="url" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="serversType">
+		<xs:annotation>
+			<xs:documentation>Servers container.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="server" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:complexType name="httpConfigurationType">
+		<xs:annotation>
+			<xs:documentation>HTTP configuration definition.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>		
+			<xs:element name="proxy" type="proxyType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="tcp" type="tcpConfigurationType" minOccurs="0" maxOccurs="1" />			
+			<xs:element name="follow-redirects" type="httpFollowRedirectsType" minOccurs="0" maxOccurs="1" />												
+		</xs:sequence>		
+		<xs:attribute name="id" type="xs:ID" use="required"/>		
+		<xs:attribute name="description" type="xs:string" use="optional"/>		
+	</xs:complexType>
+	<xs:complexType name="proxyType">
+		<xs:annotation>
+			<xs:documentation>Proxy definition.</xs:documentation>
+		</xs:annotation>		
+		<xs:attribute name="host" type="xs:string" use="required"/>		
+		<xs:attribute name="port" type="xs:int" use="required"/>		
+	</xs:complexType>	
+	<xs:complexType name="httpFollowRedirectsType">
+		<xs:annotation>
+			<xs:documentation>HTTP redirects definition.</xs:documentation>
+		</xs:annotation>		
+		<xs:attribute name="value" type="xs:boolean" use="required"/>				
+	</xs:complexType>	
+	<xs:complexType name="tcpConfigurationType">
+		<xs:annotation>
+			<xs:documentation>TCP definition.</xs:documentation>
+		</xs:annotation>		
+		<xs:attribute name="socket-timeout" type="xs:int" use="required"/>				
+	</xs:complexType>	
+	
+	<xs:complexType name="httpRedirectType">
+		<xs:annotation>
+			<xs:documentation>Test case which tests HTTP redirects.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="url" type="xs:string" minOccurs="1" />		
+			<xs:element name="assert" type="httpRedirectAssertType" />
+		</xs:sequence>
+		<xs:attribute name="description" type="xs:string" use="required"/>
+		<xs:attribute name="http-configuration-ref" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="httpRedirectAssertType">
+		<xs:annotation>
+			<xs:documentation>The values which are asserted after execution of the http-redirects test case</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="url" type="xs:string" minOccurs="1" />		
+		</xs:sequence>		
+	</xs:complexType>	
+
+	<xs:complexType name="httpStatusCodeType">
+		<xs:annotation>
+			<xs:documentation>Test case which tests HTTP status code.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="description" type="xs:string" use="required"/>
+		<xs:attribute name="http-configuration-ref" type="xs:string" use="optional"/>
+		<xs:attribute name="url" type="xs:string" use="required"/>
+		<xs:attribute name="expected" type="xs:int" use="required"/>						
+	</xs:complexType>
+	
+	<xs:complexType name="httpHeaderType">
+		<xs:annotation>
+			<xs:documentation>Test case which tests HTTP headers.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="url" type="xs:string" minOccurs="1" />		
+			<xs:element name="assert" type="httpHeaderAssertType" />
+		</xs:sequence>
+		<xs:attribute name="description" type="xs:string" use="required"/>
+		<xs:attribute name="http-configuration-ref" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="httpHeaderAssertType">
+		<xs:annotation>
+			<xs:documentation>The values which are asserted after execution of the http-header test case</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="headers" type="headersType" minOccurs="0" />                           		
+			<xs:element name="nonexisting-headers" type="nonExistingHeadersType" minOccurs="0" />			
+		</xs:sequence>		
+	</xs:complexType>	
+
+	<xs:complexType name="headersType">
+		<xs:annotation>
+			<xs:documentation>Headers container.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="header" type="headerType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:complexType name="headerType">
+		<xs:annotation>
+			<xs:documentation>Name-Value header.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:string" use="required"/>		
+		<xs:attribute name="value" type="xs:string" use="required"/>		
+	</xs:complexType>	
+
+	<xs:complexType name="nonExistingHeadersType">
+		<xs:annotation>
+			<xs:documentation>non existing headers container.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="header" type="nonExistingHeaderType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:complexType name="nonExistingHeaderType">
+		<xs:annotation>
+			<xs:documentation>Name-Value non existing header.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:string" use="required"/>				
+	</xs:complexType>	
+
+	<xs:complexType name="ftpServerActiveType">
+		<xs:annotation>
+			<xs:documentation>Test case which tests whether a FTP server is active on designated host.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="host" type="xs:string" />		
+			<xs:element name="port" type="xs:int" />
+			<xs:element name="user" type="xs:string" />						
+			<xs:element name="password" type="xs:string" />			
+		</xs:sequence>
+		<xs:attribute name="description" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="ftpServerContainsDirectoryType">
+		<xs:annotation>
+			<xs:documentation>Test case which tests whether a FTP server contains a specified directory.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="host" type="xs:string" />		
+			<xs:element name="port" type="xs:int" />
+			<xs:element name="user" type="xs:string" />						
+			<xs:element name="password" type="xs:string" />
+			<xs:element name="directory" type="xs:string" />						
+		</xs:sequence>
+		<xs:attribute name="description" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="ftpServerCreateDirectoryType">
+		<xs:annotation>
+			<xs:documentation>Test case which tests whether a FTP server can create and delete a directory.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="host" type="xs:string" />		
+			<xs:element name="port" type="xs:int" />
+			<xs:element name="user" type="xs:string" />						
+			<xs:element name="password" type="xs:string" />						
+		</xs:sequence>
+		<xs:attribute name="description" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="accessUncPathType">
+		<xs:annotation>
+			<xs:documentation>Test case which tests whether a unprotected UNC path can be accessed.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="host" type="xs:string" />		
+			<xs:element name="path" type="xs:string" />
+		</xs:sequence>
+		<xs:attribute name="description" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="tcpConnectionType">
+		<xs:annotation>
+			<xs:documentation>Test case which tests whether a connection can created to ports on a TCP host.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>		
+			<xs:element name="port" type="portType" minOccurs="0" maxOccurs="unbounded" />			
+		</xs:sequence>
+		<xs:attribute name="host" type="xs:string" use="required"/>
+		<xs:attribute name="description" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="portType">
+		<xs:annotation>
+			<xs:documentation>TCP port.</xs:documentation>
+		</xs:annotation>		
+		<xs:attribute name="value" type="xs:int" use="required"/>		
+	</xs:complexType>	
+		
+</xs:schema>

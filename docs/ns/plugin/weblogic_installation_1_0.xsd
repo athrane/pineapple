@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   xmlns="http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0" 
+		   targetNamespace="http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0" 
+		   elementFormDefault="qualified" 
+		   attributeFormDefault="unqualified">
+	<xs:element name="weblogic">
+		<xs:annotation>
+			<xs:documentation>WebLogic installation specification</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>							
+				<xs:element name="release9" type="release9Type" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="release10" type="release10Type" minOccurs="0" maxOccurs="1"/>				
+				<xs:element name="release12" type="release12Type" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="release1212" type="release1212Type" minOccurs="0" maxOccurs="1"/>												
+			</xs:sequence>			
+		</xs:complexType>
+	</xs:element>
+				
+	<xs:complexType name="release9Type">
+		<xs:annotation>
+			<xs:documentation>WebLogic 9.x specification.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="installer" type="xs:string" use="required"/>
+		<xs:attribute name="uninstaller" type="xs:string" use="required"/>		
+		<xs:attribute name="target-directory" type="xs:string" use="required"/>
+	</xs:complexType>
+	
+	<xs:complexType name="release10Type">
+		<xs:annotation>
+			<xs:documentation>WebLogic 10.x specification.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="installer" type="xs:string" use="required"/>
+		<xs:attribute name="uninstaller" type="xs:string" use="required"/>
+		<xs:attribute name="target-directory" type="xs:string" use="required"/>
+		<xs:attribute name="local-jvm" type="xs:string" use="required"/>												
+	</xs:complexType>
+
+	<xs:complexType name="release12Type">
+		<xs:annotation>
+			<xs:documentation>WebLogic 12.1.1 specification.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="installer" type="xs:string" use="required"/>
+		<xs:attribute name="uninstaller" type="xs:string" use="required"/>
+		<xs:attribute name="target-directory" type="xs:string" use="required"/>
+		<xs:attribute name="local-jvm" type="xs:string" use="required"/>												
+	</xs:complexType>
+
+	<xs:complexType name="release1212Type">
+		<xs:annotation>
+			<xs:documentation>WebLogic 12.1.2 specification.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="installer" type="xs:string" use="required"/>
+		<xs:attribute name="uninstaller" type="xs:string" use="required"/>
+		<xs:attribute name="target-directory" type="xs:string" use="required"/>
+		<xs:attribute name="local-jvm" type="xs:string" use="required"/>
+	</xs:complexType>
+
+</xs:schema>

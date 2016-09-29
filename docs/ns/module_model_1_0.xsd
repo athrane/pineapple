@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://pineapple.dev.java.net/ns/module_model_1_0" xmlns="http://pineapple.dev.java.net/ns/module_model_1_0"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="models">
+		<xs:annotation>
+			<xs:documentation>Module model which can consist of a set of aggregated models.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="variables" type="variablesType" minOccurs="0" maxOccurs="1"/>			
+				<xs:element name="model" type="modelType" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="continue" type="xs:boolean" use="optional" default="true" />						
+		</xs:complexType>	
+	</xs:element>
+	<xs:complexType name="modelType">
+		<xs:annotation>
+			<xs:documentation>Aggregated model which contains data for operations.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="trigger" type="triggerType" minOccurs="0" maxOccurs="unbounded" />		
+			<xs:element name="content" type="contentType" />
+		</xs:sequence>
+		<xs:attribute name="target-resource" type="xs:ID" use="required"/>		
+		<xs:attribute name="target-operation" type="xs:string" use="optional" default="*"/>				
+		<xs:attribute name="substitute-variables" type="xs:boolean" use="optional" default="true" />	
+		<xs:attribute name="description" type="xs:string" use="optional" default="Description N/A" />	
+				
+	</xs:complexType>
+	<xs:complexType name="contentType">
+		<xs:annotation>
+			<xs:documentation>Model content holder.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="variablesType">
+		<xs:annotation>
+			<xs:documentation>Set of variable declarations in a model.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="variable" type="variableType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="variableType">
+		<xs:annotation>
+			<xs:documentation>Key-value variable definition.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="key" type="xs:ID" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>				
+	</xs:complexType>	
+	<xs:complexType name="triggerType">
+		<xs:annotation>
+			<xs:documentation>Trigger execution definition.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:string" use="optional"/>										
+		<xs:attribute name="on-target-operation" type="xs:string" use="optional"/>		
+		<xs:attribute name="on-result" type="xs:string" use="optional"/>		
+		<xs:attribute name="module" type="xs:string" use="required"/>
+		<xs:attribute name="environment" type="xs:string" use="required"/>				
+		<xs:attribute name="operation" type="xs:string" use="required"/>						
+	</xs:complexType>		
+</xs:schema>

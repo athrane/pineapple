@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   xmlns="http://pineapple.dev.java.net/ns/plugin/agent_1_0" 
+		   targetNamespace="http://pineapple.dev.java.net/ns/plugin/agent_1_0" 
+		   elementFormDefault="qualified" 
+		   attributeFormDefault="unqualified">
+
+	<xs:element name="agent" type="agentType" />
+
+	<xs:complexType name="agentType" >
+		<xs:annotation>
+			<xs:documentation>Remote Pineapple Agent.</xs:documentation>
+		</xs:annotation>	
+		<xs:sequence>
+			<xs:choice  minOccurs="0" maxOccurs="unbounded" >							
+				<xs:element name="execute-operation" type="executeOperationType" />
+				<xs:element name="distribute-and-execute-operation" type="distributeAndExecuteOperationType" />				
+				<xs:element name="distribute-module" type="distributeModuleType" />
+				<xs:element name="delete-module" type="deleteModuleType" />				
+				<xs:element name="refresh-environment-configuration" type="refreshEnvironmentConfigurationType" />												
+				<xs:element name="create-environment" type="createEnvironmentType" />
+				<xs:element name="schedule-operation" type="scheduleOperationType" />
+				<xs:element name="delete-scheduled-operation" type="deleteScheduledOperationType" />
+				<xs:element name="delete-all-scheduled-operations" type="deleteAllScheduledOperationsType" />				
+			 </xs:choice>
+		</xs:sequence>			
+	</xs:complexType>
+
+	<xs:complexType abstract="true" name="commandType">
+		<xs:annotation>
+			<xs:documentation>Abstract Pineapple Agent command</xs:documentation>
+		</xs:annotation>				
+	</xs:complexType>
+				
+	<xs:complexType name="executeOperationType">
+		<xs:annotation>
+			<xs:documentation>Execute operation at Pineapple agent.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="module" type="xs:string" use="required"/>
+				<xs:attribute name="operation" type="xs:string" use="required"/>
+				<xs:attribute name="environment" type="xs:string" use="required"/>
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+	<xs:complexType name="distributeAndExecuteOperationType">
+		<xs:annotation>
+			<xs:documentation>Distributes an module to an Pineapple agent, executes it and deletes it.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="module" type="xs:string" use="required"/>
+				<xs:attribute name="operation" type="xs:string" use="required"/>
+				<xs:attribute name="environment" type="xs:string" use="required"/>
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+	<xs:complexType name="distributeModuleType">
+		<xs:annotation>
+			<xs:documentation>Distribute module to Pineapple agent.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="module" type="xs:string" use="required"/>
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+	<xs:complexType name="deleteModuleType">
+		<xs:annotation>
+			<xs:documentation>Delete module from Pineapple agent.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="module" type="xs:string" use="required"/>
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+	<xs:complexType name="refreshEnvironmentConfigurationType">
+		<xs:annotation>
+			<xs:documentation>Refresh environment configuration.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType" /> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+	<xs:complexType name="createEnvironmentType">
+		<xs:annotation>
+			<xs:documentation>Create environment in resource and credential configurations.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="environment" type="xs:string" use="required"/>
+				<xs:attribute name="description" type="xs:string" use="optional"/>				
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+	<xs:complexType name="deleteEnvironmentType">
+		<xs:annotation>
+			<xs:documentation>Delete environment in resource and credential configurations.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="environment" type="xs:string" use="required"/>
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+	<xs:complexType name="scheduleOperationType">
+		<xs:annotation>
+			<xs:documentation>Create scheduled operation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="name" type="xs:string" use="required"/>							
+				<xs:attribute name="module" type="xs:string" use="required"/>
+				<xs:attribute name="operation" type="xs:string" use="required"/>
+				<xs:attribute name="environment" type="xs:string" use="required"/>
+				<xs:attribute name="description" type="xs:string" use="optional"/>				
+				<xs:attribute name="scheduling-expression" type="xs:string" use="required"/>				
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+	<xs:complexType name="deleteScheduledOperationType">
+		<xs:annotation>
+			<xs:documentation>Delete scheduled operation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="name" type="xs:string" use="required"/>							
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+	<xs:complexType name="deleteAllScheduledOperationsType">
+		<xs:annotation>
+			<xs:documentation>Delete all scheduled operations.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+			
+</xs:schema>

@@ -50,10 +50,10 @@
 		<developerConnection>scm:git:git@github.com:athrane/pineapple.git</developerConnection>
 	</scm>	
 	<issueManagement>
-		<system>JIRA</system>
-		<url>http://java.net/jira/browse/PINEAPPLE</url>
+		<system>GitHub Issues</system>	
+		<url>https://github.com/athrane/pineapple/issues</url>
 	</issueManagement>
-
+	
 	<properties>
 		<cglib.version>2.2.2</cglib.version>
 		<junit.version>4.11</junit.version>

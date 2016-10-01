@@ -18,5 +18,4 @@ The project website is located at: [https://athrane.github.io/pineapple/](https:
 Visit the project blog at: [http://pineapplesoftware.blogspot.com/](http://pineapplesoftware.blogspot.com/).
 
 ## Downloads
-
 [ ![Download](https://api.bintray.com/packages/pineapple/maven/com.alpha.pineapple/images/download.svg) ](https://bintray.com/pineapple/maven/com.alpha.pineapple/_latestVersion)

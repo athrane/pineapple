@@ -12,4 +12,7 @@ Pineapple can help you with:
 * Automated test of infrastructure:
 
 ## Website
-The project website is hosted at [https://athrane.github.io/pineapple/](https://athrane.github.io/pineapple/).
+The project website is located at: [https://athrane.github.io/pineapple/](https://athrane.github.io/pineapple/).
+
+## Blog
+Visti the project blog at: [http://pineapplesoftware.blogspot.com/](http://pineapplesoftware.blogspot.com/).

@@ -15,4 +15,4 @@ Pineapple can help you with:
 The project website is located at: [https://athrane.github.io/pineapple/](https://athrane.github.io/pineapple/).
 
 ## Blog
-Visti the project blog at: [http://pineapplesoftware.blogspot.com/](http://pineapplesoftware.blogspot.com/).
+Visit the project blog at: [http://pineapplesoftware.blogspot.com/](http://pineapplesoftware.blogspot.com/).

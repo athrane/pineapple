@@ -14,30 +14,15 @@ Building Pineapple
 
 	{{{./version-info.html}Pineapple Java requirements.}}
 								
-* Build from Subversion repository
+* Build from GitHub repository
 
-** Download and install a Subversion client.
-
-	[[1]] Download and install a Subversion client from <<{{{http://subversion.tigris.org/}tigris.org.}}>>
-	
-** Check out the Pineapple source code	
-	
-	[[1]] Use the Subversion client to check out the project from trunk using the command (with your username inserted): 
-	<<<svn checkout https://svn.java.net/svn/pineapple~svn pineapple --username username>>>
-
-	[]
-	
-	The remaining instructions can also be found in the file: <<</pineapple/README.txt>>>
-
-** Download and install Maven 3.x+
+** Download and install Maven
 
 	[[1]] Download Maven 3.x+ from http://maven.apache.org and install it.
-	
+
 	[[2]] Add <<<$M2_HOME/bin>>> to your <<<$PATH>>>.
 
 	[[3]] Create a <<<MAVEN_OPTS>>> environment variable and set its value to: <<<-Xms512M -Xmx512M>>>
-	
-	[]
 
 ** Add third party jars to local Maven repository 
 

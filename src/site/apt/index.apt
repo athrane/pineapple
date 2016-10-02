@@ -77,7 +77,7 @@ Overview
 	
 ** Visit the blogs for up to date information
 	 
-	The <<{{{http://pineapplesoftware.blogspot.com}Pineapple Tool Blog}}>> is continuously updated with information regarding
+	The <<{{{http://pineapplesoftware.blogspot.com}Pineapple Project Blog}}>> is continuously updated with information regarding
 	current development activities and examples. 
 
 	Visit the <<{{{http://exceptiontrail.blogspot.com}Pineapple Exception Trail Blog}}>> for a list of known issues 
@@ -89,26 +89,17 @@ Overview
 
 * Version Information
 
-** Version 1.8.0 (Current release)
+** Version 1.9.0 (Current release)
+
+	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=17708}Release Notes for version 1.9.0}}.>> 
+
+** Version 1.8.0 
 
 	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=17380}Release Notes for version 1.8.0}}.>> 
 
 ** Version 1.7.0 
 
 	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=17057}Release Notes for version 1.7.0}}.>> 
-
-** Version 1.6.0
-
-	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=16820}Release Notes for version 1.6.0}}.>> 
-
-** Version 1.5.0
-
-	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=16658}Release Notes for version 1.5.0}}.>> 
-	  
-** Version 1.4.0
-
-	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=16301}Release Notes for version 1.4.0}}.>> 
-
    
 * Development documentation
 

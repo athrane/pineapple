@@ -62,19 +62,18 @@
 		</menu>
 
 		<menu name="Additional Information" inherit="top">
-			<item name="The Pineapple Tool Blog" href="http://pineapplesoftware.blogspot.com" />
+			<item name="The Pineapple Project Blog" href="http://pineapplesoftware.blogspot.com" />
 			<item name="Pineapple Exception Trail Blog" href="http://exceptiontrail.blogspot.com" />			
 		</menu>
 
 		<menu name="Project Tools" inherit="top">
-			<item name="Downloads" href="http://java.net/projects/pineapple/downloads" />
-			<item name="Source Code" href="http://java.net/projects/pineapple/sources/svn/show" />
-			<item name="Issue Tracker" href="http://java.net/jira/browse/PINEAPPLE" />
-			<item name="Mailing Lists" href="http://java.net/projects/pineapple/lists" />
+			<item name="Downloads" href="https://bintray.com/pineapple/maven/com.alpha.pineapple" />
+			<item name="Source Code" href="https://github.com/athrane/pineapple" />
+			<item name="Issue Tracker" href="https://github.com/athrane/pineapple/issues" />
 		</menu>
 
 		<menu ref="reports" inherit="bottom" />
 		
-		 <footer>Copyright (C) 2007-2013 Allan Thrane Andersen. All Rights Reserved.</footer>
+		 <footer>Copyright (C) 2007-2016 Allan Thrane Andersen. All Rights Reserved.</footer>
 	</body>
 </project>

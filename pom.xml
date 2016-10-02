@@ -754,7 +754,7 @@
 	<distributionManagement>
 		<site>
 			<id>local</id>
-			<url>file:./www/</url>
+			<url>file:./docs/</url>
 		</site>
 		<repository>
 			<id>bintray-pineapple-maven</id>

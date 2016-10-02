@@ -12,10 +12,12 @@ Pineapple can help you with
 * Automated test of infrastructure
 
 ## Website
-The project website is located at: [https://athrane.github.io/pineapple/](https://athrane.github.io/pineapple/).
+[Visit the project website for reference documentation](https://athrane.github.io/pineapple/).
 
 ## Blog
-Visit the project blog at: [http://pineapplesoftware.blogspot.com/](http://pineapplesoftware.blogspot.com/).
+[Visit the project blog for news updates](http://pineapplesoftware.blogspot.com/).
 
-## Downloads
+## Download
+[Download Pineapple from Bintray](https://bintray.com/pineapple/maven/com.alpha.pineapple/).
+
 [ ![Download](https://api.bintray.com/packages/pineapple/maven/com.alpha.pineapple/images/download.svg) ](https://bintray.com/pineapple/maven/com.alpha.pineapple/_latestVersion)

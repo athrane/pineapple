@@ -152,7 +152,7 @@ and click Apply.
 8) Configure run configuration in Eclipse
 
 8.1) Open Eclipse -> Run -> Run Configurations -> Maven Build -> 
-Name: Maven jetty:run
+Name: Maven jetty run
 Base-directory: $workspace_loc:/pineapple-web-application-war}
 User settings: C:\tools\apache-maven-3.3.3\conf\settings.xml
 Offline: true

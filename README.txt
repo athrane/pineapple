@@ -149,16 +149,23 @@ Select all sub projects and click Finish.
 -> Import -> C:\Users\myuser\git\pineapple\src\checkstyle\maven-eclipse-codestyle.xml
 and click Apply.
 
+8) Configure run configuration in Eclipse
+
+8.1) Open Eclipse -> Run -> Run Configurations -> Maven Build -> 
+Name: Maven jetty:run
+Base-directory: $workspace_loc:/pineapple-web-application-war}
+User settings: C:\tools\apache-maven-3.3.3\conf\settings.xml
+Offline: true
 
 ------------------------------------------------------------
 NOTES ON BUILDING AND RUNNING PINEAPPLE
 ------------------------------------------------------------
 
-8) Build pineapple
+9) Build pineapple
 -------------------
 
-8.1) From command-prompt , cd into the pineapple directory and run:
+9.1) From command-prompt , cd into the pineapple directory and run:
 
 mvn -cpu clean install
 
-9) Enjoy
+10) Enjoy

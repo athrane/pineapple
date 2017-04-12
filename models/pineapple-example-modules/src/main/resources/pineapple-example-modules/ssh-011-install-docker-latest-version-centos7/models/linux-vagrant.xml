@@ -2,14 +2,11 @@
 <mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"     
     xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
     <mmd:variables>
-      <mmd:variable key="tmp-dir" value="/tmp" />        	    
-      <mmd:variable key="docker-source-config" value="docker.service" />    
-      <mmd:variable key="docker-target-config" value="/usr/lib/systemd/system/docker.service" />    
-      <mmd:variable key="docker-source-config.d" value="docker.conf" />    
-      <mmd:variable key="docker-target-config-dir" value="/etc/systemd/system/docker.service.d" />          
-      <mmd:variable key="docker-target-config.d" value="docker.conf" />                
-      <mmd:variable key="docker-source-yum-config" value="docker.repo" />    
-      <mmd:variable key="docker-target-yum-config" value="/etc/yum.repos.d/docker.repo" />    
+      <mmd:variable key="tmp-dir" value="/tmp" />        	   
+      <mmd:variable key="docker-daemon-config" value="daemon.json" />    
+      <mmd:variable key="docker-daemon-config-dir" value="/etc/docker" />                      
+      <mmd:variable key="docker-repo" value="https://download.docker.com/linux/centos/docker-ce.repo" />    
+      <mmd:variable key="docker-package" value="docker-ce" />          
       <mmd:variable key="create-user-script" value="create-docker-user.sh" />          
     </mmd:variables>
 	
@@ -25,7 +22,8 @@
    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Update YUM (can take some time)" >
       <mmd:content>
         <shp:ssh>
-        <shp:execute command="sudo yum --assumeyes update" />
+          <shp:execute command="sudo yum --assumeyes update" />
+          <shp:execute command="sudo yum install -y yum-utils" />        
         </shp:ssh>    		
       </mmd:content>
     </mmd:model>
@@ -33,8 +31,8 @@
    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Add Docker repository to YUM" >
       <mmd:content>
         <shp:ssh>
-          <shp:copy-to source="modulepath:bin/${docker-source-yum-config}" destination="${tmp-dir}/${docker-source-yum-config}" chmod="775" />
-          <shp:execute command="sudo mv ${tmp-dir}/${docker-source-yum-config} ${docker-target-yum-config}" />    							                    
+          <shp:execute command="sudo yum-config-manager --add-repo ${docker-repo}" />    
+          <shp:execute command="sudo yum makecache fast" />                        
         </shp:ssh>    		
       </mmd:content>
     </mmd:model>
@@ -42,13 +40,11 @@
     <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Install Docker" >
       <mmd:content>
         <shp:ssh>        
-          <shp:execute command="sudo yum --assumeyes install docker-engine" /> 
-          <shp:copy-to source="modulepath:bin/${docker-source-config}" destination="${tmp-dir}/${docker-source-config}" chmod="775" />
-          <shp:execute command="sudo mv ${tmp-dir}/${docker-source-config} ${docker-target-config}" />    							          
-          <shp:execute command="sudo mkdir ${docker-target-config-dir}" />        						                    
-          <shp:copy-to source="modulepath:bin/${docker-source-config.d}" destination="${tmp-dir}/${docker-source-config.d}" chmod="775" />
-          <shp:execute command="sudo mv ${tmp-dir}/${docker-source-config.d} ${docker-target-config-dir}/${docker-target-config.d}" />    							          
-          <shp:execute command="sudo systemctl enable docker" />           
+          <shp:execute command="sudo yum --assumeyes install ${docker-package}" />     
+          <shp:copy-to source="modulepath:bin/${docker-daemon-config}" destination="${tmp-dir}/${docker-daemon-config}" chmod="775" />
+          <shp:execute command="sudo mkdir ${docker-daemon-config-dir}" />        						                              
+          <shp:execute command="sudo mv ${tmp-dir}/${docker-daemon-config} ${docker-daemon-config-dir}/${docker-daemon-config}" />    							                          
+          <shp:execute command="sudo systemctl enable  docker" /> 
           <shp:execute command="sudo systemctl start docker" /> 
         </shp:ssh>			
       </mmd:content>
@@ -67,9 +63,10 @@
     <mmd:model target-resource="ssh-node1" target-operation="undeploy-configuration" description="Uninstall Docker" >
       <mmd:content>
         <shp:ssh>        
-          <shp:execute command="sudo systemctl stop docker.service" /> 
-          <shp:execute command="sudo yum -y remove docker-engine.x86_64 " /> 
-          <shp:execute command="sudo rm -rf /var/lib/docker" /> 
+          <shp:execute command="sudo systemctl stop docker" /> 
+          <shp:execute command="sudo yum -y remove ${docker-package}" /> 
+          <shp:execute command="sudo rm -rf /var/lib/docker" />           
+          <shp:execute command="sudo rm -rf ${docker-daemon-config-dir}" />           
         </shp:ssh>			
       </mmd:content>
     </mmd:model>

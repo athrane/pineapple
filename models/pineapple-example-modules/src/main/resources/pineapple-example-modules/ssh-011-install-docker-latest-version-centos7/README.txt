@@ -8,7 +8,7 @@ https://docs.docker.com/engine/installation/centos/
 1) Create and add Docker user to sudoers.
 1) Update YUM (can take some time).
 2) Add Docker repository to YUM configuration.
-3) Installs the Docker as a OS service using systemd (https://docs.docker.com/engine/articles/systemd/).
+3) Installs the Docker as a OS service using systemctrl.
 4) Starts Docker as a OS service. 
 
 Docker is available at: http://192.168.34.10:8082
@@ -36,9 +36,7 @@ Module content
 -----------------------
 * "models/linux-vagrant.xml" - model file for the "linux-vagrant" environment. 
 * "vagrant/Vagrantfile" - Vagrant file for creation of CentOS 7.0 VM.
-* "bin/docker.repo" - Docker YUM repository.
-* "bin/docker.service" - Docker systemd configuration file.
-* "bin/docker.conf" - Docker systemd drop-in configuration file.
+* "bin/daemon.json" - Docker daemon configuration file.
 * "bin/create-docker-user.sh" - shell script to create docker user and add it to sudoers.
 
 Environments

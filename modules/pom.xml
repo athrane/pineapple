@@ -35,9 +35,6 @@
 		<module>pineapple-core</module>	
 		
 		<!-- plugins -->
-		<!-- removed for RELEASE 1.1
-		<module>pineapple-weblogic-deployment-plugin</module>		
-		-->
 		<module>pineapple-weblogic-jmx-plugin</module>		
 		<module>pineapple-infrastructure-test-plugin</module>		
 

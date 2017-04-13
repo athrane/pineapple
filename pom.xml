@@ -102,11 +102,6 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>pineapple-weblogic-deployment-plugin</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
 				<artifactId>pineapple-infrastructure-test-plugin</artifactId>
 				<version>${project.version}</version>
 			</dependency>

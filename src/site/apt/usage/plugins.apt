@@ -28,8 +28,6 @@ Pineapple plugins overview
 	
 	* WebLogic installation plugin
 	
-	* WebLogic deployment plugin
-	
 	* WebLogic scripting tool (WLST) plugin	
 	
 	* WebLogic JMX plugin	
@@ -77,12 +75,6 @@ Pineapple plugins overview
 	Plugin for installation of the WebLogic server.
 	 
 	{{{../pineapple-plugins/pineapple-weblogic-installation-plugin/index.html}Plugin documentation.}}			
-
-* WebLogic deployment plugin
-
-	Plugin for deployment of application to WebLogic Servers.
-
-	{{{../pineapple-modules/pineapple-weblogic-deployment-plugin/index.html}Plugin documentation.}}				 
 
 * WebLogic scripting tool (WLST) plugin
 

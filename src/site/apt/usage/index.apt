@@ -72,14 +72,10 @@ Usage
 	
 	* {{{../pineapple-modules/pineapple-infrastructure-test-plugin/index.html}Infrastructure test plugin.}}		
 
-	* {{{../pineapple-plugins/pineapple-jrockit-installation-plugin/index.html}JRockit installation plugin.}}
-
 	* {{{../pineapple-plugins/pineapple-fusion-middleware-installation-plugin/index.html}Fusion Middleware installation plugin.}}
 
 	* {{{../pineapple-plugins/pineapple-weblogic-installation-plugin/index.html}WebLogic installation plugin.}}
 		
-	* {{{../pineapple-modules/pineapple-weblogic-deployment-plugin/index.html}Weblogic deployment plugin.}}	
-
 	* {{{../pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html}Weblogic scripting tool (WLST) plugin.}}
 
 	* {{{../pineapple-modules/pineapple-weblogic-jmx-plugin/index.html}Weblogic JMX plugin.}}	

@@ -53,8 +53,6 @@ pineapple-project
      |     +--- pineapple-jsr88-commands
      |                
      +--- models
-     |     +--- pineapple-weblogic-920-schemas          
-     |     +--- pineapple-weblogic-103-schemas          
      |     +--- pineapple-weblogic-1212-schemas
      |     +--- pineapple-example-modules
      |                	 
@@ -265,16 +263,6 @@ pineapple-project
 
 	
 * Model projects				
-
-** pineapple-weblogic-103-schemas
-
-	Location: pineapple-project/models/pineapple-weblogic-103-schemas
-
-	JAR-type project which produces a JAR file which contains the WebLogic 10.3
-	schemas and a XMLBeans based OXM mapping of the schemas.
-	
-	A link to the project documentation for the project can be found 
-	{{{../pineapple-models/pineapple-weblogic-103-schemas/index.html}here}}.		
 
 ** pineapple-weblogic-1212-schemas
 

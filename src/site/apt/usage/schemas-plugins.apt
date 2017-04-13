@@ -60,14 +60,6 @@ Schema locations for plugins
 	{{{../pineapple-modules/pineapple-wbem-plugin/index.html}pineapple-wbem-plugin project.}}	
 	The jar file is named <<<pineapple-wbem-plugin-$\{version\}.jar>>>.
 
-* JRockit installation plugin
-
-	The schema can be found at <<{{{../ns/plugin/jrockit_installation_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/jrockit_installation_1_0.xsd}}>>
-
-	The schema can be found in the root of the jar created by the
-	{{{../pineapple-plugins/pineapple-jrockit-installation-plugin/index.html}pineapple-jrockit-installation-plugin project.}}	
-	The jar file is named <<<pineapple-jrockit-installation-plugin-$\{version\}.jar>>>.
-
 * WebLogic installation plugin
 
 	The schema can be found at <<{{{../ns/plugin/weblogic_installation_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0.xsd}}>>

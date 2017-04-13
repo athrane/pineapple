@@ -73,20 +73,10 @@
 		<groupId>${project.groupId}</groupId>
 		<artifactId>pineapple-infrastructure-test-plugin</artifactId>
 	</dependency>			
-	<!-- removed for RELEASE 1.1
-	<dependency>
-		<groupId>${project.groupId}</groupId>
-		<artifactId>pineapple-weblogic-deployment-plugin</artifactId>
-	</dependency>
-	-->
 	<dependency>
 		<groupId>${project.groupId}</groupId>
 		<artifactId>pineapple-filesystem-plugin</artifactId>
 	</dependency>																																										
-	<dependency>
-		<groupId>${project.groupId}</groupId>
-		<artifactId>pineapple-jrockit-installation-plugin</artifactId>
-	</dependency>
 	<dependency>
 		<groupId>${project.groupId}</groupId>
 		<artifactId>pineapple-weblogic-installation-plugin</artifactId>

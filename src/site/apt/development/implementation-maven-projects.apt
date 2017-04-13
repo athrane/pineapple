@@ -65,7 +65,6 @@ pineapple-project
      |     +--- pineapple-docker-plugin     
      |     +--- pineapple-filesystem-plugin     
      |     +--- pineapple-fusion-middleware-installation-plugin     
-     |     +--- pineapple-jrockit-installation-plugin
      |     +--- pineapple-weblogic-installation-plugin     
      |     +--- pineapple-weblogic-scripting-tool-plugin     
      |                	 
@@ -267,16 +266,6 @@ pineapple-project
 	
 * Model projects				
 
-** pineapple-weblogic-920-schemas
-
-	Location: pineapple-project/models/pineapple-weblogic-920-schemas
-
-	JAR-type project which produces a JAR file which contains the WebLogic 9.2
-	schemas and a XMLBeans based OXM mapping of the schemas.
-	
-	A link to the project documentation for the project can be found 
-	{{{../pineapple-models/pineapple-weblogic-920-schemas/index.html}here}}.		
-
 ** pineapple-weblogic-103-schemas
 
 	Location: pineapple-project/models/pineapple-weblogic-103-schemas
@@ -363,16 +352,6 @@ pineapple-project
 	
 	A link to the project documentation for the plugin can be found 
 	{{{../pineapple-plugins/pineapple-fusion-middleware-installation-plugin/index.html}here}}.		
-
-** pineapple-jrockit-installation-plugin
-
-	Location: pineapple-project/plugins/pineapple-jrockit-installation-plugin
-
-	JAR-type project which produces a JAR file which implements a plugin for 
-	to installation and uninstallation of the JRockit JVM.
-	
-	A link to the project documentation for the plugin can be found 
-	{{{../pineapple-plugins/pineapple-jrockit-installation-plugin/index.html}here}}.		
 
 ** pineapple-weblogic-installation-plugin
 

@@ -31,7 +31,6 @@
 	<name>Pineapple plugin projects</name>
 	<modules>
 		<module>pineapple-filesystem-plugin</module>										
-		<module>pineapple-jrockit-installation-plugin</module>										
 		<module>pineapple-weblogic-installation-plugin</module>												
 		<module>pineapple-weblogic-scripting-tool-plugin</module>														
 		<module>pineapple-fusion-middleware-installation-plugin</module>

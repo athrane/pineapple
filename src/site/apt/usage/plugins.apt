@@ -26,8 +26,6 @@ Pineapple plugins overview
 
 	* Infrastructure test plugin
 	
-	* JRockit installation plugin
-	
 	* WebLogic installation plugin
 	
 	* WebLogic deployment plugin
@@ -67,12 +65,6 @@ Pineapple plugins overview
 	Plugin for testing basic network infrastructure.
 	 
 	{{{../pineapple-modules/pineapple-infrastructure-test-plugin/index.html}Plugin documentation.}}			
-
-* JRockit installation plugin
-
-	Plugin for installation of the JRockit JVM.
-	 
-	{{{../pineapple-plugins/pineapple-jrockit-installation-plugin/index.html}Plugin documentation.}}			
 
 * Fusion Middleware installation plugin
 

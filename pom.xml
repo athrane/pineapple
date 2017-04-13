@@ -152,11 +152,6 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>pineapple-jsr88-commands</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
 				<artifactId>pineapple-process-execution-support</artifactId>
 				<version>${project.version}</version>
 			</dependency>

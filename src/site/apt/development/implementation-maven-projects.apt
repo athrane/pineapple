@@ -49,7 +49,6 @@ pineapple-project
      |     +--- pineapple-core
      |     +--- pineapple-weblogic-jmx-plugin
      |     +--- pineapple-infrastructure-test-plugin
-     |     +--- pineapple-jsr88-commands
      |                
      +--- models
      |     +--- pineapple-weblogic-1212-schemas
@@ -239,17 +238,6 @@ pineapple-project
 	
 	A link to the project documentation for the plugin can be found 
 	{{{../pineapple-modules/pineapple-infrastructure-test-plugin/index.html}here}}.		
-
-** pineapple-jsr88-commands
-
-	Location: pineapple-project/modules/pineapple-jsr88-commands
-
-	JAR-type project which produces a JAR file which contains a set of Chain 
-	commands with J2EE deployment functionality.
-	
-	A link to the project documentation for the plugin can be found 
-	{{{../pineapple-modules/pineapple-jsr88-commands/index.html}here}}.		
-
 	
 * Model projects				
 

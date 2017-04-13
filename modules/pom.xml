@@ -40,6 +40,5 @@
 
 		<!-- support -->		
 		<module>pineapple-commands-api</module>								
-		<module>pineapple-jsr88-commands</module>							
 	</modules>
 </project>

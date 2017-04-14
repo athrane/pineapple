@@ -301,7 +301,7 @@ public class DefaultOperation implements Operation
 			String cmdExpectedValue = command.getExpectedValue();
 			
 			// create result
-        	Object[] args = { cmdAsString };    	        	
+        	Object[] args = { cmdExpectedValue };    	        	
         	String scpDescription = messageProvider.getMessage("do.execute_assert_equals_info", args );
 			commandResult = result.addChild(scpDescription);
 									
@@ -382,7 +382,7 @@ public class DefaultOperation implements Operation
 			String cmdExpectedValue = command.getExpectedValue();
 			
 			// create result
-        	Object[] args = { cmdAsString };    	        	
+        	Object[] args = { cmdExpectedValue };    	        	
         	String scpDescription = messageProvider.getMessage("do.execute_assert_contains_info", args );
 			commandResult = result.addChild(scpDescription);
 									

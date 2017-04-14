@@ -355,7 +355,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 
 	// create windows-default environment
 	environment = createEnvironment(environments, "windows-default", DEFAULT_WIN_DESC);
-	addJRockitResource(environment, "jrockit-r28", "C:\\Program Files\\Java\\jrockit-jdk1.6.0_31-R28.2.3-4.1.0");
 	addWebLogicResource(environment, "weblogic-r103");
 	addWebLogicResource(environment, "weblogic-r121");
 	addFusionMiddlewareResource(environment, "fusion-middleware");
@@ -365,7 +364,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 
 	// create linux-default environment
 	environment = createEnvironment(environments, "linux-default", DEFAULT_LINUX_DESC);
-	addJRockitResource(environment, "jrockit-r28", "/weblogic/jrockit-jdk1.6.0_31-R28.2.3-4.1.0");
 	addWebLogicResource(environment, "weblogic-r103");
 	addWebLogicResource(environment, "weblogic-r121");
 	addWebLogicWlstResource(environment, "weblogic-wlst-r103", "/home/weblogic/Oracle/Middleware/wlserver_10.3");
@@ -374,7 +372,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 
 	// create windows-enterprise environment
 	environment = createEnvironment(environments, "windows-enterprise", ENTERPRISE_WIN_DESC);
-	addJRockitResource(environment, "jrockit-r28", "C:\\app\\oracle\\product\\fmw\\jrockit\\R28.2.3-1.6.0_31");
 	addWebLogicResource(environment, "weblogic-r103");
 	addWebLogicResource(environment, "weblogic-r121");
 	addFusionMiddlewareResource(environment, "fusion-middleware");
@@ -383,7 +380,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 
 	// create linux-enterprise environment
 	environment = createEnvironment(environments, "linux-enterprise", ENTERPRISE_LINUX_DESC);
-	addJRockitResource(environment, "jrockit-r28", "/u01/app/oracle/product/fmw/jrockit-jdk1.6.0_31-R28.2.3-4.1.0");
 	addWebLogicResource(environment, "weblogic-r103");
 	addWebLogicResource(environment, "weblogic-r121");
 	addWebLogicWlstResource(environment, "weblogic-wlst-r103", "/u01/app/oracle/product/fmw/wlserver_10.3");
@@ -391,8 +387,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 
 	// create linux-exalogic environment
 	environment = createEnvironment(environments, "linux-exalogic", EXALOGIC_DESC);
-	addJRockitResource(environment, "jrockit-r28",
-		"/u01/app/FMW_Product1/Oracle/Middleware/jrockit-jdk1.6.0_31-R28.2.3-4.1.0");
 	addWebLogicResource(environment, "weblogic-r103");
 	addWebLogicWlstResource(environment, "weblogic-wlst-r103",
 		"/u01/app/FMW_Product1/Oracle/Middleware/wlserver_10.3");
@@ -494,26 +488,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
 	resource.setId(id);
 	resource.setPluginId("com.alpha.pineapple.plugin.weblogic.scriptingtool");
-	environment.getResources().getResource().add(resource);
-	HashMap<String, String> properties = new HashMap<String, String>();
-	properties.put("home-directory", path);
-	addProperties(properties, resource);
-    }
-
-    /**
-     * Create resource for JRockit installation plugin.
-     * 
-     * @param environment
-     *            Environment where resource is added to.
-     * @param id
-     *            Resource ID.
-     * @param path
-     *            WebLogic Home directory.
-     */
-    void addJRockitResource(Environment environment, String id, String path) {
-	com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
-	resource.setId(id);
-	resource.setPluginId("com.alpha.pineapple.plugin.jrockit.installation");
 	environment.getResources().getResource().add(resource);
 	HashMap<String, String> properties = new HashMap<String, String>();
 	properties.put("home-directory", path);

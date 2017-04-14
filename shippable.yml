@@ -1,0 +1,10 @@
+
+language: java	
+
+jdk:
+  - openjdk8
+  - oraclejdk8
+  
+build:
+  ci:
+   - shippable_retry mvn install

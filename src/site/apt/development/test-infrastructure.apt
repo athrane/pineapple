@@ -194,16 +194,21 @@ Pineapple Continuous Integration
 
 *** Docker installation
 
-	The installation first installs the EPEL repository. 
-	Docker is available for RHEL (and CentOS) from the Extra Packages for Enterprise Linux (EPEL). 
-	The EPEL package is installed. It contains the EPEL PGP key and the YUM configuration.
-	The device-mapper libs to be updated to >= 1.02.90-1 on Centos/RHEL 6.5 as required by Docker version 1.4.0+.
+	The installation consists of these steps:
+	
+		* <<Create Docker user>>. A custom docker user is created and added to the sudoers file.
+	
+		* <<Update YUM>>. Update YUM packages.
 		
-	Docker is installed and updated. 
-	To install the latest version of Docker, the package is installed from the EPEL testing repository. 
-	YUM is used to install Docker as an OS service. 
-	The Docker configuration file is installed in <<</etc/sysconfig/docker>>>. 
-	Docker is started as an OS service.
+		* <<Add Docker YUM repository>>. Configure the Docker YUM repository with YUM.
+		
+		* <<Install Docker>>. Docker is installed as a systemctrl service.
+		The Docker daemon is configured using the configuration file <<<etc/docker/daemon.json>>>
+		 which defines the API to listen on <<</var/run/docker.sock/>>> and <<<[::]:8082>>>.           
+
+		* The installation is validated.
+	
+	[]
 
 	Docker is configured to:
 	
@@ -212,6 +217,25 @@ Pineapple Continuous Integration
 		*  Listen on 0.0.0.0:8082 to support remote usage of the  REST API.
 		
 		[]
+
+	The Docker daemon configuration file <<<daemon.json>>> is installed in <<</etc/docker/daemon.json>>>. 
+	The file configures the daemon to:
+	
+		*  Listen for local connections by the <<<root>>> user.
+
+		*  Listen on 0.0.0.0:8082 to support remote usage of the REST API.
+		
+		[]
+		
+		
+	The file contains:
+	
++---
+{
+	"hosts": [ "unix:///var/run/docker.sock",
+	"tcp://0.0.0.0:8082" ]	
+}
++---	
 		
 * Build server Docker images 		
 				

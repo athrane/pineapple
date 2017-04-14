@@ -43,13 +43,9 @@ Module content
 -----------------------
 * "models/linux-pineapple-ci.xml" - model file for the "linux-vagrant" environment. 
 * "vagrant/Vagrantfile" - Vagrant file for creation of the CI server VM.
-* "bin/docker.repo" - Docker YUM repository.
-* "bin/docker.service" - Docker systemd configuration file.
-* "bin/docker.conf" - Docker systemd drop-in configuration file.
-* "bin/create-docker-user.sh" - shell script to create docker user and add it to sudoers.
 * "bin/artifactory.config.xml" - Artifactory main configuration file.
 * "bin/create-docker-user.sh" - shell script for setting the Docker user to run the Docker host under.
-* "bin/docker.config" - Docker configuration file.
+* "bin/daemon.json" - Docker daemon configuration file.
 * "weblogic-full-client-12.1.2.pom" - Maven POM for the WebLogic client JAR.
 * "dockersrc/ci/config.xml" - Jenkins main configuration file.
 * "dockersrc/ci/Dockerfile" - Dockerfile for building the pineapple/ci image.

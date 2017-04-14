@@ -21,10 +21,7 @@
 				<label value ="Request URI:" style="font-weight:bold" />																
 				<label multiline="true"	value="${requestScope['javax.servlet.forward.request_uri']}" sclass="word-wrap" width="100%" />								
 				<separator />		    	
-				<label value ="Did you mean to visit one of these URLS?" />				
-				<separator />				
-				<toolbarbutton label="Login" href="/mvc/login"  style="text-decoration: underline" />         
-				<toolbarbutton label="Workspace" href="/mvc/workspace"  style="text-decoration: underline" />				         	    					         	    	
+				<label value ="Please look in the log file and generated report." />				
 	    	</vbox>
 	    </center>
 	    

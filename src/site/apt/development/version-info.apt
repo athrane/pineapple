@@ -36,9 +36,3 @@ Pineapple Version Information
 		
 	[]
 	
-* Pineapple standalone web client project
-	
-	* The <<<PINEAPPLE_HOME>>> value in: <<<src/main/release-dir/pineapple-service.sh>>>.
-		
-	[]
-	

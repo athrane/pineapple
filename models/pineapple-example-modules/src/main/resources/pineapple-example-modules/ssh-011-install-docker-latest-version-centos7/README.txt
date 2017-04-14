@@ -28,6 +28,7 @@ Intended operations
 -----------------------
 * "deploy-configuration"  - will install Docker.
 * "undeploy-configuration"  - will uninstall Docker.
+* "test"  - Validates the installation, i.e. whehter the Docker engine is running and listens to the configured ports.
 
 The model is targeted to the "deploy-configuration" and the "undeploy-configuration" operations. 
 All other operations is NOP.

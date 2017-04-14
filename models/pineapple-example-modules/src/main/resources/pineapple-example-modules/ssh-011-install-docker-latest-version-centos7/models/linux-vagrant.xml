@@ -50,7 +50,7 @@
       </mmd:content>
     </mmd:model>
 
-    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Validate Docker installation" >
+    <mmd:model target-resource="ssh-node1" target-operation="{deploy-configuration, test}" description="Validate Docker installation" >
       <mmd:content>
         <shp:ssh>        
           <shp:assert-contains command="sudo systemctl status docker" expected-value="Daemon has completed initialization"/>                     

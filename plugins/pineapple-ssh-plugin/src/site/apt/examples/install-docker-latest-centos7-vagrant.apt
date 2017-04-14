@@ -306,7 +306,7 @@ ssh-011-install-docker-latest-version-centos7
       </mmd:content>
     </mmd:model>
 
-    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Validate Docker installation" >
+    <mmd:model target-resource="ssh-node1" target-operation="{deploy-configuration, test}" description="Validate Docker installation" >
       <mmd:content>
         <shp:ssh>        
           <shp:assert-contains command="sudo systemctl status docker" expected-value="Daemon has completed initialization"/>                     
@@ -328,6 +328,7 @@ ssh-011-install-docker-latest-version-centos7
     </mmd:model>
 
 </mmd:models>
+
 +---	
 
 *** The configuration details
@@ -357,14 +358,15 @@ ssh-011-install-docker-latest-version-centos7
 		The Docker daemon is configured using the configuration file <<<etc/docker/daemon.json>>>
 		 which defines the API to listen on <<</var/run/docker.sock/>>> and <<<[::]:8082>>>.           
 
-		* The installation is validated.
+		* <<Validate the installation>>. It is tested whether the docker engine is running and listens to
+		the configured ports.
 
 		[]
 
 	The <<<target-operation>>> attribute is used to restrict that the sub-models are only executed when Pineapple
 	is invoked with the <deploy-configuration> operation. This allows for the definition of a set
 	of sub-models which only responds to the <undeploy-configuration> which implements the inverse semantics,
-	e.g. uninstallation of Docker.   
+	e.g. uninstallation of Docker. This feature is also used to support validation of the installation.
 
 	Finally, the execute commands in the models is executed using sudo. The requirement for sudo depends on 
 	the privileges of the user used by the SSH plugin to connect to a given host. The users was defined in 

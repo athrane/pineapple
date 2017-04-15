@@ -38,12 +38,12 @@
 			<xs:element name="repoDigests" type="stringList" minOccurs="0" maxOccurs="1" />			
 		</xs:sequence>
 		<xs:attribute name="containers" type="xs:integer" use="optional"/>		
-		<xs:attribute name="created" type="xs:string" use="optional"/>				
+		<xs:attribute name="created" type="xs:integer" use="optional"/>				
 		<xs:attribute name="id" type="xs:string" use="optional"/>		
 		<xs:attribute name="parentId" type="xs:string" use="optional"/>				
-		<xs:attribute name="size" type="xs:string" use="optional"/>		
+		<xs:attribute name="size" type="xs:integer" use="optional"/>		
 		<xs:attribute name="sharedSize" type="xs:integer" use="optional"/>				
-		<xs:attribute name="virtualSize" type="xs:string" use="optional"/>		
+		<xs:attribute name="virtualSize" type="xs:integer" use="optional"/>		
 	</xs:complexType>
 
 	<xs:complexType name="inspectedImageType" >

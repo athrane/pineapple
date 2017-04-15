@@ -44,15 +44,15 @@ public class ContainerConfigurationLabelsMapAdapter
 
     @Override
     public ContainerConfigurationLabels marshal(ContainerConfigurationLabelsMap map) throws Exception {
-	ContainerConfigurationLabels ports = objectFactory.createContainerConfigurationLabels();
+	ContainerConfigurationLabels target = objectFactory.createContainerConfigurationLabels();
 	Set<Entry<String, String>> entries = map.entrySet();
 	for (Entry<String, String> entry : entries) {
 	    ContainerConfigurationLabel label = objectFactory.createContainerConfigurationLabel();
 	    label.setKey(entry.getKey());
 	    label.setValue(entry.getValue());
-	    ports.getLabel().add(label);
+	    target.getLabel().add(label);
 	}
-	return ports;
+	return target;
     }
 
     @Override

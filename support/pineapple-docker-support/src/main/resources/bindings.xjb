@@ -38,18 +38,6 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedImageGraphDriverType']" >
-			<jaxb:class name="inspectedImageGraphDriver" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedImageGraphDriverDataType']" >
-			<jaxb:class name="inspectedImageGraphDriverData" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='inspectedImageContainerConfigurationType']" >
 			<jaxb:class name="InspectedImageContainerConfiguration" />				
 		</jaxb:bindings>		 
@@ -289,6 +277,9 @@
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 
+
+	<!-- Generic types -->
+
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='progressDetailType']" >
 			<jaxb:class name="ProgressDetail" />				
@@ -301,7 +292,21 @@
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='graphDriverType']" >
+			<jaxb:class name="GraphDriver" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='graphDriverDataType']" >
+			<jaxb:class name="GraphDriverData" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
 	<!-- Map definitions -->
+
+	<!-- Map definitions for images -->
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='listedImageType']//xs:element[@name='labels']">
@@ -374,6 +379,8 @@
 			</jaxb:property>
 		</jaxb:bindings>
 	</jaxb:bindings>
+
+	<!-- Map definitions for containers -->
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationType']//xs:element[@name='labels']">
@@ -495,5 +502,14 @@
 		</jaxb:bindings>
 	</jaxb:bindings>
 
+	<!-- Map definitions for generic types -->
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='graphDriverType']//xs:element[@name='data']">
+			<jaxb:property>
+				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.GraphDriverDataMap" />
+			</jaxb:property>
+		</jaxb:bindings>
+	</jaxb:bindings>
 
 </jaxb:bindings>

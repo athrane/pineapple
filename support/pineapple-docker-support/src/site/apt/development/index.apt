@@ -323,7 +323,14 @@ Development documentation
 	To support binding of schema element <<<inspectedContainerNetworkSettingsType.networks>>> to a map, 
 	the binding is customized to bind to the custom map <<<InspectedContainerNetworkSettingsNetworksMap>>> 
 	using the custom JABX adaptor <<<InspectedContainerNetworkSettingsNetworksMapAdapter>>>.
+	
+*** GraphDriver Data
 
+	To support binding of schema element <<<inspectedImageGraphDriverType.data>>> to a map, 
+	the binding is customized to bind to the custom map <<<GraphDriverDataMap>>> 
+	using the custom JABX adaptor <<<GraphDriverDataMapAdapter>>>.
+	The map and JAXB adaptor is shared with the other bindings in the section.
+	
 ** JAXB Links
 
 	More information about JAXB can be found	

@@ -68,6 +68,7 @@
 		<xs:attribute name="dockerVersion" type="xs:string" use="optional"/>
 		<xs:attribute name="id" type="xs:string" use="optional"/>		
 		<xs:attribute name="os" type="xs:string" use="optional"/>		
+		<xs:attribute name="osVersion" type="xs:string" use="optional"/>				
 		<xs:attribute name="parent" type="xs:string" use="optional"/>		
 		<xs:attribute name="size" type="xs:long" use="optional"/>	
 		<xs:attribute name="virtualSize" type="xs:long" use="optional"/>	

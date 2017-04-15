@@ -30,14 +30,15 @@
 
 	<xs:complexType name="listedImageType" >
 		<xs:annotation>
-			<xs:documentation>Info about a listed Docker image (Output from listing images).</xs:documentation>
+			<xs:documentation>Info about a listed Docker image (Output from the List Images operation).</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />					
 			<xs:element name="repoTags" type="stringList" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="repoDigests" type="stringList" minOccurs="0" maxOccurs="1" />			
 		</xs:sequence>
-		<xs:attribute name="created" type="xs:string" use="optional"/>		
+		<xs:attribute name="Containers" type="xs:integer" use="optional"/>		
+		<xs:attribute name="created" type="xs:string" use="optional"/>				
 		<xs:attribute name="id" type="xs:string" use="optional"/>		
 		<xs:attribute name="parentId" type="xs:string" use="optional"/>				
 		<xs:attribute name="size" type="xs:string" use="optional"/>		

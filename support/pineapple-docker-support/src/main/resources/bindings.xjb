@@ -304,6 +304,12 @@
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='rootFSType']" >
+			<jaxb:class name="RootFS" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
 	<!-- Map definitions -->
 
 	<!-- Map definitions for images -->

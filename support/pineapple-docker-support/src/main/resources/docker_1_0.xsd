@@ -58,6 +58,7 @@
 			<xs:element name="graphDriver" type="graphDriverType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="repoDigests" type="stringList" minOccurs="0" maxOccurs="1" />						
 			<xs:element name="repoTags" type="stringList" minOccurs="0" maxOccurs="1" />								
+			<xs:element name="rootFS" type="rootFSType" minOccurs="0" maxOccurs="1" />						
  		</xs:sequence>
 		<xs:attribute name="author" type="xs:string" use="optional"/>		
 		<xs:attribute name="architecture" type="xs:string" use="optional"/>		
@@ -752,6 +753,14 @@
 
 	<!-- Generic definitions -->
 
+	<xs:simpleType name="stringList">
+  		<xs:list itemType="xs:string"/>
+	</xs:simpleType>
+
+	<xs:simpleType name="intList">
+  		<xs:list itemType="xs:int"/>
+	</xs:simpleType>
+
 	<xs:complexType name="progressDetailType" >
 		<xs:annotation>
 			<xs:documentation>Detailed info about progress during image creation.</xs:documentation>
@@ -788,13 +797,17 @@
 			<xs:element name="value" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
-	
-	<xs:simpleType name="stringList">
-  		<xs:list itemType="xs:string"/>
-	</xs:simpleType>
 
-	<xs:simpleType name="intList">
-  		<xs:list itemType="xs:int"/>
-	</xs:simpleType>
+	<xs:complexType name="rootFSType" >
+		<xs:annotation>
+			<xs:documentation>Docker Root file system configuration  (Output from inspecting an image or container).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="layers" type="stringList" minOccurs="0" maxOccurs="1" />				
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string" use="optional"/>		
+		<xs:attribute name="baseLayer" type="xs:string" use="optional"/>		
+	</xs:complexType>
+	
 														
 </xs:schema>

@@ -185,6 +185,9 @@ Development documentation
 	During marshalling the type is bound to the map 
 	<<<InspectedContainerNetworkSettingsNetworksMap>>> using the 
 	<<<InspectedContainerNetworkSettingsNetworksMapAdapter>>>.
+
+	* <<<ContainerMountType>>> - Info about Docker container mount point
+	(Output from listing containers).
 			
 	[]
 
@@ -551,7 +554,7 @@ Development documentation
 		* If the target object attribute is <<<ListedContainer.imageId>>> then the received JSON property <<<ImageID>>> is
 		mapped to to the target attribute <<<imageId>>>.
 
-		* If the target object attribute is <<<InspectedContainerMounts.rw>>> then the received JSON property <<<RW>>> is
+		* If the target object attribute is <<<ContainerMount.rw>>> then the received JSON property <<<RW>>> is
 		mapped to to the target attribute <<<rw>>>.
 				
 		[]

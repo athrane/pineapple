@@ -395,7 +395,7 @@
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="names" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="mounts" type="listedContainerMountType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="mounts" type="containerMountType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="ports" type="listedContainerPortType" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="command" type="xs:string" use="optional"/>		
@@ -422,18 +422,28 @@
 	<!-- 
 		Corresponds to MountPoint   
 		in docker/engine-api/types/types.go	
-		https://github.com/docker/docker/blob/ce255f76c70a77c21d48ebd407d83cad55edf883/vendor/src/github.com/docker/engine-api/types/types.go						
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go
+		
+		Please notice:
+		
+		The type for "propagation" is defined as string in 		
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go
+		
+		The type for "type" is defined as string in 		
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go
+		
 	 -->
-	<xs:complexType name="listedContainerMountType">
+	<xs:complexType name="containerMountType">
 		<xs:annotation>
-			<xs:documentation>Mounts in listed container.</xs:documentation>
+			<xs:documentation>Container mount point (Output from listing a container).</xs:documentation>
 		</xs:annotation>		
 		<xs:attribute name="destination" type="xs:string" use="optional"/>								
 		<xs:attribute name="driver" type="xs:string" use="optional"/>								
 		<xs:attribute name="mode" type="xs:string" use="optional"/>								
 		<xs:attribute name="name" type="xs:string" use="optional"/>										
-		<xs:attribute name="propagation " type="xs:string" use="optional"/>								
-		<xs:attribute name="source" type="xs:string" use="optional"/>										
+		<xs:attribute name="propagation" type="xs:string" use="optional"/>								
+		<xs:attribute name="source" type="xs:string" use="optional"/>									
+		<xs:attribute name="type" type="xs:string" use="optional"/>												
 		<xs:attribute name="rw" type="xs:boolean" use="optional"/>										
 	</xs:complexType>
 
@@ -809,6 +819,5 @@
 		<xs:attribute name="type" type="xs:string" use="optional"/>		
 		<xs:attribute name="baseLayer" type="xs:string" use="optional"/>		
 	</xs:complexType>
-	
-														
+															
 </xs:schema>

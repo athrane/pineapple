@@ -9,7 +9,7 @@
 	<xs:element name="createdContainer" type="createdContainerType" />
 	<xs:element name="listedContainer" type="listedContainerType" />	
 	<xs:element name="inspectedContainer" type="inspectedContainerType" />
-	<xs:element name="inspectedImage" type="inspectedImageType" />
+	<xs:element name="inspectedImage" type="imageInspectType" />
 	<xs:element name="imageCreationInfo" type="imageCreationType" />
 	<xs:element name="imageDeletionInfo" type="imageDeletionType" />
 	<xs:element name="version" type="versionType" />
@@ -28,32 +28,95 @@
 		<xs:attribute name="experimental" type="xs:string" use="optional"/>		
 	</xs:complexType>
 
+	<!-- Generic definitions -->
+
+	<xs:simpleType name="stringList">
+  		<xs:list itemType="xs:string"/>
+	</xs:simpleType>
+
+	<xs:simpleType name="intList">
+  		<xs:list itemType="xs:int"/>
+	</xs:simpleType>
+
+	<xs:complexType name="graphDriverType" >
+		<xs:annotation>
+			<xs:documentation>Docker Graph driver configuration (Output from inspecting an image or container).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="data" type="graphDriverDataType" minOccurs="0" maxOccurs="1" />						
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="optional"/>		
+	</xs:complexType>
+
+	<xs:complexType name="graphDriverDataType" >
+		<xs:annotation>
+			<xs:documentation>Docker graph driver data configuration (Output from inspecting an image or container).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="key" type="xs:string" /> <!-- key in map -->
+			<xs:element name="value" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="rootFSType" >
+		<xs:annotation>
+			<xs:documentation>Docker Root file system configuration  (Output from inspecting an image or container).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="layers" type="stringList" minOccurs="0" maxOccurs="1" />				
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string" use="optional"/>		
+		<xs:attribute name="baseLayer" type="xs:string" use="optional"/>		
+	</xs:complexType>
+
+	<!-- Image definitions -->
+
+	<xs:complexType name="progressDetailType" >
+		<xs:annotation>
+			<xs:documentation>Detailed info about progress during image creation.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="start" type="xs:string" use="optional"/>		
+		<xs:attribute name="current" type="xs:string" use="optional"/>		
+		<xs:attribute name="total" type="xs:string" use="optional"/>		
+	</xs:complexType>
+
+	<xs:complexType name="errorDetailType" >
+		<xs:annotation>
+			<xs:documentation>Detailed info about errors during image creation.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="code" type="xs:int" use="optional"/>		
+		<xs:attribute name="message" type="xs:string" use="optional"/>		
+	</xs:complexType>
+
 	<xs:complexType name="listedImageType" >
 		<xs:annotation>
-			<xs:documentation>Info about a listed Docker image (Output from listing images).</xs:documentation>
+			<xs:documentation>Info about a listed Docker image (Output from the "List images" operation).</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />					
 			<xs:element name="repoTags" type="stringList" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="repoDigests" type="stringList" minOccurs="0" maxOccurs="1" />			
 		</xs:sequence>
-		<xs:attribute name="created" type="xs:string" use="optional"/>		
+		<xs:attribute name="containers" type="xs:integer" use="optional"/>		
+		<xs:attribute name="created" type="xs:integer" use="optional"/>				
 		<xs:attribute name="id" type="xs:string" use="optional"/>		
 		<xs:attribute name="parentId" type="xs:string" use="optional"/>				
-		<xs:attribute name="size" type="xs:string" use="optional"/>		
-		<xs:attribute name="virtualSize" type="xs:string" use="optional"/>		
+		<xs:attribute name="size" type="xs:integer" use="optional"/>		
+		<xs:attribute name="sharedSize" type="xs:integer" use="optional"/>				
+		<xs:attribute name="virtualSize" type="xs:integer" use="optional"/>		
 	</xs:complexType>
 
-	<xs:complexType name="inspectedImageType" >
+	<xs:complexType name="imageInspectType" >
 		<xs:annotation>
-			<xs:documentation>Info about an inspected Docker image (Output from inspecting an image).</xs:documentation>
+			<xs:documentation>Info about an inspected Docker image (Output from the "Inspect an image" operation).</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="containerConfig" type="inspectedImageContainerConfigurationType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="config" type="inspectedImageConfigurationType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="graphDriver" type="inspectedImageGraphDriverType" minOccurs="0" maxOccurs="1" />			
+			<xs:element name="graphDriver" type="graphDriverType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="repoDigests" type="stringList" minOccurs="0" maxOccurs="1" />						
 			<xs:element name="repoTags" type="stringList" minOccurs="0" maxOccurs="1" />								
+			<xs:element name="rootFS" type="rootFSType" minOccurs="0" maxOccurs="1" />						
  		</xs:sequence>
 		<xs:attribute name="author" type="xs:string" use="optional"/>		
 		<xs:attribute name="architecture" type="xs:string" use="optional"/>		
@@ -63,6 +126,7 @@
 		<xs:attribute name="dockerVersion" type="xs:string" use="optional"/>
 		<xs:attribute name="id" type="xs:string" use="optional"/>		
 		<xs:attribute name="os" type="xs:string" use="optional"/>		
+		<xs:attribute name="osVersion" type="xs:string" use="optional"/>				
 		<xs:attribute name="parent" type="xs:string" use="optional"/>		
 		<xs:attribute name="size" type="xs:long" use="optional"/>	
 		<xs:attribute name="virtualSize" type="xs:long" use="optional"/>	
@@ -132,25 +196,6 @@
 		<xs:attribute name="workingDir" type="xs:string" use="optional"/>		
 	</xs:complexType>
 
-	<xs:complexType name="inspectedImageGraphDriverType" >
-		<xs:annotation>
-			<xs:documentation>Docker image graph driver configuration (Output from inspecting an image).</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="data" type="inspectedImageGraphDriverDataType" minOccurs="0" maxOccurs="1" />						
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string" use="optional"/>		
-	</xs:complexType>
-
-	<xs:complexType name="inspectedImageGraphDriverDataType" >
-		<xs:annotation>
-			<xs:documentation>Docker image graph driver data configuration (Output from inspecting an image).</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="deviceId" type="xs:string" use="optional"/>		
-		<xs:attribute name="deviceName" type="xs:string" use="optional"/>		
-		<xs:attribute name="deviceSize" type="xs:string" use="optional"/>				
-	</xs:complexType>
-
 	<xs:complexType name="imageCreationType" >
 		<xs:annotation>
 			<xs:documentation>Info about Docker image creation progress.</xs:documentation>
@@ -174,22 +219,7 @@
 		<xs:attribute name="deleted" type="xs:string" use="optional"/>		
 	</xs:complexType>
 
-	<xs:complexType name="progressDetailType" >
-		<xs:annotation>
-			<xs:documentation>Detailed info about progress during image creation.</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="start" type="xs:string" use="optional"/>		
-		<xs:attribute name="current" type="xs:string" use="optional"/>		
-		<xs:attribute name="total" type="xs:string" use="optional"/>		
-	</xs:complexType>
-
-	<xs:complexType name="errorDetailType" >
-		<xs:annotation>
-			<xs:documentation>Detailed info about errors during image creation.</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="code" type="xs:int" use="optional"/>		
-		<xs:attribute name="message" type="xs:string" use="optional"/>		
-	</xs:complexType>
+	<!-- Container definitions -->
 
 	<xs:complexType name="containerConfigurationType" >
 		<xs:annotation>
@@ -423,7 +453,7 @@
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="names" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="mounts" type="listedContainerMountType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="mounts" type="containerMountType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="ports" type="listedContainerPortType" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="command" type="xs:string" use="optional"/>		
@@ -450,18 +480,28 @@
 	<!-- 
 		Corresponds to MountPoint   
 		in docker/engine-api/types/types.go	
-		https://github.com/docker/docker/blob/ce255f76c70a77c21d48ebd407d83cad55edf883/vendor/src/github.com/docker/engine-api/types/types.go						
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go
+		
+		Please notice:
+		
+		The type for "propagation" is defined as string in 		
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go
+		
+		The type for "type" is defined as string in 		
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go
+		
 	 -->
-	<xs:complexType name="listedContainerMountType">
+	<xs:complexType name="containerMountType">
 		<xs:annotation>
-			<xs:documentation>Mounts in listed container.</xs:documentation>
+			<xs:documentation>Container mount point (Output from listing a container).</xs:documentation>
 		</xs:annotation>		
 		<xs:attribute name="destination" type="xs:string" use="optional"/>								
 		<xs:attribute name="driver" type="xs:string" use="optional"/>								
 		<xs:attribute name="mode" type="xs:string" use="optional"/>								
 		<xs:attribute name="name" type="xs:string" use="optional"/>										
-		<xs:attribute name="propagation " type="xs:string" use="optional"/>								
-		<xs:attribute name="source" type="xs:string" use="optional"/>										
+		<xs:attribute name="propagation" type="xs:string" use="optional"/>								
+		<xs:attribute name="source" type="xs:string" use="optional"/>									
+		<xs:attribute name="type" type="xs:string" use="optional"/>												
 		<xs:attribute name="rw" type="xs:boolean" use="optional"/>										
 	</xs:complexType>
 
@@ -779,13 +819,5 @@
 		<xs:attribute name="macAddress" type="xs:string" use="optional"/>	
 		<xs:attribute name="networkID" type="xs:string" use="optional"/>													
 	</xs:complexType>
-	
-	<xs:simpleType name="stringList">
-  		<xs:list itemType="xs:string"/>
-	</xs:simpleType>
-
-	<xs:simpleType name="intList">
-  		<xs:list itemType="xs:int"/>
-	</xs:simpleType>
-														
+															
 </xs:schema>

@@ -310,22 +310,25 @@
 <h4>Schema types for images<a name="Schema_types_for_images"></a></h4>
 <div class="section">
 <h5>progressDetailType<a name="progressDetailType"></a></h5>
-<p>Detailed info about progress during image creation. Partial output from image creation.</p></div>
+<p>Detailed info about progress during image creation.</p>
+<p>Partial output from image creation.</p></div>
 <div class="section">
 <h5>errorDetailType<a name="errorDetailType"></a></h5>
-<p>Detailed info about errors during image creation. Partial output from image creation.</p></div>
+<p>Detailed info about errors during image creation. </p>
+<p>Partial output from image creation.</p></div>
 <div class="section">
 <h5>listedImageType<a name="listedImageType"></a></h5>
-<p>Info about a listed Docker image. Output from the <a class="externalLink" href="https://docs.docker.com/engine/api/v1.28/#operation/List images">Inspect an image (v1.28)</a> operation. </p></div>
+<p>Info about a listed Docker image. </p>
+<p>Output from the <a class="externalLink" href="https://docs.docker.com/engine/api/v1.28/#operation/List images">Inspect an image (v1.28)</a> operation. </p></div>
 <div class="section">
 <h5>ImageInspectType<a name="ImageInspectType"></a></h5>
-<p>Info about an inspected Docker image. Output from the <a class="externalLink" href="https://docs.docker.com/engine/api/v1.28/#operation/ImageInspect">Inspect an image (v1.28)</a> operation. Defined Docker type: <a class="externalLink" href="https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go">ImageInspect</a></p></div>
-<div class="section">
-<h5>inspectedImageContainerConfigurationType<a name="inspectedImageContainerConfigurationType"></a></h5>
-<p>Docker container configuration. Output from the <a class="externalLink" href="https://docs.docker.com/engine/api/v1.28/#operation/ImageInspect">Inspect an image (v1.28)</a> operation. </p></div>
+<p>Info about an inspected Docker image.</p>
+<p>Output from the <a class="externalLink" href="https://docs.docker.com/engine/api/v1.28/#operation/ImageInspect">Inspect an image (v1.28)</a> operation. </p>
+<p>Defined Docker type: <a class="externalLink" href="https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go">ImageInspect</a></p></div>
 <div class="section">
 <h5>inspectedImageConfigurationType<a name="inspectedImageConfigurationType"></a></h5>
-<p>Docker image configuration. Output from the <a class="externalLink" href="https://docs.docker.com/engine/api/v1.28/#operation/ImageInspect">Inspect an image (v1.28)</a> operation. </p></div>
+<p>Docker image configuration. </p>
+<p>Output from the <a class="externalLink" href="https://docs.docker.com/engine/api/v1.28/#operation/ImageInspect">Inspect an image (v1.28)</a> operation. </p></div>
 <div class="section">
 <h5>imageCreationType <a name="imageCreationType"></a></h5>
 <p>Info about Docker image creation progress.</p></div>
@@ -337,7 +340,9 @@
 <div class="section">
 <h5>containerConfigurationType<a name="containerConfigurationType"></a></h5>
 <p>Docker container configuration </p>
-<p>Input to container creation and output from container inspection.</p>
+<p>Input to container creation and output from container and image inspection.</p>
+<p>Defined Docker type: <a class="externalLink" href="https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/config.go">container.Config</a></p>
+<p>TODO: rewrite</p>
 <p>The schema contains these types for handling container:</p>
 <ul>
 <li><tt>containerConfigurationExposedPortType</tt> - Docker container configuration of a single exposed port (Input to container creation and output from container inspection). The JSON marshalled from this type when the Docker REST API is invoked requires a map with values with the format: <tt>{ &quot;&lt;port&gt;/&lt;tcp|udp&gt;: {}&quot; }</tt>. To support this requirement the exposed port type defines a port (the port/protocol part) and a null value (the {} part). To generate the null object for the value the <tt>containerConfigurationExposedPortNullValueType</tt> is used.</li>
@@ -374,32 +379,28 @@
 <p>To support binding of schema element <tt>containerConfigurationType.exposedPorts</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationExposedPortsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationExposedPortsMapAdapter</tt>. The map and JAXB adaptor is shared with the two other bindings described in this section.</p>
 <p>To support binding of schema element <tt>inspectedContainerConfigurationType.exposedPorts</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationExposedPortsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationExposedPortsMapAdapter</tt>. The map and JAXB adaptor is shared with the two other bindings described in this section.</p>
 <p>To support binding of schema element <tt>inspectedConfigurationType.exposedPorts</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationExposedPortsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationExposedPortsMapAdapter</tt>. The map and JAXB adaptor is shared with the two other bindings described in this section.</p>
-<p>To support binding of schema element <tt>inspectedContainerNetworkSettingsType.ports</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationExposedPortsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationExposedPortsMapAdapter</tt>. The map and JAXB adaptor is shared with the two other bindings described in this section.</p>
-<p>To support binding of schema element <tt>inspectedImageContainerConfigurationType.exposedPorts</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationExposedPortsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationExposedPortsMapAdapter</tt>. The map and JAXB adaptor is shared with the two other bindings described in this section.</p></div>
+<p>To support binding of schema element <tt>inspectedContainerNetworkSettingsType.ports</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationExposedPortsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationExposedPortsMapAdapter</tt>. The map and JAXB adaptor is shared with the two other bindings described in this section.</p></div>
 <div class="section">
 <h5>Labels<a name="Labels"></a></h5>
 <p>To support binding of schema element <tt>containerConfigurationType.labels</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationLabelsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationLabelsMapAdapter</tt>. The map and JAXB adaptor is shared with the other bindings in the section.</p>
 <p>To support binding of schema element <tt>listedContainerType.labels</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationLabelsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationLabelsMapAdapter</tt>. The map and JAXB adaptor is shared with the other bindings in the section.</p>
 <p>To support binding of schema element <tt>inspectedContainerConfigurationType.labels</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationLabelsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationLabelsMapAdapter</tt>. The map and JAXB adaptor is shared with the other bindings in the section.</p>
 <p>To support binding of schema element <tt>inspectedImageContainerType.labels</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationLabelsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationLabelsMapAdapter</tt>. The map and JAXB adaptor is shared with the other bindings in the section.</p>
-<p>To support binding of schema element <tt>inspectedImageContainerConfigurationType.labels</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationLabelsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationLabelsMapAdapter</tt>. The map and JAXB adaptor is shared with the other bindings in the section.</p>
 <p>To support binding of schema element <tt>listedImageType.labels</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationLabelsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationLabelsMapAdapter</tt>. The map and JAXB adaptor is shared with the other bindings in the section.</p></div>
 <div class="section">
 <h5>Port binding<a name="Port_binding"></a></h5>
 <p>To support binding of schema element <tt>containerConfigurationHostConfigType.portBindings</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationHostConfigPortBindingsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationHostConfigPortBindingsMapAdapter</tt>. The map and JAXB adaptor is shared with two other bindings in this section.</p>
 <p>To support binding of schema element <tt>inspectedContainerHostConfigType.portBindings</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationHostConfigPortBindingsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationHostConfigPortBindingsMapAdapter</tt>. The map and JAXB adaptor is shared with two other bindings in this section.</p>
 <p>To support binding of schema element <tt>inspectedContainerConfigurationType.portSpecs</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationHostConfigPortBindingsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationHostConfigPortBindingsMapAdapter</tt>. The map and JAXB adaptor is shared with two other bindings in this section.</p>
-<p>To support binding of schema element <tt>inspectedImageConfigurationType.portSpecs</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationHostConfigPortBindingsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationHostConfigPortBindingsMapAdapter</tt>. The map and JAXB adaptor is shared with two other bindings in this section.</p>
-<p>To support binding of schema element <tt>inspectedImageContainerConfigurationType.portSpecs</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationHostConfigPortBindingsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationHostConfigPortBindingsMapAdapter</tt>. The map and JAXB adaptor is shared with two other bindings in this section.</p></div>
+<p>To support binding of schema element <tt>inspectedImageConfigurationType.portSpecs</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationHostConfigPortBindingsMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationHostConfigPortBindingsMapAdapter</tt>. The map and JAXB adaptor is shared with two other bindings in this section.</p></div>
 <div class="section">
 <h5>Restart policy<a name="Restart_policy"></a></h5>
 <p>TODO:..</p></div>
 <div class="section">
 <h5>Volumes<a name="Volumes"></a></h5>
-<p>To support binding of <tt>containerConfigurationType.volumes</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationVolumesMap&gt;&gt; using the custom JABX adaptor &lt;&lt;&lt;ContainerConfigurationVolumesMapAdapter</tt>. The map and JAXB adaptor is shared with binding of <tt>inspectedContainerConfigurationType.volumes</tt> and <tt>inspectedImageContainerConfigurationType.volumes</tt>.</p>
-<p>To support binding of schema element <tt>inspectedContainerConfigurationType.volumes</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationVolumesMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationVolumesMapAdapter</tt>. The map and JAXB adaptor is shared with binding of <tt>containerConfigurationType.volumes</tt> and <tt>inspectedImageContainerConfigurationType.volumes</tt>.</p>
+<p>To support binding of <tt>containerConfigurationType.volumes</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationVolumesMap&gt;&gt; using the custom JABX adaptor &lt;&lt;&lt;ContainerConfigurationVolumesMapAdapter</tt>. The map and JAXB adaptor is shared with binding of <tt>inspectedContainerConfigurationType.volumes</tt>.</p>
+<p>To support binding of schema element <tt>inspectedContainerConfigurationType.volumes</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationVolumesMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationVolumesMapAdapter</tt>. The map and JAXB adaptor is shared with binding of <tt>containerConfigurationType.volumes</tt>.</p>
 <p>To support binding of schema element <tt>inspectedImageConfigurationType.volumes</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationVolumesMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationVolumesMapAdapter</tt>. The map and JAXB adaptor is shared with binding of <tt>containerConfigurationType.volumes</tt> and <tt>inspectedContainerConfigurationType.volumes</tt>.</p>
-<p>To support binding of schema element <tt>inspectedImageContainerConfigurationType.volumes</tt> to a map, the binding is customized to bind to the custom map <tt>ContainerConfigurationVolumesMap</tt> using the custom JABX adaptor <tt>ContainerConfigurationVolumesMapAdapter</tt>. The map and JAXB adaptor is shared with binding of <tt>containerConfigurationType.volumes</tt> and <tt>inspectedContainerConfigurationType.volumes</tt>.</p>
 <p>To support binding of schema element <tt>inspectedContainerType.volumes</tt> to a map, the binding is customized to bind to the custom map <tt>InspectedContainerVolumesMap</tt> using the custom JABX adaptor <tt>InspectedContainerVolumesMapAdapter</tt>.</p>
 <p>To support binding of schema element <tt>inspectedContainerType.volumesRelabel</tt>to a map, the binding is customized to bind to the custom map <tt>inspectedContainerVolumesRelabelMap</tt> using the custom JABX adaptor <tt>inspectedContainerVolumesRelabelMapAdapter</tt>.</p>
 <p>To support binding of schema element <tt>inspectedContainerType.volumesRW</tt>to a map, the binding is customized to bind to the custom map <tt>inspectedContainerVolumesRwMap</tt> using the custom JABX adaptor <tt>inspectedContainerVolumesRwMapAdapter</tt>.</p></div>

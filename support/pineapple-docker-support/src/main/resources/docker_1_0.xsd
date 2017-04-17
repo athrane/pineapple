@@ -9,7 +9,7 @@
 	<xs:element name="createdContainer" type="createdContainerType" />
 	<xs:element name="listedContainer" type="listedContainerType" />	
 	<xs:element name="inspectedContainer" type="inspectedContainerType" />
-	<xs:element name="inspectedImage" type="inspectedImageType" />
+	<xs:element name="inspectedImage" type="imageInspectType" />
 	<xs:element name="imageCreationInfo" type="imageCreationType" />
 	<xs:element name="imageDeletionInfo" type="imageDeletionType" />
 	<xs:element name="version" type="versionType" />
@@ -28,7 +28,65 @@
 		<xs:attribute name="experimental" type="xs:string" use="optional"/>		
 	</xs:complexType>
 
+	<!-- Generic definitions -->
+
+	<xs:simpleType name="stringList">
+  		<xs:list itemType="xs:string"/>
+	</xs:simpleType>
+
+	<xs:simpleType name="intList">
+  		<xs:list itemType="xs:int"/>
+	</xs:simpleType>
+
+	<xs:complexType name="graphDriverType" >
+		<xs:annotation>
+			<xs:documentation>Docker Graph driver configuration (Output from inspecting an image or container).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="data" type="graphDriverDataType" minOccurs="0" maxOccurs="1" />						
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="optional"/>		
+	</xs:complexType>
+
+	<xs:complexType name="graphDriverDataType" >
+		<xs:annotation>
+			<xs:documentation>Docker graph driver data configuration (Output from inspecting an image or container).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="key" type="xs:string" /> <!-- key in map -->
+			<xs:element name="value" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="rootFSType" >
+		<xs:annotation>
+			<xs:documentation>Docker Root file system configuration  (Output from inspecting an image or container).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="layers" type="stringList" minOccurs="0" maxOccurs="1" />				
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string" use="optional"/>		
+		<xs:attribute name="baseLayer" type="xs:string" use="optional"/>		
+	</xs:complexType>
+
 	<!-- Image definitions -->
+
+	<xs:complexType name="progressDetailType" >
+		<xs:annotation>
+			<xs:documentation>Detailed info about progress during image creation.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="start" type="xs:string" use="optional"/>		
+		<xs:attribute name="current" type="xs:string" use="optional"/>		
+		<xs:attribute name="total" type="xs:string" use="optional"/>		
+	</xs:complexType>
+
+	<xs:complexType name="errorDetailType" >
+		<xs:annotation>
+			<xs:documentation>Detailed info about errors during image creation.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="code" type="xs:int" use="optional"/>		
+		<xs:attribute name="message" type="xs:string" use="optional"/>		
+	</xs:complexType>
 
 	<xs:complexType name="listedImageType" >
 		<xs:annotation>
@@ -48,7 +106,7 @@
 		<xs:attribute name="virtualSize" type="xs:integer" use="optional"/>		
 	</xs:complexType>
 
-	<xs:complexType name="inspectedImageType" >
+	<xs:complexType name="imageInspectType" >
 		<xs:annotation>
 			<xs:documentation>Info about an inspected Docker image (Output from the "Inspect an image" operation).</xs:documentation>
 		</xs:annotation>
@@ -760,64 +818,6 @@
 		<xs:attribute name="ipv6Gateway" type="xs:string" use="optional"/>										
 		<xs:attribute name="macAddress" type="xs:string" use="optional"/>	
 		<xs:attribute name="networkID" type="xs:string" use="optional"/>													
-	</xs:complexType>
-
-	<!-- Generic definitions -->
-
-	<xs:simpleType name="stringList">
-  		<xs:list itemType="xs:string"/>
-	</xs:simpleType>
-
-	<xs:simpleType name="intList">
-  		<xs:list itemType="xs:int"/>
-	</xs:simpleType>
-
-	<xs:complexType name="progressDetailType" >
-		<xs:annotation>
-			<xs:documentation>Detailed info about progress during image creation.</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="start" type="xs:string" use="optional"/>		
-		<xs:attribute name="current" type="xs:string" use="optional"/>		
-		<xs:attribute name="total" type="xs:string" use="optional"/>		
-	</xs:complexType>
-
-	<xs:complexType name="errorDetailType" >
-		<xs:annotation>
-			<xs:documentation>Detailed info about errors during image creation.</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="code" type="xs:int" use="optional"/>		
-		<xs:attribute name="message" type="xs:string" use="optional"/>		
-	</xs:complexType>
-
-	<xs:complexType name="graphDriverType" >
-		<xs:annotation>
-			<xs:documentation>Docker Graph driver configuration (Output from inspecting an image or container).</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="data" type="graphDriverDataType" minOccurs="0" maxOccurs="1" />						
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string" use="optional"/>		
-	</xs:complexType>
-
-	<xs:complexType name="graphDriverDataType" >
-		<xs:annotation>
-			<xs:documentation>Docker graph driver data configuration (Output from inspecting an image or container).</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="key" type="xs:string" /> <!-- key in map -->
-			<xs:element name="value" type="xs:string" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="rootFSType" >
-		<xs:annotation>
-			<xs:documentation>Docker Root file system configuration  (Output from inspecting an image or container).</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="layers" type="stringList" minOccurs="0" maxOccurs="1" />				
-		</xs:sequence>
-		<xs:attribute name="type" type="xs:string" use="optional"/>		
-		<xs:attribute name="baseLayer" type="xs:string" use="optional"/>		
 	</xs:complexType>
 															
 </xs:schema>

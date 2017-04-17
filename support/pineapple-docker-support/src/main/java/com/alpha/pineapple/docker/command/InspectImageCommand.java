@@ -39,7 +39,7 @@ import com.alpha.pineapple.command.initialization.Initialize;
 import com.alpha.pineapple.command.initialization.ValidateValue;
 import com.alpha.pineapple.command.initialization.ValidationPolicy;
 import com.alpha.pineapple.docker.model.ImageInfo;
-import com.alpha.pineapple.docker.model.rest.InspectedImage;
+import com.alpha.pineapple.docker.model.rest.ImageInspect;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.i18n.MessageProvider;
@@ -88,81 +88,81 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class InspectImageCommand implements Command {
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result
+	 * object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Image info.
-     */
-    public static final String IMAGE_INFO_KEY = "image-info";
+	/**
+	 * Key used to identify property in context: Image info.
+	 */
+	public static final String IMAGE_INFO_KEY = "image-info";
 
-    /**
-     * Key used to identify property in context: inspected image info object.
-     */
-    public static final String INSPECTED_IMAGE_KEY = "inspected-image-info";
+	/**
+	 * Key used to identify property in context: inspected image info object.
+	 */
+	public static final String INSPECTED_IMAGE_KEY = "inspected-image-info";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Image info.
-     */
-    @Initialize(IMAGE_INFO_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ImageInfo imageInfo;
+	/**
+	 * Image info.
+	 */
+	@Initialize(IMAGE_INFO_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ImageInfo imageInfo;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    @SuppressWarnings("unchecked")
-    public boolean execute(Context context) throws Exception {
+	@SuppressWarnings("unchecked")
+	public boolean execute(Context context) throws Exception {
 
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// get container name
-	Map<String, String> uriVariables = new HashMap<String, String>();
-	uriVariables.put("id", imageInfo.getFullyQualifiedName());
+		// get container name
+		Map<String, String> uriVariables = new HashMap<String, String>();
+		uriVariables.put("id", imageInfo.getFullyQualifiedName());
 
-	// get to inspect container
-	InspectedImage info = session.httpGetForObject(INSPECT_IMAGE_URI, uriVariables, InspectedImage.class);
+		// get to inspect image 
+		ImageInspect info = session.httpGetForObject(INSPECT_IMAGE_URI, uriVariables, ImageInspect.class);
 
-	// complete result
-	Object[] args = { imageInfo.getFullyQualifiedName() };
-	executionResult.completeAsSuccessful(messageProvider, "imc.inspect_image_completed", args);
+		// complete result
+		Object[] args = { imageInfo.getFullyQualifiedName() };
+		executionResult.completeAsSuccessful(messageProvider, "imc.inspect_image_completed", args);
 
-	// store inspection info
-	context.put(INSPECTED_IMAGE_KEY, info);
+		// store inspection info
+		context.put(INSPECTED_IMAGE_KEY, info);
 
-	return Command.CONTINUE_PROCESSING;
-    }
+		return Command.CONTINUE_PROCESSING;
+	}
 
 }

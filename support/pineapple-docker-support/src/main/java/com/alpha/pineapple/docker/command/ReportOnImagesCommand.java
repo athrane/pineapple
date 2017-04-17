@@ -45,7 +45,7 @@ import com.alpha.pineapple.command.initialization.ValidationPolicy;
 import com.alpha.pineapple.docker.DockerClient;
 import com.alpha.pineapple.docker.model.ImageInfo;
 import com.alpha.pineapple.docker.model.InfoBuilder;
-import com.alpha.pineapple.docker.model.rest.InspectedImage;
+import com.alpha.pineapple.docker.model.rest.ImageInspect;
 import com.alpha.pineapple.docker.model.rest.ListedImage;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -90,123 +90,123 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class ReportOnImagesCommand implements Command {
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result
+	 * object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * First repo tags list index.
-     */
-    static final int FIRST_LIST_INDEX = 0;
+	/**
+	 * First repo tags list index.
+	 */
+	static final int FIRST_LIST_INDEX = 0;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    /**
-     * Docker info object builder.
-     */
-    @Resource
-    InfoBuilder dockerInfoBuilder;
+	/**
+	 * Docker info object builder.
+	 */
+	@Resource
+	InfoBuilder dockerInfoBuilder;
 
-    /**
-     * Docker JAXB Getter method matcher.
-     */
-    @Resource
-    GetterMethodMatcher dockerJaxbGetterMethodMatcher;
+	/**
+	 * Docker JAXB Getter method matcher.
+	 */
+	@Resource
+	GetterMethodMatcher dockerJaxbGetterMethodMatcher;
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// list images
-	ListedImage[] images = dockerClient.listImages(session, executionResult);
+		// list images
+		ListedImage[] images = dockerClient.listImages(session, executionResult);
 
-	// add messages
-	Object[] args = { images.length };
-	String message = messageProvider.getMessage("roic.list_image_info", args);
-	executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+		// add messages
+		Object[] args = { images.length };
+		String message = messageProvider.getMessage("roic.list_image_info", args);
+		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
 
-	for (ListedImage image : images) {
+		for (ListedImage image : images) {
 
-	    // skip image if it has no name
-	    if (isNoImageRepoTagsDefined(image))
-		continue;
+			// skip image if it has no name
+			if (isNoImageRepoTagsDefined(image))
+				continue;
 
-	    String repoTagsAsString = removeEnclosingBrackets(image.getRepoTags().toString());
-	    Object[] args2 = { repoTagsAsString, createTruncatedId(image.getId()),
-		    createTruncatedId(image.getParentId()) };
-	    String message2 = messageProvider.getMessage("roic.list_single_image_header_info", args2);
-	    ExecutionResult childResult = executionResult.addChild(message2);
-	    inspectImage(image, childResult);
+			String repoTagsAsString = removeEnclosingBrackets(image.getRepoTags().toString());
+			Object[] args2 = { repoTagsAsString, createTruncatedId(image.getId()),
+					createTruncatedId(image.getParentId()) };
+			String message2 = messageProvider.getMessage("roic.list_single_image_header_info", args2);
+			ExecutionResult childResult = executionResult.addChild(message2);
+			inspectImage(image, childResult);
 
+		}
+
+		// complete result
+		executionResult.completeAsSuccessful(messageProvider, "roic.list_images_completed");
+
+		return Command.CONTINUE_PROCESSING;
 	}
 
-	// complete result
-	executionResult.completeAsSuccessful(messageProvider, "roic.list_images_completed");
+	/**
+	 * Inspect image.
+	 * 
+	 * @param container
+	 *            container meta data.
+	 * @param result
+	 *            result where container data should be added to.
+	 */
+	void inspectImage(ListedImage image, ExecutionResult result) {
 
-	return Command.CONTINUE_PROCESSING;
-    }
+		try {
+			// report using reflection
+			List<String> repoTags = image.getRepoTags();
+			String firstRepoTag = repoTags.get(FIRST_LIST_INDEX);
+			// reportOnObject(result, image, dockerJaxbGetterMethodMatcher,
+			// CUSTOM_JAXB_MAPS);
+			ImageInfo imageInfo = dockerInfoBuilder.buildImageInfoFromFQName(firstRepoTag);
+			ImageInspect inspectedImage = dockerClient.inspectImage(session, imageInfo, result);
+			reportOnObject(result, inspectedImage, dockerJaxbGetterMethodMatcher, CUSTOM_JAXB_MAPS);
+			result.setState(ExecutionResult.ExecutionState.SUCCESS);
 
-    /**
-     * Inspect image.
-     * 
-     * @param container
-     *            container meta data.
-     * @param result
-     *            result where container data should be added to.
-     */
-    void inspectImage(ListedImage image, ExecutionResult result) {
-
-	try {
-	    // report using reflection
-	    List<String> repoTags = image.getRepoTags();
-	    String firstRepoTag = repoTags.get(FIRST_LIST_INDEX);
-	    // reportOnObject(result, image, dockerJaxbGetterMethodMatcher,
-	    // CUSTOM_JAXB_MAPS);
-	    ImageInfo imageInfo = dockerInfoBuilder.buildImageInfoFromFQName(firstRepoTag);
-	    InspectedImage inspectedImage = dockerClient.inspectImage(session, imageInfo, result);
-	    reportOnObject(result, inspectedImage, dockerJaxbGetterMethodMatcher, CUSTOM_JAXB_MAPS);
-	    result.setState(ExecutionResult.ExecutionState.SUCCESS);
-
-	} catch (Exception e) {
-	    result.completeAsError(messageProvider, "roic.inpect_image_failure", e);
+		} catch (Exception e) {
+			result.completeAsError(messageProvider, "roic.inpect_image_failure", e);
+		}
 	}
-    }
 
 }

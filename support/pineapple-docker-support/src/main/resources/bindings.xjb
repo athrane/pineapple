@@ -24,8 +24,8 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedImageType']" >
-			<jaxb:class name="InspectedImage" />				
+		<jaxb:bindings node="//xs:complexType[@name='imageInspectType']" >
+			<jaxb:class name="ImageInspect" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 

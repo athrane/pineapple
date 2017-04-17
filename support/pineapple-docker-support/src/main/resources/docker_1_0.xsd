@@ -111,7 +111,7 @@
 			<xs:documentation>Info about an inspected Docker image (Output from the "Inspect an image" operation).</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="containerConfig" type="inspectedImageContainerConfigurationType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="containerConfig" type="containerConfigurationType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="config" type="inspectedImageConfigurationType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="graphDriver" type="graphDriverType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="repoDigests" type="stringList" minOccurs="0" maxOccurs="1" />						
@@ -130,39 +130,6 @@
 		<xs:attribute name="parent" type="xs:string" use="optional"/>		
 		<xs:attribute name="size" type="xs:long" use="optional"/>	
 		<xs:attribute name="virtualSize" type="xs:long" use="optional"/>	
-	</xs:complexType>
-
-	<xs:complexType name="inspectedImageContainerConfigurationType" >
-		<xs:annotation>
-			<xs:documentation>Docker container configuration (Output from inspecting an image).</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="cmd" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="dns" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="env" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="entrypoint" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="exposedPorts" type="containerConfigurationExposedPortsType" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="onBuild" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="portSpecs" type="containerConfigurationHostConfigPortBindingsType" minOccurs="0" maxOccurs="1" />									
-			<xs:element name="volumes" type="containerConfigurationVolumesType" minOccurs="0" maxOccurs="1" />						
-		</xs:sequence>
-		<xs:attribute name="attachStderr" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="attachStdin" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="attachStdout" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="domainname" type="xs:string" use="optional"/>		
-		<xs:attribute name="hostname" type="xs:string" use="optional"/>		
-		<xs:attribute name="image" type="xs:string" use="optional"/>				
-		<xs:attribute name="init" type="xs:string" use="optional"/>				
-		<xs:attribute name="macAddress" type="xs:string" use="optional"/>				
-		<xs:attribute name="networkDisabled" type="xs:boolean" use="optional"/>				
-		<xs:attribute name="openStdin" type="xs:boolean" use="optional"/>			
-		<xs:attribute name="stdinOnce" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="tty" type="xs:boolean" use="optional"/>				
-		<xs:attribute name="user" type="xs:string" use="optional"/>		
-		<xs:attribute name="volumeDriver" type="xs:string" use="optional"/>		
-		<xs:attribute name="volumesFrom" type="xs:string" use="optional"/>		
-		<xs:attribute name="workingDir" type="xs:string" use="optional"/>		
 	</xs:complexType>
 
 	<xs:complexType name="inspectedImageConfigurationType" >
@@ -221,6 +188,11 @@
 
 	<!-- Container definitions -->
 
+	<!-- 
+		Corresponds to MountPoint   
+		in docker/engine-api/types/config.go	
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/config.go				
+	 -->
 	<xs:complexType name="containerConfigurationType" >
 		<xs:annotation>
 			<xs:documentation>Docker container configuration (Input to container creation).</xs:documentation>

@@ -58,32 +58,33 @@ Development documentation
 *** progressDetailType
 
 	Detailed info about progress during image creation.
+	
 	Partial output from image creation.
 
 *** errorDetailType
 
 	Detailed info about errors during image creation.	
+	
 	Partial output from image creation.
 
 *** listedImageType
 
 	Info about a listed Docker image.	
+	
 	Output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/List images}Inspect an image (v1.28)}} operation.		
 	
 *** ImageInspectType
 		
-	Info about an inspected Docker image.	
+	Info about an inspected Docker image.
+		
 	Output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ImageInspect}Inspect an image (v1.28)}} operation.	
+	
 	Defined Docker type: {{{https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go}ImageInspect}}
-
-*** inspectedImageContainerConfigurationType
-
-	Docker container configuration.	
-	Output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ImageInspect}Inspect an image (v1.28)}} operation.	
 
 *** inspectedImageConfigurationType
 
 	Docker image configuration.	
+	
 	Output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ImageInspect}Inspect an image (v1.28)}} operation.	
 	
 *** imageCreationType	
@@ -100,9 +101,15 @@ Development documentation
 
 	Docker container configuration 
 	
-	Input to container creation and output from container inspection.
+	Input to container creation and output from container and image inspection.
+
+	Defined Docker type: {{{https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/config.go}container.Config}}
 
 
+
+
+
+	TODO: rewrite
 
 	The schema contains these types for handling container:
 	
@@ -258,11 +265,6 @@ Development documentation
 	using the custom JABX adaptor <<<ContainerConfigurationExposedPortsMapAdapter>>>.
 	The map and JAXB adaptor is shared with the two other bindings described in this section.
 
-	To support binding of schema element <<<inspectedImageContainerConfigurationType.exposedPorts>>> to a map, 
-	the binding is customized to bind to the custom map <<<ContainerConfigurationExposedPortsMap>>> 
-	using the custom JABX adaptor <<<ContainerConfigurationExposedPortsMapAdapter>>>.
-	The map and JAXB adaptor is shared with the two other bindings described in this section.
-
 *** Labels
 
 	To support binding of schema element <<<containerConfigurationType.labels>>> to a map, 
@@ -281,11 +283,6 @@ Development documentation
 	The map and JAXB adaptor is shared with the other bindings in the section.
 
 	To support binding of schema element <<<inspectedImageContainerType.labels>>> to a map, 
-	the binding is customized to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
-	using the custom JABX adaptor <<<ContainerConfigurationLabelsMapAdapter>>>.
-	The map and JAXB adaptor is shared with the other bindings in the section.
-
-	To support binding of schema element <<<inspectedImageContainerConfigurationType.labels>>> to a map, 
 	the binding is customized to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationLabelsMapAdapter>>>.
 	The map and JAXB adaptor is shared with the other bindings in the section.
@@ -317,11 +314,6 @@ Development documentation
 	using the custom JABX adaptor <<<ContainerConfigurationHostConfigPortBindingsMapAdapter>>>.
 	The map and JAXB adaptor is shared with two other bindings in this section.
 
-	To support binding of schema element <<<inspectedImageContainerConfigurationType.portSpecs>>> to a map, 
-	the binding is customized to bind to the custom map <<<ContainerConfigurationHostConfigPortBindingsMap>>> 
-	using the custom JABX adaptor <<<ContainerConfigurationHostConfigPortBindingsMapAdapter>>>.
-	The map and JAXB adaptor is shared with two other bindings in this section.
-
 *** Restart policy
 
 	TODO:..
@@ -331,22 +323,14 @@ Development documentation
 	To support binding of <<<containerConfigurationType.volumes>>> to a map, the binding is customized
 	to bind to the custom map <<<ContainerConfigurationVolumesMap>> using the custom JABX adaptor
 	<<<ContainerConfigurationVolumesMapAdapter>>>.
-	The map and JAXB adaptor is shared with binding of <<<inspectedContainerConfigurationType.volumes>>>
-	and <<<inspectedImageContainerConfigurationType.volumes>>>.
+	The map and JAXB adaptor is shared with binding of <<<inspectedContainerConfigurationType.volumes>>>.
 	
 	To support binding of schema element <<<inspectedContainerConfigurationType.volumes>>> to a map, 
 	the binding is customized to bind to the custom map <<<ContainerConfigurationVolumesMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationVolumesMapAdapter>>>.
-	The map and JAXB adaptor is shared with binding of <<<containerConfigurationType.volumes>>>
-	and <<<inspectedImageContainerConfigurationType.volumes>>>.
+	The map and JAXB adaptor is shared with binding of <<<containerConfigurationType.volumes>>>.
 
 	To support binding of schema element <<<inspectedImageConfigurationType.volumes>>> to a map, 
-	the binding is customized to bind to the custom map <<<ContainerConfigurationVolumesMap>>> 
-	using the custom JABX adaptor <<<ContainerConfigurationVolumesMapAdapter>>>.
-	The map and JAXB adaptor is shared with binding of <<<containerConfigurationType.volumes>>>
-	and <<<inspectedContainerConfigurationType.volumes>>>.
-
-	To support binding of schema element <<<inspectedImageContainerConfigurationType.volumes>>> to a map, 
 	the binding is customized to bind to the custom map <<<ContainerConfigurationVolumesMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationVolumesMapAdapter>>>.
 	The map and JAXB adaptor is shared with binding of <<<containerConfigurationType.volumes>>>

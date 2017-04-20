@@ -348,6 +348,7 @@
 		<xs:attribute name="memorySwap" type="xs:long" use="optional"/>		
 		<xs:attribute name="memorySwappiness" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="oomKillDisable" type="xs:boolean" use="optional"/> <!-- Not implemented yet-->		
+		<xs:attribute name="oomScoreAdj" type="xs:int" use="optional"/> 
 		<xs:attribute name="pidMode" type="xs:string" use="optional"/> <!-- wrong type -->				
 		<xs:attribute name="privileged" type="xs:boolean" use="optional"/>				
 		<xs:attribute name="publishAllPorts" type="xs:boolean" use="optional"/>		

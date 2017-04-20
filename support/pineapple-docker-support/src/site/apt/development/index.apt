@@ -99,17 +99,25 @@ Development documentation
 
 *** containerConfigurationType
 
-	Docker container configuration 
+	Info about Docker container configuration. 
 	
-	Input to container creation and output from container and image inspection.
+	Input to container creation and output from container and image inspection. 
+	Used by these schema types:
+	
+	* <<<ImageInspectType>>>
+	
+	[]
 
 	Defined Docker type: {{{https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/config.go}container.Config}}
 
 
+*** inspectedContainerHostConfigType 
 
+	Info about the host configuration of a Docker container.
+	
+	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
 
-
-	TODO: rewrite
+	------------------- TODO: rewrite from here......
 
 	The schema contains these types for handling container:
 	
@@ -196,8 +204,11 @@ Development documentation
 	* <<<inspectedContainerNetworkSettingsType>>> - Info about the network configuration of a 
 	Docker container (Partial output from inspecting a containers).
 	
-	* <<<inspectedContainerHostConfigType>>> - Info about the host configuration of a Docker container 
-	(Partial output from inspecting a container).
+
+
+
+
+
 
 	* <<<inspectedContainerVolumesType>>> - Info about volumes from a container inspection info 
 	(Partial output from inspecting a container).

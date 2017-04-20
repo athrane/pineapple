@@ -97,7 +97,7 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 
 		// handle case for ContainerMount.rw
 		// - map received JSON property "RW" to
-		// InspectedContainerMounts.rw as defined in the Docker schema
+		// ContainerMounts.rw as defined in the Docker schema
 		if (methodName.equals(ContainerMount.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.

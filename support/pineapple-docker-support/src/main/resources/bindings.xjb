@@ -168,8 +168,8 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerType']" >
-			<jaxb:class name="InspectedContainer" />				
+		<jaxb:bindings node="//xs:complexType[@name='containerJsonBaseType']" >
+			<jaxb:class name="ContainerJsonBase" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 
@@ -389,7 +389,7 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerType']//xs:element[@name='volumes']">
+		<jaxb:bindings node="//xs:complexType[@name='containerJsonBaseType']//xs:element[@name='volumes']">
 			<jaxb:property>
 				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.InspectedContainerVolumesMap" />
 			</jaxb:property>
@@ -397,7 +397,7 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerType']//xs:element[@name='volumesRelabel']">
+		<jaxb:bindings node="//xs:complexType[@name='containerJsonBaseType']//xs:element[@name='volumesRelabel']">
 			<jaxb:property>
 				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.InspectedContainerVolumesRelabelMap" />
 			</jaxb:property>
@@ -405,7 +405,7 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerType']//xs:element[@name='volumesRW']">
+		<jaxb:bindings node="//xs:complexType[@name='containerJsonBaseType']//xs:element[@name='volumesRW']">
 			<jaxb:property>
 				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.InspectedContainerVolumesRwMap" />
 			</jaxb:property>

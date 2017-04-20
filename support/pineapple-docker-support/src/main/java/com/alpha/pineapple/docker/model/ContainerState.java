@@ -21,7 +21,7 @@
  */
 package com.alpha.pineapple.docker.model;
 
-import com.alpha.pineapple.docker.model.rest.InspectedContainer;
+import com.alpha.pineapple.docker.model.rest.ContainerJsonBase;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerState;
 
 /**
@@ -51,13 +51,13 @@ public enum ContainerState {
     }
 
     /**
-     * Return the container state as enum from an inspected container.
-     * 
-     * @param inspectedContainer
-     *            inspected container to return the state from.
-     * @return the container state as enum from an inspected container
-     */
-    public static ContainerState getContainerStateFromInspectedContainer(InspectedContainer inspectedContainer) {
+	 * Return the container state as enum from an inspected container.
+	 * 
+	 * @param inspectedContainer
+	 *            inspected container to return the state from.
+	 * @return the container state as enum from an inspected container
+	 */
+	public static ContainerState getContainerStateFromInspectedContainer(ContainerJsonBase inspectedContainer) {
 	InspectedContainerState actualState = inspectedContainer.getState();
 	if (actualState.isPaused())
 	    return PAUSED;

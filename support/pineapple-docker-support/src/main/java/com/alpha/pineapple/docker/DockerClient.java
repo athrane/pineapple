@@ -27,8 +27,8 @@ import com.alpha.pineapple.docker.model.ContainerInfo;
 import com.alpha.pineapple.docker.model.ContainerInstanceInfo;
 import com.alpha.pineapple.docker.model.ContainerState;
 import com.alpha.pineapple.docker.model.ImageInfo;
+import com.alpha.pineapple.docker.model.rest.ContainerJsonBase;
 import com.alpha.pineapple.docker.model.rest.ImageInspect;
-import com.alpha.pineapple.docker.model.rest.InspectedContainer;
 import com.alpha.pineapple.docker.model.rest.ListedContainer;
 import com.alpha.pineapple.docker.model.rest.ListedImage;
 import com.alpha.pineapple.docker.session.DockerSession;
@@ -379,7 +379,7 @@ public interface DockerClient {
 	 * @throws Exception
 	 *             if query fails.
 	 */
-	public InspectedContainer inspectContainer(DockerSession session, ContainerInfo info, ExecutionResult result);
+	public ContainerJsonBase inspectContainer(DockerSession session, ContainerInfo info, ExecutionResult result);
 
 	/**
 	 * Create report from containers.

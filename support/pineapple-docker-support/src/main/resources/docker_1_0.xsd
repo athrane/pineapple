@@ -8,7 +8,7 @@
 	<xs:element name="containerConfiguration" type="containerConfigurationType" />
 	<xs:element name="createdContainer" type="createdContainerType" />
 	<xs:element name="listedContainer" type="listedContainerType" />	
-	<xs:element name="inspectedContainer" type="inspectedContainerType" />
+	<xs:element name="inspectedContainer" type="containerJsonBaseType" />
 	<xs:element name="inspectedImage" type="imageInspectType" />
 	<xs:element name="imageCreationInfo" type="imageCreationType" />
 	<xs:element name="imageDeletionInfo" type="imageDeletionType" />
@@ -106,6 +106,10 @@
 		<xs:attribute name="virtualSize" type="xs:integer" use="optional"/>		
 	</xs:complexType>
 
+	<!-- 
+		Corresponds to ImageInspect
+		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go	
+	 -->
 	<xs:complexType name="imageInspectType" >
 		<xs:annotation>
 			<xs:documentation>Info about an inspected Docker image (Output from the "Inspect an image" operation).</xs:documentation>
@@ -189,9 +193,8 @@
 	<!-- Container definitions -->
 
 	<!-- 
-		Corresponds to MountPoint   
-		in docker/engine-api/types/config.go	
-		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/config.go				
+		Corresponds to Config    
+		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/config.go
 	 -->
 	<xs:complexType name="containerConfigurationType" >
 		<xs:annotation>
@@ -297,6 +300,10 @@
 		</xs:annotation>
 	</xs:complexType>
 
+	<!-- 
+		Corresponds to HostConfig   
+		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/host_config.go		
+	 -->
 	<xs:complexType name="containerConfigurationHostConfigType" >
 		<xs:annotation>
 			<xs:documentation>Info about host configuration in a container configuration.</xs:documentation>
@@ -413,7 +420,6 @@
 
 	<!-- 
 		Corresponds to Container  
-		in docker/engine-api/types/types.go	
 		https://github.com/docker/docker/blob/ce255f76c70a77c21d48ebd407d83cad55edf883/vendor/src/github.com/docker/engine-api/types/types.go
 	 -->
 	<xs:complexType name="listedContainerType" >
@@ -451,7 +457,6 @@
 
 	<!-- 
 		Corresponds to MountPoint   
-		in docker/engine-api/types/types.go	
 		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go
 		
 		Please notice:
@@ -460,8 +465,7 @@
 		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go
 		
 		The type for "type" is defined as string in 		
-		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go
-		
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go		
 	 -->
 	<xs:complexType name="containerMountType">
 		<xs:annotation>
@@ -479,10 +483,9 @@
 
 	<!-- 
 		Corresponds to ContainerJSONBase  
-		in docker/engine-api/types/types.go	
-		https://github.com/docker/docker/blob/ce255f76c70a77c21d48ebd407d83cad55edf883/vendor/src/github.com/docker/engine-api/types/types.go	
-	 -->
-	<xs:complexType name="inspectedContainerType" >
+		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go	 
+	-->
+	<xs:complexType name="containerJsonBaseType" >
 		<xs:annotation>
 			<xs:documentation>Info about an inspected Docker container (Output from inspecting a container).</xs:documentation>
 		</xs:annotation>
@@ -598,7 +601,7 @@
 	<!-- 
 		Corresponds to HostConfig   
 		in docker/engine-api/types/container/host_config.go	
-		https://github.com/docker/docker/blob/ce255f76c70a77c21d48ebd407d83cad55edf883/vendor/src/github.com/docker/engine-api/types/container/host_config.go	
+		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/host_config.go		
 	 -->
 	<xs:complexType name="inspectedContainerHostConfigType" >
 		<xs:annotation>
@@ -753,7 +756,6 @@
 
 	<!-- 
 		Corresponds to NetworkingConfig 
-		in docker/engine-api/types/network/network.go	
 		https://github.com/docker/docker/blob/3d13fddd2bc4d679f0eaa68b0be877e5a816ad53/vendor/src/github.com/docker/engine-api/types/network/network.go		
 	 -->
 
@@ -769,7 +771,6 @@
 
 	<!-- 
 		Corresponds to EndpointSettings 
-		in docker/engine-api/types/network/network.go	
 		https://github.com/docker/docker/blob/3d13fddd2bc4d679f0eaa68b0be877e5a816ad53/vendor/src/github.com/docker/engine-api/types/network/network.go		
 	 -->
 	<xs:complexType name="inspectedContainerNetworkSettingsNetworkValueType">

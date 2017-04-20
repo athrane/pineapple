@@ -51,7 +51,7 @@ import com.alpha.pineapple.docker.model.ContainerInfo;
 import com.alpha.pineapple.docker.model.ContainerInstanceInfo;
 import com.alpha.pineapple.docker.model.ImageInfo;
 import com.alpha.pineapple.docker.model.InfoBuilder;
-import com.alpha.pineapple.docker.model.rest.InspectedContainer;
+import com.alpha.pineapple.docker.model.rest.ContainerJsonBase;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerConfiguration;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.docker.utils.RestResponseException;
@@ -67,286 +67,286 @@ import com.alpha.testutils.DockerTestHelper;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.docker-config.xml" })
 public class InspectContainerCommandSystemTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command inspectContainerCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command inspectContainerCommand;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Docker session.
-     */
-    DockerSession session;
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
 
-    /**
-     * Docker helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
+	/**
+	 * Docker helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
 
-    /**
-     * Docker info objects builder.
-     */
-    @Resource
-    InfoBuilder dockerInfoBuilder;
+	/**
+	 * Docker info objects builder.
+	 */
+	@Resource
+	InfoBuilder dockerInfoBuilder;
 
-    /**
-     * Container info.
-     */
-    ContainerInfo containerInfo;
+	/**
+	 * Container info.
+	 */
+	ContainerInfo containerInfo;
 
-    /**
-     * Container instance info.
-     */
-    ContainerInstanceInfo containerInstanceInfo;
+	/**
+	 * Container instance info.
+	 */
+	ContainerInstanceInfo containerInstanceInfo;
 
-    /**
-     * Tagged image info.
-     */
-    ImageInfo taggedImageInfo;
+	/**
+	 * Tagged image info.
+	 */
+	ImageInfo taggedImageInfo;
 
-    /**
-     * Default image info (CentOS).
-     */
-    ImageInfo defaultImageInfo;
+	/**
+	 * Default image info (CentOS).
+	 */
+	ImageInfo defaultImageInfo;
 
-    /**
-     * Random container ID.
-     */
-    String randomId;
+	/**
+	 * Random container ID.
+	 */
+	String randomId;
 
-    /**
-     * Random container name.
-     */
-    String randomName;
+	/**
+	 * Random container name.
+	 */
+	String randomName;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-	randomId = RandomStringUtils.randomAlphabetic(10);
-	randomName = RandomStringUtils.randomAlphabetic(10);
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		randomId = RandomStringUtils.randomAlphabetic(10);
+		randomName = RandomStringUtils.randomAlphabetic(10);
 
-	// create context
-	context = new ContextBase();
+		// create context
+		context = new ContextBase();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("root");
+		// create execution result
+		executionResult = new ExecutionResultImpl("root");
 
-	// create session
-	session = dockerHelper.createDefaultSession();
+		// create session
+		session = dockerHelper.createDefaultSession();
 
-	// create image and info's
-	defaultImageInfo = dockerHelper.createDefaultImage(session);
-	taggedImageInfo = dockerHelper.createDefaultTaggedImageInfo();
+		// create image and info's
+		defaultImageInfo = dockerHelper.createDefaultImage(session);
+		taggedImageInfo = dockerHelper.createDefaultTaggedImageInfo();
 
-	// tag image
-	dockerHelper.tagImage(session, defaultImageInfo, taggedImageInfo);
+		// tag image
+		dockerHelper.tagImage(session, defaultImageInfo, taggedImageInfo);
 
-	// clear container info
-	containerInfo = null;
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-
-	// delete container - if it exists
-	if ((containerInfo != null) && (dockerHelper.containerExists(session, containerInfo))) {
-	    dockerHelper.stopContainer(session, containerInfo);
-	    dockerHelper.deleteContainer(session, containerInfo);
+		// clear container info
+		containerInfo = null;
 	}
 
-	// delete tagged image - if it exist
-	dockerHelper.deleteImage(session, taggedImageInfo);
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
 
-    /**
-     * Test that command instance can be created in application context.
-     */
-    @Test
-    public void testCanGetInstance() throws Exception {
-	assertNotNull(inspectContainerCommand);
-    }
+		// delete container - if it exists
+		if ((containerInfo != null) && (dockerHelper.containerExists(session, containerInfo))) {
+			dockerHelper.stopContainer(session, containerInfo);
+			dockerHelper.deleteContainer(session, containerInfo);
+		}
 
-    /**
-     * Assert that command execution was successful and returned defined
-     * inspection state.
-     */
-    void assertCommandWasSuccessfulWithDefinedInspectionState() {
-	assertTrue(executionResult.isSuccess());
-	assertTrue(context.containsKey(InspectContainerCommand.INSPECTED_CONTAINER_KEY));
-	assertNotNull(context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY));
-    }
+		// delete tagged image - if it exist
+		dockerHelper.deleteImage(session, taggedImageInfo);
+	}
 
-    /**
-     * Test that command can inspect container.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanInspectContainer() throws Exception {
+	/**
+	 * Test that command instance can be created in application context.
+	 */
+	@Test
+	public void testCanGetInstance() throws Exception {
+		assertNotNull(inspectContainerCommand);
+	}
 
-	// create container
-	containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
-	containerInfo = containerInstanceInfo.getContainerInfo();
+	/**
+	 * Assert that command execution was successful and returned defined
+	 * inspection state.
+	 */
+	void assertCommandWasSuccessfulWithDefinedInspectionState() {
+		assertTrue(executionResult.isSuccess());
+		assertTrue(context.containsKey(InspectContainerCommand.INSPECTED_CONTAINER_KEY));
+		assertNotNull(context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY));
+	}
 
-	// setup context
-	context.put(EXECUTIONRESULT_KEY, executionResult);
-	context.put(SESSION_KEY, session);
-	context.put(CONTAINER_INFO_KEY, containerInfo);
+	/**
+	 * Test that command can inspect container.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanInspectContainer() throws Exception {
 
-	// execute command
-	inspectContainerCommand.execute(context);
+		// create container
+		containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
+		containerInfo = containerInstanceInfo.getContainerInfo();
 
-	// test
-	assertCommandWasSuccessfulWithDefinedInspectionState();
-    }
+		// setup context
+		context.put(EXECUTIONRESULT_KEY, executionResult);
+		context.put(SESSION_KEY, session);
+		context.put(CONTAINER_INFO_KEY, containerInfo);
 
-    /**
-     * Test that dormant container returns running state to be false.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDormantContainerReturnsRunningIsFalse() throws Exception {
+		// execute command
+		inspectContainerCommand.execute(context);
 
-	// create container
-	containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
-	containerInfo = containerInstanceInfo.getContainerInfo();
+		// test
+		assertCommandWasSuccessfulWithDefinedInspectionState();
+	}
 
-	// setup context
-	context.put(EXECUTIONRESULT_KEY, executionResult);
-	context.put(SESSION_KEY, session);
-	context.put(CONTAINER_INFO_KEY, containerInfo);
+	/**
+	 * Test that dormant container returns running state to be false.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDormantContainerReturnsRunningIsFalse() throws Exception {
 
-	// execute command
-	inspectContainerCommand.execute(context);
+		// create container
+		containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
+		containerInfo = containerInstanceInfo.getContainerInfo();
 
-	// test
-	assertCommandWasSuccessfulWithDefinedInspectionState();
-	InspectedContainer info = (InspectedContainer) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
-	assertEquals(false, info.getState().isRunning());
-    }
+		// setup context
+		context.put(EXECUTIONRESULT_KEY, executionResult);
+		context.put(SESSION_KEY, session);
+		context.put(CONTAINER_INFO_KEY, containerInfo);
 
-    /**
-     * Test that running container returns running state to be true.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testRunningContainerReturnsRunningIsTrue() throws Exception {
-	// create container
-	containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
-	containerInfo = containerInstanceInfo.getContainerInfo();
+		// execute command
+		inspectContainerCommand.execute(context);
 
-	// start container
-	dockerHelper.startContainer(session, containerInfo);
+		// test
+		assertCommandWasSuccessfulWithDefinedInspectionState();
+		ContainerJsonBase info = (ContainerJsonBase) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
+		assertEquals(false, info.getState().isRunning());
+	}
 
-	// setup context
-	context.put(EXECUTIONRESULT_KEY, executionResult);
-	context.put(SESSION_KEY, session);
-	context.put(CONTAINER_INFO_KEY, containerInfo);
+	/**
+	 * Test that running container returns running state to be true.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testRunningContainerReturnsRunningIsTrue() throws Exception {
+		// create container
+		containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
+		containerInfo = containerInstanceInfo.getContainerInfo();
 
-	// execute command
-	inspectContainerCommand.execute(context);
+		// start container
+		dockerHelper.startContainer(session, containerInfo);
 
-	// test
-	assertCommandWasSuccessfulWithDefinedInspectionState();
-	InspectedContainer info = (InspectedContainer) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
-	assertEquals(true, info.getState().isRunning());
-    }
+		// setup context
+		context.put(EXECUTIONRESULT_KEY, executionResult);
+		context.put(SESSION_KEY, session);
+		context.put(CONTAINER_INFO_KEY, containerInfo);
 
-    /**
-     * Test that command fails to inspect unknown container.
-     */
-    @SuppressWarnings("unchecked")
-    @Test(expected = RestResponseException.class)
-    public void testFailsToInspectUnknownContainer() throws Exception {
+		// execute command
+		inspectContainerCommand.execute(context);
 
-	// create fake container info's
-	containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
-	containerInstanceInfo = dockerInfoBuilder.buildInstanceInfo(randomId, containerInfo);
+		// test
+		assertCommandWasSuccessfulWithDefinedInspectionState();
+		ContainerJsonBase info = (ContainerJsonBase) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
+		assertEquals(true, info.getState().isRunning());
+	}
 
-	// setup context
-	context.put(InspectContainerCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(InspectContainerCommand.SESSION_KEY, session);
-	context.put(InspectContainerCommand.CONTAINER_INFO_KEY, containerInfo);
+	/**
+	 * Test that command fails to inspect unknown container.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(expected = RestResponseException.class)
+	public void testFailsToInspectUnknownContainer() throws Exception {
 
-	// execute command
-	inspectContainerCommand.execute(context);
+		// create fake container info's
+		containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
+		containerInstanceInfo = dockerInfoBuilder.buildInstanceInfo(randomId, containerInfo);
 
-	// test
-	assertFalse(executionResult.isSuccess());
-    }
+		// setup context
+		context.put(InspectContainerCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(InspectContainerCommand.SESSION_KEY, session);
+		context.put(InspectContainerCommand.CONTAINER_INFO_KEY, containerInfo);
 
-    /**
-     * Test that container built from default image (CentOS) returns expected
-     * name.
-     * 
-     * The name is prefixed with a "/".
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testContainerReturnsExpectedName() throws Exception {
-	// create container
-	containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
-	containerInfo = containerInstanceInfo.getContainerInfo();
+		// execute command
+		inspectContainerCommand.execute(context);
 
-	// setup context
-	context.put(EXECUTIONRESULT_KEY, executionResult);
-	context.put(SESSION_KEY, session);
-	context.put(CONTAINER_INFO_KEY, containerInfo);
+		// test
+		assertFalse(executionResult.isSuccess());
+	}
 
-	// execute command
-	inspectContainerCommand.execute(context);
+	/**
+	 * Test that container built from default image (CentOS) returns expected
+	 * name.
+	 * 
+	 * The name is prefixed with a "/".
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testContainerReturnsExpectedName() throws Exception {
+		// create container
+		containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
+		containerInfo = containerInstanceInfo.getContainerInfo();
 
-	// test
-	assertCommandWasSuccessfulWithDefinedInspectionState();
-	InspectedContainer info = (InspectedContainer) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
-	assertEquals("/" + randomId, info.getName());
-    }
+		// setup context
+		context.put(EXECUTIONRESULT_KEY, executionResult);
+		context.put(SESSION_KEY, session);
+		context.put(CONTAINER_INFO_KEY, containerInfo);
 
-    /**
-     * Test that container built from default image (CentOS) returns expected
-     * commands (in the container configuration object).
-     * 
-     * The name is prefixed with a "/".
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testContainerReturnsExpectedConfigCmds() throws Exception {
-	// create container
-	containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
-	containerInfo = containerInstanceInfo.getContainerInfo();
+		// execute command
+		inspectContainerCommand.execute(context);
 
-	// setup context
-	context.put(EXECUTIONRESULT_KEY, executionResult);
-	context.put(SESSION_KEY, session);
-	context.put(CONTAINER_INFO_KEY, containerInfo);
+		// test
+		assertCommandWasSuccessfulWithDefinedInspectionState();
+		ContainerJsonBase info = (ContainerJsonBase) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
+		assertEquals("/" + randomId, info.getName());
+	}
 
-	// execute command
-	inspectContainerCommand.execute(context);
+	/**
+	 * Test that container built from default image (CentOS) returns expected
+	 * commands (in the container configuration object).
+	 * 
+	 * The name is prefixed with a "/".
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testContainerReturnsExpectedConfigCmds() throws Exception {
+		// create container
+		containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
+		containerInfo = containerInstanceInfo.getContainerInfo();
 
-	// test
-	assertCommandWasSuccessfulWithDefinedInspectionState();
-	InspectedContainer info = (InspectedContainer) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
-	assertNotNull(info.getConfig());
-	InspectedContainerConfiguration configuration = info.getConfig();
-	List<String> cmds = configuration.getCmd();
-	assertNotNull(cmds);
-	assertEquals(1, cmds.size());
-	assertEquals(DUMMY_COMMAND, cmds.get(0));
-    }
+		// setup context
+		context.put(EXECUTIONRESULT_KEY, executionResult);
+		context.put(SESSION_KEY, session);
+		context.put(CONTAINER_INFO_KEY, containerInfo);
+
+		// execute command
+		inspectContainerCommand.execute(context);
+
+		// test
+		assertCommandWasSuccessfulWithDefinedInspectionState();
+		ContainerJsonBase info = (ContainerJsonBase) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
+		assertNotNull(info.getConfig());
+		InspectedContainerConfiguration configuration = info.getConfig();
+		List<String> cmds = configuration.getCmd();
+		assertNotNull(cmds);
+		assertEquals(1, cmds.size());
+		assertEquals(DUMMY_COMMAND, cmds.get(0));
+	}
 
 }

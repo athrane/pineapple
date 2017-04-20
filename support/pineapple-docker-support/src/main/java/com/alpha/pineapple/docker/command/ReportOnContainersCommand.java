@@ -45,7 +45,7 @@ import com.alpha.pineapple.docker.DockerClient;
 import com.alpha.pineapple.docker.model.ContainerInfo;
 import com.alpha.pineapple.docker.model.ImageInfo;
 import com.alpha.pineapple.docker.model.InfoBuilder;
-import com.alpha.pineapple.docker.model.rest.InspectedContainer;
+import com.alpha.pineapple.docker.model.rest.ContainerJsonBase;
 import com.alpha.pineapple.docker.model.rest.ListedContainer;
 import com.alpha.pineapple.docker.model.rest.ListedContainerPort;
 import com.alpha.pineapple.docker.session.DockerSession;
@@ -92,149 +92,149 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class ReportOnContainersCommand implements Command {
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result
+	 * object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * First container name entry.
-     */
-    static final int FIRST_ENTRY = 0;
+	/**
+	 * First container name entry.
+	 */
+	static final int FIRST_ENTRY = 0;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    /**
-     * Docker info object builder.
-     */
-    @Resource
-    InfoBuilder dockerInfoBuilder;
+	/**
+	 * Docker info object builder.
+	 */
+	@Resource
+	InfoBuilder dockerInfoBuilder;
 
-    /**
-     * Docker JAXB Getter method matcher.
-     */
-    @Resource
-    GetterMethodMatcher dockerJaxbGetterMethodMatcher;
+	/**
+	 * Docker JAXB Getter method matcher.
+	 */
+	@Resource
+	GetterMethodMatcher dockerJaxbGetterMethodMatcher;
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// list containers
-	ListedContainer[] containerInfos = dockerClient.listContainers(session, executionResult);
+		// list containers
+		ListedContainer[] containerInfos = dockerClient.listContainers(session, executionResult);
 
-	// add messages
-	Object[] args = { containerInfos.length };
-	String message = messageProvider.getMessage("rocc.list_container_info", args);
-	executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+		// add messages
+		Object[] args = { containerInfos.length };
+		String message = messageProvider.getMessage("rocc.list_container_info", args);
+		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
 
-	for (ListedContainer listedContainer : containerInfos) {
+		for (ListedContainer listedContainer : containerInfos) {
 
-	    // get container name
-	    String firstName = getFirstListEntry(listedContainer.getNames());
-	    firstName = removeContainerNamePrefix(firstName);
+			// get container name
+			String firstName = getFirstListEntry(listedContainer.getNames());
+			firstName = removeContainerNamePrefix(firstName);
 
-	    // add child execution result
-	    Object[] args2 = { firstName, listedContainer.getImage() };
-	    String message2 = messageProvider.getMessage("rocc.list_single_container_header_info", args2);
-	    ExecutionResult childResult = executionResult.addChild(message2);
+			// add child execution result
+			Object[] args2 = { firstName, listedContainer.getImage() };
+			String message2 = messageProvider.getMessage("rocc.list_single_container_header_info", args2);
+			ExecutionResult childResult = executionResult.addChild(message2);
 
-	    inspectContainer(listedContainer, childResult);
+			inspectContainer(listedContainer, childResult);
+		}
+
+		// complete result
+		executionResult.completeAsComputed(messageProvider, "rocc.list_containers_completed");
+		return Command.CONTINUE_PROCESSING;
 	}
 
-	// complete result
-	executionResult.completeAsComputed(messageProvider, "rocc.list_containers_completed");
-	return Command.CONTINUE_PROCESSING;
-    }
+	/**
+	 * Inspect container.
+	 * 
+	 * @param container
+	 *            container meta data.
+	 * @param result
+	 *            result where container data should be added to.
+	 */
+	void inspectContainer(ListedContainer container, ExecutionResult result) {
 
-    /**
-     * Inspect container.
-     * 
-     * @param container
-     *            container meta data.
-     * @param result
-     *            result where container data should be added to.
-     */
-    void inspectContainer(ListedContainer container, ExecutionResult result) {
+		try {
 
-	try {
+			// get a container name
+			List<String> names = container.getNames();
+			String name = getFirstListEntry(names);
+			name = removeContainerNamePrefix(name);
 
-	    // get a container name
-	    List<String> names = container.getNames();
-	    String name = getFirstListEntry(names);
-	    name = removeContainerNamePrefix(name);
+			// inspect container
+			ImageInfo imageInfo = dockerInfoBuilder.buildImageInfoFromFQName(container.getImage());
+			ContainerInfo info = dockerInfoBuilder.buildContainerInfo(name, imageInfo);
+			ContainerJsonBase inspectedContainer = dockerClient.inspectContainer(session, info, result);
 
-	    // inspect container
-	    ImageInfo imageInfo = dockerInfoBuilder.buildImageInfoFromFQName(container.getImage());
-	    ContainerInfo info = dockerInfoBuilder.buildContainerInfo(name, imageInfo);
-	    InspectedContainer inspectedContainer = dockerClient.inspectContainer(session, info, result);
+			// report using reflection
+			reportOnObject(result, inspectedContainer, dockerJaxbGetterMethodMatcher, CUSTOM_JAXB_MAPS);
 
-	    // report using reflection
-	    reportOnObject(result, inspectedContainer, dockerJaxbGetterMethodMatcher, CUSTOM_JAXB_MAPS);
+			// add ports
+			String message3 = messageProvider.getMessage("rocc.list_container_ports_header");
+			ExecutionResult portsResult = result.addChild(message3);
+			List<ListedContainerPort> ports = container.getPorts();
+			Object[] args4 = { ports.size() };
+			String message4 = messageProvider.getMessage("rocc.list_container_ports_info", args4);
+			portsResult.addMessage(ExecutionResult.MSG_MESSAGE, message4);
 
-	    // add ports
-	    String message3 = messageProvider.getMessage("rocc.list_container_ports_header");
-	    ExecutionResult portsResult = result.addChild(message3);
-	    List<ListedContainerPort> ports = container.getPorts();
-	    Object[] args4 = { ports.size() };
-	    String message4 = messageProvider.getMessage("rocc.list_container_ports_info", args4);
-	    portsResult.addMessage(ExecutionResult.MSG_MESSAGE, message4);
+			for (ListedContainerPort port : ports) {
+				Object[] args5 = { port.getIp(), port.getPublicPort(), port.getPrivatePort(), port.getType() };
+				String message5 = messageProvider.getMessage("rocc.list_single_container_port_info", args5);
+				ExecutionResult portResult = portsResult.addChild(message5);
+				portResult.addMessage("IP", port.getIp());
+				portResult.addMessage("Public port", port.getPublicPort());
+				portResult.addMessage("Private port", port.getPrivatePort());
+				portResult.addMessage("Type", port.getType());
 
-	    for (ListedContainerPort port : ports) {
-		Object[] args5 = { port.getIp(), port.getPublicPort(), port.getPrivatePort(), port.getType() };
-		String message5 = messageProvider.getMessage("rocc.list_single_container_port_info", args5);
-		ExecutionResult portResult = portsResult.addChild(message5);
-		portResult.addMessage("IP", port.getIp());
-		portResult.addMessage("Public port", port.getPublicPort());
-		portResult.addMessage("Private port", port.getPrivatePort());
-		portResult.addMessage("Type", port.getType());
+				portResult.setState(ExecutionResult.ExecutionState.SUCCESS);
+			}
+			portsResult.setState(ExecutionResult.ExecutionState.SUCCESS);
 
-		portResult.setState(ExecutionResult.ExecutionState.SUCCESS);
-	    }
-	    portsResult.setState(ExecutionResult.ExecutionState.SUCCESS);
+			// complete as computed
+			result.completeAsComputed(messageProvider, "rocc.list_single_container_completed");
 
-	    // complete as computed
-	    result.completeAsComputed(messageProvider, "rocc.list_single_container_completed");
-
-	} catch (Exception e) {
-	    result.completeAsError(messageProvider, "rocc.inpect_container_failure", e);
+		} catch (Exception e) {
+			result.completeAsError(messageProvider, "rocc.inpect_container_failure", e);
+		}
 	}
-    }
 
 }

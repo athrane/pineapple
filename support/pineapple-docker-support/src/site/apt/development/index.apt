@@ -111,11 +111,23 @@ Development documentation
 	Defined Docker type: {{{https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/config.go}container.Config}}
 
 
+*** containerJsonBaseType
+
+	 Info about an inspected Docker container. 
+
+	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
+	
+	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go}ContainerJSONBase }}
+
+
 *** inspectedContainerHostConfigType 
 
 	Info about the host configuration of a Docker container.
 	
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
+	
+	TODO: Rename this type to the Docker type...
+	
 
 	------------------- TODO: rewrite from here......
 
@@ -195,8 +207,6 @@ Development documentation
 	* <<<listedContainerPortType>>> - Info about a port from a container info 
 	(Partial output from listing a container).
 
-	* <<<inspectedContainerType>>> - Info about an inspected Docker container 
-	(Output from inspecting a container).
 
 	* <<<inspectedContainerStateType>>> - Info about the state of a Docker container 
 	(Partial output from inspecting a containers).
@@ -347,15 +357,15 @@ Development documentation
 	The map and JAXB adaptor is shared with binding of <<<containerConfigurationType.volumes>>>
 	and <<<inspectedContainerConfigurationType.volumes>>>.
 
-	To support binding of schema element <<<inspectedContainerType.volumes>>> to a map, 
+	To support binding of schema element <<<containerJsonBaseType.volumes>>> to a map, 
 	the binding is customized to bind to the custom map <<<InspectedContainerVolumesMap>>> 
 	using the custom JABX adaptor <<<InspectedContainerVolumesMapAdapter>>>.
 
-	To support binding of schema element <<<inspectedContainerType.volumesRelabel>>>to a map, 
+	To support binding of schema element <<<containerJsonBaseType.volumesRelabel>>>to a map, 
 	the binding is customized to bind to the custom map <<<inspectedContainerVolumesRelabelMap>>> 
 	using the custom JABX adaptor <<<inspectedContainerVolumesRelabelMapAdapter>>>.
 
-	To support binding of schema element <<<inspectedContainerType.volumesRW>>>to a map, 
+	To support binding of schema element <<<containerJsonBaseType.volumesRW>>>to a map, 
 	the binding is customized to bind to the custom map <<<inspectedContainerVolumesRwMap>>> 
 	using the custom JABX adaptor <<<inspectedContainerVolumesRwMapAdapter>>>.
 

@@ -39,7 +39,7 @@ import com.alpha.pineapple.command.initialization.Initialize;
 import com.alpha.pineapple.command.initialization.ValidateValue;
 import com.alpha.pineapple.command.initialization.ValidationPolicy;
 import com.alpha.pineapple.docker.model.ContainerInfo;
-import com.alpha.pineapple.docker.model.rest.InspectedContainer;
+import com.alpha.pineapple.docker.model.rest.ContainerJsonBase;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.i18n.MessageProvider;
@@ -89,84 +89,83 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class InspectContainerCommand implements Command {
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result
+	 * object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Container info for the
-     * container to access.
-     */
-    public static final String CONTAINER_INFO_KEY = "container-info";
+	/**
+	 * Key used to identify property in context: Container info for the
+	 * container to access.
+	 */
+	public static final String CONTAINER_INFO_KEY = "container-info";
 
-    /**
-     * Key used to identify property in context: inspected container info
-     * object.
-     */
-    public static final String INSPECTED_CONTAINER_KEY = "inspected-container-info";
+	/**
+	 * Key used to identify property in context: inspected container info
+	 * object.
+	 */
+	public static final String INSPECTED_CONTAINER_KEY = "inspected-container-info";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Container info.
-     */
-    @Initialize(CONTAINER_INFO_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ContainerInfo containerInfo;
+	/**
+	 * Container info.
+	 */
+	@Initialize(CONTAINER_INFO_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ContainerInfo containerInfo;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    @SuppressWarnings("unchecked")
-    public boolean execute(Context context) throws Exception {
+	@SuppressWarnings("unchecked")
+	public boolean execute(Context context) throws Exception {
 
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// get container name
-	Map<String, String> uriVariables = new HashMap<String, String>();
-	uriVariables.put("id", containerInfo.getName());
+		// get container name
+		Map<String, String> uriVariables = new HashMap<String, String>();
+		uriVariables.put("id", containerInfo.getName());
 
-	// get to inspect container
-	InspectedContainer info = session.httpGetForObject(INSPECT_CONTAINER_URI, uriVariables,
-		InspectedContainer.class);
+		// get to inspect container
+		ContainerJsonBase info = session.httpGetForObject(INSPECT_CONTAINER_URI, uriVariables, ContainerJsonBase.class);
 
-	// complete result
-	Object[] args = { info.getName() };
-	executionResult.completeAsSuccessful(messageProvider, "icc.inspect_container_completed", args);
+		// complete result
+		Object[] args = { info.getName() };
+		executionResult.completeAsSuccessful(messageProvider, "icc.inspect_container_completed", args);
 
-	// store inspection info
-	context.put(INSPECTED_CONTAINER_KEY, info);
+		// store inspection info
+		context.put(INSPECTED_CONTAINER_KEY, info);
 
-	return Command.CONTINUE_PROCESSING;
-    }
+		return Command.CONTINUE_PROCESSING;
+	}
 
 }

@@ -303,6 +303,11 @@
 	<!-- 
 		Corresponds to HostConfig   
 		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/host_config.go		
+
+		Please notice:
+		
+		The type for "cgroup" is defined as string in 		
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go		
 	 -->
 	<xs:complexType name="containerConfigurationHostConfigType" >
 		<xs:annotation>
@@ -311,6 +316,7 @@
 		<xs:sequence>
 			<xs:element name="binds" type="stringList" minOccurs="0" maxOccurs="1" /> 			
 			<xs:element name="dns" type="stringList" minOccurs="0" maxOccurs="1" /> 
+			<xs:element name="dnsOptions" type="stringList" minOccurs="0" maxOccurs="1" /> 						
 			<xs:element name="dnsSearch" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="extraHosts" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="groupAdd" type="stringList" minOccurs="0" maxOccurs="1" />	
@@ -321,10 +327,12 @@
 			<xs:element name="securityOpt" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="volumesFrom" type="stringList" minOccurs="0" maxOccurs="1" />				
  		</xs:sequence>
+		<xs:attribute name="autoRemove" type="xs:boolean" use="optional"/>		 		 		 		
 		<xs:attribute name="blkioWeight" type="xs:long" use="optional"/> <!-- Not implemented yet-->		
 		<xs:attribute name="containerIDFile" type="xs:string" use="optional"/> <!-- Not implemented yet-->		 		
 		<xs:attribute name="capAdd" type="xs:string" use="optional"/> <!-- wrong type -->		
-		<xs:attribute name="capDrop" type="xs:string" use="optional"/> <!-- wrong type -->		
+		<xs:attribute name="capDrop" type="xs:string" use="optional"/> <!-- wrong type -->
+		<xs:attribute name="cgroup" type="xs:string" use="optional"/> <!-- approximation of the CgroupSpec which is implemented as a string -->					
 		<xs:attribute name="cgroupParent" type="xs:string" use="optional"/> 		
 		<xs:attribute name="consoleSize" type="xs:string" use="optional"/> <!-- Not implemented yet-->		
 		<xs:attribute name="cpuShares" type="xs:long" use="optional"/>				
@@ -345,8 +353,8 @@
 		<xs:attribute name="publishAllPorts" type="xs:boolean" use="optional"/>		
 		<xs:attribute name="readonlyRootfs" type="xs:string" use="optional"/> <!-- wrong type -->		
 		<xs:attribute name="ulimits" type="xs:string" use="optional"/> <!-- wrong type -->						
-		<xs:attribute name="utsMode" type="xs:string" use="optional"/> <!-- wrong type -->				
-
+		<xs:attribute name="utsMode" type="xs:string" use="optional"/> <!-- wrong type -->	
+		<xs:attribute name="volumeDriver" type="xs:string" use="optional"/> 											
 	</xs:complexType>
 
 	<xs:complexType name="containerConfigurationHostConfigPortBindingsType" >
@@ -427,7 +435,7 @@
 			<xs:documentation>Info about a listed Docker container (Output from listing containers).</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="hostConfig" type="inspectedContainerHostConfigType" minOccurs="0" maxOccurs="1" />							
+			<xs:element name="hostConfig" type="containerConfigurationHostConfigType" minOccurs="0" maxOccurs="1" />							
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="names" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" />			
@@ -494,7 +502,7 @@
 			<xs:element name="config" type="inspectedContainerConfigurationType" minOccurs="0" maxOccurs="1" />  <!-- gone in current source/rest1.23, but not in 1.9 -->
 			<xs:element name="execIDs" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="graphDriver" type="inspectedContainerGraphDriverType" minOccurs="0" maxOccurs="1" />									
-			<xs:element name="hostConfig" type="inspectedContainerHostConfigType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="hostConfig" type="containerConfigurationHostConfigType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="mounts" type="inspectedContainerMountsType" minOccurs="0" maxOccurs="unbounded" />	<!-- gone in current source/rest1.23, but not in 1.9 -->											
 			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" /> <!-- gone in current source/rest1.23, but not in 1.9 -->
 			<xs:element name="state" type="inspectedContainerStateType" minOccurs="0" maxOccurs="1" />
@@ -596,62 +604,6 @@
 		<xs:attribute name="sandboxId" type="xs:string" use="optional"/>						
 		<xs:attribute name="secondaryIPAddresses" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="secondaryIPv6Addresses" type="xs:long" use="optional"/> <!-- wrong type -->
-	</xs:complexType>
-
-	<!-- 
-		Corresponds to HostConfig   
-		in docker/engine-api/types/container/host_config.go	
-		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/host_config.go		
-	 -->
-	<xs:complexType name="inspectedContainerHostConfigType" >
-		<xs:annotation>
-			<xs:documentation>Info about the host configuration of a Docker container (Partial output from inspecting a container).</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="binds" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="consoleSize" type="intList" minOccurs="0" maxOccurs="1" /> 						
-			<xs:element name="devices" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="dns" type="stringList" minOccurs="0" maxOccurs="1" /> 
-			<xs:element name="dnsSearch" type="stringList" minOccurs="0" maxOccurs="1" /> 
-			<xs:element name="dnsOptions" type="stringList" minOccurs="0" maxOccurs="1" /> 			
-			<xs:element name="extraHosts" type="stringList" minOccurs="0" maxOccurs="1" /> 
-			<xs:element name="groupAdd" type="stringList" minOccurs="0" maxOccurs="1" /> 
-			<xs:element name="links" type="stringList" minOccurs="0" maxOccurs="1" /> 						
-			<xs:element name="logConfig" type="containerConfigurationHostConfigLogConfigType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="lxcConf" type="stringList" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="portBindings" type="containerConfigurationHostConfigPortBindingsType" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="restartPolicy" type="containerConfigurationHostConfigRestartPolicyType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="securityOpt" type="stringList" minOccurs="0" maxOccurs="1" /> 			
-			<xs:element name="volumesFrom" type="stringList" minOccurs="0" maxOccurs="1" /> 			
- 		</xs:sequence>
-		<xs:attribute name="autoRemove" type="xs:boolean" use="optional"/>		 		 		
-		<xs:attribute name="blkioWeight" type="xs:long" use="optional"/>		 		
-		<xs:attribute name="capAdd" type="xs:string" use="optional"/> <!-- wrong type -->		
-		<xs:attribute name="capDrop" type="xs:string" use="optional"/> <!-- wrong type -->		
-		<xs:attribute name="cgroup" type="xs:string" use="optional"/> <!-- approximation of the CgroupSpec which is implemented as a string -->		
-		<xs:attribute name="cgroupParent" type="xs:string" use="optional"/> 		
-		<xs:attribute name="containerIDFile" type="xs:string" use="optional"/>				
-		<xs:attribute name="cpuShares" type="xs:long" use="optional"/>				
-		<xs:attribute name="cpuPeriod" type="xs:long" use="optional"/>				
-		<xs:attribute name="cpuQuota" type="xs:long" use="optional"/>						
-		<xs:attribute name="cpusetCpus" type="xs:string" use="optional"/>						
-		<xs:attribute name="cpusetMems" type="xs:string" use="optional"/>						
-		<xs:attribute name="ipcMode" type="xs:string" use="optional"/>		
-		<xs:attribute name="kernelMemory" type="xs:long" use="optional"/>										
-		<xs:attribute name="memory" type="xs:long" use="optional"/>		
-		<xs:attribute name="memoryReservation" type="xs:long" use="optional"/>										
-		<xs:attribute name="memorySwap" type="xs:long" use="optional"/>								
-		<xs:attribute name="memorySwappiness" type="xs:long" use="optional"/>										
-		<xs:attribute name="mountRun" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="networkMode" type="xs:string" use="optional"/>	  <!-- wrong type in rest1.23 -->	
-		<xs:attribute name="oomKillDisable" type="xs:boolean" use="optional"/> 
-		<xs:attribute name="pidMode" type="xs:string" use="optional"/>						
-		<xs:attribute name="privileged" type="xs:boolean" use="optional"/>				
-		<xs:attribute name="publishAllPorts" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="readonlyRootfs" type="xs:string" use="optional"/> <!-- wrong type -->		
-		<xs:attribute name="ulimits" type="xs:string" use="optional"/> <!-- wrong type -->				
-		<xs:attribute name="utsMode" type="xs:string" use="optional"/> 				
-		<xs:attribute name="volumeDriver" type="xs:string" use="optional"/> 						
 	</xs:complexType>
 
 	<xs:complexType name="inspectedContainerGraphDriverType">

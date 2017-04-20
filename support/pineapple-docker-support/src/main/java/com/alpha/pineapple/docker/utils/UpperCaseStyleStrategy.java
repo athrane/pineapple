@@ -26,7 +26,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.alpha.pineapple.docker.model.rest.ContainerMount;
 import com.alpha.pineapple.docker.model.rest.CreatedContainer;
-import com.alpha.pineapple.docker.model.rest.InspectedContainerHostConfig;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettings;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettingsNetworkValue;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerState;
@@ -180,16 +179,6 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 			// property.
 			if (defaultName.equals("globalIpv6PrefixLen"))
 				return "GlobalIPv6PrefixLen";
-		}
-
-		// handle case for InspectedContainerHostConfig properties
-		// example: map received JSON property "UTSMode" to
-		// InspectedContainerHostConfig.utsMode as defined in the Docker schema
-		if (methodName.equals(InspectedContainerHostConfig.class.getName())) {
-			// if field name matches name from schema then return name of JSON
-			// property.
-			if (defaultName.equals("utsMode"))
-				return "UTSMode";
 		}
 
 		// handle case for InspectedContainerState.oomKilled

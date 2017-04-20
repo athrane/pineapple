@@ -113,19 +113,29 @@ Development documentation
 
 *** containerJsonBaseType
 
-	 Info about an inspected Docker container. 
+	Info about an inspected Docker container. 
 
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
 	
-	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go}ContainerJSONBase }}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go}ContainerJSONBase}}
 
-
-*** inspectedContainerHostConfigType 
+*** containerConfigurationHostConfigType 
 
 	Info about the host configuration of a Docker container.
 	
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
+
+	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go}HostConfig}}
 	
+	Used by these schema types:
+	
+	* <<<containerConfigurationType>>>
+
+	* <<<containerJsonBaseType>>>
+
+	* <<<listedContainerType>>>
+	
+	[]	
 	TODO: Rename this type to the Docker type...
 	
 
@@ -316,11 +326,6 @@ Development documentation
 *** Port binding
 
 	To support binding of schema element <<<containerConfigurationHostConfigType.portBindings>>> to a map, 
-	the binding is customized to bind to the custom map <<<ContainerConfigurationHostConfigPortBindingsMap>>> 
-	using the custom JABX adaptor <<<ContainerConfigurationHostConfigPortBindingsMapAdapter>>>.
-	The map and JAXB adaptor is shared with two other bindings in this section.
-
-	To support binding of schema element <<<inspectedContainerHostConfigType.portBindings>>> to a map, 
 	the binding is customized to bind to the custom map <<<ContainerConfigurationHostConfigPortBindingsMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationHostConfigPortBindingsMapAdapter>>>.
 	The map and JAXB adaptor is shared with two other bindings in this section.
@@ -550,9 +555,6 @@ Development documentation
 
 		* If the target object attribute is <<<CreatedContainer.id>>> then the received JSON property <<<Id>>> is
 		mapped to to the target attribute <<<id>>>.
-
-		* If the target object attribute is <<<InspectedContainerHostConfig.utsMode>>> then the received JSON 
-		property <<<UTSMode>>> is mapped to to the target attribute <<<utsMode>>>.
 
 		* If the target object attribute is <<<InspectedContainerNetworkSettings.ipAddress>>> then the received JSON 
 		property <<<IPAddress>>> is mapped to to the target attribute <<<ipAddress>>>.

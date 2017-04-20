@@ -62,7 +62,6 @@ import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfig;
 import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfigPortBindingValue;
 import com.alpha.pineapple.docker.model.rest.ContainerJsonBase;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerConfiguration;
-import com.alpha.pineapple.docker.model.rest.InspectedContainerHostConfig;
 import com.alpha.pineapple.docker.model.rest.ObjectFactory;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.docker.utils.RestResponseException;
@@ -1319,7 +1318,7 @@ public class CreateContainerCommandSystemTest {
 		assertNotNull(inspectedContainer);
 		InspectedContainerConfiguration inspectedContainerConfig = inspectedContainer.getConfig();
 		assertNotNull(inspectedContainerConfig);
-		InspectedContainerHostConfig inspectedHostConfig = inspectedContainer.getHostConfig();
+		ContainerConfigurationHostConfig inspectedHostConfig = inspectedContainer.getHostConfig();
 		List<String> inspectedLinks = inspectedHostConfig.getLinks();
 		assertNotNull(inspectedLinks);
 		assertEquals(1, inspectedLinks.size());
@@ -1369,7 +1368,7 @@ public class CreateContainerCommandSystemTest {
 		assertNotNull(inspectedContainer);
 		InspectedContainerConfiguration inspectedContainerConfig = inspectedContainer.getConfig();
 		assertNotNull(inspectedContainerConfig);
-		InspectedContainerHostConfig inspectedHostConfig = inspectedContainer.getHostConfig();
+		ContainerConfigurationHostConfig inspectedHostConfig = inspectedContainer.getHostConfig();
 		List<String> inspectedLinks = inspectedHostConfig.getLinks();
 		assertNotNull(inspectedLinks);
 		assertEquals(2, inspectedLinks.size());

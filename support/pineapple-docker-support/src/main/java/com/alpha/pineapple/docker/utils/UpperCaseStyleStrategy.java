@@ -24,6 +24,7 @@ package com.alpha.pineapple.docker.utils;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfig;
 import com.alpha.pineapple.docker.model.rest.ContainerMount;
 import com.alpha.pineapple.docker.model.rest.CreatedContainer;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettings;
@@ -92,6 +93,17 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 			// property.
 			if (defaultName.equals("id"))
 				return "Id";
+		}
+
+		// handle case for ContainerConfigurationHostConfig properties
+		// example: map received JSON property "UTSMode" to
+		// ContainerConfigurationHostConfig.utsMode as defined in the Docker
+		// schema
+		if (methodName.equals(ContainerConfigurationHostConfig.class.getName())) {
+			// if field name matches name from schema then return name of JSON
+			// property.
+			if (defaultName.equals("utsMode"))
+				return "UTSMode";
 		}
 
 		// handle case for ContainerMount.rw

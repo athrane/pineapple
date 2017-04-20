@@ -556,6 +556,9 @@ Development documentation
 		* If the target object attribute is <<<CreatedContainer.id>>> then the received JSON property <<<Id>>> is
 		mapped to to the target attribute <<<id>>>.
 
+		* If the target object attribute is <<<ContainerConfigurationHostConfig.utsMode>>> then the received JSON 
+		property <<<UTSMode>>> is mapped to to the target attribute <<<utsMode>>>.
+
 		* If the target object attribute is <<<InspectedContainerNetworkSettings.ipAddress>>> then the received JSON 
 		property <<<IPAddress>>> is mapped to to the target attribute <<<ipAddress>>>.
 

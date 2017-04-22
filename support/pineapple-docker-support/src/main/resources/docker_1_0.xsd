@@ -308,6 +308,9 @@
 		
 		The type for "cgroup" is defined as string in 		
 		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go		
+		
+		The type for "usernsMode" is defined as string in 		
+		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/host_config.go
 	 -->
 	<xs:complexType name="containerConfigurationHostConfigType" >
 		<xs:annotation>
@@ -355,6 +358,7 @@
 		<xs:attribute name="readonlyRootfs" type="xs:string" use="optional"/> <!-- wrong type -->		
 		<xs:attribute name="ulimits" type="xs:string" use="optional"/> <!-- wrong type -->						
 		<xs:attribute name="utsMode" type="xs:string" use="optional"/> <!-- wrong type -->	
+		<xs:attribute name="usernsMode" type="xs:string" use="optional"/> <!-- approximation of the UsernsMode which is implemented as a string -->			
 		<xs:attribute name="volumeDriver" type="xs:string" use="optional"/> 											
 	</xs:complexType>
 

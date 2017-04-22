@@ -318,6 +318,7 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="binds" type="stringList" minOccurs="0" maxOccurs="1" /> 			
+			<xs:element name="consoleSize" type="intList" minOccurs="0" maxOccurs="1" /> 			
 			<xs:element name="dns" type="stringList" minOccurs="0" maxOccurs="1" /> 
 			<xs:element name="dnsOptions" type="stringList" minOccurs="0" maxOccurs="1" /> 						
 			<xs:element name="dnsSearch" type="stringList" minOccurs="0" maxOccurs="1" />	
@@ -332,12 +333,11 @@
  		</xs:sequence>
 		<xs:attribute name="autoRemove" type="xs:boolean" use="optional"/>		 		 		 		
 		<xs:attribute name="blkioWeight" type="xs:long" use="optional"/> <!-- Not implemented yet-->		
-		<xs:attribute name="containerIDFile" type="xs:string" use="optional"/> <!-- Not implemented yet-->		 		
 		<xs:attribute name="capAdd" type="xs:string" use="optional"/> <!-- wrong type -->		
 		<xs:attribute name="capDrop" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="cgroup" type="xs:string" use="optional"/> <!-- approximation of the CgroupSpec which is implemented as a string -->					
 		<xs:attribute name="cgroupParent" type="xs:string" use="optional"/> 		
-		<xs:attribute name="consoleSize" type="xs:string" use="optional"/> <!-- Not implemented yet-->		
+		<xs:attribute name="containerIDFile" type="xs:string" use="optional"/> <!-- Not implemented yet-->		 				
 		<xs:attribute name="cpuShares" type="xs:long" use="optional"/>				
 		<xs:attribute name="cpuPeriod" type="xs:long" use="optional"/>				
 		<xs:attribute name="cpusetCpus" type="xs:string" use="optional"/>				

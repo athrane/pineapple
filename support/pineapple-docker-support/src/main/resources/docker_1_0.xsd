@@ -355,7 +355,8 @@
 		<xs:attribute name="pidMode" type="xs:string" use="optional"/> <!-- wrong type -->				
 		<xs:attribute name="privileged" type="xs:boolean" use="optional"/>				
 		<xs:attribute name="publishAllPorts" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="readonlyRootfs" type="xs:string" use="optional"/> <!-- wrong type -->		
+		<xs:attribute name="readonlyRootfs" type="xs:string" use="optional"/> <!-- wrong type -->	
+		<xs:attribute name="shmSize" type="xs:long" use="optional"/> <!-- approximation of the ShmSize which is implemented as a int64 -->				
 		<xs:attribute name="ulimits" type="xs:string" use="optional"/> <!-- wrong type -->						
 		<xs:attribute name="utsMode" type="xs:string" use="optional"/> <!-- wrong type -->	
 		<xs:attribute name="usernsMode" type="xs:string" use="optional"/> <!-- approximation of the UsernsMode which is implemented as a string -->			

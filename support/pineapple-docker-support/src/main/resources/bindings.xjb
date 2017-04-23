@@ -1,4 +1,4 @@
-<jaxb:bindings version="2.0"		xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+<jaxb:bindings version="2.0" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"	
 	jaxb:extensionBindingPrefixes="xjc" >
@@ -14,6 +14,52 @@
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='versionType']" >
 			<jaxb:class name="Version" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<!-- Generic definitions -->
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='graphDriverType']" >
+			<jaxb:class name="GraphDriver" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='graphDriverDataType']" >
+			<jaxb:class name="GraphDriverData" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='rootFSType']" >
+			<jaxb:class name="RootFS" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='weightDeviceType']" >
+			<jaxb:class name="WeightDevice" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='weightDevicesType']" >
+			<jaxb:class name="WeightDevices" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<!-- Image definitions -->
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='progressDetailType']" >
+			<jaxb:class name="ProgressDetail" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='errorDetailType']" >
+			<jaxb:class name="ErrorDetail" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 
@@ -46,6 +92,8 @@
 			<jaxb:class name="ImageDeletion" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
+
+	<!-- Container definitions -->
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationType']" >
@@ -260,39 +308,6 @@
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerMountsType']" >
 			<jaxb:class name="InspectedContainerMounts" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-
-	<!-- Generic types -->
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='progressDetailType']" >
-			<jaxb:class name="ProgressDetail" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='errorDetailType']" >
-			<jaxb:class name="ErrorDetail" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='graphDriverType']" >
-			<jaxb:class name="GraphDriver" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='graphDriverDataType']" >
-			<jaxb:class name="GraphDriverData" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='rootFSType']" >
-			<jaxb:class name="RootFS" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 

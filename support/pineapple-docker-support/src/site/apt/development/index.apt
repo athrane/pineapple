@@ -53,6 +53,33 @@ Development documentation
 	
 	Type for list of integers.
 	
+*** graphDriverType	
+
+	Container for <<<graphDriverDataType>>> 
+	
+	Implemented as a map, see <Bindings> section below.
+		
+*** graphDriverDataType	
+
+	Docker Graph driver configuration (Output from inspecting an image or container).
+	
+	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
+	
+	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/blkiodev/blkio.go}WeightDevice}}
+
+*** weightDeviceType	
+
+	Container for <<<graphDriverDataType>>> 
+	
+	Implemented as a default list by JAXB, no bindings.
+	
+*** weightDeviceType	
+
+	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
+	
+	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/blkiodev/blkio.go}WeightDevice}}
+	
+	
 ** Schema types for images
 
 *** progressDetailType
@@ -136,6 +163,7 @@ Development documentation
 	* <<<listedContainerType>>>
 	
 	[]	
+	
 	TODO: Rename this type to the Docker type...
 	
 

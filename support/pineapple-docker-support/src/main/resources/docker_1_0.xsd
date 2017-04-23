@@ -311,6 +311,10 @@
 		
 		The type for "usernsMode" is defined as string in 		
 		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/host_config.go
+		
+		The type for "Isolation" is defined as string in 		
+		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/host_config.go
+		
 	 -->
 	<xs:complexType name="containerConfigurationHostConfigType" >
 		<xs:annotation>
@@ -346,6 +350,7 @@
 		<xs:attribute name="devices" type="xs:string" use="optional"/> <!-- wrong type -->		
 		<xs:attribute name="lxcConf" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="ipcMode" type="xs:string" use="optional"/> <!-- wrong type -->						
+		<xs:attribute name="isolation" type="xs:string" use="optional"/> <!-- approximation of the Isolation which is implemented as a string -->			
 		<xs:attribute name="networkMode" type="xs:string" use="optional"/> <!-- wrong type -->				
 		<xs:attribute name="memory" type="xs:long" use="optional"/>		
 		<xs:attribute name="memorySwap" type="xs:long" use="optional"/>		

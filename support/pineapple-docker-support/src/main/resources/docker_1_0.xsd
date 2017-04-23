@@ -391,6 +391,7 @@
 			<xs:element name="blkioDeviceReadBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="blkioDeviceWriteBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="blkioDeviceReadIOps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="blkioDeviceWriteIOps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="securityOpt" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="volumesFrom" type="stringList" minOccurs="0" maxOccurs="1" />				
  		</xs:sequence>

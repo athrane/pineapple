@@ -39,7 +39,7 @@
 	</xs:simpleType>
 
 	<!-- 
-		Container for graphDriverDataType (implemented as map)   
+		Container for graphDriverDataType (implemented as map using JAXB binding)   
 	 -->
 	<xs:complexType name="graphDriverType" >
 		<xs:annotation>
@@ -77,11 +77,11 @@
 	</xs:complexType>
 
 	<!-- 
-		Container for weightDeviceType (implemented as map)   
+		Container for weightDeviceType (implemented as default JAXB list)   
 	 -->
 	<xs:complexType name="weightDevicesType" >
 		<xs:annotation>
-			<xs:documentation>Port bindings configuration in container host configuration and container inspection.</xs:documentation>
+			<xs:documentation>Container for device weight.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="devices" type="weightDeviceType" minOccurs="0" maxOccurs="unbounded" />
@@ -94,13 +94,34 @@
 	 -->
 	<xs:complexType name="weightDeviceType" >
 		<xs:annotation>
-			<xs:documentation>Docker Block IO weight (relative device weight) (Output from inspecting an image or container).</xs:documentation>
+			<xs:documentation>Block IO weight (relative device weight) (Output from inspecting an image or container).</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="layers" type="stringList" minOccurs="0" maxOccurs="1" />				
-		</xs:sequence>
 		<xs:attribute name="path" type="xs:string" use="optional"/>		
 		<xs:attribute name="weight" type="xs:int" use="optional"/> <!-- approximation of the Weight which is implemented as a uint16 -->		
+	</xs:complexType>
+
+	<!-- 
+		Container for throttleDeviceType (implemented as default JAXB list)   
+	 -->
+	<xs:complexType name="throttleDevicesType" >
+		<xs:annotation>
+			<xs:documentation>Container for device throttling.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="devices" type="throttleDeviceType" minOccurs="0" maxOccurs="unbounded" />
+ 		</xs:sequence>		
+	</xs:complexType>
+
+	<!-- 
+		Corresponds to ThrottleDevice     
+		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/blkiodev/blkio.go
+	 -->
+	<xs:complexType name="throttleDeviceType" >
+		<xs:annotation>
+			<xs:documentation>Limit read rate (bytes per second) from a device (Output from inspecting an image or container).</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="path" type="xs:string" use="optional"/>		
+		<xs:attribute name="rate" type="xs:int" use="optional"/> <!-- approximation of the Rate which is implemented as a uint16 -->		
 	</xs:complexType>
 
 	<!-- Image definitions -->
@@ -367,7 +388,7 @@
 			<xs:element name="logConfig" type="containerConfigurationHostConfigLogConfigType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="portBindings" type="containerConfigurationHostConfigPortBindingsType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="blkioWeightDevice" type="weightDevicesType" minOccurs="0" maxOccurs="1" />
-
+			<xs:element name="blkioDeviceReadBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="securityOpt" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="volumesFrom" type="stringList" minOccurs="0" maxOccurs="1" />				
  		</xs:sequence>

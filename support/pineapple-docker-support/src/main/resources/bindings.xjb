@@ -38,14 +38,26 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='weightDevicesType']" >
+			<jaxb:class name="WeightDevices" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='weightDeviceType']" >
 			<jaxb:class name="WeightDevice" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='weightDevicesType']" >
-			<jaxb:class name="WeightDevices" />				
+		<jaxb:bindings node="//xs:complexType[@name='throttleDevicesType']" >
+			<jaxb:class name="ThrottleDevices" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='throttleDeviceType']" >
+			<jaxb:class name="ThrottleDevice" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 

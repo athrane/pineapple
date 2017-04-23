@@ -389,6 +389,7 @@
 			<xs:element name="portBindings" type="containerConfigurationHostConfigPortBindingsType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="blkioWeightDevice" type="weightDevicesType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="blkioDeviceReadBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="blkioDeviceWriteBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="securityOpt" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="volumesFrom" type="stringList" minOccurs="0" maxOccurs="1" />				
  		</xs:sequence>

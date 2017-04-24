@@ -402,6 +402,8 @@
 		<xs:attribute name="cgroup" type="xs:string" use="optional"/> <!-- approximation of the CgroupSpec which is implemented as a string -->					
 		<xs:attribute name="cgroupParent" type="xs:string" use="optional"/> 		
 		<xs:attribute name="containerIDFile" type="xs:string" use="optional"/> <!-- Not implemented yet-->		 				
+		<xs:attribute name="cpuCount" type="xs:long" use="optional"/>  <!-- approximation of the CpuCount which is implemented as a int64 -->				
+		<xs:attribute name="cpuPercent" type="xs:long" use="optional"/>	<!-- approximation of the CpuPercent which is implemented as a int64 -->			
 		<xs:attribute name="cpuPeriod" type="xs:long" use="optional"/>				
 		<xs:attribute name="cpuQuota" type="xs:long" use="optional"/> <!-- Not implemented yet-->		
 		<xs:attribute name="cpuShares" type="xs:long" use="optional"/>				
@@ -412,17 +414,20 @@
 		<xs:attribute name="devices" type="xs:string" use="optional"/> <!-- wrong type -->		
 		<xs:attribute name="diskQuota" type="xs:long" use="optional"/> <!-- approximation of the DiskQuota which is implemented as a int64 -->		
 		<xs:attribute name="lxcConf" type="xs:string" use="optional"/> <!-- wrong type -->
+
 		<xs:attribute name="ipcMode" type="xs:string" use="optional"/> <!-- wrong type -->						
 		<xs:attribute name="isolation" type="xs:string" use="optional"/> <!-- approximation of the Isolation which is implemented as a string -->			
 		<xs:attribute name="kernelMemory" type="xs:long" use="optional"/> <!-- approximation of the KernelMemory which is implemented as a int64 -->			
 		<xs:attribute name="nanoCpus" type="xs:long" use="optional"/> <!-- approximation of the NanoCPUs which is implemented as a int64 -->				
 		<xs:attribute name="networkMode" type="xs:string" use="optional"/> <!-- wrong type -->				
 		<xs:attribute name="memory" type="xs:long" use="optional"/>		
+		<xs:attribute name="memoryReservation" type="xs:long" use="optional"/>  <!-- approximation of the MemoryReservation which is implemented as a int64 -->	
 		<xs:attribute name="memorySwap" type="xs:long" use="optional"/>		
 		<xs:attribute name="memorySwappiness" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="oomKillDisable" type="xs:boolean" use="optional"/> <!-- Not implemented yet-->		
 		<xs:attribute name="oomScoreAdj" type="xs:int" use="optional"/> 
-		<xs:attribute name="pidMode" type="xs:string" use="optional"/> <!-- wrong type -->				
+		<xs:attribute name="pidMode" type="xs:string" use="optional"/> <!-- wrong type -->		
+		<xs:attribute name="pidsLimit" type="xs:string" use="optional"/> <!-- approximation of the PidsLimit which is implemented as a int64 -->						
 		<xs:attribute name="privileged" type="xs:boolean" use="optional"/>				
 		<xs:attribute name="publishAllPorts" type="xs:boolean" use="optional"/>		
 		<xs:attribute name="readonlyRootfs" type="xs:string" use="optional"/> <!-- wrong type -->	

@@ -598,6 +598,9 @@ Development documentation
 		* If the target object attribute is <<<ContainerConfigurationHostConfig.utsMode>>> then the received JSON 
 		property <<<UTSMode>>> is mapped to to the target attribute <<<utsMode>>>.
 		
+		* If the target object attribute is <<<ContainerConfigurationHostConfig.ioMaximumIOps>>> then the received JSON 
+		property <<<IOMaximumIOps>>> is mapped to to the target attribute <<<ioMaximumIOps>>>.
+				
 		* If the target object attribute is <<<InspectedContainerNetworkSettings.ipAddress>>> then the received JSON 
 		property <<<IPAddress>>> is mapped to to the target attribute <<<ipAddress>>>.
 

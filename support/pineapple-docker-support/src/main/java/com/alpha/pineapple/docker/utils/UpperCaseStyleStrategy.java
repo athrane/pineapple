@@ -106,6 +106,17 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 				return "UTSMode";
 		}
 
+		// handle case for ContainerConfigurationHostConfig properties
+		// example: map received JSON property "IOMaximumIOps" to
+		// ContainerConfigurationHostConfig.ioMaximumIOps as defined in the Docker
+		// schema
+		if (methodName.equals(ContainerConfigurationHostConfig.class.getName())) {
+			// if field name matches name from schema then return name of JSON
+			// property.
+			if (defaultName.equals("ioMaximumIOps"))
+				return "IOMaximumIOps";
+		}
+		
 		// handle case for ContainerMount.rw
 		// - map received JSON property "RW" to
 		// ContainerMounts.rw as defined in the Docker schema

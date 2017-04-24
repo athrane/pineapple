@@ -406,6 +406,7 @@
 		<xs:attribute name="cpuQuota" type="xs:long" use="optional"/> <!-- Not implemented yet-->		
 		<xs:attribute name="cpuShares" type="xs:long" use="optional"/>				
 		<xs:attribute name="cpuRealtimePeriod" type="xs:long" use="optional"/> <!-- approximation of the CpuRealtimePeriod which is implemented as a int64 -->				
+		<xs:attribute name="cpuRealtimeRuntime" type="xs:long" use="optional"/> <!-- approximation of the CpuRealtimeRuntime which is implemented as a int64 -->				
 		<xs:attribute name="cpusetCpus" type="xs:string" use="optional"/>				
 		<xs:attribute name="cpusetMems" type="xs:string" use="optional"/>										
 		<xs:attribute name="devices" type="xs:string" use="optional"/> <!-- wrong type -->		

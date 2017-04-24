@@ -124,6 +124,32 @@
 		<xs:attribute name="rate" type="xs:int" use="optional"/> <!-- approximation of the Rate which is implemented as a uint16 -->		
 	</xs:complexType>
 
+	<!-- 
+		Corresponds to Mount   
+		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go		
+
+		Please notice:
+		
+		The type for "propagation" is defined as string in 		
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go
+		
+		The type for "type" is defined as string in 		
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go		
+	 -->
+	<xs:complexType name="mountType">
+		<xs:annotation>
+			<xs:documentation>Container mount point (Output from listing a container).</xs:documentation>
+		</xs:annotation>		
+		<xs:attribute name="destination" type="xs:string" use="optional"/>								
+		<xs:attribute name="driver" type="xs:string" use="optional"/>								
+		<xs:attribute name="mode" type="xs:string" use="optional"/>								
+		<xs:attribute name="name" type="xs:string" use="optional"/>										
+		<xs:attribute name="propagation" type="xs:string" use="optional"/>								
+		<xs:attribute name="source" type="xs:string" use="optional"/>									
+		<xs:attribute name="type" type="xs:string" use="optional"/>												
+		<xs:attribute name="rw" type="xs:boolean" use="optional"/>										
+	</xs:complexType>
+
 	<!-- Image definitions -->
 
 	<xs:complexType name="progressDetailType" >
@@ -521,7 +547,7 @@
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="names" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="mounts" type="containerMountType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="mounts" type="mountType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="ports" type="listedContainerPortType" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="command" type="xs:string" use="optional"/>		
@@ -546,32 +572,6 @@
 	</xs:complexType>
 
 	<!-- 
-		Corresponds to MountPoint   
-		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go
-		
-		Please notice:
-		
-		The type for "propagation" is defined as string in 		
-		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go
-		
-		The type for "type" is defined as string in 		
-		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go		
-	 -->
-	<xs:complexType name="containerMountType">
-		<xs:annotation>
-			<xs:documentation>Container mount point (Output from listing a container).</xs:documentation>
-		</xs:annotation>		
-		<xs:attribute name="destination" type="xs:string" use="optional"/>								
-		<xs:attribute name="driver" type="xs:string" use="optional"/>								
-		<xs:attribute name="mode" type="xs:string" use="optional"/>								
-		<xs:attribute name="name" type="xs:string" use="optional"/>										
-		<xs:attribute name="propagation" type="xs:string" use="optional"/>								
-		<xs:attribute name="source" type="xs:string" use="optional"/>									
-		<xs:attribute name="type" type="xs:string" use="optional"/>												
-		<xs:attribute name="rw" type="xs:boolean" use="optional"/>										
-	</xs:complexType>
-
-	<!-- 
 		Corresponds to ContainerJSONBase  
 		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go	 
 	-->
@@ -583,9 +583,9 @@
 			<xs:element name="args" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="config" type="inspectedContainerConfigurationType" minOccurs="0" maxOccurs="1" />  <!-- gone in current source/rest1.23, but not in 1.9 -->
 			<xs:element name="execIDs" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="graphDriver" type="inspectedContainerGraphDriverType" minOccurs="0" maxOccurs="1" />									
+			<xs:element name="graphDriver" type="graphDriverType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="hostConfig" type="containerConfigurationHostConfigType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="mounts" type="inspectedContainerMountsType" minOccurs="0" maxOccurs="unbounded" />	<!-- gone in current source/rest1.23, but not in 1.9 -->											
+			<xs:element name="mounts" type="mountType" minOccurs="0" maxOccurs="unbounded" />											
 			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" /> <!-- gone in current source/rest1.23, but not in 1.9 -->
 			<xs:element name="state" type="inspectedContainerStateType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="volumes" type="inspectedContainerVolumesType" minOccurs="0" maxOccurs="1" /> <!--  also defined in container.config.volumes --> <!-- gone in current source/rest1.23, but not in 1.9 -->
@@ -686,40 +686,6 @@
 		<xs:attribute name="sandboxId" type="xs:string" use="optional"/>						
 		<xs:attribute name="secondaryIPAddresses" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="secondaryIPv6Addresses" type="xs:long" use="optional"/> <!-- wrong type -->
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerGraphDriverType">
-		<xs:annotation>
-			<xs:documentation>Graph driver in inspected container.</xs:documentation>
-		</xs:annotation>		
-		<xs:sequence>
-			<xs:element name="data" type="inspectedContainerGraphDriverDataType" />
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string" use="optional"/>								
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerGraphDriverDataType">
-		<xs:annotation>
-			<xs:documentation>Data type for graph driver in inspected container.</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="deviceId" type="xs:string" use="optional"/>						
-		<xs:attribute name="deviceName" type="xs:string" use="optional"/>						
-		<xs:attribute name="DeviceSize" type="xs:string" use="optional"/>								
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerMountsType">
-		<xs:annotation>
-			<xs:documentation>Mounts in inspected container.</xs:documentation>
-		</xs:annotation>		
-		<xs:sequence>
-			<xs:element name="data" type="inspectedContainerGraphDriverDataType" />
-		</xs:sequence>
-		<xs:attribute name="destination" type="xs:string" use="optional"/>								
-		<xs:attribute name="driver" type="xs:string" use="optional"/>								
-		<xs:attribute name="mode" type="xs:string" use="optional"/>								
-		<xs:attribute name="name" type="xs:string" use="optional"/>										
-		<xs:attribute name="source" type="xs:string" use="optional"/>								
-		<xs:attribute name="rw" type="xs:string" use="optional"/>										
 	</xs:complexType>
 
 	<xs:complexType name="inspectedContainerVolumesType" >

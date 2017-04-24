@@ -25,13 +25,13 @@ package com.alpha.pineapple.docker.utils;
 import org.apache.commons.lang.StringUtils;
 
 import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfig;
-import com.alpha.pineapple.docker.model.rest.ContainerMount;
 import com.alpha.pineapple.docker.model.rest.CreatedContainer;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettings;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettingsNetworkValue;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerState;
 import com.alpha.pineapple.docker.model.rest.ListedContainer;
 import com.alpha.pineapple.docker.model.rest.ListedImage;
+import com.alpha.pineapple.docker.model.rest.Mount;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedField;
@@ -108,7 +108,8 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 
 		// handle case for ContainerConfigurationHostConfig properties
 		// example: map received JSON property "IOMaximumIOps" to
-		// ContainerConfigurationHostConfig.ioMaximumIOps as defined in the Docker
+		// ContainerConfigurationHostConfig.ioMaximumIOps as defined in the
+		// Docker
 		// schema
 		if (methodName.equals(ContainerConfigurationHostConfig.class.getName())) {
 			// if field name matches name from schema then return name of JSON
@@ -119,7 +120,8 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 
 		// handle case for ContainerConfigurationHostConfig properties
 		// example: map received JSON property "IOMaximumBandwidth" to
-		// ContainerConfigurationHostConfig.ioMaximumBandwidth as defined in the Docker
+		// ContainerConfigurationHostConfig.ioMaximumBandwidth as defined in the
+		// Docker
 		// schema
 		if (methodName.equals(ContainerConfigurationHostConfig.class.getName())) {
 			// if field name matches name from schema then return name of JSON
@@ -127,11 +129,11 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 			if (defaultName.equals("ioMaximumBandwidth"))
 				return "IOMaximumBandwidth";
 		}
-				
-		// handle case for ContainerMount.rw
+
+		// handle case for Mount.rw
 		// - map received JSON property "RW" to
 		// ContainerMounts.rw as defined in the Docker schema
-		if (methodName.equals(ContainerMount.class.getName())) {
+		if (methodName.equals(Mount.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("rw"))

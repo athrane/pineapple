@@ -61,6 +61,12 @@
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='mountType']" >
+			<jaxb:class name="Mount" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
 	<!-- Image definitions -->
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
@@ -222,12 +228,6 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='containerMountType']" >
-			<jaxb:class name="ContainerMount" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='containerJsonBaseType']" >
 			<jaxb:class name="ContainerJsonBase" />				
 		</jaxb:bindings>		 
@@ -302,24 +302,6 @@
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerVolumeRwType']" >
 			<jaxb:class name="InspectedContainerVolumeRw" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerGraphDriverType']" >
-			<jaxb:class name="InspectedContainerGraphDriver" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerGraphDriverDataType']" >
-			<jaxb:class name="InspectedContainerGraphDriverData" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerMountsType']" >
-			<jaxb:class name="InspectedContainerMounts" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 

@@ -414,6 +414,7 @@
 		<xs:attribute name="lxcConf" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="ipcMode" type="xs:string" use="optional"/> <!-- wrong type -->						
 		<xs:attribute name="isolation" type="xs:string" use="optional"/> <!-- approximation of the Isolation which is implemented as a string -->			
+		<xs:attribute name="kernelMemory" type="xs:long" use="optional"/> <!-- approximation of the KernelMemory which is implemented as a int64 -->			
 		<xs:attribute name="nanoCpus" type="xs:long" use="optional"/> <!-- approximation of the NanoCPUs which is implemented as a int64 -->				
 		<xs:attribute name="networkMode" type="xs:string" use="optional"/> <!-- wrong type -->				
 		<xs:attribute name="memory" type="xs:long" use="optional"/>		

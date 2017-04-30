@@ -110,11 +110,11 @@ public class ReportOnImagesCommandSystemTest {
     }
 
     /**
-     * Test that command can report on containers.
+     * Test that command can report on images.
      */
     @SuppressWarnings("unchecked")
     @Test
-    public void testCommandCanReportOnContainers() throws Exception {
+    public void testCommandCanReportOnImages() throws Exception {
 	// setup context
 	context.put(ReportOnImagesCommand.EXECUTIONRESULT_KEY, executionResult);
 	context.put(ReportOnImagesCommand.SESSION_KEY, session);

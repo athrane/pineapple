@@ -81,6 +81,8 @@ Overview
 	* {{{./examples/install-docker-latest-centos7-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 7.0 using SSH.}}		
 						
 	* {{{./examples/install-docker-fixed-version-centos7-vagrant.html}How-to: Install specific version of Docker in a Vagrant box with CentOS 7.0 using SSH.}}		
+
+	* {{{./examples/cleanup-docker.html} How-to: Clean up a Docker host using SSH.}}		
 															
   	[]
   

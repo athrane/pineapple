@@ -1,0 +1,90 @@
+ ------
+ How-to: Clean up a Docker host using SSH
+ ------
+ Allan Thrane Andersen
+ ------
+ May 2017
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to:  How-to: Clean up a Docker host using SSH
+
+* Overview
+
+	This example illustrates how the SSH plugin can be used to cleanup a Docker host. 
+	The example executes various Docker prune commands.  
+ 	
+	This example modifies the {{{./install-docker-latest-centos7-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 7.0 using SSH}} example.
+
+** Part of the default configuration
+
+	This example named <<<ssh-014-docker-host-cleanup>>>, including all configuration files, is included in the 
+	{{{../../../usage/default-configuration.html}default configuration}} which is created by Pineapple, 
+	so there is no need to create it by hand.
+
+** The module	  
+
+	A module defines input to Pineapple and consists in its minimal form of a single XML file containing a model:
+	
+[../images/module-directory-layout.jpg]		 
+
+	The directory: <<<$\{user.home\}/.pineapple/modules/ssh-014-docker-host-cleanup>>> contains the module.
+	The module in this example have the structure:
+
++---
+ssh-014-docker-host-cleanup
+ |
+ +--- models	 
+ |     +--- linux-vagrant.xml
++---
+	
+*** Module files
+	
+	The module consists of the file:
+	
+	* <<<linux-vagrant.xml>>> is the Pineapple model file for the environment <linux-vagrant> which installs Docker.
+	
+** The model file
+	
+	The model file named <<<linux-vagrant.xml>>> has the content:
+
++---
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" >
+   <mmd:model target-resource="ssh-node1"  target-operation="deploy-configuration" description="Docker system prune" >   
+        <mmd:content>
+            <shp:ssh>
+                <shp:execute command="sudo df -h"/>    		            
+                <shp:execute command="sudo docker system df"/>			
+                <shp:execute command="sudo docker system prune -f"/>
+                <shp:execute command="sudo docker image prune -f"/>
+                <shp:execute command="sudo docker container prune -f"/>                
+                <shp:execute command="sudo df -h"/>        	            
+                <shp:execute command="sudo docker system df"/>			
+				</shp:ssh>
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++---	
+
+*** The configuration details
+
+	Two schema are used in the model file. The <<<http://pineapple.dev.java.net/ns/module_model_1_0>>> is used
+	to define the namespace <<<mmd>>> which defines the general infrastructure for models. The 
+	<<<http://pineapple.dev.java.net/ns/plugin/ssh_1_0>>> schema is used to define the namespace 
+	<<<shp>>> which is used to define the model for the SSH plugin. Since multiple schemas are used 
+	to define the model file, the elements are qualified.
+	 
+	The <<<target-resource>>> attribute defines a reference to the resource which is targeted when the 
+	model executed. In this case, the value <<<ssh-node1>>> targets the model to a single resource.
+
+	The model file executes a set of SSH commands to prune the resource consumption of the Docker host.
+
+	The <<<target-operation>>> attribute is used to restrict that the models is only executed when Pineapple
+	is invoked with the <deploy-configuration> operation. 
+	
+	Finally, the execute commands in the models is executed using sudo. The requirement for sudo depends on 
+	the privileges of the user used by the SSH plugin to connect to a given host. The users was defined in 
+	credentials file in the previous section.

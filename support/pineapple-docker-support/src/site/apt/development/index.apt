@@ -53,6 +53,10 @@ Development documentation
 	
 	Type for list of integers.
 	
+*** errorType
+
+	Standard Docker error info.	
+	
 *** graphDriverType	
 
 	Container for <<<graphDriverDataType>>> 
@@ -279,12 +283,6 @@ Development documentation
 	* <<<inspectedContainerNetworkSettingsType>>> - Info about the network configuration of a 
 	Docker container (Partial output from inspecting a containers).
 	
-
-
-
-
-
-
 	* <<<inspectedContainerVolumesType>>> - Info about volumes from a container inspection info 
 	(Partial output from inspecting a container).
 	Has role comparable to <<<containerConfigurationVolumesType>>> but for inspected container.

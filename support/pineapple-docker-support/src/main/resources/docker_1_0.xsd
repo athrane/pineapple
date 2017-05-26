@@ -38,6 +38,13 @@
   		<xs:list itemType="xs:int"/>
 	</xs:simpleType>
 
+	<xs:complexType name="errorType" >
+		<xs:annotation>
+			<xs:documentation>Generic error info .</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="message" type="xs:string" use="optional"/>		
+	</xs:complexType>
+
 	<!-- 
 		Container for graphDriverDataType (implemented as map using JAXB binding)   
 	 -->
@@ -161,14 +168,6 @@
 		<xs:attribute name="total" type="xs:string" use="optional"/>		
 	</xs:complexType>
 
-	<xs:complexType name="errorDetailType" >
-		<xs:annotation>
-			<xs:documentation>Detailed info about errors during image creation.</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="code" type="xs:int" use="optional"/>		
-		<xs:attribute name="message" type="xs:string" use="optional"/>		
-	</xs:complexType>
-
 	<xs:complexType name="listedImageType" >
 		<xs:annotation>
 			<xs:documentation>Info about a listed Docker image (Output from the "List images" operation).</xs:documentation>
@@ -223,12 +222,11 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="progressDetail" type="progressDetailType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="errorDetail" type="errorDetailType" minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
-		<xs:attribute name="id" type="xs:string" use="optional"/>		
-		<xs:attribute name="status" type="xs:string" use="optional"/>		
-		<xs:attribute name="progress" type="xs:string" use="optional"/>		
 		<xs:attribute name="error" type="xs:string" use="optional"/>		
+		<xs:attribute name="id" type="xs:string" use="optional"/>		
+		<xs:attribute name="progress" type="xs:string" use="optional"/>		
+		<xs:attribute name="status" type="xs:string" use="optional"/>		
 		<xs:attribute name="stream" type="xs:string" use="optional"/>		
 	</xs:complexType>
 

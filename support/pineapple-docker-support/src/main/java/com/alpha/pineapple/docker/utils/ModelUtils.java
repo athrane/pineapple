@@ -122,48 +122,6 @@ public class ModelUtils {
     }
 
     /**
-     * Returns true if image creation object contains error information in the
-     * error field, i.e. it is defined with a non-null or non-empty value.
-     * 
-     * @param info
-     *            image creation object.
-     * 
-     * @return true if image creation object contains error information in the
-     *         error field, i.e. it is defined with a non-null or non-empty
-     *         value.
-     */
-    public static boolean containsErrorMessage(ImageCreation info) {
-	Validate.notNull(info, "info is undefined");
-
-	if (info.getError() == null)
-	    return false;
-	if (info.getError().isEmpty())
-	    return false;
-	return true;
-    }
-
-    /**
-     * Returns true if image creation was successful, i.e. no errors was
-     * returned.
-     * 
-     * @param infos
-     *            image creation objects.
-     * 
-     * @return true if image creation was successful, i.e. no errors was
-     *         returned.
-     */
-    public static boolean isImageCreationSuccessful(ImageCreation[] infos) {
-	Validate.notNull(infos, "infos is undefined");
-
-	for (ImageCreation info : infos) {
-	    if (containsErrorMessage(info))
-		return false;
-	}
-
-	return true;
-    }
-
-    /**
      * Create truncated ID which is reduced to 12 characters long.
      * 
      * @param id

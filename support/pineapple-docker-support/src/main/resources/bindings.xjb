@@ -20,6 +20,12 @@
 	<!-- Generic definitions -->
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='errorType']" >
+			<jaxb:class name="Error" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='graphDriverType']" >
 			<jaxb:class name="GraphDriver" />				
 		</jaxb:bindings>		 
@@ -72,12 +78,6 @@
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='progressDetailType']" >
 			<jaxb:class name="ProgressDetail" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='errorDetailType']" >
-			<jaxb:class name="ErrorDetail" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 

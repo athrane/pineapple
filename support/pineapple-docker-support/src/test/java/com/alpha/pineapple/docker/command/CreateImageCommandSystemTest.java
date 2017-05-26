@@ -316,10 +316,7 @@ public class CreateImageCommandSystemTest {
 
 	// test
 	assertFalse(executionResult.isSuccess());
-	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	ImageCreation[] infos = (ImageCreation[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
-	assertTrue(infos.length != 0);
+	assertFalse(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
 	assertFalse(dockerClient.imageExists(session, imageInfo));
     }
 
@@ -341,10 +338,7 @@ public class CreateImageCommandSystemTest {
 
 	// test
 	assertFalse(executionResult.isSuccess());
-	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	ImageCreation[] infos = (ImageCreation[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
-	assertTrue(infos.length != 0);
+	assertFalse(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
 	assertFalse(dockerClient.imageExists(session, imageInfo));
     }
 

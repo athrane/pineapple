@@ -24,9 +24,7 @@ package com.alpha.pineapple.docker.command;
 
 import static com.alpha.pineapple.docker.DockerConstants.CREATE_IMAGE_URI;
 import static com.alpha.pineapple.docker.DockerConstants.CREATE_TAGGED_IMAGE_URI;
-import static com.alpha.pineapple.docker.utils.ModelUtils.containsErrorMessage;
 import static com.alpha.pineapple.docker.utils.ModelUtils.containsStatusUpdate;
-import static com.alpha.pineapple.docker.utils.ModelUtils.isImageCreationSuccessful;
 import static com.alpha.pineapple.docker.utils.ModelUtils.isTaggedImage;
 
 import java.util.HashMap;
@@ -47,6 +45,7 @@ import com.alpha.pineapple.docker.DockerClient;
 import com.alpha.pineapple.docker.model.ImageInfo;
 import com.alpha.pineapple.docker.model.rest.ImageCreation;
 import com.alpha.pineapple.docker.session.DockerSession;
+import com.alpha.pineapple.docker.utils.RestResponseException;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.i18n.MessageProvider;
 
@@ -86,7 +85,8 @@ import com.alpha.pineapple.i18n.MessageProvider;
  * <ul>
  * 
  * <li><code>image-creation-infos</code> contains array of image creation info's
- * from Docker. If image already exists then no info's are returned. The type is
+ * from Docker. If image already exists then no info's are returned. If the
+ * creation fails then no no info's are returned. The type is
  * <code>com.alpha.pineapple.docker.model.ImageCreation[]</code>.</li>
  * 
  * <li>The the state of the supplied <code>ExecutionResult</code> is updated
@@ -101,142 +101,140 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class CreateImageCommand implements Command {
 
-    /**
-     * Null image creation info's.
-     */
-    static final ImageCreation[] NULL_INFOS = {};
+	/**
+	 * Null image creation info's.
+	 */
+	static final ImageCreation[] NULL_INFOS = {};
 
-    /**
-     * Key used to identify property in context: Image info.
-     */
-    public static final String IMAGE_INFO_KEY = "image-info";
+	/**
+	 * Key used to identify property in context: Image info.
+	 */
+	public static final String IMAGE_INFO_KEY = "image-info";
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result
+	 * object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: array of image creation info
-     * objects.
-     */
-    public static final String IMAGE_CREATION_INFOS_KEY = "image-creation-infos";
+	/**
+	 * Key used to identify property in context: array of image creation info
+	 * objects.
+	 */
+	public static final String IMAGE_CREATION_INFOS_KEY = "image-creation-infos";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Image info.
-     */
-    @Initialize(IMAGE_INFO_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ImageInfo imageInfo;
+	/**
+	 * Image info.
+	 */
+	@Initialize(IMAGE_INFO_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ImageInfo imageInfo;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    @SuppressWarnings("unchecked")
-    public boolean execute(Context context) throws Exception {
+	@SuppressWarnings("unchecked")
+	public boolean execute(Context context) throws Exception {
 
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// exit if image exists in repository
-	if (dockerClient.imageExists(session, imageInfo)) {
+		// exit if image exists in repository
+		if (dockerClient.imageExists(session, imageInfo)) {
 
-	    // store null creation info's
-	    context.put(IMAGE_CREATION_INFOS_KEY, NULL_INFOS);
+			// store null creation info's
+			context.put(IMAGE_CREATION_INFOS_KEY, NULL_INFOS);
 
-	    // set state
-	    Object[] args = { imageInfo.getFullyQualifiedName() };
-	    executionResult.completeAsSuccessful(messageProvider, "cic.image_already_exists_success", args);
-	    String message = messageProvider.getMessage("cic.image_already_exists_note");
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-	    return Command.CONTINUE_PROCESSING;
+			// set state
+			Object[] args = { imageInfo.getFullyQualifiedName() };
+			executionResult.completeAsSuccessful(messageProvider, "cic.image_already_exists_success", args);
+			String message = messageProvider.getMessage("cic.image_already_exists_note");
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// set variables
+		Map<String, String> uriVariables = new HashMap<String, String>(3);
+		uriVariables.put("image", imageInfo.getRepository());
+
+		// post to create image
+		ImageCreation[] infos = null;
+
+		try {
+
+			if (isTaggedImage(imageInfo)) {
+				uriVariables.put("tag", imageInfo.getTag());
+				infos = session.httpPostForObjectWithMultipleRootElements(CREATE_TAGGED_IMAGE_URI, uriVariables,
+						ImageCreation[].class);
+			} else {
+				infos = session.httpPostForObjectWithMultipleRootElements(CREATE_IMAGE_URI, uriVariables,
+						ImageCreation[].class);
+			}
+
+		} catch (RestResponseException rre) {
+			Object[] args2 = { rre.getStatusCode(), rre.getMessage() };
+			executionResult.completeAsFailure(messageProvider, "cic.create_image_failed", args2);
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// add messages
+		Object[] args = { infos.length };
+		String message = messageProvider.getMessage("cic.list_image_info", args);
+		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+		for (ImageCreation info : infos) {
+
+			// handle normal status update
+			if (containsStatusUpdate(info)) {
+				Object[] args2 = { info.getStatus() };
+				String message2 = messageProvider.getMessage("cic.list_single_info", args2);
+				executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message2);
+				continue;
+			}
+
+		}
+
+		// store creation info's
+		context.put(IMAGE_CREATION_INFOS_KEY, infos);
+
+		// complete result
+		Object[] args2 = { imageInfo.getFullyQualifiedName() };
+		executionResult.completeAsSuccessful(messageProvider, "cic.create_image_completed", args2);
+
+		return Command.CONTINUE_PROCESSING;
 	}
-
-	// set variables
-	Map<String, String> uriVariables = new HashMap<String, String>(3);
-	uriVariables.put("image", imageInfo.getRepository());
-
-	// post to create image
-	ImageCreation[] infos = null;
-	if (isTaggedImage(imageInfo)) {
-	    uriVariables.put("tag", imageInfo.getTag());
-	    infos = session.httpPostForObjectWithMultipleRootElements(CREATE_TAGGED_IMAGE_URI, uriVariables,
-		    ImageCreation[].class);
-	} else {
-	    infos = session.httpPostForObjectWithMultipleRootElements(CREATE_IMAGE_URI, uriVariables,
-		    ImageCreation[].class);
-	}
-
-	// add messages
-	ImageCreation failedInfo = null;
-	Object[] args = { infos.length };
-	String message = messageProvider.getMessage("cic.list_image_info", args);
-	executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-	for (ImageCreation info : infos) {
-
-	    // handle normal status update
-	    if (containsStatusUpdate(info)) {
-		Object[] args2 = { info.getStatus() };
-		String message2 = messageProvider.getMessage("cic.list_single_info", args2);
-		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message2);
-		continue;
-	    }
-
-	    // handle error and skip the loop
-	    if (containsErrorMessage(info)) {
-		failedInfo = info;
-		break;
-	    }
-	}
-
-	// store creation info's
-	context.put(IMAGE_CREATION_INFOS_KEY, infos);
-
-	// complete result
-	if (isImageCreationSuccessful(infos)) {
-	    Object[] args2 = { imageInfo.getFullyQualifiedName() };
-	    executionResult.completeAsSuccessful(messageProvider, "cic.create_image_completed", args2);
-	} else {
-	    Object[] args2 = { failedInfo.getError() };
-	    executionResult.completeAsFailure(messageProvider, "cic.create_image_failed", args2);
-	}
-
-	return Command.CONTINUE_PROCESSING;
-    }
 
 }

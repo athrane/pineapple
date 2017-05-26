@@ -27,7 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Exception class for signaling a captured error from {@linkplain RestTemplate}
+ * Exception class for signalling a captured error from {@linkplain RestTemplate}
  * .
  */
 public class RestResponseException extends RuntimeException {

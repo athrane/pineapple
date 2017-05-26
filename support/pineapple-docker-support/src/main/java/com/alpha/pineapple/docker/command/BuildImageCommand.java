@@ -25,10 +25,8 @@ package com.alpha.pineapple.docker.command;
 import static com.alpha.pineapple.docker.DockerConstants.BUILD_IMAGE_URI;
 import static com.alpha.pineapple.docker.DockerConstants.CONTENT_TYPE_KEY;
 import static com.alpha.pineapple.docker.DockerConstants.CONTENT_TYPE_TAR;
-import static com.alpha.pineapple.docker.utils.ModelUtils.containsErrorMessage;
 import static com.alpha.pineapple.docker.utils.ModelUtils.containsStatusUpdate;
 import static com.alpha.pineapple.docker.utils.ModelUtils.containsStreamUpdate;
-import static com.alpha.pineapple.docker.utils.ModelUtils.isImageCreationSuccessful;
 import static com.alpha.pineapple.docker.utils.ModelUtils.remoteLfFromStreamUpdate;
 import static com.alpha.pineapple.execution.ExecutionResult.MSG_MESSAGE;
 
@@ -56,9 +54,9 @@ import com.alpha.pineapple.command.initialization.ValidateValue;
 import com.alpha.pineapple.command.initialization.ValidationPolicy;
 import com.alpha.pineapple.docker.DockerClient;
 import com.alpha.pineapple.docker.model.ImageInfo;
-import com.alpha.pineapple.docker.model.rest.ErrorDetail;
 import com.alpha.pineapple.docker.model.rest.ImageCreation;
 import com.alpha.pineapple.docker.session.DockerSession;
+import com.alpha.pineapple.docker.utils.RestResponseException;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.session.SessionException;
@@ -120,244 +118,240 @@ import com.alpha.pineapple.test.matchers.PineappleMatchers;
  */
 public class BuildImageCommand implements Command {
 
-    /**
-     * Null image creation info's.
-     */
-    static final ImageCreation[] NULL_INFOS = {};
+	/**
+	 * Null image creation info's.
+	 */
+	static final ImageCreation[] NULL_INFOS = {};
 
-    /**
-     * Single digit string representation for boolean true.
-     */
-    static final String TRUE_AS_DIGIT = "1";
+	/**
+	 * Single digit string representation for boolean true.
+	 */
+	static final String TRUE_AS_DIGIT = "1";
 
-    /**
-     * Single digit string representation for boolean false.
-     */
-    static final String FALSE_AS_DIGIT = "0";
+	/**
+	 * Single digit string representation for boolean false.
+	 */
+	static final String FALSE_AS_DIGIT = "0";
 
-    /**
-     * Key used to identify property in context: Image info.
-     */
-    public static final String IMAGE_INFO_KEY = "image-info";
+	/**
+	 * Key used to identify property in context: Image info.
+	 */
+	public static final String IMAGE_INFO_KEY = "image-info";
 
-    /**
-     * Key used to identify property in context: Pull image behavior.
-     */
-    public static final String PULL_IMAGE_KEY = "pull-image";
+	/**
+	 * Key used to identify property in context: Pull image behavior.
+	 */
+	public static final String PULL_IMAGE_KEY = "pull-image";
 
-    /**
-     * Key used to identify property in context: Path to TAR archive.
-     */
-    public static final String TAR_ARCHIVE_KEY = "tar-archive";
+	/**
+	 * Key used to identify property in context: Path to TAR archive.
+	 */
+	public static final String TAR_ARCHIVE_KEY = "tar-archive";
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result
+	 * object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: array of image creation info
-     * objects.
-     */
-    public static final String IMAGE_CREATION_INFOS_KEY = "image-creation-infos";
+	/**
+	 * Key used to identify property in context: array of image creation info
+	 * objects.
+	 */
+	public static final String IMAGE_CREATION_INFOS_KEY = "image-creation-infos";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Image info.
-     */
-    @Initialize(IMAGE_INFO_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ImageInfo imageInfo;
+	/**
+	 * Image info.
+	 */
+	@Initialize(IMAGE_INFO_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ImageInfo imageInfo;
 
-    /**
-     * TAR archive.
-     */
-    @Initialize(TAR_ARCHIVE_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    File tarArchive;
+	/**
+	 * TAR archive.
+	 */
+	@Initialize(TAR_ARCHIVE_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	File tarArchive;
 
-    /**
-     * Pull image behavior.
-     */
-    @Initialize(PULL_IMAGE_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    Boolean pullImage;
+	/**
+	 * Pull image behavior.
+	 */
+	@Initialize(PULL_IMAGE_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	Boolean pullImage;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
 
-	buildImage(context);
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	return Command.CONTINUE_PROCESSING;
-    }
+		buildImage(context);
 
-    /**
-     * Build image.
-     * 
-     * @param context
-     *            command context.
-     * 
-     * @throws SessionException
-     *             if HTTP post fails.
-     */
-    @SuppressWarnings("unchecked")
-    void buildImage(Context context) throws SessionException {
-
-	// exit if image exists in repository
-	if (dockerClient.imageExists(session, imageInfo)) {
-
-	    // store null creation info's
-	    context.put(IMAGE_CREATION_INFOS_KEY, NULL_INFOS);
-
-	    Object[] args = { imageInfo.getFullyQualifiedName() };
-	    executionResult.completeAsSuccessful(messageProvider, "bic.image_already_exists_success", args);
-	    String message = messageProvider.getMessage("bic.image_already_exists_note");
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-	    return;
+		return Command.CONTINUE_PROCESSING;
 	}
 
-	// validate TAR archive exist
-	Matcher<File> matcher = PineappleMatchers.doesFileExist();
-	if (matcher.matches(tarArchive)) {
-	    Object[] args = { tarArchive };
-	    String message = messageProvider.getMessage("bic.validate_tar_exist_info", args);
-	    executionResult.addMessage(MSG_MESSAGE, message);
-	} else {
-	    // complete with failure
-	    Object[] args = { tarArchive };
-	    executionResult.completeAsFailure(messageProvider, "bic.validate_tar_exist_failure", args);
-	    return;
+	/**
+	 * Build image.
+	 * 
+	 * @param context
+	 *            command context.
+	 * 
+	 * @throws SessionException
+	 *             if HTTP post fails.
+	 */
+	@SuppressWarnings("unchecked")
+	void buildImage(Context context) throws SessionException {
+
+		// exit if image exists in repository
+		if (dockerClient.imageExists(session, imageInfo)) {
+
+			// store null creation info's
+			context.put(IMAGE_CREATION_INFOS_KEY, NULL_INFOS);
+
+			Object[] args = { imageInfo.getFullyQualifiedName() };
+			executionResult.completeAsSuccessful(messageProvider, "bic.image_already_exists_success", args);
+			String message = messageProvider.getMessage("bic.image_already_exists_note");
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+			return;
+		}
+
+		// validate TAR archive exist
+		Matcher<File> matcher = PineappleMatchers.doesFileExist();
+		if (matcher.matches(tarArchive)) {
+			Object[] args = { tarArchive };
+			String message = messageProvider.getMessage("bic.validate_tar_exist_info", args);
+			executionResult.addMessage(MSG_MESSAGE, message);
+		} else {
+			// complete with failure
+			Object[] args = { tarArchive };
+			executionResult.completeAsFailure(messageProvider, "bic.validate_tar_exist_failure", args);
+			return;
+		}
+
+		// set URI variables
+		Map<String, String> uriVariables = new HashMap<String, String>();
+		uriVariables.put("tag", imageInfo.getFullyQualifiedName());
+		uriVariables.put("pull", getPullImageBehavior());
+
+		// create HTTP request object
+		HttpHeaders requestHeaders = new HttpHeaders();
+		requestHeaders.set(CONTENT_TYPE_KEY, CONTENT_TYPE_TAR);
+		HttpEntity<byte[]> requestEntity;
+		FileInputStream openInputStream = null;
+
+		try {
+			// read TAR archive into HTTP request
+			openInputStream = FileUtils.openInputStream(tarArchive);
+			byte[] byteArray = IOUtils.toByteArray(openInputStream);
+			requestEntity = new HttpEntity<byte[]>(byteArray, requestHeaders);
+
+			// close stream
+			IOUtils.closeQuietly(openInputStream);
+
+		} catch (IOException e) {
+
+			// complete with error
+			executionResult.completeAsError(messageProvider, "bic.read_tar_archive_error", e);
+
+			// close stream
+			IOUtils.closeQuietly(openInputStream);
+
+			return;
+		}
+
+		// post to create image
+		ImageCreation[] infos = null;
+
+		try {
+
+			infos = session.httpPostForObjectWithMultipleRootElements(BUILD_IMAGE_URI, uriVariables, requestEntity,
+					ImageCreation[].class, CONTENT_TYPE_TAR);
+
+		} catch (RestResponseException rre) {
+			Object[] args2 = { rre.getStatusCode(), rre.getMessage() };
+			executionResult.completeAsFailure(messageProvider, "bic.build_image_failed", args2);
+			return;
+		}
+
+		// add messages
+		Object[] args = { infos.length };
+		String message = messageProvider.getMessage("bic.list_image_info", args);
+		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+
+		for (ImageCreation info : infos) {
+
+			// handle normal status update
+			if (containsStatusUpdate(info)) {
+				Object[] args2 = { info.getStatus() };
+				String message2 = messageProvider.getMessage("bic.list_single_info", args2);
+				executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message2);
+				continue;
+			}
+
+			if (containsStreamUpdate(info)) {
+				Object[] args2 = { remoteLfFromStreamUpdate(info.getStream()) };
+				String message2 = messageProvider.getMessage("bic.list_single_stream_info", args2);
+				executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message2);
+				continue;
+			}
+
+		}
+
+		// store creation info's
+		context.put(IMAGE_CREATION_INFOS_KEY, infos);
+
+		// complete successfully
+		Object[] args2 = { imageInfo.getFullyQualifiedName() };
+		executionResult.completeAsSuccessful(messageProvider, "bic.build_image_completed", args2);
 	}
 
-	// set URI variables
-	Map<String, String> uriVariables = new HashMap<String, String>();
-	uriVariables.put("tag", imageInfo.getFullyQualifiedName());
-	uriVariables.put("pull", getPullImageBehavior());
-
-	// create HTTP request object
-	HttpHeaders requestHeaders = new HttpHeaders();
-	requestHeaders.set(CONTENT_TYPE_KEY, CONTENT_TYPE_TAR);
-	HttpEntity<byte[]> requestEntity;
-	FileInputStream openInputStream = null;
-
-	try {
-	    // read TAR archive into HTTP request
-	    openInputStream = FileUtils.openInputStream(tarArchive);
-	    byte[] byteArray = IOUtils.toByteArray(openInputStream);
-	    requestEntity = new HttpEntity<byte[]>(byteArray, requestHeaders);
-
-	    // close stream
-	    IOUtils.closeQuietly(openInputStream);
-
-	} catch (IOException e) {
-
-	    // complete with error
-	    executionResult.completeAsError(messageProvider, "bic.read_tar_archive_error", e);
-
-	    // close stream
-	    IOUtils.closeQuietly(openInputStream);
-
-	    return;
+	/**
+	 * Return the pull image behaviour as a string.
+	 * 
+	 * @return the pull image behaviour as a string.
+	 */
+	String getPullImageBehavior() {
+		if (!pullImage.booleanValue())
+			return FALSE_AS_DIGIT;
+		return TRUE_AS_DIGIT;
 	}
-
-	// post to create image
-	ImageCreation[] infos = null;
-	infos = session.httpPostForObjectWithMultipleRootElements(BUILD_IMAGE_URI, uriVariables, requestEntity,
-		ImageCreation[].class, CONTENT_TYPE_TAR);
-
-	// add messages
-	ImageCreation failedInfo = null;
-	Object[] args = { infos.length };
-	String message = messageProvider.getMessage("bic.list_image_info", args);
-	executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-
-	for (ImageCreation info : infos) {
-
-	    // handle normal status update
-	    if (containsStatusUpdate(info)) {
-		Object[] args2 = { info.getStatus() };
-		String message2 = messageProvider.getMessage("bic.list_single_info", args2);
-		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message2);
-		continue;
-	    }
-
-	    if (containsStreamUpdate(info)) {
-		Object[] args2 = { remoteLfFromStreamUpdate(info.getStream()) };
-		String message2 = messageProvider.getMessage("bic.list_single_stream_info", args2);
-		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message2);
-		continue;
-	    }
-
-	    // handle error and skip the loop
-	    if (containsErrorMessage(info)) {
-		failedInfo = info;
-		break;
-	    }
-	}
-
-	// store creation info's
-	context.put(IMAGE_CREATION_INFOS_KEY, infos);
-
-	// complete successfully
-	if (isImageCreationSuccessful(infos)) {
-	    Object[] args2 = { imageInfo.getFullyQualifiedName() };
-	    executionResult.completeAsSuccessful(messageProvider, "bic.build_image_completed", args2);
-	    return;
-	}
-
-	// complete with failure
-	ErrorDetail errorDetail = failedInfo.getErrorDetail();
-	Object[] args2 = { errorDetail.getCode(), errorDetail.getMessage() };
-	executionResult.completeAsFailure(messageProvider, "bic.build_image_failed", args2);
-    }
-
-    /**
-     * Return the pull image behavior as a string.
-     * 
-     * @return the pull image behavior as a string.
-     */
-    String getPullImageBehavior() {
-	if (!pullImage.booleanValue())
-	    return FALSE_AS_DIGIT;
-	return TRUE_AS_DIGIT;
-    }
 
 }

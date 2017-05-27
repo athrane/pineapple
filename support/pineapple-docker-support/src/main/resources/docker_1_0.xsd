@@ -8,7 +8,7 @@
 	<xs:element name="containerConfiguration" type="containerConfigurationType" />
 	<xs:element name="createdContainer" type="createdContainerType" />
 	<xs:element name="listedContainer" type="listedContainerType" />	
-	<xs:element name="inspectedContainer" type="containerJsonBaseType" />
+	<xs:element name="inspectedContainer" type="containerJsonType" />
 	<xs:element name="inspectedImage" type="imageInspectType" />
 	<xs:element name="imageCreationInfo" type="imageCreationType" />
 	<xs:element name="imageDeletionInfo" type="imageDeletionType" />
@@ -541,10 +541,10 @@
 	</xs:complexType>
 
 	<!-- 
-		Corresponds to ContainerJSONBase  
+		Corresponds to ContainerJSON   
 		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go	 
 	-->
-	<xs:complexType name="containerJsonBaseType" >
+	<xs:complexType name="containerJsonType" >
 		<xs:annotation>
 			<xs:documentation>Info about an inspected Docker container (Output from inspecting a container).</xs:documentation>
 		</xs:annotation>

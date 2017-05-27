@@ -153,13 +153,13 @@ Development documentation
 	Defined Docker type: {{{https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/config.go}container.Config}}
 
 
-*** containerJsonBaseType
+*** containerJson
 
 	Info about an inspected Docker container. 
 
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
 	
-	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go}ContainerJSONBase}}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go}ContainerJSON}}
 
 *** containerConfigurationType
 

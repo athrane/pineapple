@@ -222,8 +222,8 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='containerJsonBaseType']" >
-			<jaxb:class name="ContainerJsonBase" />				
+		<jaxb:bindings node="//xs:complexType[@name='containerJsonType']" >
+			<jaxb:class name="ContainerJson" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 

@@ -172,7 +172,7 @@ Development documentation
 	
 	Used by these schema types:
 	
-	* <<<containerJsonBaseType>>> (TODO: refactoring still pending)
+	* <<<containerJsonType>>> (TODO: refactoring still pending, issue #112)
 
 	* <<<imageInspectType>>>
 	
@@ -189,7 +189,7 @@ Development documentation
 	
 	* <<<containerConfigurationType>>>
 
-	* <<<containerJsonBaseType>>>
+	* <<<containerJsonType>>>
 
 	* <<<listedContainerType>>>
 	
@@ -404,15 +404,15 @@ Development documentation
 	using the custom JABX adaptor <<<ContainerConfigurationVolumesMapAdapter>>>.
 	The map and JAXB adaptor is shared with binding of <<<containerConfigurationType.volumes>>>.
 
-	To support binding of schema element <<<containerJsonBaseType.volumes>>> to a map, 
+	To support binding of schema element <<<containerJsonType.volumes>>> to a map, 
 	the binding is customized to bind to the custom map <<<InspectedContainerVolumesMap>>> 
 	using the custom JABX adaptor <<<InspectedContainerVolumesMapAdapter>>>.
 
-	To support binding of schema element <<<containerJsonBaseType.volumesRelabel>>>to a map, 
+	To support binding of schema element <<<containerJsonType.volumesRelabel>>>to a map, 
 	the binding is customized to bind to the custom map <<<inspectedContainerVolumesRelabelMap>>> 
 	using the custom JABX adaptor <<<inspectedContainerVolumesRelabelMapAdapter>>>.
 
-	To support binding of schema element <<<containerJsonBaseType.volumesRW>>>to a map, 
+	To support binding of schema element <<<containerJsonType.volumesRW>>>to a map, 
 	the binding is customized to bind to the custom map <<<inspectedContainerVolumesRwMap>>> 
 	using the custom JABX adaptor <<<inspectedContainerVolumesRwMapAdapter>>>.
 

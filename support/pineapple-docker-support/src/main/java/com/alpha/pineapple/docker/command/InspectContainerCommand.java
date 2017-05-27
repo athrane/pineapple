@@ -39,7 +39,7 @@ import com.alpha.pineapple.command.initialization.Initialize;
 import com.alpha.pineapple.command.initialization.ValidateValue;
 import com.alpha.pineapple.command.initialization.ValidationPolicy;
 import com.alpha.pineapple.docker.model.ContainerInfo;
-import com.alpha.pineapple.docker.model.rest.ContainerJsonBase;
+import com.alpha.pineapple.docker.model.rest.ContainerJson;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.i18n.MessageProvider;
@@ -156,7 +156,7 @@ public class InspectContainerCommand implements Command {
 		uriVariables.put("id", containerInfo.getName());
 
 		// get to inspect container
-		ContainerJsonBase info = session.httpGetForObject(INSPECT_CONTAINER_URI, uriVariables, ContainerJsonBase.class);
+		ContainerJson info = session.httpGetForObject(INSPECT_CONTAINER_URI, uriVariables, ContainerJson.class);
 
 		// complete result
 		Object[] args = { info.getName() };

@@ -51,7 +51,7 @@ import com.alpha.pineapple.docker.model.ContainerInfo;
 import com.alpha.pineapple.docker.model.ContainerInstanceInfo;
 import com.alpha.pineapple.docker.model.ImageInfo;
 import com.alpha.pineapple.docker.model.InfoBuilder;
-import com.alpha.pineapple.docker.model.rest.ContainerJsonBase;
+import com.alpha.pineapple.docker.model.rest.ContainerJson;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerConfiguration;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.docker.utils.RestResponseException;
@@ -236,7 +236,7 @@ public class InspectContainerCommandSystemTest {
 
 		// test
 		assertCommandWasSuccessfulWithDefinedInspectionState();
-		ContainerJsonBase info = (ContainerJsonBase) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
+		ContainerJson info = (ContainerJson) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
 		assertEquals(false, info.getState().isRunning());
 	}
 
@@ -263,7 +263,7 @@ public class InspectContainerCommandSystemTest {
 
 		// test
 		assertCommandWasSuccessfulWithDefinedInspectionState();
-		ContainerJsonBase info = (ContainerJsonBase) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
+		ContainerJson info = (ContainerJson) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
 		assertEquals(true, info.getState().isRunning());
 	}
 
@@ -313,7 +313,7 @@ public class InspectContainerCommandSystemTest {
 
 		// test
 		assertCommandWasSuccessfulWithDefinedInspectionState();
-		ContainerJsonBase info = (ContainerJsonBase) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
+		ContainerJson info = (ContainerJson) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
 		assertEquals("/" + randomId, info.getName());
 	}
 
@@ -340,7 +340,7 @@ public class InspectContainerCommandSystemTest {
 
 		// test
 		assertCommandWasSuccessfulWithDefinedInspectionState();
-		ContainerJsonBase info = (ContainerJsonBase) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
+		ContainerJson info = (ContainerJson) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
 		assertNotNull(info.getConfig());
 		InspectedContainerConfiguration configuration = info.getConfig();
 		List<String> cmds = configuration.getCmd();

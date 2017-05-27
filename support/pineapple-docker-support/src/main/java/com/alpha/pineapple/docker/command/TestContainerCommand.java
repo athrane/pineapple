@@ -39,7 +39,7 @@ import com.alpha.pineapple.command.initialization.ValidationPolicy;
 import com.alpha.pineapple.docker.DockerClient;
 import com.alpha.pineapple.docker.model.ContainerInfo;
 import com.alpha.pineapple.docker.model.ContainerState;
-import com.alpha.pineapple.docker.model.rest.ContainerJsonBase;
+import com.alpha.pineapple.docker.model.rest.ContainerJson;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.i18n.MessageProvider;
@@ -176,7 +176,7 @@ public class TestContainerCommand implements Command {
 		}
 
 		// inspect container
-		ContainerJsonBase inspectedContainer = dockerClient.inspectContainer(session, containerInfo, executionResult);
+		ContainerJson inspectedContainer = dockerClient.inspectContainer(session, containerInfo, executionResult);
 
 		// test container state
 		ExecutionResult assertResult = assertContainerState(inspectedContainer);
@@ -202,7 +202,7 @@ public class TestContainerCommand implements Command {
 	 * 
 	 * @return assertion result.
 	 */
-	ExecutionResult assertContainerState(ContainerJsonBase inspectedContainer) {
+	ExecutionResult assertContainerState(ContainerJson inspectedContainer) {
 		ContainerState actualState = getContainerStateFromInspectedContainer(inspectedContainer);
 		Object[] args = { expectedContainerState.toString().toUpperCase() };
 		String message = messageProvider.getMessage("tcc.test_container_assert_state_info", args);

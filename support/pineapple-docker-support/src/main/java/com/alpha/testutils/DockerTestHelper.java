@@ -56,7 +56,7 @@ import com.alpha.pineapple.docker.model.ContainerInfo;
 import com.alpha.pineapple.docker.model.ContainerInstanceInfo;
 import com.alpha.pineapple.docker.model.ImageInfo;
 import com.alpha.pineapple.docker.model.InfoBuilder;
-import com.alpha.pineapple.docker.model.rest.ContainerJsonBase;
+import com.alpha.pineapple.docker.model.rest.ContainerJson;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.docker.session.DockerSessionImpl;
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -452,10 +452,10 @@ public class DockerTestHelper {
 	 * @throws Exception
 	 *             if query fails.
 	 */
-	public ContainerJsonBase inspectContainer(DockerSession session, ContainerInfo info) throws Exception {
+	public ContainerJson inspectContainer(DockerSession session, ContainerInfo info) throws Exception {
 		try {
 			ExecutionResult result = executionResultFactory.startExecution("Inspect Docker container");
-			ContainerJsonBase inspectedContainer = dockerClient.inspectContainer(session, info, result);
+			ContainerJson inspectedContainer = dockerClient.inspectContainer(session, info, result);
 			validateResultIsSuccessful(result.getFirstChild());
 			return inspectedContainer;
 

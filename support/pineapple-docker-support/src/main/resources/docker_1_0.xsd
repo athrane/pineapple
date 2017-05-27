@@ -250,8 +250,8 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="cmd" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="env" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="entrypoint" type="stringList" minOccurs="0" maxOccurs="1" />
+			<xs:element name="env" type="stringList" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="exposedPorts" type="containerConfigurationExposedPortsType" minOccurs="0" maxOccurs="1" />						
 			<xs:element name="hostConfig" type="containerConfigurationHostConfigType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />			

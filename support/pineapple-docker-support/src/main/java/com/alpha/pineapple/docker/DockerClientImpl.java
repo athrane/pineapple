@@ -57,7 +57,7 @@ import com.alpha.pineapple.docker.model.ContainerInfo;
 import com.alpha.pineapple.docker.model.ContainerInstanceInfo;
 import com.alpha.pineapple.docker.model.ContainerState;
 import com.alpha.pineapple.docker.model.ImageInfo;
-import com.alpha.pineapple.docker.model.rest.ContainerJsonBase;
+import com.alpha.pineapple.docker.model.rest.ContainerJson;
 import com.alpha.pineapple.docker.model.rest.ImageInspect;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerState;
 import com.alpha.pineapple.docker.model.rest.ListedContainer;
@@ -791,7 +791,7 @@ public class DockerClientImpl implements DockerClient {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public ContainerJsonBase inspectContainer(DockerSession session, ContainerInfo info, ExecutionResult result) {
+	public ContainerJson inspectContainer(DockerSession session, ContainerInfo info, ExecutionResult result) {
 		Validate.notNull(session, "session is undefined.");
 		Validate.notNull(info, "info is undefined.");
 		Validate.notNull(result, "result is undefined.");
@@ -821,7 +821,7 @@ public class DockerClientImpl implements DockerClient {
 			throw new DockerClientException(commandResult);
 
 		// handle successful execution
-		return (ContainerJsonBase) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
+		return (ContainerJson) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -890,7 +890,7 @@ public class DockerClientImpl implements DockerClient {
 		Validate.notNull(info, "info is undefined.");
 
 		ExecutionResult result = executionResultFactory.startExecution("Inspect container");
-		ContainerJsonBase inspectedContainer = inspectContainer(session, info, result);
+		ContainerJson inspectedContainer = inspectContainer(session, info, result);
 		InspectedContainerState state = inspectedContainer.getState();
 		return state.isRunning();
 	}
@@ -901,7 +901,7 @@ public class DockerClientImpl implements DockerClient {
 		Validate.notNull(info, "info is undefined.");
 
 		ExecutionResult result = executionResultFactory.startExecution("Inspect container");
-		ContainerJsonBase inspectedContainer = inspectContainer(session, info, result);
+		ContainerJson inspectedContainer = inspectContainer(session, info, result);
 		InspectedContainerState state = inspectedContainer.getState();
 		return state.isPaused();
 	}

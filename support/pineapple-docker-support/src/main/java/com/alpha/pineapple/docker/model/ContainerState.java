@@ -21,53 +21,53 @@
  */
 package com.alpha.pineapple.docker.model;
 
-import com.alpha.pineapple.docker.model.rest.ContainerJsonBase;
+import com.alpha.pineapple.docker.model.rest.ContainerJson;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerState;
 
 /**
  * Enumeration which defines the Docker container states used by the project.
  */
 public enum ContainerState {
-    RUNNING("running"), PAUSED("paused"), STOPPED("stopped"), RESTARTING("restarting"), OOM("oom");
+	RUNNING("running"), PAUSED("paused"), STOPPED("stopped"), RESTARTING("restarting"), OOM("oom");
 
-    /**
-     * Enum name.
-     */
-    String name;
+	/**
+	 * Enum name.
+	 */
+	String name;
 
-    /**
-     * ContainerState constructor.
-     * 
-     * @param name
-     *            name of the state.
-     */
-    ContainerState(String name) {
-	this.name = name;
-    }
+	/**
+	 * ContainerState constructor.
+	 * 
+	 * @param name
+	 *            name of the state.
+	 */
+	ContainerState(String name) {
+		this.name = name;
+	}
 
-    @Override
-    public String toString() {
-	return name;
-    }
+	@Override
+	public String toString() {
+		return name;
+	}
 
-    /**
+	/**
 	 * Return the container state as enum from an inspected container.
 	 * 
 	 * @param inspectedContainer
 	 *            inspected container to return the state from.
 	 * @return the container state as enum from an inspected container
 	 */
-	public static ContainerState getContainerStateFromInspectedContainer(ContainerJsonBase inspectedContainer) {
-	InspectedContainerState actualState = inspectedContainer.getState();
-	if (actualState.isPaused())
-	    return PAUSED;
-	if (actualState.isRunning())
-	    return RUNNING;
-	if (actualState.isRestarting())
-	    return RESTARTING;
-	if (actualState.isOomKilled())
-	    return OOM;
-	return STOPPED;
-    }
+	public static ContainerState getContainerStateFromInspectedContainer(ContainerJson inspectedContainer) {
+		InspectedContainerState actualState = inspectedContainer.getState();
+		if (actualState.isPaused())
+			return PAUSED;
+		if (actualState.isRunning())
+			return RUNNING;
+		if (actualState.isRestarting())
+			return RESTARTING;
+		if (actualState.isOomKilled())
+			return OOM;
+		return STOPPED;
+	}
 
 }

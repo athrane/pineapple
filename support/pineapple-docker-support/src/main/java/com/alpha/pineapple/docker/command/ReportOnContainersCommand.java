@@ -45,7 +45,7 @@ import com.alpha.pineapple.docker.DockerClient;
 import com.alpha.pineapple.docker.model.ContainerInfo;
 import com.alpha.pineapple.docker.model.ImageInfo;
 import com.alpha.pineapple.docker.model.InfoBuilder;
-import com.alpha.pineapple.docker.model.rest.ContainerJsonBase;
+import com.alpha.pineapple.docker.model.rest.ContainerJson;
 import com.alpha.pineapple.docker.model.rest.ListedContainer;
 import com.alpha.pineapple.docker.model.rest.ListedContainerPort;
 import com.alpha.pineapple.docker.session.DockerSession;
@@ -203,7 +203,7 @@ public class ReportOnContainersCommand implements Command {
 			// inspect container
 			ImageInfo imageInfo = dockerInfoBuilder.buildImageInfoFromFQName(container.getImage());
 			ContainerInfo info = dockerInfoBuilder.buildContainerInfo(name, imageInfo);
-			ContainerJsonBase inspectedContainer = dockerClient.inspectContainer(session, info, result);
+			ContainerJson inspectedContainer = dockerClient.inspectContainer(session, info, result);
 
 			// report using reflection
 			reportOnObject(result, inspectedContainer, dockerJaxbGetterMethodMatcher, CUSTOM_JAXB_MAPS);

@@ -178,7 +178,7 @@ Development documentation
 	
 	[]
 	
-*** containerConfigurationHealthConfigType 
+*** HealthConfigType 
 
 	Configuration settings for the healthcheck feature for a Docker container.
 	

@@ -162,8 +162,8 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationHealthConfigType']" >
-			<jaxb:class name="ContainerConfigurationHealthConfig" />				
+		<jaxb:bindings node="//xs:complexType[@name='HealthConfigType']" >
+			<jaxb:class name="HealthConfig" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 

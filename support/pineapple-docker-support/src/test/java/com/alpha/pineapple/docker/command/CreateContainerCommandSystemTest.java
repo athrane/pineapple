@@ -61,7 +61,6 @@ import com.alpha.pineapple.docker.model.rest.ContainerConfiguration;
 import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfig;
 import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfigPortBindingValue;
 import com.alpha.pineapple.docker.model.rest.ContainerJson;
-import com.alpha.pineapple.docker.model.rest.InspectedContainerConfiguration;
 import com.alpha.pineapple.docker.model.rest.ObjectFactory;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.docker.utils.RestResponseException;
@@ -546,7 +545,7 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		InspectedContainerConfiguration actualConfiguration = inspectedContainer.getConfig();
+		ContainerConfiguration actualConfiguration = inspectedContainer.getConfig();
 		assertNotNull(actualConfiguration);
 		List<String> cmds = actualConfiguration.getCmd();
 		assertNotNull(cmds);
@@ -587,7 +586,7 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		InspectedContainerConfiguration actualConfiguration = inspectedContainer.getConfig();
+		ContainerConfiguration actualConfiguration = inspectedContainer.getConfig();
 		assertNotNull(actualConfiguration);
 		ContainerConfigurationExposedPortsMap exposedPorts = actualConfiguration.getExposedPorts();
 		assertNotNull(exposedPorts);
@@ -628,7 +627,7 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		InspectedContainerConfiguration actualConfiguration = inspectedContainer.getConfig();
+		ContainerConfiguration actualConfiguration = inspectedContainer.getConfig();
 		assertNotNull(actualConfiguration);
 		ContainerConfigurationExposedPortsMap exposedPorts = actualConfiguration.getExposedPorts();
 		assertNotNull(exposedPorts);
@@ -671,7 +670,7 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		InspectedContainerConfiguration actualConfiguration = inspectedContainer.getConfig();
+		ContainerConfiguration actualConfiguration = inspectedContainer.getConfig();
 		assertNotNull(actualConfiguration);
 		ContainerConfigurationExposedPortsMap exposedPorts = actualConfiguration.getExposedPorts();
 		assertNotNull(exposedPorts);
@@ -1149,9 +1148,9 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		InspectedContainerConfiguration inspectedContainerConfig = inspectedContainer.getConfig();
-		assertNotNull(inspectedContainerConfig);
-		List<String> inspectedEntryPoint = inspectedContainerConfig.getEntrypoint();
+		ContainerConfiguration containerConfig = inspectedContainer.getConfig();
+		assertNotNull(containerConfig);
+		List<String> inspectedEntryPoint = containerConfig.getEntrypoint();
 		assertNotNull(inspectedEntryPoint);
 		assertEquals(1, inspectedEntryPoint.size());
 	}
@@ -1191,9 +1190,9 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		InspectedContainerConfiguration inspectedContainerConfig = inspectedContainer.getConfig();
-		assertNotNull(inspectedContainerConfig);
-		List<String> inspectedEntryPoint = inspectedContainerConfig.getEntrypoint();
+		ContainerConfiguration containerConfig = inspectedContainer.getConfig();
+		assertNotNull(containerConfig);
+		List<String> inspectedEntryPoint = containerConfig.getEntrypoint();
 		assertNotNull(inspectedEntryPoint);
 		assertEquals(2, inspectedEntryPoint.size());
 	}
@@ -1230,9 +1229,9 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		InspectedContainerConfiguration inspectedContainerConfig = inspectedContainer.getConfig();
-		assertNotNull(inspectedContainerConfig);
-		List<String> inspectedCmds = inspectedContainerConfig.getCmd();
+		ContainerConfiguration containerConfig = inspectedContainer.getConfig();
+		assertNotNull(containerConfig);
+		List<String> inspectedCmds = containerConfig.getCmd();
 		assertNotNull(inspectedCmds);
 		assertEquals(1, inspectedCmds.size());
 	}
@@ -1270,9 +1269,9 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		InspectedContainerConfiguration inspectedContainerConfig = inspectedContainer.getConfig();
-		assertNotNull(inspectedContainerConfig);
-		List<String> inspectedCmds = inspectedContainerConfig.getCmd();
+		ContainerConfiguration containerConfig = inspectedContainer.getConfig();
+		assertNotNull(containerConfig);
+		List<String> inspectedCmds = containerConfig.getCmd();
 		assertNotNull(inspectedCmds);
 		assertEquals(2, inspectedCmds.size());
 	}
@@ -1316,8 +1315,8 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		InspectedContainerConfiguration inspectedContainerConfig = inspectedContainer.getConfig();
-		assertNotNull(inspectedContainerConfig);
+		ContainerConfiguration containerConfig = inspectedContainer.getConfig();
+		assertNotNull(containerConfig);
 		ContainerConfigurationHostConfig inspectedHostConfig = inspectedContainer.getHostConfig();
 		List<String> inspectedLinks = inspectedHostConfig.getLinks();
 		assertNotNull(inspectedLinks);
@@ -1366,8 +1365,8 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		InspectedContainerConfiguration inspectedContainerConfig = inspectedContainer.getConfig();
-		assertNotNull(inspectedContainerConfig);
+		ContainerConfiguration containerConfig = inspectedContainer.getConfig();
+		assertNotNull(containerConfig);
 		ContainerConfigurationHostConfig inspectedHostConfig = inspectedContainer.getHostConfig();
 		List<String> inspectedLinks = inspectedHostConfig.getLinks();
 		assertNotNull(inspectedLinks);

@@ -51,8 +51,8 @@ import com.alpha.pineapple.docker.model.ContainerInfo;
 import com.alpha.pineapple.docker.model.ContainerInstanceInfo;
 import com.alpha.pineapple.docker.model.ImageInfo;
 import com.alpha.pineapple.docker.model.InfoBuilder;
+import com.alpha.pineapple.docker.model.rest.ContainerConfiguration;
 import com.alpha.pineapple.docker.model.rest.ContainerJson;
-import com.alpha.pineapple.docker.model.rest.InspectedContainerConfiguration;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.docker.utils.RestResponseException;
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -342,7 +342,7 @@ public class InspectContainerCommandSystemTest {
 		assertCommandWasSuccessfulWithDefinedInspectionState();
 		ContainerJson info = (ContainerJson) context.get(InspectContainerCommand.INSPECTED_CONTAINER_KEY);
 		assertNotNull(info.getConfig());
-		InspectedContainerConfiguration configuration = info.getConfig();
+		ContainerConfiguration configuration = info.getConfig();
 		List<String> cmds = configuration.getCmd();
 		assertNotNull(cmds);
 		assertEquals(1, cmds.size());

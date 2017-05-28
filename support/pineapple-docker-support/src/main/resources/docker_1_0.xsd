@@ -253,7 +253,7 @@
 			<xs:element name="entrypoint" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="env" type="stringList" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="exposedPorts" type="containerConfigurationExposedPortsType" minOccurs="0" maxOccurs="1" />		
-			<xs:element name="healthcheck" type="HealthConfigType" minOccurs="0" maxOccurs="1" />										
+			<xs:element name="healthcheck" type="HealthConfigType" minOccurs="0" maxOccurs="1" />				
 			<xs:element name="hostConfig" type="containerConfigurationHostConfigType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="onBuild" type="stringList" minOccurs="0" maxOccurs="1" />
@@ -570,14 +570,14 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="args" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="config" type="inspectedContainerConfigurationType" minOccurs="0" maxOccurs="1" />  <!-- gone in current source/rest1.23, but not in 1.9 -->
+			<xs:element name="config" type="containerConfigurationType" minOccurs="0" maxOccurs="1" />  
 			<xs:element name="execIDs" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="graphDriver" type="graphDriverType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="hostConfig" type="containerConfigurationHostConfigType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="mounts" type="mountType" minOccurs="0" maxOccurs="unbounded" />											
-			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" /> <!-- gone in current source/rest1.23, but not in 1.9 -->
+			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" /> 
 			<xs:element name="state" type="inspectedContainerStateType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="volumes" type="inspectedContainerVolumesType" minOccurs="0" maxOccurs="1" /> <!--  also defined in container.config.volumes --> <!-- gone in current source/rest1.23, but not in 1.9 -->
+			<xs:element name="volumes" type="inspectedContainerVolumesType" minOccurs="0" maxOccurs="1" /> 
 			<xs:element name="volumesRW" type="inspectedContainerVolumesRwType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="volumesRelabel" type="inspectedContainerVolumesRelabelType" minOccurs="0" maxOccurs="1" />
  		</xs:sequence>
@@ -597,39 +597,6 @@
 		<xs:attribute name="restartCount" type="xs:long" use="optional"/>	
 		<xs:attribute name="resolvConfPath" type="xs:string" use="optional"/>	
 		<xs:attribute name="sysInitPath" type="xs:string" use="optional"/>		
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerConfigurationType" >
-		<xs:annotation>
-			<xs:documentation>Docker container configuration (Partial output from container inspection).</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="cmd" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="entrypoint" type="stringList" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="env" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="exposedPorts" type="containerConfigurationExposedPortsType" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />		
-			<xs:element name="onBuild" type="stringList" minOccurs="0" maxOccurs="1" />							
-			<xs:element name="portSpecs" type="containerConfigurationHostConfigPortBindingsType" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="volumes" type="containerConfigurationVolumesType" minOccurs="0" maxOccurs="1"/>	<!--  also defined in container.volumes -->					
-		</xs:sequence>
-		<xs:attribute name="attachStderr" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="attachStdin" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="attachStdout" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="domainname" type="xs:string" use="optional"/>				
-		<xs:attribute name="hostname" type="xs:string" use="optional"/>		
-		<xs:attribute name="image" type="xs:string" use="optional"/>				
-		<xs:attribute name="init" type="xs:string" use="optional"/>		
-		<xs:attribute name="macAddress" type="xs:string" use="optional"/>		
-		<xs:attribute name="memory" type="xs:long" use="optional"/>		
-		<xs:attribute name="memorySwap" type="xs:long" use="optional"/>		
-		<xs:attribute name="networkDisabled" type="xs:boolean" use="optional"/>				
-		<xs:attribute name="openStdin" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="stdinOnce" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="tty" type="xs:boolean" use="optional"/>				
-		<xs:attribute name="user" type="xs:string" use="optional"/>		
-		<xs:attribute name="volumeDriver" type="xs:string" use="optional"/>		
-		<xs:attribute name="workingDir" type="xs:string" use="optional"/>		
 	</xs:complexType>
 
 	<xs:complexType name="inspectedContainerStateType" >

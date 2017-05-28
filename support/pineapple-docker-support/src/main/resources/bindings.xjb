@@ -234,12 +234,6 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerConfigurationType']" >
-			<jaxb:class name="InspectedContainerConfiguration" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerStateType']" >
 			<jaxb:class name="InspectedContainerState" />				
 		</jaxb:bindings>		 
@@ -379,46 +373,6 @@
 		<jaxb:bindings node="//xs:complexType[@name='containerJsonType']//xs:element[@name='volumesRW']">
 			<jaxb:property>
 				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.InspectedContainerVolumesRwMap" />
-			</jaxb:property>
-		</jaxb:bindings>
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" > 
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerConfigurationType']//xs:element[@name='volumes']">
-			<jaxb:property>
-				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationVolumesMap" />
-			</jaxb:property>
-		</jaxb:bindings>
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerConfigurationType']//xs:element[@name='portSpecs']">
-			<jaxb:property>
-				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationHostConfigPortBindingsMap" />
-			</jaxb:property>
-		</jaxb:bindings>
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerConfigurationType']//xs:element[@name='labels']">
-			<jaxb:property>
-				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationLabelsMap" />
-			</jaxb:property>
-		</jaxb:bindings>
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerConfigurationType']//xs:element[@name='exposedPorts']">
-			<jaxb:property>
-				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationExposedPortsMap" />
-			</jaxb:property>
-		</jaxb:bindings>
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerNetworkSettingsType']//xs:element[@name='ports']">
-			<jaxb:property>
-				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationExposedPortsMap" />
 			</jaxb:property>
 		</jaxb:bindings>
 	</jaxb:bindings>

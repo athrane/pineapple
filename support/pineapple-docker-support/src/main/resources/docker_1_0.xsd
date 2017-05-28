@@ -256,6 +256,7 @@
 			<xs:element name="hostConfig" type="containerConfigurationHostConfigType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="onBuild" type="stringList" minOccurs="0" maxOccurs="1" />
+			<xs:element name="shell" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="volumes" type="containerConfigurationVolumesType" minOccurs="0" maxOccurs="1" />						
 		</xs:sequence>
 		<xs:attribute name="argsEscaped" type="xs:boolean" use="optional"/>				

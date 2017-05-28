@@ -338,16 +338,19 @@ Development documentation
 	the binding is customized to bind to the custom map <<<ContainerConfigurationExposedPortsMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationExposedPortsMapAdapter>>>.
 	The map and JAXB adaptor is shared with the two other bindings described in this section.
+	TODO: Delete..
 
 	To support binding of schema element <<<inspectedConfigurationType.exposedPorts>>> to a map, 
 	the binding is customized to bind to the custom map <<<ContainerConfigurationExposedPortsMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationExposedPortsMapAdapter>>>.
 	The map and JAXB adaptor is shared with the two other bindings described in this section.
+	TODO: Delete..
 
 	To support binding of schema element <<<inspectedContainerNetworkSettingsType.ports>>> to a map, 
 	the binding is customized to bind to the custom map <<<ContainerConfigurationExposedPortsMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationExposedPortsMapAdapter>>>.
 	The map and JAXB adaptor is shared with the two other bindings described in this section.
+	TODO: Delete..
 
 *** Labels
 
@@ -365,6 +368,7 @@ Development documentation
 	the binding is customized to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationLabelsMapAdapter>>>.
 	The map and JAXB adaptor is shared with the other bindings in the section.
+	TODO: Delete..
 
 	To support binding of schema element <<<inspectedImageContainerType.labels>>> to a map, 
 	the binding is customized to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
@@ -387,6 +391,7 @@ Development documentation
 	the binding is customized to bind to the custom map <<<ContainerConfigurationHostConfigPortBindingsMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationHostConfigPortBindingsMapAdapter>>>.
 	The map and JAXB adaptor is shared with the other binding in this section.
+	TODO: Delete..
 
 *** Restart policy
 
@@ -403,6 +408,7 @@ Development documentation
 	the binding is customized to bind to the custom map <<<ContainerConfigurationVolumesMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationVolumesMapAdapter>>>.
 	The map and JAXB adaptor is shared with binding of <<<containerConfigurationType.volumes>>>.
+	TODO: Delete..
 
 	To support binding of schema element <<<containerJsonType.volumes>>> to a map, 
 	the binding is customized to bind to the custom map <<<InspectedContainerVolumesMap>>> 
@@ -421,6 +427,7 @@ Development documentation
 	To support binding of schema element <<<inspectedContainerNetworkSettingsType.networks>>> to a map, 
 	the binding is customized to bind to the custom map <<<InspectedContainerNetworkSettingsNetworksMap>>> 
 	using the custom JABX adaptor <<<InspectedContainerNetworkSettingsNetworksMapAdapter>>>.
+	TODO: Delete..
 	
 *** GraphDriver Data
 

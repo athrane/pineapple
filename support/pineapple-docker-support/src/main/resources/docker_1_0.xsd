@@ -269,7 +269,9 @@
 		<xs:attribute name="macAddress" type="xs:string" use="optional"/>		
 		<xs:attribute name="networkDisabled" type="xs:boolean" use="optional"/>				
 		<xs:attribute name="openStdin" type="xs:boolean" use="optional"/>			
-		<xs:attribute name="stdinOnce" type="xs:boolean" use="optional"/>		
+		<xs:attribute name="stdinOnce" type="xs:boolean" use="optional"/>	
+		<xs:attribute name="stopSignal" type="xs:string" use="optional"/>	
+		<xs:attribute name="stopTimeout" type="xs:int" use="optional"/>							
 		<xs:attribute name="tty" type="xs:boolean" use="optional"/>				
 		<xs:attribute name="user" type="xs:string" use="optional"/>		
 		<xs:attribute name="workingDir" type="xs:string" use="optional"/>		

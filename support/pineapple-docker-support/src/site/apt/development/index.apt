@@ -177,6 +177,21 @@ Development documentation
 	* <<<imageInspectType>>>
 	
 	[]
+	
+*** containerConfigurationHealthConfigType 
+
+	Configuration settings for the healthcheck feature for a Docker container.
+	
+	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
+
+	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go}HostConfig}}
+	
+	Used by these schema types:
+	
+	* <<<containerConfigurationType>>>
+	
+	[]	
+	
 *** containerConfigurationHostConfigType 
 
 	Info about the host configuration of a Docker container.
@@ -427,7 +442,6 @@ Development documentation
 	To support binding of schema element <<<inspectedContainerNetworkSettingsType.networks>>> to a map, 
 	the binding is customized to bind to the custom map <<<InspectedContainerNetworkSettingsNetworksMap>>> 
 	using the custom JABX adaptor <<<InspectedContainerNetworkSettingsNetworksMapAdapter>>>.
-	TODO: Delete..
 	
 *** GraphDriver Data
 

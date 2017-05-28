@@ -252,7 +252,8 @@
 			<xs:element name="cmd" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="entrypoint" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="env" type="stringList" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="exposedPorts" type="containerConfigurationExposedPortsType" minOccurs="0" maxOccurs="1" />						
+			<xs:element name="exposedPorts" type="containerConfigurationExposedPortsType" minOccurs="0" maxOccurs="1" />		
+			<xs:element name="healthcheck" type="containerConfigurationHealthConfigType" minOccurs="0" maxOccurs="1" />										
 			<xs:element name="hostConfig" type="containerConfigurationHostConfigType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="onBuild" type="stringList" minOccurs="0" maxOccurs="1" />
@@ -350,6 +351,22 @@
 		<xs:annotation>
 			<xs:documentation>Null value for a volume in container configuration.</xs:documentation>
 		</xs:annotation>
+	</xs:complexType>
+
+	<!-- 
+		Corresponds to HealthConfig   
+		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/config.go#L11
+	-->
+	<xs:complexType name="containerConfigurationHealthConfigType" >
+		<xs:annotation>
+			<xs:documentation>HealthConfig holds configuration settings for the healthcheck feature.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="test" type="stringList" minOccurs="0" maxOccurs="1" />
+ 		</xs:sequence>		
+		<xs:attribute name="interval" type="xs:long" use="optional"/>  <!-- approximation of the Interval which is implemented as a time.Duration -->				
+		<xs:attribute name="timeout" type="xs:long" use="optional"/>  <!-- approximation of the Timeout which is implemented as a time.Duration -->				
+		<xs:attribute name="Retries" type="xs:int" use="optional"/>  	
 	</xs:complexType>
 
 	<!-- 

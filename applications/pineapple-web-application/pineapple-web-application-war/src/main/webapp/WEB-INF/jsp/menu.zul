@@ -169,13 +169,13 @@
 			            <menuseparator/>	            
 			            <menuitem id="webClientUserGuide" 
 			            	label="Web Client User Documentation" 
-			            	href="http://pineapple.java.net/pineapple-applications/pineapple-web-application/pineapple-web-application-war/index.html" 
-			            	target="http://pineapple.java.net/pineapple-applications/pineapple-web-application/pineapple-web-application-war/index.html"
+			            	href="https://athrane.github.io/pineapple/pineapple-applications/pineapple-web-application/pineapple-web-application-war/index.html" 
+			            	target="https://athrane.github.io/pineapple/pineapple-applications/pineapple-web-application/pineapple-web-application-war/index.html"
 			            	iconSclass="z-icon-question" />						    		            										            	
 			            <menuitem id="pineappleProjectSite" 
 			            	label="Pineapple Project Site" 
-			            	href="http://pineapple.java.net" 
-			            	target="http://pineapple.java.net"
+			            	href="https://athrane.github.io/pineapple" 
+			            	target="https://athrane.github.io/pineapple"
 			     			iconSclass="z-icon-question" />						    		            										            			            
 			            <menuitem id="pineappleBlog" 
 			            	label="Pineapple Blog" 

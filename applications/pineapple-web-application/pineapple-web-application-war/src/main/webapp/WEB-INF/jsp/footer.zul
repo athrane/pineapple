@@ -51,8 +51,8 @@
 			<toolbar align="end">
 		        <toolbarbutton label="@load(vm.version)" />			
 		        <toolbarbutton tooltiptext="Visit the Pineapple website."  
-		        	label="https://pineapple.java.net" 
-		        	href="https://pineapple.java.net" 
+		        	label="https://athrane.github.io/pineapple" 
+		        	href="https://athrane.github.io/pineapple" 
 		        	style="font-weight: bold;" 
 					iconSclass="z-icon-home" />
 		    </toolbar>	

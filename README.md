@@ -1,4 +1,4 @@
-Pineapple - the prototyping and provisioning tool
+Pineapple - a prototyping and provisioning tool
 ============================
 
 Pineapple is an open source project whose goal it is to create a free tool for prototyping and provisioning of web applications and platforms.

@@ -4,7 +4,12 @@ language: java
 jdk:
   - openjdk8
   - oraclejdk8
-  
+   
 build:
   ci:
-   - shippable_retry mvn install
+  - shippable_retry curl -L "https://dl.bintray.com/pineapple/generic/pineapple-3rdparty-maven-dependencies-1.10.0.tar"  
+  - tar xf pineapple-3rdparty-maven-dependencies-1.10.0.tar
+  - rm -rf ~/.m2
+  - mkdir -p ~/.m2/
+  - mv repository ~/.m2/
+  - shippable_retry mvn install

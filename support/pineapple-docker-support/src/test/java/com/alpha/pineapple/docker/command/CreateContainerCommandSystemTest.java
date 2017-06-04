@@ -466,7 +466,7 @@ public class CreateContainerCommandSystemTest {
 		assertNotNull(inspectedContainer);
 		List<String> envs = inspectedContainer.getConfig().getEnv();
 		assertNotNull(envs);
-		assertEquals(1, envs.size());
+		assertEquals(2, envs.size());
 		assertEquals(name + "=" + value, envs.get(0));
 	}
 
@@ -509,7 +509,7 @@ public class CreateContainerCommandSystemTest {
 		assertNotNull(inspectedContainer);
 		List<String> envs = inspectedContainer.getConfig().getEnv();
 		assertNotNull(envs);
-		assertEquals(2, envs.size());
+		assertEquals(3, envs.size());
 		assertEquals(name + "=" + value, envs.get(0));
 		assertEquals(name2 + "=" + value2, envs.get(1));
 	}

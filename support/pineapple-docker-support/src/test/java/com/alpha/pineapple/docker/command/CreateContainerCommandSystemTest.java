@@ -1273,7 +1273,7 @@ public class CreateContainerCommandSystemTest {
 		assertNotNull(containerConfig);
 		List<String> inspectedCmds = containerConfig.getCmd();
 		assertNotNull(inspectedCmds);
-		assertEquals(2, inspectedCmds.size());
+		assertEquals(1, inspectedCmds.size());
 	}
 
 	/**

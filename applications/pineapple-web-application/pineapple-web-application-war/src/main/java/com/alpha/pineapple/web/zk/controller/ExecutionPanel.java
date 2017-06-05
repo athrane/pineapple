@@ -23,16 +23,14 @@
 package com.alpha.pineapple.web.zk.controller;
 
 import static com.alpha.pineapple.web.WebApplicationConstants.COLLAPSEEXAPAND_EXECUTIONRESULT_TREE_GLOBALCOMMAND;
-import static com.alpha.pineapple.web.WebApplicationConstants.PINEAPPLE_ZK_QUEUE;
 
 import java.util.Collection;
 
 import org.zkoss.bind.GlobalCommandEvent;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zkmax.ui.select.annotation.Subscribe;
+//import org.zkoss.zkmax.ui.select.annotation.Subscribe;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Window;
@@ -42,86 +40,86 @@ import org.zkoss.zul.Window;
  */
 public class ExecutionPanel extends SelectorComposer<Window> {
 
-    /**
-     * Serial Version UID.
-     */
-    static final long serialVersionUID = 6470043898269443180L;
+	/**
+	 * Serial Version UID.
+	 */
+	static final long serialVersionUID = 6470043898269443180L;
 
-    /**
-     * Tree.
-     */
-    @Wire
-    Tree tree;
+	/**
+	 * Tree.
+	 */
+	@Wire
+	Tree tree;
 
-    /**
-     * Tree state, whether is it expanded or collapsed.
-     */
-    boolean isTreeCollapsed = false;
+	/**
+	 * Tree state, whether is it expanded or collapsed.
+	 */
+	boolean isTreeCollapsed = false;
 
-    /**
-     * ZK doAfterCompose method.
-     * 
-     * @param comp
-     *            ZK Window.
-     */
-    public void doAfterCompose(Window comp) throws Exception {
-	super.doAfterCompose(comp);
+	/**
+	 * ZK doAfterCompose method.
+	 * 
+	 * @param comp
+	 *            ZK Window.
+	 */
+	public void doAfterCompose(Window comp) throws Exception {
+		super.doAfterCompose(comp);
 
-	isTreeCollapsed = true;
-    }
-
-    /**
-     * Event handler for global command "startOperation" and
-     * "collapseExpandExecutionResultTree" subscribes to queue
-     * "pineapple-queue".
-     * 
-     * @param evt
-     *            global command event.
-     */
-    @Subscribe(value = PINEAPPLE_ZK_QUEUE, scope = EventQueues.SESSION)
-    public void processEvent(Event evt) {
-
-	if (evt instanceof GlobalCommandEvent) {
-	    String command = ((GlobalCommandEvent) evt).getCommand();
-
-	    // execute if global command is "collapseExpandExecutionResultTree"
-	    if (COLLAPSEEXAPAND_EXECUTIONRESULT_TREE_GLOBALCOMMAND.equals(command)) {
-		collapseExpandExecutionResultTree();
-	    }
-
+		isTreeCollapsed = true;
 	}
-    }
 
-    /**
-     * Return true if tree is collapsed.
-     * 
-     * @return true if tree are collapsed.
-     */
-    boolean isTreeCollapsed() {
-	return isTreeCollapsed;
-    }
+	/**
+	 * Event handler for global command "startOperation" and
+	 * "collapseExpandExecutionResultTree" subscribes to queue
+	 * "pineapple-queue".
+	 * 
+	 * @param evt
+	 *            global command event.
+	 */
+	// @Subscribe(value = PINEAPPLE_ZK_QUEUE, scope = EventQueues.SESSION)
+	public void processEvent(Event evt) {
 
-    /**
-     * Collapse or expand execution result tree.
-     */
-    void collapseExpandExecutionResultTree() {
-	if (tree == null)
-	    return;
+		if (evt instanceof GlobalCommandEvent) {
+			String command = ((GlobalCommandEvent) evt).getCommand();
 
-	// clear selection
-	tree.clearSelection();
+			// execute if global command is "collapseExpandExecutionResultTree"
+			if (COLLAPSEEXAPAND_EXECUTIONRESULT_TREE_GLOBALCOMMAND.equals(command)) {
+				collapseExpandExecutionResultTree();
+			}
 
-	// get tree item
-	Collection<Treeitem> treeItems = tree.getItems();
-	Treeitem[] itemsArray = treeItems.toArray(new Treeitem[treeItems.size()]);
-
-	// set state
-	boolean setOpen = isTreeCollapsed();
-	isTreeCollapsed = !isTreeCollapsed();
-
-	for (Treeitem item : itemsArray) {
-	    item.setOpen(setOpen);
+		}
 	}
-    }
+
+	/**
+	 * Return true if tree is collapsed.
+	 * 
+	 * @return true if tree are collapsed.
+	 */
+	boolean isTreeCollapsed() {
+		return isTreeCollapsed;
+	}
+
+	/**
+	 * Collapse or expand execution result tree.
+	 */
+	void collapseExpandExecutionResultTree() {
+		if (tree == null)
+			return;
+
+		// clear selection
+		tree.clearSelection();
+
+		// get tree item
+		Collection<Treeitem> treeItems = tree.getItems();
+		Treeitem[] itemsArray = treeItems.toArray(new Treeitem[treeItems.size()]);
+
+		// set state
+		boolean setOpen = isTreeCollapsed();
+		isTreeCollapsed = !isTreeCollapsed();
+
+		for (Treeitem item : itemsArray) {
+			item.setOpen(setOpen);
+		}
+	}
 
 }

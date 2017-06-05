@@ -22,7 +22,6 @@
 
 package com.alpha.pineapple.web.zk.controller;
 
-import static com.alpha.pineapple.web.WebApplicationConstants.PINEAPPLE_ZK_QUEUE;
 import static com.alpha.pineapple.web.WebApplicationConstants.SELECT_WORKSPACE_TAB_GLOBALCOMMAND;
 
 import org.apache.log4j.Logger;
@@ -30,11 +29,10 @@ import org.zkoss.bind.GlobalCommandEvent;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zkmax.ui.select.annotation.Subscribe;
+//import org.zkoss.zkmax.ui.select.annotation.Subscribe;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Window;
 
@@ -47,148 +45,148 @@ import com.alpha.pineapple.web.model.SessionState;
  */
 public class WorkspacePanel extends SelectorComposer<Window> {
 
-    /**
-     * Serial Version UID.
-     */
-    static final long serialVersionUID = 6470043898269443180L;
+	/**
+	 * Serial Version UID.
+	 */
+	static final long serialVersionUID = 6470043898269443180L;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @WireVariable
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@WireVariable
+	MessageProvider webMessageProvider;
 
-    /**
-     * Event dispatcher.
-     */
-    @WireVariable
-    EventDispatcher eventDispatcher;
+	/**
+	 * Event dispatcher.
+	 */
+	@WireVariable
+	EventDispatcher eventDispatcher;
 
-    /**
-     * Session state.
-     */
-    @WireVariable
-    SessionState sessionState;
+	/**
+	 * Session state.
+	 */
+	@WireVariable
+	SessionState sessionState;
 
-    /**
-     * ZK Desktop set and enabled by server push.
-     */
-    Desktop desktop;
+	/**
+	 * ZK Desktop set and enabled by server push.
+	 */
+	Desktop desktop;
 
-    /**
-     * ZK module tab.
-     */
-    @Wire
-    Tab moduleTab;
+	/**
+	 * ZK module tab.
+	 */
+	@Wire
+	Tab moduleTab;
 
-    /**
-     * ZK execution tab.
-     */
-    @Wire
-    Tab executionTab;
+	/**
+	 * ZK execution tab.
+	 */
+	@Wire
+	Tab executionTab;
 
-    /**
-     * ZK report tab.
-     */
-    @Wire
-    Tab reportTab;
+	/**
+	 * ZK report tab.
+	 */
+	@Wire
+	Tab reportTab;
 
-    /**
-     * ZK configuration tab.
-     */
-    @Wire
-    Tab configurationTab;
+	/**
+	 * ZK configuration tab.
+	 */
+	@Wire
+	Tab configurationTab;
 
-    /**
-     * ZK debug tab.
-     */
-    @Wire
-    Tab debugTab;
+	/**
+	 * ZK debug tab.
+	 */
+	@Wire
+	Tab debugTab;
 
-    /**
-     * ZK scheduled operation tab.
-     */
-    @Wire
-    Tab schedulingTab;
+	/**
+	 * ZK scheduled operation tab.
+	 */
+	@Wire
+	Tab schedulingTab;
 
-    /**
-     * ZK doAfterCompose method.
-     * 
-     * @param comp
-     *            ZK Window.
-     */
-    public void doAfterCompose(Window comp) throws Exception {
-	super.doAfterCompose(comp);
+	/**
+	 * ZK doAfterCompose method.
+	 * 
+	 * @param comp
+	 *            ZK Window.
+	 */
+	public void doAfterCompose(Window comp) throws Exception {
+		super.doAfterCompose(comp);
 
-	// enable server push
-	desktop = Executions.getCurrent().getDesktop();
+		// enable server push
+		desktop = Executions.getCurrent().getDesktop();
 
-	// register desktop with event dispatcher
-	eventDispatcher.register(desktop);
-    }
-
-    /**
-     * Set requested tab in focus.
-     */
-    void setTabInFocus() {
-	// set tab in focus
-	switch (sessionState.getRequestTabFocus()) {
-	case NONE:
-	    return;
-	case MODULE:
-	    moduleTab.setSelected(true);
-	    return;
-	case DEBUG:
-	    debugTab.setSelected(true);
-	    return;
-	case EXECUTION:
-	    executionTab.setSelected(true);
-	    return;
-	case REPORT:
-	    reportTab.setSelected(true);
-	    return;
-	case CONFIGURATION:
-	    configurationTab.setSelected(true);
-	    return;
-	case SCHEDULED_OPERATIONS:
-	    schedulingTab.setSelected(true);
-	    return;
-	default:
-	    return;
+		// register desktop with event dispatcher
+		eventDispatcher.register(desktop);
 	}
-    }
 
-    /**
-     * Sets debug visibility depending on the session state.
-     */
-    void toogleDebugTab() {
-	debugTab.setVisible(sessionState.isDebugInfoEnabled());
-    }
-
-    /**
-     * Event handler global command "selectWorkspaceTab" subscribes to queue
-     * "pineapple-queue".
-     * 
-     * @param evt
-     *            global command event.
-     */
-    @Subscribe(value = PINEAPPLE_ZK_QUEUE, scope = EventQueues.SESSION)
-    public void selectWorkspaceTab(Event evt) {
-
-	if (evt instanceof GlobalCommandEvent) {
-	    String command = ((GlobalCommandEvent) evt).getCommand();
-
-	    // execute of global command is "selectWorkspaceTab"
-	    if (SELECT_WORKSPACE_TAB_GLOBALCOMMAND.equals(command)) {
-		toogleDebugTab();
-		setTabInFocus();
-	    }
+	/**
+	 * Set requested tab in focus.
+	 */
+	void setTabInFocus() {
+		// set tab in focus
+		switch (sessionState.getRequestTabFocus()) {
+		case NONE:
+			return;
+		case MODULE:
+			moduleTab.setSelected(true);
+			return;
+		case DEBUG:
+			debugTab.setSelected(true);
+			return;
+		case EXECUTION:
+			executionTab.setSelected(true);
+			return;
+		case REPORT:
+			reportTab.setSelected(true);
+			return;
+		case CONFIGURATION:
+			configurationTab.setSelected(true);
+			return;
+		case SCHEDULED_OPERATIONS:
+			schedulingTab.setSelected(true);
+			return;
+		default:
+			return;
+		}
 	}
-    }
+
+	/**
+	 * Sets debug visibility depending on the session state.
+	 */
+	void toogleDebugTab() {
+		debugTab.setVisible(sessionState.isDebugInfoEnabled());
+	}
+
+	/**
+	 * Event handler global command "selectWorkspaceTab" subscribes to queue
+	 * "pineapple-queue".
+	 * 
+	 * @param evt
+	 *            global command event.
+	 */
+	// @Subscribe(value = PINEAPPLE_ZK_QUEUE, scope = EventQueues.SESSION)
+	public void selectWorkspaceTab(Event evt) {
+
+		if (evt instanceof GlobalCommandEvent) {
+			String command = ((GlobalCommandEvent) evt).getCommand();
+
+			// execute of global command is "selectWorkspaceTab"
+			if (SELECT_WORKSPACE_TAB_GLOBALCOMMAND.equals(command)) {
+				toogleDebugTab();
+				setTabInFocus();
+			}
+		}
+	}
 
 }

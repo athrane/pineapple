@@ -664,12 +664,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<!-- direct deployment using wagon-svn is disablet -->
-		<!-- enable wagon-svn for site upload to java.net -->
-		<extensions>
-			<!-- <extension> <groupId>org.jvnet.wagon-svn</groupId> <artifactId>wagon-svn</artifactId> 
-				<version>1.9-SNAPSHOT</version> </extension> -->
-		</extensions>
 	</build>
 	<repositories>
 		<repository>

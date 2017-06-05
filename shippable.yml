@@ -7,11 +7,11 @@ jdk:
    
 build:
   ci:
-	- shippable_retry curl -O -L https://dl.bintray.com/pineapple/generic/pineapple-3rdparty-maven-dependencies-1.10.0.tar
-	- tar xfv pineapple-3rdparty-maven-dependencies-1.10.0.tar
-	- mkdir -p /root/.m2/
-	- mv repository /root/.m2/
-	- shippable_retry mvn install
+  - shippable_retry curl -O -L https://dl.bintray.com/pineapple/generic/pineapple-3rdparty-maven-dependencies-1.10.0.tar
+  - tar xfv pineapple-3rdparty-maven-dependencies-1.10.0.tar
+  - mkdir -p /root/.m2/
+  - mv repository /root/.m2/
+  - shippable_retry mvn install
 
   on_success:
-	- shippable_retry mvn deploy
+  - shippable_retry mvn deploy

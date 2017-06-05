@@ -21,3 +21,7 @@ Pineapple can help you with
 [Download Pineapple from Bintray](https://bintray.com/pineapple/maven/com.alpha.pineapple/).
 
 [ ![Download](https://api.bintray.com/packages/pineapple/maven/com.alpha.pineapple/images/download.svg) ](https://bintray.com/pineapple/maven/com.alpha.pineapple/_latestVersion)
+
+## Badges
+
+[![Run Status](https://api.shippable.com/projects/587cc4c52f36a111000d1ba1/badge?branch=master)](https://app.shippable.com/github/athrane/pineapple)

@@ -707,12 +707,6 @@
 			<id>ZK CE</id>
 			<url>http://mavensync.zkoss.org/maven2</url>
 		</repository>
-		<repository>
-			<id>ZK EE</id>
-			<url>https://maven.zkoss.org/repo/zk/ee</url>
-		</repository>
-		<!-- <repository> <id>ZK PE/EE Evaluation</id> <url>http://mavensync.zkoss.org/eval/</url> 
-			</repository> -->
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>

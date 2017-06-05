@@ -47,49 +47,6 @@ to install the jar into your local repository.
 
 mvn install:install-file -DgroupId=oracle -DartifactId=weblogic-full-client -Dversion=12.1.2 -Dpackaging=jar -Dfile=wlfullclient.jar -DgeneratePom=true
 
-3.2) Configure Maven to access ZK EE artifacts
-
-The Pineapple project has a ZOL license to use ZK EE. During the build Maven will download ZK EE artifacts.
-The ZK EE repository requires authentication to access the ZK EE artifacts. 
-	
-Configure the Maven settings.xml file to support authentication by adding a server stanza for the ZK EE repository:
-	
-<servers>
-	<server>
-		<id>ZK EE</id><!-- Same as your repository name -->
-		<!-- Your premium user name and password -->
-		<username>zk-ee-user</username>
-		<password>zk-ee-password</password>
-	</server>
-</servers>
-	
-User and password for the server element must be provided by ZKOSS.
-
-Detailed description can be found at the ZK Site:	
-http://books.zkoss.org/wiki/ZK_Installation_Guide/Setting_up_IDE/Maven/Resolving_ZK_Framework_Artifacts_via_Maven
-
-To support SSL communication with the ZK EE repository, the JVM which is used to execute Maven, must have access to the ZK certificate. 
-	
-This can be done in several different ways, but one way to do is:
-1) Get CA certificate from ZKOSS.
-2) Import it into cacerts for JDK used by Maven to build Pineapple.	
-This process is documented at: 
-http://books.zkoss.org/wiki/ZK_Installation_Guide/Setting_up_IDE/Maven/Resolving_ZK_Framework_Artifacts_via_Maven#Sample_of_pom.xml_for_licensed_Professional_Package
-
-Example from the ZK site:
-"C:\Program Files\Java\jdk1.7.0_25\bin\keytool.exe" -import -noprompt -trustcacerts -alias ZKOSS_root_CA -file c:\temp-pineapple\ZKOSS_root_CA.crt -keystore "C:\Program Files\Java\jdk1.7.0_25\jre\lib\security\cacerts" -storepass changeit
-	
-An alternative way is to:
-	
-a) Get CA certificate from ZKOSS.
-b) Extract certificate and create ZK EE key store:
-
-keytool.exe -importcert -alias zkee -keystore zkee.jks -storepass secret -file ZKOSS_root_CA.crt	
-
-c) Invoke Maven with MAVEN_OPT configured with these arguments:
-	
-set MAVEN_OPTS=-Djavax.net.ssl.trustStore=/path/to/apache-maven-3.1.1/conf/zkee.jks -Djavax.net.ssl.trustStorePassword=secret
-
 4) Create Maven based workspace in Eclipse
 -----------
 

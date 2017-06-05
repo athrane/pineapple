@@ -2,7 +2,7 @@
 language: java	
 
 env:
-- secure: wq87WH7pzcdpLBOuuBHmkm2rltGkyO2SCdPekQPz6yO7wudorzjmqANzR9syhvPGU1wFyyPjKTVJc0DaP4uaIBOlm7hoJITzJ2MDsBe8EJ6yvced2vwDjkiiIT86pjeieSkajqa5XAC3kYnohZly6acxw67Q1AzMGOZlsVIWI+W37TXwrLhVMyfLZImYz/kPKyDolpsgKNjF52u3KHvB4C0758gkms9j6e0utESYKw7L0tycIW/pdvrnMCnw/RwBRCsRjpAZzRWtYwus6xYAZTzqMWyW+MU5SAg6ZFIfRef3ZbYe9wwrYvKZx1BEyioCPsdbB4G7zhqbO0+/WfMQWw==
+- secure: Vx0Eaosf/cCgmxLQNpsAaEkbMM7fhmNDA2x8aVSzDMwstothq306Pt2KSUocmPdvml/NlxALPi+Amgh4M8JXYVSQbKVRGncOFn+YHaE0UgjSsYsyBq1NbRq8ibSCSM8e4fvcru9Ykp47XD98ooHokkN+DCE4eYNwsG2XRoS72zHYEh5ghWJH6/PvweFApSLYvOu56Z3cDxbqjs6HwAB0KWuiMiygDdmLLo7GL43cIZg8h2fl8QNMeuTdn8cxETMgppiyDvWywVy66oNwsEeX79PmKlE84kF53H6tZ+vHoEth1ENlboYIqDChesmlctowJqysesK/2KO1zIN8YcDC6Q==
 
 jdk:
   - openjdk8
@@ -11,7 +11,7 @@ jdk:
 before_install:
    - mkdir -p ~/.m2
    - echo "<settings><servers><server><id>bintray-pineapple-maven</id>
-               <username>einheriii@gmail.com</username>
+               <username>einheriii</username>
                <password>${BINTRAY_PASSWORD}</password>
            </server></servers></settings>" > ~/.m2/settings.xml   
 

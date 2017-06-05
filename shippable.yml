@@ -1,6 +1,9 @@
 
 language: java	
 
+env:
+- secure: wq87WH7pzcdpLBOuuBHmkm2rltGkyO2SCdPekQPz6yO7wudorzjmqANzR9syhvPGU1wFyyPjKTVJc0DaP4uaIBOlm7hoJITzJ2MDsBe8EJ6yvced2vwDjkiiIT86pjeieSkajqa5XAC3kYnohZly6acxw67Q1AzMGOZlsVIWI+W37TXwrLhVMyfLZImYz/kPKyDolpsgKNjF52u3KHvB4C0758gkms9j6e0utESYKw7L0tycIW/pdvrnMCnw/RwBRCsRjpAZzRWtYwus6xYAZTzqMWyW+MU5SAg6ZFIfRef3ZbYe9wwrYvKZx1BEyioCPsdbB4G7zhqbO0+/WfMQWw==
+
 jdk:
   - openjdk8
   - oraclejdk8
@@ -8,8 +11,8 @@ jdk:
 before_install:
    - mkdir -p ~/.m2
    - echo "<settings><servers><server><id>bintray-pineapple-maven</id>
-               <username>{{ARTIFACTORY_USERNAME}}</username>
-               <password>{{ARTIFACTORY_PASSWORD}}</password>
+               <username>einheriii@gmail.com</username>
+               <password>${BINTRAY_PASSWORD}</password>
            </server></servers></settings>" > ~/.m2/settings.xml   
 
 build:
@@ -20,4 +23,4 @@ build:
   - shippable_retry mvn install
 
   on_success:
-  - shippable_retry mvn deploy
+  - mvn deploy

@@ -181,11 +181,10 @@
 		<groupId>org.zkoss.zk</groupId>
 		<artifactId>zkplus</artifactId>
     </dependency>					
-    <dependency>
+	<dependency>
 		<groupId>org.zkoss.zk</groupId>
-		<artifactId>zkbind</artifactId>
-    </dependency>					
-    
+		<artifactId>zkmax</artifactId>
+	</dependency>			    	    
     <dependency>
 		<groupId>com.google.code.gson</groupId>
 		<artifactId>gson</artifactId>

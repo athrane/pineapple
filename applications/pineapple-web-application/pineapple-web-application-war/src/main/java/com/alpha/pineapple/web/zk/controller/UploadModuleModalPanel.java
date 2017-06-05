@@ -41,10 +41,11 @@ import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-//import org.zkoss.zkmax.ui.select.annotation.Subscribe;
+import org.zkoss.zkmax.ui.select.annotation.Subscribe;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
@@ -62,151 +63,151 @@ import com.alpha.pineapple.web.zk.asynctask.event.visitor.UnpackModuleTaskEventV
  * ZK controller for the upload module panel (modal).
  */
 public class UploadModuleModalPanel extends SelectorComposer<Window>
-		implements UnpackModuleTaskEventVisitor, EventListener<Event> {
+	implements UnpackModuleTaskEventVisitor, EventListener<Event> {
 
-	/**
-	 * Serial Version UID.
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * Serial Version UID.
+     */
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
+    /**
+     * Logger object.
+     */
+    Logger logger = Logger.getLogger(this.getClass().getName());
 
-	/**
-	 * Message provider for I18N support.
-	 */
-	@WireVariable
-	MessageProvider webMessageProvider;
+    /**
+     * Message provider for I18N support.
+     */
+    @WireVariable
+    MessageProvider webMessageProvider;
 
-	/**
-	 * Session state.
-	 */
-	@WireVariable
-	SessionState sessionState;
+    /**
+     * Session state.
+     */
+    @WireVariable
+    SessionState sessionState;
 
-	/**
-	 * Asynchronous unpack module task.
-	 */
-	@WireVariable
-	UnpackModuleTask unpackModuleTask;
+    /**
+     * Asynchronous unpack module task.
+     */
+    @WireVariable
+    UnpackModuleTask unpackModuleTask;
 
-	/**
-	 * Asynchronous task execution helper.
-	 */
-	@WireVariable
-	AsyncTaskHelper asyncTaskHelper;
+    /**
+     * Asynchronous task execution helper.
+     */
+    @WireVariable
+    AsyncTaskHelper asyncTaskHelper;
 
-	/**
-	 * Runtime directory resolver.
-	 */
-	@WireVariable
-	RuntimeDirectoryProvider runtimeDirectoryResolver;
+    /**
+     * Runtime directory resolver.
+     */
+    @WireVariable
+    RuntimeDirectoryProvider runtimeDirectoryResolver;
 
-	/**
-	 * ZK Desktop set and enabled by server push.
-	 */
-	Desktop desktop;
+    /**
+     * ZK Desktop set and enabled by server push.
+     */
+    Desktop desktop;
 
-	/**
-	 * ZK button.
-	 */
-	@Wire
-	Button closeButton;
+    /**
+     * ZK button.
+     */
+    @Wire
+    Button closeButton;
 
-	/**
-	 * ZK button.
-	 */
-	@Wire
-	Button uploadButton;
+    /**
+     * ZK button.
+     */
+    @Wire
+    Button uploadButton;
 
-	/**
-	 * ZK doAfterCompose method.
-	 * 
-	 * @param comp
-	 *            ZK Window.
-	 */
-	public void doAfterCompose(Window comp) throws Exception {
-		super.doAfterCompose(comp);
+    /**
+     * ZK doAfterCompose method.
+     * 
+     * @param comp
+     *            ZK Window.
+     */
+    public void doAfterCompose(Window comp) throws Exception {
+	super.doAfterCompose(comp);
 
-		// enable server push
-		desktop = asyncTaskHelper.enableServerPush();
+	// enable server push
+	desktop = asyncTaskHelper.enableServerPush();
+    }
+
+    /**
+     * Event handler for global command "uploadModule" subscribes to queue
+     * "pineapple-queue".
+     * 
+     * @param evt
+     *            global command event.
+     */
+    @Subscribe(value = PINEAPPLE_ZK_QUEUE, scope = EventQueues.SESSION)
+    public void executeOperation(Event evt) {
+
+	if (evt instanceof GlobalCommandEvent) {
+	    String command = ((GlobalCommandEvent) evt).getCommand();
+
+	    // execute of global command is "uploadModule"
+	    if (UPLOAD_MODULE_GLOBALCOMMAND.equals(command)) {
+
+		// get command media argument
+		Map<String, Object> args = ((GlobalCommandEvent) evt).getArgs();
+		Media uploadedMedia = (Media) args.get(MEDIA_ARG);
+
+		// disable buttons
+		uploadButton.setDisabled(true);
+		closeButton.setDisabled(true);
+
+		// invoke pineapple operation asynchronously
+		unpackModuleTask.setMedia(uploadedMedia);
+		asyncTaskHelper.executeAsync(unpackModuleTask, this.desktop, (EventListener<Event>) this);
+	    }
+	}
+    }
+
+    /**
+     * Generic event handler for asynchronous task which dispatch event to
+     * specific event handler.
+     */
+    @Override
+    public void onEvent(Event evt) throws Exception {
+	// TODO: throw error if type cast fails
+
+	// dispatch event
+	((UnpackModuleTaskEvent) evt).accept(this);
+    }
+
+    @Override
+    public void visit(FileUnpackUpdateEvent evt) {
+
+	// create command arguments with event
+	Map<String, Object> args = new HashMap<String, Object>();
+	args.put(FILE_UNPACK_EVENT_ARG, evt);
+
+	// post global command to trigger update at view model
+	BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, FILE_UNPACK_UPDATE_GLOBALCOMMAND, args);
+    }
+
+    /**
+     * Event handler for the unpacked entry event which signals that a file
+     * entry have been unpacked from the zip archive.
+     */
+    @Override
+    public void visit(UnpackedEntryEvent evt) {
+
+	// enabled close button if done
+	if (evt.getPercentage() == 100) {
+	    uploadButton.setDisabled(false);
+	    closeButton.setDisabled(false);
 	}
 
-	/**
-	 * Event handler for global command "uploadModule" subscribes to queue
-	 * "pineapple-queue".
-	 * 
-	 * @param evt
-	 *            global command event.
-	 */
-	// @Subscribe(value = PINEAPPLE_ZK_QUEUE, scope = EventQueues.SESSION)
-	public void executeOperation(Event evt) {
+	// create command arguments with event
+	Map<String, Object> args = new HashMap<String, Object>();
+	args.put(UNPACKED_ENTRY_EVENT_ARG, evt);
 
-		if (evt instanceof GlobalCommandEvent) {
-			String command = ((GlobalCommandEvent) evt).getCommand();
-
-			// execute of global command is "uploadModule"
-			if (UPLOAD_MODULE_GLOBALCOMMAND.equals(command)) {
-
-				// get command media argument
-				Map<String, Object> args = ((GlobalCommandEvent) evt).getArgs();
-				Media uploadedMedia = (Media) args.get(MEDIA_ARG);
-
-				// disable buttons
-				uploadButton.setDisabled(true);
-				closeButton.setDisabled(true);
-
-				// invoke pineapple operation asynchronously
-				unpackModuleTask.setMedia(uploadedMedia);
-				asyncTaskHelper.executeAsync(unpackModuleTask, this.desktop, (EventListener<Event>) this);
-			}
-		}
-	}
-
-	/**
-	 * Generic event handler for asynchronous task which dispatch event to
-	 * specific event handler.
-	 */
-	@Override
-	public void onEvent(Event evt) throws Exception {
-		// TODO: throw error if type cast fails
-
-		// dispatch event
-		((UnpackModuleTaskEvent) evt).accept(this);
-	}
-
-	@Override
-	public void visit(FileUnpackUpdateEvent evt) {
-
-		// create command arguments with event
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put(FILE_UNPACK_EVENT_ARG, evt);
-
-		// post global command to trigger update at view model
-		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, FILE_UNPACK_UPDATE_GLOBALCOMMAND, args);
-	}
-
-	/**
-	 * Event handler for the unpacked entry event which signals that a file
-	 * entry have been unpacked from the zip archive.
-	 */
-	@Override
-	public void visit(UnpackedEntryEvent evt) {
-
-		// enabled close button if done
-		if (evt.getPercentage() == 100) {
-			uploadButton.setDisabled(false);
-			closeButton.setDisabled(false);
-		}
-
-		// create command arguments with event
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put(UNPACKED_ENTRY_EVENT_ARG, evt);
-
-		// post global command to trigger update at view model
-		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, UNPACKED_MODULE_ENTRY_GLOBALCOMMAND, args);
-	}
+	// post global command to trigger update at view model
+	BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, UNPACKED_MODULE_ENTRY_GLOBALCOMMAND, args);
+    }
 
 }

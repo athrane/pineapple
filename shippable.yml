@@ -11,4 +11,4 @@ build:
   - tar xfv pineapple-3rdparty-maven-dependencies-1.10.0.tar
   - mkdir -p /root/.m2/
   - mv repository /root/.m2/
-  - shippable_retry mvn -X install
+  - shippable_retry mvn install

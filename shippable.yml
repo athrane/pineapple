@@ -5,12 +5,18 @@ jdk:
   - openjdk8
   - oraclejdk8
    
+before_install:
+   - mkdir -p ~/.m2
+   - echo "<settings><servers><server><id>bintray-pineapple-maven</id>
+               <username>{{ARTIFACTORY_USERNAME}}</username>
+               <password>{{ARTIFACTORY_PASSWORD}}</password>
+           </server></servers></settings>" > ~/.m2/settings.xml   
+
 build:
   ci:
   - shippable_retry curl -O -L https://dl.bintray.com/pineapple/generic/pineapple-3rdparty-maven-dependencies-1.10.0.tar
   - tar xfv pineapple-3rdparty-maven-dependencies-1.10.0.tar
-  - mkdir -p /root/.m2/
-  - mv repository /root/.m2/
+  - mv repository ~/.m2/
   - shippable_retry mvn install
 
   on_success:

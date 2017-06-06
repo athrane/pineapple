@@ -737,7 +737,7 @@
 		<repository>
 			<id>bintray-pineapple-maven</id>
 			<name>pineapple-maven</name>
-			<url>https://api.bintray.com/maven/pineapple/maven/com.alpha.pineapple/;publish=1;?override=1</url>
+			<url>https://api.bintray.com/maven/pineapple/maven/com.alpha.pineapple/;publish=1;override=1</url>
 		</repository>
 	</distributionManagement>
 	<profiles>

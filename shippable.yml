@@ -16,7 +16,7 @@ build:
   - shippable_retry curl -O -L https://dl.bintray.com/pineapple/generic/pineapple-3rdparty-maven-dependencies-1.10.0.tar
   - tar xfv pineapple-3rdparty-maven-dependencies-1.10.0.tar
   - mv repository ~/.m2/
-  - shippable_retry mvn install
+  - shippable_retry mvn --quiet install
 
   on_success:
   - echo "<settings><servers><server><id>bintray-pineapple-maven</id>
@@ -24,4 +24,16 @@ build:
                <password>${BINTRAY_PASSWORD}</password>
            </server></servers></settings>" > ~/.m2/settings.xml   
   
-  - mvn deploy
+  - mvn --quiet deploy 
+  
+post_ci:
+  - cp /root/src/github.com/athrane/pineapple/applications/pineapple-web-application/pineapple-standalone-web-client/target/pineapple-standalone-web-client-*.zip ./shippable/buildoutput  
+  - cp /root/src/github.com/athrane/pineapple/models/pineapple-example-modules/target/classes/pineapple-example-modules/docker-005-pineapple-image-centos/dockersrc/Dockerfile ./shippable/buildoutput
+  
+  post_ci:
+  - docker push pineapple/pineapple:1.10.0  
+  
+integrations:                               
+  hub:
+    - integrationName: docker
+      type: docker 

@@ -125,4 +125,52 @@ NOTES ON BUILDING AND RUNNING PINEAPPLE
 
 mvn -cpu clean install
 
-10) Enjoy
+10) Deploy Pineapple to Bintray
+
+10.1) Add Bintray profile to settings.xml
+
+       <profile>
+            <repositories>
+                <repository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>bintray-pineapple-maven</id>
+                    <name>bintray</name>
+                    <url>http://dl.bintray.com/pineapple/maven</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>bintray-pineapple-maven</id>
+                    <name>bintray-plugins</name>
+                    <url>http://dl.bintray.com/pineapple/maven</url>
+                </pluginRepository>
+            </pluginRepositories>
+            <id>bintray</id>
+        </profile>
+
+10.2) Activate profile
+
+	<activeProfiles>
+		..other profiles...
+        <activeProfile>bintray</activeProfile>		
+	</activeProfiles>
+
+10.3) Configure server
+
+ 		<server>
+			<id>bintray-pineapple-maven</id>	
+            <username>some-user</username>
+            <password>some-password</password>
+		</server>		
+
+10.4) Invoke to deploy
+
+mvn deploy
+
+
+

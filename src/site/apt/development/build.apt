@@ -60,4 +60,72 @@ Building Pineapple
 
 	[]
 
+** Deploy Pineapple
+
+	Documentation of how Pineapple is confgured to deploy to Bintray.
+
+	[[1]] Add Bintray profile to settings.xml
+
++--  
+   <profile>
+        <repositories>
+            <repository>
+                <snapshots>
+                    <enabled>false</enabled>
+                </snapshots>
+                <id>bintray-pineapple-maven</id>
+                <name>bintray</name>
+                <url>http://dl.bintray.com/pineapple/maven</url>
+            </repository>
+        </repositories>
+        <pluginRepositories>
+            <pluginRepository>
+                <snapshots>
+                    <enabled>false</enabled>
+                </snapshots>
+                <id>bintray-pineapple-maven</id>
+                <name>bintray-plugins</name>
+                <url>http://dl.bintray.com/pineapple/maven</url>
+            </pluginRepository>
+        </pluginRepositories>
+        <id>bintray</id>
+    </profile>
++--  
+
+
+	[[2]] Activate Bintray profile in settings.xml
+
++--  
+	<activeProfiles>
+		..other profiles...
+	    <activeProfile>bintray</activeProfile>		
+	</activeProfiles>
++--  
+
+	[[3]] Configure credentil in settings.xml
+
++--  
+	<server>
+		<id>bintray-pineapple-maven</id>	
+        <username>some-user</username>
+        <password>some-password</password>
+	</server>		
++--  
+
+	[[4]] From command-prompt, cd into the pineapple directory and run:
+	
++--  
+	mvn deploy
++--  
+
+
+
+
+	
+
+
+
+
+
+
 

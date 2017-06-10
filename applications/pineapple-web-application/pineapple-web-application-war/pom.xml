@@ -187,8 +187,11 @@
 	</dependency>
 	<dependency>
 		<groupId>org.zkoss.zk</groupId>
+		<artifactId>zkex</artifactId>
+	</dependency>	
+	<dependency>
+		<groupId>org.zkoss.zk</groupId>
 		<artifactId>zkbind</artifactId>
-		<version>${zk.version}</version>
 	</dependency>							    	    
     <dependency>
 		<groupId>com.google.code.gson</groupId>

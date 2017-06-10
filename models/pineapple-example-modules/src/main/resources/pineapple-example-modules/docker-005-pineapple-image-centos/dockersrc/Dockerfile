@@ -7,11 +7,11 @@ FROM pineapple/centos-openjdk-java:8
 MAINTAINER Allan Thrane Andersen <einheriii@gmail.com>
 
 # Define variable
-ENV PINEAPPLE_ARCHIVE pineapple-standalone-web-client-1.8.0.zip
+ENV PINEAPPLE_ARCHIVE pineapple-standalone-web-client-1.10.0.zip
 ENV TESTCASES_MODULES dn-testautomation-docker-tests.zip
 ENV PINEAPPLE_INSTALL_DIR /opt
 ENV PINEAPPLE_HOME_DIR /var/pineapple
-ENV PINEAPPLE_DIR $PINEAPPLE_INSTALL_DIR/pineapple-standalone-web-client-1.8.0
+ENV PINEAPPLE_DIR $PINEAPPLE_INSTALL_DIR/pineapple-standalone-web-client-1.10.0
 ENV PINEAPPLE_USER pineapple
 ENV PINEAPPLE_GROUP pineapple
 

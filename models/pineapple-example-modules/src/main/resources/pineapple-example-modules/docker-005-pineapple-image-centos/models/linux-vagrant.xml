@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
     xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" >
-    <mmd:model target-resource="docker-node" description="Define Docker image: pineapple/pineapple:1.8 from Dockerfile" >
+    <mmd:model target-resource="docker-node" description="Define Docker image: pineapple/pineapple:1.10.0 from Dockerfile" >
         <mmd:content>
             <dkp:docker>
                 <dkp:image-from-dockerfile source-directory="modulepath:dockersrc" pull-image="false" >
-                    <dkp:target-image repository="pineapple/pineapple" tag="1.8" />
+                    <dkp:target-image repository="pineapple/pineapple" tag="1.10.0" />
                 </dkp:image-from-dockerfile>
             </dkp:docker>                       
         </mmd:content>

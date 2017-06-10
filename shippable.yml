@@ -31,7 +31,6 @@ build:
   - cp /root/src/github.com/athrane/pineapple/models/pineapple-example-modules/target/classes/pineapple-example-modules/docker-005-pineapple-image-centos/dockersrc/Dockerfile ./shippable/buildoutput
   - docker build -t push pineapple/pineapple:1.10.0 ./shippable/buildoutput
   - docker build -t push pineapple/pineapple:$BUILD_NUM ./shippable/buildoutput
-  - docker push pineapple/pineapple:1.10.0  
   
 integrations:                               
   hub:

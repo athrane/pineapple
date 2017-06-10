@@ -577,7 +577,6 @@
 			<xs:element name="mounts" type="mountType" minOccurs="0" maxOccurs="unbounded" />											
 			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" /> 
 			<xs:element name="state" type="inspectedContainerStateType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="volumes" type="inspectedContainerVolumesType" minOccurs="0" maxOccurs="1" /> 
 			<xs:element name="volumesRW" type="inspectedContainerVolumesRwType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="volumesRelabel" type="inspectedContainerVolumesRelabelType" minOccurs="0" maxOccurs="1" />
  		</xs:sequence>
@@ -642,25 +641,6 @@
 		<xs:attribute name="sandboxId" type="xs:string" use="optional"/>						
 		<xs:attribute name="secondaryIPAddresses" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="secondaryIPv6Addresses" type="xs:long" use="optional"/> <!-- wrong type -->
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerVolumesType" >
-		<xs:annotation>
-			<xs:documentation>Info about volumes from a container inspection info.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="volume" type="inspectedContainerVolumeType" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerVolumeType">
-		<xs:annotation>
-			<xs:documentation>Volume in inspected container.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="mountpoint" type="xs:string" /> <!-- key in map -->
-			<xs:element name="path" type="xs:string" />
-		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="inspectedContainerVolumesRwType" >

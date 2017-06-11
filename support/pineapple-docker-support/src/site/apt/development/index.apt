@@ -298,22 +298,6 @@ Development documentation
 	* <<<inspectedContainerNetworkSettingsType>>> - Info about the network configuration of a 
 	Docker container (Partial output from inspecting a containers).
 	
-	* <<<inspectedContainerVolumesRelabelType>>> - Info about volumes from a container inspection info 
-	(Partial output from inspecting a container).
-	Has role comparable to <<<containerConfigurationVolumesType>>> but for inspected container.
-
-	* <<<inspectedContainerVolumeRelabelType>>> - Info about a volume from a container inspection info 
-	(Partial output from inspecting a container).
-	Has role comparable to <<<containerConfigurationVolumeType>>> but for inspected container.
-
-	* <<<inspectedContainerVolumesRwType>>> - Info about volumes RW from a container inspection info 
-	(Partial output from inspecting a container).
-	Has role comparable to <<<containerConfigurationVolumesType>>> but for inspected container.
-
-	* <<<inspectedContainerVolumeRwType>>> - Info about a volume from a container inspection info 
-	(Partial output from inspecting a container).
-	Has role comparable to <<<containerConfigurationVolumeType>>> but for inspected container.
-
 	* <<<inspectedContainerNetworkSettingsNetworkType>>> - Info about a Docker container 
 	network from a container inspection info.
 	The JSON marshalled from this type when the Docker REST API is invoked
@@ -377,14 +361,6 @@ Development documentation
 	To support binding of <<<containerConfigurationType.volumes>>> to a map, the binding is customized
 	to bind to the custom map <<<ContainerConfigurationVolumesMap>> using the custom JABX adaptor
 	<<<ContainerConfigurationVolumesMapAdapter>>>.
-
-	To support binding of schema element <<<containerJsonType.volumesRelabel>>>to a map, 
-	the binding is customized to bind to the custom map <<<inspectedContainerVolumesRelabelMap>>> 
-	using the custom JABX adaptor <<<inspectedContainerVolumesRelabelMapAdapter>>>.
-
-	To support binding of schema element <<<containerJsonType.volumesRW>>>to a map, 
-	the binding is customized to bind to the custom map <<<inspectedContainerVolumesRwMap>>> 
-	using the custom JABX adaptor <<<inspectedContainerVolumesRwMapAdapter>>>.
 
 *** Network
 
@@ -780,27 +756,6 @@ Development documentation
 	* <<<ContainerConfigurationHostConfigPortBindingsMapAdapter>>> JAXB binding adapter. 
 	Implements binding of schema generated type <<<ContainerConfigurationHostConfigPortBinding>>>
 	to <<<ContainerConfigurationHostConfigPortBindingsMap>>> and back.
-
-	* <<<InspectedContainerVolumesMap>>> custom map implementation. 
-	Used bind to schema generated type <<<InspectedContainerVolumes>>> into a map.
-
-	* <<<InspectedContainerVolumesMapAdapter>>> JAXB binding adapter. 
-	Implements binding of schema generated type <<<InspectedContainerVolumes>>>
-	to <<<InspectedContainerVolumesMap>>> and back.
-
-	* <<<InspectedContainerVolumesRelabelMap>>> custom map implementation. 
-	Used bind to schema generated type <<<InspectedContainerVolumesRelabel>>> into a map.
-
-	* <<<InspectedContainerVolumesRelabelMapAdapter>>> JAXB binding adapter. 
-	Implements binding of schema generated type <<<InspectedContainerVolumesRelabel>>>
-	to <<<InspectedContainerVolumesRelabelMap>>> and back.
-
-	* <<<InspectedContainerVolumesRwMap>>> custom map implementation. 
-	Used bind to schema generated type <<<InspectedContainerVolumesRw>>> into a map.
-
-	* <<<InspectedContainerVolumesRwMapAdapter>>> JAXB binding adapter. 
-	Implements binding of schema generated type <<<InspectedContainerVolumesRw>>>
-	to <<<InspectedContainerVolumesRwMap>>> and back.
 
 	[]
 			

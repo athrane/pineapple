@@ -263,30 +263,6 @@
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerVolumesRelabelType']" >
-			<jaxb:class name="InspectedContainerVolumesRelabel" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerVolumeRelabelType']" >
-			<jaxb:class name="InspectedContainerVolumeRelabel" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerVolumesRwType']" >
-			<jaxb:class name="InspectedContainerVolumesRw" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerVolumeRwType']" >
-			<jaxb:class name="InspectedContainerVolumeRw" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
 	<!-- Map definitions -->
 
 	<!-- Map definitions for images -->
@@ -337,22 +313,6 @@
 		<jaxb:bindings node="//xs:complexType[@name='listedContainerType']//xs:element[@name='labels']">
 			<jaxb:property>
 				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationLabelsMap" />
-			</jaxb:property>
-		</jaxb:bindings>
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='containerJsonType']//xs:element[@name='volumesRelabel']">
-			<jaxb:property>
-				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.InspectedContainerVolumesRelabelMap" />
-			</jaxb:property>
-		</jaxb:bindings>
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='containerJsonType']//xs:element[@name='volumesRW']">
-			<jaxb:property>
-				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.InspectedContainerVolumesRwMap" />
 			</jaxb:property>
 		</jaxb:bindings>
 	</jaxb:bindings>

@@ -577,8 +577,6 @@
 			<xs:element name="mounts" type="mountType" minOccurs="0" maxOccurs="unbounded" />											
 			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" /> 
 			<xs:element name="state" type="inspectedContainerStateType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="volumesRW" type="inspectedContainerVolumesRwType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="volumesRelabel" type="inspectedContainerVolumesRelabelType" minOccurs="0" maxOccurs="1" />
  		</xs:sequence>
 		<xs:attribute name="appArmorProfile" type="xs:string" use="optional"/>		
 		<xs:attribute name="created" type="xs:string" use="optional"/>		
@@ -641,44 +639,6 @@
 		<xs:attribute name="sandboxId" type="xs:string" use="optional"/>						
 		<xs:attribute name="secondaryIPAddresses" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="secondaryIPv6Addresses" type="xs:long" use="optional"/> <!-- wrong type -->
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerVolumesRwType" >
-		<xs:annotation>
-			<xs:documentation>Info about volumes RW from a container inspection info.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="volume" type="inspectedContainerVolumeRwType" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>		
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerVolumeRwType">
-		<xs:annotation>
-			<xs:documentation>Volume RW property in inspected container.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="mountpoint" type="xs:string" /> <!--  key in map -->
-			<xs:element name="enabled" type="xs:boolean" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerVolumesRelabelType" >
-		<xs:annotation>
-			<xs:documentation>Info about volumes relabeling from a container inspection info.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="volume" type="inspectedContainerVolumeRelabelType" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>				
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerVolumeRelabelType">
-		<xs:annotation>
-			<xs:documentation>Volume relabel property in inspected container.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="mountpoint" type="xs:string" /> <!-- key in map -->
-			<xs:element name="label" type="xs:string" />
-		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="inspectedContainerNetworkSettingsNetworksType" >

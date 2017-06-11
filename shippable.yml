@@ -26,11 +26,11 @@ build:
   - mvn --quiet deploy 
   
   post_ci:
-  - mkdir -p shippable/buildoutput  
-  - cp /root/src/github.com/athrane/pineapple/applications/pineapple-web-application/pineapple-standalone-web-client/target/pineapple-standalone-web-client-*.zip ./shippable/buildoutput  
-  - cp /root/src/github.com/athrane/pineapple/models/pineapple-example-modules/target/classes/pineapple-example-modules/docker-005-pineapple-image-centos/dockersrc/Dockerfile ./shippable/buildoutput
-  - docker build -t pineapple/pineapple:1.10.0 ./shippable/buildoutput
-  - docker push pineapple/pineapple:1.10.0 ./shippable/buildoutput
+  - mkdir -p $SHIPPABLE_BUILD_DIR/dockersrc  
+  - cp /root/src/github.com/athrane/pineapple/applications/pineapple-web-application/pineapple-standalone-web-client/target/pineapple-standalone-web-client-*.zip $SHIPPABLE_BUILD_DIR/dockersrc  
+  - cp /root/src/github.com/athrane/pineapple/models/pineapple-example-modules/target/classes/pineapple-example-modules/docker-005-pineapple-image-centos/dockersrc/Dockerfile $SHIPPABLE_BUILD_DIR/dockersrc
+  - docker build -t pineapple/pineapple:1.10.0 $SHIPPABLE_BUILD_DIR/dockersrc
+  - docker push pineapple/pineapple:1.10.0 $SHIPPABLE_BUILD_DIR/dockersrc
   
 integrations:
   hub:

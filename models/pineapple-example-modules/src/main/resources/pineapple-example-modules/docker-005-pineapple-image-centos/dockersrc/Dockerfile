@@ -23,8 +23,9 @@ RUN yum --assumeyes install unzip && \
 
 # Install Pineapple binary 
 # Create default user, directory and make pineapple executable
-RUN ls -la 
-RUN ls -la $SHIPPABLE_BUILD_DIR/dockersrc  
+RUN cd $SHIPPABLE_BUILD_DIR/dockersrc && \
+	pwd && \
+	ls -la $SHIPPABLE_BUILD_DIR/dockersrc  
 COPY $PINEAPPLE_ARCHIVE /tmp/ 
 RUN unzip /tmp/$PINEAPPLE_ARCHIVE -d $PINEAPPLE_INSTALL_DIR && \
 	rm -rf /tmp/$PINEAPPLE_ARCHIVE && \

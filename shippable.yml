@@ -29,6 +29,12 @@ build:
   - mkdir -p $SHIPPABLE_BUILD_DIR/dockersrc  
   - cp $SHIPPABLE_BUILD_DIR/src/ci/Dockerfile $SHIPPABLE_BUILD_DIR//dockersrc
   - cp /root/src/github.com/athrane/pineapple/applications/pineapple-web-application/pineapple-standalone-web-client/target/pineapple-standalone-web-client-*.zip $SHIPPABLE_BUILD_DIR/dockersrc  
+  - cd $SHIPPABLE_BUILD_DIR  
+  - pwd
+  - ls -al 
+  - cd $SHIPPABLE_BUILD_DIR/dockersrc
+  - pwd
+  - ls -al 
   - docker build -t pineapple/pineapple:1.10.0 $SHIPPABLE_BUILD_DIR/dockersrc
   - docker push pineapple/pineapple:1.10.0 $SHIPPABLE_BUILD_DIR/dockersrc
   

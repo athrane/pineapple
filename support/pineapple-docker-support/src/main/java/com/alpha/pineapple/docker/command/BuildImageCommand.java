@@ -54,7 +54,7 @@ import com.alpha.pineapple.command.initialization.ValidateValue;
 import com.alpha.pineapple.command.initialization.ValidationPolicy;
 import com.alpha.pineapple.docker.DockerClient;
 import com.alpha.pineapple.docker.model.ImageInfo;
-import com.alpha.pineapple.docker.model.rest.ImageCreation;
+import com.alpha.pineapple.docker.model.rest.JsonMessage;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.docker.utils.RestResponseException;
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -104,7 +104,7 @@ import com.alpha.pineapple.test.matchers.PineappleMatchers;
  * 
  * <li><code>image-creation-infos</code> contains array of image creation info's
  * from Docker. The type is
- * <code>com.alpha.pineapple.docker.model.ImageCreation[]</code>.</li>
+ * <code>com.alpha.pineapple.docker.model.rest.JsonMessage[]</code>.</li>
  * 
  * <li>The the state of the supplied <code>ExecutionResult</code> is updated
  * with <code>ExecutionState.SUCCESS</code> if the test succeeded. If the test
@@ -121,7 +121,7 @@ public class BuildImageCommand implements Command {
 	/**
 	 * Null image creation info's.
 	 */
-	static final ImageCreation[] NULL_INFOS = {};
+	static final JsonMessage[] NULL_INFOS = {};
 
 	/**
 	 * Single digit string representation for boolean true.
@@ -298,12 +298,12 @@ public class BuildImageCommand implements Command {
 		}
 
 		// post to create image
-		ImageCreation[] infos = null;
+		JsonMessage[] infos = null;
 
 		try {
 
 			infos = session.httpPostForObjectWithMultipleRootElements(BUILD_IMAGE_URI, uriVariables, requestEntity,
-					ImageCreation[].class, CONTENT_TYPE_TAR);
+					JsonMessage[].class, CONTENT_TYPE_TAR);
 
 		} catch (RestResponseException rre) {
 			Object[] args2 = { rre.getStatusCode(), rre.getMessage() };
@@ -316,7 +316,7 @@ public class BuildImageCommand implements Command {
 		String message = messageProvider.getMessage("bic.list_image_info", args);
 		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
 
-		for (ImageCreation info : infos) {
+		for (JsonMessage info : infos) {
 
 			// handle normal status update
 			if (containsStatusUpdate(info)) {

@@ -45,7 +45,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.alpha.pineapple.docker.DockerClient;
 import com.alpha.pineapple.docker.model.ImageInfo;
 import com.alpha.pineapple.docker.model.InfoBuilder;
-import com.alpha.pineapple.docker.model.rest.ImageCreation;
+import com.alpha.pineapple.docker.model.rest.JsonMessage;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResultImpl;
@@ -174,7 +174,7 @@ public class CreateImageCommandSystemTest {
 	assertTrue(executionResult.isSuccess());
 	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
 	assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	ImageCreation[] infos = (ImageCreation[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
+	JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
 	assertTrue(infos.length != 0);
 
 	// test that image is actually is created with the "latest" tag
@@ -205,7 +205,7 @@ public class CreateImageCommandSystemTest {
 	assertTrue(executionResult.isSuccess());
 	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
 	assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	ImageCreation[] infos = (ImageCreation[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
+	JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
 	assertTrue(infos.length != 0);
 	assertTrue(dockerClient.imageExists(session, imageInfo));
     }
@@ -231,7 +231,7 @@ public class CreateImageCommandSystemTest {
 	assertTrue(executionResult.isSuccess());
 	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
 	assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	ImageCreation[] infos = (ImageCreation[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
+	JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
 	assertTrue(infos.length != 0);
 	assertTrue(dockerClient.imageExists(session, imageInfo));
     }
@@ -262,7 +262,7 @@ public class CreateImageCommandSystemTest {
 	assertTrue(executionResult.isSuccess());
 	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
 	assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	ImageCreation[] infos = (ImageCreation[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
+	JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
 	assertTrue(infos.length != 0);
 
 	// test that image is actually is created with the "latest" tag
@@ -293,7 +293,7 @@ public class CreateImageCommandSystemTest {
 	assertTrue(executionResult.isSuccess());
 	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
 	assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	ImageCreation[] infos = (ImageCreation[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
+	JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
 	assertTrue(infos.length != 0);
 	assertTrue(dockerClient.imageExists(session, imageInfo));
     }
@@ -366,7 +366,7 @@ public class CreateImageCommandSystemTest {
 	assertTrue(executionResult.isSuccess());
 	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
 	assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	ImageCreation[] infos = (ImageCreation[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
+	JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
 	assertEquals(0, infos.length);
     }
 

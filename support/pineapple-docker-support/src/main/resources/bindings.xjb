@@ -73,13 +73,19 @@
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 
-	<!-- Image definitions -->
-
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='progressDetailType']" >
-			<jaxb:class name="ProgressDetail" />				
+		<jaxb:bindings node="//xs:complexType[@name='jsonProgressType']" >
+			<jaxb:class name="JsonProgress" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='jsonErrorType']" >
+			<jaxb:class name="JsonError" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<!-- Image definitions -->
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='listedImageType']" >
@@ -94,8 +100,8 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='imageCreationType']" >
-			<jaxb:class name="ImageCreation" />				
+		<jaxb:bindings node="//xs:complexType[@name='jsonMessageType']" >
+			<jaxb:class name="JsonMessage" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 

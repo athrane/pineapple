@@ -64,7 +64,7 @@ import com.alpha.pineapple.docker.model.ImageInfo;
 import com.alpha.pineapple.docker.model.InfoBuilder;
 import com.alpha.pineapple.docker.model.rest.ContainerConfiguration;
 import com.alpha.pineapple.docker.model.rest.CreatedContainer;
-import com.alpha.pineapple.docker.model.rest.ImageCreation;
+import com.alpha.pineapple.docker.model.rest.JsonMessage;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResultImpl;
@@ -255,9 +255,9 @@ public class DeployConfigurationIntegrationTest {
     @Test
     public void testCanExecuteWithModelWithImageCommandWithEmptyTag() throws Exception {
 	// complete session initialization
-	ImageCreation[] imageCreationInfos = {};
+	JsonMessage[] JsonMessageInfos = {};
 	expect(session.httpPostForObjectWithMultipleRootElements(eq(CREATE_IMAGE_URI), isA(Map.class),
-		isA(ImageCreation[].class.getClass()))).andReturn(imageCreationInfos);
+		isA(JsonMessage[].class.getClass()))).andReturn(JsonMessageInfos);
 	replay(session);
 
 	// create content
@@ -283,9 +283,9 @@ public class DeployConfigurationIntegrationTest {
     public void testCanExecuteWithModelWithImageCommandWithUndefinedTag() throws Exception {
 
 	// complete session initialization
-	ImageCreation[] imageCreationInfos = {};
+	JsonMessage[] JsonMessageInfos = {};
 	expect(session.httpPostForObjectWithMultipleRootElements(eq(CREATE_TAGGED_IMAGE_URI), isA(Map.class),
-		isA(ImageCreation[].class.getClass()))).andReturn(imageCreationInfos);
+		isA(JsonMessage[].class.getClass()))).andReturn(JsonMessageInfos);
 	replay(session);
 
 	// create content
@@ -307,9 +307,9 @@ public class DeployConfigurationIntegrationTest {
     public void testCanExecuteWithModelWithImageCommand() throws Exception {
 
 	// complete session initialization
-	ImageCreation[] imageCreationInfos = {};
+	JsonMessage[] JsonMessageInfos = {};
 	expect(session.httpPostForObjectWithMultipleRootElements(eq(CREATE_TAGGED_IMAGE_URI), isA(Map.class),
-		isA(ImageCreation[].class.getClass()))).andReturn(imageCreationInfos);
+		isA(JsonMessage[].class.getClass()))).andReturn(JsonMessageInfos);
 	replay(session);
 
 	// create content
@@ -369,10 +369,10 @@ public class DeployConfigurationIntegrationTest {
 	replay(coreRuntimeDirectoryProvider);
 
 	// complete session initialization
-	ImageCreation[] imageCreationInfos = {};
+	JsonMessage[] JsonMessageInfos = {};
 	expect(session.httpPostForObjectWithMultipleRootElements(eq(BUILD_IMAGE_URI), isA(Map.class),
-		isA(HttpEntity.class), isA(ImageCreation[].class.getClass()), eq(CONTENT_TYPE_TAR)))
-			.andReturn(imageCreationInfos);
+		isA(HttpEntity.class), isA(JsonMessage[].class.getClass()), eq(CONTENT_TYPE_TAR)))
+			.andReturn(JsonMessageInfos);
 	replay(session);
 
 	// create content

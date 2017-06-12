@@ -10,7 +10,7 @@
 	<xs:element name="listedContainer" type="listedContainerType" />	
 	<xs:element name="inspectedContainer" type="containerJsonType" />
 	<xs:element name="inspectedImage" type="imageInspectType" />
-	<xs:element name="imageCreationInfo" type="imageCreationType" />
+	<xs:element name="imageCreationInfo" type="jsonMessageType" />
 	<xs:element name="imageDeletionInfo" type="imageDeletionType" />
 	<xs:element name="version" type="versionType" />
 
@@ -157,16 +157,35 @@
 		<xs:attribute name="rw" type="xs:boolean" use="optional"/>										
 	</xs:complexType>
 
-	<!-- Image definitions -->
-
-	<xs:complexType name="progressDetailType" >
+	<!-- 
+		Corresponds to /pkg/jsonmessage/JSONProgress
+		https://github.com/moby/moby/blob/eb8abc95985bf3882a4a177c409a96e36e25f5b7/pkg/jsonmessage/jsonmessage.go#L33
+	-->
+	<xs:complexType name="jsonProgressType" >
 		<xs:annotation>
-			<xs:documentation>Detailed info about progress during image creation.</xs:documentation>
+			<xs:documentation>JSONProgress describes a Progress..</xs:documentation>
 		</xs:annotation>
-		<xs:attribute name="start" type="xs:string" use="optional"/>		
-		<xs:attribute name="current" type="xs:string" use="optional"/>		
-		<xs:attribute name="total" type="xs:string" use="optional"/>		
+		<xs:attribute name="current" type="xs:long" use="optional"/> <!-- approximation of the Current which is implemented as a int64 -->				
+		<xs:attribute name="start" type="xs:long" use="optional"/> <!-- approximation of the Start which is implemented as a int64 -->						
+		<xs:attribute name="hideCounts" type="xs:boolean" use="optional"/> 				
+		<xs:attribute name="total" type="xs:long" use="optional"/> <!-- approximation of the Total which is implemented as a int64 -->				
+		<xs:attribute name="units" type="xs:string" use="optional"/> 				
 	</xs:complexType>
+
+	<!-- 
+		Corresponds to /pkg/jsonmessage/JSONError
+		https://github.com/moby/moby/blob/eb8abc95985bf3882a4a177c409a96e36e25f5b7/pkg/jsonmessage/jsonmessage.go#L20
+	-->
+	<xs:complexType name="jsonErrorType" >
+		<xs:annotation>
+			<xs:documentation>JSONError wraps a concrete Code and Message, Code is is an integer error code, Message is the error message.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="code" type="xs:int" use="optional"/> 				
+		<xs:attribute name="message" type="xs:string" use="optional"/> 			
+	</xs:complexType>
+
+
+	<!-- Image definitions -->
 
 	<xs:complexType name="listedImageType" >
 		<xs:annotation>
@@ -216,18 +235,26 @@
 		<xs:attribute name="virtualSize" type="xs:long" use="optional"/>	
 	</xs:complexType>
 
-	<xs:complexType name="imageCreationType" >
+	<!-- 
+		Corresponds to /pkg/jsonmessage/JSONMessage     
+		https://github.com/moby/moby/blob/eb8abc95985bf3882a4a177c409a96e36e25f5b7/pkg/jsonmessage/jsonmessage.go#L119	 
+	-->
+	<xs:complexType name="jsonMessageType" >
 		<xs:annotation>
-			<xs:documentation>Info about Docker image creation progress.</xs:documentation>
+			<xs:documentation>It describes the created time, where it from, status, ID of the message. It's used for docker events.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="progressDetail" type="progressDetailType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="progressDetail" type="jsonProgressType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="errorDetail" type="jsonErrorType" minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
-		<xs:attribute name="error" type="xs:string" use="optional"/>		
+		<xs:attribute name="error" type="xs:string" use="optional"/>				
+		<xs:attribute name="from" type="xs:string" use="optional"/>		
 		<xs:attribute name="id" type="xs:string" use="optional"/>		
 		<xs:attribute name="progress" type="xs:string" use="optional"/>		
 		<xs:attribute name="status" type="xs:string" use="optional"/>		
 		<xs:attribute name="stream" type="xs:string" use="optional"/>		
+		<xs:attribute name="time" type="xs:long" use="optional"/> <!-- approximation of the Time which is implemented as a int64 -->				
+		<xs:attribute name="timeNano" type="xs:long" use="optional"/> <!-- approximation of the TimeNano which is implemented as a int64 -->						
 	</xs:complexType>
 
 	<xs:complexType name="imageDeletionType" >

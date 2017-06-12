@@ -43,7 +43,7 @@ import com.alpha.pineapple.command.initialization.ValidateValue;
 import com.alpha.pineapple.command.initialization.ValidationPolicy;
 import com.alpha.pineapple.docker.DockerClient;
 import com.alpha.pineapple.docker.model.ImageInfo;
-import com.alpha.pineapple.docker.model.rest.ImageCreation;
+import com.alpha.pineapple.docker.model.rest.JsonMessage;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.docker.utils.RestResponseException;
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -87,7 +87,7 @@ import com.alpha.pineapple.i18n.MessageProvider;
  * <li><code>image-creation-infos</code> contains array of image creation info's
  * from Docker. If image already exists then no info's are returned. If the
  * creation fails then no no info's are returned. The type is
- * <code>com.alpha.pineapple.docker.model.ImageCreation[]</code>.</li>
+ * <code>com.alpha.pineapple.docker.model.rest.JsonMessage[]</code>.</li>
  * 
  * <li>The the state of the supplied <code>ExecutionResult</code> is updated
  * with <code>ExecutionState.SUCCESS</code> if the test succeeded. If the test
@@ -104,7 +104,7 @@ public class CreateImageCommand implements Command {
 	/**
 	 * Null image creation info's.
 	 */
-	static final ImageCreation[] NULL_INFOS = {};
+	static final JsonMessage[] NULL_INFOS = {};
 
 	/**
 	 * Key used to identify property in context: Image info.
@@ -192,17 +192,17 @@ public class CreateImageCommand implements Command {
 		uriVariables.put("image", imageInfo.getRepository());
 
 		// post to create image
-		ImageCreation[] infos = null;
+		JsonMessage[] infos = null;
 
 		try {
 
 			if (isTaggedImage(imageInfo)) {
 				uriVariables.put("tag", imageInfo.getTag());
 				infos = session.httpPostForObjectWithMultipleRootElements(CREATE_TAGGED_IMAGE_URI, uriVariables,
-						ImageCreation[].class);
+						JsonMessage[].class);
 			} else {
 				infos = session.httpPostForObjectWithMultipleRootElements(CREATE_IMAGE_URI, uriVariables,
-						ImageCreation[].class);
+						JsonMessage[].class);
 			}
 
 		} catch (RestResponseException rre) {
@@ -215,7 +215,7 @@ public class CreateImageCommand implements Command {
 		Object[] args = { infos.length };
 		String message = messageProvider.getMessage("cic.list_image_info", args);
 		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-		for (ImageCreation info : infos) {
+		for (JsonMessage info : infos) {
 
 			// handle normal status update
 			if (containsStatusUpdate(info)) {

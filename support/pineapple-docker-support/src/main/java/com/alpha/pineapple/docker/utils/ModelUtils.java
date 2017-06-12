@@ -29,7 +29,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 
 import com.alpha.pineapple.docker.model.ImageInfo;
-import com.alpha.pineapple.docker.model.rest.ImageCreation;
+import com.alpha.pineapple.docker.model.rest.JsonMessage;
 import com.alpha.pineapple.docker.model.rest.ListedContainer;
 import com.alpha.pineapple.docker.model.rest.ListedImage;
 
@@ -38,223 +38,224 @@ import com.alpha.pineapple.docker.model.rest.ListedImage;
  */
 public class ModelUtils {
 
-    /**
-     * String index for removal of prefix.
-     */
-    static final int INDEX_FOR_PREFIX_REMOVAL = 1;
+	/**
+	 * String index for removal of prefix.
+	 */
+	static final int INDEX_FOR_PREFIX_REMOVAL = 1;
 
-    /**
-     * Start index for truncated Id.
-     */
-    static final int START_INDEX = 0;
+	/**
+	 * Start index for truncated Id.
+	 */
+	static final int START_INDEX = 0;
 
-    /**
-     * End index for truncated Id.
-     */
-    static final int END_INDEX = 12;
+	/**
+	 * End index for truncated Id.
+	 */
+	static final int END_INDEX = 12;
 
-    /**
-     * First list index.
-     */
-    static final int FIRST_INDEX = 0;
+	/**
+	 * First list index.
+	 */
+	static final int FIRST_INDEX = 0;
 
-    /**
-     * Returns true if image object is defined with a non-null or non-empty tag
-     * parameter.
-     * 
-     * @param info
-     *            image info object.
-     * 
-     * @return true if the tag parameter is defined and not empty.
-     */
-    public static boolean isTaggedImage(ImageInfo info) {
-	Validate.notNull(info, "info is undefined");
+	/**
+	 * Returns true if image object is defined with a non-null or non-empty tag
+	 * parameter.
+	 * 
+	 * @param info
+	 *            image info object.
+	 * 
+	 * @return true if the tag parameter is defined and not empty.
+	 */
+	public static boolean isTaggedImage(ImageInfo info) {
+		Validate.notNull(info, "info is undefined");
 
-	if (info.getTag() == null)
-	    return false;
-	if (info.getTag().isEmpty())
-	    return false;
-	return true;
-    }
-
-    /**
-     * Returns true if image creation object contains a regular status update
-     * information in the status field, i.e. it is defined with a non-null or
-     * non-empty value.
-     * 
-     * @param info
-     *            image creation object.
-     * 
-     * @return true if image creation object contains regular status update
-     *         information in the status field. Returns false if the status
-     *         field is null or empty.
-     */
-    public static boolean containsStatusUpdate(ImageCreation info) {
-	Validate.notNull(info, "info is undefined");
-
-	if (info.getStatus() == null)
-	    return false;
-	if (info.getStatus().isEmpty())
-	    return false;
-	return true;
-    }
-
-    /**
-     * Returns true if image creation object contains a stream update
-     * information in the stream field, i.e. it is defined with a non-null or
-     * non-empty value.
-     * 
-     * @param info
-     *            image creation object.
-     * 
-     * @return true if image creation object contains stream update information
-     *         in the stream field. Returns false if the status field is null or
-     *         empty.
-     */
-    public static boolean containsStreamUpdate(ImageCreation info) {
-	Validate.notNull(info, "info is undefined");
-
-	if (info.getStream() == null)
-	    return false;
-	if (info.getStream().isEmpty())
-	    return false;
-	return true;
-    }
-
-    /**
-     * Create truncated ID which is reduced to 12 characters long.
-     * 
-     * @param id
-     *            id to be truncated. If the id is null or empty then the empty
-     *            string is returned.
-     */
-    public static String createTruncatedId(String id) {
-	if (id == null)
-	    return "";
-	if (id.isEmpty())
-	    return "";
-	return id.substring(START_INDEX, END_INDEX);
-    }
-
-    /**
-     * Remove LF from Docker stream update.
-     * 
-     * @param update
-     *            stream update.
-     */
-    public static String remoteLfFromStreamUpdate(String update) {
-	if (update == null)
-	    return update;
-	return StringUtils.trim(update);
-    }
-
-    /**
-     * Returns true if no repository tags are defined.
-     * 
-     * @param image
-     *            listed Docker image.
-     * 
-     * @return true if no repository tags are defined.
-     */
-    public static boolean isNoImageRepoTagsDefined(ListedImage image) {
-	if (image == null)
-	    return true;
-	if (image.getRepoTags() == null)
-	    return true;
-
-	List<String> tagsList = image.getRepoTags();
-	if (tagsList.isEmpty())
-	    return true;
-	for (String tag : tagsList) {
-	    if (!UNDEFINED_REPO_TAG.equals(tag))
-		return false;
+		if (info.getTag() == null)
+			return false;
+		if (info.getTag().isEmpty())
+			return false;
+		return true;
 	}
-	return true;
-    }
 
-    /**
-     * Returns true if tag is defined in image name in container.
-     * The tag is defined using the ":" separator.
-     * 
-     * @param image
-     *            Docker image name .
-     * 
-     * @return true if repository tag is defined in image name.
-     */
-    public static boolean isImageRepoTagDefined(ListedContainer container) {
-	Validate.notNull(container, "container is undefined.");
-	return containsSeparator(container.getImage());
-    }
-    
-    /**
-     * Return true if string message is not null or empty.
-     * 
-     * @param stringMessage
-     *            optional string message.
-     * 
-     * @return true if string message is not null or empty.
-     */
-    public static boolean isStringMessageDefined(String stringMessage) {
-	if (stringMessage == null)
-	    return false;
-	return (!stringMessage.isEmpty());
-    }
+	/**
+	 * Returns true if image creation object contains a regular status update
+	 * information in the status field, i.e. it is defined with a non-null or
+	 * non-empty value.
+	 * 
+	 * @param info
+	 *            image creation object.
+	 * 
+	 * @return true if image creation object contains regular status update
+	 *         information in the status field. Returns false if the status
+	 *         field is null or empty.
+	 */
+	public static boolean containsStatusUpdate(JsonMessage info) {
+		Validate.notNull(info, "info is undefined");
 
-    /**
-     * Return true if container name is prefixed with "/".
-     * 
-     * @param name
-     *            container name.
-     * 
-     * @return true if container name is prefixed with "/"..
-     */
-    public static boolean isContainerNamePrefixed(String name) {
-	if (name == null)
-	    return false;
-	if (name.isEmpty())
-	    return false;
-	return name.startsWith("/");
-    }
+		if (info.getStatus() == null)
+			return false;
+		if (info.getStatus().isEmpty())
+			return false;
+		return true;
+	}
 
-    /**
-     * If container name is prefixed with "/" then the prefix is removed.
-     * 
-     * @param name
-     *            container name.
-     * 
-     * @return container name with prefix removed.
-     */
-    public static String removeContainerNamePrefix(String name) {
-	if (!isContainerNamePrefixed(name))
-	    return name;
-	return name.substring(INDEX_FOR_PREFIX_REMOVAL);
-    }
+	/**
+	 * Returns true if image creation object contains a stream update
+	 * information in the stream field, i.e. it is defined with a non-null or
+	 * non-empty value.
+	 * 
+	 * @param info
+	 *            image creation object.
+	 * 
+	 * @return true if image creation object contains stream update information
+	 *         in the stream field. Returns false if the status field is null or
+	 *         empty.
+	 */
+	public static boolean containsStreamUpdate(JsonMessage info) {
+		Validate.notNull(info, "info is undefined");
 
-    /**
-     * Get first list entry. If list is empty the null is returned.
-     * 
-     * @param list
-     *            string list.
-     * 
-     * @return first list entry.
-     */
-    public static String getFirstListEntry(List<String> list) {
-	if (list.isEmpty())
-	    return null;
-	return list.get(FIRST_INDEX);
-    }
+		if (info.getStream() == null)
+			return false;
+		if (info.getStream().isEmpty())
+			return false;
+		return true;
+	}
 
-    /**
-     * Returns true if name contains separator ":".
-     * 
-     * @param name name to test.
-     * 
-     * @return true if string contains separator ":".
-     */
-    public static boolean containsSeparator(String name) {
-	Validate.notNull(name, "name is undefined.");
-	int index = name.indexOf(":");
-	return (index != -1);
-    }
-    
+	/**
+	 * Create truncated ID which is reduced to 12 characters long.
+	 * 
+	 * @param id
+	 *            id to be truncated. If the id is null or empty then the empty
+	 *            string is returned.
+	 */
+	public static String createTruncatedId(String id) {
+		if (id == null)
+			return "";
+		if (id.isEmpty())
+			return "";
+		return id.substring(START_INDEX, END_INDEX);
+	}
+
+	/**
+	 * Remove LF from Docker stream update.
+	 * 
+	 * @param update
+	 *            stream update.
+	 */
+	public static String remoteLfFromStreamUpdate(String update) {
+		if (update == null)
+			return update;
+		return StringUtils.trim(update);
+	}
+
+	/**
+	 * Returns true if no repository tags are defined.
+	 * 
+	 * @param image
+	 *            listed Docker image.
+	 * 
+	 * @return true if no repository tags are defined.
+	 */
+	public static boolean isNoImageRepoTagsDefined(ListedImage image) {
+		if (image == null)
+			return true;
+		if (image.getRepoTags() == null)
+			return true;
+
+		List<String> tagsList = image.getRepoTags();
+		if (tagsList.isEmpty())
+			return true;
+		for (String tag : tagsList) {
+			if (!UNDEFINED_REPO_TAG.equals(tag))
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Returns true if tag is defined in image name in container. The tag is
+	 * defined using the ":" separator.
+	 * 
+	 * @param image
+	 *            Docker image name .
+	 * 
+	 * @return true if repository tag is defined in image name.
+	 */
+	public static boolean isImageRepoTagDefined(ListedContainer container) {
+		Validate.notNull(container, "container is undefined.");
+		return containsSeparator(container.getImage());
+	}
+
+	/**
+	 * Return true if string message is not null or empty.
+	 * 
+	 * @param stringMessage
+	 *            optional string message.
+	 * 
+	 * @return true if string message is not null or empty.
+	 */
+	public static boolean isStringMessageDefined(String stringMessage) {
+		if (stringMessage == null)
+			return false;
+		return (!stringMessage.isEmpty());
+	}
+
+	/**
+	 * Return true if container name is prefixed with "/".
+	 * 
+	 * @param name
+	 *            container name.
+	 * 
+	 * @return true if container name is prefixed with "/"..
+	 */
+	public static boolean isContainerNamePrefixed(String name) {
+		if (name == null)
+			return false;
+		if (name.isEmpty())
+			return false;
+		return name.startsWith("/");
+	}
+
+	/**
+	 * If container name is prefixed with "/" then the prefix is removed.
+	 * 
+	 * @param name
+	 *            container name.
+	 * 
+	 * @return container name with prefix removed.
+	 */
+	public static String removeContainerNamePrefix(String name) {
+		if (!isContainerNamePrefixed(name))
+			return name;
+		return name.substring(INDEX_FOR_PREFIX_REMOVAL);
+	}
+
+	/**
+	 * Get first list entry. If list is empty the null is returned.
+	 * 
+	 * @param list
+	 *            string list.
+	 * 
+	 * @return first list entry.
+	 */
+	public static String getFirstListEntry(List<String> list) {
+		if (list.isEmpty())
+			return null;
+		return list.get(FIRST_INDEX);
+	}
+
+	/**
+	 * Returns true if name contains separator ":".
+	 * 
+	 * @param name
+	 *            name to test.
+	 * 
+	 * @return true if string contains separator ":".
+	 */
+	public static boolean containsSeparator(String name) {
+		Validate.notNull(name, "name is undefined.");
+		int index = name.indexOf(":");
+		return (index != -1);
+	}
+
 }

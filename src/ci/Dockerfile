@@ -17,12 +17,6 @@ ENV PINEAPPLE_ARCHIVE pineapple-standalone-web-client-1.10.0.zip \
 	PINEAPPLE_HTTP_HOST 0.0.0.0 \
 	PINEAPPLE_HTTP_PORT 8080
 
-RUN ls -la 
-RUN pwd
-RUN ls -la $SHIPPABLE_BUILD_DIR
-RUN ls -la $SHIPPABLE_BUILD_DIR/root
-RUN ls -la $SHIPPABLE_BUILD_DIR/dockersrc
-
 # Install unzip
 RUN yum --assumeyes install unzip && \
 	yum clean all

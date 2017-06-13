@@ -53,15 +53,15 @@ import com.alpha.pineapple.docker.model.ContainerInfo;
 import com.alpha.pineapple.docker.model.ContainerInstanceInfo;
 import com.alpha.pineapple.docker.model.ImageInfo;
 import com.alpha.pineapple.docker.model.InfoBuilder;
-import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationExposedPortsMap;
-import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationHostConfigPortBindingsMap;
 import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationLabelsMap;
 import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationVolumesMap;
+import com.alpha.pineapple.docker.model.jaxb.PortMapMap;
+import com.alpha.pineapple.docker.model.jaxb.PortSetMap;
 import com.alpha.pineapple.docker.model.rest.ContainerConfiguration;
 import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfig;
-import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfigPortBindingValue;
 import com.alpha.pineapple.docker.model.rest.ContainerJson;
 import com.alpha.pineapple.docker.model.rest.ObjectFactory;
+import com.alpha.pineapple.docker.model.rest.PortBinding;
 import com.alpha.pineapple.docker.session.DockerSession;
 import com.alpha.pineapple.docker.utils.RestResponseException;
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -588,7 +588,7 @@ public class CreateContainerCommandSystemTest {
 		assertNotNull(inspectedContainer);
 		ContainerConfiguration actualConfiguration = inspectedContainer.getConfig();
 		assertNotNull(actualConfiguration);
-		ContainerConfigurationExposedPortsMap exposedPorts = actualConfiguration.getExposedPorts();
+		PortSetMap exposedPorts = actualConfiguration.getExposedPorts();
 		assertNotNull(exposedPorts);
 		assertEquals(1, exposedPorts.size());
 		assertTrue(exposedPorts.containsKey(containerInfo.createPortString(PORT_NUMBER, "tcp")));
@@ -629,7 +629,7 @@ public class CreateContainerCommandSystemTest {
 		assertNotNull(inspectedContainer);
 		ContainerConfiguration actualConfiguration = inspectedContainer.getConfig();
 		assertNotNull(actualConfiguration);
-		ContainerConfigurationExposedPortsMap exposedPorts = actualConfiguration.getExposedPorts();
+		PortSetMap exposedPorts = actualConfiguration.getExposedPorts();
 		assertNotNull(exposedPorts);
 		assertEquals(1, exposedPorts.size());
 		assertTrue(exposedPorts.containsKey(containerInfo.createPortString(PORT_NUMBER, "udp")));
@@ -672,7 +672,7 @@ public class CreateContainerCommandSystemTest {
 		assertNotNull(inspectedContainer);
 		ContainerConfiguration actualConfiguration = inspectedContainer.getConfig();
 		assertNotNull(actualConfiguration);
-		ContainerConfigurationExposedPortsMap exposedPorts = actualConfiguration.getExposedPorts();
+		PortSetMap exposedPorts = actualConfiguration.getExposedPorts();
 		assertNotNull(exposedPorts);
 		assertEquals(2, exposedPorts.size());
 		assertTrue(exposedPorts.containsKey(containerInfo.createPortString(PORT_NUMBER, "tcp")));
@@ -919,13 +919,12 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		ContainerConfigurationHostConfigPortBindingsMap portBindings = inspectedContainer.getHostConfig()
-				.getPortBindings();
+		PortMapMap portBindings = inspectedContainer.getHostConfig().getPortBindings();
 		assertNotNull(portBindings);
 		assertEquals(1, portBindings.size());
 		String bindingKey = containerInfo.createPortString(randomPort, "tcp");
 		assertTrue(portBindings.containsKey(bindingKey));
-		ContainerConfigurationHostConfigPortBindingValue[] bindingArray = portBindings.get(bindingKey);
+		PortBinding[] bindingArray = portBindings.get(bindingKey);
 		assertEquals(1, bindingArray.length);
 		assertEquals("", bindingArray[FIRST_INDEX].getHostIp());
 		assertEquals(Integer.toString(randomPort), bindingArray[FIRST_INDEX].getHostPort());
@@ -963,13 +962,12 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		ContainerConfigurationHostConfigPortBindingsMap portBindings = inspectedContainer.getHostConfig()
-				.getPortBindings();
+		PortMapMap portBindings = inspectedContainer.getHostConfig().getPortBindings();
 		assertNotNull(portBindings);
 		assertEquals(1, portBindings.size());
 		String bindingKey = containerInfo.createPortString(randomPort, "udp");
 		assertTrue(portBindings.containsKey(bindingKey));
-		ContainerConfigurationHostConfigPortBindingValue[] bindingArray = portBindings.get(bindingKey);
+		PortBinding[] bindingArray = portBindings.get(bindingKey);
 		assertEquals(1, bindingArray.length);
 		assertEquals("", bindingArray[FIRST_INDEX].getHostIp());
 		assertEquals(Integer.toString(randomPort), bindingArray[FIRST_INDEX].getHostPort());
@@ -1008,19 +1006,18 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		ContainerConfigurationHostConfigPortBindingsMap portBindings = inspectedContainer.getHostConfig()
-				.getPortBindings();
+		PortMapMap portBindings = inspectedContainer.getHostConfig().getPortBindings();
 		assertNotNull(portBindings);
 		assertEquals(2, portBindings.size());
 		String bindingKey = containerInfo.createPortString(randomPort, "tcp");
 		assertTrue(portBindings.containsKey(bindingKey));
-		ContainerConfigurationHostConfigPortBindingValue[] bindingArray = portBindings.get(bindingKey);
+		PortBinding[] bindingArray = portBindings.get(bindingKey);
 		assertEquals(1, bindingArray.length);
 		assertEquals("", bindingArray[FIRST_INDEX].getHostIp());
 		assertEquals(Integer.toString(randomPort), bindingArray[FIRST_INDEX].getHostPort());
 		String bindingKey2 = containerInfo.createPortString(randomPort2, "tcp");
 		assertTrue(portBindings.containsKey(bindingKey2));
-		ContainerConfigurationHostConfigPortBindingValue[] bindingArray2 = portBindings.get(bindingKey2);
+		PortBinding[] bindingArray2 = portBindings.get(bindingKey2);
 		assertEquals(1, bindingArray2.length);
 		assertEquals("", bindingArray2[FIRST_INDEX].getHostIp());
 		assertEquals(Integer.toString(randomPort2), bindingArray2[FIRST_INDEX].getHostPort());
@@ -1060,13 +1057,12 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		ContainerConfigurationHostConfigPortBindingsMap portBindings = inspectedContainer.getHostConfig()
-				.getPortBindings();
+		PortMapMap portBindings = inspectedContainer.getHostConfig().getPortBindings();
 		assertNotNull(portBindings);
 		assertEquals(1, portBindings.size());
 		String bindingKey = containerInfo.createPortString(randomPort, "udp");
 		assertTrue(portBindings.containsKey(bindingKey));
-		ContainerConfigurationHostConfigPortBindingValue[] bindingArray = portBindings.get(bindingKey);
+		PortBinding[] bindingArray = portBindings.get(bindingKey);
 		assertEquals(1, bindingArray.length);
 		assertEquals("", bindingArray[FIRST_INDEX].getHostIp());
 		assertEquals(Integer.toString(randomPort2), bindingArray[FIRST_INDEX].getHostPort());
@@ -1106,13 +1102,12 @@ public class CreateContainerCommandSystemTest {
 		assertTrue(dockerClient.containerExists(session, containerInstanceInfo.getContainerInfo()));
 		ContainerJson inspectedContainer = dockerHelper.inspectContainer(session, containerInfo);
 		assertNotNull(inspectedContainer);
-		ContainerConfigurationHostConfigPortBindingsMap portBindings = inspectedContainer.getHostConfig()
-				.getPortBindings();
+		PortMapMap portBindings = inspectedContainer.getHostConfig().getPortBindings();
 		assertNotNull(portBindings);
 		assertEquals(1, portBindings.size());
 		String bindingKey = containerInfo.createPortString(randomPort, "udp");
 		assertTrue(portBindings.containsKey(bindingKey));
-		ContainerConfigurationHostConfigPortBindingValue[] bindingArray = portBindings.get(bindingKey);
+		PortBinding[] bindingArray = portBindings.get(bindingKey);
 		assertEquals(1, bindingArray.length);
 		assertEquals("", bindingArray[FIRST_INDEX].getHostIp());
 		assertEquals(Integer.toString(randomPort), bindingArray[FIRST_INDEX].getHostPort());

@@ -159,7 +159,7 @@
 
 	<!-- 
 		Corresponds to /pkg/jsonmessage/JSONProgress
-		https://github.com/moby/moby/blob/eb8abc95985bf3882a4a177c409a96e36e25f5b7/pkg/jsonmessage/jsonmessage.go#L33
+		https://github.com/moby/moby/blob/master/pkg/jsonmessage/jsonmessage.go
 	-->
 	<xs:complexType name="jsonProgressType" >
 		<xs:annotation>
@@ -174,7 +174,7 @@
 
 	<!-- 
 		Corresponds to /pkg/jsonmessage/JSONError
-		https://github.com/moby/moby/blob/eb8abc95985bf3882a4a177c409a96e36e25f5b7/pkg/jsonmessage/jsonmessage.go#L20
+		https://github.com/moby/moby/blob/master/pkg/jsonmessage/jsonmessage.go
 	-->
 	<xs:complexType name="jsonErrorType" >
 		<xs:annotation>
@@ -184,6 +184,74 @@
 		<xs:attribute name="message" type="xs:string" use="optional"/> 			
 	</xs:complexType>
 
+	<!-- 
+		Corresponds to /nat/PortSet 
+		https://github.com/docker/go-connections/blob/master/nat/nat.go
+	-->
+	<xs:complexType name="portSetType">
+		<xs:annotation>
+			<xs:documentation>PortSet is a collection of structs indexed by Port.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="elements" type="portSetElementType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="portSetElementType">
+		<xs:annotation>
+			<xs:documentation>
+				Element in port set.
+				The value isn't used by Docker, but a null value (an object) must be defined.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="port" type="xs:string" />
+			<xs:element name="nullValue" type="portSetElementNullValueType" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="portSetElementNullValueType">
+		<xs:annotation>
+			<xs:documentation>Null value for port in port set.</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+
+	<!-- 
+		Corresponds to /nat/PortMap 
+		https://github.com/docker/go-connections/blob/master/nat/nat.go
+	-->
+	<xs:complexType name="portMapType" >
+		<xs:annotation>
+			<xs:documentation>PortMap is a collection of PortBinding indexed by Port.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="elements" type="portMapElementType" minOccurs="0" maxOccurs="unbounded" />
+ 		</xs:sequence>		
+	</xs:complexType>
+
+	<xs:complexType name="portMapElementType">
+		<xs:annotation>
+			<xs:documentation>Port map element. The value is a port binding.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="port" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="binding" type="portBindingType" minOccurs="0" maxOccurs="unbounded" />						
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- 
+		Corresponds to /nat/PortBinding 
+		https://github.com/docker/go-connections/blob/master/nat/nat.go
+	-->
+	<xs:complexType name="portBindingType">
+		<xs:annotation>
+			<xs:documentation>PortBinding represents a binding between a Host IP address and a Host Port.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="hostIp" type="xs:string" /> 
+			<xs:element name="hostPort" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
 
 	<!-- Image definitions -->
 
@@ -207,7 +275,7 @@
 
 	<!-- 
 		Corresponds to ImageInspect
-		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go	
+		https://github.com/moby/moby/blob/master/api/types/types.go
 	 -->
 	<xs:complexType name="imageInspectType" >
 		<xs:annotation>
@@ -269,7 +337,7 @@
 
 	<!-- 
 		Corresponds to Config    
-		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/config.go
+		https://github.com/moby/moby/blob/master/api/types/container/config.go
 	 -->
 	<xs:complexType name="containerConfigurationType" >
 		<xs:annotation>
@@ -279,7 +347,7 @@
 			<xs:element name="cmd" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="entrypoint" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="env" type="stringList" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="exposedPorts" type="containerConfigurationExposedPortsType" minOccurs="0" maxOccurs="1" />		
+			<xs:element name="exposedPorts" type="portSetType" minOccurs="0" maxOccurs="1" />		
 			<xs:element name="healthcheck" type="HealthConfigType" minOccurs="0" maxOccurs="1" />				
 			<xs:element name="hostConfig" type="containerConfigurationHostConfigType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />			
@@ -322,34 +390,6 @@
 			<xs:element name="key" type="xs:string" /> <!-- key in map -->
 			<xs:element name="value" type="xs:string" />
 		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="containerConfigurationExposedPortsType">
-		<xs:annotation>
-			<xs:documentation>Info about exposed ports in a container configuration and inspected container.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="port" type="containerConfigurationExposedPortType" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="containerConfigurationExposedPortType">
-		<xs:annotation>
-			<xs:documentation>
-				Exposed port in container configuration and inspected container.
-				The value isn't used by Docker, but a null value (an object) must be defined.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="port" type="xs:string" />
-			<xs:element name="nullValue" type="containerConfigurationExposedPortNullValueType" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="containerConfigurationExposedPortNullValueType">
-		<xs:annotation>
-			<xs:documentation>Null value for exposed port in container configuration and inspected container.</xs:documentation>
-		</xs:annotation>
 	</xs:complexType>
 
 	<xs:complexType name="containerConfigurationVolumesType">
@@ -398,7 +438,7 @@
 
 	<!-- 
 		Corresponds to HostConfig   
-		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/host_config.go		
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
 
 		Please notice:
 		
@@ -427,7 +467,7 @@
 			<xs:element name="links" type="stringList" minOccurs="0" maxOccurs="1" />				
 			<xs:element name="restartPolicy" type="containerConfigurationHostConfigRestartPolicyType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="logConfig" type="containerConfigurationHostConfigLogConfigType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="portBindings" type="containerConfigurationHostConfigPortBindingsType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="portBindings" type="portMapType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="blkioWeightDevice" type="weightDevicesType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="blkioDeviceReadBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="blkioDeviceWriteBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
@@ -479,35 +519,6 @@
 		<xs:attribute name="utsMode" type="xs:string" use="optional"/> <!-- wrong type -->	
 		<xs:attribute name="usernsMode" type="xs:string" use="optional"/> <!-- approximation of the UsernsMode which is implemented as a string -->			
 		<xs:attribute name="volumeDriver" type="xs:string" use="optional"/> 											
-	</xs:complexType>
-
-	<xs:complexType name="containerConfigurationHostConfigPortBindingsType" >
-		<xs:annotation>
-			<xs:documentation>Port bindings configuration in container host configuration and container inspection.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="binding" type="containerConfigurationHostConfigPortBindingType" minOccurs="0" maxOccurs="unbounded" />
- 		</xs:sequence>		
-	</xs:complexType>
-
-	<xs:complexType name="containerConfigurationHostConfigPortBindingType">
-		<xs:annotation>
-			<xs:documentation>Port binding configuration in container host configuration and container inspection.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="containerPort" type="xs:string" minOccurs="0" maxOccurs="1" />
-			<xs:element name="value" type="containerConfigurationHostConfigPortBindingValueType" minOccurs="0" maxOccurs="unbounded" />						
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="containerConfigurationHostConfigPortBindingValueType">
-		<xs:annotation>
-			<xs:documentation>Port binding value in container host configuration and container inspection.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="hostPort" type="xs:string" />
-			<xs:element name="hostIp" type="xs:string" /> <!-- hostIP is only used for container inspection -->
-		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="containerConfigurationHostConfigLogConfigType" >
@@ -589,7 +600,7 @@
 
 	<!-- 
 		Corresponds to ContainerJSON   
-		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go	 
+		https://github.com/moby/moby/blob/master/api/types/types.go
 	-->
 	<xs:complexType name="containerJsonType" >
 		<xs:annotation>
@@ -640,12 +651,16 @@
 		<xs:attribute name="status" type="xs:string" use="optional"/>			
 	</xs:complexType>
 
+	<!-- 
+		Corresponds to NetworkSettings    	
+		https://github.com/moby/moby/blob/master/api/types/types.go	
+	 -->
 	<xs:complexType name="inspectedContainerNetworkSettingsType" >
 		<xs:annotation>
 			<xs:documentation>Info about the network configuration of a Docker container (Partial output from inspecting a container).</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="ports" type="containerConfigurationExposedPortsType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="ports" type="portMapType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="networks" type="inspectedContainerNetworkSettingsNetworksType" minOccurs="0" maxOccurs="1" />			
  		</xs:sequence>
 		<xs:attribute name="bridge" type="xs:string" use="optional"/>		

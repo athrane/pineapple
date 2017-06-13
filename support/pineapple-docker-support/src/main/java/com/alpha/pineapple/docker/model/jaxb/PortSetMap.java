@@ -25,7 +25,9 @@ import java.util.HashMap;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.alpha.pineapple.docker.model.rest.PortSetElementNullValue;
+
 @SuppressWarnings("serial")
-@XmlJavaTypeAdapter(ContainerConfigurationExposedPortsMapAdapter.class)
-public class ContainerConfigurationExposedPortsMap extends HashMap<String, Object> {
+@XmlJavaTypeAdapter(PortSetMapAdapter.class)
+public class PortSetMap extends HashMap<String, PortSetElementNullValue> {
 }

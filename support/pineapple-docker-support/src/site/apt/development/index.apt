@@ -27,13 +27,13 @@ Development documentation
 	The project uses JABX through the Maven 2 plugin <<<maven-jaxb2-plugin>>> 
 	to generate classes from XML schemas.		
 	 	
-** Customized package names
+** customised package names
 	 	
 	The generated classes are mapping into the package 
 	<<<com.alpha.pineapple.docker.model.rest>>> using the JAXB bindings file at:
 	<<<src/main/resources/bindings.xjb>>>.
 
-** Customized type names
+** customised type names
 	
 	The JAXB bindings file also defines mappings of Schema type into
 	Java types. The applied rule is to remove the postfixed <<<Type>>>
@@ -69,7 +69,7 @@ Development documentation
 	
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
 	
-	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/blkiodev/blkio.go}WeightDevice}}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/blkiodev/blkio.go}WeightDevice}}
 
 *** weightDevicesType	
 
@@ -81,7 +81,7 @@ Development documentation
 
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
 	
-	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/blkiodev/blkio.go}WeightDevice}}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/blkiodev/blkio.go}WeightDevice}}
 	
 *** throttleDevicesType	
 
@@ -93,15 +93,13 @@ Development documentation
 
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
 	
-	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/blkiodev/blkio.go}ThrottleDevice}}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/blkiodev/blkio.go}ThrottleDevice}}
 
 *** MountType	
 	
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
 	
-	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/blkiodev/blkio.go}Mount}}
-
-** Schema types for images
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/blkiodev/blkio.go}Mount}}
 
 *** jsonProgressType 
 
@@ -111,7 +109,7 @@ Development documentation
 	
 	Used by the schema type <<<jsonMessageType>>>.
 	
-	Defined Docker type: {{{https://github.com/moby/moby/blob/eb8abc95985bf3882a4a177c409a96e36e25f5b7/pkg/jsonmessage/jsonmessage.go}JSONProgress}}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/pkg/jsonmessage/jsonmessage.go}JSONProgress}}
 
 *** jsonErrorType 
 
@@ -119,7 +117,76 @@ Development documentation
 		
 	Used by the schema type <<<jsonMessageType>>>.
 	
-	Defined Docker type: {{{https://github.com/moby/moby/blob/eb8abc95985bf3882a4a177c409a96e36e25f5b7/pkg/jsonmessage/jsonmessage.go}JSONError}}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/pkg/jsonmessage/jsonmessage.go}JSONError}}
+
+*** portSetType
+
+	PortSet is a collection of structs indexed by Port.
+
+	Used by the schema type <<<containerConfigurationType>>>.
+
+	* <<<inspectedContainerNetworkSettingsType>>>.
+
+	Defined Docker type: {{{https://github.com/docker/go-connections/blob/master/nat/nat.go}PortSet}}
+
+** portSetElementType
+
+	Port map element. The value is a port binding.
+	
+	The JSON marshalled from this type when the Docker REST API is invoked requires a map with 
+	values with the format: <<<\{ "\<port\>/\<tcp|udp\>: \{\}" \}>>>.
+	To support this requirement the exposed port type defines a port (the port/protocol part)
+	and a null value (the \{\} part). 
+	To generate the null object for the value the <<<portSetElementNullValueType>>> is used.
+
+	Used by the schema type <<<portSetType>>>.
+	
+	No corresponding Docker type.
+
+*** portSetElementNullValueType
+
+	Null value for port in port set.
+
+	Used by the schema type <<<portSetElementType>>>.
+
+	Defined Docker type: {{{https://github.com/docker/go-connections/blob/master/nat/nat.go}struct}}
+
+*** portMapType
+
+	Element in port set. The value isn't used by Docker, but a null value (an object) must be defined.
+
+	Used by the schema types:
+	
+	*  <<<containerConfigurationHostConfigType>>>.
+
+	* <<<inspectedContainerNetworkSettingsType>>>.
+
+	[]
+
+	Defined Docker type: {{{https://github.com/docker/go-connections/blob/master/nat/nat.go}PortMap}}
+
+*** portMapElementType
+
+	Port map element. The value is a port binding.
+	
+	The JSON marshalled from this type when the Docker REST API is invoked
+	requires a map with values with the format: <<<\{ "22/tcp": [\{ "HostPort": "11022" \}] \} >>>.
+	To support this requirement the binding type defines a key (XML element named port) and value (XML element named binding).
+	The value is of the type <<<portBindingType>>>.
+	
+	Used by the schema type <<<portMapType>>>.
+	
+	No corresponding Docker type.
+
+*** portBindingType
+
+	PortBinding represents a binding between a Host IP address and a Host Port.
+
+	Used by the schema type <<<portMapElementType>>>.
+
+	Defined Docker type: {{{https://github.com/docker/go-connections/blob/master/nat/nat.go}PortBinding}}
+
+** Schema types for images
 
 *** listedImageType
 
@@ -133,13 +200,13 @@ Development documentation
 		
 	Output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ImageInspect}Inspect an image (v1.28)}} operation.	
 	
-	Defined Docker type: {{{https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go}ImageInspect}}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/types.go}ImageInspect}}
 	
 *** jsonMessageType	
 	
 	Info about Docker image creation progress.
 	
-	Defined Docker type: {{{https://github.com/moby/moby/blob/eb8abc95985bf3882a4a177c409a96e36e25f5b7/pkg/jsonmessage/jsonmessage.go}JSONMessage}}	
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/pkg/jsonmessage/jsonmessage.go}JSONMessage}}	
 	
 *** imageDeletionType
 
@@ -158,8 +225,7 @@ Development documentation
 	
 	[]
 
-	Defined Docker type: {{{https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/config.go}container.Config}}
-
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/container/config.go}container.Config}}
 
 *** containerJson
 
@@ -167,7 +233,7 @@ Development documentation
 
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
 	
-	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go}ContainerJSON}}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/types.go}ContainerJSON}}
 
 *** containerConfigurationType
 
@@ -176,7 +242,7 @@ Development documentation
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} and 
 	{{{https://docs.docker.com/engine/api/v1.28/#operation/ImageInspect}Inspect an image (v1.28)}} operations.	
 
-	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go}HostConfig}}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/types.go}HostConfig}}
 	
 	Used by these schema types:
 	
@@ -192,7 +258,7 @@ Development documentation
 	
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
 
-	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go}HostConfig}}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/types.go}HostConfig}}
 	
 	Used by these schema types:
 	
@@ -206,7 +272,7 @@ Development documentation
 	
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
 
-	Defined Docker type: {{{https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go}HostConfig}}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/types.go}HostConfig}}
 	
 	Used by these schema types:
 	
@@ -225,25 +291,6 @@ Development documentation
 
 	The schema contains these types for handling container:
 	
-
-	* <<<containerConfigurationExposedPortType>>> - Docker container configuration of a single exposed port 
-	(Input to container creation and output from container inspection).
-	The JSON marshalled from this type when the Docker REST API is invoked
-	requires a map with values with the format: <<<\{ "\<port\>/\<tcp|udp\>: \{\}" \}>>>.
-	To support this requirement the exposed port type defines a port (the port/protocol part)
-	and a null value (the \{\} part). To generate the null object for the value the 
-	<<<containerConfigurationExposedPortNullValueType>>> is used.
-
-	* <<<containerConfigurationExposedPortNullValueType>>> - Null value for
-	export port (Input to container creation and output from container inspection).
-
-	* <<<containerConfigurationExposedPortsType>>> - Docker container configuration of a map of 
-	exposed ports (Input to container creation and output from container inspection). 
-	Each port is defined using the <<<containerConfigurationExposedPortType>>>.
-	During marshalling the type is bound to the map 
-	<<<ContainerConfigurationExposedPortsMap>>> using the 
-	<<<ContainerConfigurationExposedPortsMapAdapter>>>.
-
 	* <<<containerConfigurationLabelType>>> - Docker container configuration of a label
 	(Input to container creation, output from container inspection and listing of containers).
 	The JSON marshalled from this type when the Docker REST API is invoked
@@ -273,22 +320,6 @@ Development documentation
 	During marshalling the type is bound to the map 
 	<<<ContainerConfigurationVolumesMap>>> using the 
 	<<<ContainerConfigurationVolumesMapAdapter>>>.
-
-	* <<<containerConfigurationHostConfigPortBindingValueType>>> - Value for port binding
-
-	* <<<containerConfigurationHostConfigPortBindingType>>> - Docker container configuration of a port binding
-	(Input to container creation and output from container inspection).
-	The JSON marshalled from this type when the Docker REST API is invoked
-	requires a map with values with the format: <<<\{ "22/tcp": [\{ "HostPort": "11022" \}] \} >>>.
-	To support this requirement the binding type defines a key (element named containerPort) and value (element named value).
-	The value is of the type <<<containerConfigurationHostConfigPortBindingValueType>>>.
-
-	* <<<containerConfigurationHostConfigPortBindingsType>>> - Docker container configuration of a map of 
-	port bindings (Input to container creation and output from container inspection). 
-	Each label is defined using the <<<containerConfigurationHostConfigPortBindingType>>>.
-	During marshalling the type is bound to the map 
-	<<<ContainerConfigurationHostConfigPortBindingsMap>>> using the 
-	<<<ContainerConfigurationHostConfigPortBindingsMapAdapter>>>.
 
 	* <<<createdContainerType>>> - Info about created Docker container 
 	(Output from container creation).
@@ -329,36 +360,42 @@ Development documentation
 *** Exposed ports
 
 	To support binding of schema element <<<containerConfigurationType.exposedPorts>>> to a map, 
-	the binding is customized to bind to the custom map <<<ContainerConfigurationExposedPortsMap>>> 
-	using the custom JABX adaptor <<<ContainerConfigurationExposedPortsMapAdapter>>>.
+	the binding is customised to bind to the custom map <<<PortSetMap>>> 
+	using the custom JABX adaptor <<<PortSetMapAdapter>>>.
 
 *** Labels
 
 	To support binding of schema element <<<containerConfigurationType.labels>>> to a map, 
-	the binding is customized to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
+	the binding is customised to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationLabelsMapAdapter>>>.
 	The map and JAXB adaptor is shared with the other bindings in the section.
 
 	To support binding of schema element <<<listedContainerType.labels>>> to a map, 
-	the binding is customized to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
+	the binding is customised to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationLabelsMapAdapter>>>.
 	The map and JAXB adaptor is shared with the other bindings in the section.
 	
 	To support binding of schema element <<<inspectedImageContainerType.labels>>> to a map, 
-	the binding is customized to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
+	the binding is customised to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationLabelsMapAdapter>>>.
 	The map and JAXB adaptor is shared with the other bindings in the section.
 
 	To support binding of schema element <<<listedImageType.labels>>> to a map, 
-	the binding is customized to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
+	the binding is customised to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationLabelsMapAdapter>>>.
 	The map and JAXB adaptor is shared with the other bindings in the section.
 
 *** Port binding
 
 	To support binding of schema element <<<containerConfigurationHostConfigType.portBindings>>> to a map, 
-	the binding is customized to bind to the custom map <<<ContainerConfigurationHostConfigPortBindingsMap>>> 
-	using the custom JABX adaptor <<<ContainerConfigurationHostConfigPortBindingsMapAdapter>>>.
+	the binding is customised to bind to the custom map <<<PortMapMap>>> 
+	using the custom JABX adaptor <<<PortMapMapAdapter>>>.
+	
+	To support binding of schema element <<<inspectedContainerNetworkSettingsType.ports>>> to a map, 
+	the binding is customised to bind to the custom map <<<PortMapMap>>> 
+	using the custom JABX adaptor <<<PortMapMapAdapter>>>.
+	
+	inspectedContainerNetworkSettingsType
 
 *** Restart policy
 
@@ -366,20 +403,20 @@ Development documentation
 
 *** Volumes
 
-	To support binding of <<<containerConfigurationType.volumes>>> to a map, the binding is customized
+	To support binding of <<<containerConfigurationType.volumes>>> to a map, the binding is customised
 	to bind to the custom map <<<ContainerConfigurationVolumesMap>> using the custom JABX adaptor
 	<<<ContainerConfigurationVolumesMapAdapter>>>.
 
 *** Network
 
 	To support binding of schema element <<<inspectedContainerNetworkSettingsType.networks>>> to a map, 
-	the binding is customized to bind to the custom map <<<InspectedContainerNetworkSettingsNetworksMap>>> 
+	the binding is customised to bind to the custom map <<<InspectedContainerNetworkSettingsNetworksMap>>> 
 	using the custom JABX adaptor <<<InspectedContainerNetworkSettingsNetworksMapAdapter>>>.
 	
 *** GraphDriver Data
 
 	To support binding of schema element <<<inspectedImageGraphDriverType.data>>> to a map, 
-	the binding is customized to bind to the custom map <<<GraphDriverDataMap>>> 
+	the binding is customised to bind to the custom map <<<GraphDriverDataMap>>> 
 	using the custom JABX adaptor <<<GraphDriverDataMapAdapter>>>.
 	The map and JAXB adaptor is shared with the other bindings in the section.
 	
@@ -530,7 +567,7 @@ Development documentation
 	error handling from for RestTemlpate: 
 	
 	* <<<RestResponseErrorHandler>>> which implements the <<<ResponseErrorHandler>>> interface 
-	to provide a customized error handler for exceptions returned by RestTemplate. The error handle 
+	to provide a customised error handler for exceptions returned by RestTemplate. The error handle 
 	captures the exception from	RestTemplate and information from the HTTP response. The handler 
 	then throws a <<<RestResponseException>>> with all the collected data.
 
@@ -543,7 +580,7 @@ Development documentation
 	The package <<<com.alpha.pineapple.docker.utils>>> also contains helper classes used during marshalling JSON to objects:
 
 	* <<<UpperCaseStyleStrategy>>> implements the Jackson <<<PropertyNamingStrategy>>> interface 
-	to provide a customized property naming strategy during marshalling. The strategy generates
+	to provide a customised property naming strategy during marshalling. The strategy generates
 	upper case target attribute names in objects for for JSON attribute to be mapped to. Special cases:
 	
 		* If the target object attribute is <<<ListedImage.id>>> then the received JSON property <<<Id>>> is
@@ -731,17 +768,24 @@ Development documentation
 		
 	[]
 
-** Support for customized JAXB bindings 
+** Support for customised JAXB bindings 
 
 	The package <<<com.alpha.pineapple.docker.model.jaxb>>> contains objects 
-	for implementation of customized JAXB bindings:
+	for implementation of customised JAXB bindings:
 
-	* <<<ContainerConfigurationExposedPortsMap>>> custom map implementation. 
-	Used bind to the schema generated type <<<ContainerConfigurationExposedPorts>>> into a map.
+	* <<<PortSetMap>>> custom map implementation. 
+	Used bind to the schema generated type <<<PortSet>>> into a map.
 
-	* <<<ContainerConfigurationExposedPortsMapAdapter>>> JAXB binding adapter. 
-	Implements binding of schema generated type <<<ContainerConfigurationExposedPorts>>>
-	to <<<ContainerConfigurationExposedPortsMap>>> and back.
+	* <<<PortSetMapAdapter>>> JAXB binding adapter. 
+	Implements binding of schema generated type <<<PortSet>>>
+	to <<<PortSetMap>>> and back.
+
+	* <<<PortMapMap>>> custom map implementation. 
+	Used bind to the schema generated type <<<PortMap>>> into a map.
+
+	* <<<PortMapMapAdapter>>> JAXB binding adapter. 
+	Implements binding of schema generated type <<<PortMap>>>
+	to <<<PortMapMap>>> and back.
 
 	* <<<ContainerConfigurationLabelsMap>>> custom map implementation. 
 	Used bind to the schema generated type <<<ContainerConfigurationLabels>>>,
@@ -757,13 +801,6 @@ Development documentation
 	* <<<ContainerConfigurationVolumesMapAdapter>>> JAXB binding adapter. 
 	Implements binding of schema generated type <<<ContainerConfigurationVolumes>>>
 	to <<<ContainerConfigurationVolumesMap>>> and back.
-
-	* <<<ContainerConfigurationHostConfigPortBindingsMap>>> custom map implementation. 
-	Used bind to the schema generated type <<<ContainerConfigurationHostConfigPortBinding>>> into a map.
-
-	* <<<ContainerConfigurationHostConfigPortBindingsMapAdapter>>> JAXB binding adapter. 
-	Implements binding of schema generated type <<<ContainerConfigurationHostConfigPortBinding>>>
-	to <<<ContainerConfigurationHostConfigPortBindingsMap>>> and back.
 
 	[]
 			

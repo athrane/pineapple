@@ -23,7 +23,6 @@
 package com.alpha.pineapple.docker.model;
 
 import com.alpha.pineapple.docker.model.rest.ContainerConfiguration;
-import com.alpha.pineapple.docker.model.rest.ContainerConfigurationExposedPortNullValue;
 import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfig;
 import com.alpha.pineapple.docker.model.rest.ContainerConfigurationVolumeNullValue;
 
@@ -33,121 +32,121 @@ import com.alpha.pineapple.docker.model.rest.ContainerConfigurationVolumeNullVal
  */
 public interface ContainerInfo {
 
-    /**
-     * Return image info.
-     * 
-     * @return image info.
-     */
-    ImageInfo getImageInfo();
+	/**
+	 * Return image info.
+	 * 
+	 * @return image info.
+	 */
+	ImageInfo getImageInfo();
 
-    /**
-     * Return container name.
-     * 
-     * @return container name.
-     */
-    String getName();
+	/**
+	 * Return container name.
+	 * 
+	 * @return container name.
+	 */
+	String getName();
 
-    /**
-     * Get container configuration.
-     * 
-     * @return container configuration.
-     */
-    ContainerConfiguration getContainerConfiguration();
+	/**
+	 * Get container configuration.
+	 * 
+	 * @return container configuration.
+	 */
+	ContainerConfiguration getContainerConfiguration();
 
-    /**
-     * Add exposed TCP port to container configuration.
-     * 
-     * The port is added with the expected Docker format &lt;port&gt;/tcp and a
-     * null value object {@linkplain ContainerConfigurationExposedPortNullValue}
-     * .
-     * 
-     * @param port
-     *            number. Must be a value between 0 and 65535.
-     */
-    void addExposedTcpPort(int portNumber);
+	/**
+	 * Add exposed TCP port to container configuration.
+	 * 
+	 * The port is added with the expected Docker format &lt;port&gt;/tcp and a
+	 * null value object {@linkplain ContainerConfigurationExposedPortNullValue}
+	 * .
+	 * 
+	 * @param port
+	 *            number. Must be a value between 0 and 65535.
+	 */
+	void addExposedTcpPort(int portNumber);
 
-    /**
-     * Add exposed UDP port to container configuration.
-     * 
-     * The port is added with the expected Docker format &lt;port&gt;/tcp and a
-     * null value object {@linkplain ContainerConfigurationExposedPortNullValue}
-     * .
-     * 
-     * @param port
-     *            number. Must be a value between 0 and 65535.
-     */
-    void addExposedUdpPort(int portNumber);
+	/**
+	 * Add exposed UDP port to container configuration.
+	 * 
+	 * The port is added with the expected Docker format &lt;port&gt;/tcp and a
+	 * null value object {@linkplain ContainerConfigurationExposedPortNullValue}
+	 * .
+	 * 
+	 * @param port
+	 *            number. Must be a value between 0 and 65535.
+	 */
+	void addExposedUdpPort(int portNumber);
 
-    /**
-     * Create port string according to the Docker format:
-     * &lt;port&gt;/&lt;tcp|udp&gt;
-     * 
-     * @param portNumber
-     *            IP port number.
-     * @param portType
-     *            port type. Should either be "udp" or "tcp".
-     * 
-     * @return port string.
-     */
-    String createPortString(int portNumber, String portType);
+	/**
+	 * Create port string according to the Docker format:
+	 * &lt;port&gt;/&lt;tcp|udp&gt;
+	 * 
+	 * @param portNumber
+	 *            IP port number.
+	 * @param portType
+	 *            port type. Should either be "udp" or "tcp".
+	 * 
+	 * @return port string.
+	 */
+	String createPortString(int portNumber, String portType);
 
-    /**
-     * Add volume to container configuration.
-     * 
-     * The volume is added with a null value object
-     * {@linkplain ContainerConfigurationVolumeNullValue}.
-     * 
-     * @param volume.
-     */
-    void addVolume(String volume);
+	/**
+	 * Add volume to container configuration.
+	 * 
+	 * The volume is added with a null value object
+	 * {@linkplain ContainerConfigurationVolumeNullValue}.
+	 * 
+	 * @param volume.
+	 */
+	void addVolume(String volume);
 
-    /**
-     * Add environment variable.
-     * 
-     * @param name
-     *            variable name.
-     * @param value
-     *            variable value.
-     */
-    void addEnvironmentVariable(String name, String value);
+	/**
+	 * Add environment variable.
+	 * 
+	 * @param name
+	 *            variable name.
+	 * @param value
+	 *            variable value.
+	 */
+	void addEnvironmentVariable(String name, String value);
 
-    /**
-     * Add label.
-     * 
-     * @param key
-     *            label key.
-     * @param value
-     *            label value.
-     */
-    void addLabel(String key, String value);
+	/**
+	 * Add label.
+	 * 
+	 * @param key
+	 *            label key.
+	 * @param value
+	 *            label value.
+	 */
+	void addLabel(String key, String value);
 
-    /**
-     * Add bound TCP port to host configuration. Container port is bound to host
-     * port.
-     * 
-     * @param containerPortNumber
-     *            Container host IP port number.
-     * @param hostPortNumber
-     *            host host IP port number.
-     */
-    void addTcpPortBinding(int containerPortNumber, int hostPortNumber);
+	/**
+	 * Add bound TCP port to host configuration. Container port is bound to host
+	 * port.
+	 * 
+	 * @param containerPortNumber
+	 *            Container host IP port number.
+	 * @param hostPortNumber
+	 *            host host IP port number.
+	 */
+	void addTcpPortBinding(int containerPortNumber, int hostPortNumber);
 
-    /**
-     * Add bound UDP port to host configuration. Container port is bound to host
-     * port.
-     * 
-     * @param containerPortNumber
-     *            Container host IP port number.
-     * @param hostPortNumber
-     *            host host IP port number.
-     */
-    void addUdpPortBinding(int containerPortNumber, int hostPortNumber);
-    
-    /**
-     * Create container host configuration object.
-     * 
-     * @return container host configuration object.
-     */
-    public ContainerConfigurationHostConfig createHostConfiguration();
-    
+	/**
+	 * Add bound UDP port to host configuration. Container port is bound to host
+	 * port.
+	 * 
+	 * @param containerPortNumber
+	 *            Container host IP port number.
+	 * @param hostPortNumber
+	 *            host host IP port number.
+	 */
+	void addUdpPortBinding(int containerPortNumber, int hostPortNumber);
+
+	/**
+	 * Create container host configuration object.
+	 * 
+	 * @return container host configuration object.
+	 */
+	public ContainerConfigurationHostConfig createHostConfiguration();
+
 }

@@ -29,208 +29,210 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 
 import com.alpha.javautils.NetworkUtils;
-import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationExposedPortsMap;
-import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationHostConfigPortBindingsMap;
 import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationLabelsMap;
 import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationVolumesMap;
+import com.alpha.pineapple.docker.model.jaxb.PortMapMap;
+import com.alpha.pineapple.docker.model.jaxb.PortSetMap;
 import com.alpha.pineapple.docker.model.rest.ContainerConfiguration;
 import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfig;
-import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfigPortBindingValue;
 import com.alpha.pineapple.docker.model.rest.ObjectFactory;
+import com.alpha.pineapple.docker.model.rest.PortBinding;
 
 /**
  * Implementation of the {@linkplain ContainerInfo} interface.
  */
 public class ContainerInfoImpl implements ContainerInfo {
 
-    /**
-     * Error message for port number validation.
-     */
-    static final String ILLEGAL_PORT_TEXT = "portNumber is illegal port number. Legal values are between 1 to 65535";
+	/**
+	 * Error message for port number validation.
+	 */
+	static final String ILLEGAL_PORT_TEXT = "portNumber is illegal port number. Legal values are between 1 to 65535";
 
-    /**
-     * Image info.
-     */
-    ImageInfo info;
+	/**
+	 * Image info.
+	 */
+	ImageInfo info;
 
-    /**
-     * Container name.
-     */
-    String name;
+	/**
+	 * Container name.
+	 */
+	String name;
 
-    /**
-     * Configuration which is passed to Docker upon creation.
-     */
-    ContainerConfiguration configuration;
+	/**
+	 * Configuration which is passed to Docker upon creation.
+	 */
+	ContainerConfiguration configuration;
 
-    /**
-     * Docker object factory.
-     */
-    static final ObjectFactory dockerModelObjectFactory = new ObjectFactory();
+	/**
+	 * Docker object factory.
+	 */
+	static final ObjectFactory dockerModelObjectFactory = new ObjectFactory();
 
-    /**
-     * ContainerInfoImpl constructor.
-     * 
-     * @param id
-     *            Container ID.
-     * @param info
-     *            image info.
-     */
-    ContainerInfoImpl(String id, ImageInfo info) {
-	this.name = id;
-	this.info = info;	
-	configuration = dockerModelObjectFactory.createContainerConfiguration();
-    }
+	/**
+	 * ContainerInfoImpl constructor.
+	 * 
+	 * @param id
+	 *            Container ID.
+	 * @param info
+	 *            image info.
+	 */
+	ContainerInfoImpl(String id, ImageInfo info) {
+		this.name = id;
+		this.info = info;
+		configuration = dockerModelObjectFactory.createContainerConfiguration();
+	}
 
-    @Override
-    public ImageInfo getImageInfo() {
-	return info;
-    }
+	@Override
+	public ImageInfo getImageInfo() {
+		return info;
+	}
 
-    @Override
-    public String getName() {
-	return name;
-    }
+	@Override
+	public String getName() {
+		return name;
+	}
 
-    @Override
-    public ContainerConfiguration getContainerConfiguration() {
-	return configuration;
-    }
+	@Override
+	public ContainerConfiguration getContainerConfiguration() {
+		return configuration;
+	}
 
-    @Override
-    public void addExposedTcpPort(int portNumber) {
-	addPort(portNumber, "tcp");
-    }
+	@Override
+	public void addExposedTcpPort(int portNumber) {
+		addPort(portNumber, "tcp");
+	}
 
-    @Override
-    public void addExposedUdpPort(int portNumber) {
-	addPort(portNumber, "udp");
-    }
+	@Override
+	public void addExposedUdpPort(int portNumber) {
+		addPort(portNumber, "udp");
+	}
 
-    @Override
-    public String createPortString(int portNumber, String portType) {
-	String portKey = new StringBuilder().append(portNumber).append("/").append(portType.toLowerCase()).toString();
-	return portKey;
-    }
+	@Override
+	public String createPortString(int portNumber, String portType) {
+		String portKey = new StringBuilder().append(portNumber).append("/").append(portType.toLowerCase()).toString();
+		return portKey;
+	}
 
-    /**
-     * Add port.
-     * 
-     * If exposed ports map isn't defined in configuration then it is created.
-     * 
-     * @param portNumber
-     *            IP port number.
-     * @param portType
-     *            port type.
-     * 
-     * @throws IllegalArgumentException
-     *             if port number is invalid.
-     */
-    void addPort(int portNumber, String portType) {
-	NetworkUtils.validatePort(portNumber);
-	Validate.notNull(portType, "portType is undefined");
-	Validate.notEmpty(portType, "portType is empty");
+	/**
+	 * Add port.
+	 * 
+	 * If exposed ports map isn't defined in configuration then it is created.
+	 * 
+	 * @param portNumber
+	 *            IP port number.
+	 * @param portType
+	 *            port type.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if port number is invalid.
+	 */
+	void addPort(int portNumber, String portType) {
+		NetworkUtils.validatePort(portNumber);
+		Validate.notNull(portType, "portType is undefined");
+		Validate.notEmpty(portType, "portType is empty");
 
-	String portKey = createPortString(portNumber, portType);
-	if(configuration.getExposedPorts() == null) configuration.setExposedPorts(new ContainerConfigurationExposedPortsMap());
-	ContainerConfigurationExposedPortsMap exposedPorts = configuration.getExposedPorts();	
-	exposedPorts.put(portKey, dockerModelObjectFactory.createContainerConfigurationExposedPortNullValue());
-    }
+		String portKey = createPortString(portNumber, portType);
+		if (configuration.getExposedPorts() == null)
+			configuration.setExposedPorts(new PortSetMap());
+		PortSetMap exposedPorts = configuration.getExposedPorts();
+		exposedPorts.put(portKey, dockerModelObjectFactory.createPortSetElementNullValue());
+	}
 
-    @Override
-    public void addVolume(String volume) {
-	Validate.notNull(volume, "volume is undefined.");
-	Validate.notEmpty(volume, "volume is empty.");
+	@Override
+	public void addVolume(String volume) {
+		Validate.notNull(volume, "volume is undefined.");
+		Validate.notEmpty(volume, "volume is empty.");
 
-	// get volumes map 
-	if(configuration.getVolumes() == null) configuration.setVolumes(new ContainerConfigurationVolumesMap());
-	ContainerConfigurationVolumesMap volumes = configuration.getVolumes();
-	
-	// add volume
-	volumes.put(volume, dockerModelObjectFactory.createContainerConfigurationVolumeNullValue());
-    }
+		// get volumes map
+		if (configuration.getVolumes() == null)
+			configuration.setVolumes(new ContainerConfigurationVolumesMap());
+		ContainerConfigurationVolumesMap volumes = configuration.getVolumes();
 
-    @Override
-    public void addEnvironmentVariable(String name, String value) {
-	Validate.notNull(name, "name is undefined.");
-	Validate.notEmpty(name, "name is empty.");
-	Validate.notNull(value, "value is undefined.");
-	Validate.notEmpty(value, "value is empty.");
+		// add volume
+		volumes.put(volume, dockerModelObjectFactory.createContainerConfigurationVolumeNullValue());
+	}
 
-	List<String> envs = configuration.getEnv();
-	String env = new StringBuilder().append(name).append("=").append(value).toString();
-	envs.add(env);
-    }
+	@Override
+	public void addEnvironmentVariable(String name, String value) {
+		Validate.notNull(name, "name is undefined.");
+		Validate.notEmpty(name, "name is empty.");
+		Validate.notNull(value, "value is undefined.");
+		Validate.notEmpty(value, "value is empty.");
 
-    @Override
-    public void addLabel(String key, String value) {
-	Validate.notNull(key, "key is undefined.");
-	Validate.notEmpty(key, "key is empty.");
-	Validate.notNull(value, "value is undefined.");
-	Validate.notEmpty(value, "value is empty.");
+		List<String> envs = configuration.getEnv();
+		String env = new StringBuilder().append(name).append("=").append(value).toString();
+		envs.add(env);
+	}
 
-	// get labels map
-	if(configuration.getLabels() == null) configuration.setLabels(new ContainerConfigurationLabelsMap());
-	ContainerConfigurationLabelsMap labels = configuration.getLabels();
-	
-	// add label
-	labels.put(key, value);
-    }
+	@Override
+	public void addLabel(String key, String value) {
+		Validate.notNull(key, "key is undefined.");
+		Validate.notEmpty(key, "key is empty.");
+		Validate.notNull(value, "value is undefined.");
+		Validate.notEmpty(value, "value is empty.");
 
-    @Override
-    public void addTcpPortBinding(int containerPortNumber, int hostPortNumber) {
-	addPortBinding(containerPortNumber, "tcp", hostPortNumber);
-    }
+		// get labels map
+		if (configuration.getLabels() == null)
+			configuration.setLabels(new ContainerConfigurationLabelsMap());
+		ContainerConfigurationLabelsMap labels = configuration.getLabels();
 
-    @Override
-    public void addUdpPortBinding(int containerPortNumber, int hostPortNumber) {
-	addPortBinding(containerPortNumber, "udp", hostPortNumber);
-    }
+		// add label
+		labels.put(key, value);
+	}
 
-    /**
-     * Add port binding.
-     * 
-     * @param containerPortNumber
-     *            container port number.
-     * @param containerPortType
-     *            container port type.
-     * @param hostPortNumber
-     *            host port number.
-     * 
-     * @throws IllegalArgumentException
-     *             if port number is invalid.
-     */
-    void addPortBinding(int containerPortNumber, String containerPortType, int hostPortNumber) {
-	NetworkUtils.validatePort(containerPortNumber);
-	Validate.notNull(containerPortType, "containerPortType is undefined.");
-	Validate.notEmpty(containerPortType, "containerPortType is empty.");
-	NetworkUtils.validatePort(hostPortNumber);
+	@Override
+	public void addTcpPortBinding(int containerPortNumber, int hostPortNumber) {
+		addPortBinding(containerPortNumber, "tcp", hostPortNumber);
+	}
 
-	// get host config
-	if(configuration.getHostConfig() == null ) configuration.setHostConfig(dockerModelObjectFactory.createContainerConfigurationHostConfig());
-	ContainerConfigurationHostConfig hostConfig = configuration.getHostConfig();
+	@Override
+	public void addUdpPortBinding(int containerPortNumber, int hostPortNumber) {
+		addPortBinding(containerPortNumber, "udp", hostPortNumber);
+	}
 
-	// get binding map
-	if(hostConfig.getPortBindings() == null) hostConfig.setPortBindings(new ContainerConfigurationHostConfigPortBindingsMap());		
-	ContainerConfigurationHostConfigPortBindingsMap bindings = hostConfig.getPortBindings();
-	
-	// add binding
-	String portKey = createPortString(containerPortNumber, containerPortType);
-	ContainerConfigurationHostConfigPortBindingValue bindingValue;
-	bindingValue = dockerModelObjectFactory.createContainerConfigurationHostConfigPortBindingValue();
-	ContainerConfigurationHostConfigPortBindingValue[] valueArray = new ContainerConfigurationHostConfigPortBindingValue[] {
-		bindingValue };
-	bindingValue.setHostPort(Integer.toString(hostPortNumber));
-	bindingValue.setHostIp(PORTBINDING_NULL_HOST_IP);
-	bindings.put(portKey, valueArray);
-    }
+	/**
+	 * Add port binding.
+	 * 
+	 * @param containerPortNumber
+	 *            container port number.
+	 * @param containerPortType
+	 *            container port type.
+	 * @param hostPortNumber
+	 *            host port number.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if port number is invalid.
+	 */
+	void addPortBinding(int containerPortNumber, String containerPortType, int hostPortNumber) {
+		NetworkUtils.validatePort(containerPortNumber);
+		Validate.notNull(containerPortType, "containerPortType is undefined.");
+		Validate.notEmpty(containerPortType, "containerPortType is empty.");
+		NetworkUtils.validatePort(hostPortNumber);
 
-    @Override
-    public ContainerConfigurationHostConfig createHostConfiguration() {
-	if(configuration.getHostConfig()== null) 
-	    configuration.setHostConfig(dockerModelObjectFactory.createContainerConfigurationHostConfig());
-	return configuration.getHostConfig();
-    }
-    
-    
+		// get host config
+		if (configuration.getHostConfig() == null)
+			configuration.setHostConfig(dockerModelObjectFactory.createContainerConfigurationHostConfig());
+		ContainerConfigurationHostConfig hostConfig = configuration.getHostConfig();
+
+		// get binding map
+		if (hostConfig.getPortBindings() == null)
+			hostConfig.setPortBindings(new PortMapMap());
+		PortMapMap bindings = hostConfig.getPortBindings();
+
+		// add binding
+		String portKey = createPortString(containerPortNumber, containerPortType);
+		PortBinding bindingValue = dockerModelObjectFactory.createPortBinding();
+		PortBinding[] valueArray = new PortBinding[] { bindingValue };
+		bindingValue.setHostPort(Integer.toString(hostPortNumber));
+		bindingValue.setHostIp(PORTBINDING_NULL_HOST_IP);
+		bindings.put(portKey, valueArray);
+	}
+
+	@Override
+	public ContainerConfigurationHostConfig createHostConfiguration() {
+		if (configuration.getHostConfig() == null)
+			configuration.setHostConfig(dockerModelObjectFactory.createContainerConfigurationHostConfig());
+		return configuration.getHostConfig();
+	}
+
 }

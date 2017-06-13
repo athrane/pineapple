@@ -25,10 +25,9 @@ import java.util.HashMap;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfigPortBindingValue;
+import com.alpha.pineapple.docker.model.rest.PortBinding;
 
 @SuppressWarnings("serial")
-@XmlJavaTypeAdapter(ContainerConfigurationHostConfigPortBindingsMapAdapter.class)
-public class ContainerConfigurationHostConfigPortBindingsMap
-	extends HashMap<String, ContainerConfigurationHostConfigPortBindingValue[]> {
+@XmlJavaTypeAdapter(PortMapMapAdapter.class)
+public class PortMapMap extends HashMap<String, PortBinding[]> {
 }

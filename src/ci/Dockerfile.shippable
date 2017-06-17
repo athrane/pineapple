@@ -22,7 +22,7 @@ RUN yum --assumeyes install unzip && \
 	yum clean all
 
 # Download zip
-curl -L "https://dl.bintray.com/pineapple/maven/com/alpha/pineapple/pineapple-standalone-web-client/1.10.0/pineapple-standalone-web-client-1.10.0.zip" -o pineapple-standalone-web-client-1.10.0.zip
+RUN curl -L "https://dl.bintray.com/pineapple/maven/com/alpha/pineapple/pineapple-standalone-web-client/1.10.0/pineapple-standalone-web-client-1.10.0.zip" -o pineapple-standalone-web-client-1.10.0.zip
 
 # Install Pineapple binary 
 # Create default user, directory and make pineapple executable  

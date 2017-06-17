@@ -34,7 +34,7 @@ import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationVolumesMap;
 import com.alpha.pineapple.docker.model.jaxb.PortMapMap;
 import com.alpha.pineapple.docker.model.jaxb.PortSetMap;
 import com.alpha.pineapple.docker.model.rest.ContainerConfiguration;
-import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfig;
+import com.alpha.pineapple.docker.model.rest.HostConfig;
 import com.alpha.pineapple.docker.model.rest.ObjectFactory;
 import com.alpha.pineapple.docker.model.rest.PortBinding;
 
@@ -211,8 +211,8 @@ public class ContainerInfoImpl implements ContainerInfo {
 
 		// get host config
 		if (configuration.getHostConfig() == null)
-			configuration.setHostConfig(dockerModelObjectFactory.createContainerConfigurationHostConfig());
-		ContainerConfigurationHostConfig hostConfig = configuration.getHostConfig();
+			configuration.setHostConfig(dockerModelObjectFactory.createHostConfig());
+		HostConfig hostConfig = configuration.getHostConfig();
 
 		// get binding map
 		if (hostConfig.getPortBindings() == null)
@@ -229,9 +229,9 @@ public class ContainerInfoImpl implements ContainerInfo {
 	}
 
 	@Override
-	public ContainerConfigurationHostConfig createHostConfiguration() {
+	public HostConfig createHostConfiguration() {
 		if (configuration.getHostConfig() == null)
-			configuration.setHostConfig(dockerModelObjectFactory.createContainerConfigurationHostConfig());
+			configuration.setHostConfig(dockerModelObjectFactory.createHostConfig());
 		return configuration.getHostConfig();
 	}
 

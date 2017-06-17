@@ -157,7 +157,7 @@ Development documentation
 
 	Used by the schema types:
 	
-	*  <<<containerConfigurationHostConfigType>>>.
+	*  <<<hostConfigType>>>.
 
 	* <<<inspectedContainerNetworkSettingsType>>>.
 
@@ -266,7 +266,7 @@ Development documentation
 	
 	[]	
 	
-*** containerConfigurationHostConfigType 
+*** hostConfigType 
 
 	Info about the host configuration of a Docker container.
 	
@@ -387,7 +387,7 @@ Development documentation
 
 *** Port binding
 
-	To support binding of schema element <<<containerConfigurationHostConfigType.portBindings>>> to a map, 
+	To support binding of schema element <<<hostConfigType.portBindings>>> to a map, 
 	the binding is customised to bind to the custom map <<<PortMapMap>>> 
 	using the custom JABX adaptor <<<PortMapMapAdapter>>>.
 	
@@ -589,13 +589,13 @@ Development documentation
 		* If the target object attribute is <<<CreatedContainer.id>>> then the received JSON property <<<Id>>> is
 		mapped to to the target attribute <<<id>>>.
 
-		* If the target object attribute is <<<ContainerConfigurationHostConfig.utsMode>>> then the received JSON 
+		* If the target object attribute is <<<HostConfig.utsMode>>> then the received JSON 
 		property <<<UTSMode>>> is mapped to to the target attribute <<<utsMode>>>.
 
-		* If the target object attribute is <<<ContainerConfigurationHostConfig.ioMaximumBandwidth>>> then the received JSON 
+		* If the target object attribute is <<<HostConfig.ioMaximumBandwidth>>> then the received JSON 
 		property <<<IOMaximumBandwidth>>> is mapped to to the target attribute <<<ioMaximumBandwidth>>>.
 		
-		* If the target object attribute is <<<ContainerConfigurationHostConfig.ioMaximumIOps>>> then the received JSON 
+		* If the target object attribute is <<<HostConfig.ioMaximumIOps>>> then the received JSON 
 		property <<<IOMaximumIOps>>> is mapped to to the target attribute <<<ioMaximumIOps>>>.
 
 		* If the target object attribute is <<<InspectedContainerNetworkSettings.ipAddress>>> then the received JSON 

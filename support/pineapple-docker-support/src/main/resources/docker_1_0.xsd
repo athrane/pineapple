@@ -349,7 +349,7 @@
 			<xs:element name="env" type="stringList" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="exposedPorts" type="portSetType" minOccurs="0" maxOccurs="1" />		
 			<xs:element name="healthcheck" type="HealthConfigType" minOccurs="0" maxOccurs="1" />				
-			<xs:element name="hostConfig" type="containerConfigurationHostConfigType" minOccurs="0" maxOccurs="1" />			
+			<xs:element name="hostConfig" type="hostConfigType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="onBuild" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="shell" type="stringList" minOccurs="0" maxOccurs="1" />
@@ -452,7 +452,7 @@
 		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/host_config.go
 		
 	 -->
-	<xs:complexType name="containerConfigurationHostConfigType" >
+	<xs:complexType name="hostConfigType" >
 		<xs:annotation>
 			<xs:documentation>Info about host configuration in a container configuration.</xs:documentation>
 		</xs:annotation>
@@ -570,7 +570,7 @@
 			<xs:documentation>Info about a listed Docker container (Output from listing containers).</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="hostConfig" type="containerConfigurationHostConfigType" minOccurs="0" maxOccurs="1" />							
+			<xs:element name="hostConfig" type="hostConfigType" minOccurs="0" maxOccurs="1" />							
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="names" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" />			
@@ -611,7 +611,7 @@
 			<xs:element name="config" type="containerConfigurationType" minOccurs="0" maxOccurs="1" />  
 			<xs:element name="execIDs" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="graphDriver" type="graphDriverType" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="hostConfig" type="containerConfigurationHostConfigType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="hostConfig" type="hostConfigType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="mounts" type="mountType" minOccurs="0" maxOccurs="unbounded" />											
 			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" /> 
 			<xs:element name="state" type="inspectedContainerStateType" minOccurs="0" maxOccurs="1" />

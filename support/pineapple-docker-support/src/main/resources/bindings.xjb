@@ -192,8 +192,8 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationHostConfigType']" >
-			<jaxb:class name="ContainerConfigurationHostConfig" />				
+		<jaxb:bindings node="//xs:complexType[@name='hostConfigType']" >
+			<jaxb:class name="HostConfig" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 
@@ -308,7 +308,7 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationHostConfigType']//xs:element[@name='portBindings']">
+		<jaxb:bindings node="//xs:complexType[@name='hostConfigType']//xs:element[@name='portBindings']">
 			<jaxb:property>
 				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.PortMapMap" />
 			</jaxb:property>

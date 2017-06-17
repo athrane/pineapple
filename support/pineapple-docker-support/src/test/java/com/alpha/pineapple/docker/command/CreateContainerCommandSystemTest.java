@@ -58,7 +58,7 @@ import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationVolumesMap;
 import com.alpha.pineapple.docker.model.jaxb.PortMapMap;
 import com.alpha.pineapple.docker.model.jaxb.PortSetMap;
 import com.alpha.pineapple.docker.model.rest.ContainerConfiguration;
-import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfig;
+import com.alpha.pineapple.docker.model.rest.HostConfig;
 import com.alpha.pineapple.docker.model.rest.ContainerJson;
 import com.alpha.pineapple.docker.model.rest.ObjectFactory;
 import com.alpha.pineapple.docker.model.rest.PortBinding;
@@ -1289,8 +1289,8 @@ public class CreateContainerCommandSystemTest {
 		ContainerInfo containerInfo = dockerInfoBuilder.buildContainerInfo(randomId, imageInfo);
 		ContainerConfiguration config = containerInfo.getContainerConfiguration();
 		if (config.getHostConfig() == null)
-			config.setHostConfig(dockerModelObjectFactory.createContainerConfigurationHostConfig());
-		ContainerConfigurationHostConfig hostConfig = config.getHostConfig();
+			config.setHostConfig(dockerModelObjectFactory.createHostConfig());
+		HostConfig hostConfig = config.getHostConfig();
 		List<String> linkList = hostConfig.getLinks();
 		linkList.add(randomValue + ":" + randomValue2);
 
@@ -1316,7 +1316,7 @@ public class CreateContainerCommandSystemTest {
 		assertNotNull(inspectedContainer);
 		ContainerConfiguration containerConfig = inspectedContainer.getConfig();
 		assertNotNull(containerConfig);
-		ContainerConfigurationHostConfig inspectedHostConfig = inspectedContainer.getHostConfig();
+		HostConfig inspectedHostConfig = inspectedContainer.getHostConfig();
 		List<String> inspectedLinks = inspectedHostConfig.getLinks();
 		assertNotNull(inspectedLinks);
 		assertEquals(1, inspectedLinks.size());
@@ -1338,8 +1338,8 @@ public class CreateContainerCommandSystemTest {
 		ContainerInfo containerInfo = dockerInfoBuilder.buildContainerInfo(randomId, imageInfo);
 		ContainerConfiguration config = containerInfo.getContainerConfiguration();
 		if (config.getHostConfig() == null)
-			config.setHostConfig(dockerModelObjectFactory.createContainerConfigurationHostConfig());
-		ContainerConfigurationHostConfig hostConfig = config.getHostConfig();
+			config.setHostConfig(dockerModelObjectFactory.createHostConfig());
+		HostConfig hostConfig = config.getHostConfig();
 		List<String> linkList = hostConfig.getLinks();
 		linkList.add(randomValue + ":" + randomValue2);
 		linkList.add(randomValue3 + ":" + randomValue4);
@@ -1366,7 +1366,7 @@ public class CreateContainerCommandSystemTest {
 		assertNotNull(inspectedContainer);
 		ContainerConfiguration containerConfig = inspectedContainer.getConfig();
 		assertNotNull(containerConfig);
-		ContainerConfigurationHostConfig inspectedHostConfig = inspectedContainer.getHostConfig();
+		HostConfig inspectedHostConfig = inspectedContainer.getHostConfig();
 		List<String> inspectedLinks = inspectedHostConfig.getLinks();
 		assertNotNull(inspectedLinks);
 		assertEquals(2, inspectedLinks.size());
@@ -1384,8 +1384,8 @@ public class CreateContainerCommandSystemTest {
 		ContainerInfo containerInfo = dockerInfoBuilder.buildContainerInfo(randomId, imageInfo);
 		ContainerConfiguration config = containerInfo.getContainerConfiguration();
 		if (config.getHostConfig() == null)
-			config.setHostConfig(dockerModelObjectFactory.createContainerConfigurationHostConfig());
-		ContainerConfigurationHostConfig hostConfig = config.getHostConfig();
+			config.setHostConfig(dockerModelObjectFactory.createHostConfig());
+		HostConfig hostConfig = config.getHostConfig();
 		List<String> linkList = hostConfig.getLinks();
 		linkList.add("alpha01:httpd1");
 

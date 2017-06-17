@@ -23,7 +23,7 @@
 package com.alpha.pineapple.docker.model;
 
 import com.alpha.pineapple.docker.model.rest.ContainerConfiguration;
-import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfig;
+import com.alpha.pineapple.docker.model.rest.HostConfig;
 import com.alpha.pineapple.docker.model.rest.ContainerConfigurationVolumeNullValue;
 
 /**
@@ -147,6 +147,6 @@ public interface ContainerInfo {
 	 * 
 	 * @return container host configuration object.
 	 */
-	public ContainerConfigurationHostConfig createHostConfiguration();
+	public HostConfig createHostConfiguration();
 
 }

@@ -24,7 +24,7 @@ package com.alpha.pineapple.docker.utils;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfig;
+import com.alpha.pineapple.docker.model.rest.HostConfig;
 import com.alpha.pineapple.docker.model.rest.CreatedContainer;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettings;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettingsNetworkValue;
@@ -95,35 +95,35 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 				return "Id";
 		}
 
-		// handle case for ContainerConfigurationHostConfig properties
+		// handle case for HostConfig properties
 		// example: map received JSON property "UTSMode" to
-		// ContainerConfigurationHostConfig.utsMode as defined in the Docker
+		// HostConfig.utsMode as defined in the Docker
 		// schema
-		if (methodName.equals(ContainerConfigurationHostConfig.class.getName())) {
+		if (methodName.equals(HostConfig.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("utsMode"))
 				return "UTSMode";
 		}
 
-		// handle case for ContainerConfigurationHostConfig properties
+		// handle case for HostConfig properties
 		// example: map received JSON property "IOMaximumIOps" to
-		// ContainerConfigurationHostConfig.ioMaximumIOps as defined in the
+		// HostConfig.ioMaximumIOps as defined in the
 		// Docker
 		// schema
-		if (methodName.equals(ContainerConfigurationHostConfig.class.getName())) {
+		if (methodName.equals(HostConfig.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("ioMaximumIOps"))
 				return "IOMaximumIOps";
 		}
 
-		// handle case for ContainerConfigurationHostConfig properties
+		// handle case for HostConfig properties
 		// example: map received JSON property "IOMaximumBandwidth" to
-		// ContainerConfigurationHostConfig.ioMaximumBandwidth as defined in the
+		// HostConfig.ioMaximumBandwidth as defined in the
 		// Docker
 		// schema
-		if (methodName.equals(ContainerConfigurationHostConfig.class.getName())) {
+		if (methodName.equals(HostConfig.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("ioMaximumBandwidth"))

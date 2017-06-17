@@ -52,8 +52,8 @@ import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationLabelsMap;
 import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationVolumesMap;
 import com.alpha.pineapple.docker.model.jaxb.PortMapMap;
 import com.alpha.pineapple.docker.model.jaxb.PortSetMap;
-import com.alpha.pineapple.docker.model.rest.ContainerConfigurationHostConfig;
 import com.alpha.pineapple.docker.model.rest.ContainerConfigurationVolumeNullValue;
+import com.alpha.pineapple.docker.model.rest.HostConfig;
 import com.alpha.testutils.ObjectMotherContent;
 
 /**
@@ -191,7 +191,7 @@ public class MapperImplIntegrationTest {
 		assertEquals("", containerConfig.getWorkingDir());
 
 		// test default host-config properties
-		ContainerConfigurationHostConfig hostConfig = containerConfig.getHostConfig();
+		HostConfig hostConfig = containerConfig.getHostConfig();
 		assertNotNull(hostConfig);
 		assertEquals(Long.valueOf(0), hostConfig.getCpuShares());
 		assertEquals(Long.valueOf(0), hostConfig.getCpuPeriod());
@@ -263,7 +263,7 @@ public class MapperImplIntegrationTest {
 		com.alpha.pineapple.plugin.docker.model.ContainerConfigurationHostConfig srcHostConfig;
 		srcHostConfig = srcContainerConfig.getHostConfig();
 		assertNotNull(srcHostConfig);
-		ContainerConfigurationHostConfig targetHostConfig = targetContainerConfig.getHostConfig();
+		HostConfig targetHostConfig = targetContainerConfig.getHostConfig();
 		assertNotNull(targetHostConfig);
 
 		assertEquals(srcHostConfig.getCpuShares(), targetHostConfig.getCpuShares());
@@ -1310,7 +1310,7 @@ public class MapperImplIntegrationTest {
 		assertNotNull(containerConfig);
 
 		// test
-		ContainerConfigurationHostConfig hostConfig = containerConfig.getHostConfig();
+		HostConfig hostConfig = containerConfig.getHostConfig();
 		assertNotNull(hostConfig);
 		PortMapMap bindings = hostConfig.getPortBindings();
 		assertEquals(1, bindings.size());
@@ -1345,7 +1345,7 @@ public class MapperImplIntegrationTest {
 		assertNotNull(containerConfig);
 
 		// test
-		ContainerConfigurationHostConfig hostConfig = containerConfig.getHostConfig();
+		HostConfig hostConfig = containerConfig.getHostConfig();
 		assertNotNull(hostConfig);
 		PortMapMap bindings = hostConfig.getPortBindings();
 		assertEquals(2, bindings.size());
@@ -1381,7 +1381,7 @@ public class MapperImplIntegrationTest {
 		assertNotNull(containerConfig);
 
 		// test
-		ContainerConfigurationHostConfig hostConfig = containerConfig.getHostConfig();
+		HostConfig hostConfig = containerConfig.getHostConfig();
 		assertNotNull(hostConfig);
 		PortMapMap bindings = hostConfig.getPortBindings();
 		assertEquals(1, bindings.size());

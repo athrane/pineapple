@@ -30,7 +30,7 @@ build:
   - ls -al
   - pwd
   - docker build --no-cache -t pineapple/pineapple:1.10.0 .
-  - docker push pineapple/pineapple:1.10.0 $SHIPPABLE_BUILD_DIR
+  - docker push pineapple/pineapple:1.10.0
   
 integrations:
   hub:

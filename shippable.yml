@@ -26,8 +26,9 @@ build:
   - mvn --quiet deploy 
   
   post_ci:
-  - docker build --build-arg SHIPPABLE_BUILD_DIR=$SHIPPABLE_BUILD_DIR -t pineapple/pineapple:1.10.0 $SHIPPABLE_BUILD_DIR
-  - docker push pineapple/pineapple:1.10.0 $SHIPPABLE_BUILD_DIR/dockersrc
+  - cp $SHIPPABLE_BUILD_DIR/src/ci/Dockerfile.shippable $SHIPPABLE_BUILD_DIR/Dockerfile
+  - docker build  --build-arg SHIPPABLE_BUILD_DIR=$SHIPPABLE_BUILD_DIR -t pineapple/pineapple:1.10.0 $SHIPPABLE_BUILD_DIR
+  - docker push pineapple/pineapple:1.10.0 $SHIPPABLE_BUILD_DIR
   
 integrations:
   hub:

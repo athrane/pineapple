@@ -7,8 +7,8 @@ FROM pineapple/centos-openjdk-java:8
 MAINTAINER Allan Thrane Andersen <einheriii@gmail.com>
 
 # Define variable
-ENV PINEAPPLE_ARCHIVE pineapple-standalone-web-client-1.10.0.zip \
-	PINEAPPLE_INSTALL_DIR /opt \
+ENV PINEAPPLE_ARCHIVE pineapple-standalone-web-client-1.10.0.zip 
+ENV	PINEAPPLE_INSTALL_DIR /opt \
 	PINEAPPLE_HOME_DIR /var/pineapple \
 	PINEAPPLE_DIR $PINEAPPLE_INSTALL_DIR/pineapple-standalone-web-client-1.10.0 \
 	PINEAPPLE_USER pineapple \
@@ -20,6 +20,9 @@ ENV PINEAPPLE_ARCHIVE pineapple-standalone-web-client-1.10.0.zip \
 # Install unzip
 RUN yum --assumeyes install unzip && \
 	yum clean all
+
+# Download zip
+curl -L "https://dl.bintray.com/pineapple/maven/com/alpha/pineapple/pineapple-standalone-web-client/1.10.0/pineapple-standalone-web-client-1.10.0.zip" -o pineapple-standalone-web-client-1.10.0.zip
 
 # Install Pineapple binary 
 # Create default user, directory and make pineapple executable  

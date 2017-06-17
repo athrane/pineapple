@@ -27,7 +27,7 @@ build:
   
   post_ci:
   - mkdir -p $SHIPPABLE_BUILD_DIR/dockersrc    
-  - cp $SHIPPABLE_BUILD_DIR/src/ci/Dockerfile.shippable $SHIPPABLE_BUILD_DIR/dockersrc
+  - cp $SHIPPABLE_BUILD_DIR/src/ci/Dockerfile.shippable $SHIPPABLE_BUILD_DIR/dockersrc/Dockerfile
   - cp /root/src/github.com/athrane/pineapple/applications/pineapple-web-application/pineapple-standalone-web-client/target/pineapple-standalone-web-client-*.zip $SHIPPABLE_BUILD_DIR/dockersrc  
   - ls -la $SHIPPABLE_BUILD_DIR/dockersrc
   - shippable_replace Dockerfile  

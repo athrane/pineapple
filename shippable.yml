@@ -31,7 +31,7 @@ build:
   - cp /root/src/github.com/athrane/pineapple/applications/pineapple-web-application/pineapple-standalone-web-client/target/pineapple-standalone-web-client-*.zip $SHIPPABLE_BUILD_DIR/dockersrc  
   - docker build -t pineapple/pineapple:1.10.0 $SHIPPABLE_BUILD_DIR/dockersrc
   - docker push pineapple/pineapple:1.10.0
-  - docker push pineapple/pineapple:latest
+  - docker push pineapple/pineapple
     
 integrations:
   hub:

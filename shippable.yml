@@ -12,21 +12,17 @@ before_install:
 
 build:
   ci:
+  - echo "Commit: $COMMIT"    
+  - echo "Build: $BUILD_NUMBER"    
+
   - mkdir -p ~/.m2  
   - shippable_retry curl -O -L https://dl.bintray.com/pineapple/generic/pineapple-3rdparty-maven-dependencies-1.10.0.tar
   - tar xfv pineapple-3rdparty-maven-dependencies-1.10.0.tar
   - mv -f repository ~/.m2/
   - shippable_retry mvn --quiet install
-
-  on_success:
-  - echo "<settings><servers><server><id>bintray-pineapple-maven</id>
-               <username>einheriii</username>
-               <password>${BINTRAY_PASSWORD}</password>
-           </server></servers></settings>" > ~/.m2/settings.xml     
-  - mvn deploy 
   
   post_ci:
-  - PINEAPPLE_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+  - PINEAPPLE_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec).B$BUILD_NUMBER
   - echo $PINEAPPLE_VERSION  
   
   - mkdir -p $SHIPPABLE_BUILD_DIR/dockersrc    
@@ -34,6 +30,14 @@ build:
   - cp /root/src/github.com/athrane/pineapple/applications/pineapple-web-application/pineapple-standalone-web-client/target/pineapple-standalone-web-client-*.zip $SHIPPABLE_BUILD_DIR/dockersrc  
   - docker build --build-arg PINEAPPLE_VERSION=$PINEAPPLE_VERSION -t pineapple/pineapple:$PINEAPPLE_VERSION $SHIPPABLE_BUILD_DIR/dockersrc
   - docker push pineapple/pineapple:$PINEAPPLE_VERSION
+  - docker push pineapple/pineapple
+
+  on_success:
+  - echo "<settings><servers><server><id>bintray-pineapple-maven</id>
+               <username>einheriii</username>
+               <password>${BINTRAY_PASSWORD}</password>
+           </server></servers></settings>" > ~/.m2/settings.xml     
+  - mvn --quiet deploy 
     
 integrations:
   hub:

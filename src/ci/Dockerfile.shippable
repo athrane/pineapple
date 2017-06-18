@@ -6,11 +6,10 @@ FROM pineapple/centos-openjdk-java:8
 # ----------
 MAINTAINER Allan Thrane Andersen <einheriii@gmail.com>
 
-# Define variables
-
+# Define argument
 ARG PINEAPPLE_VERSION
-RUN echo $PINEAPPLE_VERSION
 
+# Define variables
 ENV PINEAPPLE_ARCHIVE=pineapple-standalone-web-client-$PINEAPPLE_VERSION.zip \
 	PINEAPPLE_INSTALL_DIR=/opt \
 	PINEAPPLE_HOME_DIR=/var/pineapple 

@@ -12,12 +12,10 @@ before_install:
 
 build:
   ci:
-  - PINEAPPLE_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
-  - echo $PINEAPPLE_VERSION  
-
   - mkdir -p ~/.m2  
   - shippable_retry curl -O -L https://dl.bintray.com/pineapple/generic/pineapple-3rdparty-maven-dependencies-1.10.0.tar
-  - tar xfv pineapple-3rdparty-maven-dependencies-1.10.0.tar ~/.m2/
+  - tar xfv pineapple-3rdparty-maven-dependencies-1.10.0.tar
+  - mv -f repository 
   - shippable_retry mvn --quiet install
 
   on_success:
@@ -28,6 +26,9 @@ build:
   - mvn deploy 
   
   post_ci:
+  - PINEAPPLE_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+  - echo $PINEAPPLE_VERSION  
+  
   - mkdir -p $SHIPPABLE_BUILD_DIR/dockersrc    
   - cp $SHIPPABLE_BUILD_DIR/src/ci/Dockerfile.shippable $SHIPPABLE_BUILD_DIR/dockersrc/Dockerfile
   - cp /root/src/github.com/athrane/pineapple/applications/pineapple-web-application/pineapple-standalone-web-client/target/pineapple-standalone-web-client-*.zip $SHIPPABLE_BUILD_DIR/dockersrc  

@@ -6,15 +6,16 @@ FROM pineapple/centos-openjdk-java:8
 # ----------
 MAINTAINER Allan Thrane Andersen <einheriii@gmail.com>
 
-# Define variable
-ENV PINEAPPLE_ARCHIVE pineapple-standalone-web-client-1.10.0.zip \
-	PINEAPPLE_INSTALL_DIR /opt \
-	PINEAPPLE_HOME_DIR /var/pineapple \
-ENV	PINEAPPLE_DIR $PINEAPPLE_INSTALL_DIR/pineapple-standalone-web-client-1.10.0 
-ENV	PINEAPPLE_USER pineapple 
-ENV	PINEAPPLE_GROUP pineapple 
-ENV PINEAPPLE_HTTP_HOST 0.0.0.0
-ENV PINEAPPLE_HTTP_PORT 8080
+# Define variables
+ENV PINEAPPLE_ARCHIVE=pineapple-standalone-web-client-1.10.0.zip \
+	PINEAPPLE_INSTALL_DIR=/opt \
+	PINEAPPLE_HOME_DIR=/var/pineapple \
+	
+ENV	PINEAPPLE_DIR=$PINEAPPLE_INSTALL_DIR/pineapple-standalone-web-client-1.10.0 \
+	PINEAPPLE_USER=pineapple \
+	PINEAPPLE_GROUP=pineapple 
+	PINEAPPLE_HTTP_HOST=0.0.0.0
+	PINEAPPLE_HTTP_PORT=8080
 
 # Add binary
 ADD pineapple-standalone-web-client-1.10.0.zip /tmp/

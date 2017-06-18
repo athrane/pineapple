@@ -18,7 +18,7 @@ ENV	PINEAPPLE_DIR=$PINEAPPLE_INSTALL_DIR/pineapple-standalone-web-client-1.10.0 
 	PINEAPPLE_HTTP_PORT=8080
 
 # Add binary
-ADD pineapple-standalone-web-client-1.10.0.zip /tmp/
+ADD $PINEAPPLE_ARCHIVE /tmp/
 
 # Install unzip
 RUN yum --assumeyes install unzip && \

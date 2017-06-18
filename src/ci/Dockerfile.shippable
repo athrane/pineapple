@@ -23,20 +23,20 @@ ADD pineapple-standalone-web-client-1.10.0.zip /tmp/
 RUN yum --assumeyes install unzip && \
 	yum clean all
 
-# Install Pineapple binary 
+# Unzip Pineapple binary 
 # Create default user, directory and make pineapple executable  
 RUN chmod 777 /tmp/$PINEAPPLE_ARCHIVE && \
 	unzip /tmp/$PINEAPPLE_ARCHIVE -d $PINEAPPLE_INSTALL_DIR && \
-	rm -rf /tmp/$PINEAPPLE_ARCHIVE 
-RUN	chmod +x $PINEAPPLE_DIR/bin/setup.sh 
-RUN	$PINEAPPLE_DIR/bin/setup.sh $PINEAPPLE_DIR $PINEAPPLE_USER $PINEAPPLE_GROUP
+	rm -rf /tmp/$PINEAPPLE_ARCHIVE && \
+	chmod +x $PINEAPPLE_DIR/bin/setup.sh && \
+	$PINEAPPLE_DIR/bin/setup.sh $PINEAPPLE_DIR $PINEAPPLE_USER $PINEAPPLE_GROUP
 
 # Temporary solution to make logging work
 RUN mkdir -p /var/pineapple/logs && \
 	chown -R $PINEAPPLE_USER:$PINEAPPLE_GROUP /var/pineapple && \
 	chmod -R 775 /var/pineapple
 
-# Make pineapple executable
+# Set workdir
 WORKDIR $PINEAPPLE_DIR
 
 # Expose port to host

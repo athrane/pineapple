@@ -32,6 +32,7 @@ build:
   - docker build --build-arg PINEAPPLE_VERSION=$PINEAPPLE_VERSION -t pineapple/pineapple:$DOCKER_VERSION $SHIPPABLE_BUILD_DIR/dockersrc
   - docker tag pineapple/pineapple:$DOCKER_VERSION pineapple/pineapple:latest
   - docker push pineapple/pineapple:$DOCKER_VERSION
+  - docker push pineapple/pineapple:latest
  
   on_success:
   - echo "<settings><servers><server><id>bintray-pineapple-maven</id>

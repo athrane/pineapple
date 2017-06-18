@@ -460,11 +460,14 @@
 		The type for "cgroup" is defined as string in 		
 		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go		
 		
-		The type for "usernsMode" is defined as string in 		
-		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/host_config.go
+		The type for "network" is defined as string in 		
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
 		
 		The type for "Isolation" is defined as string in 		
-		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/host_config.go
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
+
+		The type for "usernsMode" is defined as string in 		
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
 		
 	 -->
 	<xs:complexType name="hostConfigType" >
@@ -517,7 +520,7 @@
 		<xs:attribute name="isolation" type="xs:string" use="optional"/> <!-- approximation of the Isolation which is implemented as a string -->			
 		<xs:attribute name="kernelMemory" type="xs:long" use="optional"/> <!-- approximation of the KernelMemory which is implemented as a int64 -->			
 		<xs:attribute name="nanoCpus" type="xs:long" use="optional"/> <!-- approximation of the NanoCPUs which is implemented as a int64 -->				
-		<xs:attribute name="networkMode" type="xs:string" use="optional"/> <!-- wrong type -->				
+		<xs:attribute name="networkMode" type="xs:string" use="optional"/> <!-- approximation of the NetworkMode which is implemented as a string -->				
 		<xs:attribute name="memory" type="xs:long" use="optional"/>	<!-- approximation of the Memory which is implemented as a int64 -->	
 		<xs:attribute name="memoryReservation" type="xs:long" use="optional"/>  <!-- approximation of the MemoryReservation which is implemented as a int64 -->	
 		<xs:attribute name="memorySwap" type="xs:long" use="optional"/>		

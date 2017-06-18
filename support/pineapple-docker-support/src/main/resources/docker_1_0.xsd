@@ -518,6 +518,7 @@ https://github.com/moby/moby/blob/master/api/types/mount/mount.go
 		<xs:attribute name="cpusetMems" type="xs:string" use="optional"/>										
 		<xs:attribute name="diskQuota" type="xs:long" use="optional"/> <!-- approximation of the DiskQuota which is implemented as a int64 -->		
 		<xs:attribute name="lxcConf" type="xs:string" use="optional"/> <!-- wrong type -->
+		<xs:attribute name="init" type="xs:boolean" use="optional"/>				
 		<xs:attribute name="ioMaximumBandwidth" type="xs:long" use="optional"/> <!-- approximation of the IOMaximumBandwidth which is implemented as a int64 -->			
 		<xs:attribute name="ioMaximumIOps" type="xs:long" use="optional"/> <!-- approximation of the IOMaximumIOps which is implemented as a int64 -->			
 		<xs:attribute name="ipcMode" type="xs:string" use="optional"/> <!-- approximation of the IPCMode which is implemented as a string -->						

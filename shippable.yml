@@ -29,7 +29,7 @@ build:
   - mkdir -p $SHIPPABLE_BUILD_DIR/dockersrc    
   - cp $SHIPPABLE_BUILD_DIR/src/ci/Dockerfile.shippable $SHIPPABLE_BUILD_DIR/dockersrc/Dockerfile
   - cp /root/src/github.com/athrane/pineapple/applications/pineapple-web-application/pineapple-standalone-web-client/target/pineapple-standalone-web-client-*.zip $SHIPPABLE_BUILD_DIR/dockersrc  
-  - docker build --build-arg PINEAPPLE_VERSION=$PINEAPPLE_VERSION -t pineapple/pineapple:$PINEAPPLE_VERSION $SHIPPABLE_BUILD_DIR/dockersrc
+  - docker build --build-arg PINEAPPLE_VERSION=$PINEAPPLE_VERSION -t pineapple/pineapple:$DOCKER_VERSION $SHIPPABLE_BUILD_DIR/dockersrc
   - docker push pineapple/pineapple:$DOCKER_VERSION
   - docker push pineapple/pineapple
 

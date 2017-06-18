@@ -186,6 +186,15 @@ Development documentation
 
 	Defined Docker type: {{{https://github.com/docker/go-connections/blob/master/nat/nat.go}PortBinding}}
 
+*** deviceMappingType
+
+	DeviceMapping represents the device mapping between the host and the container.
+
+	Used by the schema type <<<hostConfigType>>>.
+
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/container/host_config.go}DeviceMapping}}
+
+
 ** Schema types for images
 
 *** listedImageType

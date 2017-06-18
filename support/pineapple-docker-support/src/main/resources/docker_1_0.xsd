@@ -97,7 +97,7 @@
 
 	<!-- 
 		Corresponds to WeightDevice    
-		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/blkiodev/blkio.go
+		https://github.com/moby/moby/blob/master/api/types/blkiodev/blkio.go
 	 -->
 	<xs:complexType name="weightDeviceType" >
 		<xs:annotation>
@@ -251,6 +251,19 @@
 			<xs:element name="hostIp" type="xs:string" /> 
 			<xs:element name="hostPort" type="xs:string" />
 		</xs:sequence>
+	</xs:complexType>
+
+	<!-- 
+		Corresponds to DeviceMapping   
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
+	-->
+	<xs:complexType name="deviceMappingType" >
+		<xs:annotation>
+			<xs:documentation>DeviceMapping represents the device mapping between the host and the container.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="pathInContainer" type="xs:string" use="optional"/>		
+		<xs:attribute name="pathOnHost" type="xs:string" use="optional"/>		
+		<xs:attribute name="cgroupPermissions" type="xs:string" use="optional"/>		
 	</xs:complexType>
 
 	<!-- Image definitions -->
@@ -422,7 +435,7 @@
 
 	<!-- 
 		Corresponds to HealthConfig   
-		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/config.go#L11
+		https://github.com/moby/moby/blob/master/api/types/container/config.go
 	-->
 	<xs:complexType name="HealthConfigType" >
 		<xs:annotation>
@@ -442,6 +455,8 @@
 
 		Please notice:
 		
+		THe Hostconfig references the Resources type which is embedded in this schema type.
+		
 		The type for "cgroup" is defined as string in 		
 		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go		
 		
@@ -458,26 +473,28 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="binds" type="stringList" minOccurs="0" maxOccurs="1" /> 			
+			<xs:element name="blkioWeightDevice" type="weightDevicesType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="blkioDeviceReadBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="blkioDeviceWriteBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="blkioDeviceReadIOps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="blkioDeviceWriteIOps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="consoleSize" type="intList" minOccurs="0" maxOccurs="1" /> 			
+			<xs:element name="devices" type="deviceMappingType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="deviceCgroupRules" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="dns" type="stringList" minOccurs="0" maxOccurs="1" /> 
 			<xs:element name="dnsOptions" type="stringList" minOccurs="0" maxOccurs="1" /> 						
 			<xs:element name="dnsSearch" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="extraHosts" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="groupAdd" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="links" type="stringList" minOccurs="0" maxOccurs="1" />				
-			<xs:element name="restartPolicy" type="containerConfigurationHostConfigRestartPolicyType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="logConfig" type="containerConfigurationHostConfigLogConfigType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="portBindings" type="portMapType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="blkioWeightDevice" type="weightDevicesType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="blkioDeviceReadBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="blkioDeviceWriteBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="blkioDeviceReadIOps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="blkioDeviceWriteIOps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="restartPolicy" type="containerConfigurationHostConfigRestartPolicyType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="securityOpt" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="volumesFrom" type="stringList" minOccurs="0" maxOccurs="1" />				
  		</xs:sequence>
 		<xs:attribute name="autoRemove" type="xs:boolean" use="optional"/>		 		 		 		
-		<xs:attribute name="blkioWeight" type="xs:long" use="optional"/> <!-- Not implemented yet-->		
+		<xs:attribute name="blkioWeight" type="xs:long" use="optional"/> <!-- approximation of the Bl kioWeight which is implemented as a uint16 -->		
 		<xs:attribute name="capAdd" type="xs:string" use="optional"/> <!-- wrong type -->		
 		<xs:attribute name="capDrop" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="cgroup" type="xs:string" use="optional"/> <!-- approximation of the CgroupSpec which is implemented as a string -->					
@@ -485,14 +502,13 @@
 		<xs:attribute name="containerIDFile" type="xs:string" use="optional"/> <!-- Not implemented yet-->		 				
 		<xs:attribute name="cpuCount" type="xs:long" use="optional"/>  <!-- approximation of the CpuCount which is implemented as a int64 -->				
 		<xs:attribute name="cpuPercent" type="xs:long" use="optional"/>	<!-- approximation of the CpuPercent which is implemented as a int64 -->			
-		<xs:attribute name="cpuPeriod" type="xs:long" use="optional"/>				
-		<xs:attribute name="cpuQuota" type="xs:long" use="optional"/> <!-- Not implemented yet-->		
-		<xs:attribute name="cpuShares" type="xs:long" use="optional"/>				
+		<xs:attribute name="cpuPeriod" type="xs:long" use="optional"/> <!-- approximation of the CPUPeriod which is implemented as a int64 -->				
+		<xs:attribute name="cpuQuota" type="xs:long" use="optional"/> <!-- approximation of the CPUPeriod which is implemented as a int64 -->		
+		<xs:attribute name="cpuShares" type="xs:long" use="optional"/> <!-- approximation of the CPUQuota which is implemented as a int64 -->				
 		<xs:attribute name="cpuRealtimePeriod" type="xs:long" use="optional"/> <!-- approximation of the CpuRealtimePeriod which is implemented as a int64 -->				
 		<xs:attribute name="cpuRealtimeRuntime" type="xs:long" use="optional"/> <!-- approximation of the CpuRealtimeRuntime which is implemented as a int64 -->				
 		<xs:attribute name="cpusetCpus" type="xs:string" use="optional"/>				
 		<xs:attribute name="cpusetMems" type="xs:string" use="optional"/>										
-		<xs:attribute name="devices" type="xs:string" use="optional"/> <!-- wrong type -->		
 		<xs:attribute name="diskQuota" type="xs:long" use="optional"/> <!-- approximation of the DiskQuota which is implemented as a int64 -->		
 		<xs:attribute name="lxcConf" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="ioMaximumBandwidth" type="xs:long" use="optional"/> <!-- approximation of the IOMaximumBandwidth which is implemented as a int64 -->			
@@ -502,13 +518,13 @@
 		<xs:attribute name="kernelMemory" type="xs:long" use="optional"/> <!-- approximation of the KernelMemory which is implemented as a int64 -->			
 		<xs:attribute name="nanoCpus" type="xs:long" use="optional"/> <!-- approximation of the NanoCPUs which is implemented as a int64 -->				
 		<xs:attribute name="networkMode" type="xs:string" use="optional"/> <!-- wrong type -->				
-		<xs:attribute name="memory" type="xs:long" use="optional"/>		
+		<xs:attribute name="memory" type="xs:long" use="optional"/>	<!-- approximation of the Memory which is implemented as a int64 -->	
 		<xs:attribute name="memoryReservation" type="xs:long" use="optional"/>  <!-- approximation of the MemoryReservation which is implemented as a int64 -->	
 		<xs:attribute name="memorySwap" type="xs:long" use="optional"/>		
 		<xs:attribute name="memorySwappiness" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="oomKillDisable" type="xs:boolean" use="optional"/> <!-- Not implemented yet-->		
 		<xs:attribute name="oomScoreAdj" type="xs:int" use="optional"/> 
-		<xs:attribute name="pidMode" type="xs:string" use="optional"/> <!-- wrong type -->		
+		<xs:attribute name="pidMode" type="xs:string" use="optional"/> <!-- approximation of the Pidmode which is implemented as a string -->			
 		<xs:attribute name="pidsLimit" type="xs:string" use="optional"/> <!-- approximation of the PidsLimit which is implemented as a int64 -->						
 		<xs:attribute name="privileged" type="xs:boolean" use="optional"/>				
 		<xs:attribute name="publishAllPorts" type="xs:boolean" use="optional"/>		

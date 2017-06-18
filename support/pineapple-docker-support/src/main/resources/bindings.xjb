@@ -121,6 +121,12 @@
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='deviceMappingType']" >
+			<jaxb:class name="DeviceMapping" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
 	<!-- Image definitions -->
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >

@@ -30,7 +30,7 @@ ADD pineapple-standalone-web-client-1.10.0.zip /tmp/
 RUN ls -la /tmp
 RUN chmod 777 /tmp/$PINEAPPLE_ARCHIVE
 RUN ls -la /tmp
-RUN unzip ./$PINEAPPLE_ARCHIVE -d $PINEAPPLE_INSTALL_DIR 
+RUN unzip /tmp/$PINEAPPLE_ARCHIVE -d $PINEAPPLE_INSTALL_DIR 
 RUN	rm -rf /tmp/$PINEAPPLE_ARCHIVE && \
 	chmod +x $PINEAPPLE_DIR/bin/setup.sh && \
 	$PINEAPPLE_DIR/bin/setup.sh $PINEAPPLE_DIR $PINEAPPLE_USER $PINEAPPLE_GROUP

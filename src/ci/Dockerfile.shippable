@@ -29,7 +29,7 @@ RUN curl -L https://dl.bintray.com/pineapple/maven/com/alpha/pineapple/pineapple
 RUN ls -la .
 RUN chmod 777 ./$PINEAPPLE_ARCHIVE
 RUN ls -la .
-COPY ./$PINEAPPLE_ARCHIVE /tmp/  
+COPY $PINEAPPLE_ARCHIVE /tmp/  
 RUN unzip /tmp/$PINEAPPLE_ARCHIVE -d $PINEAPPLE_INSTALL_DIR && \
 	rm -rf /tmp/$PINEAPPLE_ARCHIVE && \
 	chmod +x $PINEAPPLE_DIR/bin/setup.sh && \

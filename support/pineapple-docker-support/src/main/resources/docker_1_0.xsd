@@ -133,7 +133,7 @@
 
 	<!-- 
 		Corresponds to Mount   
-		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go		
+https://github.com/moby/moby/blob/master/api/types/mount/mount.go
 
 		Please notice:
 		
@@ -494,6 +494,7 @@
 			<xs:element name="groupAdd" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="links" type="stringList" minOccurs="0" maxOccurs="1" />				
 			<xs:element name="logConfig" type="containerConfigurationHostConfigLogConfigType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="mounts" type="mountType" minOccurs="0" maxOccurs="unbounded" />			
 			<xs:element name="portBindings" type="portMapType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="restartPolicy" type="containerConfigurationHostConfigRestartPolicyType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="securityOpt" type="stringList" minOccurs="0" maxOccurs="1" />	

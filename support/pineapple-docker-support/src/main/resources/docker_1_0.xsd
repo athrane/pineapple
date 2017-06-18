@@ -462,6 +462,9 @@
 		
 		The type for "network" is defined as string in 		
 		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
+
+		The type for "IpcMode" is defined as string in 		
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
 		
 		The type for "Isolation" is defined as string in 		
 		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
@@ -516,7 +519,7 @@
 		<xs:attribute name="lxcConf" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="ioMaximumBandwidth" type="xs:long" use="optional"/> <!-- approximation of the IOMaximumBandwidth which is implemented as a int64 -->			
 		<xs:attribute name="ioMaximumIOps" type="xs:long" use="optional"/> <!-- approximation of the IOMaximumIOps which is implemented as a int64 -->			
-		<xs:attribute name="ipcMode" type="xs:string" use="optional"/> <!-- wrong type -->						
+		<xs:attribute name="ipcMode" type="xs:string" use="optional"/> <!-- approximation of the IPCMode which is implemented as a string -->						
 		<xs:attribute name="isolation" type="xs:string" use="optional"/> <!-- approximation of the Isolation which is implemented as a string -->			
 		<xs:attribute name="kernelMemory" type="xs:long" use="optional"/> <!-- approximation of the KernelMemory which is implemented as a int64 -->			
 		<xs:attribute name="nanoCpus" type="xs:long" use="optional"/> <!-- approximation of the NanoCPUs which is implemented as a int64 -->				

@@ -10,7 +10,7 @@
     <meta name="author" content="Allan Thrane Andersen" />
     <meta name="Date-Revision-yyyymmdd" content="20170621" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>Pineapple process execution support - How-to: Use the process execution session to execute external processes</title>
+    <title>Pineapple SSH plugin - How-to: Clean up a Docker host using SSH</title>
     <link rel="stylesheet" href="../css/apache-maven-fluido-1.3.0.min.css" />
     <link rel="stylesheet" href="../css/site.css" />
     <link rel="stylesheet" href="../css/print.css" media="print" />
@@ -29,7 +29,7 @@
           <div id="banner">
         <div class="pull-left">
                                 <div id="bannerLeft">
-                <h2>Pineapple process execution support</h2>
+                <h2>Pineapple SSH plugin</h2>
                 </div>
                       </div>
         <div class="pull-right">  </div>
@@ -46,16 +46,16 @@
         </li>
       <li class="divider ">/</li>
             <li class="">
-                    <a href="../../" title="Pineapple support projects">
-        Pineapple support projects</a>
+                    <a href="../../" title="Pineapple plugin projects">
+        Pineapple plugin projects</a>
         </li>
       <li class="divider ">/</li>
             <li class="">
-                    <a href="../" title="Pineapple process execution support">
-        Pineapple process execution support</a>
+                    <a href="../" title="Pineapple SSH plugin">
+        Pineapple SSH plugin</a>
         </li>
       <li class="divider ">/</li>
-        <li class="">How-to: Use the process execution session to execute external processes</li>
+        <li class="">How-to: Clean up a Docker host using SSH</li>
         
                 
                     
@@ -264,7 +264,7 @@
     <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
 
     
-    <div class="g-plusone" data-href="https://pineapple.dev.java.net" data-size="tall" ></div>
+    <div class="g-plusone" data-href="https://pineapple.java.net" data-size="tall" ></div>
 
                    <div class="clear"></div>
                             <div class="clear"></div>
@@ -280,127 +280,58 @@
         <div id="bodyColumn"  class="span10" >
                                   
             <!-- NOTE: For help with the syntax of this file, see: --><!-- http://maven.apache.org/guides/mini/guide-apt-format.html --><div class="section">
-<h2>How-to: Use the process execution session to execute external processes<a name="How-to:_Use_the_process_execution_session_to_execute_external_processes"></a></h2>
+<h2>How-to: How-to: Clean up a Docker host using SSH<a name="How-to:_How-to:_Clean_up_a_Docker_host_using_SSH"></a></h2>
 <div class="section">
-<h3>Introduction<a name="Introduction"></a></h3>
-<p>This example illustrates how to setup a project to use the <tt>ProcessExecutionSessionImpl</tt> class in a plugin to execute external OS processes and capture the result in execution result objects.</p>
-<p>To setup a project to use the asserter follow these steps:</p>
-<ul>
-<li>Add Maven dependency to the project.</li>
-<li>Import the spring configuration file </li>
-<li>Subclass <tt>ProcessExecutionSessionImpl</tt> into a plugin specific session class. </li>
-<li>Annotate the plugin specific session class. </li>
-<li>Use the session object in operations. </li></ul></div>
+<h3>Overview<a name="Overview"></a></h3>
+<p>This example illustrates how the SSH plugin can be used to cleanup a Docker host. The example executes various Docker prune commands. </p>
+<p>This example modifies the <a href="./install-docker-latest-centos7-vagrant.html">How-to: Install latest Docker version in a Vagrant box with CentOS 7.0 using SSH</a> example.</p>
 <div class="section">
-<h3>Add Maven dependency to the project<a name="Add_Maven_dependency_to_the_project"></a></h3>
-<p>The <tt>ProcessExecutionSessionImpl</tt> class is defined in the <tt>pineapple-process-execution-support</tt> project, so add a Maven dependency to the project POM:</p>
+<h4>Part of the default configuration<a name="Part_of_the_default_configuration"></a></h4>
+<p>This example named <tt>ssh-014-docker-host-cleanup</tt>, including all configuration files, is included in the <a href="../../../usage/default-configuration.html">default configuration</a> which is created by Pineapple, so there is no need to create it by hand.</p></div>
+<div class="section">
+<h4>The module <a name="The_module"></a></h4>
+<p>A module defines input to Pineapple and consists in its minimal form of a single XML file containing a model:</p><img src="../images/module-directory-layout.jpg" alt="" />
+<p>The directory: <tt>${user.home}/.pineapple/modules/ssh-014-docker-host-cleanup</tt> contains the module. The module in this example have the structure:</p>
 <div class="source">
-<pre>  &lt;dependency&gt;
-    &lt;groupId&gt;com.alpha.pineapple&lt;/groupId&gt;
-    &lt;artifactId&gt;pineapple-process-execution-support&lt;/artifactId&gt;                       
-  &lt;/dependency&gt;                         
-</pre></div></div>
-<div class="section">
-<h3>Import the spring configuration file<a name="Import_the_spring_configuration_file"></a></h3>
-<p>If the project contain a Spring configuration file for definition of the beans used by the project then add an <tt>import</tt> directive to import the Spring configuration file from the process execution project:</p>
-<div class="source">
-<pre>        &lt;!-- Configures pineapple-process-execution-plugin-support --&gt;
-        &lt;import resource=&quot;classpath:com.alpha.pineapple.process.execution-config.xml&quot; /&gt;
+<pre>ssh-014-docker-host-cleanup
+ |
+ +--- models     
+ |     +--- linux-vagrant.xml
 </pre></div>
-<p>Now the session class and other command class is available in the project with the bean id's:</p>
+<div class="section">
+<h5>Module files<a name="Module_files"></a></h5>
+<p>The module consists of the file:</p>
 <ul>
-<li><tt>processExecutionCommand</tt> which is an prototype instance of a process execution command.</li>
-<li><tt>processExecutionSession</tt> which is an prototype instance of a process execution session. </li></ul>
-<p><b>Please notice:</b> that the purpose isn't to get access to the session class through Spring, but to enable the session class to access the process execution command through Spring. </p></div>
+<li><tt>linux-vagrant.xml</tt> is the Pineapple model file for the environment <i>linux-vagrant</i> which installs Docker.</li></ul></div></div>
 <div class="section">
-<h3>Subclass <tt>ProcessExecutionSessionImpl</tt> into a plugin specific session class <a name="Subclass_ProcessExecutionSessionImpl_into_a_plugin_specific_session_class"></a></h3>
-<p>Subclass the <tt>ProcessExecutionSessionImpl</tt> into a plugin specific session class to reuse the functionality of the class. </p>
-<p>Example: in the JRockit installation plugion the <tt>ProcessExecutionSessionImpl</tt> class is subclasses into <tt>JRockitInstallationSessionImpl</tt> </p>
+<h4>The model file<a name="The_model_file"></a></h4>
+<p>The model file named <tt>linux-vagrant.xml</tt> has the content:</p>
 <div class="source">
-<pre>
-package com.alpha.pineapple.plugin.jrockit.installation.session;
-
-import com.alpha.pineapple.plugin.PluginSession;
-import com.alpha.pineapple.session.ProcessExecutionSessionImpl;
-
-/**
- * Subclass of {@link ProcessExecutionSessionImpl} to reuse it.   
- */
-@PluginSession
-public class JRockitInstallationSessionImpl extends ProcessExecutionSessionImpl {
-}
-        
-</pre></div></div>
+<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;mmd:models xmlns:mmd=&quot;http://pineapple.dev.java.net/ns/module_model_1_0&quot;
+        xmlns:shp=&quot;http://pineapple.dev.java.net/ns/plugin/ssh_1_0&quot; &gt;
+   &lt;mmd:model target-resource=&quot;ssh-node1&quot;  target-operation=&quot;deploy-configuration&quot; description=&quot;Docker system prune&quot; &gt;   
+        &lt;mmd:content&gt;
+            &lt;shp:ssh&gt;
+                &lt;shp:execute command=&quot;sudo df -h&quot;/&gt;                         
+                &lt;shp:execute command=&quot;sudo docker system df&quot;/&gt;                  
+                &lt;shp:execute command=&quot;sudo docker system prune -f&quot;/&gt;
+                &lt;shp:execute command=&quot;sudo docker image prune -f&quot;/&gt;
+                &lt;shp:execute command=&quot;sudo docker container prune -f&quot;/&gt;                
+                &lt;shp:execute command=&quot;sudo df -h&quot;/&gt;                         
+                &lt;shp:execute command=&quot;sudo docker system df&quot;/&gt;                  
+                                &lt;/shp:ssh&gt;
+        &lt;/mmd:content&gt;
+    &lt;/mmd:model&gt;
+&lt;/mmd:models&gt;
+</pre></div>
 <div class="section">
-<h3>Annotate the plugin specific session class <a name="Annotate_the_plugin_specific_session_class"></a></h3>
-<p>To enable the usage of the session class at runtime , annotate it with the <tt>@PluginSession</tt> annotation.</p>
-<p>Example: From the JRockit installation plugin: </p>
-<div class="source">
-<pre>
-package com.alpha.pineapple.plugin.jrockit.installation.session;
-
-import com.alpha.pineapple.plugin.PluginSession;
-import com.alpha.pineapple.session.ProcessExecutionSessionImpl;
-
-/**
- * Subclass of {@link ProcessExecutionSessionImpl} to reuse it.   
- */
-@PluginSession
-public class JRockitInstallationSessionImpl extends ProcessExecutionSessionImpl {
-}
-        
-</pre></div></div>
-<div class="section">
-<h3>Use the session object in operations<a name="Use_the_session_object_in_operations"></a></h3>
-<p>The session object will now be initialized by Pineapple when an operation is executed. The session object is available to any operation since it is passed as any argument to operations in the plugin. </p>
-<p>Example: From the JRockit installation plugin: </p>
-<div class="source">
-<pre>
-@PluginOperation( OperationNames.DEPLOY_CONFIGURATION )
-public class DeployConfiguration implements Operation
-{
-
-    public void execute( Object content, Session session, ExecutionResult executionResult ) throws PluginExecutionFailedException
-    {
-        // validate parameters
-        Validate.notNull( content, &quot;content is undefined.&quot; );
-        Validate.notNull( session, &quot;session is undefined.&quot; );
-        Validate.notNull( executionResult, &quot;executionResult is undefined.&quot; );        
-        
-        // throw exception if required type isn't available
-        if ( !( session instanceof ProcessExecutionSession ) )
-        {
-                Object[] args = { ProcessExecutionSession.class };                      
-                String message = messageProvider.getMessage(&quot;dc.session_typecast_failed&quot;, args );
-            throw new PluginExecutionFailedException( message );
-        }
-                
-        try
-        {               
-            // type cast to JRockit installation model object
-                JRockitInstallation model = (JRockitInstallation) content;
-            
-            // type cast to process execution session 
-            ProcessExecutionSession externalProcessSession = (ProcessExecutionSession) session; 
-
-                        //.. more code goes here...
-                        
-                        // execute external process     
-                        session.execute(installer , arguments, DEFAULT_PROCESS_TIMEOUT, description2, result);
-                        
-        }
-        catch ( Exception e )
-        {
-                Object[] args = { e.toString() };                       
-                String message = messageProvider.getMessage(&quot;dc.error&quot;, args );
-            throw new PluginExecutionFailedException( message, e );
-        }                                       
-        
-        }
-
-}
-        
-</pre></div></div></div>
+<h5>The configuration details<a name="The_configuration_details"></a></h5>
+<p>Two schema are used in the model file. The <tt>http://pineapple.dev.java.net/ns/module_model_1_0</tt> is used to define the namespace <tt>mmd</tt> which defines the general infrastructure for models. The <tt>http://pineapple.dev.java.net/ns/plugin/ssh_1_0</tt> schema is used to define the namespace <tt>shp</tt> which is used to define the model for the SSH plugin. Since multiple schemas are used to define the model file, the elements are qualified.</p>
+<p>The <tt>target-resource</tt> attribute defines a reference to the resource which is targeted when the model executed. In this case, the value <tt>ssh-node1</tt> targets the model to a single resource.</p>
+<p>The model file executes a set of SSH commands to prune the resource consumption of the Docker host.</p>
+<p>The <tt>target-operation</tt> attribute is used to restrict that the models is only executed when Pineapple is invoked with the <i>deploy-configuration</i> operation. </p>
+<p>Finally, the execute commands in the models is executed using sudo. The requirement for sudo depends on the privileges of the user used by the SSH plugin to connect to a given host. The users was defined in credentials file in the previous section.</p></div></div></div></div>
                   </div>
             </div>
           </div>

@@ -19,17 +19,15 @@ Pineapple can help you with
 
 ## Download
 
-[Download Pineapple from Bintray](https://bintray.com/pineapple/maven/com.alpha.pineapple/). [ ![Download](https://api.bintray.com/packages/pineapple/maven/com.alpha.pineapple/images/download.svg) ](https://bintray.com/pineapple/maven/com.alpha.pineapple/_latestVersion)
+[Download Pineapple from Bintray](https://bintray.com/pineapple/maven/com.alpha.pineapple/). 
+[ ![Download](https://api.bintray.com/packages/pineapple/maven/com.alpha.pineapple/images/download.svg) ](https://bintray.com/pineapple/maven/com.alpha.pineapple/_latestVersion)
 
-### Docker image
-
-[Download Pineapple from DockerHub](https://hub.docker.com/r/pineapple/pineapple/)
-
-[![](https://images.microbadger.com/badges/version/pineapple/pineapple.svg)](https://microbadger.com/images/pineapple/pineapple "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/image/pineapple/pineapple.svg)](http://microbadger.com/images/pineapple/pineapple “Get your own image badge on microbadger.com”)
-
+[Download Pineapple from DockerHub](https://hub.docker.com/r/pineapple/pineapple/):
 ```
 docker pull pineapple/pineapple
 ```
+[![](https://images.microbadger.com/badges/version/pineapple/pineapple.svg)](https://microbadger.com/images/pineapple/pineapple "Get your own version badge on microbadger.com") 
+[![](https://images.microbadger.com/badges/image/pineapple/pineapple.svg)](http://microbadger.com/images/pineapple/pineapple “Get your own image badge on microbadger.com”)
 
 ## Build status
 

@@ -19,9 +19,9 @@ Pineapple can help you with
 
 ## Download
 
-[Download Pineapple from Bintray](https://bintray.com/pineapple/maven/com.alpha.pineapple/): [ ![Download](https://api.bintray.com/packages/pineapple/maven/com.alpha.pineapple/images/download.svg) ](https://bintray.com/pineapple/maven/com.alpha.pineapple/_latestVersion)
+[Download Pineapple binaries from Bintray](https://bintray.com/pineapple/maven/com.alpha.pineapple/): [ ![Download](https://api.bintray.com/packages/pineapple/maven/com.alpha.pineapple/images/download.svg) ](https://bintray.com/pineapple/maven/com.alpha.pineapple/_latestVersion)
 
-[Download Pineapple from DockerHub](https://hub.docker.com/r/pineapple/pineapple/): [![](https://images.microbadger.com/badges/version/pineapple/pineapple.svg)](https://microbadger.com/images/pineapple/pineapple) 
+[Download Pineapple Docker image from DockerHub](https://hub.docker.com/r/pineapple/pineapple/): [![](https://images.microbadger.com/badges/version/pineapple/pineapple.svg)](https://microbadger.com/images/pineapple/pineapple) 
 
 ## Build status
 

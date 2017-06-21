@@ -8,9 +8,9 @@
 	<xs:element name="containerConfiguration" type="containerConfigurationType" />
 	<xs:element name="createdContainer" type="createdContainerType" />
 	<xs:element name="listedContainer" type="listedContainerType" />	
-	<xs:element name="inspectedContainer" type="inspectedContainerType" />
+	<xs:element name="inspectedContainer" type="containerJsonType" />
 	<xs:element name="inspectedImage" type="imageInspectType" />
-	<xs:element name="imageCreationInfo" type="imageCreationType" />
+	<xs:element name="imageCreationInfo" type="jsonMessageType" />
 	<xs:element name="imageDeletionInfo" type="imageDeletionType" />
 	<xs:element name="version" type="versionType" />
 
@@ -38,6 +38,16 @@
   		<xs:list itemType="xs:int"/>
 	</xs:simpleType>
 
+	<xs:complexType name="errorType" >
+		<xs:annotation>
+			<xs:documentation>Generic error info .</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="message" type="xs:string" use="optional"/>		
+	</xs:complexType>
+
+	<!-- 
+		Container for graphDriverDataType (implemented as map using JAXB binding)   
+	 -->
 	<xs:complexType name="graphDriverType" >
 		<xs:annotation>
 			<xs:documentation>Docker Graph driver configuration (Output from inspecting an image or container).</xs:documentation>
@@ -48,6 +58,10 @@
 		<xs:attribute name="name" type="xs:string" use="optional"/>		
 	</xs:complexType>
 
+	<!-- 
+		Corresponds to GraphDriverData    
+		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/blkiodev/blkio.go
+	 -->
 	<xs:complexType name="graphDriverDataType" >
 		<xs:annotation>
 			<xs:documentation>Docker graph driver data configuration (Output from inspecting an image or container).</xs:documentation>
@@ -69,24 +83,190 @@
 		<xs:attribute name="baseLayer" type="xs:string" use="optional"/>		
 	</xs:complexType>
 
+	<!-- 
+		Container for weightDeviceType (implemented as default JAXB list)   
+	 -->
+	<xs:complexType name="weightDevicesType" >
+		<xs:annotation>
+			<xs:documentation>Container for device weight.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="devices" type="weightDeviceType" minOccurs="0" maxOccurs="unbounded" />
+ 		</xs:sequence>		
+	</xs:complexType>
+
+	<!-- 
+		Corresponds to WeightDevice    
+		https://github.com/moby/moby/blob/master/api/types/blkiodev/blkio.go
+	 -->
+	<xs:complexType name="weightDeviceType" >
+		<xs:annotation>
+			<xs:documentation>Block IO weight (relative device weight) (Output from inspecting an image or container).</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="path" type="xs:string" use="optional"/>		
+		<xs:attribute name="weight" type="xs:int" use="optional"/> <!-- approximation of the Weight which is implemented as a uint16 -->		
+	</xs:complexType>
+
+	<!-- 
+		Container for throttleDeviceType (implemented as default JAXB list)   
+	 -->
+	<xs:complexType name="throttleDevicesType" >
+		<xs:annotation>
+			<xs:documentation>Container for device throttling.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="devices" type="throttleDeviceType" minOccurs="0" maxOccurs="unbounded" />
+ 		</xs:sequence>		
+	</xs:complexType>
+
+	<!-- 
+		Corresponds to ThrottleDevice     
+		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/blkiodev/blkio.go
+	 -->
+	<xs:complexType name="throttleDeviceType" >
+		<xs:annotation>
+			<xs:documentation>Limit read rate (bytes per second) from a device (Output from inspecting an image or container).</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="path" type="xs:string" use="optional"/>		
+		<xs:attribute name="rate" type="xs:int" use="optional"/> <!-- approximation of the Rate which is implemented as a uint16 -->		
+	</xs:complexType>
+
+	<!-- 
+		Corresponds to Mount   
+https://github.com/moby/moby/blob/master/api/types/mount/mount.go
+
+		Please notice:
+		
+		The type for "propagation" is defined as string in 		
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go
+		
+		The type for "type" is defined as string in 		
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go		
+	 -->
+	<xs:complexType name="mountType">
+		<xs:annotation>
+			<xs:documentation>Container mount point (Output from listing a container).</xs:documentation>
+		</xs:annotation>		
+		<xs:attribute name="destination" type="xs:string" use="optional"/>								
+		<xs:attribute name="driver" type="xs:string" use="optional"/>								
+		<xs:attribute name="mode" type="xs:string" use="optional"/>								
+		<xs:attribute name="name" type="xs:string" use="optional"/>										
+		<xs:attribute name="propagation" type="xs:string" use="optional"/>								
+		<xs:attribute name="source" type="xs:string" use="optional"/>									
+		<xs:attribute name="type" type="xs:string" use="optional"/>												
+		<xs:attribute name="rw" type="xs:boolean" use="optional"/>										
+	</xs:complexType>
+
+	<!-- 
+		Corresponds to /pkg/jsonmessage/JSONProgress
+		https://github.com/moby/moby/blob/master/pkg/jsonmessage/jsonmessage.go
+	-->
+	<xs:complexType name="jsonProgressType" >
+		<xs:annotation>
+			<xs:documentation>JSONProgress describes a Progress..</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="current" type="xs:long" use="optional"/> <!-- approximation of the Current which is implemented as a int64 -->				
+		<xs:attribute name="start" type="xs:long" use="optional"/> <!-- approximation of the Start which is implemented as a int64 -->						
+		<xs:attribute name="hideCounts" type="xs:boolean" use="optional"/> 				
+		<xs:attribute name="total" type="xs:long" use="optional"/> <!-- approximation of the Total which is implemented as a int64 -->				
+		<xs:attribute name="units" type="xs:string" use="optional"/> 				
+	</xs:complexType>
+
+	<!-- 
+		Corresponds to /pkg/jsonmessage/JSONError
+		https://github.com/moby/moby/blob/master/pkg/jsonmessage/jsonmessage.go
+	-->
+	<xs:complexType name="jsonErrorType" >
+		<xs:annotation>
+			<xs:documentation>JSONError wraps a concrete Code and Message, Code is is an integer error code, Message is the error message.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="code" type="xs:int" use="optional"/> 				
+		<xs:attribute name="message" type="xs:string" use="optional"/> 			
+	</xs:complexType>
+
+	<!-- 
+		Corresponds to /nat/PortSet 
+		https://github.com/docker/go-connections/blob/master/nat/nat.go
+	-->
+	<xs:complexType name="portSetType">
+		<xs:annotation>
+			<xs:documentation>PortSet is a collection of structs indexed by Port.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="elements" type="portSetElementType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="portSetElementType">
+		<xs:annotation>
+			<xs:documentation>
+				Element in port set.
+				The value isn't used by Docker, but a null value (an object) must be defined.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="port" type="xs:string" />
+			<xs:element name="nullValue" type="portSetElementNullValueType" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="portSetElementNullValueType">
+		<xs:annotation>
+			<xs:documentation>Null value for port in port set.</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+
+	<!-- 
+		Corresponds to /nat/PortMap 
+		https://github.com/docker/go-connections/blob/master/nat/nat.go
+	-->
+	<xs:complexType name="portMapType" >
+		<xs:annotation>
+			<xs:documentation>PortMap is a collection of PortBinding indexed by Port.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="elements" type="portMapElementType" minOccurs="0" maxOccurs="unbounded" />
+ 		</xs:sequence>		
+	</xs:complexType>
+
+	<xs:complexType name="portMapElementType">
+		<xs:annotation>
+			<xs:documentation>Port map element. The value is a port binding.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="port" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="binding" type="portBindingType" minOccurs="0" maxOccurs="unbounded" />						
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- 
+		Corresponds to /nat/PortBinding 
+		https://github.com/docker/go-connections/blob/master/nat/nat.go
+	-->
+	<xs:complexType name="portBindingType">
+		<xs:annotation>
+			<xs:documentation>PortBinding represents a binding between a Host IP address and a Host Port.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="hostIp" type="xs:string" /> 
+			<xs:element name="hostPort" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- 
+		Corresponds to DeviceMapping   
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
+	-->
+	<xs:complexType name="deviceMappingType" >
+		<xs:annotation>
+			<xs:documentation>DeviceMapping represents the device mapping between the host and the container.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="pathInContainer" type="xs:string" use="optional"/>		
+		<xs:attribute name="pathOnHost" type="xs:string" use="optional"/>		
+		<xs:attribute name="cgroupPermissions" type="xs:string" use="optional"/>		
+	</xs:complexType>
+
 	<!-- Image definitions -->
-
-	<xs:complexType name="progressDetailType" >
-		<xs:annotation>
-			<xs:documentation>Detailed info about progress during image creation.</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="start" type="xs:string" use="optional"/>		
-		<xs:attribute name="current" type="xs:string" use="optional"/>		
-		<xs:attribute name="total" type="xs:string" use="optional"/>		
-	</xs:complexType>
-
-	<xs:complexType name="errorDetailType" >
-		<xs:annotation>
-			<xs:documentation>Detailed info about errors during image creation.</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="code" type="xs:int" use="optional"/>		
-		<xs:attribute name="message" type="xs:string" use="optional"/>		
-	</xs:complexType>
 
 	<xs:complexType name="listedImageType" >
 		<xs:annotation>
@@ -106,13 +286,17 @@
 		<xs:attribute name="virtualSize" type="xs:integer" use="optional"/>		
 	</xs:complexType>
 
+	<!-- 
+		Corresponds to ImageInspect
+		https://github.com/moby/moby/blob/master/api/types/types.go
+	 -->
 	<xs:complexType name="imageInspectType" >
 		<xs:annotation>
 			<xs:documentation>Info about an inspected Docker image (Output from the "Inspect an image" operation).</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="containerConfig" type="containerConfigurationType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="config" type="inspectedImageConfigurationType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="config" type="containerConfigurationType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="graphDriver" type="graphDriverType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="repoDigests" type="stringList" minOccurs="0" maxOccurs="1" />						
 			<xs:element name="repoTags" type="stringList" minOccurs="0" maxOccurs="1" />								
@@ -132,50 +316,26 @@
 		<xs:attribute name="virtualSize" type="xs:long" use="optional"/>	
 	</xs:complexType>
 
-	<xs:complexType name="inspectedImageConfigurationType" >
+	<!-- 
+		Corresponds to /pkg/jsonmessage/JSONMessage     
+		https://github.com/moby/moby/blob/eb8abc95985bf3882a4a177c409a96e36e25f5b7/pkg/jsonmessage/jsonmessage.go#L119	 
+	-->
+	<xs:complexType name="jsonMessageType" >
 		<xs:annotation>
-			<xs:documentation>Docker image configuration (Output from inspecting an image).</xs:documentation>
+			<xs:documentation>It describes the created time, where it from, status, ID of the message. It's used for docker events.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="cmd" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="entrypoint" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="env" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="exposedPorts" type="containerConfigurationExposedPortsType" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="onBuild" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="portSpecs" type="containerConfigurationHostConfigPortBindingsType" minOccurs="0" maxOccurs="1" />									
-			<xs:element name="volumes" type="containerConfigurationVolumesType" minOccurs="0" maxOccurs="1" />						
+			<xs:element name="progressDetail" type="jsonProgressType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="errorDetail" type="jsonErrorType" minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
-		<xs:attribute name="attachStderr" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="attachStdin" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="attachStdout" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="domainname" type="xs:string" use="optional"/>		
-		<xs:attribute name="hostname" type="xs:string" use="optional"/>		
-		<xs:attribute name="image" type="xs:string" use="optional"/>				
-		<xs:attribute name="init" type="xs:string" use="optional"/>				
-		<xs:attribute name="macAddress" type="xs:string" use="optional"/>				
-		<xs:attribute name="networkDisabled" type="xs:boolean" use="optional"/>				
-		<xs:attribute name="openStdin" type="xs:boolean" use="optional"/>			
-		<xs:attribute name="stdinOnce" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="tty" type="xs:boolean" use="optional"/>				
-		<xs:attribute name="user" type="xs:string" use="optional"/>		
-		<xs:attribute name="volumeDriver" type="xs:string" use="optional"/>		
-		<xs:attribute name="workingDir" type="xs:string" use="optional"/>		
-	</xs:complexType>
-
-	<xs:complexType name="imageCreationType" >
-		<xs:annotation>
-			<xs:documentation>Info about Docker image creation progress.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="progressDetail" type="progressDetailType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="errorDetail" type="errorDetailType" minOccurs="0" maxOccurs="1" />
-		</xs:sequence>
+		<xs:attribute name="error" type="xs:string" use="optional"/>				
+		<xs:attribute name="from" type="xs:string" use="optional"/>		
 		<xs:attribute name="id" type="xs:string" use="optional"/>		
-		<xs:attribute name="status" type="xs:string" use="optional"/>		
 		<xs:attribute name="progress" type="xs:string" use="optional"/>		
-		<xs:attribute name="error" type="xs:string" use="optional"/>		
+		<xs:attribute name="status" type="xs:string" use="optional"/>		
 		<xs:attribute name="stream" type="xs:string" use="optional"/>		
+		<xs:attribute name="time" type="xs:long" use="optional"/> <!-- approximation of the Time which is implemented as a int64 -->				
+		<xs:attribute name="timeNano" type="xs:long" use="optional"/> <!-- approximation of the TimeNano which is implemented as a int64 -->						
 	</xs:complexType>
 
 	<xs:complexType name="imageDeletionType" >
@@ -189,9 +349,8 @@
 	<!-- Container definitions -->
 
 	<!-- 
-		Corresponds to MountPoint   
-		in docker/engine-api/types/config.go	
-		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/container/config.go				
+		Corresponds to Config    
+		https://github.com/moby/moby/blob/master/api/types/container/config.go
 	 -->
 	<xs:complexType name="containerConfigurationType" >
 		<xs:annotation>
@@ -199,14 +358,17 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="cmd" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="env" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="entrypoint" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="exposedPorts" type="containerConfigurationExposedPortsType" minOccurs="0" maxOccurs="1" />						
-			<xs:element name="hostConfig" type="containerConfigurationHostConfigType" minOccurs="0" maxOccurs="1" />			
+			<xs:element name="env" type="stringList" minOccurs="0" maxOccurs="1" />			
+			<xs:element name="exposedPorts" type="portSetType" minOccurs="0" maxOccurs="1" />		
+			<xs:element name="healthcheck" type="HealthConfigType" minOccurs="0" maxOccurs="1" />				
+			<xs:element name="hostConfig" type="hostConfigType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="onBuild" type="stringList" minOccurs="0" maxOccurs="1" />
+			<xs:element name="shell" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="volumes" type="containerConfigurationVolumesType" minOccurs="0" maxOccurs="1" />						
 		</xs:sequence>
+		<xs:attribute name="argsEscaped" type="xs:boolean" use="optional"/>				
 		<xs:attribute name="attachStderr" type="xs:boolean" use="optional"/>		
 		<xs:attribute name="attachStdin" type="xs:boolean" use="optional"/>		
 		<xs:attribute name="attachStdout" type="xs:boolean" use="optional"/>		
@@ -216,7 +378,9 @@
 		<xs:attribute name="macAddress" type="xs:string" use="optional"/>		
 		<xs:attribute name="networkDisabled" type="xs:boolean" use="optional"/>				
 		<xs:attribute name="openStdin" type="xs:boolean" use="optional"/>			
-		<xs:attribute name="stdinOnce" type="xs:boolean" use="optional"/>		
+		<xs:attribute name="stdinOnce" type="xs:boolean" use="optional"/>	
+		<xs:attribute name="stopSignal" type="xs:string" use="optional"/>	
+		<xs:attribute name="stopTimeout" type="xs:int" use="optional"/>							
 		<xs:attribute name="tty" type="xs:boolean" use="optional"/>				
 		<xs:attribute name="user" type="xs:string" use="optional"/>		
 		<xs:attribute name="workingDir" type="xs:string" use="optional"/>		
@@ -239,34 +403,6 @@
 			<xs:element name="key" type="xs:string" /> <!-- key in map -->
 			<xs:element name="value" type="xs:string" />
 		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="containerConfigurationExposedPortsType">
-		<xs:annotation>
-			<xs:documentation>Info about exposed ports in a container configuration and inspected container.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="port" type="containerConfigurationExposedPortType" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="containerConfigurationExposedPortType">
-		<xs:annotation>
-			<xs:documentation>
-				Exposed port in container configuration and inspected container.
-				The value isn't used by Docker, but a null value (an object) must be defined.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="port" type="xs:string" />
-			<xs:element name="nullValue" type="containerConfigurationExposedPortNullValueType" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="containerConfigurationExposedPortNullValueType">
-		<xs:annotation>
-			<xs:documentation>Null value for exposed port in container configuration and inspected container.</xs:documentation>
-		</xs:annotation>
 	</xs:complexType>
 
 	<xs:complexType name="containerConfigurationVolumesType">
@@ -297,78 +433,116 @@
 		</xs:annotation>
 	</xs:complexType>
 
-	<xs:complexType name="containerConfigurationHostConfigType" >
+	<!-- 
+		Corresponds to HealthConfig   
+		https://github.com/moby/moby/blob/master/api/types/container/config.go
+	-->
+	<xs:complexType name="HealthConfigType" >
+		<xs:annotation>
+			<xs:documentation>HealthConfig holds configuration settings for the healthcheck feature.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="test" type="stringList" minOccurs="0" maxOccurs="1" />
+ 		</xs:sequence>		
+		<xs:attribute name="interval" type="xs:long" use="optional"/>  <!-- approximation of the Interval which is implemented as a time.Duration -->				
+		<xs:attribute name="timeout" type="xs:long" use="optional"/>  <!-- approximation of the Timeout which is implemented as a time.Duration -->				
+		<xs:attribute name="Retries" type="xs:int" use="optional"/>  	
+	</xs:complexType>
+
+	<!-- 
+		Corresponds to HostConfig   
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
+
+		Please notice:
+		
+		THe Hostconfig references the Resources type which is embedded in this schema type.
+		
+		The type for "cgroup" is defined as string in 		
+		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go		
+		
+		The type for "network" is defined as string in 		
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
+
+		The type for "IpcMode" is defined as string in 		
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
+		
+		The type for "Isolation" is defined as string in 		
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
+
+		The type for "usernsMode" is defined as string in 		
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
+		
+	 -->
+	<xs:complexType name="hostConfigType" >
 		<xs:annotation>
 			<xs:documentation>Info about host configuration in a container configuration.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="binds" type="stringList" minOccurs="0" maxOccurs="1" /> 			
+			<xs:element name="blkioWeightDevice" type="weightDevicesType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="blkioDeviceReadBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="blkioDeviceWriteBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="blkioDeviceReadIOps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="blkioDeviceWriteIOps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="consoleSize" type="intList" minOccurs="0" maxOccurs="1" /> 			
+			<xs:element name="devices" type="deviceMappingType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="deviceCgroupRules" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="dns" type="stringList" minOccurs="0" maxOccurs="1" /> 
+			<xs:element name="dnsOptions" type="stringList" minOccurs="0" maxOccurs="1" /> 						
 			<xs:element name="dnsSearch" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="extraHosts" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="groupAdd" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="links" type="stringList" minOccurs="0" maxOccurs="1" />				
-			<xs:element name="restartPolicy" type="containerConfigurationHostConfigRestartPolicyType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="logConfig" type="containerConfigurationHostConfigLogConfigType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="portBindings" type="containerConfigurationHostConfigPortBindingsType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="mounts" type="mountType" minOccurs="0" maxOccurs="unbounded" />			
+			<xs:element name="portBindings" type="portMapType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="restartPolicy" type="containerConfigurationHostConfigRestartPolicyType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="securityOpt" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="volumesFrom" type="stringList" minOccurs="0" maxOccurs="1" />				
  		</xs:sequence>
-		<xs:attribute name="blkioWeight" type="xs:long" use="optional"/> <!-- Not implemented yet-->		
-		<xs:attribute name="containerIDFile" type="xs:string" use="optional"/> <!-- Not implemented yet-->		 		
+		<xs:attribute name="autoRemove" type="xs:boolean" use="optional"/>		 		 		 		
+		<xs:attribute name="blkioWeight" type="xs:long" use="optional"/> <!-- approximation of the Bl kioWeight which is implemented as a uint16 -->		
 		<xs:attribute name="capAdd" type="xs:string" use="optional"/> <!-- wrong type -->		
-		<xs:attribute name="capDrop" type="xs:string" use="optional"/> <!-- wrong type -->		
+		<xs:attribute name="capDrop" type="xs:string" use="optional"/> <!-- wrong type -->
+		<xs:attribute name="cgroup" type="xs:string" use="optional"/> <!-- approximation of the CgroupSpec which is implemented as a string -->					
 		<xs:attribute name="cgroupParent" type="xs:string" use="optional"/> 		
-		<xs:attribute name="consoleSize" type="xs:string" use="optional"/> <!-- Not implemented yet-->		
-		<xs:attribute name="cpuShares" type="xs:long" use="optional"/>				
-		<xs:attribute name="cpuPeriod" type="xs:long" use="optional"/>				
+		<xs:attribute name="containerIDFile" type="xs:string" use="optional"/> <!-- Not implemented yet-->		 				
+		<xs:attribute name="cpuCount" type="xs:long" use="optional"/>  <!-- approximation of the CpuCount which is implemented as a int64 -->				
+		<xs:attribute name="cpuPercent" type="xs:long" use="optional"/>	<!-- approximation of the CpuPercent which is implemented as a int64 -->			
+		<xs:attribute name="cpuPeriod" type="xs:long" use="optional"/> <!-- approximation of the CPUPeriod which is implemented as a int64 -->				
+		<xs:attribute name="cpuQuota" type="xs:long" use="optional"/> <!-- approximation of the CPUPeriod which is implemented as a int64 -->		
+		<xs:attribute name="cpuShares" type="xs:long" use="optional"/> <!-- approximation of the CPUQuota which is implemented as a int64 -->				
+		<xs:attribute name="cpuRealtimePeriod" type="xs:long" use="optional"/> <!-- approximation of the CpuRealtimePeriod which is implemented as a int64 -->				
+		<xs:attribute name="cpuRealtimeRuntime" type="xs:long" use="optional"/> <!-- approximation of the CpuRealtimeRuntime which is implemented as a int64 -->				
 		<xs:attribute name="cpusetCpus" type="xs:string" use="optional"/>				
 		<xs:attribute name="cpusetMems" type="xs:string" use="optional"/>										
-		<xs:attribute name="cpuQuota" type="xs:long" use="optional"/> <!-- Not implemented yet-->		
-		<xs:attribute name="devices" type="xs:string" use="optional"/> <!-- wrong type -->		
+		<xs:attribute name="diskQuota" type="xs:long" use="optional"/> <!-- approximation of the DiskQuota which is implemented as a int64 -->		
 		<xs:attribute name="lxcConf" type="xs:string" use="optional"/> <!-- wrong type -->
-		<xs:attribute name="ipcMode" type="xs:string" use="optional"/> <!-- wrong type -->						
-		<xs:attribute name="networkMode" type="xs:string" use="optional"/> <!-- wrong type -->				
-		<xs:attribute name="memory" type="xs:long" use="optional"/>		
+		<xs:attribute name="init" type="xs:boolean" use="optional"/>				
+		<xs:attribute name="ioMaximumBandwidth" type="xs:long" use="optional"/> <!-- approximation of the IOMaximumBandwidth which is implemented as a int64 -->			
+		<xs:attribute name="ioMaximumIOps" type="xs:long" use="optional"/> <!-- approximation of the IOMaximumIOps which is implemented as a int64 -->			
+		<xs:attribute name="ipcMode" type="xs:string" use="optional"/> <!-- approximation of the IPCMode which is implemented as a string -->						
+		<xs:attribute name="isolation" type="xs:string" use="optional"/> <!-- approximation of the Isolation which is implemented as a string -->			
+		<xs:attribute name="kernelMemory" type="xs:long" use="optional"/> <!-- approximation of the KernelMemory which is implemented as a int64 -->			
+		<xs:attribute name="nanoCpus" type="xs:long" use="optional"/> <!-- approximation of the NanoCPUs which is implemented as a int64 -->				
+		<xs:attribute name="networkMode" type="xs:string" use="optional"/> <!-- approximation of the NetworkMode which is implemented as a string -->				
+		<xs:attribute name="memory" type="xs:long" use="optional"/>	<!-- approximation of the Memory which is implemented as a int64 -->	
+		<xs:attribute name="memoryReservation" type="xs:long" use="optional"/>  <!-- approximation of the MemoryReservation which is implemented as a int64 -->	
 		<xs:attribute name="memorySwap" type="xs:long" use="optional"/>		
 		<xs:attribute name="memorySwappiness" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="oomKillDisable" type="xs:boolean" use="optional"/> <!-- Not implemented yet-->		
-		<xs:attribute name="pidMode" type="xs:string" use="optional"/> <!-- wrong type -->				
+		<xs:attribute name="oomScoreAdj" type="xs:int" use="optional"/> 
+		<xs:attribute name="pidMode" type="xs:string" use="optional"/> <!-- approximation of the Pidmode which is implemented as a string -->			
+		<xs:attribute name="pidsLimit" type="xs:string" use="optional"/> <!-- approximation of the PidsLimit which is implemented as a int64 -->						
 		<xs:attribute name="privileged" type="xs:boolean" use="optional"/>				
 		<xs:attribute name="publishAllPorts" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="readonlyRootfs" type="xs:string" use="optional"/> <!-- wrong type -->		
+		<xs:attribute name="readonlyRootfs" type="xs:string" use="optional"/> <!-- wrong type -->	
+		<xs:attribute name="runtime" type="xs:string" use="optional"/> 	
+		<xs:attribute name="shmSize" type="xs:long" use="optional"/> <!-- approximation of the ShmSize which is implemented as a int64 -->				
 		<xs:attribute name="ulimits" type="xs:string" use="optional"/> <!-- wrong type -->						
-		<xs:attribute name="utsMode" type="xs:string" use="optional"/> <!-- wrong type -->				
-
-	</xs:complexType>
-
-	<xs:complexType name="containerConfigurationHostConfigPortBindingsType" >
-		<xs:annotation>
-			<xs:documentation>Port bindings configuration in container host configuration and container inspection.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="binding" type="containerConfigurationHostConfigPortBindingType" minOccurs="0" maxOccurs="unbounded" />
- 		</xs:sequence>		
-	</xs:complexType>
-
-	<xs:complexType name="containerConfigurationHostConfigPortBindingType">
-		<xs:annotation>
-			<xs:documentation>Port binding configuration in container host configuration and container inspection.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="containerPort" type="xs:string" minOccurs="0" maxOccurs="1" />
-			<xs:element name="value" type="containerConfigurationHostConfigPortBindingValueType" minOccurs="0" maxOccurs="unbounded" />						
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="containerConfigurationHostConfigPortBindingValueType">
-		<xs:annotation>
-			<xs:documentation>Port binding value in container host configuration and container inspection.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="hostPort" type="xs:string" />
-			<xs:element name="hostIp" type="xs:string" /> <!-- hostIP is only used for container inspection -->
-		</xs:sequence>
+		<xs:attribute name="utsMode" type="xs:string" use="optional"/> <!-- wrong type -->	
+		<xs:attribute name="usernsMode" type="xs:string" use="optional"/> <!-- approximation of the UsernsMode which is implemented as a string -->			
+		<xs:attribute name="volumeDriver" type="xs:string" use="optional"/> 											
 	</xs:complexType>
 
 	<xs:complexType name="containerConfigurationHostConfigLogConfigType" >
@@ -413,7 +587,6 @@
 
 	<!-- 
 		Corresponds to Container  
-		in docker/engine-api/types/types.go	
 		https://github.com/docker/docker/blob/ce255f76c70a77c21d48ebd407d83cad55edf883/vendor/src/github.com/docker/engine-api/types/types.go
 	 -->
 	<xs:complexType name="listedContainerType" >
@@ -421,11 +594,11 @@
 			<xs:documentation>Info about a listed Docker container (Output from listing containers).</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="hostConfig" type="inspectedContainerHostConfigType" minOccurs="0" maxOccurs="1" />							
+			<xs:element name="hostConfig" type="hostConfigType" minOccurs="0" maxOccurs="1" />							
 			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />			
 			<xs:element name="names" type="stringList" minOccurs="0" maxOccurs="1" />
 			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="mounts" type="containerMountType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="mounts" type="mountType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="ports" type="listedContainerPortType" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="command" type="xs:string" use="optional"/>		
@@ -450,54 +623,22 @@
 	</xs:complexType>
 
 	<!-- 
-		Corresponds to MountPoint   
-		in docker/engine-api/types/types.go	
-		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/types.go
-		
-		Please notice:
-		
-		The type for "propagation" is defined as string in 		
-		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go
-		
-		The type for "type" is defined as string in 		
-		https://github.com/docker/docker/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/mount/mount.go
-		
-	 -->
-	<xs:complexType name="containerMountType">
-		<xs:annotation>
-			<xs:documentation>Container mount point (Output from listing a container).</xs:documentation>
-		</xs:annotation>		
-		<xs:attribute name="destination" type="xs:string" use="optional"/>								
-		<xs:attribute name="driver" type="xs:string" use="optional"/>								
-		<xs:attribute name="mode" type="xs:string" use="optional"/>								
-		<xs:attribute name="name" type="xs:string" use="optional"/>										
-		<xs:attribute name="propagation" type="xs:string" use="optional"/>								
-		<xs:attribute name="source" type="xs:string" use="optional"/>									
-		<xs:attribute name="type" type="xs:string" use="optional"/>												
-		<xs:attribute name="rw" type="xs:boolean" use="optional"/>										
-	</xs:complexType>
-
-	<!-- 
-		Corresponds to ContainerJSONBase  
-		in docker/engine-api/types/types.go	
-		https://github.com/docker/docker/blob/ce255f76c70a77c21d48ebd407d83cad55edf883/vendor/src/github.com/docker/engine-api/types/types.go	
-	 -->
-	<xs:complexType name="inspectedContainerType" >
+		Corresponds to ContainerJSON   
+		https://github.com/moby/moby/blob/master/api/types/types.go
+	-->
+	<xs:complexType name="containerJsonType" >
 		<xs:annotation>
 			<xs:documentation>Info about an inspected Docker container (Output from inspecting a container).</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="args" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="config" type="inspectedContainerConfigurationType" minOccurs="0" maxOccurs="1" />  <!-- gone in current source/rest1.23, but not in 1.9 -->
+			<xs:element name="config" type="containerConfigurationType" minOccurs="0" maxOccurs="1" />  
 			<xs:element name="execIDs" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="graphDriver" type="inspectedContainerGraphDriverType" minOccurs="0" maxOccurs="1" />									
-			<xs:element name="hostConfig" type="inspectedContainerHostConfigType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="mounts" type="inspectedContainerMountsType" minOccurs="0" maxOccurs="unbounded" />	<!-- gone in current source/rest1.23, but not in 1.9 -->											
-			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" /> <!-- gone in current source/rest1.23, but not in 1.9 -->
+			<xs:element name="graphDriver" type="graphDriverType" minOccurs="0" maxOccurs="1" />			
+			<xs:element name="hostConfig" type="hostConfigType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="mounts" type="mountType" minOccurs="0" maxOccurs="unbounded" />											
+			<xs:element name="networkSettings" type="inspectedContainerNetworkSettingsType" minOccurs="0" maxOccurs="1" /> 
 			<xs:element name="state" type="inspectedContainerStateType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="volumes" type="inspectedContainerVolumesType" minOccurs="0" maxOccurs="1" /> <!--  also defined in container.config.volumes --> <!-- gone in current source/rest1.23, but not in 1.9 -->
-			<xs:element name="volumesRW" type="inspectedContainerVolumesRwType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="volumesRelabel" type="inspectedContainerVolumesRelabelType" minOccurs="0" maxOccurs="1" />
  		</xs:sequence>
 		<xs:attribute name="appArmorProfile" type="xs:string" use="optional"/>		
 		<xs:attribute name="created" type="xs:string" use="optional"/>		
@@ -517,39 +658,6 @@
 		<xs:attribute name="sysInitPath" type="xs:string" use="optional"/>		
 	</xs:complexType>
 
-	<xs:complexType name="inspectedContainerConfigurationType" >
-		<xs:annotation>
-			<xs:documentation>Docker container configuration (Partial output from container inspection).</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="cmd" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="entrypoint" type="stringList" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="env" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="exposedPorts" type="containerConfigurationExposedPortsType" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="labels" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />		
-			<xs:element name="onBuild" type="stringList" minOccurs="0" maxOccurs="1" />							
-			<xs:element name="portSpecs" type="containerConfigurationHostConfigPortBindingsType" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="volumes" type="containerConfigurationVolumesType" minOccurs="0" maxOccurs="1"/>	<!--  also defined in container.volumes -->					
-		</xs:sequence>
-		<xs:attribute name="attachStderr" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="attachStdin" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="attachStdout" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="domainname" type="xs:string" use="optional"/>				
-		<xs:attribute name="hostname" type="xs:string" use="optional"/>		
-		<xs:attribute name="image" type="xs:string" use="optional"/>				
-		<xs:attribute name="init" type="xs:string" use="optional"/>		
-		<xs:attribute name="macAddress" type="xs:string" use="optional"/>		
-		<xs:attribute name="memory" type="xs:long" use="optional"/>		
-		<xs:attribute name="memorySwap" type="xs:long" use="optional"/>		
-		<xs:attribute name="networkDisabled" type="xs:boolean" use="optional"/>				
-		<xs:attribute name="openStdin" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="stdinOnce" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="tty" type="xs:boolean" use="optional"/>				
-		<xs:attribute name="user" type="xs:string" use="optional"/>		
-		<xs:attribute name="volumeDriver" type="xs:string" use="optional"/>		
-		<xs:attribute name="workingDir" type="xs:string" use="optional"/>		
-	</xs:complexType>
-
 	<xs:complexType name="inspectedContainerStateType" >
 		<xs:annotation>
 			<xs:documentation>Info about the state of a Docker container (Partial output from container inspection).</xs:documentation>
@@ -567,12 +675,16 @@
 		<xs:attribute name="status" type="xs:string" use="optional"/>			
 	</xs:complexType>
 
+	<!-- 
+		Corresponds to NetworkSettings    	
+		https://github.com/moby/moby/blob/master/api/types/types.go	
+	 -->
 	<xs:complexType name="inspectedContainerNetworkSettingsType" >
 		<xs:annotation>
 			<xs:documentation>Info about the network configuration of a Docker container (Partial output from inspecting a container).</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="ports" type="containerConfigurationExposedPortsType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="ports" type="portMapType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="networks" type="inspectedContainerNetworkSettingsNetworksType" minOccurs="0" maxOccurs="1" />			
  		</xs:sequence>
 		<xs:attribute name="bridge" type="xs:string" use="optional"/>		
@@ -595,153 +707,6 @@
 		<xs:attribute name="secondaryIPv6Addresses" type="xs:long" use="optional"/> <!-- wrong type -->
 	</xs:complexType>
 
-	<!-- 
-		Corresponds to HostConfig   
-		in docker/engine-api/types/container/host_config.go	
-		https://github.com/docker/docker/blob/ce255f76c70a77c21d48ebd407d83cad55edf883/vendor/src/github.com/docker/engine-api/types/container/host_config.go	
-	 -->
-	<xs:complexType name="inspectedContainerHostConfigType" >
-		<xs:annotation>
-			<xs:documentation>Info about the host configuration of a Docker container (Partial output from inspecting a container).</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="binds" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="consoleSize" type="intList" minOccurs="0" maxOccurs="1" /> 						
-			<xs:element name="devices" type="stringList" minOccurs="0" maxOccurs="1" />
-			<xs:element name="dns" type="stringList" minOccurs="0" maxOccurs="1" /> 
-			<xs:element name="dnsSearch" type="stringList" minOccurs="0" maxOccurs="1" /> 
-			<xs:element name="dnsOptions" type="stringList" minOccurs="0" maxOccurs="1" /> 			
-			<xs:element name="extraHosts" type="stringList" minOccurs="0" maxOccurs="1" /> 
-			<xs:element name="groupAdd" type="stringList" minOccurs="0" maxOccurs="1" /> 
-			<xs:element name="links" type="stringList" minOccurs="0" maxOccurs="1" /> 						
-			<xs:element name="logConfig" type="containerConfigurationHostConfigLogConfigType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="lxcConf" type="stringList" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="portBindings" type="containerConfigurationHostConfigPortBindingsType" minOccurs="0" maxOccurs="1" />			
-			<xs:element name="restartPolicy" type="containerConfigurationHostConfigRestartPolicyType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="securityOpt" type="stringList" minOccurs="0" maxOccurs="1" /> 			
-			<xs:element name="volumesFrom" type="stringList" minOccurs="0" maxOccurs="1" /> 			
- 		</xs:sequence>
-		<xs:attribute name="autoRemove" type="xs:boolean" use="optional"/>		 		 		
-		<xs:attribute name="blkioWeight" type="xs:long" use="optional"/>		 		
-		<xs:attribute name="capAdd" type="xs:string" use="optional"/> <!-- wrong type -->		
-		<xs:attribute name="capDrop" type="xs:string" use="optional"/> <!-- wrong type -->		
-		<xs:attribute name="cgroup" type="xs:string" use="optional"/> <!-- approximation of the CgroupSpec which is implemented as a string -->		
-		<xs:attribute name="cgroupParent" type="xs:string" use="optional"/> 		
-		<xs:attribute name="containerIDFile" type="xs:string" use="optional"/>				
-		<xs:attribute name="cpuShares" type="xs:long" use="optional"/>				
-		<xs:attribute name="cpuPeriod" type="xs:long" use="optional"/>				
-		<xs:attribute name="cpuQuota" type="xs:long" use="optional"/>						
-		<xs:attribute name="cpusetCpus" type="xs:string" use="optional"/>						
-		<xs:attribute name="cpusetMems" type="xs:string" use="optional"/>						
-		<xs:attribute name="ipcMode" type="xs:string" use="optional"/>		
-		<xs:attribute name="kernelMemory" type="xs:long" use="optional"/>										
-		<xs:attribute name="memory" type="xs:long" use="optional"/>		
-		<xs:attribute name="memoryReservation" type="xs:long" use="optional"/>										
-		<xs:attribute name="memorySwap" type="xs:long" use="optional"/>								
-		<xs:attribute name="memorySwappiness" type="xs:long" use="optional"/>										
-		<xs:attribute name="mountRun" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="networkMode" type="xs:string" use="optional"/>	  <!-- wrong type in rest1.23 -->	
-		<xs:attribute name="oomKillDisable" type="xs:boolean" use="optional"/> 
-		<xs:attribute name="pidMode" type="xs:string" use="optional"/>						
-		<xs:attribute name="privileged" type="xs:boolean" use="optional"/>				
-		<xs:attribute name="publishAllPorts" type="xs:boolean" use="optional"/>		
-		<xs:attribute name="readonlyRootfs" type="xs:string" use="optional"/> <!-- wrong type -->		
-		<xs:attribute name="ulimits" type="xs:string" use="optional"/> <!-- wrong type -->				
-		<xs:attribute name="utsMode" type="xs:string" use="optional"/> 				
-		<xs:attribute name="volumeDriver" type="xs:string" use="optional"/> 						
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerGraphDriverType">
-		<xs:annotation>
-			<xs:documentation>Graph driver in inspected container.</xs:documentation>
-		</xs:annotation>		
-		<xs:sequence>
-			<xs:element name="data" type="inspectedContainerGraphDriverDataType" />
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string" use="optional"/>								
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerGraphDriverDataType">
-		<xs:annotation>
-			<xs:documentation>Data type for graph driver in inspected container.</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="deviceId" type="xs:string" use="optional"/>						
-		<xs:attribute name="deviceName" type="xs:string" use="optional"/>						
-		<xs:attribute name="DeviceSize" type="xs:string" use="optional"/>								
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerMountsType">
-		<xs:annotation>
-			<xs:documentation>Mounts in inspected container.</xs:documentation>
-		</xs:annotation>		
-		<xs:sequence>
-			<xs:element name="data" type="inspectedContainerGraphDriverDataType" />
-		</xs:sequence>
-		<xs:attribute name="destination" type="xs:string" use="optional"/>								
-		<xs:attribute name="driver" type="xs:string" use="optional"/>								
-		<xs:attribute name="mode" type="xs:string" use="optional"/>								
-		<xs:attribute name="name" type="xs:string" use="optional"/>										
-		<xs:attribute name="source" type="xs:string" use="optional"/>								
-		<xs:attribute name="rw" type="xs:string" use="optional"/>										
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerVolumesType" >
-		<xs:annotation>
-			<xs:documentation>Info about volumes from a container inspection info.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="volume" type="inspectedContainerVolumeType" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerVolumeType">
-		<xs:annotation>
-			<xs:documentation>Volume in inspected container.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="mountpoint" type="xs:string" /> <!-- key in map -->
-			<xs:element name="path" type="xs:string" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerVolumesRwType" >
-		<xs:annotation>
-			<xs:documentation>Info about volumes RW from a container inspection info.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="volume" type="inspectedContainerVolumeRwType" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>		
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerVolumeRwType">
-		<xs:annotation>
-			<xs:documentation>Volume RW property in inspected container.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="mountpoint" type="xs:string" /> <!--  key in map -->
-			<xs:element name="enabled" type="xs:boolean" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerVolumesRelabelType" >
-		<xs:annotation>
-			<xs:documentation>Info about volumes relabeling from a container inspection info.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="volume" type="inspectedContainerVolumeRelabelType" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>				
-	</xs:complexType>
-
-	<xs:complexType name="inspectedContainerVolumeRelabelType">
-		<xs:annotation>
-			<xs:documentation>Volume relabel property in inspected container.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="mountpoint" type="xs:string" /> <!-- key in map -->
-			<xs:element name="label" type="xs:string" />
-		</xs:sequence>
-	</xs:complexType>
-
 	<xs:complexType name="inspectedContainerNetworkSettingsNetworksType" >
 		<xs:annotation>
 			<xs:documentation>Info about networks from a container network settings inspection info. (container/map).</xs:documentation>
@@ -753,7 +718,6 @@
 
 	<!-- 
 		Corresponds to NetworkingConfig 
-		in docker/engine-api/types/network/network.go	
 		https://github.com/docker/docker/blob/3d13fddd2bc4d679f0eaa68b0be877e5a816ad53/vendor/src/github.com/docker/engine-api/types/network/network.go		
 	 -->
 
@@ -769,7 +733,6 @@
 
 	<!-- 
 		Corresponds to EndpointSettings 
-		in docker/engine-api/types/network/network.go	
 		https://github.com/docker/docker/blob/3d13fddd2bc4d679f0eaa68b0be877e5a816ad53/vendor/src/github.com/docker/engine-api/types/network/network.go		
 	 -->
 	<xs:complexType name="inspectedContainerNetworkSettingsNetworkValueType">

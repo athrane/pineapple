@@ -72,6 +72,6 @@
 
 		<menu ref="reports" inherit="bottom" />
 		
-		 <footer>Copyright (C) 2007-2016 Allan Thrane Andersen. All Rights Reserved.</footer>
+		 <footer>Copyright (C) 2007-2017 Allan Thrane Andersen. All Rights Reserved.</footer>
 	</body>
 </project>

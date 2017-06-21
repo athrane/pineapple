@@ -15,7 +15,7 @@ Installation of the Pineapple deployable web application
 * Download the client
 
 	Download the client <<<pineapple-web-application-VERSION.war>>> 
-	from the <<{{{http://java.net/projects/pineapple/downloads}Downloads page}}>>.
+	from the <<{{{https://bintray.com/pineapple/maven/com.alpha.pineapple}Downloads page}}>>.
 			
 * Make Pineapple executable
 

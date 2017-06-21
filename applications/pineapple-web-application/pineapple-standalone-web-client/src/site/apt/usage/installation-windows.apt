@@ -15,7 +15,7 @@ Installation of the Pineapple standalone web application on Windows
 * Download Pineapple
 
 	Download the client <<<pineapple-gui-release-VERSION.zip>>> from the 
-	<<{{{http://java.net/projects/pineapple/downloads}Downloads page}}>>.
+	<<{{{https://bintray.com/pineapple/maven/com.alpha.pineapple}Downloads page}}>>.
 
 * Unpack Pineapple
 

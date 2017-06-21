@@ -12,16 +12,27 @@ Download and install the Pineapple Docker image
 		  
 	Pineapple is available for download as a Docker image from the 
 	{{{https://hub.docker.com/r/pineapple/pineapple/}Pineapple repository at DockerHub}}.
+
+* Pull image
+
+	Issue this command to pull the image:
+
++---
+docker pull pineapple pineapple
++---
+
+	The image is built using {{{https://app.shippable.com/github/athrane/pineapple/dashboard}Shippable}}.
+	A new image is built an uploaded to DockerHub on each commit to GitHub.
 	
 * Create a container
 
 	Issue this command to run a container with the name <pineapple>:
 
 +---
-docker run -p 8080:8080 --name=pineapple pineapple/pineapple:1.7
+docker run -p 8080:8080 --name=pineapple pineapple/pineapple
 +---
 
-* Details
+* Images details
 
 	Pineapple will run at http:/0.0.0.0:8080 within the container.	
 	The image defines exposure of port 8080 to the Docker host.
@@ -35,4 +46,9 @@ docker run -p 8080:8080 --name=pineapple pineapple/pineapple:1.7
 
 	A description of how Pineapple is used to create the image can be found at:
 	{{{https://pineapple.java.net/pineapple-plugins/pineapple-docker-plugin/examples/create-simple-pineapple-image.html}How-to: Create simple Pineapple Docker image}}.
+
+
+
+
+
 		

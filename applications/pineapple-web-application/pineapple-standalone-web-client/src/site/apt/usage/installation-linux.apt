@@ -15,7 +15,7 @@ Installation of the Pineapple standalone web application on Linux
 * Download Pineapple
 
 	Download the client <<<pineapple-standalone-web-client-VERSION.zip>>> 
-	from the <<{{{http://java.net/projects/pineapple/downloads}Downloads page}}>>.
+	from the <<{{{https://bintray.com/pineapple/maven/com.alpha.pineapple}Downloads page}}>>.
 
 * Select an installation type
 

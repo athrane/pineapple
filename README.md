@@ -18,10 +18,21 @@ Pineapple can help you with
 [Visit the project blog for news updates](http://pineapplesoftware.blogspot.com/).
 
 ## Download
+
+### Binaries from Bintray
 [Download Pineapple from Bintray](https://bintray.com/pineapple/maven/com.alpha.pineapple/).
 
 [ ![Download](https://api.bintray.com/packages/pineapple/maven/com.alpha.pineapple/images/download.svg) ](https://bintray.com/pineapple/maven/com.alpha.pineapple/_latestVersion)
 
-## Badges
+### Docker image
+
+[Download Pineapple from DockerHub](https://hub.docker.com/r/pineapple/pineapple/):
+```
+docker pull pineapple/pineapple
+```
+
+[ ![Download](https://api.bintray.com/packages/pineapple/maven/com.alpha.pineapple/images/download.svg) ](https://bintray.com/pineapple/maven/com.alpha.pineapple/_latestVersion)
+
+## Build status
 
 [![Run Status](https://api.shippable.com/projects/587cc4c52f36a111000d1ba1/badge?branch=master)](https://app.shippable.com/github/athrane/pineapple)

@@ -50,9 +50,9 @@ import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResultNotification;
 import com.alpha.pineapple.execution.ResultListener;
 import com.alpha.pineapple.i18n.MessageProvider;
-import com.alpha.pineapple.model.report.basichtml.ExecutionResultType;
 import com.alpha.pineapple.model.report.basichtml.ObjectFactory;
 import com.alpha.pineapple.model.report.basichtml.Report;
+import com.alpha.pineapple.model.report.basichtml.Result;
 import com.alpha.pineapple.report.basichtml.model.Mapper;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
@@ -287,8 +287,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 		Report reportRoot = mapper.createReport();
 
 		// add operation to report
-		ExecutionResultType operationReportResult;
-		operationReportResult = mapper.mapOperationToReport(reportRoot, result);
+		Result operationReportResult = mapper.mapOperationToReport(reportRoot, result);
 
 		// add models to report
 		ExecutionResult[] modelResults = result.getChildren();

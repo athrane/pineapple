@@ -25,8 +25,6 @@ package com.alpha.pineapple.report.basichtml.model;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.junit.After;
@@ -39,12 +37,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.alpha.pineapple.execution.ExecutionResult;
-import com.alpha.pineapple.execution.ExecutionResultImpl;
 import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
-import com.alpha.pineapple.model.report.basichtml.ExecutionResultType;
-import com.alpha.pineapple.model.report.basichtml.MessageType;
-import com.alpha.pineapple.model.report.basichtml.MessagesType;
+import com.alpha.pineapple.execution.ExecutionResultImpl;
 import com.alpha.pineapple.model.report.basichtml.Report;
+import com.alpha.pineapple.model.report.basichtml.Result;
 import com.alpha.springutils.DirectoryTestExecutionListener;
 
 /**
@@ -114,7 +110,7 @@ public class MapperImplIntegrationTest {
 		result.setState(ExecutionState.SUCCESS);
 		
 		// map 
-		ExecutionResultType reportResult;
+		Result reportResult;
 		reportResult = mapper.mapOperationToReport(report, result);
 		
 		// test
@@ -144,7 +140,7 @@ public class MapperImplIntegrationTest {
 		result.setState(ExecutionState.FAILURE);
 		
 		// map 
-		ExecutionResultType reportResult;
+		Result reportResult;
 		reportResult = mapper.mapOperationToReport(report, result);
 		
 		// test
@@ -174,7 +170,7 @@ public class MapperImplIntegrationTest {
 		result.setState(ExecutionState.ERROR);
 		
 		// map 
-		ExecutionResultType reportResult;
+		Result reportResult;
 		reportResult = mapper.mapOperationToReport(report, result);
 		
 		// test
@@ -204,7 +200,7 @@ public class MapperImplIntegrationTest {
 		result.setState(ExecutionState.COMPUTED);
 		
 		// map 
-		ExecutionResultType reportResult;
+		Result reportResult;
 		reportResult = mapper.mapOperationToReport(report, result);
 		
 		// test
@@ -238,7 +234,7 @@ public class MapperImplIntegrationTest {
 		child.setState(ExecutionState.SUCCESS);		
 		
 		// map 
-		ExecutionResultType reportResult;
+		Result reportResult;
 		reportResult = mapper.mapOperationToReport(report, result);
 		
 		// test
@@ -272,7 +268,7 @@ public class MapperImplIntegrationTest {
 		child.setState(ExecutionState.FAILURE);		
 		
 		// map 
-		ExecutionResultType reportResult;
+		Result reportResult;
 		reportResult = mapper.mapOperationToReport(report, result);
 		
 		// test
@@ -307,7 +303,7 @@ public class MapperImplIntegrationTest {
 		child.setState(ExecutionState.ERROR);		
 		
 		// map 
-		ExecutionResultType reportResult;
+		Result reportResult;
 		reportResult = mapper.mapOperationToReport(report, result);
 		
 		// test
@@ -345,7 +341,7 @@ public class MapperImplIntegrationTest {
 		child2.setState(ExecutionState.SUCCESS);				
 		
 		// map 
-		ExecutionResultType reportResult;
+		Result reportResult;
 		reportResult = mapper.mapOperationToReport(report, result);
 		
 		// test
@@ -380,7 +376,7 @@ public class MapperImplIntegrationTest {
 		result.setState(ExecutionState.COMPUTED);
 		
 		// map 
-		ExecutionResultType reportResult;
+		Result reportResult;
 		reportResult = mapper.mapOperationToReport(report, result);
 		
 		// test
@@ -415,7 +411,7 @@ public class MapperImplIntegrationTest {
 		result.setState(ExecutionState.COMPUTED);
 		
 		// map 
-		ExecutionResultType reportResult;
+		Result reportResult;
 		reportResult = mapper.mapOperationToReport(report, result);
 		
 		// test

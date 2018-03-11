@@ -35,11 +35,11 @@ import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
-import com.alpha.pineapple.model.report.basichtml.ExecutionResultType;
-import com.alpha.pineapple.model.report.basichtml.MessageType;
-import com.alpha.pineapple.model.report.basichtml.MessageValueType;
+import com.alpha.pineapple.model.report.basichtml.Message;
+import com.alpha.pineapple.model.report.basichtml.MessageValue;
 import com.alpha.pineapple.model.report.basichtml.ObjectFactory;
 import com.alpha.pineapple.model.report.basichtml.Report;
+import com.alpha.pineapple.model.report.basichtml.Result;
 
 /**
  * Implementation of the <code>Mapper</code> interface
@@ -87,14 +87,14 @@ public class MapperImpl implements Mapper {
 		return objectFactory.createReport();
 	}
 
-	public ExecutionResultType mapOperationToReport(Report reportRoot, ExecutionResult result) {
+	public Result mapOperationToReport(Report reportRoot, ExecutionResult result) {
 		
 		// format start time
         FastDateFormat fastDateFormat = FastDateFormat.getInstance(DATE_FORMAT_PATTERN);        
         String formatedTime = fastDateFormat.format(result.getStartTime());
 		
 		// create report object for operation
-		ExecutionResultType operationResult = objectFactory.createExecutionResultType();
+		Result operationResult = objectFactory.createResult();
 		operationResult.setDescription(result.getDescription());
 		operationResult.setStartTime(formatedTime);		
 		operationResult.setTime( (float) result.getTime());		
@@ -117,9 +117,9 @@ public class MapperImpl implements Mapper {
 		operationResult.setSuccessful( BigInteger.valueOf(successful) );
 						
 		// map messages
-		operationResult.setMessages(objectFactory.createMessagesType());		
+		operationResult.setMessages(objectFactory.createMessages());		
 		Map<String, String> sourceMessages = result.getMessages();		
-		List<MessageType> destinationMessages = operationResult.getMessages().getMessage();		
+		List<Message> destinationMessages = operationResult.getMessages().getMessage();		
 		mapMessages(sourceMessages, destinationMessages);
 		
 		// result type as operation
@@ -135,7 +135,7 @@ public class MapperImpl implements Mapper {
 	}
 
 	
-	public ExecutionResultType mapModelToReport(ExecutionResultType operation, ExecutionResult result) {
+	public Result mapModelToReport(Result operation, ExecutionResult result) {
 		
 		// format start time
 		String pattern = "HH:mm:ss";
@@ -143,7 +143,7 @@ public class MapperImpl implements Mapper {
         String formatedTime = fastDateFormat.format(result.getStartTime());
 		
 		// create report object for operation
-		ExecutionResultType reportResult = objectFactory.createExecutionResultType();
+		Result reportResult = objectFactory.createResult();
 		reportResult.setDescription(result.getDescription());
 		reportResult.setStartTime(formatedTime);
 		reportResult.setTime( (float) result.getTime());		
@@ -166,9 +166,9 @@ public class MapperImpl implements Mapper {
 		reportResult.setSuccessful( BigInteger.valueOf(successful) );
 		
 		// map messages
-		reportResult.setMessages(objectFactory.createMessagesType());		
+		reportResult.setMessages(objectFactory.createMessages());		
 		Map<String, String> sourceMessages = result.getMessages();		
-		List<MessageType> destinationMessages = reportResult.getMessages().getMessage();
+		List<Message> destinationMessages = reportResult.getMessages().getMessage();
 		mapMessages(sourceMessages, destinationMessages);
 
 		// result type as operation
@@ -191,7 +191,7 @@ public class MapperImpl implements Mapper {
 		return reportResult;
 	}
 	
-	public ExecutionResultType mapChildResultToReport(ExecutionResultType parent, ExecutionResult result) {
+	public Result mapChildResultToReport(Result parent, ExecutionResult result) {
 		
 		// format start time
 		String pattern = "HH:mm:ss";
@@ -199,7 +199,7 @@ public class MapperImpl implements Mapper {
         String formatedTime = fastDateFormat.format(result.getStartTime());
                 
 		// create report object for operation
-		ExecutionResultType reportResult = objectFactory.createExecutionResultType();
+		Result reportResult = objectFactory.createResult();
 		reportResult.setDescription(result.getDescription());
 		reportResult.setTime( (float) result.getTime());	
 		reportResult.setStartTime(formatedTime);
@@ -222,9 +222,9 @@ public class MapperImpl implements Mapper {
 		reportResult.setSuccessful( BigInteger.valueOf(successful) );
 		
 		// map messages
-		reportResult.setMessages(objectFactory.createMessagesType());		
+		reportResult.setMessages(objectFactory.createMessages());		
 		Map<String, String> sourceMessages = result.getMessages();		
-		List<MessageType> destinationMessages = reportResult.getMessages().getMessage();
+		List<Message> destinationMessages = reportResult.getMessages().getMessage();
 		mapMessages(sourceMessages, destinationMessages);
 		
 		// result type as operation
@@ -254,9 +254,9 @@ public class MapperImpl implements Mapper {
 	 * @param sourceMessages Map of source messages.
 	 * @param destinationMessages List of mapped messages.
 	 */
-	void mapMessages(Map<String, String> sourceMessages, List<MessageType> destinationMessages) {
+	void mapMessages(Map<String, String> sourceMessages, List<Message> destinationMessages) {
 		for (String key : sourceMessages.keySet()) {			
-			MessageType message = objectFactory.createMessageType();
+			Message message = objectFactory.createMessage();
 			message.setName(key);
 			destinationMessages.add(message);
 			
@@ -266,7 +266,7 @@ public class MapperImpl implements Mapper {
 			// add message lines			
 			if (lines != null ) { 
 				for (String line : lines) {
-					MessageValueType messageValue = objectFactory.createMessageValueType();
+					MessageValue messageValue = objectFactory.createMessageValue();
 					messageValue.setValue(line);				
 					message.getValue().add(messageValue);
 				}					
@@ -276,7 +276,7 @@ public class MapperImpl implements Mapper {
 			}
 			
 			// handle null case, add null message
-			MessageValueType messageValue = objectFactory.createMessageValueType();
+			MessageValue messageValue = objectFactory.createMessageValue();
 			messageValue.setValue(NULL_MESSAGE_VALUE);				
 			message.getValue().add(messageValue);												
 		}

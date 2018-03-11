@@ -1,0 +1,42 @@
+<jaxb:bindings version="2.0"	
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"	
+	jaxb:extensionBindingPrefixes="xjc" >
+
+	<jaxb:bindings schemaLocation="basichtmlreport_1_0.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="com.alpha.pineapple.model.report.basichtml" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="basichtmlreport_1_0.xsd" >
+		<jaxb:bindings node="//xs:element[@name='report']" >
+			<jaxb:class name="Report" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+	
+	<jaxb:bindings schemaLocation="basichtmlreport_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='ResultType']" >
+			<jaxb:class name="Result" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>	
+	<jaxb:bindings schemaLocation="basichtmlreport_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='messagesType']" >
+			<jaxb:class name="Messages" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="basichtmlreport_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='messageType']" >
+			<jaxb:class name="Message" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="basichtmlreport_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='messageValueType']" >
+			<jaxb:class name="MessageValue" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+	
+</jaxb:bindings>

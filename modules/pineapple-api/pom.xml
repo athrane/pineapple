@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Pineapple - a tool to install, configure and test Java web 
-  applications and infrastructure. 
-  
-  Copyright (C) 2007-2013 Allan Thrane Andersen..
-  
-  This file is part of Pineapple.
-  
-  Pineapple is free software: you can redistribute it and/or modify 
-  it under the terms of the GNU General Public License as published 
-  by the Free Software Foundation, either version 3 of the License, 
-  or (at your option) any later version.
-  
-  Pineapple is distributed in the hope that it will be useful, but WITHOUT 
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
-  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License along
-   with Pineapple. If not, see <http://www.gnu.org/licenses/>.
--->
+<!-- Pineapple - a tool to install, configure and test Java web applications 
+	and infrastructure. Copyright (C) 2007-2018 Allan Thrane Andersen.. This 
+	file is part of Pineapple. Pineapple is free software: you can redistribute 
+	it and/or modify it under the terms of the GNU General Public License as 
+	published by the Free Software Foundation, either version 3 of the License, 
+	or (at your option) any later version. Pineapple is distributed in the hope 
+	that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+	warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+	GNU General Public License for more details. You should have received a copy 
+	of the GNU General Public License along with Pineapple. If not, see <http://www.gnu.org/licenses/>. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -38,65 +28,77 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>commons-chain</groupId>
-			<artifactId>commons-chain</artifactId>			
-		</dependency>				
-		<!-- provides access to @resource annotation  -->
-  		<dependency>
-    		<groupId>javax.annotation</groupId>
-    		<artifactId>jsr250-api</artifactId>    		
-  		</dependency>			
+			<artifactId>commons-chain</artifactId>
+		</dependency>
+		<!-- provides access to @resource annotation -->
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>jsr250-api</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
-		</dependency>  		
-		<dependency>
-			<groupId>org.easymock</groupId>  
-			<artifactId>easymock</artifactId>  
-			<scope>test</scope>  		
 		</dependency>
- 		<dependency>
-    		<groupId>org.easymock</groupId>  
-    		<artifactId>easymockclassextension</artifactId>  
-    		<scope>test</scope>                 
-  		</dependency>							
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymockclassextension</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- to get access to org.springframework.test.util.ReflectionTestUtils -->
 		<dependency>
-			<groupId>org.springframework</groupId> 
+			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<scope>test</scope>  					 
+			<scope>test</scope>
 		</dependency>
 		<!-- to get access to org.springframework.util.Assert -->
 		<dependency>
-			<groupId>org.springframework</groupId> 
+			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<scope>test</scope>  					 
-		</dependency>					
+			<scope>test</scope>
+		</dependency>
 		<!-- to get access to org.springframework.test.context.ContextConfiguration -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<scope>test</scope>  					 
-		</dependency>																					
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb2-plugin</artifactId>
-				<configuration>
-					<extension>true</extension>					
-					<bindingIncludes>
-						<include>*.xjb</include>
-					</bindingIncludes>					
-				</configuration>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-xjc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>xsdtojava</goal>
+						</goals>
+						<configuration>
+							<sourceRoot>${basedir}/target/generated-sources/cxf-xjc/</sourceRoot>
+							<xsdOptions>
+								<xsdOption>
+									<xsdDir>${basedir}/src/main/resources</xsdDir>
+									<bindingFile>${basedir}/src/main/resources/bindings.xjb</bindingFile>
+								</xsdOption>
+							</xsdOptions>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -107,7 +109,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>			
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
 					<execution>
@@ -122,20 +124,20 @@
 								<resource>
 									<directory>src/main/resources</directory>
 									<includes>
-          								<include>environment_1_0.xsd</include>
-          								<include>module_1_0.xsd</include>          								
-          								<include>module_model_1_0.xsd</include>          								
-          								<include>execution_result_1_0.xsd</include>
-          								<include>scheduled_operation_1_0.xsd</include>          								          								          								
-          								<include>module_info_1_0.xsd</include>          								          								          								          								
-          								<include>report_1_0.xsd</include>          								          								          								          								
-        							</includes>									
+										<include>environment_1_0.xsd</include>
+										<include>module_1_0.xsd</include>
+										<include>module_model_1_0.xsd</include>
+										<include>execution_result_1_0.xsd</include>
+										<include>scheduled_operation_1_0.xsd</include>
+										<include>module_info_1_0.xsd</include>
+										<include>report_1_0.xsd</include>
+									</includes>
 								</resource>
 							</resources>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>						
+			</plugin>
 		</plugins>
 	</build>
 </project>

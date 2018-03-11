@@ -13,7 +13,7 @@
 
 	<jaxb:bindings schemaLocation="environment_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='credentialsType']" >
-			<jaxb:class name="credentials" />				
+			<jaxb:class name="Credentials" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 

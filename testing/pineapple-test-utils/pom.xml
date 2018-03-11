@@ -88,14 +88,26 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb2-plugin</artifactId>
-				<configuration>
-					<extension>true</extension>					
-					<bindingIncludes>
-						<include>*.xjb</include>
-					</bindingIncludes>					
-				</configuration>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-xjc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>xsdtojava</goal>
+						</goals>
+						<configuration>
+							<sourceRoot>${basedir}/target/generated-sources/cxf-xjc/</sourceRoot>
+							<xsdOptions>
+								<xsdOption>
+									<xsdDir>${basedir}/src/main/resources</xsdDir>
+									<bindingFile>${basedir}/src/main/resources/bindings.xjb</bindingFile>
+								</xsdOption>
+							</xsdOptions>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>	

@@ -24,8 +24,8 @@
 package com.alpha.pineapple.report.basichtml.model;
 
 import com.alpha.pineapple.execution.ExecutionResult;
-import com.alpha.pineapple.model.report.basichtml.ExecutionResultType;
 import com.alpha.pineapple.model.report.basichtml.Report;
+import com.alpha.pineapple.model.report.basichtml.Result;
 
 /**
  * Maps execution results into schema generated objects.
@@ -47,7 +47,7 @@ public interface Mapper {
 	 * 
 	 * @return report result object for operation. 
 	 */
-	public ExecutionResultType mapOperationToReport(Report reportRoot, ExecutionResult result);	
+	public Result mapOperationToReport(Report reportRoot, ExecutionResult result);	
 
 	/**
 	 * Map model result object into a report result object and add it
@@ -58,7 +58,7 @@ public interface Mapper {
 	 *  
 	 * @return report result object for model.
 	 */
-	public ExecutionResultType mapModelToReport(ExecutionResultType operation, ExecutionResult result);
+	public Result mapModelToReport(Result operation, ExecutionResult result);
 	
 	/**
 	 * Map model result object into a report result object and add it
@@ -67,5 +67,5 @@ public interface Mapper {
 	 * @param parent Parent report result object. 
 	 * @param result Execution result containing result for child.
 	 */
-	public ExecutionResultType mapChildResultToReport(ExecutionResultType parent, ExecutionResult result);
+	public Result mapChildResultToReport(Result parent, ExecutionResult result);
 }

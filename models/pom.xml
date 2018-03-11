@@ -3,7 +3,7 @@
   Pineapple - a tool to install, configure and test Java web 
   applications and infrastructure. 
   
-  Copyright (C) 2007-2013 Allan Thrane Andersen..
+  Copyright (C) 2007-2018 Allan Thrane Andersen..
   
   This file is part of Pineapple.
   
@@ -30,7 +30,6 @@
 	<packaging>pom</packaging>
 	<name>Pineapple models</name>
 	<modules>
-		<module>pineapple-weblogic-1212-schemas</module>							
 		<module>pineapple-example-modules</module>									
 	</modules>
 </project>

@@ -62,15 +62,7 @@
 			<groupId>org.springframework</groupId> 
 			<artifactId>spring-test</artifactId> 
 			<scope>test</scope>
-		</dependency>					
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-		</dependency>		
-		<dependency>
-			<groupId>javax.xml</groupId>
-			<artifactId>jaxb-impl</artifactId>
-		</dependency>						
+		</dependency>										
 		<!-- provides access to @resource annotation  -->
   		<dependency>
     		<groupId>javax.annotation</groupId>
@@ -79,17 +71,46 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-		</dependency>						  		
+		</dependency>
+		<!-- JAXB must be defined explicit as of Java 9 -->		
+		<dependency>
+           	<groupId>javax.xml.bind</groupId>
+           	<artifactId>jaxb-api</artifactId>
+       	</dependency>
+       	<dependency>
+           	<groupId>com.sun.xml.bind</groupId>
+           	<artifactId>jaxb-impl</artifactId>
+       	</dependency>
+       	<dependency>
+           	<groupId>com.sun.xml.bind</groupId>
+           	<artifactId>jaxb-core</artifactId>
+       	</dependency>				
+				
 	</dependencies>
 	<build>
-		<plugins>
+		<plugins>		
 			<plugin>
-				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb2-plugin</artifactId>
-				<configuration>
-					<generatePackage>com.alpha.pineapple.model.report.basichtml</generatePackage>
-				</configuration>
-			</plugin>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-xjc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>xsdtojava</goal>
+						</goals>
+						<configuration>
+							<sourceRoot>${basedir}/target/generated-sources/cxf-xjc/</sourceRoot>
+							<xsdOptions>
+								<xsdOption>
+									<xsdDir>${basedir}/src/main/resources</xsdDir>
+									<bindingFile>${basedir}/src/main/resources/bindings.xjb</bindingFile>
+								</xsdOption>
+							</xsdOptions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>			
 				<artifactId>maven-resources-plugin</artifactId>

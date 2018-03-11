@@ -5,12 +5,12 @@ NOTES ON SETTING UP IDE + CHECKING OUT THE PROJECT
 1) IDE: Eclipse
 -----------
 
-1.1) Download Eclipse 4.6 (Neon) and install it.
+1.1) Download Eclipse and install it.
 
 2) Maven 
 ---------
 
-2.1) Download Maven 3.3.3 and install it.
+2.1) Download Maven 3.5.3 and install it.
 
 2.2 ) Add $M2_HOME/bin to your $PATH.
 
@@ -52,12 +52,12 @@ mvn install:install-file -DgroupId=oracle -DartifactId=weblogic-full-client -Dve
 
 4.1) Open Eclipse
 
-4.2) Create a new workspace named: c:\projects\pineapple-maven-ws
+4.2) Create a new workspace named: c:\projects\pineapple-ws
 
 5) Configure Maven in Eclipse 
 -----------
 
-5.1) Open the Eclipse workspace: c:\projects\pineapple-maven-ws
+5.1) Open the Eclipse workspace: c:\projects\pineapple-ws
 
 5.2) Configure the Maven settings file to use by selecting Windows -> Preferences 
 -> Maven -> User Settings and browse to the location of your Maven settings file.
@@ -67,7 +67,7 @@ Click Apply.
 6) Import Maven projects into Eclipse from GitHub
 -----------
 
-6.1) Open the Eclipse workspace: c:\projects\pineapple-maven-ws
+6.1) Open the Eclipse workspace: c:\projects\pineapple-ws
 
 6.2) Import projects by going to File -> Import ->  Git -> Projects from Git -> Clone URI 
 
@@ -97,10 +97,10 @@ Click cancel.
 and browse to the Git working directory at: C:\Users\myuser\git\pineapple
 Select all sub projects and click Finish.
 
-7) Configure code template in Eclipse pineapple-java-ws workspace
+7) Configure code template in Eclipse pineapple-ws workspace
 -----------
 
-7.1) Open the Eclipse workspace: c:\projects\pineapple-maven-ws
+7.1) Open the Eclipse workspace: c:\projects\pineapple-ws
 
 7.2) Open Eclipse -> Windows -> Preferences -> Java -> Code Style -> Code Templates
 -> Import -> C:\Users\myuser\git\pineapple\src\checkstyle\maven-eclipse-codestyle.xml
@@ -111,7 +111,7 @@ and click Apply.
 8.1) Open Eclipse -> Run -> Run Configurations -> Maven Build -> 
 Name: Maven jetty run
 Base-directory: $workspace_loc:/pineapple-web-application-war}
-User settings: C:\tools\apache-maven-3.3.3\conf\settings.xml
+User settings: C:\tools\apache-maven-3.5.3\conf\settings.xml
 Offline: true
 
 ------------------------------------------------------------
@@ -163,7 +163,7 @@ mvn -cpu clean install
 10.3) Configure server
 
  		<server>
-			<id>bintray-pineapple-maven</id>	
+            <id>bintray-pineapple-maven</id>
             <username>some-user</username>
             <password>some-password</password>
 		</server>		
@@ -171,6 +171,3 @@ mvn -cpu clean install
 10.4) Invoke to deploy
 
 mvn deploy
-
-
-

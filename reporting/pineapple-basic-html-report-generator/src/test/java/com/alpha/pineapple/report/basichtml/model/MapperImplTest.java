@@ -40,10 +40,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
-import com.alpha.pineapple.model.report.basichtml.ExecutionResultType;
-import com.alpha.pineapple.model.report.basichtml.MessageType;
-import com.alpha.pineapple.model.report.basichtml.MessageValueType;
-import com.alpha.pineapple.model.report.basichtml.MessagesType;
+import com.alpha.pineapple.model.report.basichtml.Result;
+import com.alpha.pineapple.model.report.basichtml.Message;
+import com.alpha.pineapple.model.report.basichtml.MessageValue;
+import com.alpha.pineapple.model.report.basichtml.Messages;
 import com.alpha.pineapple.model.report.basichtml.ObjectFactory;
 import com.alpha.pineapple.model.report.basichtml.Report;
 
@@ -65,7 +65,7 @@ public class MapperImplTest {
 	/**
 	 * Execution time.
 	 */
-	static final Long EXECUTION_TIME = new Long(99);	
+	static final Long EXECUTION_TIME = Long.valueOf(99);	
 	
 	/**
 	 * Error state for report object.
@@ -120,12 +120,12 @@ public class MapperImplTest {
 	/**
 	 * Mock report result object.
 	 */
-	ExecutionResultType reportResult;
+	Result reportResult;
 	
 	/**
 	 * Mock report result messages object. 
 	 */
-	MessagesType messagesType;
+	Messages Messages;
 
 	/**
 	 * Random start time.
@@ -157,10 +157,10 @@ public class MapperImplTest {
         objectFactory = org.easymock.classextension.EasyMock.createMock( ObjectFactory.class );
 
 		// create mock report result configuration
-		reportResult = org.easymock.classextension.EasyMock.createMock( ExecutionResultType.class);
+		reportResult = org.easymock.classextension.EasyMock.createMock( Result.class);
 
 		// create mock report messages type
-		messagesType = org.easymock.classextension.EasyMock.createMock( MessagesType.class);
+		Messages = org.easymock.classextension.EasyMock.createMock( Messages.class);
 
 		// complete mock report configuration
 		report = org.easymock.classextension.EasyMock.createMock( Report.class);
@@ -178,7 +178,7 @@ public class MapperImplTest {
 		mapper = null;
 		executionResult = null;
 		reportResult = null;
-		messagesType = null;
+		Messages = null;
 		objectFactory = null;
 		report = null;
 	}
@@ -188,8 +188,8 @@ public class MapperImplTest {
 	 */
 	void completeMockObjectFactorySetup() {
 		org.easymock.classextension.EasyMock.expect( objectFactory.createReport()).andReturn(report);
-		org.easymock.classextension.EasyMock.expect( objectFactory.createExecutionResultType()).andReturn(reportResult);
-		org.easymock.classextension.EasyMock.expect( objectFactory.createMessagesType()).andReturn(messagesType);		
+		org.easymock.classextension.EasyMock.expect( objectFactory.createResult()).andReturn(reportResult);
+		org.easymock.classextension.EasyMock.expect( objectFactory.createMessages()).andReturn(Messages);		
 		org.easymock.classextension.EasyMock.replay( objectFactory );
 	}	
 
@@ -231,9 +231,9 @@ public class MapperImplTest {
 	/**
 	 * Complete mock report messages type configuration.
 	 */	
-	void completeMockMessagesTypeSetup() {
-		org.easymock.classextension.EasyMock.expect( messagesType.getMessage()).andReturn(new ArrayList<MessageType>());
-		org.easymock.classextension.EasyMock.replay( messagesType );
+	void completeMockMessagesSetup() {
+		org.easymock.classextension.EasyMock.expect( Messages.getMessage()).andReturn(new ArrayList<Message>());
+		org.easymock.classextension.EasyMock.replay( Messages );
 	}		
 	
 	/**
@@ -247,7 +247,7 @@ public class MapperImplTest {
         FastDateFormat fastDateFormat = FastDateFormat.getInstance(MapperImpl.DATE_FORMAT_PATTERN);        
         String formatedTime = fastDateFormat.format(randomStartTime);
 		
-		org.easymock.classextension.EasyMock.expect( reportResult.getMessages()).andReturn( messagesType ).times( messagesAccessed );
+		org.easymock.classextension.EasyMock.expect( reportResult.getMessages()).andReturn( Messages ).times( messagesAccessed );
 		reportResult.setDescription( DESC );
 		reportResult.setStartTime(formatedTime);
 		reportResult.setTime(EXECUTION_TIME.floatValue() );
@@ -256,7 +256,7 @@ public class MapperImplTest {
 		reportResult.setErrors(BigInteger.ZERO);
 		reportResult.setFailures(BigInteger.ZERO);		
 		reportResult.setSuccessful(BigInteger.ZERO);
-		reportResult.setMessages(messagesType);
+		reportResult.setMessages(Messages);
 		reportResult.setType(OPERATION_TYPE);
 		reportResult.setReportId(BigInteger.ONE);
 		org.easymock.classextension.EasyMock.replay( reportResult );
@@ -304,14 +304,14 @@ public class MapperImplTest {
 		// complete mock objects configuration
 		completeMockObjectFactorySetup();			
 		completeMockExecutionResultSetup(ExecutionState.SUCCESS);
-		completeMockMessagesTypeSetup();		
+		completeMockMessagesSetup();		
 		completeMockReportResultSetup(SUCCESS_STATE);
 		
 		// create report
 		Report report = mapper.createReport();
 		
 		// map 
-		ExecutionResultType actualReportResult;
+		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
 				
@@ -320,7 +320,7 @@ public class MapperImplTest {
 		org.easymock.classextension.EasyMock.verify(objectFactory);
 		EasyMock.verify(executionResult);
 		org.easymock.classextension.EasyMock.verify(reportResult);	
-		org.easymock.classextension.EasyMock.verify( messagesType );
+		org.easymock.classextension.EasyMock.verify( Messages );
 	}
 
 	/**
@@ -332,14 +332,14 @@ public class MapperImplTest {
 		// complete objects configuration
 		completeMockObjectFactorySetup();			
 		completeMockExecutionResultSetup(ExecutionState.FAILURE);
-		completeMockMessagesTypeSetup();		
+		completeMockMessagesSetup();		
 		completeMockReportResultSetup(FAILURE_STATE);
 		
 		// create report
 		Report report = mapper.createReport();
 		
 		// map 
-		ExecutionResultType actualReportResult;
+		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
 				
@@ -347,7 +347,7 @@ public class MapperImplTest {
 		org.easymock.classextension.EasyMock.verify(objectFactory);
 		EasyMock.verify(executionResult);
 		org.easymock.classextension.EasyMock.verify(reportResult);	
-		org.easymock.classextension.EasyMock.verify( messagesType );
+		org.easymock.classextension.EasyMock.verify( Messages );
 	}
 	
 	/**
@@ -359,14 +359,14 @@ public class MapperImplTest {
 		// complete mock objects configuration
 		completeMockObjectFactorySetup();			
 		completeMockExecutionResultSetup(ExecutionState.ERROR);
-		completeMockMessagesTypeSetup();		
+		completeMockMessagesSetup();		
 		completeMockReportResultSetup(ERROR_STATE);
 		
 		// create report
 		Report report = mapper.createReport();
 		
 		// map 
-		ExecutionResultType actualReportResult;
+		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
 				
@@ -375,7 +375,7 @@ public class MapperImplTest {
 		org.easymock.classextension.EasyMock.verify(objectFactory);
 		EasyMock.verify(executionResult);
 		org.easymock.classextension.EasyMock.verify(reportResult);	
-		org.easymock.classextension.EasyMock.verify( messagesType );
+		org.easymock.classextension.EasyMock.verify( Messages );
 	}
 	
 	/**
@@ -387,14 +387,14 @@ public class MapperImplTest {
 		// complete objects configuration
 		completeMockObjectFactorySetup();			
 		completeMockExecutionResultSetup(ExecutionState.EXECUTING);
-		completeMockMessagesTypeSetup();		
+		completeMockMessagesSetup();		
 		completeMockReportResultSetup(EXECUTING_STATE);
 		
 		// create report
 		Report report = mapper.createReport();
 		
 		// map 
-		ExecutionResultType actualReportResult;
+		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
 				
@@ -403,7 +403,7 @@ public class MapperImplTest {
 		org.easymock.classextension.EasyMock.verify(objectFactory);
 		EasyMock.verify(executionResult);
 		org.easymock.classextension.EasyMock.verify(reportResult);	
-		org.easymock.classextension.EasyMock.verify( messagesType );
+		org.easymock.classextension.EasyMock.verify( Messages );
 	}
 	
 	
@@ -414,9 +414,9 @@ public class MapperImplTest {
 	public void testMapOperationWithZeroMessages() {
 
 		// Complete mock report messages type configuration.
-		ArrayList<MessageType> messageList = new ArrayList<MessageType>();			
-		org.easymock.classextension.EasyMock.expect( messagesType.getMessage()).andReturn(messageList).times(2);		
-		org.easymock.classextension.EasyMock.replay( messagesType );
+		ArrayList<Message> messageList = new ArrayList<Message>();			
+		org.easymock.classextension.EasyMock.expect( Messages.getMessage()).andReturn(messageList).times(2);		
+		org.easymock.classextension.EasyMock.replay( Messages );
 		
 		// complete mock objects configuration
 		completeMockObjectFactorySetup();			
@@ -427,7 +427,7 @@ public class MapperImplTest {
 		Report report = mapper.createReport();
 		
 		// map 
-		ExecutionResultType actualReportResult;
+		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
 		
@@ -439,7 +439,7 @@ public class MapperImplTest {
 		org.easymock.classextension.EasyMock.verify(objectFactory);
 		EasyMock.verify(executionResult);
 		org.easymock.classextension.EasyMock.verify(reportResult);	
-		org.easymock.classextension.EasyMock.verify( messagesType );		
+		org.easymock.classextension.EasyMock.verify( Messages );		
 	}
 	
 	/**
@@ -449,14 +449,14 @@ public class MapperImplTest {
 	public void testMapOperationWithOneMessage() {
 
 		// Complete mock report message type configuration.		
-		MessageType message = org.easymock.classextension.EasyMock.createMock( MessageType.class );
+		Message message = org.easymock.classextension.EasyMock.createMock( Message.class );
 		org.easymock.classextension.EasyMock.replay( message );
 		
 		// Complete mock report messages type configuration.
-		ArrayList<MessageType> messageList = new ArrayList<MessageType>();	
+		ArrayList<Message> messageList = new ArrayList<Message>();	
 		messageList.add(message);		
-		org.easymock.classextension.EasyMock.expect( messagesType.getMessage()).andReturn(messageList).times(2);		
-		org.easymock.classextension.EasyMock.replay( messagesType );
+		org.easymock.classextension.EasyMock.expect( Messages.getMessage()).andReturn(messageList).times(2);		
+		org.easymock.classextension.EasyMock.replay( Messages );
 		
 		// complete mock objects configuration
 		completeMockObjectFactorySetup();			
@@ -467,7 +467,7 @@ public class MapperImplTest {
 		Report report = mapper.createReport();
 		
 		// map 
-		ExecutionResultType actualReportResult;
+		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
 		
@@ -479,7 +479,7 @@ public class MapperImplTest {
 		org.easymock.classextension.EasyMock.verify(objectFactory);
 		EasyMock.verify(executionResult);
 		org.easymock.classextension.EasyMock.verify(reportResult);	
-		org.easymock.classextension.EasyMock.verify( messagesType );
+		org.easymock.classextension.EasyMock.verify( Messages );
 		org.easymock.classextension.EasyMock.verify( message );		
 	}
 
@@ -490,18 +490,18 @@ public class MapperImplTest {
 	public void testMapOperationWithMultipleMessages() {
 
 		// Complete mock report message type configuration.		
-		MessageType message = org.easymock.classextension.EasyMock.createMock( MessageType.class );
+		Message message = org.easymock.classextension.EasyMock.createMock( Message.class );
 		org.easymock.classextension.EasyMock.replay( message );
 
-		MessageType message2 = org.easymock.classextension.EasyMock.createMock( MessageType.class );
+		Message message2 = org.easymock.classextension.EasyMock.createMock( Message.class );
 		org.easymock.classextension.EasyMock.replay( message2 );
 				
 		// Complete mock report messages type configuration.
-		ArrayList<MessageType> messageList = new ArrayList<MessageType>();	
+		ArrayList<Message> messageList = new ArrayList<Message>();	
 		messageList.add(message);		
 		messageList.add(message2);		
-		org.easymock.classextension.EasyMock.expect( messagesType.getMessage()).andReturn(messageList).times(2);		
-		org.easymock.classextension.EasyMock.replay( messagesType );
+		org.easymock.classextension.EasyMock.expect( Messages.getMessage()).andReturn(messageList).times(2);		
+		org.easymock.classextension.EasyMock.replay( Messages );
 
 		// complete mock objects configuration
 		completeMockObjectFactorySetup();
@@ -513,7 +513,7 @@ public class MapperImplTest {
 		Report report = mapper.createReport();
 		
 		// map 
-		ExecutionResultType actualReportResult;
+		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
 		
@@ -525,7 +525,7 @@ public class MapperImplTest {
 		org.easymock.classextension.EasyMock.verify(objectFactory);
 		EasyMock.verify(executionResult);
 		org.easymock.classextension.EasyMock.verify(reportResult);	
-		org.easymock.classextension.EasyMock.verify( messagesType );
+		org.easymock.classextension.EasyMock.verify( Messages );
 		org.easymock.classextension.EasyMock.verify( message );		
 	}
 	
@@ -536,21 +536,21 @@ public class MapperImplTest {
 	public void testMapOperationWithNullMessage() {
 
 		// Complete mock report message value configuration.		
-		MessageValueType messageValueType = org.easymock.classextension.EasyMock.createMock( MessageValueType.class );
-		messageValueType.setValue(MapperImpl.NULL_MESSAGE_VALUE);
-		org.easymock.classextension.EasyMock.replay( messageValueType );
+		MessageValue MessageValue = org.easymock.classextension.EasyMock.createMock( MessageValue.class );
+		MessageValue.setValue(MapperImpl.NULL_MESSAGE_VALUE);
+		org.easymock.classextension.EasyMock.replay( MessageValue );
 		
 		// Complete mock report message type configuration.
-		ArrayList<MessageValueType> messageValueList = new ArrayList<MessageValueType>();	
-		MessageType messageType = org.easymock.classextension.EasyMock.createMock( MessageType.class );
-		messageType.setName(randomString);
-		org.easymock.classextension.EasyMock.expect(messageType.getValue()).andReturn(messageValueList);
-		org.easymock.classextension.EasyMock.replay( messageType );
+		ArrayList<MessageValue> messageValueList = new ArrayList<MessageValue>();	
+		Message message = org.easymock.classextension.EasyMock.createMock( Message.class );
+		message.setName(randomString);
+		org.easymock.classextension.EasyMock.expect(message.getValue()).andReturn(messageValueList);
+		org.easymock.classextension.EasyMock.replay( message );
 		
 		// Complete mock report messages type configuration.
-		ArrayList<MessageType> messageList = new ArrayList<MessageType>();			
-		org.easymock.classextension.EasyMock.expect( messagesType.getMessage()).andReturn(messageList).times(2);		
-		org.easymock.classextension.EasyMock.replay( messagesType );
+		ArrayList<Message> messageList = new ArrayList<Message>();			
+		org.easymock.classextension.EasyMock.expect( Messages.getMessage()).andReturn(messageList).times(2);		
+		org.easymock.classextension.EasyMock.replay( Messages );
 		
 		// complete execution result mock configuration
 		HashMap<String, String> messages = new HashMap<String, String>();
@@ -561,10 +561,10 @@ public class MapperImplTest {
 
 		// complete mock configuration
 		org.easymock.classextension.EasyMock.expect( objectFactory.createReport()).andReturn(report);
-		org.easymock.classextension.EasyMock.expect( objectFactory.createExecutionResultType()).andReturn(reportResult);
-		org.easymock.classextension.EasyMock.expect( objectFactory.createMessagesType()).andReturn(messagesType);				
-		org.easymock.classextension.EasyMock.expect( objectFactory.createMessageType()).andReturn(messageType);
-		org.easymock.classextension.EasyMock.expect( objectFactory.createMessageValueType()).andReturn(messageValueType);
+		org.easymock.classextension.EasyMock.expect( objectFactory.createResult()).andReturn(reportResult);
+		org.easymock.classextension.EasyMock.expect( objectFactory.createMessages()).andReturn(Messages);				
+		org.easymock.classextension.EasyMock.expect( objectFactory.createMessage()).andReturn(message);
+		org.easymock.classextension.EasyMock.expect( objectFactory.createMessageValue()).andReturn(MessageValue);
 		org.easymock.classextension.EasyMock.replay( objectFactory );
 		
 		// complete mock configuration			
@@ -574,7 +574,7 @@ public class MapperImplTest {
 		Report report = mapper.createReport();
 		
 		// map 
-		ExecutionResultType actualReportResult;
+		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
 		
@@ -586,9 +586,9 @@ public class MapperImplTest {
 		org.easymock.classextension.EasyMock.verify(objectFactory);
 		EasyMock.verify(executionResult);
 		org.easymock.classextension.EasyMock.verify(reportResult);	
-		org.easymock.classextension.EasyMock.verify( messagesType );
-		org.easymock.classextension.EasyMock.verify( messageType );	
-		org.easymock.classextension.EasyMock.verify( messageValueType );
+		org.easymock.classextension.EasyMock.verify( messages);
+		org.easymock.classextension.EasyMock.verify( message);	
+		org.easymock.classextension.EasyMock.verify( MessageValue );
 	}
 	
 }

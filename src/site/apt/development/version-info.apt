@@ -16,8 +16,24 @@ Pineapple Version Information
 	Information about where version information is located in
 	the project:
 
-* Pineapple master Maven project	
+* Version element in the parent Maven project	
 	
+	* The <<<version>>> element in the parent Maven project:
+
++----
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.alpha.pineapple</groupId>
+	<artifactId>pineapple-project</artifactId>
+	<packaging>pom</packaging>
+	<version>1.11.0</version>
++----
+		
+	The version info is used as source for linking child projects.
+		
+* Release property in the parent Maven project			
+		
 	* The <<<pineapple.release.version>>> property in the pineapple-project POM.
 	
 	[]
@@ -30,7 +46,7 @@ Pineapple Version Information
 		
 		[]	
 
-* Pineapple child Maven projects	
+* Version element in child Maven projects	
 	
 	* The <<<version>>> property in the parent stanza in the child Maven projects:
 

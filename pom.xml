@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Pineapple - a tool to install, configure and test Java web applications 
-	and infrastructure. Copyright (C) 2007-2017 Allan Thrane Andersen.. This 
+	and infrastructure. Copyright (C) 2007-2018 Allan Thrane Andersen.. This 
 	file is part of Pineapple. Pineapple is free software: you can redistribute 
 	it and/or modify it under the terms of the GNU General Public License as 
 	published by the Free Software Foundation, either version 3 of the License, 
@@ -15,7 +15,7 @@
 	<groupId>com.alpha.pineapple</groupId>
 	<artifactId>pineapple-project</artifactId>
 	<packaging>pom</packaging>
-	<version>1.10.0</version>
+	<version>1.11.0</version>
 	<name>Pineapple Project</name>
 	<description>Pineapple is a tool to install, configure and test Java web applications and infrastructure.</description>
 	<url>https://athrane.github.io/pineapple/</url>
@@ -64,7 +64,7 @@
 		<pineapple.webapp.jettystarter.version>1.0.0</pineapple.webapp.jettystarter.version>
 
 		<!-- Pineapple release version -->
-		<pineapple.release.version>1.10.0</pineapple.release.version>
+		<pineapple.release.version>1.11.0</pineapple.release.version>
 
 		<!-- Text file encoding used by Maven plugins -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

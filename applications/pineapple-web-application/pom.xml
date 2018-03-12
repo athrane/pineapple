@@ -24,15 +24,12 @@
 	<parent>
 		<groupId>com.alpha.pineapple</groupId>
 		<artifactId>pineapple-applications</artifactId>
-		<version>1.10.0</version>
+		<version>1.11.0</version>
 	</parent>
   <artifactId>pineapple-web-application</artifactId>
   <packaging>pom</packaging>
   <name>Pineapple web application</name>	  
   <modules>
-  	<!-- disabled since its destiny is undecided
-  	<module>pineapple-web-application-ear</module>
-  	-->
   	<module>pineapple-web-application-war</module>
 	<module>pineapple-standalone-web-client</module>
 	<module>pineapple-jetty-starter</module>

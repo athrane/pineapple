@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>com.alpha.pineapple</groupId>
 		<artifactId>pineapple-support</artifactId>
-		<version>1.10.0</version>
+		<version>1.11.0</version>
 	</parent>
 	<artifactId>pineapple-docker-support</artifactId>
 	<packaging>jar</packaging>

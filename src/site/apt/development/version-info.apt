@@ -16,7 +16,7 @@ Pineapple Version Information
 	Information about where version information is located in
 	the project:
 
-* Pineapple Project	
+* Pineapple master Maven project	
 	
 	* The <<<pineapple.release.version>>> property in the pineapple-project POM.
 	
@@ -29,7 +29,21 @@ Pineapple Version Information
 		* Pineapple standalone web application project.		
 		
 		[]	
+
+* Pineapple child Maven projects	
 	
+	* The <<<version>>> property in the parent stanza in the child Maven projects:
+
++----
+  <parent>
+    <groupId>com.alpha.pineapple</groupId>
+    <artifactId>pineapple-modules</artifactId>
+    <version>1.11.0</version>
+  </parent>
++----
+		
+	The version info is used to link to the main parent project.	
+			
 * Pineapple core project
 	
 	* The <<<ci.version>>> value in: <<<src/main/resources/com.alpha.pineapple.core-messages.properties>>>.

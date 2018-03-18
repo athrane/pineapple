@@ -50,7 +50,6 @@ pineapple-project
      |     +--- pineapple-infrastructure-test-plugin
      |                
      +--- models
-     |     +--- pineapple-weblogic-1212-schemas
      |     +--- pineapple-example-modules
      |                	 
      +--- plugins
@@ -229,16 +228,6 @@ pineapple-project
 	{{{../pineapple-modules/pineapple-infrastructure-test-plugin/index.html}here}}.		
 	
 * Model projects				
-
-** pineapple-weblogic-1212-schemas
-
-	Location: pineapple-project/models/pineapple-weblogic-1212-schemas
-
-	JAR-type project which produces a JAR file which contains the WebLogic 12.1.2
-	schemas and a XMLBeans based OXM mapping of the schemas.
-	
-	A link to the project documentation for the project can be found 
-	{{{../pineapple-models/pineapple-weblogic-1212-schemas/index.html}here}}.		
 
 ** pineapple-example-modules
 

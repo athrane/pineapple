@@ -71,14 +71,6 @@ Usage
 	* {{{../pineapple-plugins/pineapple-docker-plugin/index.html}Docker plugin.}}
 	
 	* {{{../pineapple-modules/pineapple-infrastructure-test-plugin/index.html}Infrastructure test plugin.}}		
-
-	* {{{../pineapple-plugins/pineapple-fusion-middleware-installation-plugin/index.html}Fusion Middleware installation plugin.}}
-
-	* {{{../pineapple-plugins/pineapple-weblogic-installation-plugin/index.html}WebLogic installation plugin.}}
-		
-	* {{{../pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html}Weblogic scripting tool (WLST) plugin.}}	
-
-	* {{{../pineapple-modules/pineapple-wbem-plugin/index.html}WBEM plugin.}}
 	
 	* {{{../pineapple-modules/pineapple-filesystem-plugin/index.html}File system plugin.}}		
 		

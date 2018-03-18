@@ -2,7 +2,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	targetNamespace="http://pineapple.dev.java.net/ns/report/basic_html_1_0" 
 	xmlns="http://pineapple.dev.java.net/ns/report/basic_html_1_0"
-	elementFormDefault="qualified" attributeFormDefault="qualified">
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
 	
   <xs:annotation>
     <xs:documentation>XML Schema for basic HTML reports, inspired by the JUnit reports.</xs:documentation>
@@ -11,26 +11,26 @@
   <xs:element name="report">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="result"   type="executionResultType" />
+        <xs:element name="result" type="ResultType" minOccurs="1" maxOccurs="1"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
 
-  <xs:complexType name="executionResultType" >
+  <xs:complexType name="ResultType" >
     <xs:sequence>
-      <xs:element name="result"   		type="executionResultType"   minOccurs="0" maxOccurs="unbounded" />
-      <xs:element name="messages" 		type="messagesType" />        
+      <xs:element name="result" type="ResultType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="messages" type="messagesType" minOccurs="1" maxOccurs="1" />        
     </xs:sequence>
-    <xs:attribute name="type"			type="xs:string" />    
-    <xs:attribute name="description"	type="xs:string" />
-    <xs:attribute name="time"     		type="xs:float" />            
-    <xs:attribute name="startTime"     	type="xs:string" />    
-    <xs:attribute name="state"     		type="xs:string" />
-    <xs:attribute name="children"   	type="xs:integer" />    
-    <xs:attribute name="successful"   	type="xs:integer" />
-    <xs:attribute name="failures" 		type="xs:integer" />
-    <xs:attribute name="errors"   		type="xs:integer" />            
-    <xs:attribute name="reportId"   	type="xs:integer" />    
+    <xs:attribute name="type" type="xs:string" />    
+    <xs:attribute name="description" type="xs:string" />
+    <xs:attribute name="time" type="xs:float" />            
+    <xs:attribute name="startTime" type="xs:string" />    
+    <xs:attribute name="state" type="xs:string" />
+    <xs:attribute name="children" type="xs:integer" />    
+    <xs:attribute name="successful" type="xs:integer" />
+    <xs:attribute name="failures" type="xs:integer" />
+    <xs:attribute name="errors" type="xs:integer" />            
+    <xs:attribute name="reportId" type="xs:integer" />    
   </xs:complexType>
 
   <xs:complexType name="messagesType">
@@ -43,7 +43,7 @@
     <xs:sequence>
       <xs:element name="value" type="messageValueType" minOccurs="1" maxOccurs="unbounded" />
     </xs:sequence>  
-    <xs:attribute name="name"  type="xs:string" />
+    <xs:attribute name="name" type="xs:string" />
   </xs:complexType>
 
   <xs:complexType name="messageValueType">

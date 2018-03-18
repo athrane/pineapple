@@ -16,36 +16,6 @@ Overview
 
 	Pineapple can help you with:
 
-	* <<Automated installation of Fusion Middleware software:>>
-
-		* Installation of the Oracle JVM.
-
-		* Installation of the WebLogic server, WebCenter and ADF.
-
-		[]
-
-	* <<Automated configuration of Fusion Middleware software:>>
-
-		* Configuration the Oracle and JRockit JVM.
-
-		* Creation of WebLogic Domains. Update and deletion of the configuration of a WebLogic Domain.
-		
-		* Installation of WebLogic NodeManager.		
-
-		[]
-
-	* <<Automated test of Fusion Middleware software:>>
-
-		* Test the installation of the JRockit JVM, WebLogic server and the configuration in a WebLogic Domain.
-
-		[]
-
-	* <<Automated deployment of application in WebLogic domains:>>
-
-		* Deployment and undeployment of applications in a WebLogic Domain.
-
-		[]
-
 	* <<Automated deployment of Docker images:>>
 
 		* Creation and deletion of a Docker image.
@@ -68,6 +38,8 @@ Overview
 		
 		[]
 
+	* <<Scheduled test and configuration of tasks>> 
+
 	[]
 	
 * Usage
@@ -89,17 +61,9 @@ Overview
 
 * Version Information
 
-** Version 1.9.0 (Current release)
+** Version 1.11.0 (Current release)
 
-	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=17708}Release Notes for version 1.9.0}}.>> 
-
-** Version 1.8.0 
-
-	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=17380}Release Notes for version 1.8.0}}.>> 
-
-** Version 1.7.0 
-
-	<<{{{https://java.net/jira/secure/ReleaseNote.jspa?projectId=11255&version=17057}Release Notes for version 1.7.0}}.>> 
+	<<{{{https://github.com/athrane/pineapple/milestone/2?closed=1}Closed issues in the 1.11.0 GitHub milestone}}.>> 
    
 * Development documentation
 

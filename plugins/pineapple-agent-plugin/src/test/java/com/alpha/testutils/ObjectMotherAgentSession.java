@@ -114,7 +114,7 @@ public class ObjectMotherAgentSession {
     /**
      * Create unconnected agent session.
      * 
-     * @return unconnected WebLogic JMX Edit session.
+     * @return unconnected agent session.
      */
 	public AgentSession createUnconnectedSshSession() {
 		

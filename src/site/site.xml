@@ -50,8 +50,7 @@
 			<item name="Infrastructure Test" href="./pineapple-modules/pineapple-infrastructure-test-plugin/index.html" />
 			<item name="Fusion Middleware Installation" href="./pineapple-plugins/pineapple-fusion-middleware-installation-plugin/index.html" />			
 			<item name="WebLogic Installation" href="./pineapple-plugins/pineapple-weblogic-installation-plugin/index.html" />
-			<item name="WebLogic Scripting Tool (WLST)" href="./pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html" />			
-			<item name="WebLogic JMX" href="./pineapple-modules/pineapple-weblogic-jmx-plugin/index.html" />									
+			<item name="WebLogic Scripting Tool (WLST)" href="./pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html" />											
 		</menu>
 
 		<menu name="API's" inherit="top">

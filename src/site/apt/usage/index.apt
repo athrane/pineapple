@@ -76,9 +76,7 @@ Usage
 
 	* {{{../pineapple-plugins/pineapple-weblogic-installation-plugin/index.html}WebLogic installation plugin.}}
 		
-	* {{{../pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html}Weblogic scripting tool (WLST) plugin.}}
-
-	* {{{../pineapple-modules/pineapple-weblogic-jmx-plugin/index.html}Weblogic JMX plugin.}}	
+	* {{{../pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html}Weblogic scripting tool (WLST) plugin.}}	
 
 	* {{{../pineapple-modules/pineapple-wbem-plugin/index.html}WBEM plugin.}}
 	

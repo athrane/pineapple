@@ -217,17 +217,14 @@ Introduction
 	
 	Id of the credential in the current environment. 
 
-	Notice: The example id <<<weblogic-edit-jmx>>> is 
+	Notice: The example id <<<vagrant-ssh>>> is 
 	referenced from the resource example defined in the previous section. 
 		
 ** The <<<user>>> attribute
 	
 	User name used to authenticate the resource.
 
-	The user must be authenticated in the WebLogic domain either be definition or
-	delegation to another authorization mechanism.
-	
-	The user must have adequate privileges to access the domain.
+	The user must be authenticated by the SSH server.
 
 ** The <<<password>>> attribute
 

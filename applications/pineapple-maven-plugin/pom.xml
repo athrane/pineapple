@@ -75,35 +75,8 @@
 		<!--  provides access to Pineapple plugins (todo: remove this hack) -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>pineapple-weblogic-jmx-plugin</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
 			<artifactId>pineapple-infrastructure-test-plugin</artifactId>
 		</dependency>		
-		<!--
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>pineapple-filesystem-plugin</artifactId>
-		</dependency>																																										
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>pineapple-jrockit-installation-plugin</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>pineapple-weblogic-installation-plugin</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>pineapple-weblogic-scripting-tool-plugin</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>pineapple-fusion-middleware-installation-plugin</artifactId>
-			<version>${project.version}</version>								
-		</dependency>
-		-->
 		<!--  provides test access to AbstractMojoTestCase -->
 		<dependency>
 			<groupId>org.apache.maven.shared</groupId>

@@ -23,32 +23,6 @@ Building Pineapple
 	[[2]] Add <<<$M2_HOME/bin>>> to your <<<$PATH>>>.
 
 	[[3]] Create a <<<MAVEN_OPTS>>> environment variable and set its value to: <<<-Xms512M -Xmx512M>>>
-
-** Add third party jars to local Maven repository 
-
-	Pineapple uses some third party jars that are not hosted on the Maven 
-	repositories: You will need to manually install the jars into your 
-	local repository yourself.
-
-*** Add WebLogic 12.1.2 jar 
-
-	[[1]]  Use the WebLogic jar builder tool to build a JDK 1.6 client jar from a WebLogic 12.1.2: 
-	<<{{{http://docs.oracle.com/cd/E24329_01/web.1211/e24378/jarbuilder.htm}Jarbuilder usage instructions.}}>>	
-	
-	[[2]] Run the following commands from the directory where the wlfullclient.jar was created to install the 
-	jar into your local repository:
-
-+--  
-	mvn install:install-file 
-	-DgroupId=oracle 
-	-DartifactId=weblogic-full-client 
-	-Dversion=12.1.2 
-	-Dpackaging=jar 
-	-Dfile=wlfullclient.jar 
-	-DgeneratePom=true
-+--  	
-
-	[]
 	
 ** Build Pineapple
 

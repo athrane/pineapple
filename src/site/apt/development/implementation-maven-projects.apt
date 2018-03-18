@@ -47,7 +47,6 @@ pineapple-project
      |     +--- pineapple-api          
      |     +--- pineapple-commands-api     
      |     +--- pineapple-core
-     |     +--- pineapple-weblogic-jmx-plugin
      |     +--- pineapple-infrastructure-test-plugin
      |                
      +--- models
@@ -217,17 +216,7 @@ pineapple-project
 	Pineapple-projects should link to this project if they need to use the reusable classes.
 	
 	A link to the project documentation for the core component can be found 
-	{{{../pineapple-modules/pineapple-core/index.html}here}}.	
-		
-** pineapple-weblogic-jmx-plugin
-
-	Location: pineapple-project/modules/pineapple-weblogic-jmx-plugin
-
-	JAR-type project which produces a JAR file which implements a plugin for 
-	management of WebLogic Servers through JMX.
-	
-	A link to the project documentation for the plugin can be found 
-	{{{../pineapple-modules/pineapple-weblogic-jmx-plugin/index.html}here}}.		
+	{{{../pineapple-modules/pineapple-core/index.html}here}}.			
 
 ** pineapple-infrastructure-test-plugin
 

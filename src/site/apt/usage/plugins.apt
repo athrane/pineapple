@@ -30,8 +30,6 @@ Pineapple plugins overview
 	
 	* WebLogic scripting tool (WLST) plugin	
 	
-	* WebLogic JMX plugin	
-	
 	[]
 
 * Agent plugin 	
@@ -81,11 +79,4 @@ Pineapple plugins overview
 	Plugin for execution of WLST scripts to manage or configure WebLogic Servers.
 	 
 	{{{../pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html}Plugin documentation.}}			
-
-* WebLogic JMX plugin	
-	
-	Plugin for management of WebLogic Servers through JMX.
-	
-	{{{../pineapple-modules/pineapple-weblogic-jmx-plugin/index.html}Plugin documentation.}}			
-	
 	

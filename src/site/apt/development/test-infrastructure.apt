@@ -566,8 +566,6 @@ Pineapple Continuous Integration
 	The web service <<</artifactory/ext-release-local/path/to/jar/>>> is invoked with HTTP POST to install
 	artifacts into the <<<ext-release-local>>> repository:
 	
-	* The WebLogic full client JAR and POM are installed with coordinate: <<<oracle:weblogic-full-client:12.1.2>>>
-
 	* The ZK Common library JAR and POM are installed with coordinate: <<<org.zkoss.common:zcommon:7.0.2>>>
 
 	* The ZK ZEL library JAR and POM are installed with coordinate: <<<org.zkoss.common:zel:7.0.2>>>

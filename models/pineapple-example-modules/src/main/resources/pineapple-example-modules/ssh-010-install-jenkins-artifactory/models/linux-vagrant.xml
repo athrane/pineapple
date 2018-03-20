@@ -22,9 +22,6 @@
         <mmd:variable key="rm-port" value="8081" />        
         <mmd:variable key="rm-ws-upload-system-config" value="/artifactory/api/system/configuration" />        
         <mmd:variable key="rm-ws-upload-artifact" value="/artifactory/libs-release-local" />        
-
-		<!-- 3rd party libraries variables -->
-        <mmd:variable key="weblogic-client-1212-jar" value="weblogic-full-client-12.1.2.jar" />
 		
     </mmd:variables>    
 
@@ -120,13 +117,6 @@
     			<shp:execute command="curl -u ${rm-user}:${rm-pwd} -X POST -H &quot;Content-type:application/xml&quot; --data-binary @${tmp-dir}/${rm-config} http://${resource.host}:${rm-port}${rm-ws-upload-system-config}" />            
     			<shp:execute command="rm -f ${tmp-dir}/${rm-config}" />            
 
-
-				<!-- deploy Pineapple 3rd party libraries -->
-				<!-- 
-				<shp:copy-to source="modulepath:bin/${weblogic-client-1212-jar}" destination="${tmp-dir}/${weblogic-client-1212-jar}" substitute-variables="false" chmod="775" />
-    			<shp:execute command="curl -u ${rm-user}:${rm-pwd} -X PUT  -T ${tmp-dir}/${weblogic-client-1212-jar} http://${resource.host}:${rm-port}${rm-ws-upload-artifact}/oracle/weblogic-full-client/12.1.2/${weblogic-client-1212-jar}" />            
-    			<shp:execute command="rm -f ${tmp-dir}/${weblogic-client-1212-jar}" />            
-			 	-->
 			</shp:ssh>							
         </mmd:content>
     </mmd:model>		

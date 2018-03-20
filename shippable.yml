@@ -4,11 +4,17 @@ language: java
 env:
 - secure: Vx0Eaosf/cCgmxLQNpsAaEkbMM7fhmNDA2x8aVSzDMwstothq306Pt2KSUocmPdvml/NlxALPi+Amgh4M8JXYVSQbKVRGncOFn+YHaE0UgjSsYsyBq1NbRq8ibSCSM8e4fvcru9Ykp47XD98ooHokkN+DCE4eYNwsG2XRoS72zHYEh5ghWJH6/PvweFApSLYvOu56Z3cDxbqjs6HwAB0KWuiMiygDdmLLo7GL43cIZg8h2fl8QNMeuTdn8cxETMgppiyDvWywVy66oNwsEeX79PmKlE84kF53H6tZ+vHoEth1ENlboYIqDChesmlctowJqysesK/2KO1zIN8YcDC6Q==
 
+branches:
+  only:
+    - master
+    - beta*
+    - release*
+
 jdk:
-  - openjdk8
-  - oraclejdk8
   - openjdk9
   - oraclejdk9
+  - openjdk8
+  - oraclejdk8
    
 before_install:
 

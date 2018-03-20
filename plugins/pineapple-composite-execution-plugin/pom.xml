@@ -59,11 +59,22 @@
 			<artifactId>spring-oxm</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- JAXB Java 9 support -->
 		<dependency>
-			<groupId>javax.xml</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<scope>test</scope>
-		</dependency>
+           	<groupId>javax.xml.bind</groupId>
+           	<artifactId>jaxb-api</artifactId>
+			<scope>test</scope>			           	
+       	</dependency>
+       	<dependency>
+           	<groupId>com.sun.xml.bind</groupId>
+           	<artifactId>jaxb-impl</artifactId>
+			<scope>test</scope>			
+       	</dependency>
+       	<dependency>
+           	<groupId>com.sun.xml.bind</groupId>
+           	<artifactId>jaxb-core</artifactId>
+			<scope>test</scope>			           	
+       	</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>

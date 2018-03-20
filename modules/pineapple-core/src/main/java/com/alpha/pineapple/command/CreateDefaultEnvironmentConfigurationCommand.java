@@ -351,46 +351,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 
 	// create local environment
 	environment = createEnvironment(environments, "local", LOCAL_DESC);
-	addWebLogicJmxResource(environment, "127.0.0.1", "7001");
-
-	// create windows-default environment
-	environment = createEnvironment(environments, "windows-default", DEFAULT_WIN_DESC);
-	addWebLogicResource(environment, "weblogic-r103");
-	addWebLogicResource(environment, "weblogic-r121");
-	addFusionMiddlewareResource(environment, "fusion-middleware");
-	addWebLogicWlstResource(environment, "weblogic-wlst-r103", "C:\\Oracle\\Middleware\\wlserver_10.3");
-	addWebLogicWlstResource(environment, "weblogic-wlst-r121", "C:\\Oracle\\Middleware\\wlserver_12.1");
-	addWebLogicJmxResource(environment, "127.0.0.1", "7001");
-
-	// create linux-default environment
-	environment = createEnvironment(environments, "linux-default", DEFAULT_LINUX_DESC);
-	addWebLogicResource(environment, "weblogic-r103");
-	addWebLogicResource(environment, "weblogic-r121");
-	addWebLogicWlstResource(environment, "weblogic-wlst-r103", "/home/weblogic/Oracle/Middleware/wlserver_10.3");
-	addWebLogicWlstResource(environment, "weblogic-wlst-r121", "/home/weblogic/Oracle/Middleware/wlserver_12.1");
-	addWebLogicJmxResource(environment, "127.0.0.1", "7001");
-
-	// create windows-enterprise environment
-	environment = createEnvironment(environments, "windows-enterprise", ENTERPRISE_WIN_DESC);
-	addWebLogicResource(environment, "weblogic-r103");
-	addWebLogicResource(environment, "weblogic-r121");
-	addFusionMiddlewareResource(environment, "fusion-middleware");
-	addWebLogicWlstResource(environment, "weblogic-wlst-r103", "C:\\app\\oracle\\product\\fmw\\wlserver_10.3");
-	addWebLogicWlstResource(environment, "weblogic-wlst-r121", "C:\\app\\oracle\\product\\fmw\\wlserver_12.1");
-
-	// create linux-enterprise environment
-	environment = createEnvironment(environments, "linux-enterprise", ENTERPRISE_LINUX_DESC);
-	addWebLogicResource(environment, "weblogic-r103");
-	addWebLogicResource(environment, "weblogic-r121");
-	addWebLogicWlstResource(environment, "weblogic-wlst-r103", "/u01/app/oracle/product/fmw/wlserver_10.3");
-	addWebLogicWlstResource(environment, "weblogic-wlst-r121", "/u01/app/oracle/product/fmw/wlserver_12.1");
-
-	// create linux-exalogic environment
-	environment = createEnvironment(environments, "linux-exalogic", EXALOGIC_DESC);
-	addWebLogicResource(environment, "weblogic-r103");
-	addWebLogicWlstResource(environment, "weblogic-wlst-r103",
-		"/u01/app/FMW_Product1/Oracle/Middleware/wlserver_10.3");
-	addWebLogicJmxResource(environment, "10.0.0.17", "7001");
 
 	// create linux-vagrant environment
 	environment = createEnvironment(environments, "linux-vagrant", VAGRANT_LINUX_DESC);
@@ -442,26 +402,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
     }
 
     /**
-     * Create resource for WebLogic JMX plugin.
-     * 
-     * @param environment
-     *            Environment where resource is added to.
-     */
-    void addWebLogicJmxResource(Environment environment, String host, String port) {
-	com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
-	resource.setId("weblogic-edit-jmx");
-	resource.setPluginId("com.alpha.pineapple.plugin.weblogic.jmx");
-	resource.setCredentialIdRef("weblogic-edit-jmx");
-	environment.getResources().getResource().add(resource);
-	HashMap<String, String> properties;
-	properties = new HashMap<String, String>();
-	properties.put("host", host);
-	properties.put("port", port);
-	properties.put("url-path", "weblogic.management.mbeanservers.edit");
-	addProperties(properties, resource);
-    }
-
-    /**
      * Create resource for infrastructure test plugin.
      * 
      * @param environment
@@ -471,60 +411,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
 	resource.setId("infrastructure-test");
 	resource.setPluginId("com.alpha.pineapple.plugin.net");
-	environment.getResources().getResource().add(resource);
-    }
-
-    /**
-     * Create resource for WebLogic WLST plugin.
-     * 
-     * @param environment
-     *            Environment where resource is added to.
-     * @param id
-     *            Resource ID.
-     * @param path
-     *            WebLogic Home directory.
-     */
-    void addWebLogicWlstResource(Environment environment, String id, String path) {
-	com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
-	resource.setId(id);
-	resource.setPluginId("com.alpha.pineapple.plugin.weblogic.scriptingtool");
-	environment.getResources().getResource().add(resource);
-	HashMap<String, String> properties = new HashMap<String, String>();
-	properties.put("home-directory", path);
-	addProperties(properties, resource);
-    }
-
-    /**
-     * Create resource for WebLogic installation plugin.
-     * 
-     * @param environment
-     *            Environment where resource is added to.
-     * @param id
-     *            Resource ID.
-     * @param path
-     *            WebLogic Home directory.
-     */
-    void addWebLogicResource(Environment environment, String id) {
-	com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
-	resource.setId(id);
-	resource.setPluginId("com.alpha.pineapple.plugin.weblogic.installation");
-	environment.getResources().getResource().add(resource);
-    }
-
-    /**
-     * Create resource for Fusion Middleware installation plugin.
-     * 
-     * @param environment
-     *            Environment where resource is added to.
-     * @param id
-     *            Resource ID.
-     * @param path
-     *            WebLogic Home directory.
-     */
-    void addFusionMiddlewareResource(Environment environment, String id) {
-	com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
-	resource.setId(id);
-	resource.setPluginId("com.alpha.pineapple.plugin.fusion.installation");
 	environment.getResources().getResource().add(resource);
     }
 
@@ -617,18 +503,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 
 	// create local environment
 	Environment environment = createCredentialEnvironment(environments, "local", LOCAL_DESC);
-	addWebLogicJmxCredential(environment);
-
-	// create windows-default environments
-	environment = createCredentialEnvironment(environments, "windows-default", DEFAULT_WIN_DESC);
-	addWebLogicJmxCredential(environment);
-
-	// create linux-default environment
-	environment = createCredentialEnvironment(environments, "linux-default", DEFAULT_LINUX_DESC);
-	addWebLogicJmxCredential(environment);
-
-	// create linux-exalogic environment
-	environment = createCredentialEnvironment(environments, "linux-exalogic", EXALOGIC_DESC);
 
 	// create linux-vagrant environment
 	environment = createCredentialEnvironment(environments, "linux-vagrant", VAGRANT_LINUX_DESC);
@@ -661,20 +535,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	environment.setCredentials(factory.createCredentials());
 	environments.add(environment);
 	return environment;
-    }
-
-    /**
-     * Add credential for WebLogic JMX plugin.
-     * 
-     * @param environment
-     *            Environment where credential is added to.
-     */
-    void addWebLogicJmxCredential(Environment environment) {
-	Credential credential = factory.createCredential();
-	credential.setId("weblogic-edit-jmx");
-	credential.setUser("weblogic");
-	credential.setPassword("Weblogic99");
-	environment.getCredentials().getCredential().add(credential);
     }
 
     /**

@@ -435,7 +435,7 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 	Package targetPackage = Configuration.class.getPackage();
 	Configuration resourcesConfig = (Configuration) configMother.jaxbUnmarshall(resourcesFile, targetPackage);
 
-	assertEquals(9, resourcesConfig.getEnvironments().getEnvironment().size());
+	assertEquals(4, resourcesConfig.getEnvironments().getEnvironment().size());
 
 	// verify
 	EasyMock.verify(runtimeDirectoryProvider);
@@ -484,7 +484,7 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 	Package targetPackage = Configuration.class.getPackage();
 	Configuration resourcesConfig = (Configuration) configMother.jaxbUnmarshall(credentailsFile, targetPackage);
 
-	assertEquals(6, resourcesConfig.getEnvironments().getEnvironment().size());
+	assertEquals(3, resourcesConfig.getEnvironments().getEnvironment().size());
 
 	// verify
 	EasyMock.verify(runtimeDirectoryProvider);

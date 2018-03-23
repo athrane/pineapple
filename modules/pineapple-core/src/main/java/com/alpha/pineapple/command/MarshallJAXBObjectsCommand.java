@@ -137,10 +137,6 @@ public class MarshallJAXBObjectsCommand implements Command {
     ExecutionResult executionResult;
 
     public boolean execute(Context context) throws Exception {
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    logger.debug(messageProvider.getMessage("mjoc.start"));
-	}
 
 	// initialize command
 	CommandInitializer initializer = new CommandInitializerImpl();
@@ -148,11 +144,6 @@ public class MarshallJAXBObjectsCommand implements Command {
 
 	// marshall
 	doMarshall();
-
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    logger.debug(messageProvider.getMessage("mjoc.completed"));
-	}
 
 	// set successful result
 	return Command.CONTINUE_PROCESSING;
@@ -179,15 +170,6 @@ public class MarshallJAXBObjectsCommand implements Command {
 
 	    // get parent directory
 	    File parent = file.getParentFile();
-
-	    // validate parent is directory
-	    if (!parent.isAbsolute()) {
-
-		// complete operation with error
-		Object[] args = { parent.getAbsolutePath() };
-		executionResult.completeAsFailure(messageProvider, "mjoc.patnotabsolute_failed", args);
-		return;
-	    }
 
 	    // create parent directories
 	    FileUtils.forceMkdir(parent);

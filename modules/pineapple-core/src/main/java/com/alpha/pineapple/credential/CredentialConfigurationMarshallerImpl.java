@@ -23,6 +23,8 @@
 package com.alpha.pineapple.credential;
 
 import static com.alpha.pineapple.CoreConstants.CREDENTIALS_FILE;
+import static com.alpha.pineapple.execution.ExecutionResult.MSG_ERROR_MESSAGE;
+import static com.alpha.pineapple.execution.ExecutionResult.MSG_STACKTRACE;
 
 import java.io.File;
 import java.util.List;
@@ -94,10 +96,13 @@ public class CredentialConfigurationMarshallerImpl implements CredentialConfigur
 	    commandFacade.saveJaxbObjects(credentialsFile, configuration, result);
 
 	} catch (CommandFacadeException e) {
-	    ExecutionResult failedResult = e.getResult();
+	    ExecutionResult failedResult = e.getResult();	    
+	    
+	    // get stack trace or error message 
+	    String stackTraceMessage = failedResult.getMessages().get(MSG_STACKTRACE);
+	    if (stackTraceMessage == null) stackTraceMessage = failedResult.getMessages().get(MSG_ERROR_MESSAGE);
 
-	    // create and throw exception
-	    String stackTraceMessage = failedResult.getMessages().get(ExecutionResult.MSG_STACKTRACE);
+	    // create and throw exception	    
 	    Object[] args = { stackTraceMessage };
 	    String errorMessage = messageProvider.getMessage("ccm.save_credentials_failed", args);
 	    throw new SaveConfigurationFailedException(errorMessage);
@@ -118,7 +123,7 @@ public class CredentialConfigurationMarshallerImpl implements CredentialConfigur
 	    ExecutionResult failedResult = e.getResult();
 
 	    // create and throw exception
-	    String stackTraceMessage = failedResult.getMessages().get(ExecutionResult.MSG_STACKTRACE);
+	    String stackTraceMessage = failedResult.getMessages().get(MSG_STACKTRACE);
 	    Object[] args = { stackTraceMessage };
 	    String errorMessage = messageProvider.getMessage("ccm.load_credentials_failed", args);
 	    throw new CredentialsFileNotFoundException(errorMessage);

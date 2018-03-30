@@ -58,7 +58,6 @@
 		<jaxb-api.version>2.3.0</jaxb-api.version>
 		<zk.version>7.0.2</zk.version>
 		<zkspring.version>3.1</zkspring.version>
-		<pineapple.schema.projects.version>1.0.0</pineapple.schema.projects.version>
 		<pineapple.examplemodules.project.version>1.0.0</pineapple.examplemodules.project.version>
 		<pineapple.webapp.jettystarter.version>1.0.0</pineapple.webapp.jettystarter.version>
 
@@ -95,32 +94,12 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>pineapple-weblogic-jmx-plugin</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
 				<artifactId>pineapple-infrastructure-test-plugin</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>pineapple-filesystem-plugin</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>pineapple-weblogic-installation-plugin</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>pineapple-weblogic-scripting-tool-plugin</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>pineapple-fusion-middleware-installation-plugin</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -162,11 +141,6 @@
 				<groupId>${project.groupId}</groupId>
 				<artifactId>pineapple-docker-support</artifactId>
 				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>pineapple-weblogic-1212-schemas</artifactId>
-				<version>${pineapple.schema.projects.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>

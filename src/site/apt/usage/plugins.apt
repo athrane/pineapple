@@ -26,10 +26,6 @@ Pineapple plugins overview
 
 	* Infrastructure test plugin
 	
-	* WebLogic installation plugin
-	
-	* WebLogic scripting tool (WLST) plugin	
-	
 	[]
 
 * Agent plugin 	
@@ -61,22 +57,3 @@ Pineapple plugins overview
 	Plugin for testing basic network infrastructure.
 	 
 	{{{../pineapple-modules/pineapple-infrastructure-test-plugin/index.html}Plugin documentation.}}			
-
-* Fusion Middleware installation plugin
-
-	Plugin for installation of Fusion Middlewar, e.g. SOA Suite, WebCenter and Application Runtime.
-	 
-	{{{../pineapple-plugins/pineapple-fusion-middleware-installation-plugin/index.html}Plugin documentation.}}			
-
-* WebLogic installation plugin
-
-	Plugin for installation of the WebLogic server.
-	 
-	{{{../pineapple-plugins/pineapple-weblogic-installation-plugin/index.html}Plugin documentation.}}			
-
-* WebLogic scripting tool (WLST) plugin
-
-	Plugin for execution of WLST scripts to manage or configure WebLogic Servers.
-	 
-	{{{../pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html}Plugin documentation.}}			
-	

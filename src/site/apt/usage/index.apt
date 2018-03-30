@@ -105,7 +105,7 @@ Usage
 ** General information
 
 	{{{./version-info.html}Pineapple version information (supported and required software versions).}}\
-	Supported Java and WebLogic versions.
+	Supported Java and 3rd party component versions.
 	
 	{{{../pineapple-modules/pineapple-core/usage/session-retry-support.html}Session retry support.}}\
 	How Pineapple plugin sessions automatically tries to connect/disconnect several times prior to failing.

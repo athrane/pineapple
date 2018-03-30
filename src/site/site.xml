@@ -48,9 +48,6 @@
 			<item name="SSH" href="./pineapple-plugins/pineapple-ssh-plugin/index.html" />						
 			<item name="Docker" href="./pineapple-plugins/pineapple-docker-plugin/index.html" />		
 			<item name="Infrastructure Test" href="./pineapple-modules/pineapple-infrastructure-test-plugin/index.html" />
-			<item name="Fusion Middleware Installation" href="./pineapple-plugins/pineapple-fusion-middleware-installation-plugin/index.html" />			
-			<item name="WebLogic Installation" href="./pineapple-plugins/pineapple-weblogic-installation-plugin/index.html" />
-			<item name="WebLogic Scripting Tool (WLST)" href="./pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html" />											
 		</menu>
 
 		<menu name="API's" inherit="top">

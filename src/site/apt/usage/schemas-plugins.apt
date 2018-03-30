@@ -51,30 +51,5 @@ Schema locations for plugins
 	The schema can be found in the root of the jar created by the
 	{{{../pineapple-modules/pineapple-infrastructure-test-plugin/index.html}pineapple-infrastructure-test-plugin project.}}	
 	The jar file is named <<<pineapple-infrastructure-test-plugin-$\{version\}.jar>>>.	
-	
-* WebLogic installation plugin
-
-	The schema can be found at <<{{{../ns/plugin/weblogic_installation_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/weblogic_installation_1_0.xsd}}>>
-
-	The schema can be found in the root of the jar created by the
-	{{{../pineapple-plugins/pineapple-weblogic-installation-plugin/index.html}pineapple-weblogic-installation-plugin project.}}	
-	The jar file is named <<<pineapple-weblogic-installation-plugin-$\{version\}.jar>>>.
-
-* WebLogic scripting tool (WLST) plugin
-
-	The schema can be found at <<{{{../ns/plugin/weblogic_scriptingtool_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/weblogic_scriptingtool_1_0.xsd}}>>
-
-	The schema can be found in the root of the jar created by the
-	{{{../pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html}pineapple-weblogic-scripting-tool-plugin project.}}	
-	The jar file is named <<<pineapple-weblogic-scripting-tool-plugin-$\{version\}.jar>>>.
-
-* Fusion Middleware installation plugin
-
-	The schema can be found at <<{{{../ns/plugin/fusion_middleware_installation_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/fusion_middleware_installation_1_0.xsd}}>>
-
-	The schema can be found in the root of the jar created by the
-	{{{../pineapple-plugins/pineapple-fusion-middleware-installation-plugin/index.html}pineapple-fusion-middleware-installation-plugin project.}}	
-	The jar file is named <<<pineapple-fusion-middleware-installation-plugin-$\{version\}.jar>>>.
-	
 	 	
  

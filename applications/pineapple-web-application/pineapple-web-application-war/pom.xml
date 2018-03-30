@@ -107,12 +107,7 @@
 		<groupId>org.easymock</groupId>  
 		<artifactId>easymock</artifactId>  
 		<scope>test</scope>  		
-	</dependency>
-	<dependency>
-		<groupId>org.easymock</groupId>  
-		<artifactId>easymockclassextension</artifactId>  
-		<scope>test</scope>  		  				
-	</dependency>																	  	 		 		 					    																																 		 		
+	</dependency>															  	 		 		 					    																																 		 		
 	<dependency>
 		<groupId>log4j</groupId>
 		<artifactId>log4j</artifactId>

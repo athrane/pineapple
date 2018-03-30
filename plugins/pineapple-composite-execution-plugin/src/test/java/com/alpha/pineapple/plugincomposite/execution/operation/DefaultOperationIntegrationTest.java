@@ -22,16 +22,26 @@
 
 package com.alpha.pineapple.plugincomposite.execution.operation;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
-import static com.alpha.pineapple.execution.ExecutionResult.ExecutionState.*;
+import static com.alpha.pineapple.execution.ExecutionResult.ExecutionState.ERROR;
+import static com.alpha.pineapple.execution.ExecutionResult.ExecutionState.FAILURE;
+import static com.alpha.pineapple.execution.ExecutionResult.ExecutionState.SUCCESS;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.After;
 import org.junit.Before;
@@ -185,8 +195,8 @@ public class DefaultOperationIntegrationTest {
 	contentMother = new ObjectMotherContent();
 
 	// reset plugin provider
-	EasyMock.reset(coreAdministrationProvider);
-	EasyMock.reset(coreExecutionInfoProvider);
+	reset(coreAdministrationProvider);
+	reset(coreExecutionInfoProvider);
     }
 
     @After
@@ -283,8 +293,8 @@ public class DefaultOperationIntegrationTest {
 	replay(coreExecutionInfoProvider);
 	expect(moduleRepository.resolveModule(randomName, randomEnvironment)).andReturn(moduleInfo);
 	replay(moduleRepository);
-	operationTask.execute(EasyMock.isA(ExecutionInfo.class));
-	EasyMock.expectLastCall().andAnswer(new SetChildResultStateAnswer(SUCCESS));
+	operationTask.execute(isA(ExecutionInfo.class));
+	expectLastCall().andAnswer(new SetChildResultStateAnswer(SUCCESS));
 	replay(operationTask);
 
 	// invoke operation
@@ -327,8 +337,8 @@ public class DefaultOperationIntegrationTest {
 	replay(coreExecutionInfoProvider);
 	expect(moduleRepository.resolveModule(randomName, randomEnvironment)).andReturn(moduleInfo);
 	replay(moduleRepository);
-	operationTask.execute(EasyMock.isA(ExecutionInfo.class));
-	EasyMock.expectLastCall().andAnswer(new SetChildResultStateAnswer(ERROR));
+	operationTask.execute(isA(ExecutionInfo.class));
+	expectLastCall().andAnswer(new SetChildResultStateAnswer(ERROR));
 	replay(operationTask);
 
 	// invoke operation
@@ -370,8 +380,8 @@ public class DefaultOperationIntegrationTest {
 	replay(coreExecutionInfoProvider);
 	expect(moduleRepository.resolveModule(randomName, randomEnvironment)).andReturn(moduleInfo);
 	replay(moduleRepository);
-	operationTask.execute(EasyMock.isA(ExecutionInfo.class));
-	EasyMock.expectLastCall().andAnswer(new SetChildResultStateAnswer(FAILURE));
+	operationTask.execute(isA(ExecutionInfo.class));
+	expectLastCall().andAnswer(new SetChildResultStateAnswer(FAILURE));
 	replay(operationTask);
 
 	// invoke operation
@@ -413,8 +423,8 @@ public class DefaultOperationIntegrationTest {
 	replay(coreExecutionInfoProvider);
 	expect(moduleRepository.resolveModule(randomName, randomEnvironment)).andReturn(moduleInfo);
 	replay(moduleRepository);
-	operationTask.execute(EasyMock.isA(ExecutionInfo.class));
-	// EasyMock.expectLastCall().andAnswer(new
+	operationTask.execute(isA(ExecutionInfo.class));
+	// expectLastCall().andAnswer(new
 	// SetChildResultStateAnswer(SUCCESS));
 	replay(operationTask);
 
@@ -533,10 +543,10 @@ public class DefaultOperationIntegrationTest {
 	expect(moduleRepository.resolveModule(randomName, randomEnvironment)).andReturn(moduleInfo);
 	expect(moduleRepository.resolveModule(randomName2, randomEnvironment)).andReturn(moduleInfo2);
 	replay(moduleRepository);
-	operationTask.execute(EasyMock.isA(ExecutionInfo.class));
-	EasyMock.expectLastCall().andAnswer(new SetChildResultStateAnswer(SUCCESS));
-	operationTask.execute(EasyMock.isA(ExecutionInfo.class));
-	EasyMock.expectLastCall().andAnswer(new SetChildResultStateAnswer(SUCCESS));
+	operationTask.execute(isA(ExecutionInfo.class));
+	expectLastCall().andAnswer(new SetChildResultStateAnswer(SUCCESS));
+	operationTask.execute(isA(ExecutionInfo.class));
+	expectLastCall().andAnswer(new SetChildResultStateAnswer(SUCCESS));
 	replay(operationTask);
 
 	// invoke operation
@@ -585,10 +595,10 @@ public class DefaultOperationIntegrationTest {
 	expect(moduleRepository.resolveModule(randomName, randomEnvironment)).andReturn(moduleInfo);
 	expect(moduleRepository.resolveModule(randomName2, randomEnvironment)).andReturn(moduleInfo2);
 	replay(moduleRepository);
-	operationTask.execute(EasyMock.isA(ExecutionInfo.class));
-	EasyMock.expectLastCall().andAnswer(new SetChildResultStateAnswer(ERROR));
-	operationTask.execute(EasyMock.isA(ExecutionInfo.class));
-	EasyMock.expectLastCall().andAnswer(new SetChildResultStateAnswer(SUCCESS));
+	operationTask.execute(isA(ExecutionInfo.class));
+	expectLastCall().andAnswer(new SetChildResultStateAnswer(ERROR));
+	operationTask.execute(isA(ExecutionInfo.class));
+	expectLastCall().andAnswer(new SetChildResultStateAnswer(SUCCESS));
 	replay(operationTask);
 
 	// invoke operation
@@ -636,8 +646,8 @@ public class DefaultOperationIntegrationTest {
 	replay(coreExecutionInfoProvider);
 	expect(moduleRepository.resolveModule(randomName, randomEnvironment)).andReturn(moduleInfo);
 	replay(moduleRepository);
-	operationTask.execute(EasyMock.isA(ExecutionInfo.class));
-	EasyMock.expectLastCall().andAnswer(new SetChildResultStateAnswer(ERROR));
+	operationTask.execute(isA(ExecutionInfo.class));
+	expectLastCall().andAnswer(new SetChildResultStateAnswer(ERROR));
 	replay(operationTask);
 
 	// disable continuation

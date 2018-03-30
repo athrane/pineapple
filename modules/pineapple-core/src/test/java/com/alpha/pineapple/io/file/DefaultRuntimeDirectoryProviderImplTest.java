@@ -27,10 +27,10 @@ import static com.alpha.javautils.SystemUtils.PINEAPPLE_CREDENTIALPROVIDER_PASSW
 import static com.alpha.javautils.SystemUtils.PINEAPPLE_HOMEDIR;
 import static com.alpha.javautils.SystemUtils.USER_HOME;
 import static com.alpha.javautils.SystemUtils.USER_NAME;
+import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -38,7 +38,6 @@ import java.util.Properties;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
-import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -804,9 +803,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	String modelPath = DefaultRuntimeDirectoryProviderImpl.MODULEPATH + "bin";
 
 	// create module info mock
-	ModuleInfo info = EasyMock.createMock(ModuleInfo.class);
-	EasyMock.expect(info.getDirectory()).andReturn(new File(osIndependentPath));
-	EasyMock.replay(info);
+	ModuleInfo info = createMock(ModuleInfo.class);
+	expect(info.getDirectory()).andReturn(new File(osIndependentPath));
+	replay(info);
 
 	// create expected value
 	StringBuilder expected = new StringBuilder();
@@ -828,7 +827,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	assertEquals(new File(expected.toString()), dir);
 
 	// test
-	EasyMock.verify(info);
+	verify(info);
 	verify(systemUtils, systemProperties, fileUtils);
     }
 
@@ -849,9 +848,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	String modelPath = DefaultRuntimeDirectoryProviderImpl.MODULEPATH + "bin";
 
 	// create module info mock
-	ModuleInfo info = EasyMock.createMock(ModuleInfo.class);
-	EasyMock.expect(info.getDirectory()).andReturn(new File(osIndependentPath));
-	EasyMock.replay(info);
+	ModuleInfo info = createMock(ModuleInfo.class);
+	expect(info.getDirectory()).andReturn(new File(osIndependentPath));
+	replay(info);
 
 	// create expected value
 	StringBuilder expected = new StringBuilder();
@@ -873,7 +872,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	assertEquals(new File(expected.toString()), dir);
 
 	// test
-	EasyMock.verify(info);
+	verify(info);
 	verify(systemUtils, systemProperties, fileUtils);
     }
 
@@ -897,9 +896,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	String modelPath = DefaultRuntimeDirectoryProviderImpl.MODULEPATH + "/bin";
 
 	// create module info mock
-	ModuleInfo info = EasyMock.createMock(ModuleInfo.class);
-	EasyMock.expect(info.getDirectory()).andReturn(new File(osIndependentPath));
-	EasyMock.replay(info);
+	ModuleInfo info = createMock(ModuleInfo.class);
+	expect(info.getDirectory()).andReturn(new File(osIndependentPath));
+	replay(info);
 
 	// create expected value
 	StringBuilder expected = new StringBuilder();
@@ -921,7 +920,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	assertEquals(new File(expected.toString()), dir);
 
 	// test
-	EasyMock.verify(info);
+	verify(info);
 	verify(systemUtils, systemProperties, fileUtils);
     }
 
@@ -945,9 +944,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	String modelPath = DefaultRuntimeDirectoryProviderImpl.MODULEPATH + "\\bin";
 
 	// create module info mock
-	ModuleInfo info = EasyMock.createMock(ModuleInfo.class);
-	EasyMock.expect(info.getDirectory()).andReturn(new File(osIndependentPath));
-	EasyMock.replay(info);
+	ModuleInfo info = createMock(ModuleInfo.class);
+	expect(info.getDirectory()).andReturn(new File(osIndependentPath));
+	replay(info);
 
 	// create expected value
 	StringBuilder expected = new StringBuilder();
@@ -969,7 +968,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	assertEquals(new File(expected.toString()), dir);
 
 	// test
-	EasyMock.verify(info);
+	verify(info);
 	verify(systemUtils, systemProperties, fileUtils);
     }
 
@@ -1038,8 +1037,8 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 	// create module info mock
 	ModuleInfo info = createMock(ModuleInfo.class);
-	EasyMock.expect(info.getDirectory()).andReturn(new File(osIndependentPath));
-	EasyMock.replay(info);
+	expect(info.getDirectory()).andReturn(new File(osIndependentPath));
+	replay(info);
 
 	// create expected value
 	StringBuilder expected = new StringBuilder();

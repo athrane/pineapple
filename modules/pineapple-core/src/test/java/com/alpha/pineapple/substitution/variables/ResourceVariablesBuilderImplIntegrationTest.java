@@ -22,6 +22,10 @@
 
 package com.alpha.pineapple.substitution.variables;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -108,8 +112,7 @@ public class ResourceVariablesBuilderImplIntegrationTest {
 	randomVariableValue2 = RandomStringUtils.randomAlphabetic(10);
 
 	// create resource
-	sessionResource = org.easymock.classextension.EasyMock
-		.createMock(com.alpha.pineapple.model.configuration.Resource.class);
+	sessionResource = createMock(com.alpha.pineapple.model.configuration.Resource.class);
     }
 
     /**
@@ -147,9 +150,9 @@ public class ResourceVariablesBuilderImplIntegrationTest {
      *            resource.
      */
     void completeMocksSetup(List<Property> propertyList) {
-	org.easymock.classextension.EasyMock.expect(sessionResource.getId()).andReturn(randomResourceId).anyTimes();
-	org.easymock.classextension.EasyMock.expect(sessionResource.getProperty()).andReturn(propertyList);
-	org.easymock.classextension.EasyMock.replay(sessionResource);
+	expect(sessionResource.getId()).andReturn(randomResourceId).anyTimes();
+	expect(sessionResource.getProperty()).andReturn(propertyList);
+	replay(sessionResource);
     }
 
     /**
@@ -180,8 +183,8 @@ public class ResourceVariablesBuilderImplIntegrationTest {
 	List<Property> propertyList = new ArrayList<Property>();
 
 	// complete mock setup
-	org.easymock.classextension.EasyMock.expect(sessionResource.getProperty()).andReturn(propertyList);
-	org.easymock.classextension.EasyMock.replay(sessionResource);
+	expect(sessionResource.getProperty()).andReturn(propertyList);
+	replay(sessionResource);
 
 	// builder
 	ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
@@ -193,7 +196,7 @@ public class ResourceVariablesBuilderImplIntegrationTest {
 	Map<String, String> map = variables.getMap();
 	assertNotNull(map);
 	assertEquals(0, map.size());
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -219,7 +222,7 @@ public class ResourceVariablesBuilderImplIntegrationTest {
 	Map<String, String> map = variables.getMap();
 	assertNotNull(map);
 	assertEquals(1, map.size());
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -249,7 +252,7 @@ public class ResourceVariablesBuilderImplIntegrationTest {
 	Map<String, String> map = variables.getMap();
 	assertNotNull(map);
 	assertEquals(2, map.size());
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -286,7 +289,7 @@ public class ResourceVariablesBuilderImplIntegrationTest {
 	Map<String, String> map = variables.getMap();
 	assertNotNull(map);
 	assertEquals(0, map.size());
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -311,7 +314,7 @@ public class ResourceVariablesBuilderImplIntegrationTest {
 	Map<String, String> map = variables.getMap();
 	assertNotNull(map);
 	assertEquals(0, map.size());
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -336,7 +339,7 @@ public class ResourceVariablesBuilderImplIntegrationTest {
 	Map<String, String> map = variables.getMap();
 	assertNotNull(map);
 	assertEquals(0, map.size());
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
 }

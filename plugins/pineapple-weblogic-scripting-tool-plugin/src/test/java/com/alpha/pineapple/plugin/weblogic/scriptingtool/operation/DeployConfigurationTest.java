@@ -31,7 +31,7 @@ import java.io.File;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.easymock.IAnswer;
-import org.easymock.classextension.EasyMock;
+import org.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

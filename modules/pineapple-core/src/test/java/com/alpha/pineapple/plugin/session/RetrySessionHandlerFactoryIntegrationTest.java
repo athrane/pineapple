@@ -22,12 +22,14 @@
 
 package com.alpha.pineapple.plugin.session;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,16 +78,16 @@ public class RetrySessionHandlerFactoryIntegrationTest {
     public void testCreateSessionHandler() {
 
 	// complete initialization of mock resource
-	Resource resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.replay(resource);
+	Resource resource = createMock(Resource.class);
+	replay(resource);
 
 	// complete initialization of mock credential
-	Credential credential = org.easymock.classextension.EasyMock.createMock(Credential.class);
-	org.easymock.classextension.EasyMock.replay(credential);
+	Credential credential = createMock(Credential.class);
+	replay(credential);
 
 	// complete initialization of mock operation
-	Operation operation = EasyMock.createMock(Operation.class);
-	EasyMock.replay(operation);
+	Operation operation = createMock(Operation.class);
+	replay(operation);
 
 	// create
 	Operation sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
@@ -100,9 +102,9 @@ public class RetrySessionHandlerFactoryIntegrationTest {
 	assertEquals(credential, sessionHandlerImpl.credential);
 	assertEquals(operation, sessionHandlerImpl.operation);
 
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
+	verify(resource);
+	verify(credential);
+	verify(operation);
     }
 
     /**
@@ -112,12 +114,12 @@ public class RetrySessionHandlerFactoryIntegrationTest {
     public void testCreationSucceedsWithNullCredential() {
 
 	// complete initialization of mock resource
-	Resource resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.replay(resource);
+	Resource resource = createMock(Resource.class);
+	replay(resource);
 
 	// complete initialization of mock operation
-	Operation operation = EasyMock.createMock(Operation.class);
-	EasyMock.replay(operation);
+	Operation operation = createMock(Operation.class);
+	replay(operation);
 
 	// create
 	Operation sessionHandler = retrySessionHandlerFactory.getInstance(resource, null, operation);
@@ -135,8 +137,8 @@ public class RetrySessionHandlerFactoryIntegrationTest {
 	assertEquals("", sessionHandlerImpl.credential.getUser());
 	assertEquals(operation, sessionHandlerImpl.operation);
 
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(operation);
+	verify(resource);
+	verify(operation);
     }
 
     /**
@@ -146,12 +148,12 @@ public class RetrySessionHandlerFactoryIntegrationTest {
     public void testCreationFailsWithNullResource() {
 
 	// complete initialization of mock credential
-	Credential credential = org.easymock.classextension.EasyMock.createMock(Credential.class);
-	org.easymock.classextension.EasyMock.replay(credential);
+	Credential credential = createMock(Credential.class);
+	replay(credential);
 
 	// complete initialization of mock operation
-	Operation operation = EasyMock.createMock(Operation.class);
-	EasyMock.replay(operation);
+	Operation operation = createMock(Operation.class);
+	replay(operation);
 
 	// create
 	retrySessionHandlerFactory.getInstance(null, credential, operation);
@@ -164,12 +166,12 @@ public class RetrySessionHandlerFactoryIntegrationTest {
     public void testCreationFailsWithNullOperation() {
 
 	// complete initialization of mock resource
-	Resource resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.replay(resource);
+	Resource resource = createMock(Resource.class);
+	replay(resource);
 
 	// complete initialization of mock credential
-	Credential credential = org.easymock.classextension.EasyMock.createMock(Credential.class);
-	org.easymock.classextension.EasyMock.replay(credential);
+	Credential credential = createMock(Credential.class);
+	replay(credential);
 
 	// create
 	retrySessionHandlerFactory.getInstance(resource, credential, null);
@@ -182,16 +184,16 @@ public class RetrySessionHandlerFactoryIntegrationTest {
     public void testCreatedSessionHandlerIsSpringProtototype() {
 
 	// complete initialization of mock resource
-	Resource resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.replay(resource);
+	Resource resource = createMock(Resource.class);
+	replay(resource);
 
 	// complete initialization of mock credential
-	Credential credential = org.easymock.classextension.EasyMock.createMock(Credential.class);
-	org.easymock.classextension.EasyMock.replay(credential);
+	Credential credential = createMock(Credential.class);
+	replay(credential);
 
 	// complete initialization of mock operation
-	Operation operation = EasyMock.createMock(Operation.class);
-	EasyMock.replay(operation);
+	Operation operation = createMock(Operation.class);
+	replay(operation);
 
 	// create
 	Operation sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
@@ -201,9 +203,9 @@ public class RetrySessionHandlerFactoryIntegrationTest {
 	assertFalse(sessionHandler.equals(sessionHandler2));
 	assertFalse(sessionHandler.hashCode() == sessionHandler2.hashCode());
 
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
+	verify(resource);
+	verify(credential);
+	verify(operation);
     }
 
 }

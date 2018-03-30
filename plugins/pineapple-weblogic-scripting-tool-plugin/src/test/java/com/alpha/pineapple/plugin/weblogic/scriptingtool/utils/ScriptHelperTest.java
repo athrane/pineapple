@@ -23,10 +23,10 @@
 
 package com.alpha.pineapple.plugin.weblogic.scriptingtool.utils;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
+import org.easymock.EasyMock.expect;
+org.easymock.EasyMock.createMock;
+org.easymock.EasyMock.replay;
+org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -39,7 +39,7 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.easymock.IAnswer;
-import org.easymock.classextension.EasyMock;
+import org.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -22,12 +22,17 @@
 
 package com.alpha.pineapple.plugin.activation;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.After;
 import org.junit.Before;
@@ -115,40 +120,40 @@ public class PluginActivatorImplTest {
 	pluginActivator = new PluginActivatorImpl();
 
 	// create mock credential provider
-	credentialProvider = EasyMock.createMock(CredentialProvider.class);
+	credentialProvider = createMock(CredentialProvider.class);
 
 	// create mock plugin repository
-	pluginRepository = EasyMock.createMock(PluginRuntimeRepository.class);
+	pluginRepository = createMock(PluginRuntimeRepository.class);
 
 	// inject repository
 	ReflectionTestUtils.setField(pluginActivator, "pluginRepository", pluginRepository);
 
 	// create mock resource repository
-	resourceRepository = EasyMock.createMock(ResourceRepository.class);
+	resourceRepository = createMock(ResourceRepository.class);
 
 	// inject repository
 	ReflectionTestUtils.setField(pluginActivator, "resourceRepository", resourceRepository);
 
 	// create mock provider
-	messageProvider = EasyMock.createMock(MessageProvider.class);
+	messageProvider = createMock(MessageProvider.class);
 
 	// inject message provider
 	ReflectionTestUtils.setField(pluginActivator, "messageProvider", messageProvider);
 
 	// create mock factory
-	retrySessionHandlerFactory = org.easymock.classextension.EasyMock.createMock(SessionHandlerFactory.class);
+	retrySessionHandlerFactory = createMock(SessionHandlerFactory.class);
 
 	// inject message provider
 	ReflectionTestUtils.setField(pluginActivator, "retrySessionHandlerFactory", retrySessionHandlerFactory);
 
 	// complete mock source initialization
 	IAnswer<String> answer = new MessageProviderAnswerImpl();
-	EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
-	EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-	EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class),
-		(Object[]) EasyMock.isA(Object[].class)));
-	EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-	EasyMock.replay(messageProvider);
+	expect(messageProvider.getMessage((String) isA(String.class)));
+	expectLastCall().andAnswer(answer).anyTimes();
+	expect(messageProvider.getMessage((String) isA(String.class),
+		(Object[]) isA(Object[].class)));
+	expectLastCall().andAnswer(answer).anyTimes();
+	replay(messageProvider);
 
     }
 
@@ -203,21 +208,21 @@ public class PluginActivatorImplTest {
     @Test
     public void testInitialize() {
 	// complete initialization of mock provider
-	EasyMock.replay(credentialProvider);
+	replay(credentialProvider);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(resourceRepository);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(pluginRepository);
+	replay(pluginRepository);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
 
 	// verify mocks
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
     }
 
     /**
@@ -229,24 +234,24 @@ public class PluginActivatorImplTest {
 	String id = CoreTestConstants.resourceIdentifierTestResource;
 
 	// create mock resource info
-	ResourceInfo resourceInfo = EasyMock.createMock(ResourceInfo.class);
-	EasyMock.expect(resourceInfo.getPluginId()).andReturn(PLUGIN_ID);
-	EasyMock.replay(resourceInfo);
+	ResourceInfo resourceInfo = createMock(ResourceInfo.class);
+	expect(resourceInfo.getPluginId()).andReturn(PLUGIN_ID);
+	replay(resourceInfo);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
-	EasyMock.replay(session);
+	Session session = createMock(Session.class);
+	replay(session);
 
 	// complete initialization of mock provider
-	EasyMock.replay(credentialProvider);
+	replay(credentialProvider);
 
 	// complete initialization of mock plugin repository
-	EasyMock.expect(resourceRepository.get(environment, id)).andReturn(resourceInfo);
-	EasyMock.replay(resourceRepository);
+	expect(resourceRepository.get(environment, id)).andReturn(resourceInfo);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.expect(pluginRepository.getSession(PLUGIN_ID)).andReturn(session);
-	EasyMock.replay(pluginRepository);
+	expect(pluginRepository.getSession(PLUGIN_ID)).andReturn(session);
+	replay(pluginRepository);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
@@ -259,11 +264,11 @@ public class PluginActivatorImplTest {
 	assertEquals(session, pluginSession);
 
 	// verify mocks
-	EasyMock.verify(resourceInfo);
-	EasyMock.verify(session);
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
+	verify(resourceInfo);
+	verify(session);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
     }
 
     /**
@@ -275,13 +280,13 @@ public class PluginActivatorImplTest {
 	String id = CoreTestConstants.resourceIdentifierTestResource;
 
 	// complete initialization of mock provider
-	EasyMock.replay(credentialProvider);
+	replay(credentialProvider);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(resourceRepository);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(pluginRepository);
+	replay(pluginRepository);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
@@ -293,9 +298,9 @@ public class PluginActivatorImplTest {
 	assertNotNull(pluginSession);
 
 	// verify mocks
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
     }
 
     /**
@@ -307,13 +312,13 @@ public class PluginActivatorImplTest {
 	String id = CoreTestConstants.resourceIdentifierTestResource;
 
 	// complete initialization of mock provider
-	EasyMock.replay(credentialProvider);
+	replay(credentialProvider);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(resourceRepository);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(pluginRepository);
+	replay(pluginRepository);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
@@ -325,9 +330,9 @@ public class PluginActivatorImplTest {
 	assertNotNull(pluginSession);
 
 	// verify mocks
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
     }
 
     /**
@@ -339,25 +344,25 @@ public class PluginActivatorImplTest {
 	String id = CoreTestConstants.resourceIdentifierTestResource;
 
 	// create mock resource info
-	ResourceInfo resourceInfo = EasyMock.createMock(ResourceInfo.class);
-	EasyMock.expect(resourceInfo.getPluginId()).andReturn(PLUGIN_ID);
-	EasyMock.replay(resourceInfo);
+	ResourceInfo resourceInfo = createMock(ResourceInfo.class);
+	expect(resourceInfo.getPluginId()).andReturn(PLUGIN_ID);
+	replay(resourceInfo);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
-	EasyMock.replay(session);
+	Session session = createMock(Session.class);
+	replay(session);
 
 	// complete initialization of mock provider
-	EasyMock.replay(credentialProvider);
+	replay(credentialProvider);
 
 	// complete initialization of mock plugin repository
 	Throwable exception = new ResourceNotFoundException("message");
-	EasyMock.expect(resourceRepository.get(environment, id)).andThrow(exception);
-	EasyMock.replay(resourceRepository);
+	expect(resourceRepository.get(environment, id)).andThrow(exception);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.expect(pluginRepository.getSession(PLUGIN_ID)).andReturn(session);
-	EasyMock.replay(pluginRepository);
+	expect(pluginRepository.getSession(PLUGIN_ID)).andReturn(session);
+	replay(pluginRepository);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
@@ -370,11 +375,11 @@ public class PluginActivatorImplTest {
 	assertEquals(session, pluginSession);
 
 	// verify mocks
-	EasyMock.verify(resourceInfo);
-	EasyMock.verify(session);
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
+	verify(resourceInfo);
+	verify(session);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
     }
 
     /**
@@ -386,25 +391,25 @@ public class PluginActivatorImplTest {
 	String id = "unknown-id";
 
 	// create mock resource info
-	ResourceInfo resourceInfo = EasyMock.createMock(ResourceInfo.class);
-	EasyMock.expect(resourceInfo.getPluginId()).andReturn(PLUGIN_ID);
-	EasyMock.replay(resourceInfo);
+	ResourceInfo resourceInfo = createMock(ResourceInfo.class);
+	expect(resourceInfo.getPluginId()).andReturn(PLUGIN_ID);
+	replay(resourceInfo);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
-	EasyMock.replay(session);
+	Session session = createMock(Session.class);
+	replay(session);
 
 	// complete initialization of mock provider
-	EasyMock.replay(credentialProvider);
+	replay(credentialProvider);
 
 	// complete initialization of mock plugin repository
 	Throwable exception = new ResourceNotFoundException("message");
-	EasyMock.expect(resourceRepository.get(environment, id)).andThrow(exception);
-	EasyMock.replay(resourceRepository);
+	expect(resourceRepository.get(environment, id)).andThrow(exception);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.expect(pluginRepository.getSession(PLUGIN_ID)).andReturn(session);
-	EasyMock.replay(pluginRepository);
+	expect(pluginRepository.getSession(PLUGIN_ID)).andReturn(session);
+	replay(pluginRepository);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
@@ -417,11 +422,11 @@ public class PluginActivatorImplTest {
 	assertEquals(session, pluginSession);
 
 	// verify mocks
-	EasyMock.verify(resourceInfo);
-	EasyMock.verify(session);
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
+	verify(resourceInfo);
+	verify(session);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
     }
 
     /**
@@ -433,13 +438,13 @@ public class PluginActivatorImplTest {
 	String id = CoreTestConstants.resourceIdentifierTestResource;
 
 	// complete initialization of mock provider
-	EasyMock.replay(credentialProvider);
+	replay(credentialProvider);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(resourceRepository);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(pluginRepository);
+	replay(pluginRepository);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
@@ -451,9 +456,9 @@ public class PluginActivatorImplTest {
 	assertNotNull(unmarshaller);
 
 	// verify mocks
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
     }
 
     /**
@@ -465,13 +470,13 @@ public class PluginActivatorImplTest {
 	String id = CoreTestConstants.resourceIdentifierTestResource;
 
 	// complete initialization of mock provider
-	EasyMock.replay(credentialProvider);
+	replay(credentialProvider);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(resourceRepository);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(pluginRepository);
+	replay(pluginRepository);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
@@ -483,9 +488,9 @@ public class PluginActivatorImplTest {
 	assertNotNull(unmarshaller);
 
 	// verify mocks
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
     }
 
     /**
@@ -497,30 +502,30 @@ public class PluginActivatorImplTest {
 	String resourceId = CoreTestConstants.resourceIdentifierTestResource;
 
 	// create mock resource info
-	ResourceInfo resourceInfo = EasyMock.createMock(ResourceInfo.class);
-	EasyMock.expect(resourceInfo.getPluginId()).andReturn(PLUGIN_ID);
-	EasyMock.replay(resourceInfo);
+	ResourceInfo resourceInfo = createMock(ResourceInfo.class);
+	expect(resourceInfo.getPluginId()).andReturn(PLUGIN_ID);
+	replay(resourceInfo);
 
 	// complete initialization of mock operation
-	Operation operation = EasyMock.createMock(Operation.class);
-	EasyMock.replay(operation);
+	Operation operation = createMock(Operation.class);
+	replay(operation);
 
 	// complete initialization of mock plugin info
-	PluginInfo pluginInfo = EasyMock.createMock(PluginInfo.class);
-	EasyMock.expect(pluginInfo.isSessionHandlingEnabled()).andReturn(false);
-	EasyMock.replay(pluginInfo);
+	PluginInfo pluginInfo = createMock(PluginInfo.class);
+	expect(pluginInfo.isSessionHandlingEnabled()).andReturn(false);
+	replay(pluginInfo);
 
 	// complete initialization of mock provider
-	EasyMock.replay(credentialProvider);
+	replay(credentialProvider);
 
 	// complete initialization of mock plugin repository
-	EasyMock.expect(resourceRepository.get(environment, resourceId)).andReturn(resourceInfo);
-	EasyMock.replay(resourceRepository);
+	expect(resourceRepository.get(environment, resourceId)).andReturn(resourceInfo);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.expect(pluginRepository.getPluginInfo(PLUGIN_ID)).andReturn(pluginInfo);
-	EasyMock.expect(pluginRepository.getOperation(PLUGIN_ID, OPERATION_ID)).andReturn(operation);
-	EasyMock.replay(pluginRepository);
+	expect(pluginRepository.getPluginInfo(PLUGIN_ID)).andReturn(pluginInfo);
+	expect(pluginRepository.getOperation(PLUGIN_ID, OPERATION_ID)).andReturn(operation);
+	replay(pluginRepository);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
@@ -533,12 +538,12 @@ public class PluginActivatorImplTest {
 	assertEquals(actualOperation, operation);
 
 	// verify mocks
-	EasyMock.verify(resourceInfo);
-	EasyMock.verify(operation);
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
-	EasyMock.verify(pluginInfo);
+	verify(resourceInfo);
+	verify(operation);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
+	verify(pluginInfo);
     }
 
     /**
@@ -551,51 +556,50 @@ public class PluginActivatorImplTest {
 	String credentialId = "some-credential-id";
 
 	// complete initialization of mock resource
-	Resource resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getCredentialIdRef()).andReturn(credentialId);
-	org.easymock.classextension.EasyMock.replay(resource);
+	Resource resource = createMock(Resource.class);
+	expect(resource.getCredentialIdRef()).andReturn(credentialId);
+	replay(resource);
 
 	// complete initialization of mock credential
-	Credential credential = org.easymock.classextension.EasyMock.createMock(Credential.class);
-	org.easymock.classextension.EasyMock.replay(credential);
+	Credential credential = createMock(Credential.class);
+	replay(credential);
 
 	// create mock resource info
-	ResourceInfo resourceInfo = EasyMock.createMock(ResourceInfo.class);
-	EasyMock.expect(resourceInfo.getPluginId()).andReturn(PLUGIN_ID);
-	EasyMock.expect(resourceInfo.getResource()).andReturn(resource);
-	EasyMock.replay(resourceInfo);
+	ResourceInfo resourceInfo = createMock(ResourceInfo.class);
+	expect(resourceInfo.getPluginId()).andReturn(PLUGIN_ID);
+	expect(resourceInfo.getResource()).andReturn(resource);
+	replay(resourceInfo);
 
 	// complete initialization of mock operation
-	Operation operation = EasyMock.createMock(Operation.class);
-	EasyMock.replay(operation);
+	Operation operation = createMock(Operation.class);
+	replay(operation);
 
 	// complete initialization of mock plugin info
-	PluginInfo pluginInfo = EasyMock.createMock(PluginInfo.class);
-	EasyMock.expect(pluginInfo.isSessionHandlingEnabled()).andReturn(true);
-	EasyMock.replay(pluginInfo);
+	PluginInfo pluginInfo = createMock(PluginInfo.class);
+	expect(pluginInfo.isSessionHandlingEnabled()).andReturn(true);
+	replay(pluginInfo);
 
 	// complete initialization of mock provider
-	EasyMock.expect(credentialProvider.get(environment, credentialId)).andReturn(credential);
-	EasyMock.replay(credentialProvider);
+	expect(credentialProvider.get(environment, credentialId)).andReturn(credential);
+	replay(credentialProvider);
 
 	// complete initialization of mock resource repository
-	EasyMock.expect(resourceRepository.get(environment, resourceId)).andReturn(resourceInfo).times(2);
-	EasyMock.replay(resourceRepository);
+	expect(resourceRepository.get(environment, resourceId)).andReturn(resourceInfo).times(2);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.expect(pluginRepository.getPluginInfo(PLUGIN_ID)).andReturn(pluginInfo);
-	EasyMock.expect(pluginRepository.getOperation(PLUGIN_ID, OPERATION_ID)).andReturn(operation);
-	EasyMock.replay(pluginRepository);
+	expect(pluginRepository.getPluginInfo(PLUGIN_ID)).andReturn(pluginInfo);
+	expect(pluginRepository.getOperation(PLUGIN_ID, OPERATION_ID)).andReturn(operation);
+	replay(pluginRepository);
 
 	// complete initialization of mock session handler
-	Operation sessionHandler = EasyMock.createMock(Operation.class);
-	EasyMock.replay(sessionHandler);
+	Operation sessionHandler = createMock(Operation.class);
+	replay(sessionHandler);
 
 	// complete initialization of mock factory
-	org.easymock.classextension.EasyMock
-		.expect(retrySessionHandlerFactory.getInstance(resource, credential, operation))
+	expect(retrySessionHandlerFactory.getInstance(resource, credential, operation))
 		.andReturn(sessionHandler);
-	org.easymock.classextension.EasyMock.replay(retrySessionHandlerFactory);
+	replay(retrySessionHandlerFactory);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
@@ -608,16 +612,16 @@ public class PluginActivatorImplTest {
 	assertEquals(sessionHandler, actualOperation);
 
 	// verify mocks
-	EasyMock.verify(resourceInfo);
-	EasyMock.verify(operation);
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
-	EasyMock.verify(pluginInfo);
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(retrySessionHandlerFactory);
-	EasyMock.verify(sessionHandler);
+	verify(resourceInfo);
+	verify(operation);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
+	verify(pluginInfo);
+	verify(resource);
+	verify(credential);
+	verify(retrySessionHandlerFactory);
+	verify(sessionHandler);
     }
 
     /**
@@ -630,50 +634,49 @@ public class PluginActivatorImplTest {
 	String resourceId = CoreTestConstants.resourceIdentifierTestResource;
 
 	// complete initialization of mock resource
-	Resource resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getCredentialIdRef()).andReturn(NULL_CRED_REF_ID);
-	org.easymock.classextension.EasyMock.replay(resource);
+	Resource resource = createMock(Resource.class);
+	expect(resource.getCredentialIdRef()).andReturn(NULL_CRED_REF_ID);
+	replay(resource);
 
 	// complete initialization of mock credential
-	Credential credential = org.easymock.classextension.EasyMock.createMock(Credential.class);
-	org.easymock.classextension.EasyMock.replay(credential);
+	Credential credential = createMock(Credential.class);
+	replay(credential);
 
 	// create mock resource info
-	ResourceInfo resourceInfo = EasyMock.createMock(ResourceInfo.class);
-	EasyMock.expect(resourceInfo.getPluginId()).andReturn(PLUGIN_ID);
-	EasyMock.expect(resourceInfo.getResource()).andReturn(resource);
-	EasyMock.replay(resourceInfo);
+	ResourceInfo resourceInfo = createMock(ResourceInfo.class);
+	expect(resourceInfo.getPluginId()).andReturn(PLUGIN_ID);
+	expect(resourceInfo.getResource()).andReturn(resource);
+	replay(resourceInfo);
 
 	// complete initialization of mock operation
-	Operation operation = EasyMock.createMock(Operation.class);
-	EasyMock.replay(operation);
+	Operation operation = createMock(Operation.class);
+	replay(operation);
 
 	// complete initialization of mock plugin info
-	PluginInfo pluginInfo = EasyMock.createMock(PluginInfo.class);
-	EasyMock.expect(pluginInfo.isSessionHandlingEnabled()).andReturn(true);
-	EasyMock.replay(pluginInfo);
+	PluginInfo pluginInfo = createMock(PluginInfo.class);
+	expect(pluginInfo.isSessionHandlingEnabled()).andReturn(true);
+	replay(pluginInfo);
 
 	// complete initialization of mock provider
-	EasyMock.replay(credentialProvider);
+	replay(credentialProvider);
 
 	// complete initialization of mock resource repository
-	EasyMock.expect(resourceRepository.get(environment, resourceId)).andReturn(resourceInfo).times(2);
-	EasyMock.replay(resourceRepository);
+	expect(resourceRepository.get(environment, resourceId)).andReturn(resourceInfo).times(2);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.expect(pluginRepository.getPluginInfo(PLUGIN_ID)).andReturn(pluginInfo);
-	EasyMock.expect(pluginRepository.getOperation(PLUGIN_ID, OPERATION_ID)).andReturn(operation);
-	EasyMock.replay(pluginRepository);
+	expect(pluginRepository.getPluginInfo(PLUGIN_ID)).andReturn(pluginInfo);
+	expect(pluginRepository.getOperation(PLUGIN_ID, OPERATION_ID)).andReturn(operation);
+	replay(pluginRepository);
 
 	// complete initialization of mock session handler
-	Operation sessionHandler = EasyMock.createMock(Operation.class);
-	EasyMock.replay(sessionHandler);
+	Operation sessionHandler = createMock(Operation.class);
+	replay(sessionHandler);
 
 	// complete initialization of mock factory
-	org.easymock.classextension.EasyMock
-		.expect(retrySessionHandlerFactory.getInstance(resource, NULL_CREDENTIAL, operation))
+	expect(retrySessionHandlerFactory.getInstance(resource, NULL_CREDENTIAL, operation))
 		.andReturn(sessionHandler);
-	org.easymock.classextension.EasyMock.replay(retrySessionHandlerFactory);
+	replay(retrySessionHandlerFactory);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
@@ -686,16 +689,16 @@ public class PluginActivatorImplTest {
 	assertEquals(sessionHandler, actualOperation);
 
 	// verify mocks
-	EasyMock.verify(resourceInfo);
-	EasyMock.verify(operation);
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
-	EasyMock.verify(pluginInfo);
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(retrySessionHandlerFactory);
-	EasyMock.verify(sessionHandler);
+	verify(resourceInfo);
+	verify(operation);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
+	verify(pluginInfo);
+	verify(resource);
+	verify(credential);
+	verify(retrySessionHandlerFactory);
+	verify(sessionHandler);
     }
 
     /**
@@ -709,27 +712,27 @@ public class PluginActivatorImplTest {
 	String credentialId = "some-credential-id";
 
 	// complete initialization of mock resource
-	Resource resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getCredentialIdRef()).andReturn(credentialId);
-	org.easymock.classextension.EasyMock.replay(resource);
+	Resource resource = createMock(Resource.class);
+	expect(resource.getCredentialIdRef()).andReturn(credentialId);
+	replay(resource);
 
 	// complete initialization of mock credential
-	Credential credential = org.easymock.classextension.EasyMock.createMock(Credential.class);
-	org.easymock.classextension.EasyMock.replay(credential);
+	Credential credential = createMock(Credential.class);
+	replay(credential);
 
 	// complete initialization of mock operation
-	Operation operation = EasyMock.createMock(Operation.class);
-	EasyMock.replay(operation);
+	Operation operation = createMock(Operation.class);
+	replay(operation);
 
 	// complete initialization of mock provider
-	EasyMock.expect(credentialProvider.get(environment, credentialId)).andReturn(credential);
-	EasyMock.replay(credentialProvider);
+	expect(credentialProvider.get(environment, credentialId)).andReturn(credential);
+	replay(credentialProvider);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(resourceRepository);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(pluginRepository);
+	replay(pluginRepository);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
@@ -743,12 +746,12 @@ public class PluginActivatorImplTest {
 	assertEquals(credential, actualCredential);
 
 	// verify mocks
-	EasyMock.verify(operation);
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
+	verify(operation);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
+	verify(resource);
+	verify(credential);
     }
 
     /**
@@ -761,26 +764,26 @@ public class PluginActivatorImplTest {
 	String resourceId = CoreTestConstants.resourceIdentifierTestResource;
 
 	// complete initialization of mock resource
-	Resource resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getCredentialIdRef()).andReturn(NULL_CRED_REF_ID);
-	org.easymock.classextension.EasyMock.replay(resource);
+	Resource resource = createMock(Resource.class);
+	expect(resource.getCredentialIdRef()).andReturn(NULL_CRED_REF_ID);
+	replay(resource);
 
 	// complete initialization of mock credential
-	Credential credential = org.easymock.classextension.EasyMock.createMock(Credential.class);
-	org.easymock.classextension.EasyMock.replay(credential);
+	Credential credential = createMock(Credential.class);
+	replay(credential);
 
 	// complete initialization of mock operation
-	Operation operation = EasyMock.createMock(Operation.class);
-	EasyMock.replay(operation);
+	Operation operation = createMock(Operation.class);
+	replay(operation);
 
 	// complete initialization of mock provider
-	EasyMock.replay(credentialProvider);
+	replay(credentialProvider);
 
 	// complete initialization of mock resource repository
-	EasyMock.replay(resourceRepository);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(pluginRepository);
+	replay(pluginRepository);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
@@ -792,12 +795,12 @@ public class PluginActivatorImplTest {
 	assertNull(actualCredential);
 
 	// verify mocks
-	EasyMock.verify(operation);
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
+	verify(operation);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
+	verify(resource);
+	verify(credential);
     }
 
     /**
@@ -810,26 +813,26 @@ public class PluginActivatorImplTest {
 	String resourceId = CoreTestConstants.resourceIdentifierTestResource;
 
 	// complete initialization of mock resource
-	Resource resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getCredentialIdRef()).andReturn(EMPTY_CRED_REF_ID);
-	org.easymock.classextension.EasyMock.replay(resource);
+	Resource resource = createMock(Resource.class);
+	expect(resource.getCredentialIdRef()).andReturn(EMPTY_CRED_REF_ID);
+	replay(resource);
 
 	// complete initialization of mock credential
-	Credential credential = org.easymock.classextension.EasyMock.createMock(Credential.class);
-	org.easymock.classextension.EasyMock.replay(credential);
+	Credential credential = createMock(Credential.class);
+	replay(credential);
 
 	// complete initialization of mock operation
-	Operation operation = EasyMock.createMock(Operation.class);
-	EasyMock.replay(operation);
+	Operation operation = createMock(Operation.class);
+	replay(operation);
 
 	// complete initialization of mock provider
-	EasyMock.replay(credentialProvider);
+	replay(credentialProvider);
 
 	// complete initialization of mock resource repository
-	EasyMock.replay(resourceRepository);
+	replay(resourceRepository);
 
 	// complete initialization of mock plugin repository
-	EasyMock.replay(pluginRepository);
+	replay(pluginRepository);
 
 	// initialize
 	pluginActivator.initialize(credentialProvider, resourceRepository, pluginRepository);
@@ -841,12 +844,12 @@ public class PluginActivatorImplTest {
 	assertNull(actualCredential);
 
 	// verify mocks
-	EasyMock.verify(operation);
-	EasyMock.verify(credentialProvider);
-	EasyMock.verify(resourceRepository);
-	EasyMock.verify(pluginRepository);
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
+	verify(operation);
+	verify(credentialProvider);
+	verify(resourceRepository);
+	verify(pluginRepository);
+	verify(resource);
+	verify(credential);
     }
 
 }

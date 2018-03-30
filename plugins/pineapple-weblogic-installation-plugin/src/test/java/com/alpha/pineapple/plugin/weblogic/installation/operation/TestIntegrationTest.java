@@ -37,7 +37,7 @@ import javax.annotation.Resource;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.easymock.classextension.EasyMock;
+import org.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

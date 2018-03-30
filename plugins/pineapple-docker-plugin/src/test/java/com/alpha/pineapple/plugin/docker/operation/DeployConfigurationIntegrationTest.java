@@ -35,6 +35,7 @@ import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -48,7 +49,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -211,7 +211,7 @@ public class DeployConfigurationIntegrationTest {
 	contentMother = new ObjectMotherContent();
 
 	// reset plugin provider
-	EasyMock.reset(coreRuntimeDirectoryProvider);
+	reset(coreRuntimeDirectoryProvider);
     }
 
     @After
@@ -399,11 +399,11 @@ public class DeployConfigurationIntegrationTest {
 	uriVariables.put("repository", randomRepo2);
 
 	// complete mock session initialization
-	CreatedContainer createdContainer = EasyMock.createMock(CreatedContainer.class);
-	EasyMock.expect(createdContainer.getId()).andReturn(randomDockerContainerID).times(3);
+	CreatedContainer createdContainer = createMock(CreatedContainer.class);
+	expect(createdContainer.getId()).andReturn(randomDockerContainerID).times(3);
 	List<String> emptyWarnings = new ArrayList<String>();
-	EasyMock.expect(createdContainer.getWarnings()).andReturn(emptyWarnings);
-	EasyMock.replay(createdContainer);
+	expect(createdContainer.getWarnings()).andReturn(emptyWarnings);
+	replay(createdContainer);
 	expect(session.httpPostForObject(contains(CREATE_CONTAINER_URI), isA(ContainerConfiguration.class),
 		isA(CreatedContainer.class.getClass()))).andReturn(createdContainer);
 	session.httpPost(contains(RENAME_CONTAINER_URI), isA(Map.class));
@@ -419,7 +419,7 @@ public class DeployConfigurationIntegrationTest {
 	// test
 	assertTrue(result.isSuccess());
 	verify(session);
-	EasyMock.verify(createdContainer);
+	verify(createdContainer);
     }
 
     /**

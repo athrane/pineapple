@@ -23,6 +23,7 @@
 package com.alpha.pineapple.substitution;
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
@@ -41,7 +42,7 @@ import org.apache.commons.chain.Context;
 import org.apache.commons.chain.impl.ContextBase;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -172,8 +173,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 	session = createMock(Session.class);
 
 	// create resource
-	sessionResource = org.easymock.classextension.EasyMock
-		.createMock(com.alpha.pineapple.model.configuration.Resource.class);
+	sessionResource = createMock(com.alpha.pineapple.model.configuration.Resource.class);
 
 	// create module object mother
 	moduleMother = new ObjectMotherModule();
@@ -219,8 +219,8 @@ public class VariableSubstitutionProviderIntegrationTest {
      */
     void completeSessionMockSetupWithNoResourceProperties() {
 	List<Property> propertyList = new ArrayList<Property>();
-	org.easymock.classextension.EasyMock.expect(sessionResource.getProperty()).andReturn(propertyList).anyTimes();
-	org.easymock.classextension.EasyMock.replay(sessionResource);
+	expect(sessionResource.getProperty()).andReturn(propertyList).anyTimes();
+	replay(sessionResource);
 	EasyMock.expect(session.getResource()).andReturn(sessionResource).anyTimes();
 	replay(session);
     }
@@ -232,10 +232,9 @@ public class VariableSubstitutionProviderIntegrationTest {
      *            resource property list.
      */
     void completeSessionMockSetupWithPropertyDefined(List<Property> propertyList) {
-	org.easymock.classextension.EasyMock.expect(sessionResource.getId()).andReturn(randomResourceId).anyTimes();
-	org.easymock.classextension.EasyMock.expect(sessionResource.getProperty()).andReturn(propertyList).anyTimes();
-	;
-	org.easymock.classextension.EasyMock.replay(sessionResource);
+	expect(sessionResource.getId()).andReturn(randomResourceId).anyTimes();
+	expect(sessionResource.getProperty()).andReturn(propertyList).anyTimes();
+	replay(sessionResource);
 	EasyMock.expect(session.getResource()).andReturn(sessionResource).anyTimes();
 	replay(session);
     }
@@ -315,7 +314,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 	// test
 	assertEquals(EMPTY_STRING, actual);
 	verify(session);
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
 	assertEquals(EMPTY_STRING, actual);
 	assertTrue(result.isExecuting()); // parent result is still executing
 	assertEquals(1, result.getChildren().length); // one substitution result
@@ -362,7 +361,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 										 // no
 										 // children
 	verify(session);
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -398,7 +397,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 										 // no
 										 // children
 	verify(session);
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -434,7 +433,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 										 // no
 										 // children
 	verify(session);
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -480,7 +479,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 										 // children
 
 	verify(session);
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -521,7 +520,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 										 // two
 										 // children
 	verify(session);
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -537,7 +536,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 	File localFile = new File(testDirectory, randomFileName);
 
 	// complete mock setup
-	org.easymock.classextension.EasyMock.replay(sessionResource);
+	replay(sessionResource);
 	replay(session);
 
 	// invoke
@@ -545,7 +544,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 
 	// test
 	verify(session);
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -561,7 +560,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 	File localFile = new File(testDirectory, randomFileName);
 
 	// complete mock setup
-	org.easymock.classextension.EasyMock.replay(sessionResource);
+	replay(sessionResource);
 	replay(session);
 
 	// invoke and capture exception
@@ -589,7 +588,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 										 // child
 
 	verify(session);
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -611,7 +610,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 	f.close();
 
 	// complete mock setup
-	org.easymock.classextension.EasyMock.replay(sessionResource);
+	replay(sessionResource);
 	EasyMock.expect(session.getResource()).andReturn(sessionResource);
 	replay(session);
 
@@ -623,7 +622,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 
 	// test
 	verify(session);
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
 
     }
 
@@ -646,7 +645,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 	f.close();
 
 	// complete mock setup
-	org.easymock.classextension.EasyMock.replay(sessionResource);
+	replay(sessionResource);
 	replay(session);
 
 	// invoke and capture exception
@@ -673,8 +672,7 @@ public class VariableSubstitutionProviderIntegrationTest {
 										 // two
 										 // children
 	verify(session);
-	org.easymock.classextension.EasyMock.verify(sessionResource);
-
+	verify(sessionResource);
     }
 
 }

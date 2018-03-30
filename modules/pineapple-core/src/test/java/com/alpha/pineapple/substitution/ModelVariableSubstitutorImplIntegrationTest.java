@@ -22,6 +22,10 @@
 
 package com.alpha.pineapple.substitution;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -111,8 +115,7 @@ public class ModelVariableSubstitutorImplIntegrationTest {
 	targetObjecFactory = new ObjectFactory();
 
 	// create resource
-	sessionResource = org.easymock.classextension.EasyMock
-		.createMock(com.alpha.pineapple.model.configuration.Resource.class);
+	sessionResource = createMock(com.alpha.pineapple.model.configuration.Resource.class);
     }
 
     /**
@@ -150,9 +153,9 @@ public class ModelVariableSubstitutorImplIntegrationTest {
      *            resource.
      */
     void completeResourceMockSetup(List<Property> propertyList) {
-	org.easymock.classextension.EasyMock.expect(sessionResource.getId()).andReturn(randomResourceId).anyTimes();
-	org.easymock.classextension.EasyMock.expect(sessionResource.getProperty()).andReturn(propertyList).anyTimes();
-	org.easymock.classextension.EasyMock.replay(sessionResource);
+	expect(sessionResource.getId()).andReturn(randomResourceId).anyTimes();
+	expect(sessionResource.getProperty()).andReturn(propertyList).anyTimes();
+	replay(sessionResource);
     }
 
     /**
@@ -199,7 +202,7 @@ public class ModelVariableSubstitutorImplIntegrationTest {
 
 	// test
 	assertNotNull(substitutedObject);
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -229,7 +232,7 @@ public class ModelVariableSubstitutorImplIntegrationTest {
 	// test
 	assertNotNull(substitutedObject);
 	assertEquals(randomVariableValue, substitutedObject.getContainer().getItems().get(0).getName());
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -259,7 +262,7 @@ public class ModelVariableSubstitutorImplIntegrationTest {
 	// test
 	assertNotNull(substitutedObject);
 	assertEquals(randomVariableValue, substitutedObject.getContainer().getItems().get(0).getName());
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -290,7 +293,7 @@ public class ModelVariableSubstitutorImplIntegrationTest {
 	// test
 	assertNotNull(substitutedObject);
 	assertEquals(randomVariableValue, substitutedObject.getContainer().getItems().get(0).getName());
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -321,7 +324,7 @@ public class ModelVariableSubstitutorImplIntegrationTest {
 	// test
 	assertNotNull(substitutedObject);
 	assertEquals(randomVariableValue, substitutedObject.getContainer().getItems().get(0).getName());
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -351,7 +354,7 @@ public class ModelVariableSubstitutorImplIntegrationTest {
 	// test
 	assertNotNull(substitutedObject);
 	assertEquals(randomVariableValue, substitutedObject.getContainer().getItems().get(0).getName());
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
     /**
@@ -381,7 +384,7 @@ public class ModelVariableSubstitutorImplIntegrationTest {
 	// test
 	assertNotNull(substitutedObject);
 	assertEquals(randomVariableValue, substitutedObject.getContainer().getItems().get(0).getName());
-	org.easymock.classextension.EasyMock.verify(sessionResource);
+	verify(sessionResource);
     }
 
 }

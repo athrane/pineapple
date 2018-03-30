@@ -26,6 +26,13 @@ import static com.alpha.pineapple.CoreConstants.MSG_ENVIRONMENT;
 import static com.alpha.pineapple.CoreConstants.MSG_MODULE;
 import static com.alpha.pineapple.CoreConstants.MSG_MODULE_FILE;
 import static com.alpha.pineapple.CoreConstants.MSG_OPERATION;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -36,7 +43,6 @@ import java.util.Random;
 
 import org.apache.commons.chain.Context;
 import org.apache.commons.lang.RandomStringUtils;
-import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.After;
 import org.junit.Before;
@@ -218,36 +224,36 @@ public class CoreTest {
 	moduleMother = new ObjectMotherModule();
 
 	// create mock credential provider
-	provider = EasyMock.createMock(CredentialProvider.class);
-	EasyMock.replay(provider);
+	provider = createMock(CredentialProvider.class);
+	replay(provider);
 
 	// get the test directory
 	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
 	// create mock provider
-	messageProvider = EasyMock.createMock(MessageProvider.class);
+	messageProvider = createMock(MessageProvider.class);
 
 	// inject message provider
 	ReflectionTestUtils.setField(coreImpl, "messageProvider", messageProvider);
 
 	// complete mock source initialization
 	IAnswer<String> answer = new MessageProviderAnswerImpl();
-	EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
-	EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-	EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class),
-		(Object[]) EasyMock.isA(Object[].class)));
-	EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-	EasyMock.replay(messageProvider);
+	expect(messageProvider.getMessage((String) isA(String.class)));
+	expectLastCall().andAnswer(answer).anyTimes();
+	expect(messageProvider.getMessage((String) isA(String.class),
+		(Object[]) isA(Object[].class)));
+	expectLastCall().andAnswer(answer).anyTimes();
+	replay(messageProvider);
 
 	// create mocks
-	resultRepository = EasyMock.createMock(ResultRepository.class);
-	moduleRepository = EasyMock.createMock(ModuleRepository.class);
-	scheduledOperationRespository = EasyMock.createMock(ScheduledOperationRespository.class);	
-	asyncOperationTask = EasyMock.createMock(OperationTask.class);
-	commandRunner = EasyMock.createMock(CommandRunner.class);
-	commandFacade = EasyMock.createMock(CommandFacade.class);
-	context = EasyMock.createMock(Context.class);
-	administrationProvider = EasyMock.createMock(Administration.class);
+	resultRepository = createMock(ResultRepository.class);
+	moduleRepository = createMock(ModuleRepository.class);
+	scheduledOperationRespository = createMock(ScheduledOperationRespository.class);	
+	asyncOperationTask = createMock(OperationTask.class);
+	commandRunner = createMock(CommandRunner.class);
+	commandFacade = createMock(CommandFacade.class);
+	context = createMock(Context.class);
+	administrationProvider = createMock(Administration.class);
 
 	// inject repository
 	ReflectionTestUtils.setField(coreImpl, "resultRepository", resultRepository);
@@ -259,18 +265,18 @@ public class CoreTest {
 	ReflectionTestUtils.setField(coreImpl, "administrationProvider", administrationProvider);
 
 	// create mock plugin activator
-	pluginActivator = EasyMock.createMock(PluginActivator.class);
-	EasyMock.replay(pluginActivator);
+	pluginActivator = createMock(PluginActivator.class);
+	replay(pluginActivator);
 
 	// create mock configuration
-	configuration = org.easymock.classextension.EasyMock.createMock(Configuration.class);
-	org.easymock.classextension.EasyMock.replay(configuration);
+	configuration = createMock(Configuration.class);
+	replay(configuration);
     }
 
     @After
     public void tearDown() throws Exception {
 	// verify credential provider
-	EasyMock.verify(provider);
+	verify(provider);
 
 	testDirectory = null;
 	provider = null;
@@ -289,7 +295,7 @@ public class CoreTest {
      */
     void completeMockAdministrationInitialization() {
 	administrationProvider.setCredentialProvider(provider);
-	EasyMock.replay(administrationProvider);
+	replay(administrationProvider);
     }
 
     /**
@@ -298,9 +304,9 @@ public class CoreTest {
      * @return mock execution result.
      */
     ExecutionResult completeMockRepositoryInitialization() {
-	ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
-	EasyMock.expect(resultRepository.startExecution(EasyMock.isA(String.class))).andReturn(result);
-	EasyMock.replay(resultRepository);
+	ExecutionResult result = createMock(ExecutionResult.class);
+	expect(resultRepository.startExecution(isA(String.class))).andReturn(result);
+	replay(resultRepository);
 	return result;
     }
 
@@ -313,9 +319,9 @@ public class CoreTest {
      * @return mock execution result.
      */
     ExecutionResult completeMockRepositoryInitializationForExecution(ExecutionInfo info) {
-	ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
-	EasyMock.expect(resultRepository.startExecution(EasyMock.isA(String.class))).andReturn(result);
-	EasyMock.replay(resultRepository);
+	ExecutionResult result = createMock(ExecutionResult.class);
+	expect(resultRepository.startExecution(isA(String.class))).andReturn(result);
+	replay(resultRepository);
 	return result;
     }
 
@@ -326,7 +332,7 @@ public class CoreTest {
      *            Environment configuration.
      */
     void completeMockContextInitialization(Configuration configuration) {
-	EasyMock.replay(context);
+	replay(context);
     }
 
     /**
@@ -337,7 +343,7 @@ public class CoreTest {
      */
     void completeCommandRunnerInitialization(ExecutionResult result) {
 	commandRunner.setExecutionResult(result);
-	EasyMock.replay(commandRunner);
+	replay(commandRunner);
     }
 
     /**
@@ -347,11 +353,11 @@ public class CoreTest {
      *            Mock Execution result.
      */
     void completeCommandFacadeInitialization(ExecutionResult result) {
-	EasyMock.expect(commandFacade.loadJaxbObjects(EasyMock.isA(File.class), EasyMock.isA(Class.class),
-		EasyMock.isA(ExecutionResult.class))).andReturn(configuration);
-	EasyMock.expect(commandFacade.initializePluginActivator(EasyMock.isA(CredentialProvider.class),
-		EasyMock.isA(Configuration.class), EasyMock.isA(ExecutionResult.class))).andReturn(pluginActivator);
-	EasyMock.replay(commandFacade);
+	expect(commandFacade.loadJaxbObjects(isA(File.class), isA(Class.class),
+		isA(ExecutionResult.class))).andReturn(configuration);
+	expect(commandFacade.initializePluginActivator(isA(CredentialProvider.class),
+		isA(Configuration.class), isA(ExecutionResult.class))).andReturn(pluginActivator);
+	replay(commandFacade);
     }
 
     /**
@@ -361,7 +367,7 @@ public class CoreTest {
      */
     void completeMockScheduledOperationRepositoryInitialization(ExecutionResult result) {
 	scheduledOperationRespository.initialize(result);
-	EasyMock.replay(scheduledOperationRespository);
+	replay(scheduledOperationRespository);
     }
     
     /**
@@ -398,10 +404,10 @@ public class CoreTest {
 	completeMockResultInitializationWithReportMetadata(result);
 	
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime);
-	EasyMock.expect(result.isSuccess()).andReturn(true);
+	expect(result.getTime()).andReturn(randomTime);
+	expect(result.isSuccess()).andReturn(true);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	EasyMock.replay(result);
+	replay(result);
 
 	// initialize core component
 	coreImpl.initialize(provider);
@@ -410,16 +416,16 @@ public class CoreTest {
 	assertTrue(coreImpl.toString().startsWith(PINEAPPLE_VERSION));
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(scheduledOperationRespository);	
-	EasyMock.verify(resultRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(administrationProvider);
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(scheduledOperationRespository);	
+	verify(resultRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(administrationProvider);
     }
 
     /**
@@ -451,10 +457,10 @@ public class CoreTest {
 	completeMockResultInitializationWithReportMetadata(result);
 
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime);
-	EasyMock.expect(result.isSuccess()).andReturn(true);
+	expect(result.getTime()).andReturn(randomTime);
+	expect(result.isSuccess()).andReturn(true);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	EasyMock.replay(result);
+	replay(result);
 
 	// initialize core component
 	coreImpl.initialize(provider, resourcesFile);
@@ -463,16 +469,16 @@ public class CoreTest {
 	assertTrue(coreImpl.toString().startsWith(PINEAPPLE_VERSION));
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);		
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);		
     }
 
     /**
@@ -505,10 +511,10 @@ public class CoreTest {
 	completeMockResultInitializationWithReportMetadata(result);
 	
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime);
-	EasyMock.expect(result.isSuccess()).andReturn(false);
+	expect(result.getTime()).andReturn(randomTime);
+	expect(result.isSuccess()).andReturn(false);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	EasyMock.replay(result);
+	replay(result);
 
 	// initialize core component
 	coreImpl.initialize(provider, resourcesFile);
@@ -517,15 +523,15 @@ public class CoreTest {
 	assertTrue(coreImpl.toString().startsWith(PINEAPPLE_VERSION));
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);			
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(context);
+	verify(resultRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);			
     }
 
     /**
@@ -552,10 +558,10 @@ public class CoreTest {
 	completeMockResultInitializationWithReportMetadata(result);
 
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime);
-	EasyMock.expect(result.isSuccess()).andReturn(true);
+	expect(result.getTime()).andReturn(randomTime);
+	expect(result.isSuccess()).andReturn(true);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	EasyMock.replay(result);
+	replay(result);
 
 	// convert file name to file
 	File resourcesFile = new File("resources.xml");
@@ -567,16 +573,16 @@ public class CoreTest {
 	assertTrue(coreImpl.toString().startsWith(PINEAPPLE_VERSION));
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);				
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);				
     }
 
     /**
@@ -594,7 +600,7 @@ public class CoreTest {
 
 	// complete mock initializations
 	completeMockContextInitialization(configuration);
-	ExecutionInfo info = EasyMock.createMock(ExecutionInfo.class);
+	ExecutionInfo info = createMock(ExecutionInfo.class);
 	ExecutionResult result = completeMockRepositoryInitializationForExecution(info);
 	completeCommandRunnerInitialization(result);
 	completeCommandFacadeInitialization(result);
@@ -603,25 +609,25 @@ public class CoreTest {
 	completeMockResultInitializationWithReportMetadata(result);
 
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime);
-	EasyMock.expect(result.isSuccess()).andReturn(true);
+	expect(result.getTime()).andReturn(randomTime);
+	expect(result.isSuccess()).andReturn(true);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	EasyMock.replay(result);
+	replay(result);
 
 	// complete mock execution info initialization
-	EasyMock.replay(info);
+	replay(info);
 
 	// complete mock module info initialization
-	ModuleInfo moduleInfo = EasyMock.createMock(ModuleInfo.class);
-	EasyMock.replay(moduleInfo);
+	ModuleInfo moduleInfo = createMock(ModuleInfo.class);
+	replay(moduleInfo);
 
 	// complete mock module repository initialization
 	moduleRepository.initialize();
-	EasyMock.replay(moduleRepository);
+	replay(moduleRepository);
 
 	// complete mock task initialization
-	EasyMock.expect(asyncOperationTask.execute(operation, environmentName, moduleName)).andReturn(info);
-	EasyMock.replay(asyncOperationTask);
+	expect(asyncOperationTask.execute(operation, environmentName, moduleName)).andReturn(info);
+	replay(asyncOperationTask);
 
 	// initialize core component
 	coreImpl.initialize(provider);
@@ -636,19 +642,19 @@ public class CoreTest {
 	assertNotNull(executionInfo);
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	EasyMock.verify(moduleRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(info);
-	EasyMock.verify(asyncOperationTask);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);					
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(moduleRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(info);
+	verify(asyncOperationTask);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);					
     }
 
     /**
@@ -667,13 +673,13 @@ public class CoreTest {
 
 	// complete mock initializations
 	completeMockContextInitialization(configuration);
-	ExecutionInfo info = EasyMock.createMock(ExecutionInfo.class);
+	ExecutionInfo info = createMock(ExecutionInfo.class);
 	
-	ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
-	EasyMock.expect(resultRepository.startExecution(EasyMock.isA(String.class))).andReturn(result);
-	EasyMock.expect(resultRepository.startExecution(EasyMock.isA(ModuleInfo.class), EasyMock.isA(String.class),
-		EasyMock.isA(String.class))).andReturn(info);
-	EasyMock.replay(resultRepository);
+	ExecutionResult result = createMock(ExecutionResult.class);
+	expect(resultRepository.startExecution(isA(String.class))).andReturn(result);
+	expect(resultRepository.startExecution(isA(ModuleInfo.class), isA(String.class),
+		isA(String.class))).andReturn(info);
+	replay(resultRepository);
 		
 	completeCommandRunnerInitialization(result);
 	completeCommandFacadeInitialization(result);
@@ -683,29 +689,29 @@ public class CoreTest {
 
 	// complete mock execution result initialization
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	EasyMock.expect(result.getTime()).andReturn(randomTime);
-	EasyMock.expect(result.isSuccess()).andReturn(false);
-	result.completeAsError((MessageProvider) EasyMock.isA(MessageProvider.class),
-		(String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject(), (Exception) EasyMock.anyObject());
-	EasyMock.replay(result);
+	expect(result.getTime()).andReturn(randomTime);
+	expect(result.isSuccess()).andReturn(false);
+	result.completeAsError((MessageProvider) isA(MessageProvider.class),
+		(String) isA(String.class), (Object[]) anyObject(), (Exception) anyObject());
+	replay(result);
 
 	// complete mock execution info initialization
-	EasyMock.expect(info.getResult()).andReturn(result);
-	EasyMock.replay(info);
+	expect(info.getResult()).andReturn(result);
+	replay(info);
 
 	// complete mock module info initialization
-	ModuleInfo moduleInfo = EasyMock.createMock(ModuleInfo.class);
-	EasyMock.replay(moduleInfo);
+	ModuleInfo moduleInfo = createMock(ModuleInfo.class);
+	replay(moduleInfo);
 
 	// complete mock module repository initialization which THROWS an
 	// exception
 	moduleRepository.initialize();
-	EasyMock.replay(moduleRepository);
+	replay(moduleRepository);
 
 	// complete mock task initialization
 	Exception e = new ModuleNotFoundException("exception-message");	
-	EasyMock.expect(asyncOperationTask.execute(operation, environmentName, moduleName)).andThrow(e);
-	EasyMock.replay(asyncOperationTask);
+	expect(asyncOperationTask.execute(operation, environmentName, moduleName)).andThrow(e);
+	replay(asyncOperationTask);
 
 	// initialize core component
 	coreImpl.initialize(provider);
@@ -720,19 +726,19 @@ public class CoreTest {
 	assertNotNull(executionInfo);
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	EasyMock.verify(moduleRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(info);
-	EasyMock.verify(asyncOperationTask);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);						
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(moduleRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(info);
+	verify(asyncOperationTask);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);						
     }
 
     /**
@@ -753,36 +759,36 @@ public class CoreTest {
 	// complete mock initializations
 	completeMockContextInitialization(configuration);
 	completeMockAdministrationInitialization();	
-	ExecutionInfo info = EasyMock.createMock(ExecutionInfo.class);
-	ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
-	EasyMock.expect(resultRepository.startExecution(EasyMock.isA(String.class))).andReturn(result);
+	ExecutionInfo info = createMock(ExecutionInfo.class);
+	ExecutionResult result = createMock(ExecutionResult.class);
+	expect(resultRepository.startExecution(isA(String.class))).andReturn(result);
 	completeMockScheduledOperationRepositoryInitialization(result);
 	completeMockResultInitializationWithReportMetadata(result);
 
 	// initialize result repository for NULL operation
-	EasyMock.expect(resultRepository.startExecution(moduleInfo, environmentName, null)).andReturn(info);
-	EasyMock.replay(resultRepository);
+	expect(resultRepository.startExecution(moduleInfo, environmentName, null)).andReturn(info);
+	replay(resultRepository);
 	completeCommandRunnerInitialization(result);
 	completeCommandFacadeInitialization(result);
 
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime);
-	EasyMock.expect(result.isSuccess()).andReturn(false);
+	expect(result.getTime()).andReturn(randomTime);
+	expect(result.isSuccess()).andReturn(false);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	result.completeAsError((MessageProvider) EasyMock.isA(MessageProvider.class),
-		(String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject(), (Exception) EasyMock.anyObject());
-	EasyMock.replay(result);
+	result.completeAsError((MessageProvider) isA(MessageProvider.class),
+		(String) isA(String.class), (Object[]) anyObject(), (Exception) anyObject());
+	replay(result);
 
 	// complete mock execution info initialization
-	EasyMock.expect(info.getResult()).andReturn(result);
-	EasyMock.replay(info);
+	expect(info.getResult()).andReturn(result);
+	replay(info);
 
 	// complete mock module repository initialization
 	moduleRepository.initialize();
-	EasyMock.replay(moduleRepository);
+	replay(moduleRepository);
 
 	// complete mock task initialization
-	EasyMock.replay(asyncOperationTask);
+	replay(asyncOperationTask);
 
 	// initialize core component
 	coreImpl.initialize(provider);
@@ -797,19 +803,19 @@ public class CoreTest {
 	assertNotNull(executionInfo);
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	EasyMock.verify(moduleRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(info);
-	EasyMock.verify(asyncOperationTask);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);							
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(moduleRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(info);
+	verify(asyncOperationTask);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);							
     }
 
     /**
@@ -830,36 +836,36 @@ public class CoreTest {
 	// complete mock initializations
 	completeMockContextInitialization(configuration);
 	completeMockAdministrationInitialization();
-	ExecutionInfo info = EasyMock.createMock(ExecutionInfo.class);
-	ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
-	EasyMock.expect(resultRepository.startExecution(EasyMock.isA(String.class))).andReturn(result);
+	ExecutionInfo info = createMock(ExecutionInfo.class);
+	ExecutionResult result = createMock(ExecutionResult.class);
+	expect(resultRepository.startExecution(isA(String.class))).andReturn(result);
 	completeMockScheduledOperationRepositoryInitialization(result);
 	completeMockResultInitializationWithReportMetadata(result);
 
 	// initialize result repository for EMPTY operation
-	EasyMock.expect(resultRepository.startExecution(moduleInfo, environmentName, "")).andReturn(info);
-	EasyMock.replay(resultRepository);
+	expect(resultRepository.startExecution(moduleInfo, environmentName, "")).andReturn(info);
+	replay(resultRepository);
 	completeCommandRunnerInitialization(result);
 	completeCommandFacadeInitialization(result);
 
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime);
-	EasyMock.expect(result.isSuccess()).andReturn(false);
+	expect(result.getTime()).andReturn(randomTime);
+	expect(result.isSuccess()).andReturn(false);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	result.completeAsError((MessageProvider) EasyMock.isA(MessageProvider.class),
-		(String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject(), (Exception) EasyMock.anyObject());
-	EasyMock.replay(result);
+	result.completeAsError((MessageProvider) isA(MessageProvider.class),
+		(String) isA(String.class), (Object[]) anyObject(), (Exception) anyObject());
+	replay(result);
 
 	// complete mock execution info initialization
-	EasyMock.expect(info.getResult()).andReturn(result);
-	EasyMock.replay(info);
+	expect(info.getResult()).andReturn(result);
+	replay(info);
 
 	// complete mock module repository initialization
 	moduleRepository.initialize();
-	EasyMock.replay(moduleRepository);
+	replay(moduleRepository);
 
 	// complete mock task initialization
-	EasyMock.replay(asyncOperationTask);
+	replay(asyncOperationTask);
 
 	// initialize core component
 	coreImpl.initialize(provider);
@@ -874,19 +880,19 @@ public class CoreTest {
 	assertNotNull(executionInfo);
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	EasyMock.verify(moduleRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(info);
-	EasyMock.verify(asyncOperationTask);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);							
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(moduleRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(info);
+	verify(asyncOperationTask);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);							
     }
 
     /**
@@ -908,36 +914,36 @@ public class CoreTest {
 	// complete mock initializations
 	completeMockContextInitialization(configuration);
 	completeMockAdministrationInitialization();
-	ExecutionInfo info = EasyMock.createMock(ExecutionInfo.class);
-	ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
-	EasyMock.expect(resultRepository.startExecution(EasyMock.isA(String.class))).andReturn(result);
+	ExecutionInfo info = createMock(ExecutionInfo.class);
+	ExecutionResult result = createMock(ExecutionResult.class);
+	expect(resultRepository.startExecution(isA(String.class))).andReturn(result);
 	completeMockScheduledOperationRepositoryInitialization(result);
 	completeMockResultInitializationWithReportMetadata(result);
 
 	// initialize result repository for EMPTY operation
-	EasyMock.expect(resultRepository.startExecution(moduleInfo, null, operation)).andReturn(info);
-	EasyMock.replay(resultRepository);
+	expect(resultRepository.startExecution(moduleInfo, null, operation)).andReturn(info);
+	replay(resultRepository);
 	completeCommandRunnerInitialization(result);
 	completeCommandFacadeInitialization(result);
 
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime);
-	EasyMock.expect(result.isSuccess()).andReturn(false);
+	expect(result.getTime()).andReturn(randomTime);
+	expect(result.isSuccess()).andReturn(false);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	result.completeAsError((MessageProvider) EasyMock.isA(MessageProvider.class),
-		(String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject(), (Exception) EasyMock.anyObject());
-	EasyMock.replay(result);
+	result.completeAsError((MessageProvider) isA(MessageProvider.class),
+		(String) isA(String.class), (Object[]) anyObject(), (Exception) anyObject());
+	replay(result);
 
 	// complete mock execution info initialization
-	EasyMock.expect(info.getResult()).andReturn(result);
-	EasyMock.replay(info);
+	expect(info.getResult()).andReturn(result);
+	replay(info);
 
 	// complete mock module repository initialization
 	moduleRepository.initialize();
-	EasyMock.replay(moduleRepository);
+	replay(moduleRepository);
 
 	// complete mock task initialization
-	EasyMock.replay(asyncOperationTask);
+	replay(asyncOperationTask);
 
 	// initialize core component
 	coreImpl.initialize(provider);
@@ -952,19 +958,19 @@ public class CoreTest {
 	assertNotNull(executionInfo);
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	EasyMock.verify(moduleRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(info);
-	EasyMock.verify(asyncOperationTask);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);								
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(moduleRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(info);
+	verify(asyncOperationTask);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);								
 	
     }
 
@@ -987,36 +993,36 @@ public class CoreTest {
 	// complete mock initializations
 	completeMockContextInitialization(configuration);
 	completeMockAdministrationInitialization();
-	ExecutionInfo info = EasyMock.createMock(ExecutionInfo.class);
-	ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
-	EasyMock.expect(resultRepository.startExecution(EasyMock.isA(String.class))).andReturn(result);
+	ExecutionInfo info = createMock(ExecutionInfo.class);
+	ExecutionResult result = createMock(ExecutionResult.class);
+	expect(resultRepository.startExecution(isA(String.class))).andReturn(result);
 	completeMockScheduledOperationRepositoryInitialization(result);
 	completeMockResultInitializationWithReportMetadata(result);
 
 	// initialize result repository for EMPTY operation
-	EasyMock.expect(resultRepository.startExecution(moduleInfo, "", operation)).andReturn(info);
-	EasyMock.replay(resultRepository);
+	expect(resultRepository.startExecution(moduleInfo, "", operation)).andReturn(info);
+	replay(resultRepository);
 	completeCommandRunnerInitialization(result);
 	completeCommandFacadeInitialization(result);
 
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime);
-	EasyMock.expect(result.isSuccess()).andReturn(false);
+	expect(result.getTime()).andReturn(randomTime);
+	expect(result.isSuccess()).andReturn(false);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	result.completeAsError((MessageProvider) EasyMock.isA(MessageProvider.class),
-		(String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject(), (Exception) EasyMock.anyObject());
-	EasyMock.replay(result);
+	result.completeAsError((MessageProvider) isA(MessageProvider.class),
+		(String) isA(String.class), (Object[]) anyObject(), (Exception) anyObject());
+	replay(result);
 
 	// complete mock execution info initialization
-	EasyMock.expect(info.getResult()).andReturn(result);
-	EasyMock.replay(info);
+	expect(info.getResult()).andReturn(result);
+	replay(info);
 
 	// complete mock module repository initialization
 	moduleRepository.initialize();
-	EasyMock.replay(moduleRepository);
+	replay(moduleRepository);
 
 	// complete mock task initialization
-	EasyMock.replay(asyncOperationTask);
+	replay(asyncOperationTask);
 
 	// initialize core component
 	coreImpl.initialize(provider);
@@ -1031,19 +1037,19 @@ public class CoreTest {
 	assertNotNull(executionInfo);
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	EasyMock.verify(moduleRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(info);
-	EasyMock.verify(asyncOperationTask);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);								
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(moduleRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(info);
+	verify(asyncOperationTask);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);								
     }
 
     /**
@@ -1065,36 +1071,36 @@ public class CoreTest {
 	// complete mock initializations
 	completeMockContextInitialization(configuration);
 	completeMockAdministrationInitialization();
-	ExecutionInfo info = EasyMock.createMock(ExecutionInfo.class);
-	ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
-	EasyMock.expect(resultRepository.startExecution(EasyMock.isA(String.class))).andReturn(result);
+	ExecutionInfo info = createMock(ExecutionInfo.class);
+	ExecutionResult result = createMock(ExecutionResult.class);
+	expect(resultRepository.startExecution(isA(String.class))).andReturn(result);
 	completeMockScheduledOperationRepositoryInitialization(result);
 	completeMockResultInitializationWithReportMetadata(result);
 
 	// initialize result repository for EMPTY operation
-	EasyMock.expect(resultRepository.startExecution(moduleInfo, environmentName, operation)).andReturn(info);
-	EasyMock.replay(resultRepository);
+	expect(resultRepository.startExecution(moduleInfo, environmentName, operation)).andReturn(info);
+	replay(resultRepository);
 	completeCommandRunnerInitialization(result);
 	completeCommandFacadeInitialization(result);
 
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime);
-	EasyMock.expect(result.isSuccess()).andReturn(false);
+	expect(result.getTime()).andReturn(randomTime);
+	expect(result.isSuccess()).andReturn(false);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	result.completeAsError((MessageProvider) EasyMock.isA(MessageProvider.class),
-		(String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject(), (Exception) EasyMock.anyObject());
-	EasyMock.replay(result);
+	result.completeAsError((MessageProvider) isA(MessageProvider.class),
+		(String) isA(String.class), (Object[]) anyObject(), (Exception) anyObject());
+	replay(result);
 
 	// complete mock execution info initialization
-	EasyMock.expect(info.getResult()).andReturn(result);
-	EasyMock.replay(info);
+	expect(info.getResult()).andReturn(result);
+	replay(info);
 
 	// complete mock module repository initialization
 	moduleRepository.initialize();
-	EasyMock.replay(moduleRepository);
+	replay(moduleRepository);
 
 	// complete mock task initialization
-	EasyMock.replay(asyncOperationTask);
+	replay(asyncOperationTask);
 
 	// initialize core component
 	coreImpl.initialize(provider);
@@ -1109,19 +1115,19 @@ public class CoreTest {
 	assertNotNull(executionInfo);
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	EasyMock.verify(moduleRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(info);
-	EasyMock.verify(asyncOperationTask);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);								
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(moduleRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(info);
+	verify(asyncOperationTask);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);								
     }
 
     /**
@@ -1143,36 +1149,36 @@ public class CoreTest {
 	// complete mock initializations
 	completeMockContextInitialization(configuration);
 	completeMockAdministrationInitialization();
-	ExecutionInfo info = EasyMock.createMock(ExecutionInfo.class);
-	ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
-	EasyMock.expect(resultRepository.startExecution(EasyMock.isA(String.class))).andReturn(result);
+	ExecutionInfo info = createMock(ExecutionInfo.class);
+	ExecutionResult result = createMock(ExecutionResult.class);
+	expect(resultRepository.startExecution(isA(String.class))).andReturn(result);
 	completeMockScheduledOperationRepositoryInitialization(result);
 	completeMockResultInitializationWithReportMetadata(result);
 
 	// initialize result repository for EMPTY operation
-	EasyMock.expect(resultRepository.startExecution(moduleInfo, environmentName, operation)).andReturn(info);
-	EasyMock.replay(resultRepository);
+	expect(resultRepository.startExecution(moduleInfo, environmentName, operation)).andReturn(info);
+	replay(resultRepository);
 	completeCommandRunnerInitialization(result);
 	completeCommandFacadeInitialization(result);
 
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime);
-	EasyMock.expect(result.isSuccess()).andReturn(false);
+	expect(result.getTime()).andReturn(randomTime);
+	expect(result.isSuccess()).andReturn(false);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	result.completeAsError((MessageProvider) EasyMock.isA(MessageProvider.class),
-		(String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject(), (Exception) EasyMock.anyObject());
-	EasyMock.replay(result);
+	result.completeAsError((MessageProvider) isA(MessageProvider.class),
+		(String) isA(String.class), (Object[]) anyObject(), (Exception) anyObject());
+	replay(result);
 
 	// complete mock execution info initialization
-	EasyMock.expect(info.getResult()).andReturn(result);
-	EasyMock.replay(info);
+	expect(info.getResult()).andReturn(result);
+	replay(info);
 
 	// complete mock module repository initialization
 	moduleRepository.initialize();
-	EasyMock.replay(moduleRepository);
+	replay(moduleRepository);
 
 	// complete mock task initialization
-	EasyMock.replay(asyncOperationTask);
+	replay(asyncOperationTask);
 
 	// initialize core component
 	coreImpl.initialize(provider);
@@ -1187,19 +1193,19 @@ public class CoreTest {
 	assertNotNull(executionInfo);
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	EasyMock.verify(moduleRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(info);
-	EasyMock.verify(asyncOperationTask);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);								
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(moduleRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(info);
+	verify(asyncOperationTask);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);								
     }
 
     /**
@@ -1216,11 +1222,11 @@ public class CoreTest {
     @Test
     public void testInitializationInfoStringIsDefinedBeforeCoreInitialization() throws CoreException {
 	// complete mock initializations
-	EasyMock.replay(commandRunner);
-	EasyMock.replay(commandFacade);
-	EasyMock.replay(context);
-	EasyMock.replay(resultRepository);
-	EasyMock.replay(administrationProvider);
+	replay(commandRunner);
+	replay(commandFacade);
+	replay(context);
+	replay(resultRepository);
+	replay(administrationProvider);
 
 	// no core component initialization
 
@@ -1228,14 +1234,14 @@ public class CoreTest {
 	assertEquals(PINEAPPLE_NOT_INIT_INFO, coreImpl.getInitializationInfoAsString());
 
 	// assert
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(administrationProvider);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(administrationProvider);
     }
 
     /**
@@ -1261,10 +1267,10 @@ public class CoreTest {
 	completeMockResultInitializationWithReportMetadata(result);
 	
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime).times(2);
-	EasyMock.expect(result.isSuccess()).andReturn(true).times(2);
+	expect(result.getTime()).andReturn(randomTime).times(2);
+	expect(result.isSuccess()).andReturn(true).times(2);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	EasyMock.replay(result);
+	replay(result);
 
 	// initialize core component
 	coreImpl.initialize(provider);
@@ -1273,16 +1279,16 @@ public class CoreTest {
 	assertEquals(PINEAPPLE_SUCCESFUL_INIT_INFO, coreImpl.getInitializationInfoAsString());
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);								
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);								
     }
 
     /**
@@ -1309,10 +1315,10 @@ public class CoreTest {
 	completeMockResultInitializationWithReportMetadata(result);
 
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime).times(2);
-	EasyMock.expect(result.isSuccess()).andReturn(false).times(2);
+	expect(result.getTime()).andReturn(randomTime).times(2);
+	expect(result.isSuccess()).andReturn(false).times(2);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	EasyMock.replay(result);
+	replay(result);
 
 	// initialize core component
 	coreImpl.initialize(provider);
@@ -1321,16 +1327,16 @@ public class CoreTest {
 	assertEquals(PINEAPPLE_FAILED_INIT_INFO, coreImpl.getInitializationInfoAsString());
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);								
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);								
     }
 
     /**
@@ -1343,12 +1349,12 @@ public class CoreTest {
     @Test
     public void testInitializationInfoIsntDefinedBeforeCoreInitialization() throws CoreException {
 	// complete mock initializations
-	EasyMock.replay(commandRunner);
-	EasyMock.replay(commandFacade);
-	EasyMock.replay(context);
-	EasyMock.replay(resultRepository);
-	EasyMock.replay(administrationProvider);
-	EasyMock.replay(scheduledOperationRespository);
+	replay(commandRunner);
+	replay(commandFacade);
+	replay(context);
+	replay(resultRepository);
+	replay(administrationProvider);
+	replay(scheduledOperationRespository);
 
 	// no core component initialization
 
@@ -1356,15 +1362,15 @@ public class CoreTest {
 	assertNull(coreImpl.getInitializationInfo());
 
 	// assert
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);								
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);								
     }
 
     /**
@@ -1390,10 +1396,10 @@ public class CoreTest {
 	completeMockResultInitializationWithReportMetadata(result);
 
 	// complete mock execution result initialization
-	EasyMock.expect(result.getTime()).andReturn(randomTime);
-	EasyMock.expect(result.isSuccess()).andReturn(true);
+	expect(result.getTime()).andReturn(randomTime);
+	expect(result.isSuccess()).andReturn(true);
 	result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
-	EasyMock.replay(result);
+	replay(result);
 
 	// initialize core component
 	coreImpl.initialize(provider);
@@ -1402,16 +1408,16 @@ public class CoreTest {
 	assertEquals(coreImpl.getInitializationInfo(), result);
 
 	// assert
-	EasyMock.verify(result);
-	EasyMock.verify(provider);
-	EasyMock.verify(commandRunner);
-	EasyMock.verify(commandFacade);
-	EasyMock.verify(context);
-	EasyMock.verify(resultRepository);
-	org.easymock.classextension.EasyMock.verify(configuration);
-	EasyMock.verify(pluginActivator);
-	EasyMock.verify(administrationProvider);
-	EasyMock.verify(scheduledOperationRespository);								
+	verify(result);
+	verify(provider);
+	verify(commandRunner);
+	verify(commandFacade);
+	verify(context);
+	verify(resultRepository);
+	verify(configuration);
+	verify(pluginActivator);
+	verify(administrationProvider);
+	verify(scheduledOperationRespository);								
     }
 
 }

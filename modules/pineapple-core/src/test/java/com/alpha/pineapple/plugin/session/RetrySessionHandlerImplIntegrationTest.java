@@ -22,13 +22,17 @@
 
 package com.alpha.pineapple.plugin.session;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -111,8 +115,8 @@ public class RetrySessionHandlerImplIntegrationTest {
 	result = executionResultFactory.startExecution(randomDescription);
 
 	// complete initialization of mock credential
-	credential = org.easymock.classextension.EasyMock.createMock(Credential.class);
-	org.easymock.classextension.EasyMock.replay(credential);
+	credential = createMock(Credential.class);
+	replay(credential);
     }
 
     @After
@@ -129,36 +133,36 @@ public class RetrySessionHandlerImplIntegrationTest {
     public void testCanExecuteOperation() throws Exception {
 
 	// complete initialization of mock resource
-	resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getId()).andReturn(randomId).times(2);
-	org.easymock.classextension.EasyMock.replay(resource);
+	resource = createMock(Resource.class);
+	expect(resource.getId()).andReturn(randomId).times(2);
+	replay(resource);
 
 	// complete initialization of mock content
-	Object content = org.easymock.classextension.EasyMock.createMock(Object.class);
-	org.easymock.classextension.EasyMock.replay(content);
+	Object content = createMock(Object.class);
+	replay(content);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
 	session.disconnect();
-	EasyMock.replay(session);
+	replay(session);
 
 	// complete initialization of mock operation
-	operation = EasyMock.createMock(Operation.class);
+	operation = createMock(Operation.class);
 	operation.execute(content, session, result);
 	;
-	EasyMock.replay(operation);
+	replay(operation);
 
 	// create and execute
 	sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
 	sessionHandler.execute(content, session, result);
 
 	// test
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
-	EasyMock.verify(session);
-	org.easymock.classextension.EasyMock.verify(content);
+	verify(resource);
+	verify(credential);
+	verify(operation);
+	verify(session);
+	verify(content);
     }
 
     /**
@@ -171,25 +175,25 @@ public class RetrySessionHandlerImplIntegrationTest {
     public void testSessionHandlerAddSessionInfoToExecutionResult() throws Exception {
 
 	// complete initialization of mock resource
-	resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getId()).andReturn(randomId).times(2);
-	org.easymock.classextension.EasyMock.replay(resource);
+	resource = createMock(Resource.class);
+	expect(resource.getId()).andReturn(randomId).times(2);
+	replay(resource);
 
 	// complete initialization of mock content
-	Object content = org.easymock.classextension.EasyMock.createMock(Object.class);
-	org.easymock.classextension.EasyMock.replay(content);
+	Object content = createMock(Object.class);
+	replay(content);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
 	session.disconnect();
-	EasyMock.replay(session);
+	replay(session);
 
 	// complete initialization of mock operation
-	operation = EasyMock.createMock(Operation.class);
+	operation = createMock(Operation.class);
 	operation.execute(content, session, result);
 	;
-	EasyMock.replay(operation);
+	replay(operation);
 
 	// create and execute
 	sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
@@ -200,11 +204,11 @@ public class RetrySessionHandlerImplIntegrationTest {
 	assertNotNull(result.getMessages().containsKey(CoreConstants.MSG_SESSION));
 	assertNotNull(result.getMessages().get(CoreConstants.MSG_SESSION));
 	assertNotNull(result.getMessages().get(CoreConstants.MSG_SESSION));
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
-	EasyMock.verify(session);
-	org.easymock.classextension.EasyMock.verify(content);
+	verify(resource);
+	verify(credential);
+	verify(operation);
+	verify(session);
+	verify(content);
     }
 
     /**
@@ -217,28 +221,28 @@ public class RetrySessionHandlerImplIntegrationTest {
     public void testCanExecuteWithNullSession() throws Exception {
 
 	// complete initialization of mock resource
-	resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.replay(resource);
+	resource = createMock(Resource.class);
+	replay(resource);
 
 	// complete initialization of mock content
-	Object content = org.easymock.classextension.EasyMock.createMock(Object.class);
-	org.easymock.classextension.EasyMock.replay(content);
+	Object content = createMock(Object.class);
+	replay(content);
 
 	// complete initialization of mock operation
-	operation = EasyMock.createMock(Operation.class);
+	operation = createMock(Operation.class);
 	operation.execute(content, null, result);
 	;
-	EasyMock.replay(operation);
+	replay(operation);
 
 	// create and execute
 	sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
 	sessionHandler.execute(content, null, result);
 
 	// test
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
-	org.easymock.classextension.EasyMock.verify(content);
+	verify(resource);
+	verify(credential);
+	verify(operation);
+	verify(content);
     }
 
     /**
@@ -251,31 +255,31 @@ public class RetrySessionHandlerImplIntegrationTest {
     public void testCanExecuteOperationWithNullContent() throws Exception {
 
 	// complete initialization of mock resource
-	resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getId()).andReturn(randomId).times(2);
-	org.easymock.classextension.EasyMock.replay(resource);
+	resource = createMock(Resource.class);
+	expect(resource.getId()).andReturn(randomId).times(2);
+	replay(resource);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
 	session.disconnect();
-	EasyMock.replay(session);
+	replay(session);
 
 	// complete initialization of mock operation
-	operation = EasyMock.createMock(Operation.class);
+	operation = createMock(Operation.class);
 	operation.execute(null, session, result);
 	;
-	EasyMock.replay(operation);
+	replay(operation);
 
 	// create and execute
 	sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
 	sessionHandler.execute(null, session, result);
 
 	// test
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
-	EasyMock.verify(session);
+	verify(resource);
+	verify(credential);
+	verify(operation);
+	verify(session);
     }
 
     /**
@@ -291,35 +295,35 @@ public class RetrySessionHandlerImplIntegrationTest {
     public void testExecutionFailsIfInvokedWithNullResult() throws Exception {
 
 	// complete initialization of mock resource
-	resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getId()).andReturn(randomId).times(2);
-	org.easymock.classextension.EasyMock.replay(resource);
+	resource = createMock(Resource.class);
+	expect(resource.getId()).andReturn(randomId).times(2);
+	replay(resource);
 
 	// complete initialization of mock content
-	Object content = org.easymock.classextension.EasyMock.createMock(Object.class);
-	org.easymock.classextension.EasyMock.replay(content);
+	Object content = createMock(Object.class);
+	replay(content);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
 	session.disconnect();
-	EasyMock.replay(session);
+	replay(session);
 
 	// complete initialization of mock operation
-	operation = EasyMock.createMock(Operation.class);
+	operation = createMock(Operation.class);
 	operation.execute(content, session, null);
-	EasyMock.replay(operation);
+	replay(operation);
 
 	// create and execute
 	sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
 	sessionHandler.execute(content, session, null);
 
 	// test
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
-	EasyMock.verify(session);
-	org.easymock.classextension.EasyMock.verify(content);
+	verify(resource);
+	verify(credential);
+	verify(operation);
+	verify(session);
+	verify(content);
     }
 
     /**
@@ -333,26 +337,26 @@ public class RetrySessionHandlerImplIntegrationTest {
     public void testThrownPluginExceptionIsChanneled() throws Exception {
 
 	// complete initialization of mock resource
-	resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getId()).andReturn(randomId).times(2);
-	org.easymock.classextension.EasyMock.replay(resource);
+	resource = createMock(Resource.class);
+	expect(resource.getId()).andReturn(randomId).times(2);
+	replay(resource);
 
 	// complete initialization of mock content
-	Object content = org.easymock.classextension.EasyMock.createMock(Object.class);
-	org.easymock.classextension.EasyMock.replay(content);
+	Object content = createMock(Object.class);
+	replay(content);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
 	session.disconnect();
-	EasyMock.replay(session);
+	replay(session);
 
 	// complete initialization of mock operation
-	operation = EasyMock.createMock(Operation.class);
+	operation = createMock(Operation.class);
 	operation.execute(content, session, result);
 	PluginExecutionFailedException exception = new PluginExecutionFailedException(randomDescription);
-	EasyMock.expectLastCall().andThrow(exception);
-	EasyMock.replay(operation);
+	expectLastCall().andThrow(exception);
+	replay(operation);
 
 	// create and execute
 	sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
@@ -367,11 +371,11 @@ public class RetrySessionHandlerImplIntegrationTest {
 	}
 
 	// test
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
-	EasyMock.verify(session);
-	org.easymock.classextension.EasyMock.verify(content);
+	verify(resource);
+	verify(credential);
+	verify(operation);
+	verify(session);
+	verify(content);
     }
 
     /**
@@ -385,28 +389,28 @@ public class RetrySessionHandlerImplIntegrationTest {
     public void testThrownSessionConnectExceptionDuringConnectIsChanneled() throws Exception {
 
 	// complete initialization of mock resource
-	resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getId()).andReturn(randomId);
-	org.easymock.classextension.EasyMock.replay(resource);
+	resource = createMock(Resource.class);
+	expect(resource.getId()).andReturn(randomId);
+	replay(resource);
 
 	// complete initialization of mock content
-	Object content = org.easymock.classextension.EasyMock.createMock(Object.class);
-	org.easymock.classextension.EasyMock.replay(content);
+	Object content = createMock(Object.class);
+	replay(content);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
 	SessionConnectException exception = new SessionConnectException(randomDescription);
-	EasyMock.expectLastCall().andThrow(exception).times(4); // retry logic
+	expectLastCall().andThrow(exception).times(4); // retry logic
 								// will catch
 								// the exception
 								// the first 3
 								// times
-	EasyMock.replay(session);
+	replay(session);
 
 	// complete initialization of mock operation
-	operation = EasyMock.createMock(Operation.class);
-	EasyMock.replay(operation);
+	operation = createMock(Operation.class);
+	replay(operation);
 
 	// create and execute
 	sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
@@ -421,11 +425,11 @@ public class RetrySessionHandlerImplIntegrationTest {
 	}
 
 	// test
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
-	EasyMock.verify(session);
-	org.easymock.classextension.EasyMock.verify(content);
+	verify(resource);
+	verify(credential);
+	verify(operation);
+	verify(session);
+	verify(content);
     }
 
     /**
@@ -439,26 +443,26 @@ public class RetrySessionHandlerImplIntegrationTest {
     public void testThrownSessionDisconnectExceptionDuringDisconnectIsChanneled() throws Exception {
 
 	// complete initialization of mock resource
-	resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getId()).andReturn(randomId).times(2);
-	org.easymock.classextension.EasyMock.replay(resource);
+	resource = createMock(Resource.class);
+	expect(resource.getId()).andReturn(randomId).times(2);
+	replay(resource);
 
 	// complete initialization of mock content
-	Object content = org.easymock.classextension.EasyMock.createMock(Object.class);
-	org.easymock.classextension.EasyMock.replay(content);
+	Object content = createMock(Object.class);
+	replay(content);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
 	session.disconnect();
 	SessionDisconnectException exception = new SessionDisconnectException(randomDescription);
-	EasyMock.expectLastCall().andThrow(exception);
-	EasyMock.replay(session);
+	expectLastCall().andThrow(exception);
+	replay(session);
 
 	// complete initialization of mock operation
-	operation = EasyMock.createMock(Operation.class);
+	operation = createMock(Operation.class);
 	operation.execute(content, session, result);
-	EasyMock.replay(operation);
+	replay(operation);
 
 	// create and execute
 	sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
@@ -473,11 +477,11 @@ public class RetrySessionHandlerImplIntegrationTest {
 	}
 
 	// test
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
-	EasyMock.verify(session);
-	org.easymock.classextension.EasyMock.verify(content);
+	verify(resource);
+	verify(credential);
+	verify(operation);
+	verify(session);
+	verify(content);
     }
 
     /**
@@ -491,26 +495,26 @@ public class RetrySessionHandlerImplIntegrationTest {
     public void testThrownIllegalArgumentExceptionIsChanneled() throws Exception {
 
 	// complete initialization of mock resource
-	resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getId()).andReturn(randomId).times(2);
-	org.easymock.classextension.EasyMock.replay(resource);
+	resource = createMock(Resource.class);
+	expect(resource.getId()).andReturn(randomId).times(2);
+	replay(resource);
 
 	// complete initialization of mock content
-	Object content = org.easymock.classextension.EasyMock.createMock(Object.class);
-	org.easymock.classextension.EasyMock.replay(content);
+	Object content = createMock(Object.class);
+	replay(content);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
 	session.disconnect();
-	EasyMock.replay(session);
+	replay(session);
 
 	// complete initialization of mock operation
-	operation = EasyMock.createMock(Operation.class);
+	operation = createMock(Operation.class);
 	operation.execute(content, session, result);
 	IllegalArgumentException exception = new IllegalArgumentException(randomDescription);
-	EasyMock.expectLastCall().andThrow(exception);
-	EasyMock.replay(operation);
+	expectLastCall().andThrow(exception);
+	replay(operation);
 
 	// create and execute
 	sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
@@ -525,11 +529,11 @@ public class RetrySessionHandlerImplIntegrationTest {
 	}
 
 	// test
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
-	EasyMock.verify(session);
-	org.easymock.classextension.EasyMock.verify(content);
+	verify(resource);
+	verify(credential);
+	verify(operation);
+	verify(session);
+	verify(content);
     }
 
     /**
@@ -543,26 +547,26 @@ public class RetrySessionHandlerImplIntegrationTest {
     public void testDisconnectIsInvokedIfPluginExecutionExceptionIsThrown() throws Exception {
 
 	// complete initialization of mock resource
-	resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getId()).andReturn(randomId).times(2);
-	org.easymock.classextension.EasyMock.replay(resource);
+	resource = createMock(Resource.class);
+	expect(resource.getId()).andReturn(randomId).times(2);
+	replay(resource);
 
 	// complete initialization of mock content
-	Object content = org.easymock.classextension.EasyMock.createMock(Object.class);
-	org.easymock.classextension.EasyMock.replay(content);
+	Object content = createMock(Object.class);
+	replay(content);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
 	session.disconnect();
-	EasyMock.replay(session);
+	replay(session);
 
 	// complete initialization of mock operation
-	operation = EasyMock.createMock(Operation.class);
+	operation = createMock(Operation.class);
 	operation.execute(content, session, result);
 	PluginExecutionFailedException exception = new PluginExecutionFailedException(randomDescription);
-	EasyMock.expectLastCall().andThrow(exception);
-	EasyMock.replay(operation);
+	expectLastCall().andThrow(exception);
+	replay(operation);
 
 	// create and execute
 	sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
@@ -579,11 +583,11 @@ public class RetrySessionHandlerImplIntegrationTest {
 	}
 
 	// test
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
-	EasyMock.verify(session);
-	org.easymock.classextension.EasyMock.verify(content);
+	verify(resource);
+	verify(credential);
+	verify(operation);
+	verify(session);
+	verify(content);
     }
 
     /**
@@ -597,26 +601,26 @@ public class RetrySessionHandlerImplIntegrationTest {
     public void testDisconnectIsInvokedIfIllegalArgumentExceptionIsThrown() throws Exception {
 
 	// complete initialization of mock resource
-	resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getId()).andReturn(randomId).times(2);
-	org.easymock.classextension.EasyMock.replay(resource);
+	resource = createMock(Resource.class);
+	expect(resource.getId()).andReturn(randomId).times(2);
+	replay(resource);
 
 	// complete initialization of mock content
-	Object content = org.easymock.classextension.EasyMock.createMock(Object.class);
-	org.easymock.classextension.EasyMock.replay(content);
+	Object content = createMock(Object.class);
+	replay(content);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
 	session.disconnect();
-	EasyMock.replay(session);
+	replay(session);
 
 	// complete initialization of mock operation
-	operation = EasyMock.createMock(Operation.class);
+	operation = createMock(Operation.class);
 	operation.execute(content, session, result);
 	IllegalArgumentException exception = new IllegalArgumentException(randomDescription);
-	EasyMock.expectLastCall().andThrow(exception);
-	EasyMock.replay(operation);
+	expectLastCall().andThrow(exception);
+	replay(operation);
 
 	// create and execute
 	sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
@@ -633,11 +637,11 @@ public class RetrySessionHandlerImplIntegrationTest {
 	}
 
 	// test
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
-	EasyMock.verify(session);
-	org.easymock.classextension.EasyMock.verify(content);
+	verify(resource);
+	verify(credential);
+	verify(operation);
+	verify(session);
+	verify(content);
     }
 
     /**
@@ -652,24 +656,24 @@ public class RetrySessionHandlerImplIntegrationTest {
     public void testDisconnectIsNotInvokedIfSessionConnectExceptionIsThrown() throws Exception {
 
 	// complete initialization of mock resource
-	resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getId()).andReturn(randomId);
-	org.easymock.classextension.EasyMock.replay(resource);
+	resource = createMock(Resource.class);
+	expect(resource.getId()).andReturn(randomId);
+	replay(resource);
 
 	// complete initialization of mock content
-	Object content = org.easymock.classextension.EasyMock.createMock(Object.class);
-	org.easymock.classextension.EasyMock.replay(content);
+	Object content = createMock(Object.class);
+	replay(content);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
 	SessionConnectException exception = new SessionConnectException(randomDescription);
-	EasyMock.expectLastCall().andThrow(exception).times(4);
-	EasyMock.replay(session);
+	expectLastCall().andThrow(exception).times(4);
+	replay(session);
 
 	// complete initialization of mock operation
-	operation = EasyMock.createMock(Operation.class);
-	EasyMock.replay(operation);
+	operation = createMock(Operation.class);
+	replay(operation);
 
 	// create and execute
 	sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
@@ -686,11 +690,11 @@ public class RetrySessionHandlerImplIntegrationTest {
 	}
 
 	// test
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
-	EasyMock.verify(session);
-	org.easymock.classextension.EasyMock.verify(content);
+	verify(resource);
+	verify(credential);
+	verify(operation);
+	verify(session);
+	verify(content);
     }
 
     /**
@@ -704,28 +708,28 @@ public class RetrySessionHandlerImplIntegrationTest {
     public void testPluginExecutionExceptionIsChanneledIfSessionDisconnectFails() throws Exception {
 
 	// complete initialization of mock resource
-	resource = org.easymock.classextension.EasyMock.createMock(Resource.class);
-	org.easymock.classextension.EasyMock.expect(resource.getId()).andReturn(randomId).times(2);
-	org.easymock.classextension.EasyMock.replay(resource);
+	resource = createMock(Resource.class);
+	expect(resource.getId()).andReturn(randomId).times(2);
+	replay(resource);
 
 	// complete initialization of mock content
-	Object content = org.easymock.classextension.EasyMock.createMock(Object.class);
-	org.easymock.classextension.EasyMock.replay(content);
+	Object content = createMock(Object.class);
+	replay(content);
 
 	// complete initialization of mock session
-	Session session = EasyMock.createMock(Session.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
 	session.disconnect();
 	SessionDisconnectException disConnectException = new SessionDisconnectException(randomDescription);
-	EasyMock.expectLastCall().andThrow(disConnectException);
-	EasyMock.replay(session);
+	expectLastCall().andThrow(disConnectException);
+	replay(session);
 
 	// complete initialization of mock operation
-	operation = EasyMock.createMock(Operation.class);
+	operation = createMock(Operation.class);
 	operation.execute(content, session, result);
 	PluginExecutionFailedException exception = new PluginExecutionFailedException(randomDescription);
-	EasyMock.expectLastCall().andThrow(exception);
-	EasyMock.replay(operation);
+	expectLastCall().andThrow(exception);
+	replay(operation);
 
 	// create and execute
 	sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
@@ -742,11 +746,11 @@ public class RetrySessionHandlerImplIntegrationTest {
 	}
 
 	// test
-	org.easymock.classextension.EasyMock.verify(resource);
-	org.easymock.classextension.EasyMock.verify(credential);
-	org.easymock.classextension.EasyMock.verify(operation);
-	EasyMock.verify(session);
-	org.easymock.classextension.EasyMock.verify(content);
+	verify(resource);
+	verify(credential);
+	verify(operation);
+	verify(session);
+	verify(content);
     }
 
 }

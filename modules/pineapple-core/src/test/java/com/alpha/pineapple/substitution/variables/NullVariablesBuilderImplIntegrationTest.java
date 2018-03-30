@@ -22,31 +22,17 @@
 
 package com.alpha.pineapple.substitution.variables;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
-import org.apache.commons.lang.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import com.alpha.pineapple.model.configuration.Property;
-import com.alpha.pineapple.session.Session;
-import com.alpha.pineapple.substitution.VariableSubstitutionException;
 
 /**
  * Integration test of the class {@linkplain NullVariablesBuilderImpl}.

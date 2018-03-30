@@ -23,6 +23,10 @@
 package com.alpha.pineapple.plugin.session.retry;
 
 import static com.alpha.pineapple.CoreConstants.MSG_SESSION;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -36,7 +40,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -340,7 +343,7 @@ public class SessionRetryProxyFactoryIntegrationTest {
     @Before
     public void setUp() throws Exception {
 	randomKey = RandomStringUtils.randomAlphabetic(10);
-	mockCredential = EasyMock.createMock(Credential.class);
+	mockCredential = createMock(Credential.class);
 	randomId = RandomStringUtils.randomAlphabetic(10);
 	randomDescription = RandomStringUtils.randomAlphabetic(10);
 
@@ -736,11 +739,11 @@ public class SessionRetryProxyFactoryIntegrationTest {
     @Test
     public void testNoRetryInformationIsAddedToResultOnSuccessfulConnect() throws Exception {
 	com.alpha.pineapple.model.configuration.Resource resource;
-	resource = EasyMock.createMock(com.alpha.pineapple.model.configuration.Resource.class);
-	Credential credential = EasyMock.createMock(Credential.class);
-	Session session = EasyMock.createMock(Session.class);
+	resource = createMock(com.alpha.pineapple.model.configuration.Resource.class);
+	Credential credential = createMock(Credential.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
-	EasyMock.replay(session);
+	replay(session);
 
 	// create proxy
 	Session proxiedObject = sessionRetryProxyFactory.decorateWithProxy(session, result);
@@ -754,7 +757,7 @@ public class SessionRetryProxyFactoryIntegrationTest {
 	// test
 	Map<String, String> messages = result.getMessages();
 	assertFalse(messages.containsKey(MSG_SESSION));
-	EasyMock.verify(session);
+	verify(session);
     }
 
     /**
@@ -767,12 +770,12 @@ public class SessionRetryProxyFactoryIntegrationTest {
     @Test(expected = SessionConnectException.class)
     public void testThrowsExpectedExceptionAfterMultipleFailedConnects() throws Exception {
 	com.alpha.pineapple.model.configuration.Resource resource;
-	resource = EasyMock.createMock(com.alpha.pineapple.model.configuration.Resource.class);
-	Credential credential = EasyMock.createMock(Credential.class);
-	Session session = EasyMock.createMock(Session.class);
+	resource = createMock(com.alpha.pineapple.model.configuration.Resource.class);
+	Credential credential = createMock(Credential.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
-	EasyMock.expectLastCall().andThrow(new SessionConnectException(randomDescription)).anyTimes();
-	EasyMock.replay(session);
+	expectLastCall().andThrow(new SessionConnectException(randomDescription)).anyTimes();
+	replay(session);
 
 	// create proxy
 	Session proxiedObject = sessionRetryProxyFactory.decorateWithProxy(session, result);
@@ -784,7 +787,7 @@ public class SessionRetryProxyFactoryIntegrationTest {
 	proxiedObject.connect(resource, credential);
 
 	// test - never invoked due to exception
-	EasyMock.verify(session);
+	verify(session);
     }
 
     /**
@@ -796,13 +799,13 @@ public class SessionRetryProxyFactoryIntegrationTest {
     @Test
     public void testRetryInformationIsAddedToResultOnFailedConnect() throws Exception {
 	com.alpha.pineapple.model.configuration.Resource resource;
-	resource = EasyMock.createMock(com.alpha.pineapple.model.configuration.Resource.class);
-	Credential credential = EasyMock.createMock(Credential.class);
-	Session session = EasyMock.createMock(Session.class);
+	resource = createMock(com.alpha.pineapple.model.configuration.Resource.class);
+	Credential credential = createMock(Credential.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
-	EasyMock.expectLastCall().andThrow(new SessionConnectException(randomDescription)).times(1);
-	EasyMock.expectLastCall().times(1);
-	EasyMock.replay(session);
+	expectLastCall().andThrow(new SessionConnectException(randomDescription)).times(1);
+	expectLastCall().times(1);
+	replay(session);
 	// create proxy
 	Session proxiedObject = sessionRetryProxyFactory.decorateWithProxy(session, result);
 
@@ -821,7 +824,7 @@ public class SessionRetryProxyFactoryIntegrationTest {
 
 	// count occurrences of message srl.session_connect_error
 	assertEquals(1, StringUtils.countMatches(message, "Failed to connect to session due to the error"));
-	EasyMock.verify(session);
+	verify(session);
     }
 
     /**
@@ -834,13 +837,13 @@ public class SessionRetryProxyFactoryIntegrationTest {
     @Test
     public void testRetryInformationIsAddedToResultOnFailedConnects() throws Exception {
 	com.alpha.pineapple.model.configuration.Resource resource;
-	resource = EasyMock.createMock(com.alpha.pineapple.model.configuration.Resource.class);
-	Credential credential = EasyMock.createMock(Credential.class);
-	Session session = EasyMock.createMock(Session.class);
+	resource = createMock(com.alpha.pineapple.model.configuration.Resource.class);
+	Credential credential = createMock(Credential.class);
+	Session session = createMock(Session.class);
 	session.connect(resource, credential);
-	EasyMock.expectLastCall().andThrow(new SessionConnectException(randomDescription)).times(2);
-	EasyMock.expectLastCall().times(1);
-	EasyMock.replay(session);
+	expectLastCall().andThrow(new SessionConnectException(randomDescription)).times(2);
+	expectLastCall().times(1);
+	replay(session);
 	// create proxy
 	Session proxiedObject = sessionRetryProxyFactory.decorateWithProxy(session, result);
 
@@ -859,7 +862,7 @@ public class SessionRetryProxyFactoryIntegrationTest {
 
 	// count occurrences of message srl.session_connect_error
 	assertEquals(2, StringUtils.countMatches(message, "Failed to connect to session due to the error"));
-	EasyMock.verify(session);
+	verify(session);
     }
 
 }

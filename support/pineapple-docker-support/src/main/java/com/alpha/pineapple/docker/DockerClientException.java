@@ -30,12 +30,12 @@ import com.alpha.pineapple.execution.ExecutionResultException;
  */
 public class DockerClientException extends ExecutionResultException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = -2645655614604534316L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = -2645655614604534316L;
 
-    public DockerClientException(ExecutionResult result) {
-	super(result);
-    }
+	public DockerClientException(ExecutionResult result) {
+		super(result);
+	}
 }

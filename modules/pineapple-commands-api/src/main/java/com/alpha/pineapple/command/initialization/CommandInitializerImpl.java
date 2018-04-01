@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.command.initialization;
 
 import java.lang.reflect.Field;
@@ -36,183 +35,176 @@ import com.alpha.javautils.reflection.ReflectionHelper;
 /**
  * Implementation of the {@link CommandInitializer} interface.
  */
-public class CommandInitializerImpl implements CommandInitializer
-{
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
+public class CommandInitializerImpl implements CommandInitializer {
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Reflection helper
-     */
-    ReflectionHelper helper;
+	/**
+	 * Reflection helper
+	 */
+	ReflectionHelper helper;
 
-    /**
-     * Annotation finder.
-     */
-    AnnotationFinder finder;
+	/**
+	 * Annotation finder.
+	 */
+	AnnotationFinder finder;
 
-    /**
-     * Value validation object.
-     */
-    ValueValidator validator;
-    
-    /**
-     * CommandInitializerImpl no-arg constructor.
-     */
-    public CommandInitializerImpl()
-    {
-        this( new ReflectionHelper(), new AnnotationFinder(), new ValueValidator() );
-    }
+	/**
+	 * Value validation object.
+	 */
+	ValueValidator validator;
 
-    /**
-     * CommandInitializerImpl constructor.
-     * 
-     * @param helper
-     *            Reflection helper object.
-     * @param finder
-     *            Annotation finder object.
-     */
-    public CommandInitializerImpl( ReflectionHelper helper, AnnotationFinder finder, ValueValidator validator )
-    {
-        this.helper = helper;
-        this.finder = finder;
-        this.validator = validator;
-    }
+	/**
+	 * CommandInitializerImpl no-arg constructor.
+	 */
+	public CommandInitializerImpl() {
+		this(new ReflectionHelper(), new AnnotationFinder(), new ValueValidator());
+	}
 
-    public void initialize( Context context, Command command ) throws CommandInitializationFailedException
-    {        
-        // validate arguments
-        Validate.notNull( context, "context is undefined." );
-        Validate.notNull( command, "command is undefined." );
-        
-        // variable used for exception handling
-        Field exceptionHandlingField = null;
+	/**
+	 * CommandInitializerImpl constructor.
+	 * 
+	 * @param helper
+	 *            Reflection helper object.
+	 * @param finder
+	 *            Annotation finder object.
+	 */
+	public CommandInitializerImpl(ReflectionHelper helper, AnnotationFinder finder, ValueValidator validator) {
+		this.helper = helper;
+		this.finder = finder;
+		this.validator = validator;
+	}
 
-        // variable to store context value
-        Object contextValue = null;
+	public void initialize(Context context, Command command) throws CommandInitializationFailedException {
+		// validate arguments
+		Validate.notNull(context, "context is undefined.");
+		Validate.notNull(command, "command is undefined.");
 
-        try
-        {
-            // search for annotation
-            Field[] fields = finder.findAnnotatedFields( command, Initialize.class );
+		// variable used for exception handling
+		Field exceptionHandlingField = null;
 
-            // iterate over the fields
-            for ( Field field : fields )
-            {
-                // store for exception handling purposes
-                exceptionHandlingField = field;
+		// variable to store context value
+		Object contextValue = null;
 
-                // get context key
-                String contextKey = getContextKey( context, field );
-                
-                // lookup value from context
-                contextValue = getContextValue( context, contextKey );
+		try {
+			// search for annotation
+			Field[] fields = finder.findAnnotatedFields(command, Initialize.class);
 
-                // validate value
-                validator.validateValue(contextValue, field);
-                
-                // initialize command field with value
-                helper.setFieldValue( command, field, contextValue );                
-            }
-        }
-        catch ( IllegalArgumentException e )
-        {
-            // create error message 
-            StringBuilder message = new StringBuilder(); 
-            message.append( "Setter invocation failed for field <" ); 
-            message.append( exceptionHandlingField ); message.append( "> on command < " );
-            message.append( command ); message.append( "> with value <" ); message.append( contextValue );
-            message.append( ">. Inspect embbeded exception for details." );
-            
-            // throw exception             
-            throw new CommandInitializationFailedException( message.toString(), e );
-        }
-        catch ( SecurityException e )
-        {
-            // create error message 
-            StringBuilder message = new StringBuilder(); 
-            message.append( "Setter invocation failed for field <" ); 
-            message.append( exceptionHandlingField ); message.append( "> on command < " );
-            message.append( command ); message.append( "> with value <" ); message.append( contextValue );
-            message.append( ">. Inspect embbeded exception for details." );
-            
-            // throw exception             
-            throw new CommandInitializationFailedException( message.toString(), e );
-        }
-        catch ( IllegalAccessException e )
-        {
-            // create error message 
-            StringBuilder message = new StringBuilder(); 
-            message.append( "Setter invocation failed for field <" ); 
-            message.append( exceptionHandlingField ); message.append( "> on command < " );
-            message.append( command ); message.append( "> with value <" ); message.append( contextValue );
-            message.append( ">. Inspect embbeded exception for details." );
-            
-            // throw exception             
-            throw new CommandInitializationFailedException( message.toString(), e );
-        }
-    }
+			// iterate over the fields
+			for (Field field : fields) {
+				// store for exception handling purposes
+				exceptionHandlingField = field;
 
+				// get context key
+				String contextKey = getContextKey(context, field);
 
-    /**
-     * Look up context key from annotation.
-     * 
-     * @param field
-     *            The field containing the annotation whose value is read as key.
-     * 
-     * @return Context key from {@link Initialize} annotation.
-     * 
-     * @throws CommandInitializationFailedException
-     *             If key isn't defined in the context.
-     */
-    String getContextKey( Context context, Field field ) throws CommandInitializationFailedException
-    {
-        // get annotation
-        Initialize annotation;
-        annotation = field.getAnnotation( Initialize.class );
+				// lookup value from context
+				contextValue = getContextValue(context, contextKey);
 
-        // get annotation value
-        String contextKey = annotation.value();
+				// validate value
+				validator.validateValue(contextValue, field);
 
-        // validate whether context is defined
-        if ( !context.containsKey( contextKey ) )
-        {
-            // create error message
-            StringBuilder message = new StringBuilder();
-            message.append( "Context key not found. " );
-            message.append( "The key <" );
-            message.append( contextKey );
-            message.append( "> defined by the < " );
-            message.append( Initialize.class.getName() );
-            message.append( "> annotation on the field <" );
-            message.append( field );
-            message.append( "> was not found in the context." );
+				// initialize command field with value
+				helper.setFieldValue(command, field, contextValue);
+			}
+		} catch (IllegalArgumentException e) {
+			// create error message
+			StringBuilder message = new StringBuilder();
+			message.append("Setter invocation failed for field <");
+			message.append(exceptionHandlingField);
+			message.append("> on command < ");
+			message.append(command);
+			message.append("> with value <");
+			message.append(contextValue);
+			message.append(">. Inspect embbeded exception for details.");
 
-            // throw exception
-            throw new CommandInitializationFailedException( message.toString() );
-        }
+			// throw exception
+			throw new CommandInitializationFailedException(message.toString(), e);
+		} catch (SecurityException e) {
+			// create error message
+			StringBuilder message = new StringBuilder();
+			message.append("Setter invocation failed for field <");
+			message.append(exceptionHandlingField);
+			message.append("> on command < ");
+			message.append(command);
+			message.append("> with value <");
+			message.append(contextValue);
+			message.append(">. Inspect embbeded exception for details.");
 
-        return contextKey;
-    }
-    
-    /**
-     * Look up value from context object using key.
-     * 
-     * @param context
-     *            The context.
-     * @param context key
-     *            The key used to look up value in the context.
-     * 
-     * @return Value from context.
-     */
-    Object getContextValue( Context context, String contextKey )
-    {
-        // lookup value from context
-        Object contextValue = context.get( contextKey );
+			// throw exception
+			throw new CommandInitializationFailedException(message.toString(), e);
+		} catch (IllegalAccessException e) {
+			// create error message
+			StringBuilder message = new StringBuilder();
+			message.append("Setter invocation failed for field <");
+			message.append(exceptionHandlingField);
+			message.append("> on command < ");
+			message.append(command);
+			message.append("> with value <");
+			message.append(contextValue);
+			message.append(">. Inspect embbeded exception for details.");
 
-        return contextValue;
-    }
-    
+			// throw exception
+			throw new CommandInitializationFailedException(message.toString(), e);
+		}
+	}
+
+	/**
+	 * Look up context key from annotation.
+	 * 
+	 * @param field
+	 *            The field containing the annotation whose value is read as key.
+	 * 
+	 * @return Context key from {@link Initialize} annotation.
+	 * 
+	 * @throws CommandInitializationFailedException
+	 *             If key isn't defined in the context.
+	 */
+	String getContextKey(Context context, Field field) throws CommandInitializationFailedException {
+		// get annotation
+		Initialize annotation;
+		annotation = field.getAnnotation(Initialize.class);
+
+		// get annotation value
+		String contextKey = annotation.value();
+
+		// validate whether context is defined
+		if (!context.containsKey(contextKey)) {
+			// create error message
+			StringBuilder message = new StringBuilder();
+			message.append("Context key not found. ");
+			message.append("The key <");
+			message.append(contextKey);
+			message.append("> defined by the < ");
+			message.append(Initialize.class.getName());
+			message.append("> annotation on the field <");
+			message.append(field);
+			message.append("> was not found in the context.");
+
+			// throw exception
+			throw new CommandInitializationFailedException(message.toString());
+		}
+
+		return contextKey;
+	}
+
+	/**
+	 * Look up value from context object using key.
+	 * 
+	 * @param context
+	 *            The context.
+	 * @param context
+	 *            key The key used to look up value in the context.
+	 * 
+	 * @return Value from context.
+	 */
+	Object getContextValue(Context context, String contextKey) {
+		// lookup value from context
+		Object contextValue = context.get(contextKey);
+
+		return contextValue;
+	}
+
 }

@@ -29,64 +29,64 @@ import org.apache.log4j.Logger;
  */
 public class ClassUtils {
 
-    /**
-     * Logger object.
-     */
-    static Logger logger = Logger.getLogger(ClassUtils.class.getName());
+	/**
+	 * Logger object.
+	 */
+	static Logger logger = Logger.getLogger(ClassUtils.class.getName());
 
-    /**
-     * Validate that class with queried name exists in class loader.
-     * 
-     * @param className
-     *            Fully qualified class name to verify existence of.
-     * 
-     * @return true if the class exists in the class loader. Returns false if
-     *         the name doesn't exist, the name is empty or null.
-     */
-    public static boolean isValidClass(String className) {
-	try {
-	    // exit if name is null
-	    if (className == null)
-		return false;
+	/**
+	 * Validate that class with queried name exists in class loader.
+	 * 
+	 * @param className
+	 *            Fully qualified class name to verify existence of.
+	 * 
+	 * @return true if the class exists in the class loader. Returns false if the
+	 *         name doesn't exist, the name is empty or null.
+	 */
+	public static boolean isValidClass(String className) {
+		try {
+			// exit if name is null
+			if (className == null)
+				return false;
 
-	    // try to get class from class loader.
-	    Class<?> classInQuestion = Class.forName(className);
+			// try to get class from class loader.
+			Class<?> classInQuestion = Class.forName(className);
 
-	    if (classInQuestion != null) {
+			if (classInQuestion != null) {
 
-		// log debug message
-		if (logger.isDebugEnabled()) {
-		    StringBuilder message = new StringBuilder();
-		    message.append("Successfully verified existence of class <");
-		    message.append(className);
-		    message.append(">. ");
-		    logger.debug(message.toString());
+				// log debug message
+				if (logger.isDebugEnabled()) {
+					StringBuilder message = new StringBuilder();
+					message.append("Successfully verified existence of class <");
+					message.append(className);
+					message.append(">. ");
+					logger.debug(message.toString());
+				}
+				return true;
+			}
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder message = new StringBuilder();
+				message.append("Failed to verify existence of class <");
+				message.append(className);
+				message.append(">. ");
+				logger.debug(message.toString());
+			}
+			return false;
+
+		} catch (ClassNotFoundException e) {
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder message = new StringBuilder();
+				message.append("Failed to verify existence of class <");
+				message.append(className);
+				message.append(">. ");
+				logger.debug(message.toString());
+			}
+			return false;
 		}
-		return true;
-	    }
 
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		StringBuilder message = new StringBuilder();
-		message.append("Failed to verify existence of class <");
-		message.append(className);
-		message.append(">. ");
-		logger.debug(message.toString());
-	    }
-	    return false;
-
-	} catch (ClassNotFoundException e) {
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		StringBuilder message = new StringBuilder();
-		message.append("Failed to verify existence of class <");
-		message.append(className);
-		message.append(">. ");
-		logger.debug(message.toString());
-	    }
-	    return false;
 	}
-
-    }
 
 }

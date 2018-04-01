@@ -27,31 +27,31 @@ package com.alpha.pineapple.module;
  */
 public class ModelNotFoundException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * ModelNotFoundException constructor.
-     * 
-     * @param message
-     *            error message.
-     * @param cause
-     *            cause of the exception.
-     */
-    public ModelNotFoundException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * ModelNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            error message.
+	 * @param cause
+	 *            cause of the exception.
+	 */
+	public ModelNotFoundException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * ModelNotFoundException constructor.
-     * 
-     * @param message
-     *            error message.
-     */
-    public ModelNotFoundException(String message) {
-	super(message);
-    }
+	/**
+	 * ModelNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            error message.
+	 */
+	public ModelNotFoundException(String message) {
+		super(message);
+	}
 
 }

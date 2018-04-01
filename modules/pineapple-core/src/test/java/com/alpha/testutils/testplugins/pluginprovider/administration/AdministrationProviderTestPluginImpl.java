@@ -43,25 +43,25 @@ import com.alpha.pineapple.session.Session;
 @Plugin()
 @PluginOperation(AdministrationProviderTestPluginImpl.OPERATION)
 public class AdministrationProviderTestPluginImpl implements Operation {
-    public static final String OPERATION = "no-operation";
-    public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.pluginprovider.administration";
+	public static final String OPERATION = "no-operation";
+	public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.pluginprovider.administration";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    @Resource
-    AdministrationProvider coreAdministrationProvider;
+	@Resource
+	AdministrationProvider coreAdministrationProvider;
 
-    @Override
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+	@Override
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
 
-	// test
-	result.addMessage("toString", ReflectionToStringBuilder.toString(coreAdministrationProvider));
+		// test
+		result.addMessage("toString", ReflectionToStringBuilder.toString(coreAdministrationProvider));
 
-	// compute execution state from children
-	result.setState(ExecutionState.SUCCESS);
-    }
+		// compute execution state from children
+		result.setState(ExecutionState.SUCCESS);
+	}
 
 }

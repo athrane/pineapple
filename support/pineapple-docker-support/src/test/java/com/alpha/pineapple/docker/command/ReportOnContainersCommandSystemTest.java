@@ -51,79 +51,79 @@ import com.alpha.testutils.DockerTestHelper;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.docker-config.xml" })
 public class ReportOnContainersCommandSystemTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command reportOnContainersCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command reportOnContainersCommand;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Docker session.
-     */
-    DockerSession session;
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
 
-    /**
-     * Docker helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
+	/**
+	 * Docker helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
 
-	// create context
-	context = new ContextBase();
+		// create context
+		context = new ContextBase();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("root");
+		// create execution result
+		executionResult = new ExecutionResultImpl("root");
 
-	// create session
-	session = dockerHelper.createDefaultSession();
-    }
+		// create session
+		session = dockerHelper.createDefaultSession();
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that command instance can be created in application context.
-     */
-    @Test
-    public void testCanGetInstance() throws Exception {
-	assertNotNull(reportOnContainersCommand);
-    }
+	/**
+	 * Test that command instance can be created in application context.
+	 */
+	@Test
+	public void testCanGetInstance() throws Exception {
+		assertNotNull(reportOnContainersCommand);
+	}
 
-    /**
-     * Test that command can report on containers.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCommandCanReportOnContainers() throws Exception {
-	// setup context
-	context.put(ReportOnContainersCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(ReportOnContainersCommand.SESSION_KEY, session);
+	/**
+	 * Test that command can report on containers.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCommandCanReportOnContainers() throws Exception {
+		// setup context
+		context.put(ReportOnContainersCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(ReportOnContainersCommand.SESSION_KEY, session);
 
-	// execute command
-	reportOnContainersCommand.execute(context);
+		// execute command
+		reportOnContainersCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
 }

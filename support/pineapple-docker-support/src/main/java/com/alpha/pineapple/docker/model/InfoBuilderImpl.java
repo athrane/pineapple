@@ -29,51 +29,51 @@ import org.apache.commons.lang.Validate;
 
 public class InfoBuilderImpl implements InfoBuilder {
 
-    @Override
-    public ContainerInfo buildContainerInfo(String name, ImageInfo info) {
-	Validate.notNull(info, "name is undefined");
-	Validate.notEmpty(name, "name is empty");
-	Validate.notNull(info, "info is undefined");
-	return new ContainerInfoImpl(name, info);
-    }
-
-    @Override
-    public ContainerInstanceInfo buildInstanceInfo(String id, ContainerInfo info) {
-	Validate.notNull(id, "id is undefined");
-	Validate.notEmpty(id, "id is empty.");
-	Validate.notNull(info, "info is undefined");
-	return new ContainerInstanceInfoImpl(id, info);
-    }
-
-    @Override
-    public ImageInfo buildImageInfo() {
-	return new ImageInfoImpl(DEFAULT_CENTOS_REPOSITORY, LATEST_IMAGE_TAG);
-    }
-
-    @Override
-    public ImageInfo buildImageInfo(String repository, String tag) {
-	Validate.notNull(repository, "repository is undefined.");
-	Validate.notEmpty(repository, "repository is empty.");
-	Validate.notNull(tag, "tag is undefined.");
-	return new ImageInfoImpl(repository, tag);
-    }
-
-    @Override
-    public ImageInfo buildImageInfo(String repository) {
-	return buildImageInfo(repository, LATEST_IMAGE_TAG);
-    }
-
-    @Override
-    public ImageInfo buildImageInfoFromFQName(String name) {
-	Validate.notNull(name, "name is undefined.");
-	if (containsSeparator(name)) {
-	    int index = name.indexOf(":");
-	    String repository = name.substring(0, index);
-	    String tag = name.substring(index + 1);
-	    return buildImageInfo(repository, tag);
+	@Override
+	public ContainerInfo buildContainerInfo(String name, ImageInfo info) {
+		Validate.notNull(info, "name is undefined");
+		Validate.notEmpty(name, "name is empty");
+		Validate.notNull(info, "info is undefined");
+		return new ContainerInfoImpl(name, info);
 	}
 
-	return buildImageInfo(name, "");
-    }
+	@Override
+	public ContainerInstanceInfo buildInstanceInfo(String id, ContainerInfo info) {
+		Validate.notNull(id, "id is undefined");
+		Validate.notEmpty(id, "id is empty.");
+		Validate.notNull(info, "info is undefined");
+		return new ContainerInstanceInfoImpl(id, info);
+	}
+
+	@Override
+	public ImageInfo buildImageInfo() {
+		return new ImageInfoImpl(DEFAULT_CENTOS_REPOSITORY, LATEST_IMAGE_TAG);
+	}
+
+	@Override
+	public ImageInfo buildImageInfo(String repository, String tag) {
+		Validate.notNull(repository, "repository is undefined.");
+		Validate.notEmpty(repository, "repository is empty.");
+		Validate.notNull(tag, "tag is undefined.");
+		return new ImageInfoImpl(repository, tag);
+	}
+
+	@Override
+	public ImageInfo buildImageInfo(String repository) {
+		return buildImageInfo(repository, LATEST_IMAGE_TAG);
+	}
+
+	@Override
+	public ImageInfo buildImageInfoFromFQName(String name) {
+		Validate.notNull(name, "name is undefined.");
+		if (containsSeparator(name)) {
+			int index = name.indexOf(":");
+			String repository = name.substring(0, index);
+			String tag = name.substring(index + 1);
+			return buildImageInfo(repository, tag);
+		}
+
+		return buildImageInfo(name, "");
+	}
 
 }

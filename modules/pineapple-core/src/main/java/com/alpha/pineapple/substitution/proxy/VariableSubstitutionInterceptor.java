@@ -39,89 +39,89 @@ import com.alpha.pineapple.substitution.variables.Variables;
  */
 public class VariableSubstitutionInterceptor implements MethodInterceptor {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Variable resolver.
-     */
-    @Resource
-    VariableResolver resolver;
+	/**
+	 * Variable resolver.
+	 */
+	@Resource
+	VariableResolver resolver;
 
-    /**
-     * Mode proxy factory.
-     */
-    @Resource
-    VariableSubstitutedProxyFactoryImpl factory;
+	/**
+	 * Mode proxy factory.
+	 */
+	@Resource
+	VariableSubstitutedProxyFactoryImpl factory;
 
-    /**
-     * Variables.
-     */
-    Variables variables;
+	/**
+	 * Variables.
+	 */
+	Variables variables;
 
-    public void setVariables(Variables variables) {
-	this.variables = variables;
-    }
-
-    @Override
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-
-	// if return type is string intercept and process string
-	if (isStringReturnType(invocation)) {
-	    return processInterceptedString(invocation);
+	public void setVariables(Variables variables) {
+		this.variables = variables;
 	}
 
-	// process non string object by decorating it with a proxy
-	Object returnValue = invocation.proceed();
-	Object proxy = factory.decorateWithProxy(returnValue);
+	@Override
+	public Object invoke(MethodInvocation invocation) throws Throwable {
 
-	return proxy;
-    }
+		// if return type is string intercept and process string
+		if (isStringReturnType(invocation)) {
+			return processInterceptedString(invocation);
+		}
 
-    /**
-     * Process intercepted string.
-     * 
-     * @param invocation
-     *            method invocation.
-     * 
-     * @return intercepted string which is processed for variable substitution.
-     * 
-     * @throws Throwable
-     *             if processing fails.
-     */
-    String processInterceptedString(MethodInvocation invocation) throws Throwable {
+		// process non string object by decorating it with a proxy
+		Object returnValue = invocation.proceed();
+		Object proxy = factory.decorateWithProxy(returnValue);
 
-	// invoke to get string
-	Object returnValue = invocation.proceed();
-	String strValue = returnValue.toString();
-
-	// substitute variables
-	String processedValue = resolver.resolve(variables, strValue);
-
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    logger.debug("Processed string: " + strValue + " => " + processedValue);
+		return proxy;
 	}
 
-	return processedValue;
-    }
+	/**
+	 * Process intercepted string.
+	 * 
+	 * @param invocation
+	 *            method invocation.
+	 * 
+	 * @return intercepted string which is processed for variable substitution.
+	 * 
+	 * @throws Throwable
+	 *             if processing fails.
+	 */
+	String processInterceptedString(MethodInvocation invocation) throws Throwable {
 
-    /**
-     * Return true if method return type is string.
-     * 
-     * @param invocation
-     *            method invocation.
-     * 
-     * @return true if method return type is string.
-     */
-    boolean isStringReturnType(MethodInvocation invocation) {
+		// invoke to get string
+		Object returnValue = invocation.proceed();
+		String strValue = returnValue.toString();
 
-	// get method return type
-	Method method = invocation.getMethod();
-	Class<?> returnType = method.getReturnType();
-	return String.class.isAssignableFrom(returnType);
-    }
+		// substitute variables
+		String processedValue = resolver.resolve(variables, strValue);
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			logger.debug("Processed string: " + strValue + " => " + processedValue);
+		}
+
+		return processedValue;
+	}
+
+	/**
+	 * Return true if method return type is string.
+	 * 
+	 * @param invocation
+	 *            method invocation.
+	 * 
+	 * @return true if method return type is string.
+	 */
+	boolean isStringReturnType(MethodInvocation invocation) {
+
+		// get method return type
+		Method method = invocation.getMethod();
+		Class<?> returnType = method.getReturnType();
+		return String.class.isAssignableFrom(returnType);
+	}
 
 }

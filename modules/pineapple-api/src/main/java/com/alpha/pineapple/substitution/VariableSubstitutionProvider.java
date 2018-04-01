@@ -34,79 +34,79 @@ import com.alpha.pineapple.session.Session;
  */
 public interface VariableSubstitutionProvider {
 
-    /**
-     * Substitute variables in source string and return the processed string.
-     * 
-     * @param source
-     *            source string whose content will be processed for variables.
-     * @param result
-     *            parent execution result for variable substitution process. The
-     *            parent is not modified during the substitution process other
-     *            than children are attached. The state and content of the child
-     *            results are updated to reflect the outcome of the process.
-     * 
-     * @return string whose content have been processed for variables.
-     */
-    public String substitute(String source, ExecutionResult result) throws VariableSubstitutionException;
+	/**
+	 * Substitute variables in source string and return the processed string.
+	 * 
+	 * @param source
+	 *            source string whose content will be processed for variables.
+	 * @param result
+	 *            parent execution result for variable substitution process. The
+	 *            parent is not modified during the substitution process other than
+	 *            children are attached. The state and content of the child results
+	 *            are updated to reflect the outcome of the process.
+	 * 
+	 * @return string whose content have been processed for variables.
+	 */
+	public String substitute(String source, ExecutionResult result) throws VariableSubstitutionException;
 
-    /**
-     * Substitute variables in source string and return the processed string.
-     * 
-     * @param source
-     *            source string whose content will be processed for variables.
-     * @param session
-     *            plugin session.
-     * @param result
-     *            parent execution result for variable substitution process. The
-     *            parent is not modified during the substitution process other
-     *            than children are attached. The state and content of the child
-     *            results are updated to reflect the outcome of the process.
-     * 
-     * @return string whose content have been processed for variables.
-     */
-    public String substitute(String source, Session session, ExecutionResult result)
-	    throws VariableSubstitutionException;
+	/**
+	 * Substitute variables in source string and return the processed string.
+	 * 
+	 * @param source
+	 *            source string whose content will be processed for variables.
+	 * @param session
+	 *            plugin session.
+	 * @param result
+	 *            parent execution result for variable substitution process. The
+	 *            parent is not modified during the substitution process other than
+	 *            children are attached. The state and content of the child results
+	 *            are updated to reflect the outcome of the process.
+	 * 
+	 * @return string whose content have been processed for variables.
+	 */
+	public String substitute(String source, Session session, ExecutionResult result)
+			throws VariableSubstitutionException;
 
-    /**
-     * Substitute variables in source file and store the result in a new
-     * (temporary) file.
-     * 
-     * @param source
-     *            source file whose content will be processed for variables.
-     * @param result
-     *            parent execution result for variable substitution process. The
-     *            parent is not modified during the substitution process other
-     *            than children are attached. The state and content of the child
-     *            results are updated to reflect the outcome of the process.
-     * 
-     * @return new (temporary) file whose content have been processed for
-     *         variables. The file is stored in the Pineapple temporary
-     *         directory. The Pineapple temporary directory is resolved from the
-     *         {@linkplain RuntimeDirectoryProvider}.
-     */
-    public File createSubstitutedFile(File source, ExecutionResult result) throws VariableSubstitutionException;
+	/**
+	 * Substitute variables in source file and store the result in a new (temporary)
+	 * file.
+	 * 
+	 * @param source
+	 *            source file whose content will be processed for variables.
+	 * @param result
+	 *            parent execution result for variable substitution process. The
+	 *            parent is not modified during the substitution process other than
+	 *            children are attached. The state and content of the child results
+	 *            are updated to reflect the outcome of the process.
+	 * 
+	 * @return new (temporary) file whose content have been processed for variables.
+	 *         The file is stored in the Pineapple temporary directory. The
+	 *         Pineapple temporary directory is resolved from the
+	 *         {@linkplain RuntimeDirectoryProvider}.
+	 */
+	public File createSubstitutedFile(File source, ExecutionResult result) throws VariableSubstitutionException;
 
-    /**
-     * Substitute variables in source file and store the result in a new
-     * (temporary) file. The properties of the resource accessed by the session
-     * are used for resolution of variables.
-     * 
-     * @param source
-     *            source file whose content will be processed for variables.
-     * @param session
-     *            plugin session.
-     * @param result
-     *            parent execution result for variable substitution process. The
-     *            parent is not modified during the substitution process other
-     *            than children are attached. The state and content of the child
-     *            results are updated to reflect the outcome of the process.
-     * 
-     * @return new (temporary) file whose content have been processed for
-     *         variables. The file is stored in the Pineapple temporary
-     *         directory. The Pineapple temporary directory is resolved from the
-     *         {@linkplain RuntimeDirectoryProvider}.
-     */
-    public File createSubstitutedFile(File source, Session session, ExecutionResult result)
-	    throws VariableSubstitutionException;
+	/**
+	 * Substitute variables in source file and store the result in a new (temporary)
+	 * file. The properties of the resource accessed by the session are used for
+	 * resolution of variables.
+	 * 
+	 * @param source
+	 *            source file whose content will be processed for variables.
+	 * @param session
+	 *            plugin session.
+	 * @param result
+	 *            parent execution result for variable substitution process. The
+	 *            parent is not modified during the substitution process other than
+	 *            children are attached. The state and content of the child results
+	 *            are updated to reflect the outcome of the process.
+	 * 
+	 * @return new (temporary) file whose content have been processed for variables.
+	 *         The file is stored in the Pineapple temporary directory. The
+	 *         Pineapple temporary directory is resolved from the
+	 *         {@linkplain RuntimeDirectoryProvider}.
+	 */
+	public File createSubstitutedFile(File source, Session session, ExecutionResult result)
+			throws VariableSubstitutionException;
 
 }

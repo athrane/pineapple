@@ -31,44 +31,42 @@ import com.alpha.pineapple.plugin.PluginInitializationFailedException;
  */
 public interface PluginRepository {
 
-    /**
-     * Initialization of the repository before is ready for general usage. The
-     * repository will only scan and initialize plugins which are defined in the
-     * collection of id's which is supplied as argument to the method.
-     * 
-     * @param executionResult
-     *            A child execution result will be added to this result. The
-     *            child result will reflects the outcome of the initialization.
-     *            If the initialization fails the state of the result object
-     *            will be failure or error and will contain a stack trace
-     *            message.
-     * @param pluginIds
-     *            plugin id's for all registered resources in all environments.
-     *            resources. The collection of plugin id's which the repository
-     *            will initialize.
-     * 
-     * @throws PluginInitializationFailedException
-     *             if repository initialization fails.
-     */
-    public void initialize(ExecutionResult executionResult, String[] pluginIds)
-	    throws PluginInitializationFailedException;
+	/**
+	 * Initialization of the repository before is ready for general usage. The
+	 * repository will only scan and initialize plugins which are defined in the
+	 * collection of id's which is supplied as argument to the method.
+	 * 
+	 * @param executionResult
+	 *            A child execution result will be added to this result. The child
+	 *            result will reflects the outcome of the initialization. If the
+	 *            initialization fails the state of the result object will be
+	 *            failure or error and will contain a stack trace message.
+	 * @param pluginIds
+	 *            plugin id's for all registered resources in all environments.
+	 *            resources. The collection of plugin id's which the repository will
+	 *            initialize.
+	 * 
+	 * @throws PluginInitializationFailedException
+	 *             if repository initialization fails.
+	 */
+	public void initialize(ExecutionResult executionResult, String[] pluginIds)
+			throws PluginInitializationFailedException;
 
-    /**
-     * Initialization of a single plugin.
-     * 
-     * @param executionResult
-     *            A child execution result will be added to this result. The
-     *            child result will reflects the outcome of the initialization.
-     *            If the initialization fails the state of the result object
-     *            will be failure or error and will contain a stack trace
-     *            message.
-     * @param pluginId
-     *            plugin id which the repository will initialize.
-     * 
-     * @throws PluginInitializationFailedException
-     *             if repository fails to initialize plugin.
-     */
-    public void initializePlugin(ExecutionResult executionResult, String pluginId)
-	    throws PluginInitializationFailedException;
+	/**
+	 * Initialization of a single plugin.
+	 * 
+	 * @param executionResult
+	 *            A child execution result will be added to this result. The child
+	 *            result will reflects the outcome of the initialization. If the
+	 *            initialization fails the state of the result object will be
+	 *            failure or error and will contain a stack trace message.
+	 * @param pluginId
+	 *            plugin id which the repository will initialize.
+	 * 
+	 * @throws PluginInitializationFailedException
+	 *             if repository fails to initialize plugin.
+	 */
+	public void initializePlugin(ExecutionResult executionResult, String pluginId)
+			throws PluginInitializationFailedException;
 
 }

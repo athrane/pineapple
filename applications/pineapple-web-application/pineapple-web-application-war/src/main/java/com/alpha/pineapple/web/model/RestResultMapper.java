@@ -41,89 +41,87 @@ import com.alpha.pineapple.resource.ResourceInfo;
  */
 public interface RestResultMapper {
 
-    /**
-     * Map single environment info to model objects.
-     * 
-     * @param environmentInfo
-     *            environment info.
-     * 
-     * @return environment configuration containing a single environment.
-     */
-    Configuration mapEnvironment(EnvironmentInfo environmentInfo);
+	/**
+	 * Map single environment info to model objects.
+	 * 
+	 * @param environmentInfo
+	 *            environment info.
+	 * 
+	 * @return environment configuration containing a single environment.
+	 */
+	Configuration mapEnvironment(EnvironmentInfo environmentInfo);
 
-    /**
-     * Map collection of environments info's to model objects.
-     * 
-     * @param environmentInfos
-     *            collection of environments info's
-     * 
-     * @return environment configuration containing a collection of
-     *         environments.
-     */
-    Configuration mapResourceConfiguration(EnvironmentInfo[] environmentInfos);
+	/**
+	 * Map collection of environments info's to model objects.
+	 * 
+	 * @param environmentInfos
+	 *            collection of environments info's
+	 * 
+	 * @return environment configuration containing a collection of environments.
+	 */
+	Configuration mapResourceConfiguration(EnvironmentInfo[] environmentInfos);
 
-    /**
-     * Map collection of environments info's to model objects.
-     * 
-     * @param environmentInfos
-     *            collection of environments info's
-     * 
-     * @return environment configuration containing a collection of
-     *         environments.
-     */
-    Configuration mapCredentialConfiguration(com.alpha.pineapple.credential.EnvironmentInfo[] environmentInfos);
+	/**
+	 * Map collection of environments info's to model objects.
+	 * 
+	 * @param environmentInfos
+	 *            collection of environments info's
+	 * 
+	 * @return environment configuration containing a collection of environments.
+	 */
+	Configuration mapCredentialConfiguration(com.alpha.pineapple.credential.EnvironmentInfo[] environmentInfos);
 
-    /**
-     * Map model credential into model object.
-     * 
-     * @param environment
-     *            environment ID.
-     * @param credential
-     *            model credential.
-     * 
-     * @return environment configuration containing a single credential.
-     */
-    Configuration mapCredential(String environment, Credential credential);
+	/**
+	 * Map model credential into model object.
+	 * 
+	 * @param environment
+	 *            environment ID.
+	 * @param credential
+	 *            model credential.
+	 * 
+	 * @return environment configuration containing a single credential.
+	 */
+	Configuration mapCredential(String environment, Credential credential);
 
-    /**
-     * Map model resource into model object.
-     *
-     * @param environment
-     *            environment ID.
-     * @param resourceInfo
-     *            resource info.
-     * @return
-     */
-    Configuration mapResource(String environment, ResourceInfo resourceInfo);
+	/**
+	 * Map model resource into model object.
+	 *
+	 * @param environment
+	 *            environment ID.
+	 * @param resourceInfo
+	 *            resource info.
+	 * @return
+	 */
+	Configuration mapResource(String environment, ResourceInfo resourceInfo);
 
-    /**
-     * Map stream of scheduled operation info's to model objects.
-     * 
-     * @param operations
-     *            stream of scheduled operation info's.
-     * 
-     * @return scheduled operation model containing mapped scheduled operations.
-     */
-    ScheduledOperations mapScheduledOperations(Stream<ScheduledOperationInfo> operations);
+	/**
+	 * Map stream of scheduled operation info's to model objects.
+	 * 
+	 * @param operations
+	 *            stream of scheduled operation info's.
+	 * 
+	 * @return scheduled operation model containing mapped scheduled operations.
+	 */
+	ScheduledOperations mapScheduledOperations(Stream<ScheduledOperationInfo> operations);
 
-    /**
-     * Map array of module info's to model objects.
-     * 
-     * @param infos
-     *            array of modules info's.
-     * 
-     * @return module model containing mapped module info's.
-     */
-    Modules mapModules(ModuleInfo[] infos);
+	/**
+	 * Map array of module info's to model objects.
+	 * 
+	 * @param infos
+	 *            array of modules info's.
+	 * 
+	 * @return module model containing mapped module info's.
+	 */
+	Modules mapModules(ModuleInfo[] infos);
 
-    /**
-     * Map stream of reports to model objects.
-     * 
-     * @param operations
-     *            stream of reports.
-     * 
-     * @return reports model containing reports.
-     */
-    Reports mapReports(Stream<Report> reports);
+	/**
+	 * Map stream of reports to model objects.
+	 * 
+	 * @param operations
+	 *            stream of reports.
+	 * 
+	 * @return reports model containing reports.
+	 */
+	Reports mapReports(Stream<Report> reports);
 
 }

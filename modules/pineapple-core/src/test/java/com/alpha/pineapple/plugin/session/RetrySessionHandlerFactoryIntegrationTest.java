@@ -48,164 +48,164 @@ import com.alpha.pineapple.plugin.Operation;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class RetrySessionHandlerFactoryIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @javax.annotation.Resource
-    SessionHandlerFactory retrySessionHandlerFactory;
+	/**
+	 * Object under test.
+	 */
+	@javax.annotation.Resource
+	SessionHandlerFactory retrySessionHandlerFactory;
 
-    @Before
-    public void setUp() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that factory can be looked up from context.
-     */
-    @Test
-    public void testCanCreateInstance() {
-	// test
-	assertNotNull(retrySessionHandlerFactory);
-    }
+	/**
+	 * Test that factory can be looked up from context.
+	 */
+	@Test
+	public void testCanCreateInstance() {
+		// test
+		assertNotNull(retrySessionHandlerFactory);
+	}
 
-    /**
-     * Test that session handler can be created.
-     */
-    @Test
-    public void testCreateSessionHandler() {
+	/**
+	 * Test that session handler can be created.
+	 */
+	@Test
+	public void testCreateSessionHandler() {
 
-	// complete initialization of mock resource
-	Resource resource = createMock(Resource.class);
-	replay(resource);
+		// complete initialization of mock resource
+		Resource resource = createMock(Resource.class);
+		replay(resource);
 
-	// complete initialization of mock credential
-	Credential credential = createMock(Credential.class);
-	replay(credential);
+		// complete initialization of mock credential
+		Credential credential = createMock(Credential.class);
+		replay(credential);
 
-	// complete initialization of mock operation
-	Operation operation = createMock(Operation.class);
-	replay(operation);
+		// complete initialization of mock operation
+		Operation operation = createMock(Operation.class);
+		replay(operation);
 
-	// create
-	Operation sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
+		// create
+		Operation sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
 
-	// test
-	assertNotNull(sessionHandler);
-	assertTrue(sessionHandler instanceof RetrySessionHandlerImpl);
+		// test
+		assertNotNull(sessionHandler);
+		assertTrue(sessionHandler instanceof RetrySessionHandlerImpl);
 
-	// type cast
-	RetrySessionHandlerImpl sessionHandlerImpl = (RetrySessionHandlerImpl) sessionHandler;
-	assertEquals(resource, sessionHandlerImpl.resource);
-	assertEquals(credential, sessionHandlerImpl.credential);
-	assertEquals(operation, sessionHandlerImpl.operation);
+		// type cast
+		RetrySessionHandlerImpl sessionHandlerImpl = (RetrySessionHandlerImpl) sessionHandler;
+		assertEquals(resource, sessionHandlerImpl.resource);
+		assertEquals(credential, sessionHandlerImpl.credential);
+		assertEquals(operation, sessionHandlerImpl.operation);
 
-	verify(resource);
-	verify(credential);
-	verify(operation);
-    }
+		verify(resource);
+		verify(credential);
+		verify(operation);
+	}
 
-    /**
-     * Test that session handler can be created with undefined credential.
-     */
-    @Test
-    public void testCreationSucceedsWithNullCredential() {
+	/**
+	 * Test that session handler can be created with undefined credential.
+	 */
+	@Test
+	public void testCreationSucceedsWithNullCredential() {
 
-	// complete initialization of mock resource
-	Resource resource = createMock(Resource.class);
-	replay(resource);
+		// complete initialization of mock resource
+		Resource resource = createMock(Resource.class);
+		replay(resource);
 
-	// complete initialization of mock operation
-	Operation operation = createMock(Operation.class);
-	replay(operation);
+		// complete initialization of mock operation
+		Operation operation = createMock(Operation.class);
+		replay(operation);
 
-	// create
-	Operation sessionHandler = retrySessionHandlerFactory.getInstance(resource, null, operation);
+		// create
+		Operation sessionHandler = retrySessionHandlerFactory.getInstance(resource, null, operation);
 
-	// test
-	assertNotNull(sessionHandler);
-	assertTrue(sessionHandler instanceof RetrySessionHandlerImpl);
+		// test
+		assertNotNull(sessionHandler);
+		assertTrue(sessionHandler instanceof RetrySessionHandlerImpl);
 
-	// type cast
-	RetrySessionHandlerImpl sessionHandlerImpl = (RetrySessionHandlerImpl) sessionHandler;
-	assertEquals(resource, sessionHandlerImpl.resource);
-	assertNotNull(sessionHandlerImpl.credential);
-	assertEquals("", sessionHandlerImpl.credential.getId());
-	assertEquals("", sessionHandlerImpl.credential.getPassword());
-	assertEquals("", sessionHandlerImpl.credential.getUser());
-	assertEquals(operation, sessionHandlerImpl.operation);
+		// type cast
+		RetrySessionHandlerImpl sessionHandlerImpl = (RetrySessionHandlerImpl) sessionHandler;
+		assertEquals(resource, sessionHandlerImpl.resource);
+		assertNotNull(sessionHandlerImpl.credential);
+		assertEquals("", sessionHandlerImpl.credential.getId());
+		assertEquals("", sessionHandlerImpl.credential.getPassword());
+		assertEquals("", sessionHandlerImpl.credential.getUser());
+		assertEquals(operation, sessionHandlerImpl.operation);
 
-	verify(resource);
-	verify(operation);
-    }
+		verify(resource);
+		verify(operation);
+	}
 
-    /**
-     * Test that creation fails if resource is null.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreationFailsWithNullResource() {
+	/**
+	 * Test that creation fails if resource is null.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreationFailsWithNullResource() {
 
-	// complete initialization of mock credential
-	Credential credential = createMock(Credential.class);
-	replay(credential);
+		// complete initialization of mock credential
+		Credential credential = createMock(Credential.class);
+		replay(credential);
 
-	// complete initialization of mock operation
-	Operation operation = createMock(Operation.class);
-	replay(operation);
+		// complete initialization of mock operation
+		Operation operation = createMock(Operation.class);
+		replay(operation);
 
-	// create
-	retrySessionHandlerFactory.getInstance(null, credential, operation);
-    }
+		// create
+		retrySessionHandlerFactory.getInstance(null, credential, operation);
+	}
 
-    /**
-     * Test that creation fails if operation is null.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreationFailsWithNullOperation() {
+	/**
+	 * Test that creation fails if operation is null.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreationFailsWithNullOperation() {
 
-	// complete initialization of mock resource
-	Resource resource = createMock(Resource.class);
-	replay(resource);
+		// complete initialization of mock resource
+		Resource resource = createMock(Resource.class);
+		replay(resource);
 
-	// complete initialization of mock credential
-	Credential credential = createMock(Credential.class);
-	replay(credential);
+		// complete initialization of mock credential
+		Credential credential = createMock(Credential.class);
+		replay(credential);
 
-	// create
-	retrySessionHandlerFactory.getInstance(resource, credential, null);
-    }
+		// create
+		retrySessionHandlerFactory.getInstance(resource, credential, null);
+	}
 
-    /**
-     * Test that each created session handler builder is a Spring prototype.
-     */
-    @Test
-    public void testCreatedSessionHandlerIsSpringProtototype() {
+	/**
+	 * Test that each created session handler builder is a Spring prototype.
+	 */
+	@Test
+	public void testCreatedSessionHandlerIsSpringProtototype() {
 
-	// complete initialization of mock resource
-	Resource resource = createMock(Resource.class);
-	replay(resource);
+		// complete initialization of mock resource
+		Resource resource = createMock(Resource.class);
+		replay(resource);
 
-	// complete initialization of mock credential
-	Credential credential = createMock(Credential.class);
-	replay(credential);
+		// complete initialization of mock credential
+		Credential credential = createMock(Credential.class);
+		replay(credential);
 
-	// complete initialization of mock operation
-	Operation operation = createMock(Operation.class);
-	replay(operation);
+		// complete initialization of mock operation
+		Operation operation = createMock(Operation.class);
+		replay(operation);
 
-	// create
-	Operation sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
-	Operation sessionHandler2 = retrySessionHandlerFactory.getInstance(resource, credential, operation);
+		// create
+		Operation sessionHandler = retrySessionHandlerFactory.getInstance(resource, credential, operation);
+		Operation sessionHandler2 = retrySessionHandlerFactory.getInstance(resource, credential, operation);
 
-	// test
-	assertFalse(sessionHandler.equals(sessionHandler2));
-	assertFalse(sessionHandler.hashCode() == sessionHandler2.hashCode());
+		// test
+		assertFalse(sessionHandler.equals(sessionHandler2));
+		assertFalse(sessionHandler.hashCode() == sessionHandler2.hashCode());
 
-	verify(resource);
-	verify(credential);
-	verify(operation);
-    }
+		verify(resource);
+		verify(credential);
+		verify(operation);
+	}
 
 }

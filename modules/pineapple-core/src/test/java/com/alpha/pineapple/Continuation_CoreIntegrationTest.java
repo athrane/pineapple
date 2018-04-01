@@ -66,265 +66,264 @@ import com.alpha.testutils.testplugins.infiniteloop.noncoop.NonCoperativeInfinit
 @ActiveProfiles("integration-test")
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-	DirectoryTestExecutionListener.class })
+		DirectoryTestExecutionListener.class })
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class Continuation_CoreIntegrationTest {
 
-    /**
-     * NULL credential reference.
-     */
-    static final String NULL_CRED_REF = null;
+	/**
+	 * NULL credential reference.
+	 */
+	static final String NULL_CRED_REF = null;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Core factory.
-     */
-    @Resource
-    CoreFactory coreFactory;
+	/**
+	 * Core factory.
+	 */
+	@Resource
+	CoreFactory coreFactory;
 
-    /**
-     * Object mother for credential provider
-     */
-    @Resource
-    ObjectMotherCredentialProvider providerMother;
+	/**
+	 * Object mother for credential provider
+	 */
+	@Resource
+	ObjectMotherCredentialProvider providerMother;
 
-    /**
-     * Credential provider.
-     */
-    CredentialProvider provider;
+	/**
+	 * Credential provider.
+	 */
+	CredentialProvider provider;
 
-    /**
-     * Object mother for environment configuration.
-     */
-    ObjectMotherEnvironmentConfiguration envConfigMother;
+	/**
+	 * Object mother for environment configuration.
+	 */
+	ObjectMotherEnvironmentConfiguration envConfigMother;
 
-    /**
-     * Object mother for module.
-     */
-    ObjectMotherModule moduleMother;
+	/**
+	 * Object mother for module.
+	 */
+	ObjectMotherModule moduleMother;
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Modules directory.
-     */
-    File modulesDir;
+	/**
+	 * Modules directory.
+	 */
+	File modulesDir;
 
-    /**
-     * Conf directory.
-     */
-    File confDir;
+	/**
+	 * Conf directory.
+	 */
+	File confDir;
 
-    /**
-     * Random file name.
-     */
-    String randomResourceXmlName;
+	/**
+	 * Random file name.
+	 */
+	String randomResourceXmlName;
 
-    /**
-     * Random directory name.
-     */
-    String randomDirName;
+	/**
+	 * Random directory name.
+	 */
+	String randomDirName;
 
-    /**
-     * Random environment..
-     */
-    String randomEnvironment;
+	/**
+	 * Random environment..
+	 */
+	String randomEnvironment;
 
-    /**
-     * Random module.
-     */
-    String randomModule;
+	/**
+	 * Random module.
+	 */
+	String randomModule;
 
-    /**
-     * Random resource name.
-     */
-    String randomResource;
+	/**
+	 * Random resource name.
+	 */
+	String randomResource;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	randomResourceXmlName = RandomStringUtils.randomAlphabetic(10) + ".xml";
-	randomDirName = RandomStringUtils.randomAlphabetic(10);
-	randomEnvironment = RandomStringUtils.randomAlphabetic(10);
-	randomModule = RandomStringUtils.randomAlphabetic(10) + "-module";
-	randomResource = RandomStringUtils.randomAlphabetic(10) + "-resource";
+		randomResourceXmlName = RandomStringUtils.randomAlphabetic(10) + ".xml";
+		randomDirName = RandomStringUtils.randomAlphabetic(10);
+		randomEnvironment = RandomStringUtils.randomAlphabetic(10);
+		randomModule = RandomStringUtils.randomAlphabetic(10) + "-module";
+		randomResource = RandomStringUtils.randomAlphabetic(10) + "-resource";
 
-	// create environment configuration object mother
-	envConfigMother = new ObjectMotherEnvironmentConfiguration();
+		// create environment configuration object mother
+		envConfigMother = new ObjectMotherEnvironmentConfiguration();
 
-	// create module object mother
-	moduleMother = new ObjectMotherModule();
+		// create module object mother
+		moduleMother = new ObjectMotherModule();
 
-	// create credential provider
-	provider = providerMother.createEmptyCredentialProvider();
+		// create credential provider
+		provider = providerMother.createEmptyCredentialProvider();
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// define directory names
-	modulesDir = new File(testDirectory, "modules");
-	confDir = new File(testDirectory, "conf");
+		// define directory names
+		modulesDir = new File(testDirectory, "modules");
+		confDir = new File(testDirectory, "conf");
 
-	// clear the pineapple.home.dir system property
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+		// clear the pineapple.home.dir system property
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
 
-	// fail if the the pineapple.home.dir system property is set
-	assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
-	// clear the pineapple.home.dir system setting
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
-    }
-
-    /**
-     * Wait until module execution is completed
-     * 
-     * @param executionInfo
-     *            Execution info.
-     * @throws InterruptedException
-     *             if test fails
-     */
-    void waitForOperationToComplete(ExecutionInfo executionInfo) throws InterruptedException {
-	while (executionInfo.getResult().isExecuting()) {
-	    ConcurrencyUtils.waitSomeMilliseconds(2);
+		// fail if the the pineapple.home.dir system property is set
+		assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
 	}
-    }
 
-    /**
-     * Get execution result from core which contains the state of the
-     * initialization
-     * 
-     * @param core
-     *            The core component.
-     * 
-     * @return execution result from core which contains the state of the
-     *         initialization
-     */
-    ExecutionResult getInitializationResultFromCore(PineappleCore core) {
-	CoreImpl coreImpl = (CoreImpl) core;
-	ExecutionResult result = coreImpl.getInitializationInfo();
-	return result;
-    }
+	@After
+	public void tearDown() throws Exception {
 
-    /**
-     * Configures Pineapple with directories, environment configuration and
-     * start the core component.
-     * 
-     * @param pluginId
-     *            Name of plugin id to add as resource in the environment
-     *            configuration.
-     * 
-     * @return Running configured core component.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    PineappleCore configureAndStartPineapple(String pluginId) throws Exception {
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// clear the pineapple.home.dir system setting
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+	}
 
-	// create pineapple runtime sub directories, e.g conf and modules
-	confDir.mkdirs();
-	modulesDir.mkdirs();
+	/**
+	 * Wait until module execution is completed
+	 * 
+	 * @param executionInfo
+	 *            Execution info.
+	 * @throws InterruptedException
+	 *             if test fails
+	 */
+	void waitForOperationToComplete(ExecutionInfo executionInfo) throws InterruptedException {
+		while (executionInfo.getResult().isExecuting()) {
+			ConcurrencyUtils.waitSomeMilliseconds(2);
+		}
+	}
 
-	// create environment configuration and save it
-	Configuration configuration = envConfigMother.createEnvConfigWithSingleResource(randomEnvironment,
-		randomResource, pluginId);
-	File resourcesFile = envConfigMother.createResourcesFileName(confDir);
-	envConfigMother.jaxbMarshall(configuration, resourcesFile);
+	/**
+	 * Get execution result from core which contains the state of the initialization
+	 * 
+	 * @param core
+	 *            The core component.
+	 * 
+	 * @return execution result from core which contains the state of the
+	 *         initialization
+	 */
+	ExecutionResult getInitializationResultFromCore(PineappleCore core) {
+		CoreImpl coreImpl = (CoreImpl) core;
+		ExecutionResult result = coreImpl.getInitializationInfo();
+		return result;
+	}
 
-	// create core component
-	PineappleCore core = coreFactory.createCore(provider, resourcesFile);
+	/**
+	 * Configures Pineapple with directories, environment configuration and start
+	 * the core component.
+	 * 
+	 * @param pluginId
+	 *            Name of plugin id to add as resource in the environment
+	 *            configuration.
+	 * 
+	 * @return Running configured core component.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	PineappleCore configureAndStartPineapple(String pluginId) throws Exception {
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// test initialization was a success
-	assertTrue(getInitializationResultFromCore(core).isSuccess());
+		// create pineapple runtime sub directories, e.g conf and modules
+		confDir.mkdirs();
+		modulesDir.mkdirs();
 
-	return core;
-    }
+		// create environment configuration and save it
+		Configuration configuration = envConfigMother.createEnvConfigWithSingleResource(randomEnvironment,
+				randomResource, pluginId);
+		File resourcesFile = envConfigMother.createResourcesFileName(confDir);
+		envConfigMother.jaxbMarshall(configuration, resourcesFile);
 
-    /**
-     * Test that operation can cancelled.
-     * 
-     * The plugin implements a infinite loop, whihc co-operatively inspects
-     * whehter the execution ihas been cancelled.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    //@Test
-    
-    public void testCanCancelOperationWithCooperativePlugin() throws Exception {
-	PineappleCore core = configureAndStartPineapple(CooperativeInfiniteLoopPluginImpl.PLUGIN_ID);
+		// create core component
+		PineappleCore core = coreFactory.createCore(provider, resourcesFile);
 
-	// create module
-	moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, randomResource);
-	core.getAdministration().getModuleRepository().initialize(); // refresh
-								     // modules
-								     // to pick
-								     // the
-								     // newly
-								     // create
-								     // one
+		// test initialization was a success
+		assertTrue(getInitializationResultFromCore(core).isSuccess());
 
-	// execute operation
-	ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
-	ConcurrencyUtils.waitSomeMilliseconds(200); // wait for execution to
-						    // start
+		return core;
+	}
 
-	// cancel
-	core.cancelOperation(executionInfo);
-	waitForOperationToComplete(executionInfo); // wait for cancellation to
-						   // complete
+	/**
+	 * Test that operation can cancelled.
+	 * 
+	 * The plugin implements a infinite loop, whihc co-operatively inspects whehter
+	 * the execution ihas been cancelled.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	// @Test
 
-	// test
-	assertTrue(executionInfo.getResult().isInterrupted());
-    }
+	public void testCanCancelOperationWithCooperativePlugin() throws Exception {
+		PineappleCore core = configureAndStartPineapple(CooperativeInfiniteLoopPluginImpl.PLUGIN_ID);
 
-    /**
-     * Test that operation can cancelled.
-     * 
-     * The plugin implements a infinite loop, which adds child results, the
-     * addition of child results triggers cancellation of the execution.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    //@Test
-    public void testCanCancelOperationWithNonCooperativePlugin() throws Exception {
-	PineappleCore core = configureAndStartPineapple(NonCoperativeInfiniteLoopPluginImpl.PLUGIN_ID);
+		// create module
+		moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, randomResource);
+		core.getAdministration().getModuleRepository().initialize(); // refresh
+		// modules
+		// to pick
+		// the
+		// newly
+		// create
+		// one
 
-	// create module
-	moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, randomResource);
-	core.getAdministration().getModuleRepository().initialize(); // refresh
-								     // modules
-								     // to pick
-								     // the
-								     // newly
-								     // create
-								     // one
+		// execute operation
+		ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
+		ConcurrencyUtils.waitSomeMilliseconds(200); // wait for execution to
+		// start
 
-	// execute operation
-	ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
-	ConcurrencyUtils.waitSomeMilliseconds(100); // wait for execution to
-						    // start
+		// cancel
+		core.cancelOperation(executionInfo);
+		waitForOperationToComplete(executionInfo); // wait for cancellation to
+		// complete
 
-	// cancel
-	core.cancelOperation(executionInfo);
-	waitForOperationToComplete(executionInfo); // wait for cancellation to
-						   // complete
+		// test
+		assertTrue(executionInfo.getResult().isInterrupted());
+	}
 
-	// test
-	assertTrue(executionInfo.getResult().isInterrupted());
-    }
+	/**
+	 * Test that operation can cancelled.
+	 * 
+	 * The plugin implements a infinite loop, which adds child results, the addition
+	 * of child results triggers cancellation of the execution.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	// @Test
+	public void testCanCancelOperationWithNonCooperativePlugin() throws Exception {
+		PineappleCore core = configureAndStartPineapple(NonCoperativeInfiniteLoopPluginImpl.PLUGIN_ID);
+
+		// create module
+		moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, randomResource);
+		core.getAdministration().getModuleRepository().initialize(); // refresh
+		// modules
+		// to pick
+		// the
+		// newly
+		// create
+		// one
+
+		// execute operation
+		ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
+		ConcurrencyUtils.waitSomeMilliseconds(100); // wait for execution to
+		// start
+
+		// cancel
+		core.cancelOperation(executionInfo);
+		waitForOperationToComplete(executionInfo); // wait for cancellation to
+		// complete
+
+		// test
+		assertTrue(executionInfo.getResult().isInterrupted());
+	}
 
 }

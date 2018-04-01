@@ -29,31 +29,31 @@ import com.alpha.pineapple.command.CommandException;
  */
 public class CommandInitializationFailedException extends CommandException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * ContextValidationFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public CommandInitializationFailedException(String message) {
-	super(message);
-    }
+	/**
+	 * ContextValidationFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public CommandInitializationFailedException(String message) {
+		super(message);
+	}
 
-    /**
-     * ContextValidationFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public CommandInitializationFailedException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * ContextValidationFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public CommandInitializationFailedException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
 }

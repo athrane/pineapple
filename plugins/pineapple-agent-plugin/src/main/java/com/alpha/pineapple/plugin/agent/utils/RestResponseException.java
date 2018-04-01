@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.agent.utils;
 
 import org.springframework.http.HttpHeaders;
@@ -36,28 +35,31 @@ public class RestResponseException extends RuntimeException {
 	 * HTTP status code.
 	 */
 	HttpStatus statusCode;
-	
+
 	/**
 	 * HTTP body.
 	 */
 	String body;
-	
+
 	/**
 	 * HTTP headers.
 	 */
 	HttpHeaders headers;
-	
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
 	/**
 	 * RestResponseException constructor.
 	 * 
-	 * @param statusCode HTTP status code.
-	 * @param body HTTP body.
-	 * @param headers HTTP headers.
+	 * @param statusCode
+	 *            HTTP status code.
+	 * @param body
+	 *            HTTP body.
+	 * @param headers
+	 *            HTTP headers.
 	 */
 	public RestResponseException(HttpStatus statusCode, String body, HttpHeaders headers) {
 		this.statusCode = statusCode;
@@ -73,7 +75,7 @@ public class RestResponseException extends RuntimeException {
 	public HttpHeaders getHeaders() {
 		return headers;
 	}
-	
+
 	/**
 	 * Return HTTP status code.
 	 * 
@@ -82,7 +84,7 @@ public class RestResponseException extends RuntimeException {
 	public HttpStatus getStatusCode() {
 		return statusCode;
 	}
-	
+
 	/**
 	 * Return HTTP body.
 	 * 
@@ -91,6 +93,5 @@ public class RestResponseException extends RuntimeException {
 	public String getBody() {
 		return body;
 	}
-	
-	
+
 }

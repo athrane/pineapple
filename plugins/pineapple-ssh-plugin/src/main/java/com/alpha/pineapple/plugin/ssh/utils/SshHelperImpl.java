@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.ssh.utils;
 
 import java.io.File;
@@ -35,65 +34,63 @@ import com.alpha.pineapple.io.file.RuntimeDirectoryProvider;
 import com.alpha.pineapple.module.ModuleInfo;
 import com.alpha.pineapple.test.AssertionHelper;
 
-
 /**
  * implementation of the {@linkplain SshHelper} interface.
  */
 public class SshHelperImpl implements SshHelper {
-        
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
-	        
-    /**
-     * Runtime directory provider.
-     */
-    @Resource                
-    RuntimeDirectoryProvider coreRuntimeDirectoryProvider;
-        
-    /**
-     * Execution info provider.
-     */
-    @Resource
-    ExecutionInfoProvider coreExecutionInfoProvider;
-    
-    /**
-     * Assertion helper.
-     */
-    @Resource    
-    AssertionHelper assertionHelper;
-        
-	public boolean isLocalFileValid(File installer, ExecutionResult result ) {
-		
+
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
+
+	/**
+	 * Runtime directory provider.
+	 */
+	@Resource
+	RuntimeDirectoryProvider coreRuntimeDirectoryProvider;
+
+	/**
+	 * Execution info provider.
+	 */
+	@Resource
+	ExecutionInfoProvider coreExecutionInfoProvider;
+
+	/**
+	 * Assertion helper.
+	 */
+	@Resource
+	AssertionHelper assertionHelper;
+
+	public boolean isLocalFileValid(File installer, ExecutionResult result) {
+
 		// assert installer is valid
-		ExecutionResult assertionResult = assertionHelper.assertFileExist(installer, 
-				messageProvider, 
-				"shi.assert_localfile_exists", 
-				result );						
-				
-    	// add installer path info to execution result
-    	String messageHeader = messageProvider.getMessage("shi.assert_localfile_exists_info");
-    	assertionResult.addMessage(messageHeader, installer.getAbsolutePath() );		
-		
-		return (assertionResult.isSuccess()); 				
-	}    
-	
+		ExecutionResult assertionResult = assertionHelper.assertFileExist(installer, messageProvider,
+				"shi.assert_localfile_exists", result);
+
+		// add installer path info to execution result
+		String messageHeader = messageProvider.getMessage("shi.assert_localfile_exists_info");
+		assertionResult.addMessage(messageHeader, installer.getAbsolutePath());
+
+		return (assertionResult.isSuccess());
+	}
+
 	public String resolveModulePath(ExecutionResult result, String localFile) {
-				
+
 		// exit if prefix isn't present
-		if (!coreRuntimeDirectoryProvider.startsWithModulePathPrefix(localFile)) return localFile;
-			
-		// get module info 
+		if (!coreRuntimeDirectoryProvider.startsWithModulePathPrefix(localFile))
+			return localFile;
+
+		// get module info
 		ExecutionInfo executionInfo = coreExecutionInfoProvider.get(result);
 		ModuleInfo moduleInfo = executionInfo.getModuleInfo();
-		
+
 		// resolve path
-		File resolvedPath = coreRuntimeDirectoryProvider.resolveModelPath(localFile, moduleInfo);			
+		File resolvedPath = coreRuntimeDirectoryProvider.resolveModelPath(localFile, moduleInfo);
 		localFile = resolvedPath.getAbsolutePath();
 
 		return localFile;
 	}
-	
+
 }

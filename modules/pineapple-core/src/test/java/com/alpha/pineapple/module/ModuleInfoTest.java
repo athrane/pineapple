@@ -46,118 +46,118 @@ import com.alpha.springutils.DirectoryTestExecutionListener;
 @TestExecutionListeners(DirectoryTestExecutionListener.class)
 public class ModuleInfoTest {
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Object under test.
-     */
-    ModuleInfo info;
+	/**
+	 * Object under test.
+	 */
+	ModuleInfo info;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
-    }
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	testDirectory = null;
-	info = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		testDirectory = null;
+		info = null;
+	}
 
-    /**
-     * Test instance can be created.
-     */
-    @Test
-    public void testGetInstance() {
-	String id = "id";
-	String[] environments = new String[] {};
-	boolean isDescriptorDefined = RandomUtils.nextBoolean();
-	File directory = testDirectory;
-	info = ModuleInfoImpl.getInstance(id, environments, isDescriptorDefined, directory);
+	/**
+	 * Test instance can be created.
+	 */
+	@Test
+	public void testGetInstance() {
+		String id = "id";
+		String[] environments = new String[] {};
+		boolean isDescriptorDefined = RandomUtils.nextBoolean();
+		File directory = testDirectory;
+		info = ModuleInfoImpl.getInstance(id, environments, isDescriptorDefined, directory);
 
-	// test
-	assertNotNull(info);
-	assertEquals(id, info.getId());
-	assertEquals(directory, info.getDirectory());
-	assertNotNull(info.getModelEnvironments());
-	assertEquals(0, info.getModelEnvironments().length);
-    }
+		// test
+		assertNotNull(info);
+		assertEquals(id, info.getId());
+		assertEquals(directory, info.getDirectory());
+		assertNotNull(info.getModelEnvironments());
+		assertEquals(0, info.getModelEnvironments().length);
+	}
 
-    /**
-     * Test info contains correct models.
-     */
-    @Test
-    public void testContainsModel() {
-	String id = "id";
-	String[] environments = new String[] { "env1", "env2" };
-	boolean isDescriptorDefined = RandomUtils.nextBoolean();
-	File directory = testDirectory;
-	info = ModuleInfoImpl.getInstance(id, environments, isDescriptorDefined, directory);
+	/**
+	 * Test info contains correct models.
+	 */
+	@Test
+	public void testContainsModel() {
+		String id = "id";
+		String[] environments = new String[] { "env1", "env2" };
+		boolean isDescriptorDefined = RandomUtils.nextBoolean();
+		File directory = testDirectory;
+		info = ModuleInfoImpl.getInstance(id, environments, isDescriptorDefined, directory);
 
-	// test
-	assertNotNull(info);
-	assertFalse(info.containsModel("env0"));
-	assertTrue(info.containsModel("env1"));
-	assertTrue(info.containsModel("env2"));
-	assertFalse(info.containsModel("env3"));
-    }
+		// test
+		assertNotNull(info);
+		assertFalse(info.containsModel("env0"));
+		assertTrue(info.containsModel("env1"));
+		assertTrue(info.containsModel("env2"));
+		assertFalse(info.containsModel("env3"));
+	}
 
-    /**
-     * Test models are returned sorted
-     */
-    @Test
-    public void testGetModelEnvironments() {
-	String id = "id";
-	String[] environments = new String[] { "BBB", "AAA", "CCC" };
-	boolean isDescriptorDefined = RandomUtils.nextBoolean();
-	File directory = testDirectory;
-	info = ModuleInfoImpl.getInstance(id, environments, isDescriptorDefined, directory);
+	/**
+	 * Test models are returned sorted
+	 */
+	@Test
+	public void testGetModelEnvironments() {
+		String id = "id";
+		String[] environments = new String[] { "BBB", "AAA", "CCC" };
+		boolean isDescriptorDefined = RandomUtils.nextBoolean();
+		File directory = testDirectory;
+		info = ModuleInfoImpl.getInstance(id, environments, isDescriptorDefined, directory);
 
-	// get environments
-	String[] modelsEnvs = info.getModelEnvironments();
+		// get environments
+		String[] modelsEnvs = info.getModelEnvironments();
 
-	// test
-	assertNotNull(info);
-	assertEquals(3, modelsEnvs.length);
-	assertEquals("AAA", modelsEnvs[0]);
-	assertEquals("BBB", modelsEnvs[1]);
-	assertEquals("CCC", modelsEnvs[2]);
-    }
+		// test
+		assertNotNull(info);
+		assertEquals(3, modelsEnvs.length);
+		assertEquals("AAA", modelsEnvs[0]);
+		assertEquals("BBB", modelsEnvs[1]);
+		assertEquals("CCC", modelsEnvs[2]);
+	}
 
-    /**
-     * Test is descriptor state is returned.
-     */
-    @Test
-    public void testIsDescriptorDefined() {
-	String id = "id";
-	String[] environments = new String[] { "BBB", "AAA", "CCC" };
-	boolean isDescriptorDefined = RandomUtils.nextBoolean();
-	File directory = testDirectory;
-	info = ModuleInfoImpl.getInstance(id, environments, isDescriptorDefined, directory);
+	/**
+	 * Test is descriptor state is returned.
+	 */
+	@Test
+	public void testIsDescriptorDefined() {
+		String id = "id";
+		String[] environments = new String[] { "BBB", "AAA", "CCC" };
+		boolean isDescriptorDefined = RandomUtils.nextBoolean();
+		File directory = testDirectory;
+		info = ModuleInfoImpl.getInstance(id, environments, isDescriptorDefined, directory);
 
-	// test
-	assertEquals(isDescriptorDefined, info.isDescriptorDefined());
-    }
+		// test
+		assertEquals(isDescriptorDefined, info.isDescriptorDefined());
+	}
 
-    /**
-     * Test null instance can be created.
-     */
-    @Test
-    public void testGetNullInstance() {
-	info = ModuleInfoImpl.getNullInstance();
+	/**
+	 * Test null instance can be created.
+	 */
+	@Test
+	public void testGetNullInstance() {
+		info = ModuleInfoImpl.getNullInstance();
 
-	// test
-	assertNotNull(info);
-	assertEquals("null", info.getId());
-	assertEquals(null, info.getDirectory());
-	assertEquals(false, info.isDescriptorDefined());
-	assertNotNull(info.getModelEnvironments());
-	assertEquals(0, info.getModelEnvironments().length);
-    }
+		// test
+		assertNotNull(info);
+		assertEquals("null", info.getId());
+		assertEquals(null, info.getDirectory());
+		assertEquals(false, info.isDescriptorDefined());
+		assertNotNull(info.getModelEnvironments());
+		assertEquals(0, info.getModelEnvironments().length);
+	}
 
 }

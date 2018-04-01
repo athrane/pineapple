@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import java.util.ArrayList;
@@ -38,130 +37,132 @@ import org.hamcrest.TypeSafeMatcher;
 import com.alpha.pineapple.plugin.net.http.HeaderMap;
 
 /**
- * Matches if that an array of HTTP headers doesn't contain 
- * a set of headers with specified names.
+ * Matches if that an array of HTTP headers doesn't contain a set of headers
+ * with specified names.
  * 
- * <p>The matcher succeeds if: 
- * The header array doesn't ANY contain headers with the "non-expected" 
- * header names. The match will fail if the array contains ANY of the non 
- * expected header names.
- * </p>  
+ * <p>
+ * The matcher succeeds if: The header array doesn't ANY contain headers with
+ * the "non-expected" header names. The match will fail if the array contains
+ * ANY of the non expected header names.
+ * </p>
  */
 public class IsHeadersNotContaining extends TypeSafeMatcher<Header[]> {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-    
-    /**
-     * Not expected HTTP headers.
-     */
-    String[] notExpectedHeaders;
-			
-    /**
-     * IsHeadersContaining constructor.
-     * 
-     * @param notExpectedHeaders Array of not expected HTTP headers names.
-     */
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
+	/**
+	 * Not expected HTTP headers.
+	 */
+	String[] notExpectedHeaders;
+
+	/**
+	 * IsHeadersContaining constructor.
+	 * 
+	 * @param notExpectedHeaders
+	 *            Array of not expected HTTP headers names.
+	 */
 	public IsHeadersNotContaining(String[] notExpectedHeaders) {
 		this.notExpectedHeaders = notExpectedHeaders;
-		
+
 		// log debug message
-		if( logger.isDebugEnabled()) {
+		if (logger.isDebugEnabled()) {
 			StringBuilder message = new StringBuilder();
 			message.append("Initialized IsHeadersNotContaining with <");
-			message.append( ReflectionToStringBuilder.toString(notExpectedHeaders));
-			message.append(">.");			
+			message.append(ReflectionToStringBuilder.toString(notExpectedHeaders));
+			message.append(">.");
 			logger.debug(message.toString());
 		}
-		
+
 	}
 
 	@Override
 	protected boolean matchesSafely(Header[] headers) {
-						
+
 		// succeeds if expected headers is empty
-		if (notExpectedHeaders.length == 0) return true;
-		
+		if (notExpectedHeaders.length == 0)
+			return true;
+
 		// create headers map
 		HeaderMap headerMap = createHeaderMap(headers);
-						
+
 		// fails if the map contains any of the non expected key sets
-		for( String nonExpectedHeader : notExpectedHeaders ) {
-			
-    		// log debug message
-    		if (logger.isDebugEnabled()) {
-    			StringBuilder message = new StringBuilder();
-    			message.append("Validation if non expected header <" );
-    			message.append( nonExpectedHeader );
-    			message.append("> is present." );    
-    			logger.debug(message.toString());
-    		}
-			
-			if(headerMap.containsKey(nonExpectedHeader)) return false;
+		for (String nonExpectedHeader : notExpectedHeaders) {
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder message = new StringBuilder();
+				message.append("Validation if non expected header <");
+				message.append(nonExpectedHeader);
+				message.append("> is present.");
+				logger.debug(message.toString());
+			}
+
+			if (headerMap.containsKey(nonExpectedHeader))
+				return false;
 		}
-		
+
 		// signal success
 		return true;
 	}
 
 	public void describeTo(Description description) {
-		description.appendText("IsHeadersNotContaining (");		
-		description.appendValue(notExpectedHeaders);		
-		description.appendText(")");				
+		description.appendText("IsHeadersNotContaining (");
+		description.appendValue(notExpectedHeaders);
+		description.appendText(")");
 	}
 
-    @Override
+	@Override
 	protected void describeMismatchSafely(Header[] headers, Description mismatchDescription) {
 
-    	// create headers map
+		// create headers map
 		HeaderMap headerMap = createHeaderMap(headers);
-										
-        boolean isPastFirst = false;		
-		
-		// iterate over the header to find which not-expected headers are present
-		for( String nonExpectedHeader : notExpectedHeaders ) {
 
-            if (isPastFirst) {
-                mismatchDescription.appendText(", ");
-              }
-			
-			if(headerMap.containsKey(nonExpectedHeader)) {
-				mismatchDescription.appendText("contain an non-expected header");								
-                mismatchDescription.appendValue(nonExpectedHeader);				
+		boolean isPastFirst = false;
+
+		// iterate over the header to find which not-expected headers are present
+		for (String nonExpectedHeader : notExpectedHeaders) {
+
+			if (isPastFirst) {
+				mismatchDescription.appendText(", ");
 			}
-			
-            isPastFirst = true;			
-		}				
-    }
-	
+
+			if (headerMap.containsKey(nonExpectedHeader)) {
+				mismatchDescription.appendText("contain an non-expected header");
+				mismatchDescription.appendValue(nonExpectedHeader);
+			}
+
+			isPastFirst = true;
+		}
+	}
+
 	/**
 	 * Create header map
 	 * 
-	 * @param headers Array of headers.
+	 * @param headers
+	 *            Array of headers.
 	 * 
 	 * @return Map with headers.
 	 */
 	HeaderMap createHeaderMap(Header[] headers) {
-				
+
 		// create map
 		HeaderMap headerMap = new HeaderMap();
 
 		// iterate over the headers
-		for ( Header header : headers )
-		{
-		    // add header
-			headerMap.put( header.getName(), header );
-			
-			
+		for (Header header : headers) {
+			// add header
+			headerMap.put(header.getName(), header);
+
 		}
 		return headerMap;
-	}    	
-		
+	}
+
 	@Factory
-    public static Matcher<Header[]> doesntContain(String[] expectedHeaders) {
-        return new IsHeadersNotContaining(expectedHeaders);
-    }
-	    		
+	public static Matcher<Header[]> doesntContain(String[] expectedHeaders) {
+		return new IsHeadersNotContaining(expectedHeaders);
+	}
+
 }

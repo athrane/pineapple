@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import org.apache.commons.httpclient.Cookie;
@@ -36,21 +35,21 @@ import com.alpha.pineapple.plugin.net.http.CookieMapPair;
 /**
  * Matches if a collection of cookie maps contains equal values.
  * 
- * <p>The matcher succeeds if: 
- * 1) All maps contains the same number of keys.
- * 2) All maps contains the same keys names. 
- * 3) A key maps to the same value in all maps.
- * </p>  
+ * <p>
+ * The matcher succeeds if: 1) All maps contains the same number of keys. 2) All
+ * maps contains the same keys names. 3) A key maps to the same value in all
+ * maps.
+ * </p>
  */
 public class IsCookieMapsContainingEqualValues extends TypeSafeMatcher<Iterable<Cookie[]>> {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-		
 	/**
-	 * First map stored in iteration. 
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
+	/**
+	 * First map stored in iteration.
 	 */
 	CookieMap firstMap;
 
@@ -63,120 +62,120 @@ public class IsCookieMapsContainingEqualValues extends TypeSafeMatcher<Iterable<
 	 * Last record cookies.
 	 */
 	Iterable<Cookie[]> lastCookies;
-	
+
 	@Override
 	protected boolean matchesSafely(Iterable<Cookie[]> cookiesCollection) {
-						
+
 		// store cookies for description
 		this.lastCookies = cookiesCollection;
-		
+
 		// set iteration
 		firstMap = null;
 		isFirstIteration = true;
-		
-		// create matcher 
+
+		// create matcher
 		Matcher<CookieMapPair> matcher = InfrastructureMatchers.cookieMapsPairContainingEqualValues();
-		
+
 		// iterate over the values
-        for (Cookie[] cookies : cookiesCollection ) {
+		for (Cookie[] cookies : cookiesCollection) {
 
-        	// exit if cookie array is null
-        	if (cookies == null) return false;
-        	
-        	// create cookie map 
-            CookieMap cookieMap = createCookieMap(cookies);        	
-            
-        	// store first value encountered in the iteration        	
-    		if (isFirstIteration) {
+			// exit if cookie array is null
+			if (cookies == null)
+				return false;
 
-    			firstMap = cookieMap;
-    			isFirstIteration = false;	
-    			
-    			continue;			    			
-    		}
-    		    		
-    		// match cookie maps
-    		if (!matcher.matches(new CookieMapPair(firstMap, cookieMap))) return false;    		
-        }
-        
-        // return success        
-        return true;
+			// create cookie map
+			CookieMap cookieMap = createCookieMap(cookies);
+
+			// store first value encountered in the iteration
+			if (isFirstIteration) {
+
+				firstMap = cookieMap;
+				isFirstIteration = false;
+
+				continue;
+			}
+
+			// match cookie maps
+			if (!matcher.matches(new CookieMapPair(firstMap, cookieMap)))
+				return false;
+		}
+
+		// return success
+		return true;
 	}
 
 	/**
 	 * Create cookie map
 	 * 
-	 * @param cookies Array of cookies.
+	 * @param cookies
+	 *            Array of cookies.
 	 * 
 	 * @return Map with cookies.
 	 */
 	CookieMap createCookieMap(Cookie[] cookies) {
-				
+
 		// create map
 		CookieMap cookieMap = new CookieMap();
 
 		// iterate over the cookies
-		for ( Cookie cookie : cookies )
-		{
-		    // add cookie values
-			cookieMap.put( cookie.getName(), cookie );             
+		for (Cookie cookie : cookies) {
+			// add cookie values
+			cookieMap.put(cookie.getName(), cookie);
 		}
 		return cookieMap;
 	}
 
 	public void describeTo(Description description) {
-		description.appendText("cookie maps contains equal values");		
+		description.appendText("cookie maps contains equal values");
 	}
 
-    @Override
+	@Override
 	protected void describeMismatchSafely(Iterable<Cookie[]> cookiesCollection, Description mismatchDescription) {
-    
-    	
+
 		// set iteration
 		firstMap = null;
 		isFirstIteration = true;
-		
-		// create matcher 
-		Matcher<CookieMapPair> matcher = InfrastructureMatchers.cookieMapsPairContainingEqualValues();
-		
-		// iterate over the values
-        for (Cookie[] cookies : cookiesCollection ) {
-        
-        	// if cookie array is null then report that mismatch
-        	if( cookies == null ) {        		
-                // create description
-            	mismatchDescription.appendText("contained null cookie map");    	
-            	return;
-        	}        	
-        	
-        	// create cookie map 
-            CookieMap cookieMap = createCookieMap(cookies);        	
-            
-        	// store first value encountered in the iteration        	
-    		if (isFirstIteration) {
 
-    			firstMap = cookieMap;
-    			isFirstIteration = false;	
-    			
-    			continue;			    			
-    		}
-    		
-    		// create cookie maps pair
-    		CookieMapPair pair = new CookieMapPair(firstMap, cookieMap);
-    		
-    		// match cookie maps    		
+		// create matcher
+		Matcher<CookieMapPair> matcher = InfrastructureMatchers.cookieMapsPairContainingEqualValues();
+
+		// iterate over the values
+		for (Cookie[] cookies : cookiesCollection) {
+
+			// if cookie array is null then report that mismatch
+			if (cookies == null) {
+				// create description
+				mismatchDescription.appendText("contained null cookie map");
+				return;
+			}
+
+			// create cookie map
+			CookieMap cookieMap = createCookieMap(cookies);
+
+			// store first value encountered in the iteration
+			if (isFirstIteration) {
+
+				firstMap = cookieMap;
+				isFirstIteration = false;
+
+				continue;
+			}
+
+			// create cookie maps pair
+			CookieMapPair pair = new CookieMapPair(firstMap, cookieMap);
+
+			// match cookie maps
 			if (!matcher.matches(pair)) {
-    			matcher.describeMismatch(pair, mismatchDescription);
-    			return;
-    		}
-        }
-    	
-    }
-	
-	
+				matcher.describeMismatch(pair, mismatchDescription);
+				return;
+			}
+		}
+
+	}
+
 	@Factory
-    public static Matcher<Iterable<Cookie[]>> containsEqualValues() {
-        return new IsCookieMapsContainingEqualValues();
-    }
-	    		
+	public static Matcher<Iterable<Cookie[]>> containsEqualValues() {
+		return new IsCookieMapsContainingEqualValues();
+	}
+
 }

@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test;
 
 import static org.junit.Assert.*;
@@ -51,32 +50,31 @@ import com.alpha.pineapple.test.matchers.PineappleMatchers;
  */
 public class AsserterImplTest {
 
-
 	/**
 	 * Object under test.
 	 */
 	Asserter asserter;
-	
+
 	/**
 	 * Mock execution result.
 	 */
-	ExecutionResult executionResult; 
-			
+	ExecutionResult executionResult;
+
 	@Before
 	public void setUp() throws Exception {
 
 		// create asserter
 		asserter = new AsserterImpl();
 
-	    // create mock result
-	    executionResult = EasyMock.createMock( ExecutionResult.class );				
-		
+		// create mock result
+		executionResult = EasyMock.createMock(ExecutionResult.class);
+
 		// set root execution object
 		asserter.setExecutionResult(executionResult);
 	}
 
 	@After
-	public void tearDown() throws Exception {		
+	public void tearDown() throws Exception {
 		asserter = null;
 		executionResult = null;
 	}
@@ -87,106 +85,105 @@ public class AsserterImplTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testCanAssertWithAnyhtingMatcher() {
-						
+
 		// create object which is matched
 		String matchedObject = "matched-object";
-		
-		// create matcher 
+
+		// create matcher
 		Matcher matcher = CoreMatchers.anything();
-		
+
 		// create child mock result
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
 		childResult.setState(ExecutionState.SUCCESS);
-		childResult.addMessage( (String) EasyMock.isA( String.class ), (String) EasyMock.isA( String.class ));
-		EasyMock.replay( childResult);
-		
+		childResult.addMessage((String) EasyMock.isA(String.class), (String) EasyMock.isA(String.class));
+		EasyMock.replay(childResult);
+
 		// complete execution result mock initialization
-		executionResult.addChild((String) EasyMock.isA( String.class ) );		
-		EasyMock.expectLastCall().andReturn(childResult);		
-        EasyMock.replay( executionResult );                        
-				
-		// assert object 
-		ExecutionResult result = asserter.assertObject(matchedObject, matcher, "some description");				
-		
+		executionResult.addChild((String) EasyMock.isA(String.class));
+		EasyMock.expectLastCall().andReturn(childResult);
+		EasyMock.replay(executionResult);
+
+		// assert object
+		ExecutionResult result = asserter.assertObject(matchedObject, matcher, "some description");
+
 		// test
 		assertNotNull(result);
-		
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(childResult);
 	}
 
-	
 	/**
 	 * Test that assertion with the {@link IsAnything} matcher class is successful
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testSucceedsWithAnyhtingMatcher() {
-						
+
 		// create object which matched
 		String matchedObject = "matched-object";
-		
-		// create matcher 
+
+		// create matcher
 		Matcher matcher = CoreMatchers.anything();
-		
+
 		// create child mock result
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
 		childResult.setState(ExecutionState.SUCCESS);
-		childResult.addMessage( (String) EasyMock.isA( String.class ), (String) EasyMock.isA( String.class ));
-		EasyMock.replay( childResult);
-		
+		childResult.addMessage((String) EasyMock.isA(String.class), (String) EasyMock.isA(String.class));
+		EasyMock.replay(childResult);
+
 		// complete execution result mock initialization
-		executionResult.addChild((String) EasyMock.isA( String.class ) );		
-		EasyMock.expectLastCall().andReturn(childResult);		
-        EasyMock.replay( executionResult );                        
-				
-		// assert object 
-		ExecutionResult result = asserter.assertObject(matchedObject, matcher, "some description");				
-		
+		executionResult.addChild((String) EasyMock.isA(String.class));
+		EasyMock.expectLastCall().andReturn(childResult);
+		EasyMock.replay(executionResult);
+
+		// assert object
+		ExecutionResult result = asserter.assertObject(matchedObject, matcher, "some description");
+
 		// test
 		assertEquals(childResult, result);
-		
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(childResult);
 	}
-	
+
 	/**
 	 * Test that last assertion is stored correctly.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testLastAssertionReturnTrueIfAssertionSuccceded() {
-						
+
 		// create object which matched
 		String matchedObject = "matched-object";
-		
-		// create matcher 
+
+		// create matcher
 		Matcher matcher = CoreMatchers.anything();
-		
+
 		// create child mock result
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
 		childResult.setState(ExecutionState.SUCCESS);
-		childResult.addMessage( (String) EasyMock.isA( String.class ), (String) EasyMock.isA( String.class ));
-		EasyMock.expect( childResult.getState()).andReturn(ExecutionState.SUCCESS);				
-		EasyMock.replay( childResult);
-		
+		childResult.addMessage((String) EasyMock.isA(String.class), (String) EasyMock.isA(String.class));
+		EasyMock.expect(childResult.getState()).andReturn(ExecutionState.SUCCESS);
+		EasyMock.replay(childResult);
+
 		// complete execution result mock initialization
-		executionResult.addChild((String) EasyMock.isA( String.class ) );		
-		EasyMock.expectLastCall().andReturn(childResult);		
-        EasyMock.replay( executionResult );                        
-				
-		// assert object 
-		asserter.assertObject(matchedObject, matcher, "some description");				
-		
+		executionResult.addChild((String) EasyMock.isA(String.class));
+		EasyMock.expectLastCall().andReturn(childResult);
+		EasyMock.replay(executionResult);
+
+		// assert object
+		asserter.assertObject(matchedObject, matcher, "some description");
+
 		// test
-		assertTrue( asserter.lastAssertionSucceeded());
-		
+		assertTrue(asserter.lastAssertionSucceeded());
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(childResult);
-	}	
+	}
 
 	/**
 	 * Test that last assertion result is stored correctly.
@@ -194,68 +191,67 @@ public class AsserterImplTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testLastAssertionResultReturnsCorrectResult() {
-						
+
 		// create object which matched
 		String matchedObject = "matched-object";
-		
-		// create matcher 
+
+		// create matcher
 		Matcher matcher = CoreMatchers.anything();
-		
+
 		// create child mock result
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
 		childResult.setState(ExecutionState.SUCCESS);
-		childResult.addMessage( (String) EasyMock.isA( String.class ), (String) EasyMock.isA( String.class ));				
-		EasyMock.replay( childResult);
-		
+		childResult.addMessage((String) EasyMock.isA(String.class), (String) EasyMock.isA(String.class));
+		EasyMock.replay(childResult);
+
 		// complete execution result mock initialization
-		executionResult.addChild((String) EasyMock.isA( String.class ) );		
-		EasyMock.expectLastCall().andReturn(childResult);		
-        EasyMock.replay( executionResult );                        
-				
-		// assert object 
-		asserter.assertObject(matchedObject, matcher, "some description");		
-		
+		executionResult.addChild((String) EasyMock.isA(String.class));
+		EasyMock.expectLastCall().andReturn(childResult);
+		EasyMock.replay(executionResult);
+
+		// assert object
+		asserter.assertObject(matchedObject, matcher, "some description");
+
 		// test
 		assertEquals(childResult, asserter.getLastAssertionResult());
-		
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(childResult);
-	}	
-	
-	
+	}
+
 	/**
 	 * Test that assertion with the not'ed {@link IsAnything} matcher class fails.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testFailsWithNegatedAnyhtingMatcher() {
-						
+
 		// create object which matched
 		String matchedObject = "matched-object";
-		
-		// create matcher 
+
+		// create matcher
 		Matcher matcher = CoreMatchers.not(CoreMatchers.anything());
-		
+
 		// create child mock result
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
 		childResult.setState(ExecutionState.FAILURE);
-		childResult.addMessage( (String) EasyMock.isA( String.class ), (String) EasyMock.isA( String.class ));
-		EasyMock.replay( childResult);
-		
+		childResult.addMessage((String) EasyMock.isA(String.class), (String) EasyMock.isA(String.class));
+		EasyMock.replay(childResult);
+
 		// complete execution result mock initialization
-		executionResult.addChild((String) EasyMock.isA( String.class ) );		
-		EasyMock.expectLastCall().andReturn(childResult);		
-        EasyMock.replay( executionResult );                        
-				
-		// assert object 
-		ExecutionResult result = asserter.assertObject(matchedObject, matcher, "some description");				
-		
+		executionResult.addChild((String) EasyMock.isA(String.class));
+		EasyMock.expectLastCall().andReturn(childResult);
+		EasyMock.replay(executionResult);
+
+		// assert object
+		ExecutionResult result = asserter.assertObject(matchedObject, matcher, "some description");
+
 		// test
 		assertEquals(childResult, result);
-		
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(childResult);
 	}
 
@@ -265,35 +261,35 @@ public class AsserterImplTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testLastAssertionReturnFalseIfAssertionFailed() {
-						
+
 		// create object which matched
 		String matchedObject = "matched-object";
-		
-		// create matcher 
+
+		// create matcher
 		Matcher matcher = CoreMatchers.not(CoreMatchers.anything());
-		
+
 		// create child mock result
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
 		childResult.setState(ExecutionState.FAILURE);
-		childResult.addMessage( (String) EasyMock.isA( String.class ), (String) EasyMock.isA( String.class ));
-		EasyMock.expect( childResult.getState()).andReturn(ExecutionState.FAILURE);				
-		EasyMock.replay( childResult);
-		
+		childResult.addMessage((String) EasyMock.isA(String.class), (String) EasyMock.isA(String.class));
+		EasyMock.expect(childResult.getState()).andReturn(ExecutionState.FAILURE);
+		EasyMock.replay(childResult);
+
 		// complete execution result mock initialization
-		executionResult.addChild((String) EasyMock.isA( String.class ) );		
-		EasyMock.expectLastCall().andReturn(childResult);		
-        EasyMock.replay( executionResult );                        
-				
-		// assert object 
-		asserter.assertObject(matchedObject, matcher, "some description");				
-		
+		executionResult.addChild((String) EasyMock.isA(String.class));
+		EasyMock.expectLastCall().andReturn(childResult);
+		EasyMock.replay(executionResult);
+
+		// assert object
+		asserter.assertObject(matchedObject, matcher, "some description");
+
 		// test
-		assertFalse( asserter.lastAssertionSucceeded());
-		
+		assertFalse(asserter.lastAssertionSucceeded());
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(childResult);
-	}	
+	}
 
 	/**
 	 * Test that last assertion result is stored correctly.
@@ -301,84 +297,81 @@ public class AsserterImplTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testLastAssertionResultsResturnsCorrectResult2() {
-						
+
 		// create object which matched
 		String matchedObject = "matched-object";
-		
-		// create matcher 
+
+		// create matcher
 		Matcher matcher = CoreMatchers.not(CoreMatchers.anything());
-		
+
 		// create child mock result
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
 		childResult.setState(ExecutionState.FAILURE);
-		childResult.addMessage( (String) EasyMock.isA( String.class ), (String) EasyMock.isA( String.class ));				
-		EasyMock.replay( childResult);
-		
+		childResult.addMessage((String) EasyMock.isA(String.class), (String) EasyMock.isA(String.class));
+		EasyMock.replay(childResult);
+
 		// complete execution result mock initialization
-		executionResult.addChild((String) EasyMock.isA( String.class ) );		
-		EasyMock.expectLastCall().andReturn(childResult);		
-        EasyMock.replay( executionResult );                        
-				
-		// assert object 
-		asserter.assertObject(matchedObject, matcher, "some description");				
-		
+		executionResult.addChild((String) EasyMock.isA(String.class));
+		EasyMock.expectLastCall().andReturn(childResult);
+		EasyMock.replay(executionResult);
+
+		// assert object
+		asserter.assertObject(matchedObject, matcher, "some description");
+
 		// test
 		assertEquals(childResult, asserter.getLastAssertionResult());
-		
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(childResult);
-	}	
-	
-	
+	}
+
 	/**
 	 * Test that last assertion initially returns false.
 	 */
 	@Test
 	public void testLastAssertionIntiallyReturnsFalse() {
-										
-		// test 
-		assertFalse( asserter.lastAssertionSucceeded());						
-	}	
+
+		// test
+		assertFalse(asserter.lastAssertionSucceeded());
+	}
 
 	/**
 	 * Test that get last assertion result initially returns false.
 	 */
 	@Test
 	public void testLastAssertionResultIntiallyReturnsNull() {
-										
-		// test 
-		assertNull( asserter.getLastAssertionResult());						
-	}	
-	
-	
+
+		// test
+		assertNull(asserter.getLastAssertionResult());
+	}
+
 	/**
-	 * Test that correct execution state is set when the 
+	 * Test that correct execution state is set when the
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testCompletedTestAssuccessfulSetsCorrectState() {
-												
+
 		// complete execution result initialization
-    	executionResult.completeAsSuccessful((MessageProvider) EasyMock.isA( MessageProvider.class ),
-    										 (String) EasyMock.isA( String.class ),
-    										 (Object[]) EasyMock.isA( Object[].class));
-		EasyMock.replay( executionResult );		
+		executionResult.completeAsSuccessful((MessageProvider) EasyMock.isA(MessageProvider.class),
+				(String) EasyMock.isA(String.class), (Object[]) EasyMock.isA(Object[].class));
+		EasyMock.replay(executionResult);
 
 		// create mock message provider
-		MessageProvider provider = EasyMock.createMock( MessageProvider.class );
-		EasyMock.expect(provider.getMessage((String) EasyMock.isA( String.class ), 
-				(Object[]) EasyMock.isNull())).andReturn("some-message");		
-		EasyMock.replay( provider );
-        
-		// set execution result as successful  
+		MessageProvider provider = EasyMock.createMock(MessageProvider.class);
+		EasyMock.expect(provider.getMessage((String) EasyMock.isA(String.class), (Object[]) EasyMock.isNull()))
+				.andReturn("some-message");
+		EasyMock.replay(provider);
+
+		// set execution result as successful
 		Object[] args = { "arg1" };
-		asserter.completeTestAsSuccessful(provider, "some-key", args);				
-		
-		// test		
+		asserter.completeTestAsSuccessful(provider, "some-key", args);
+
+		// test
 		// verify mocks
-		EasyMock.verify(executionResult);				
-		
+		EasyMock.verify(executionResult);
+
 	}
 
 	/**
@@ -387,41 +380,41 @@ public class AsserterImplTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testCanAssertWithIsMapContainingKeysMatcherAndEmptyMap() {
-	
-		// create mock set
-		Set<Object> expectedKeys = EasyMock.createMock( Set.class);
-		EasyMock.replay( expectedKeys );		
 
 		// create mock set
-		Map<Object,Object> map = EasyMock.createMock( Map.class);
-		Set<Object> keys = EasyMock.createMock( Set.class);
+		Set<Object> expectedKeys = EasyMock.createMock(Set.class);
+		EasyMock.replay(expectedKeys);
+
+		// create mock set
+		Map<Object, Object> map = EasyMock.createMock(Map.class);
+		Set<Object> keys = EasyMock.createMock(Set.class);
 		EasyMock.expect(keys.containsAll(expectedKeys)).andReturn(true);
-		EasyMock.replay( keys );
+		EasyMock.replay(keys);
 		EasyMock.expect(map.keySet()).andReturn(keys);
-		EasyMock.replay( map );				
-		
-		// create matcher 
+		EasyMock.replay(map);
+
+		// create matcher
 		Matcher matcher = PineappleMatchers.mapContainsKekys(expectedKeys);
-		
+
 		// create child mock result
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
 		childResult.setState(ExecutionState.SUCCESS);
-		childResult.addMessage( (String) EasyMock.isA( String.class ), (String) EasyMock.isA( String.class ));				
-		EasyMock.replay( childResult);
-		
+		childResult.addMessage((String) EasyMock.isA(String.class), (String) EasyMock.isA(String.class));
+		EasyMock.replay(childResult);
+
 		// complete execution result mock initialization
-		executionResult.addChild((String) EasyMock.isA( String.class ) );		
-		EasyMock.expectLastCall().andReturn(childResult);		
-	    EasyMock.replay( executionResult );                        
-				
-		// assert object 
-		ExecutionResult result = asserter.assertObject(map, matcher, "some description");				
-		
+		executionResult.addChild((String) EasyMock.isA(String.class));
+		EasyMock.expectLastCall().andReturn(childResult);
+		EasyMock.replay(executionResult);
+
+		// assert object
+		ExecutionResult result = asserter.assertObject(map, matcher, "some description");
+
 		// test
 		assertNotNull(result);
-		
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(childResult);
 	}
 
@@ -429,44 +422,40 @@ public class AsserterImplTest {
 	 * Can assert with the {@link IsSetEmpty} matcher class.
 	 */
 	/*
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testCanAssertWithIsSetEmptyMatcherAndNonEmptySet() {
-	
-		// initialize sequences
-		HttpInvocationSequence[] sequences = new HttpInvocationSequence[2] ;
-						
-		// create mock set
-		HttpInvocationsSet set = EasyMock.createMock( HttpInvocationsSet.class);
-		EasyMock.expect( set.getSequences() ).andReturn( sequences );
-		EasyMock.expect( set.getSequences() ).andReturn( sequences );
-		EasyMock.replay( set );		
-		
-		// create matcher 
-		Matcher matcher = PineappleMatchers.isSetEmpty();
-		
-		// create child mock result
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
-		childResult.setState(ExecutionState.FAILURE);
-		childResult.addMessage( (String) EasyMock.isA( String.class ), (String) EasyMock.isA( String.class ));
-		EasyMock.expect( childResult.getState()).andReturn(ExecutionState.FAILURE);				
-		EasyMock.replay( childResult);
-		
-		// complete execution result mock initialization
-		executionResult.addChild((String) EasyMock.isA( String.class ) );		
-		EasyMock.expectLastCall().andReturn(childResult);		
-	    EasyMock.replay( executionResult );                        
-				
-		// assert object 
-		ExecutionResult result = asserter.assertObject(set , matcher, "some description");				
-		
-		// test
-		assertNotNull(result);
-		
-		// verify mocks
-		EasyMock.verify(executionResult);				
-		EasyMock.verify(childResult);
-	}
-	*/	
-	
+	 * @SuppressWarnings("unchecked")
+	 * 
+	 * @Test public void testCanAssertWithIsSetEmptyMatcherAndNonEmptySet() {
+	 * 
+	 * // initialize sequences HttpInvocationSequence[] sequences = new
+	 * HttpInvocationSequence[2] ;
+	 * 
+	 * // create mock set HttpInvocationsSet set = EasyMock.createMock(
+	 * HttpInvocationsSet.class); EasyMock.expect( set.getSequences() ).andReturn(
+	 * sequences ); EasyMock.expect( set.getSequences() ).andReturn( sequences );
+	 * EasyMock.replay( set );
+	 * 
+	 * // create matcher Matcher matcher = PineappleMatchers.isSetEmpty();
+	 * 
+	 * // create child mock result ExecutionResult childResult =
+	 * EasyMock.createMock( ExecutionResult.class );
+	 * childResult.setState(ExecutionState.FAILURE); childResult.addMessage(
+	 * (String) EasyMock.isA( String.class ), (String) EasyMock.isA( String.class
+	 * )); EasyMock.expect(
+	 * childResult.getState()).andReturn(ExecutionState.FAILURE); EasyMock.replay(
+	 * childResult);
+	 * 
+	 * // complete execution result mock initialization
+	 * executionResult.addChild((String) EasyMock.isA( String.class ) );
+	 * EasyMock.expectLastCall().andReturn(childResult); EasyMock.replay(
+	 * executionResult );
+	 * 
+	 * // assert object ExecutionResult result = asserter.assertObject(set ,
+	 * matcher, "some description");
+	 * 
+	 * // test assertNotNull(result);
+	 * 
+	 * // verify mocks EasyMock.verify(executionResult);
+	 * EasyMock.verify(childResult); }
+	 */
+
 }

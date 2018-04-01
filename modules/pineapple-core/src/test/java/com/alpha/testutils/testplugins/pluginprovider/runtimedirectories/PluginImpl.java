@@ -43,25 +43,25 @@ import com.alpha.pineapple.session.Session;
 @Plugin()
 @PluginOperation(PluginImpl.OPERATION)
 public class PluginImpl implements Operation {
-    public static final String OPERATION = "no-operation";
-    public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.pluginprovider.runtimedirectories";
+	public static final String OPERATION = "no-operation";
+	public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.pluginprovider.runtimedirectories";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    @Resource
-    RuntimeDirectoryProvider coreRuntimeDirectoryProvider;
+	@Resource
+	RuntimeDirectoryProvider coreRuntimeDirectoryProvider;
 
-    @Override
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+	@Override
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
 
-	// test
-	result.addMessage("toString", ReflectionToStringBuilder.toString(coreRuntimeDirectoryProvider));
+		// test
+		result.addMessage("toString", ReflectionToStringBuilder.toString(coreRuntimeDirectoryProvider));
 
-	// compute execution state from children
-	result.setState(ExecutionState.SUCCESS);
-    }
+		// compute execution state from children
+		result.setState(ExecutionState.SUCCESS);
+	}
 
 }

@@ -60,11 +60,11 @@ import com.alpha.pineapple.execution.ExecutionResult;
  */
 public interface SessionRetryListener extends RetryListener {
 
-    /**
-     * Set execution result which captures information about retries.
-     * 
-     * @param result
-     *            execution result which captures information about retries.
-     */
-    void setResult(ExecutionResult result);
+	/**
+	 * Set execution result which captures information about retries.
+	 * 
+	 * @param result
+	 *            execution result which captures information about retries.
+	 */
+	void setResult(ExecutionResult result);
 }

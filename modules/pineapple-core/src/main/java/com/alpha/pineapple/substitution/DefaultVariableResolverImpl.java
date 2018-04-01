@@ -38,11 +38,11 @@ import com.alpha.pineapple.substitution.variables.Variables;
 
 public class DefaultVariableResolverImpl implements VariableResolver {
 
-    @Override
-    public String resolve(Variables variables, String source) {
-	Map<String, String> variablesMap = variables.getMap();
-	StrSubstitutor substitutor = new StrSubstitutor(variablesMap);
-	return substitutor.replace(source);
-    }
+	@Override
+	public String resolve(Variables variables, String source) {
+		Map<String, String> variablesMap = variables.getMap();
+		StrSubstitutor substitutor = new StrSubstitutor(variablesMap);
+		return substitutor.replace(source);
+	}
 
 }

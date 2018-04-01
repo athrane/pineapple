@@ -26,25 +26,25 @@ package com.alpha.pineapple.web.account;
  */
 public class AccountImpl implements Account {
 
-    /**
-     * User name.
-     */
-    String username;
+	/**
+	 * User name.
+	 */
+	String username;
 
-    /**
-     * AccountImpl constructor.
-     * 
-     * @param username
-     *            user name.
-     */
-    public AccountImpl(String username) {
-	super();
-	this.username = username;
-    }
+	/**
+	 * AccountImpl constructor.
+	 * 
+	 * @param username
+	 *            user name.
+	 */
+	public AccountImpl(String username) {
+		super();
+		this.username = username;
+	}
 
-    @Override
-    public String getUsername() {
-	return username;
-    }
+	@Override
+	public String getUsername() {
+		return username;
+	}
 
 }

@@ -39,21 +39,21 @@ import com.alpha.pineapple.web.event.EventDispatcher;
  */
 public class LifecycleEventListener implements DesktopCleanup {
 
-    @Override
-    public void cleanup(Desktop desktop) throws Exception {
+	@Override
+	public void cleanup(Desktop desktop) throws Exception {
 
-	// invalidate session
-	Session session = desktop.getSession();
-	session.invalidate();
+		// invalidate session
+		Session session = desktop.getSession();
+		session.invalidate();
 
-	// unregister desktop from event dispatcher
-	if (!desktop.hasAttribute(ATTR_DESKTOP_EVENT_DISPATCHER))
-	    return;
-	EventDispatcher dispatcher = (EventDispatcher) desktop.getAttribute(ATTR_DESKTOP_EVENT_DISPATCHER);
-	dispatcher.unregister(desktop);
+		// unregister desktop from event dispatcher
+		if (!desktop.hasAttribute(ATTR_DESKTOP_EVENT_DISPATCHER))
+			return;
+		EventDispatcher dispatcher = (EventDispatcher) desktop.getAttribute(ATTR_DESKTOP_EVENT_DISPATCHER);
+		dispatcher.unregister(desktop);
 
-	// remove attribute from desktop
-	desktop.removeAttribute(ATTR_DESKTOP_EVENT_DISPATCHER);
-    }
+		// remove attribute from desktop
+		desktop.removeAttribute(ATTR_DESKTOP_EVENT_DISPATCHER);
+	}
 
 }

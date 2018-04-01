@@ -30,77 +30,77 @@ import com.alpha.pineapple.model.configuration.Resource;
  */
 public interface ResourceInfo {
 
-    /**
-     * Get resource.
-     * 
-     * @return resource.
-     */
-    Resource getResource();
+	/**
+	 * Get resource.
+	 * 
+	 * @return resource.
+	 */
+	Resource getResource();
 
-    /**
-     * Get plugin ID.
-     * 
-     * @return plugin ID.
-     */
-    String getPluginId();
+	/**
+	 * Get plugin ID.
+	 * 
+	 * @return plugin ID.
+	 */
+	String getPluginId();
 
-    /**
-     * Get resource ID.
-     * 
-     * @return resource ID.
-     */
-    String getId();
+	/**
+	 * Get resource ID.
+	 * 
+	 * @return resource ID.
+	 */
+	String getId();
 
-    /**
-     * Get credential reference ID. If no credential reference is defined then
-     * null is returned.
-     * 
-     * @return credential reference ID.
-     */
-    String getCredentialIdRef();
+	/**
+	 * Get credential reference ID. If no credential reference is defined then null
+	 * is returned.
+	 * 
+	 * @return credential reference ID.
+	 */
+	String getCredentialIdRef();
 
-    /**
-     * Query whether resource contains property.
-     * 
-     * @param key
-     *            property key.
-     * 
-     * @return true if resource contains property.
-     */
-    boolean containsProperty(String key);
+	/**
+	 * Query whether resource contains property.
+	 * 
+	 * @param key
+	 *            property key.
+	 * 
+	 * @return true if resource contains property.
+	 */
+	boolean containsProperty(String key);
 
-    /**
-     * Get resource property.
-     * 
-     * @param key
-     *            property key.
-     * 
-     * @return property.
-     * 
-     * @throws ResourceNotFoundException
-     *             If resource doesn't contain property.
-     */
-    ResourcePropertyInfo getProperty(String key) throws ResourceNotFoundException;
+	/**
+	 * Get resource property.
+	 * 
+	 * @param key
+	 *            property key.
+	 * 
+	 * @return property.
+	 * 
+	 * @throws ResourceNotFoundException
+	 *             If resource doesn't contain property.
+	 */
+	ResourcePropertyInfo getProperty(String key) throws ResourceNotFoundException;
 
-    /**
-     * Get resource property value
-     * 
-     * @param key
-     *            property key.
-     * @param defaultValue
-     *            default value which is returned if property isn't defined in
-     *            resource.
-     * 
-     * @return property value or default value if property isn't defined.
-     */
-    String getPropertyValue(String key, String defaultValue);
+	/**
+	 * Get resource property value
+	 * 
+	 * @param key
+	 *            property key.
+	 * @param defaultValue
+	 *            default value which is returned if property isn't defined in
+	 *            resource.
+	 * 
+	 * @return property value or default value if property isn't defined.
+	 */
+	String getPropertyValue(String key, String defaultValue);
 
-    /**
-     * Get resource properties.
-     * 
-     * @return properties. If no properties are defined then an empty array is
-     *         returned.
-     */
-    ResourcePropertyInfo[] getProperties();
+	/**
+	 * Get resource properties.
+	 * 
+	 * @return properties. If no properties are defined then an empty array is
+	 *         returned.
+	 */
+	ResourcePropertyInfo[] getProperties();
 
 }

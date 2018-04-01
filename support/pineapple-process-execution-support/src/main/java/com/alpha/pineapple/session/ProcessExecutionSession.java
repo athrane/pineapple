@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.session;
 
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -30,47 +29,59 @@ import com.alpha.pineapple.session.Session;
 /**
  * Session which provides access to external processes in the operating system.
  */
-public interface ProcessExecutionSession extends Session
-{
+public interface ProcessExecutionSession extends Session {
 	/**
 	 * Returns true if resource property is defined.
 	 * 
-	 * @param name Property name.
+	 * @param name
+	 *            Property name.
 	 * 
 	 * @return true if resource property is defined.
 	 */
 	boolean isResourcePropertyDefined(String name);
-		
+
 	/**
 	 * Get property from resource.
-	 * @param name Property name.
+	 * 
+	 * @param name
+	 *            Property name.
 	 * 
 	 * @return property from resource.
 	 * 
-	 * @throws ResourceException If property isn't defined.
+	 * @throws ResourceException
+	 *             If property isn't defined.
 	 */
-	String getResourceProperty(String name) throws ResourceException; 	
-	
+	String getResourceProperty(String name) throws ResourceException;
+
 	/**
 	 * Execute an external process.
 	 * 
-	 * @param executable The executable to run in the process.
-	 * @param arguments List of argument to the process.
-	 * @param timeout Timeout in milliseconds before the external process is terminated.
-	 * @param description Human readable description which is added to the execution result.
-	 * @param parent Parent execution result from operation.
+	 * @param executable
+	 *            The executable to run in the process.
+	 * @param arguments
+	 *            List of argument to the process.
+	 * @param timeout
+	 *            Timeout in milliseconds before the external process is terminated.
+	 * @param description
+	 *            Human readable description which is added to the execution result.
+	 * @param parent
+	 *            Parent execution result from operation.
 	 */
-	void execute(String executable, String[] arguments, long timeout, String description,ExecutionResult parent);
-	
+	void execute(String executable, String[] arguments, long timeout, String description, ExecutionResult parent);
+
 	/**
-	 * Execute an external process. The external process will be ternimated after 500 milliseconds
-	 * of it isn't completed before. 
+	 * Execute an external process. The external process will be ternimated after
+	 * 500 milliseconds of it isn't completed before.
 	 * 
-	 * @param executable The executable to run in the process.
-	 * @param arguments List of argument to the process.
-	 * @param description Human readable description which is added to the execution result.
-	 * @param parent Parent execution result from operation.
+	 * @param executable
+	 *            The executable to run in the process.
+	 * @param arguments
+	 *            List of argument to the process.
+	 * @param description
+	 *            Human readable description which is added to the execution result.
+	 * @param parent
+	 *            Parent execution result from operation.
 	 */
-	void execute(String executable, String[] arguments, String description,ExecutionResult parent);
-	
+	void execute(String executable, String[] arguments, String description, ExecutionResult parent);
+
 }

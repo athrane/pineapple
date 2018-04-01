@@ -20,25 +20,25 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.filesystem.session.uri;
 
 /**
- * Implementation of the {@link VfsUriGenerator} interface to access the local file system.
+ * Implementation of the {@link VfsUriGenerator} interface to access the local
+ * file system.
  */
 public class FileUriGeneratorImpl extends AbstractUriGeneratorImpl {
 
 	/**
-	 * FileUriGeneratorImpl constructor. 
+	 * FileUriGeneratorImpl constructor.
 	 */
 	public FileUriGeneratorImpl() {
 	}
 
 	public String createUri(String path) {
 		StringBuilder uri = new StringBuilder();
-		uri.append("file://");		
-		uri.append(path);		
+		uri.append("file://");
+		uri.append(path);
 		return uri.toString();
 	}
-		
+
 }

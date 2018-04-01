@@ -45,303 +45,302 @@ import com.alpha.pineapple.model.configuration.Resource;
  */
 public class ResourcePropertyGetterTest {
 
-    /**
-     * Resource.
-     */
-    Resource resource;
+	/**
+	 * Resource.
+	 */
+	Resource resource;
 
-    /**
-     * Object under test.
-     */
-    ResourcePropertyGetter getter;
+	/**
+	 * Object under test.
+	 */
+	ResourcePropertyGetter getter;
 
-    /**
-     * Random key.
-     */
-    String randomKey;
+	/**
+	 * Random key.
+	 */
+	String randomKey;
 
-    /**
-     * Random key.
-     */
-    String randomKey2;
+	/**
+	 * Random key.
+	 */
+	String randomKey2;
 
-    /**
-     * Random value.
-     */
-    String randomValue;
+	/**
+	 * Random value.
+	 */
+	String randomValue;
 
-    /**
-     * Random value.
-     */
-    String randomValue2;
+	/**
+	 * Random value.
+	 */
+	String randomValue2;
 
-    /**
-     * Random default value.
-     */
-    String randomDefaultValue;
+	/**
+	 * Random default value.
+	 */
+	String randomDefaultValue;
 
-    @Before
-    public void setUp() throws Exception {
-	randomKey = RandomStringUtils.randomAlphabetic(10);
-	randomKey2 = RandomStringUtils.randomAlphabetic(10);
-	randomValue = RandomStringUtils.randomAlphabetic(10);
-	randomValue2 = RandomStringUtils.randomAlphabetic(10);
-	randomDefaultValue = RandomStringUtils.randomAlphabetic(10);
+	@Before
+	public void setUp() throws Exception {
+		randomKey = RandomStringUtils.randomAlphabetic(10);
+		randomKey2 = RandomStringUtils.randomAlphabetic(10);
+		randomValue = RandomStringUtils.randomAlphabetic(10);
+		randomValue2 = RandomStringUtils.randomAlphabetic(10);
+		randomDefaultValue = RandomStringUtils.randomAlphabetic(10);
 
-    }
-
-    @After
-    public void tearDown() throws Exception {
-	resource = null;
-	getter = null;
-    }
-
-    /**
-     * Create resource with no properties.
-     */
-    public Resource createResourceWithNoProperties() {
-	// create resource
-	Resource resource = new Resource();
-	resource.setId("some-id");
-	resource.setCredentialIdRef("some-credential-id");
-	resource.setPluginId("some-package-id");
-	return resource;
-    }
-
-    /**
-     * Create resource with properties.
-     * 
-     * @param properties
-     *            Properties in a hash map.
-     */
-    public Resource createResourceWithProperties(HashMap<String, String> properties) {
-	// create resource
-	Resource resource = createResourceWithNoProperties();
-
-	// get properties
-	List<Property> resourceProps = resource.getProperty();
-
-	// map properties to resource properties
-	Set<String> keys = properties.keySet();
-	for (String key : keys) {
-	    String value = properties.get(key);
-
-	    // create new property
-	    Property resourceProp = new Property();
-	    resourceProp.setKey(key);
-	    resourceProp.setValue(value);
-
-	    // store property
-	    resourceProps.add(resourceProp);
 	}
 
-	return resource;
-    }
+	@After
+	public void tearDown() throws Exception {
+		resource = null;
+		getter = null;
+	}
 
-    /**
-     * Test that instance can be created.
-     */
-    @Test
-    public void testCanCreateInstance() {
-	// create resource
-	resource = createResourceWithNoProperties();
+	/**
+	 * Create resource with no properties.
+	 */
+	public Resource createResourceWithNoProperties() {
+		// create resource
+		Resource resource = new Resource();
+		resource.setId("some-id");
+		resource.setCredentialIdRef("some-credential-id");
+		resource.setPluginId("some-package-id");
+		return resource;
+	}
 
-	// create getter
-	getter = new ResourcePropertyGetter(resource);
+	/**
+	 * Create resource with properties.
+	 * 
+	 * @param properties
+	 *            Properties in a hash map.
+	 */
+	public Resource createResourceWithProperties(HashMap<String, String> properties) {
+		// create resource
+		Resource resource = createResourceWithNoProperties();
 
-	// test
-	assertNotNull(getter);
-    }
+		// get properties
+		List<Property> resourceProps = resource.getProperty();
 
-    /**
-     * Test that instance can be created with no-arg constructor.
-     */
-    @Test
-    public void testCanCreateInstanceWithNoArgConstructor() {
-	// create getter
-	getter = new ResourcePropertyGetter();
+		// map properties to resource properties
+		Set<String> keys = properties.keySet();
+		for (String key : keys) {
+			String value = properties.get(key);
 
-	// test
-	assertNotNull(getter);
-    }
+			// create new property
+			Property resourceProp = new Property();
+			resourceProp.setKey(key);
+			resourceProp.setValue(value);
 
-    /**
-     * Test that undefined resource is rejected.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testRejectsUndefinedResource() {
-	// create getter to force exception
-	getter = new ResourcePropertyGetter(null);
+			// store property
+			resourceProps.add(resourceProp);
+		}
 
-	fail("Test should never reach here.");
-    }
+		return resource;
+	}
 
-    /**
-     * Test that undefined property lookup results in exception
-     */
-    @Test(expected = ResourceException.class)
-    public void testThrowsExceptionIfPropertyIsUnknown() throws Exception {
-	// create object
-	resource = createResourceWithNoProperties();
+	/**
+	 * Test that instance can be created.
+	 */
+	@Test
+	public void testCanCreateInstance() {
+		// create resource
+		resource = createResourceWithNoProperties();
 
-	// create getter
-	getter = new ResourcePropertyGetter(resource);
+		// create getter
+		getter = new ResourcePropertyGetter(resource);
 
-	// lookup a non-existing property to force exception
-	getter.getProperty(randomKey);
+		// test
+		assertNotNull(getter);
+	}
 
-	fail("Test should never reach here.");
-    }
+	/**
+	 * Test that instance can be created with no-arg constructor.
+	 */
+	@Test
+	public void testCanCreateInstanceWithNoArgConstructor() {
+		// create getter
+		getter = new ResourcePropertyGetter();
 
-    /**
-     * Test that property lookup returns correct value.
-     */
-    @Test
-    public void testCanGetProperty() throws Exception {
-	// setup parameters
-	HashMap<String, String> properties = new HashMap<String, String>();
-	properties.put(randomKey, randomValue);
+		// test
+		assertNotNull(getter);
+	}
 
-	// create object
-	resource = createResourceWithProperties(properties);
+	/**
+	 * Test that undefined resource is rejected.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testRejectsUndefinedResource() {
+		// create getter to force exception
+		getter = new ResourcePropertyGetter(null);
 
-	// create getter
-	getter = new ResourcePropertyGetter(resource);
+		fail("Test should never reach here.");
+	}
 
-	// lookup property
-	String actual = getter.getProperty(randomKey);
+	/**
+	 * Test that undefined property lookup results in exception
+	 */
+	@Test(expected = ResourceException.class)
+	public void testThrowsExceptionIfPropertyIsUnknown() throws Exception {
+		// create object
+		resource = createResourceWithNoProperties();
 
-	assertEquals(randomValue, actual);
-    }
+		// create getter
+		getter = new ResourcePropertyGetter(resource);
 
-    /**
-     * Test that property lookup returns correct value also with default value
-     * is defined.
-     */
-    @Test
-    public void testCanGetProperty2() throws Exception {
-	// setup parameters
-	HashMap<String, String> properties = new HashMap<String, String>();
-	properties.put(randomKey, randomValue);
+		// lookup a non-existing property to force exception
+		getter.getProperty(randomKey);
 
-	// create object
-	resource = createResourceWithProperties(properties);
+		fail("Test should never reach here.");
+	}
 
-	// create getter
-	getter = new ResourcePropertyGetter(resource);
+	/**
+	 * Test that property lookup returns correct value.
+	 */
+	@Test
+	public void testCanGetProperty() throws Exception {
+		// setup parameters
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put(randomKey, randomValue);
 
-	// lookup property
-	String actual = getter.getProperty(randomKey, randomDefaultValue);
+		// create object
+		resource = createResourceWithProperties(properties);
 
-	assertEquals(randomValue, actual);
-    }
+		// create getter
+		getter = new ResourcePropertyGetter(resource);
 
-    /**
-     * Test that property lookup returns default value if property isn't
-     * defined.
-     */
-    @Test
-    public void testReturnsDefaultValueIfPropertyIsntDefined() throws Exception {
-	// setup parameters
-	HashMap<String, String> properties = new HashMap<String, String>();
+		// lookup property
+		String actual = getter.getProperty(randomKey);
 
-	// create object
-	resource = createResourceWithProperties(properties);
+		assertEquals(randomValue, actual);
+	}
 
-	// create getter
-	getter = new ResourcePropertyGetter(resource);
+	/**
+	 * Test that property lookup returns correct value also with default value is
+	 * defined.
+	 */
+	@Test
+	public void testCanGetProperty2() throws Exception {
+		// setup parameters
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put(randomKey, randomValue);
 
-	// lookup property
-	String actual = getter.getProperty(randomKey, randomDefaultValue);
+		// create object
+		resource = createResourceWithProperties(properties);
 
-	assertEquals(randomDefaultValue, actual);
-    }
+		// create getter
+		getter = new ResourcePropertyGetter(resource);
 
-    /**
-     * Test that returned default value can be null.
-     */
-    @Test
-    public void testReturnsNullDefaultValueIfPropertyIsntDefined() throws Exception {
-	// setup parameters
-	HashMap<String, String> properties = new HashMap<String, String>();
+		// lookup property
+		String actual = getter.getProperty(randomKey, randomDefaultValue);
 
-	// create object
-	resource = createResourceWithProperties(properties);
+		assertEquals(randomValue, actual);
+	}
 
-	// create getter
-	getter = new ResourcePropertyGetter(resource);
+	/**
+	 * Test that property lookup returns default value if property isn't defined.
+	 */
+	@Test
+	public void testReturnsDefaultValueIfPropertyIsntDefined() throws Exception {
+		// setup parameters
+		HashMap<String, String> properties = new HashMap<String, String>();
 
-	// lookup property
-	String actual = getter.getProperty(randomKey, null);
+		// create object
+		resource = createResourceWithProperties(properties);
 
-	assertEquals(null, actual);
-    }
+		// create getter
+		getter = new ResourcePropertyGetter(resource);
 
-    /**
-     * Test that property lookup returns correct value for multiple properties.
-     */
-    @Test
-    public void testCanGetMultipleProperties() throws Exception {
-	// setup parameters
-	HashMap<String, String> properties = new HashMap<String, String>();
-	properties.put(randomKey, randomValue);
-	properties.put(randomKey2, randomValue2);
+		// lookup property
+		String actual = getter.getProperty(randomKey, randomDefaultValue);
 
-	// create object
-	resource = createResourceWithProperties(properties);
+		assertEquals(randomDefaultValue, actual);
+	}
 
-	// create getter
-	getter = new ResourcePropertyGetter(resource);
+	/**
+	 * Test that returned default value can be null.
+	 */
+	@Test
+	public void testReturnsNullDefaultValueIfPropertyIsntDefined() throws Exception {
+		// setup parameters
+		HashMap<String, String> properties = new HashMap<String, String>();
 
-	// lookup property
-	String actual = getter.getProperty(randomKey);
-	String actual2 = getter.getProperty(randomKey2);
+		// create object
+		resource = createResourceWithProperties(properties);
 
-	// test
-	assertEquals(randomValue, actual);
-	assertEquals(randomValue2, actual2);
-    }
+		// create getter
+		getter = new ResourcePropertyGetter(resource);
 
-    /**
-     * Test that contains query returns correct value.
-     */
-    @Test
-    public void testContainsPropertyReturnTrue() throws Exception {
-	// setup parameters
-	HashMap<String, String> properties = new HashMap<String, String>();
-	properties.put(randomKey, randomValue);
+		// lookup property
+		String actual = getter.getProperty(randomKey, null);
 
-	// create object
-	resource = createResourceWithProperties(properties);
+		assertEquals(null, actual);
+	}
 
-	// create getter
-	getter = new ResourcePropertyGetter(resource);
+	/**
+	 * Test that property lookup returns correct value for multiple properties.
+	 */
+	@Test
+	public void testCanGetMultipleProperties() throws Exception {
+		// setup parameters
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put(randomKey, randomValue);
+		properties.put(randomKey2, randomValue2);
 
-	// query about property
-	boolean actual = getter.containsProperty(randomKey);
+		// create object
+		resource = createResourceWithProperties(properties);
 
-	assertTrue(actual);
-    }
+		// create getter
+		getter = new ResourcePropertyGetter(resource);
 
-    /**
-     * Test that contains query returns correct value.
-     */
-    @Test
-    public void testContainsPropertyReturnFalse() throws Exception {
-	// setup parameters
-	HashMap<String, String> properties = new HashMap<String, String>();
-	properties.put(randomKey, randomValue);
+		// lookup property
+		String actual = getter.getProperty(randomKey);
+		String actual2 = getter.getProperty(randomKey2);
 
-	// create object
-	resource = createResourceWithProperties(properties);
+		// test
+		assertEquals(randomValue, actual);
+		assertEquals(randomValue2, actual2);
+	}
 
-	// create getter
-	getter = new ResourcePropertyGetter(resource);
+	/**
+	 * Test that contains query returns correct value.
+	 */
+	@Test
+	public void testContainsPropertyReturnTrue() throws Exception {
+		// setup parameters
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put(randomKey, randomValue);
 
-	// query about property
-	boolean actual = getter.containsProperty("unknown-property");
+		// create object
+		resource = createResourceWithProperties(properties);
 
-	assertFalse(actual);
-    }
+		// create getter
+		getter = new ResourcePropertyGetter(resource);
+
+		// query about property
+		boolean actual = getter.containsProperty(randomKey);
+
+		assertTrue(actual);
+	}
+
+	/**
+	 * Test that contains query returns correct value.
+	 */
+	@Test
+	public void testContainsPropertyReturnFalse() throws Exception {
+		// setup parameters
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put(randomKey, randomValue);
+
+		// create object
+		resource = createResourceWithProperties(properties);
+
+		// create getter
+		getter = new ResourcePropertyGetter(resource);
+
+		// query about property
+		boolean actual = getter.containsProperty("unknown-property");
+
+		assertFalse(actual);
+	}
 
 }

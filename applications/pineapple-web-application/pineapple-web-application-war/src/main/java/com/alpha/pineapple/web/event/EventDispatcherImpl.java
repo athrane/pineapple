@@ -47,61 +47,60 @@ import reactor.function.Consumer;
  * 
  * The purpose is to shift from the Reactor thread into ZK controlled threads.
  * 
- * The event dispatcher will dispatch events to all registered desktops. 
- * A registered desktop is unregistered when the desktop is destroyed.
+ * The event dispatcher will dispatch events to all registered desktops. A
+ * registered desktop is unregistered when the desktop is destroyed.
  */
 public class EventDispatcherImpl implements EventDispatcher {
 
-    /**
-     * Generic event used for dispatch ZK event which doesn't carry any
-     * arguments.
-     */
-    final static GenericEvent ZK_GENERIC_EVENT = new GenericEvent();
+	/**
+	 * Generic event used for dispatch ZK event which doesn't carry any arguments.
+	 */
+	final static GenericEvent ZK_GENERIC_EVENT = new GenericEvent();
 
-    /**
-     * Registered desktop's.
-     */
-    Set<Desktop> desktops = new HashSet<Desktop>();
+	/**
+	 * Registered desktop's.
+	 */
+	Set<Desktop> desktops = new HashSet<Desktop>();
 
-    @Override
-    public void register(Desktop desktop) {
-	// register desktop and register dispatcher with desktop
-	if (!desktops.contains(desktop))
-	    desktops.add(desktop);
-	desktop.setAttribute(ATTR_DESKTOP_EVENT_DISPATCHER, this);
-    }
-
-    @Override
-    public void unregister(Desktop desktop) {
-	if (desktops.contains(desktop))
-	    desktops.remove(desktop);
-    }
-
-    @Override
-    public void dispatchZkEvent(Event zkEvent, EventListener<Event> eventListener) {
-	if (!areDesktopsDefined()) {
-	    return;
-
+	@Override
+	public void register(Desktop desktop) {
+		// register desktop and register dispatcher with desktop
+		if (!desktops.contains(desktop))
+			desktops.add(desktop);
+		desktop.setAttribute(ATTR_DESKTOP_EVENT_DISPATCHER, this);
 	}
 
-	// schedule events
-	for (Desktop desktop : desktops) {
-	    Executions.schedule(desktop, eventListener, zkEvent);
+	@Override
+	public void unregister(Desktop desktop) {
+		if (desktops.contains(desktop))
+			desktops.remove(desktop);
 	}
-    }
 
-    @Override
-    public void dispatchZkEvent(EventListener<Event> eventListener) {
-	dispatchZkEvent(ZK_GENERIC_EVENT, eventListener);
-    }
+	@Override
+	public void dispatchZkEvent(Event zkEvent, EventListener<Event> eventListener) {
+		if (!areDesktopsDefined()) {
+			return;
 
-    /**
-     * Returns true if desktops are defined.
-     * 
-     * @return true if desktop are defined.
-     */
-    boolean areDesktopsDefined() {
-	return (!desktops.isEmpty());
-    }
+		}
+
+		// schedule events
+		for (Desktop desktop : desktops) {
+			Executions.schedule(desktop, eventListener, zkEvent);
+		}
+	}
+
+	@Override
+	public void dispatchZkEvent(EventListener<Event> eventListener) {
+		dispatchZkEvent(ZK_GENERIC_EVENT, eventListener);
+	}
+
+	/**
+	 * Returns true if desktops are defined.
+	 * 
+	 * @return true if desktop are defined.
+	 */
+	boolean areDesktopsDefined() {
+		return (!desktops.isEmpty());
+	}
 
 }

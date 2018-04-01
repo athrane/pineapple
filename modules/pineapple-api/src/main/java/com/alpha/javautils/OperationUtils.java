@@ -30,31 +30,31 @@ import com.alpha.pineapple.session.Session;
  */
 public interface OperationUtils {
 
-    /**
-     * Validate the content object can be cast to one of a set of legal types.
-     * An exception is thrown if the validation fails.
-     * 
-     * @param content
-     *            The content object whose type is validated.
-     * @param legalTypes
-     *            Set of legal values.
-     * 
-     * @throws PluginExecutionFailedException
-     *             if content validation fails.
-     */
-    public void validateContentType(Object content, Class<?>[] legalTypes) throws PluginExecutionFailedException;
+	/**
+	 * Validate the content object can be cast to one of a set of legal types. An
+	 * exception is thrown if the validation fails.
+	 * 
+	 * @param content
+	 *            The content object whose type is validated.
+	 * @param legalTypes
+	 *            Set of legal values.
+	 * 
+	 * @throws PluginExecutionFailedException
+	 *             if content validation fails.
+	 */
+	public void validateContentType(Object content, Class<?>[] legalTypes) throws PluginExecutionFailedException;
 
-    /**
-     * Validate the session can cast to expected type.
-     * 
-     * @param session
-     *            The session object whose type is validated.
-     * @param legalType
-     *            The expected session type.
-     * 
-     * @throws PluginExecutionFailedException
-     *             if session type validation fails.
-     */
-    public void validateSessionType(Session session, Class<?> legalType) throws PluginExecutionFailedException;
+	/**
+	 * Validate the session can cast to expected type.
+	 * 
+	 * @param session
+	 *            The session object whose type is validated.
+	 * @param legalType
+	 *            The expected session type.
+	 * 
+	 * @throws PluginExecutionFailedException
+	 *             if session type validation fails.
+	 */
+	public void validateSessionType(Session session, Class<?> legalType) throws PluginExecutionFailedException;
 
 }

@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.operation;
 
 import org.easymock.EasyMock;
@@ -48,86 +47,85 @@ public class TestOperationTest {
 	 * Object under test.
 	 */
 	TestOperation operation;
-	
+
 	/**
 	 * Mock session.
 	 */
 	Session session;
-		
+
 	/**
 	 * Mock execution result.
 	 */
 	ExecutionResult executionResult;
-	
+
 	/**
 	 * Mock command runner.
 	 */
-	CommandRunner runner;	
+	CommandRunner runner;
 
 	/**
 	 * Mock model mapper.
 	 */
-	Mapper mapper;	
-	
-    /**
-     * Object mother for the infrastructure model.
-     */
-    ObjectMotherContent contentMother;
+	Mapper mapper;
 
-    /**
-     * Mock message provider.
-     */
-    MessageProvider messageProvider;
-    
+	/**
+	 * Object mother for the infrastructure model.
+	 */
+	ObjectMotherContent contentMother;
+
+	/**
+	 * Mock message provider.
+	 */
+	MessageProvider messageProvider;
+
 	@Before
 	public void setUp() throws Exception {
-		
-        // create content mother
-        contentMother = new ObjectMotherContent();		
-		
-        // create operation
-        operation = new TestOperation();
-		
-        // create mock session
-        session = EasyMock.createMock( Session.class );
-                
-        // create mock command runner
-        runner = EasyMock.createMock( CommandRunner.class );       
-        
-        // inject runner into operation
-        ReflectionTestUtils.setField( operation, "commandRunner", runner, CommandRunner.class );
-        
-        // create mock model mapper
-        mapper = EasyMock.createMock( Mapper.class );       
-        
-        // inject runner into operation
-        ReflectionTestUtils.setField( operation, "mapper", mapper, Mapper.class );        
 
-        // create mock result
-        executionResult = EasyMock.createMock( ExecutionResult.class );
-     
-        // create mock provider
-        messageProvider = EasyMock.createMock( MessageProvider.class );
-                
-        // inject message provider
-        ReflectionTestUtils.setField( operation, "messageProvider", messageProvider, MessageProvider.class );
-        
-        // complete mock source initialization        
-        IAnswer<String> answer = new MessageProviderAnswerImpl(); 
-        
-        EasyMock.expect( messageProvider.getMessage(
-        		(String) EasyMock.isA( String.class ),
-        		(Object[]) EasyMock.isA( Object[].class ) ));
-        EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-        
-        EasyMock.replay(messageProvider);                
-        
+		// create content mother
+		contentMother = new ObjectMotherContent();
+
+		// create operation
+		operation = new TestOperation();
+
+		// create mock session
+		session = EasyMock.createMock(Session.class);
+
+		// create mock command runner
+		runner = EasyMock.createMock(CommandRunner.class);
+
+		// inject runner into operation
+		ReflectionTestUtils.setField(operation, "commandRunner", runner, CommandRunner.class);
+
+		// create mock model mapper
+		mapper = EasyMock.createMock(Mapper.class);
+
+		// inject runner into operation
+		ReflectionTestUtils.setField(operation, "mapper", mapper, Mapper.class);
+
+		// create mock result
+		executionResult = EasyMock.createMock(ExecutionResult.class);
+
+		// create mock provider
+		messageProvider = EasyMock.createMock(MessageProvider.class);
+
+		// inject message provider
+		ReflectionTestUtils.setField(operation, "messageProvider", messageProvider, MessageProvider.class);
+
+		// complete mock source initialization
+		IAnswer<String> answer = new MessageProviderAnswerImpl();
+
+		EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class),
+				(Object[]) EasyMock.isA(Object[].class)));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+
+		EasyMock.replay(messageProvider);
+
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		
-		operation = null;		
+
+		operation = null;
 		contentMother = null;
 		session = null;
 		runner = null;
@@ -142,83 +140,77 @@ public class TestOperationTest {
 	public void testCanExecuteWithMinimalModel() throws Exception {
 
 		// complete execution result initialization
-    	executionResult.completeAsComputed((MessageProvider) EasyMock.isA( MessageProvider.class ), 
-    			(String) EasyMock.isA( String.class ), 
-    			(Object[]) EasyMock.isNull(), 
-    			(String) EasyMock.isA( String.class ), 
-    			(Object[]) EasyMock.isNull());
-		EasyMock.replay( executionResult );		
-		
-        // create content
-        Object content = contentMother.createEmptyInfrastructure();
+		executionResult.completeAsComputed((MessageProvider) EasyMock.isA(MessageProvider.class),
+				(String) EasyMock.isA(String.class), (Object[]) EasyMock.isNull(), (String) EasyMock.isA(String.class),
+				(Object[]) EasyMock.isNull());
+		EasyMock.replay(executionResult);
 
-        // invoke operation
-        operation.execute( content, session, executionResult );
-        
-        // test
-        EasyMock.verify( executionResult );
+		// create content
+		Object content = contentMother.createEmptyInfrastructure();
+
+		// invoke operation
+		operation.execute(content, session, executionResult);
+
+		// test
+		EasyMock.verify(executionResult);
 	}
 
-	   /**
-     * Test that operation fails if the content argument doesn't contain an object of the type
-     * <code>Infrastructure</code>.
-     */
-    @Test( expected = PluginExecutionFailedException.class )
-    public void testFailsIfContentDoesntContainObjectOfInfrastructureType() throws Exception
-    {
+	/**
+	 * Test that operation fails if the content argument doesn't contain an object
+	 * of the type <code>Infrastructure</code>.
+	 */
+	@Test(expected = PluginExecutionFailedException.class)
+	public void testFailsIfContentDoesntContainObjectOfInfrastructureType() throws Exception {
 		// complete execution result initialization
-		EasyMock.replay( executionResult );		
-    	
-        // create content
-        Object content = "a-string-object";
+		EasyMock.replay(executionResult);
 
-        // invoke operation
-        operation.execute( content, session, executionResult );
-    }
-	
-    /**
-     * Test that operation fails if the content is null.
-     */
-    @Test( expected = IllegalArgumentException.class )
-    public void testFailsIfContentIsUndefined() throws Exception
-    {
+		// create content
+		Object content = "a-string-object";
+
+		// invoke operation
+		operation.execute(content, session, executionResult);
+	}
+
+	/**
+	 * Test that operation fails if the content is null.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testFailsIfContentIsUndefined() throws Exception {
 		// complete execution result initialization
-		EasyMock.replay( executionResult );		
+		EasyMock.replay(executionResult);
 
-        // invoke operation
-        operation.execute( null, session, executionResult );
-    }
-    
-    /**
-     * Test that operation fails if the session is null.
-     */
-    @Test( expected = IllegalArgumentException.class )
-    public void testFailsIfSessionIsUndefined() throws Exception
-    {
+		// invoke operation
+		operation.execute(null, session, executionResult);
+	}
+
+	/**
+	 * Test that operation fails if the session is null.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testFailsIfSessionIsUndefined() throws Exception {
 		// complete execution result initialization
-		EasyMock.replay( executionResult );		
+		EasyMock.replay(executionResult);
 
-        // create content
-        Object content = contentMother.createEmptyInfrastructure();
+		// create content
+		Object content = contentMother.createEmptyInfrastructure();
 
-        // invoke operation
-        operation.execute( content, null, executionResult );
-    }
+		// invoke operation
+		operation.execute(content, null, executionResult);
+	}
 
-    /**
-     * Test that operation fails if the execution result is null.
-     */
-    @Test( expected = IllegalArgumentException.class )
-    public void testFailsIfResultIsUndefined() throws Exception
-    {
+	/**
+	 * Test that operation fails if the execution result is null.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testFailsIfResultIsUndefined() throws Exception {
 		// complete execution result initialization
-		EasyMock.replay( executionResult );		
+		EasyMock.replay(executionResult);
 
-        // create content
-        Object content = contentMother.createEmptyInfrastructure();
+		// create content
+		Object content = contentMother.createEmptyInfrastructure();
 
-        // invoke operation
-        operation.execute( content, session, null );
-    }
-    
+		// invoke operation
+		operation.execute(content, session, null);
+	}
+
 }

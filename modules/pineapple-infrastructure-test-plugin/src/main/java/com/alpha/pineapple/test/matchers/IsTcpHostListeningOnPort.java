@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import java.io.IOException;
@@ -38,11 +37,11 @@ import org.hamcrest.TypeSafeMatcher;
  */
 public class IsTcpHostListeningOnPort extends TypeSafeMatcher<Integer> {
 
-    /**
-     * Socket timeout in milliseconds.
-     */
-    static final int SOCKET_TIMEOUT = 1000;
-	
+	/**
+	 * Socket timeout in milliseconds.
+	 */
+	static final int SOCKET_TIMEOUT = 1000;
+
 	/**
 	 * TCP host name.
 	 */
@@ -51,105 +50,101 @@ public class IsTcpHostListeningOnPort extends TypeSafeMatcher<Integer> {
 	/**
 	 * Last recorded exception.
 	 */
-	Exception lastException; 
+	Exception lastException;
 
 	/**
 	 * Last recorded port.
-	 */	
+	 */
 	Integer lastPort;
 
 	/**
 	 * IsTcpHostListeningOnPort constructor.
 	 * 
-	 * @param host TCP host name.
+	 * @param host
+	 *            TCP host name.
 	 */
 	public IsTcpHostListeningOnPort(String host) {
-		this.host = host;		
+		this.host = host;
 	}
-		
+
 	public boolean matchesSafely(Integer port) {
 
-        // store port
-        lastPort = port;
-		
-    	// declare socket
-    	Socket socket = null; 
-    	    	    	    	
-        try
-        {              	        	        	
-            // create end point
-            InetSocketAddress endpoint = new InetSocketAddress( host, port.intValue());
-            
-            // create socket
-            socket = new Socket();
-            
-            // connect 
-            socket.connect( endpoint, SOCKET_TIMEOUT);
-            
-            // assert
-            return (socket.isConnected());
-        }
-        catch ( ConnectException e) {
-        	
-        	// record exception
-        	this.lastException =  e;
-        	
-        	// fail test
-        	return false;
-        }
-        catch ( Exception e )
-        {
-        	// record exception
-        	this.lastException =  e;
-        	
-        	// fail test
-        	return false;
-        } 
-        finally {
-        
-        	if (socket != null ) {
-        		try {
-        			
-                    // close socket
+		// store port
+		lastPort = port;
+
+		// declare socket
+		Socket socket = null;
+
+		try {
+			// create end point
+			InetSocketAddress endpoint = new InetSocketAddress(host, port.intValue());
+
+			// create socket
+			socket = new Socket();
+
+			// connect
+			socket.connect(endpoint, SOCKET_TIMEOUT);
+
+			// assert
+			return (socket.isConnected());
+		} catch (ConnectException e) {
+
+			// record exception
+			this.lastException = e;
+
+			// fail test
+			return false;
+		} catch (Exception e) {
+			// record exception
+			this.lastException = e;
+
+			// fail test
+			return false;
+		} finally {
+
+			if (socket != null) {
+				try {
+
+					// close socket
 					socket.close();
-					
+
 				} catch (IOException e) {
-					
-		        	// record exception
-		        	this.lastException =  e;
-		        	
-		        	// fail test
-		        	return false;
+
+					// record exception
+					this.lastException = e;
+
+					// fail test
+					return false;
 				}
-        	}                                	
-        }
-		
+			}
+		}
+
 	}
 
 	public void describeTo(Description description) {
-		description.appendText("TCP connection to ");		
+		description.appendText("TCP connection to ");
 		description.appendValue(host);
-		description.appendText(" on port ");		
-		description.appendValue(lastPort);					
-		
+		description.appendText(" on port ");
+		description.appendValue(lastPort);
+
 	}
-	
+
 	@Override
 	protected void describeMismatchSafely(Integer item, Description mismatchDescription) {
-        // create description
-    	mismatchDescription.appendText("failed to connect on port ");    	
-    	mismatchDescription.appendValue(item.intValue());	
-    	
-    	if (lastException != null) {
-    		mismatchDescription.appendText(" due to exception ");    		
-    		mismatchDescription.appendValue(lastException.toString());
-    	}
-    	    	
+		// create description
+		mismatchDescription.appendText("failed to connect on port ");
+		mismatchDescription.appendValue(item.intValue());
+
+		if (lastException != null) {
+			mismatchDescription.appendText(" due to exception ");
+			mismatchDescription.appendValue(lastException.toString());
+		}
+
 	}
 
 	@Factory
-    public static Matcher<Integer> isTcpHostListeningOnPort(String host) {
-        return new IsTcpHostListeningOnPort(host);
-    }
-    
+	public static Matcher<Integer> isTcpHostListeningOnPort(String host) {
+		return new IsTcpHostListeningOnPort(host);
+	}
+
 }

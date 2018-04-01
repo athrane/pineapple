@@ -39,72 +39,72 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class ErrorMessageBoxModalPanel {
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider webMessageProvider;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Exception which is reported.
-     */
-    Exception exception;
+	/**
+	 * Exception which is reported.
+	 */
+	Exception exception;
 
-    /**
-     * Initialize view model.
-     * 
-     * @param exception
-     *            exception to be reported.
-     */
-    @Init
-    public void init(@ExecutionArgParam(ERROR_MESSAGE_MODAL_EXCEPTION_ARG) Exception exception) {
-	this.exception = exception;
-    }
+	/**
+	 * Initialize view model.
+	 * 
+	 * @param exception
+	 *            exception to be reported.
+	 */
+	@Init
+	public void init(@ExecutionArgParam(ERROR_MESSAGE_MODAL_EXCEPTION_ARG) Exception exception) {
+		this.exception = exception;
+	}
 
-    /**
-     * Get description.
-     * 
-     * @return description.
-     */
-    public String getDescription() {
-	if (exception == null)
-	    return "n/a";
-	if (exception.getMessage() == null)
-	    return "n/a";
-	if (exception.getMessage().isEmpty())
-	    return "n/a";
-	return exception.getMessage();
-    }
+	/**
+	 * Get description.
+	 * 
+	 * @return description.
+	 */
+	public String getDescription() {
+		if (exception == null)
+			return "n/a";
+		if (exception.getMessage() == null)
+			return "n/a";
+		if (exception.getMessage().isEmpty())
+			return "n/a";
+		return exception.getMessage();
+	}
 
-    /**
-     * Get stack trace from exception.
-     * 
-     * @return stack trace from exception.
-     */
-    public String getStacktrace() {
-	if (exception == null)
-	    return "n/a";
-	String stacktrace = StackTraceHelper.getStrackTrace(exception);
-	if (stacktrace == null)
-	    return "n/a";
-	if (stacktrace.isEmpty())
-	    return "n/a";
-	return stacktrace;
-    }
+	/**
+	 * Get stack trace from exception.
+	 * 
+	 * @return stack trace from exception.
+	 */
+	public String getStacktrace() {
+		if (exception == null)
+			return "n/a";
+		String stacktrace = StackTraceHelper.getStrackTrace(exception);
+		if (stacktrace == null)
+			return "n/a";
+		if (stacktrace.isEmpty())
+			return "n/a";
+		return stacktrace;
+	}
 
-    /**
-     * Event handler for the command "confirm".
-     * 
-     * The event is triggered from the "confirm" button menu.
-     */
-    @Command
-    public void confirm() {
-	// NO-OP
-    }
+	/**
+	 * Event handler for the command "confirm".
+	 * 
+	 * The event is triggered from the "confirm" button menu.
+	 */
+	@Command
+	public void confirm() {
+		// NO-OP
+	}
 
 }

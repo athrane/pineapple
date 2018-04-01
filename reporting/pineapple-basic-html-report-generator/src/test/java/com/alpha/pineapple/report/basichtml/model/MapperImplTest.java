@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.report.basichtml.model;
 
 import static org.easymock.EasyMock.createMock;
@@ -60,25 +59,25 @@ public class MapperImplTest {
 	 * Report result type for operation.
 	 */
 	static final String OPERATION_TYPE = "operation";
-	
+
 	/**
 	 * Execution result description
 	 */
 	static final String DESC = "some-description";
-	
+
 	/**
 	 * Execution time.
 	 */
-	static final Long EXECUTION_TIME = Long.valueOf(99);	
-	
+	static final Long EXECUTION_TIME = Long.valueOf(99);
+
 	/**
 	 * Error state for report object.
-	 */	
+	 */
 	static final String ERROR_STATE = "ERROR";
-	
+
 	/**
 	 * Failed state for report object.
-	 */	
+	 */
 	static final String FAILURE_STATE = "FAILURE";
 
 	/**
@@ -89,92 +88,92 @@ public class MapperImplTest {
 	/**
 	 * Executing state for report object.
 	 */
-	static final String EXECUTING_STATE = "EXECUTING";	
-	
+	static final String EXECUTING_STATE = "EXECUTING";
+
 	/**
 	 * Operation name.
 	 */
 	static final String OPERATION = "operation on module";
-	
+
 	/**
 	 * First Report id.
 	 */
 	static final int FIRST_REPORT_ID = 1;
-	
+
 	/**
 	 * Object under test.
 	 */
 	Mapper mapper;
 
 	/**
-	 * Mock execution result 
+	 * Mock execution result
 	 */
 	ExecutionResult executionResult;
-	
+
 	/**
-	 * Mock JAXB object factory 
+	 * Mock JAXB object factory
 	 */
-	ObjectFactory objectFactory;	
-	
+	ObjectFactory objectFactory;
+
 	/**
 	 * Mock report object
 	 */
 	Report report;
-	
+
 	/**
 	 * Mock report result object.
 	 */
 	Result reportResult;
-	
+
 	/**
-	 * Mock report result messages object. 
+	 * Mock report result messages object.
 	 */
 	Messages Messages;
 
 	/**
 	 * Random start time.
 	 */
-	Long randomStartTime;	
+	Long randomStartTime;
 
 	/**
 	 * Random String.
 	 */
-	String randomString;	
+	String randomString;
 
 	/**
 	 * Random Name.
 	 */
-	String randomName;	
-	
+	String randomName;
+
 	@Before
-	public void setUp() throws Exception {		
+	public void setUp() throws Exception {
 		randomStartTime = RandomUtils.nextLong();
 		randomString = RandomStringUtils.randomAlphabetic(10);
-		randomName= RandomStringUtils.randomAlphabetic(10);
-		
+		randomName = RandomStringUtils.randomAlphabetic(10);
+
 		mapper = new MapperImpl();
-		
+
 		// create mock execution result
-        executionResult = createMock( ExecutionResult.class );
-        
+		executionResult = createMock(ExecutionResult.class);
+
 		// create mock object factory
-        objectFactory = createMock( ObjectFactory.class );
+		objectFactory = createMock(ObjectFactory.class);
 
 		// create mock report result configuration
-		reportResult = createMock( Result.class);
+		reportResult = createMock(Result.class);
 
 		// create mock report messages type
-		Messages = createMock( Messages.class);
+		Messages = createMock(Messages.class);
 
 		// complete mock report configuration
-		report = createMock( Report.class);
-		report.setResult( reportResult);
+		report = createMock(Report.class);
+		report.setResult(reportResult);
 		expectLastCall().anyTimes();
-		expect( report.getResult()).andReturn( reportResult).anyTimes();
-		replay( report );
-		
-        // inject object factory into mapper
-        ReflectionTestUtils.setField( mapper, "objectFactory", objectFactory, ObjectFactory.class );        
+		expect(report.getResult()).andReturn(reportResult).anyTimes();
+		replay(report);
+
+		// inject object factory into mapper
+		ReflectionTestUtils.setField(mapper, "objectFactory", objectFactory, ObjectFactory.class);
 	}
 
 	@After
@@ -191,17 +190,18 @@ public class MapperImplTest {
 	 * Complete mock factory configuration.
 	 */
 	void completeMockObjectFactorySetup() {
-		expect( objectFactory.createReport()).andReturn(report);
-		expect( objectFactory.createResult()).andReturn(reportResult);
-		expect( objectFactory.createMessages()).andReturn(Messages);		
-		replay( objectFactory );
-	}	
+		expect(objectFactory.createReport()).andReturn(report);
+		expect(objectFactory.createResult()).andReturn(reportResult);
+		expect(objectFactory.createMessages()).andReturn(Messages);
+		replay(objectFactory);
+	}
 
 	/**
 	 * Complete mock execution result configuration.
 	 * 
-	 * @param state Execution result state. 
-	 */	
+	 * @param state
+	 *            Execution result state.
+	 */
 	void completeMockExecutionResultSetup(ExecutionState state) {
 		HashMap<String, String> messages = new HashMap<String, String>();
 		completeMockExecutionResultSetup(state, messages);
@@ -210,389 +210,387 @@ public class MapperImplTest {
 	/**
 	 * Complete mock execution result configuration.
 	 * 
-	 * @param state Execution result state.
-	 * @param message Execution result messages. 
-	 */	
-	void completeMockExecutionResultSetup(ExecutionState state, HashMap<String, String> messages ) {
-		ExecutionResult[] errors = new ExecutionResult[0];		
+	 * @param state
+	 *            Execution result state.
+	 * @param message
+	 *            Execution result messages.
+	 */
+	void completeMockExecutionResultSetup(ExecutionState state, HashMap<String, String> messages) {
+		ExecutionResult[] errors = new ExecutionResult[0];
 		ExecutionResult[] failures = new ExecutionResult[0];
-		ExecutionResult[] success = new ExecutionResult[0];		
-				
+		ExecutionResult[] success = new ExecutionResult[0];
+
 		// complete mock execution result configuration
 		expect(executionResult.getDescription()).andReturn(DESC);
-		expect(executionResult.getStartTime()).andReturn(randomStartTime);				
+		expect(executionResult.getStartTime()).andReturn(randomStartTime);
 		expect(executionResult.getTime()).andReturn(EXECUTION_TIME);
 		expect(executionResult.getState()).andReturn(state);
-		expect(executionResult.getChildren()).andReturn(errors);		
-		expect(executionResult.getChildrenWithState(ExecutionState.ERROR)).andReturn(errors);		
-		expect(executionResult.getChildrenWithState(ExecutionState.FAILURE)).andReturn(failures);		
-		expect(executionResult.getChildrenWithState(ExecutionState.SUCCESS)).andReturn(success);		
-		expect(executionResult.getMessages()).andReturn(messages);		
-		replay( executionResult );
+		expect(executionResult.getChildren()).andReturn(errors);
+		expect(executionResult.getChildrenWithState(ExecutionState.ERROR)).andReturn(errors);
+		expect(executionResult.getChildrenWithState(ExecutionState.FAILURE)).andReturn(failures);
+		expect(executionResult.getChildrenWithState(ExecutionState.SUCCESS)).andReturn(success);
+		expect(executionResult.getMessages()).andReturn(messages);
+		replay(executionResult);
 	}
-	
-	
+
 	/**
 	 * Complete mock report messages type configuration.
-	 */	
+	 */
 	void completeMockMessagesSetup() {
-		expect( Messages.getMessage()).andReturn(new ArrayList<Message>());
-		replay( Messages );
-	}		
-	
+		expect(Messages.getMessage()).andReturn(new ArrayList<Message>());
+		replay(Messages);
+	}
+
 	/**
 	 * Complete mock report result configuration.
 	 * 
-	 * @param state Execution result state. 
-	 */	
-	void completeMockReportResultSetup(String state, int messagesAccessed ) {
-		
+	 * @param state
+	 *            Execution result state.
+	 */
+	void completeMockReportResultSetup(String state, int messagesAccessed) {
+
 		// format start time
-        FastDateFormat fastDateFormat = FastDateFormat.getInstance(MapperImpl.DATE_FORMAT_PATTERN);        
-        String formatedTime = fastDateFormat.format(randomStartTime);
-		
-		expect( reportResult.getMessages()).andReturn( Messages ).times( messagesAccessed );
-		reportResult.setDescription( DESC );
+		FastDateFormat fastDateFormat = FastDateFormat.getInstance(MapperImpl.DATE_FORMAT_PATTERN);
+		String formatedTime = fastDateFormat.format(randomStartTime);
+
+		expect(reportResult.getMessages()).andReturn(Messages).times(messagesAccessed);
+		reportResult.setDescription(DESC);
 		reportResult.setStartTime(formatedTime);
-		reportResult.setTime(EXECUTION_TIME.floatValue() );
+		reportResult.setTime(EXECUTION_TIME.floatValue());
 		reportResult.setState(state);
-		reportResult.setChildren(BigInteger.ZERO);	
+		reportResult.setChildren(BigInteger.ZERO);
 		reportResult.setErrors(BigInteger.ZERO);
-		reportResult.setFailures(BigInteger.ZERO);		
+		reportResult.setFailures(BigInteger.ZERO);
 		reportResult.setSuccessful(BigInteger.ZERO);
 		reportResult.setMessages(Messages);
 		reportResult.setType(OPERATION_TYPE);
 		reportResult.setReportId(BigInteger.ONE);
-		replay( reportResult );
+		replay(reportResult);
 	}
 
 	/**
 	 * Complete mock report result configuration.
 	 * 
-	 * @param state Execution result state. 
-	 */	
-	void completeMockReportResultSetup(String state ) {
-		completeMockReportResultSetup(state, 1); 
+	 * @param state
+	 *            Execution result state.
+	 */
+	void completeMockReportResultSetup(String state) {
+		completeMockReportResultSetup(state, 1);
 	}
 
-	
-	
 	/**
 	 * Test that report can be created.
 	 */
 	@Test
 	public void testCreateReport() {
-		
+
 		// complete mock object factory configuration
-		expect( objectFactory.createReport()).andReturn(report);
-		replay( objectFactory );
-		
+		expect(objectFactory.createReport()).andReturn(report);
+		replay(objectFactory);
+
 		// create report
 		Report report = mapper.createReport();
-		
+
 		// test
 		assertEquals(report, report);
-		
+
 		// test
-		verify(report);		
-		verify( objectFactory );
+		verify(report);
+		verify(objectFactory);
 	}
 
-	
 	/**
-	 * Test that operation is mapped correct.  
+	 * Test that operation is mapped correct.
 	 */
 	@Test
 	public void testMapSuccessfulOperation() {
 
 		// complete mock objects configuration
-		completeMockObjectFactorySetup();			
+		completeMockObjectFactorySetup();
 		completeMockExecutionResultSetup(ExecutionState.SUCCESS);
-		completeMockMessagesSetup();		
+		completeMockMessagesSetup();
 		completeMockReportResultSetup(SUCCESS_STATE);
-		
+
 		// create report
 		Report report = mapper.createReport();
-		
-		// map 
+
+		// map
 		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
-				
+
 		// test
-		verify(report);		
+		verify(report);
 		verify(objectFactory);
 		verify(executionResult);
-		verify(reportResult);	
-		verify( Messages );
+		verify(reportResult);
+		verify(Messages);
 	}
 
 	/**
-	 * Test that operation is mapped correct.  
+	 * Test that operation is mapped correct.
 	 */
 	@Test
 	public void testMapFailedOperation() {
 
 		// complete objects configuration
-		completeMockObjectFactorySetup();			
+		completeMockObjectFactorySetup();
 		completeMockExecutionResultSetup(ExecutionState.FAILURE);
-		completeMockMessagesSetup();		
+		completeMockMessagesSetup();
 		completeMockReportResultSetup(FAILURE_STATE);
-		
+
 		// create report
 		Report report = mapper.createReport();
-		
-		// map 
+
+		// map
 		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
-				
+
 		// test
 		verify(objectFactory);
 		verify(executionResult);
-		verify(reportResult);	
-		verify( Messages );
+		verify(reportResult);
+		verify(Messages);
 	}
-	
+
 	/**
-	 * Test that operation is mapped correct.  
+	 * Test that operation is mapped correct.
 	 */
 	@Test
 	public void testMapOperationWithError() {
 
 		// complete mock objects configuration
-		completeMockObjectFactorySetup();			
+		completeMockObjectFactorySetup();
 		completeMockExecutionResultSetup(ExecutionState.ERROR);
-		completeMockMessagesSetup();		
+		completeMockMessagesSetup();
 		completeMockReportResultSetup(ERROR_STATE);
-		
+
 		// create report
 		Report report = mapper.createReport();
-		
-		// map 
+
+		// map
 		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
-				
+
 		// test
-		verify(report);		
+		verify(report);
 		verify(objectFactory);
 		verify(executionResult);
-		verify(reportResult);	
-		verify( Messages );
+		verify(reportResult);
+		verify(Messages);
 	}
-	
+
 	/**
-	 * Test that operation is mapped correct.  
+	 * Test that operation is mapped correct.
 	 */
 	@Test
 	public void testMapOperationWithExecutingState() {
 
 		// complete objects configuration
-		completeMockObjectFactorySetup();			
+		completeMockObjectFactorySetup();
 		completeMockExecutionResultSetup(ExecutionState.EXECUTING);
-		completeMockMessagesSetup();		
+		completeMockMessagesSetup();
 		completeMockReportResultSetup(EXECUTING_STATE);
-		
+
 		// create report
 		Report report = mapper.createReport();
-		
-		// map 
+
+		// map
 		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
-				
+
 		// test
-		verify(report);		
+		verify(report);
 		verify(objectFactory);
 		verify(executionResult);
-		verify(reportResult);	
-		verify( Messages );
+		verify(reportResult);
+		verify(Messages);
 	}
-	
-	
+
 	/**
-	 * Test that operation with zero message is mapped correct.  
+	 * Test that operation with zero message is mapped correct.
 	 */
 	@Test
 	public void testMapOperationWithZeroMessages() {
 
 		// Complete mock report messages type configuration.
-		ArrayList<Message> messageList = new ArrayList<Message>();			
-		expect( Messages.getMessage()).andReturn(messageList).times(2);		
-		replay( Messages );
-		
+		ArrayList<Message> messageList = new ArrayList<Message>();
+		expect(Messages.getMessage()).andReturn(messageList).times(2);
+		replay(Messages);
+
 		// complete mock objects configuration
-		completeMockObjectFactorySetup();			
+		completeMockObjectFactorySetup();
 		completeMockExecutionResultSetup(ExecutionState.SUCCESS);
 		completeMockReportResultSetup(SUCCESS_STATE, 2);
-		
+
 		// create report
 		Report report = mapper.createReport();
-		
-		// map 
+
+		// map
 		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
-		
-		// test		
-		assertEquals(0, report.getResult().getMessages().getMessage().size());
-				
+
 		// test
-		verify(report);		
+		assertEquals(0, report.getResult().getMessages().getMessage().size());
+
+		// test
+		verify(report);
 		verify(objectFactory);
 		verify(executionResult);
-		verify(reportResult);	
-		verify( Messages );		
+		verify(reportResult);
+		verify(Messages);
 	}
-	
+
 	/**
-	 * Test that operation with one message is mapped correct.  
+	 * Test that operation with one message is mapped correct.
 	 */
 	@Test
 	public void testMapOperationWithOneMessage() {
 
-		// Complete mock report message type configuration.		
-		Message message = createMock( Message.class );
-		replay( message );
-		
+		// Complete mock report message type configuration.
+		Message message = createMock(Message.class);
+		replay(message);
+
 		// Complete mock report messages type configuration.
-		ArrayList<Message> messageList = new ArrayList<Message>();	
-		messageList.add(message);		
-		expect( Messages.getMessage()).andReturn(messageList).times(2);		
-		replay( Messages );
-		
+		ArrayList<Message> messageList = new ArrayList<Message>();
+		messageList.add(message);
+		expect(Messages.getMessage()).andReturn(messageList).times(2);
+		replay(Messages);
+
 		// complete mock objects configuration
-		completeMockObjectFactorySetup();			
+		completeMockObjectFactorySetup();
 		completeMockExecutionResultSetup(ExecutionState.SUCCESS);
 		completeMockReportResultSetup(SUCCESS_STATE, 2);
-		
+
 		// create report
 		Report report = mapper.createReport();
-		
-		// map 
+
+		// map
 		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
-		
-		// test		
-		assertEquals(1, report.getResult().getMessages().getMessage().size());
-				
+
 		// test
-		verify(report);		
+		assertEquals(1, report.getResult().getMessages().getMessage().size());
+
+		// test
+		verify(report);
 		verify(objectFactory);
 		verify(executionResult);
-		verify(reportResult);	
-		verify( Messages );
-		verify( message );		
+		verify(reportResult);
+		verify(Messages);
+		verify(message);
 	}
 
 	/**
-	 * Test that operation with multiple messages is mapped correct.  
+	 * Test that operation with multiple messages is mapped correct.
 	 */
 	@Test
 	public void testMapOperationWithMultipleMessages() {
 
-		// Complete mock report message type configuration.		
-		Message message = createMock( Message.class );
-		replay( message );
+		// Complete mock report message type configuration.
+		Message message = createMock(Message.class);
+		replay(message);
 
-		Message message2 = createMock( Message.class );
-		replay( message2 );
-				
+		Message message2 = createMock(Message.class);
+		replay(message2);
+
 		// Complete mock report messages type configuration.
-		ArrayList<Message> messageList = new ArrayList<Message>();	
-		messageList.add(message);		
-		messageList.add(message2);		
-		expect( Messages.getMessage()).andReturn(messageList).times(2);		
-		replay( Messages );
+		ArrayList<Message> messageList = new ArrayList<Message>();
+		messageList.add(message);
+		messageList.add(message2);
+		expect(Messages.getMessage()).andReturn(messageList).times(2);
+		replay(Messages);
 
 		// complete mock objects configuration
 		completeMockObjectFactorySetup();
-		completeMockExecutionResultSetup(ExecutionState.SUCCESS);		
+		completeMockExecutionResultSetup(ExecutionState.SUCCESS);
 		completeMockReportResultSetup(SUCCESS_STATE, 2);
 
-		
 		// create report
 		Report report = mapper.createReport();
-		
-		// map 
+
+		// map
 		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
-		
-		// test		
-		assertEquals(2, report.getResult().getMessages().getMessage().size());
-				
+
 		// test
-		verify(report);		
+		assertEquals(2, report.getResult().getMessages().getMessage().size());
+
+		// test
+		verify(report);
 		verify(objectFactory);
 		verify(executionResult);
-		verify(reportResult);	
-		verify( Messages );
-		verify( message );		
+		verify(reportResult);
+		verify(Messages);
+		verify(message);
 	}
-	
+
 	/**
-	 * Test that operation with one message whose content is null is mapped correct.  
+	 * Test that operation with one message whose content is null is mapped correct.
 	 */
 	@Test
 	public void testMapOperationWithNullMessage() {
 
-		// Complete mock report message value configuration.		
-		MessageValue MessageValue = createMock( MessageValue.class );
+		// Complete mock report message value configuration.
+		MessageValue MessageValue = createMock(MessageValue.class);
 		MessageValue.setValue(MapperImpl.NULL_MESSAGE_VALUE);
-		replay( MessageValue );
-		
+		replay(MessageValue);
+
 		// Complete mock report message type configuration.
-		ArrayList<MessageValue> messageValueList = new ArrayList<MessageValue>();	
-		Message message = createMock( Message.class );
+		ArrayList<MessageValue> messageValueList = new ArrayList<MessageValue>();
+		Message message = createMock(Message.class);
 		message.setName(randomString);
 		expect(message.getValue()).andReturn(messageValueList);
-		replay( message );
-		
+		replay(message);
+
 		// Complete mock report messages type configuration.
-		ArrayList<Message> messageList = new ArrayList<Message>();			
-		expect( Messages.getMessage()).andReturn(messageList).times(2);		
-		replay( Messages );
-		
+		ArrayList<Message> messageList = new ArrayList<Message>();
+		expect(Messages.getMessage()).andReturn(messageList).times(2);
+		replay(Messages);
+
 		// complete execution result mock configuration
 		HashMap<String, String> messages = new HashMap<String, String>();
 		messages.put(randomString, null);
-				
+
 		// complete mock execution result configuration
 		completeMockExecutionResultSetup(ExecutionState.SUCCESS, messages);
 
 		// complete mock configuration
-		expect( objectFactory.createReport()).andReturn(report);
-		expect( objectFactory.createResult()).andReturn(reportResult);
-		expect( objectFactory.createMessages()).andReturn(Messages);				
-		expect( objectFactory.createMessage()).andReturn(message);
-		expect( objectFactory.createMessageValue()).andReturn(MessageValue);
-		replay( objectFactory );
-		
-		// complete mock configuration			
+		expect(objectFactory.createReport()).andReturn(report);
+		expect(objectFactory.createResult()).andReturn(reportResult);
+		expect(objectFactory.createMessages()).andReturn(Messages);
+		expect(objectFactory.createMessage()).andReturn(message);
+		expect(objectFactory.createMessageValue()).andReturn(MessageValue);
+		replay(objectFactory);
+
+		// complete mock configuration
 		completeMockReportResultSetup(SUCCESS_STATE, 2);
-		
+
 		// create report
 		Report report = mapper.createReport();
-		
-		// map 
+
+		// map
 		Result actualReportResult;
 		actualReportResult = mapper.mapOperationToReport(report, executionResult);
 		actualReportResult.hashCode();
-		
-		// test		
-		assertEquals(1, report.getResult().getMessages().getMessage().size());
-				
+
 		// test
-		verify(report);		
+		assertEquals(1, report.getResult().getMessages().getMessage().size());
+
+		// test
+		verify(report);
 		verify(objectFactory);
 		verify(executionResult);
-		verify(reportResult);	
-		verify( messages);
-		verify( message);	
-		verify( MessageValue );
+		verify(reportResult);
+		verify(messages);
+		verify(message);
+		verify(MessageValue);
 	}
-	
+
 }

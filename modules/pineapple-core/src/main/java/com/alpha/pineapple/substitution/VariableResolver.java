@@ -29,16 +29,16 @@ import com.alpha.pineapple.substitution.variables.Variables;
  */
 public interface VariableResolver {
 
-    /**
-     * Resolve variables in string.
-     * 
-     * @param variables
-     *            variables to for substitution.
-     * @param source
-     *            source string to resolve.
-     * 
-     * @return string with resolved variables.
-     */
-    String resolve(Variables variables, String source);
+	/**
+	 * Resolve variables in string.
+	 * 
+	 * @param variables
+	 *            variables to for substitution.
+	 * @param source
+	 *            source string to resolve.
+	 * 
+	 * @return string with resolved variables.
+	 */
+	String resolve(Variables variables, String source);
 
 }

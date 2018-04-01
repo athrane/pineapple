@@ -34,52 +34,51 @@ import com.alpha.pineapple.model.execution.scheduled.ScheduledOperations;
  */
 public interface ScheduledOperationConfigurationMarshaller {
 
-    /**
-     * Save configuration of scheduled operations.
-     * 
-     * The configuration directory is resolved from the runtime directory
-     * provider. The configuration is saved in the default scheduled operations
-     * configuration file scheduled-operations.xml.
-     * 
-     * @param executionResult
-     *            A child execution result will be added to this result. The
-     *            child result will reflects the out come of the save operation.
-     *            If the save operation fails the state of the result object
-     *            will be failure or error and will contain a stack trace
-     *            message.
-     * @param operations
-     *            scheduled operations model which is saved.
-     *            
-     * @throws SaveConfigurationFailedException if save fails.           
-     */
+	/**
+	 * Save configuration of scheduled operations.
+	 * 
+	 * The configuration directory is resolved from the runtime directory provider.
+	 * The configuration is saved in the default scheduled operations configuration
+	 * file scheduled-operations.xml.
+	 * 
+	 * @param executionResult
+	 *            A child execution result will be added to this result. The child
+	 *            result will reflects the out come of the save operation. If the
+	 *            save operation fails the state of the result object will be
+	 *            failure or error and will contain a stack trace message.
+	 * @param operations
+	 *            scheduled operations model which is saved.
+	 * 
+	 * @throws SaveConfigurationFailedException
+	 *             if save fails.
+	 */
 
-    void save(ExecutionResult executionResult, ScheduledOperations operations);
+	void save(ExecutionResult executionResult, ScheduledOperations operations);
 
-    /**
-     * Load configuration of scheduled operations.
-     * If no configuration file exist then an empty configuration is returned.
-     * 
-     * @param executionResult
-     *            A child execution result will be added to this result. The
-     *            child result will reflects the out come of the save operation.
-     *            If the save operation fails the state of the result object
-     *            will be failure or error and will contain a stack trace
-     *            message.
-     * @return loaded scheduled operations model.
-     * 
-     * @throws LoadConfigurationFailedException if save fails.           
-     */
-    ScheduledOperations load(ExecutionResult executionResult) ;
+	/**
+	 * Load configuration of scheduled operations. If no configuration file exist
+	 * then an empty configuration is returned.
+	 * 
+	 * @param executionResult
+	 *            A child execution result will be added to this result. The child
+	 *            result will reflects the out come of the save operation. If the
+	 *            save operation fails the state of the result object will be
+	 *            failure or error and will contain a stack trace message.
+	 * @return loaded scheduled operations model.
+	 * 
+	 * @throws LoadConfigurationFailedException
+	 *             if save fails.
+	 */
+	ScheduledOperations load(ExecutionResult executionResult);
 
-    /**
-     * Map scheduled operation info's for saving.
-     * 
-     * @param infos
-     *            stream of {@linkplain ScheduledOperationInfo which are mapped.
-     * 
-     * @return operations scheduled operation configuration which can be
-     *         marshalled.
-     */
-    ScheduledOperations map(Stream<ScheduledOperationInfo> infos);
+	/**
+	 * Map scheduled operation info's for saving.
+	 * 
+	 * @param infos
+	 *            stream of {@linkplain ScheduledOperationInfo which are mapped.
+	 * 
+	 * @return operations scheduled operation configuration which can be marshalled.
+	 */
+	ScheduledOperations map(Stream<ScheduledOperationInfo> infos);
 
 }

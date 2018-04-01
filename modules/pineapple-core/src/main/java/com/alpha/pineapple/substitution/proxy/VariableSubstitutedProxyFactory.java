@@ -29,27 +29,27 @@ import com.alpha.pineapple.substitution.variables.Variables;
  */
 public interface VariableSubstitutedProxyFactory {
 
-    /**
-     * Initialize factory with variable set used for variable substitution.
-     * 
-     * @param variables
-     *            variable set used for variable substitution.
-     */
-    void initialize(Variables variables);
+	/**
+	 * Initialize factory with variable set used for variable substitution.
+	 * 
+	 * @param variables
+	 *            variable set used for variable substitution.
+	 */
+	void initialize(Variables variables);
 
-    /**
-     * Decorate target object with proxy to support variable substitution. All
-     * attributes on the target object (e..g child objects) will also be proxied
-     * and thus have variable substitution enabled.
-     * 
-     * @param targetObject
-     *            target object
-     * 
-     * @return proxy decorating the target object.
-     * 
-     * @throws IllegalStateException
-     *             if factory isn't initialized prior to usage.
-     */
-    public <T> T decorateWithProxy(T targetObject);
+	/**
+	 * Decorate target object with proxy to support variable substitution. All
+	 * attributes on the target object (e..g child objects) will also be proxied and
+	 * thus have variable substitution enabled.
+	 * 
+	 * @param targetObject
+	 *            target object
+	 * 
+	 * @return proxy decorating the target object.
+	 * 
+	 * @throws IllegalStateException
+	 *             if factory isn't initialized prior to usage.
+	 */
+	public <T> T decorateWithProxy(T targetObject);
 
 }

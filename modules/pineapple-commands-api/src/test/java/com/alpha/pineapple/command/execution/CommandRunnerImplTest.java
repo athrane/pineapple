@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.command.execution;
 
 import static org.junit.Assert.assertEquals;
@@ -49,12 +48,12 @@ public class CommandRunnerImplTest {
 	 * Object under test.
 	 */
 	CommandRunner commandRunner;
-	
+
 	/**
 	 * Mock execution result.
 	 */
-	ExecutionResult executionResult; 
-	
+	ExecutionResult executionResult;
+
 	/**
 	 * Mock command
 	 */
@@ -74,23 +73,23 @@ public class CommandRunnerImplTest {
 	 * Random description.
 	 */
 	String randomExceptionCause;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		randomDescription = RandomStringUtils.randomAlphabetic(10);
 		randomExceptionCause = RandomStringUtils.randomAlphabetic(10);
-		
+
 		// create asserter
 		commandRunner = new CommandRunnerImpl();
 
-	    // create mock result
-	    executionResult = EasyMock.createMock( ExecutionResult.class );
+		// create mock result
+		executionResult = EasyMock.createMock(ExecutionResult.class);
 
-	    // create mock command	    
-		command = EasyMock.createMock( Command.class );
+		// create mock command
+		command = EasyMock.createMock(Command.class);
 
-	    // create mock context	    
-		context = EasyMock.createMock( Context.class );	    		
+		// create mock context
+		context = EasyMock.createMock(Context.class);
 	}
 
 	@After
@@ -128,9 +127,9 @@ public class CommandRunnerImplTest {
 	public void testCreatedContextHasCorrectType() {
 		assertTrue(commandRunner.createContext() instanceof ContextBase);
 	}
-	
+
 	/**
-	 * Test that the method LastExecutionSucceeded() initially returns false. 
+	 * Test that the method LastExecutionSucceeded() initially returns false.
 	 */
 	@Test
 	public void testLastExecutionSucceededIntiallyReturnsFalse() {
@@ -140,279 +139,276 @@ public class CommandRunnerImplTest {
 	/**
 	 * Test that command can be run.
 	 * 
-	 * @throws Exception If test fails.
+	 * @throws Exception
+	 *             If test fails.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testCanRunCommand() throws Exception {
-		
+
 		// complete command setup
 		EasyMock.expect(command.execute(context)).andReturn(false);
 		EasyMock.replay(command);
 
 		// create child mock result
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
-		EasyMock.expect( childResult.getState()).andReturn(ExecutionState.SUCCESS);						
-		EasyMock.replay( childResult);
-		
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
+		EasyMock.expect(childResult.getState()).andReturn(ExecutionState.SUCCESS);
+		EasyMock.replay(childResult);
+
 		// complete result setup
 		EasyMock.expect(executionResult.addChild(randomDescription)).andReturn(childResult);
 		EasyMock.replay(executionResult);
 
-		// complete context setup		
-		EasyMock.expect(context.put(CommandRunnerImpl.EXECUTION_RESULT_CONTEXT_KEY, childResult)).andReturn(null);		
+		// complete context setup
+		EasyMock.expect(context.put(CommandRunnerImpl.EXECUTION_RESULT_CONTEXT_KEY, childResult)).andReturn(null);
 		EasyMock.replay(context);
-				
+
 		// run
 		commandRunner.setExecutionResult(executionResult);
 		commandRunner.run(command, randomDescription, context);
-		
-		// test 
-		
+
+		// test
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(command);
 		EasyMock.verify(context);
-		EasyMock.verify(childResult);		
+		EasyMock.verify(childResult);
 	}
-	
+
 	/**
-	 * Test that command failing with an exception result in in execution state ERROR
-	 * and the exception is added to the execution result.
+	 * Test that command failing with an exception result in in execution state
+	 * ERROR and the exception is added to the execution result.
 	 * 
-	 * @throws Exception If test fails.
+	 * @throws Exception
+	 *             If test fails.
 	 */
 	@SuppressWarnings("unchecked")
-	@Test	
+	@Test
 	public void testRunHandlesCommandWhichFailsWithException() throws Exception {
 		Exception exception = new Exception(randomExceptionCause);
-		
+
 		// complete command setup
 		EasyMock.expect(command.execute(context)).andThrow(exception);
 		EasyMock.replay(command);
 
 		// create child mock result
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
 		childResult.completeAsError(exception);
-		EasyMock.expect( childResult.getState()).andReturn(ExecutionState.SUCCESS);						
-		EasyMock.replay( childResult);
-		
+		EasyMock.expect(childResult.getState()).andReturn(ExecutionState.SUCCESS);
+		EasyMock.replay(childResult);
+
 		// complete result setup
 		EasyMock.expect(executionResult.addChild(randomDescription)).andReturn(childResult);
 		EasyMock.replay(executionResult);
 
-		// complete context setup		
-		EasyMock.expect(context.put(CommandRunnerImpl.EXECUTION_RESULT_CONTEXT_KEY, childResult)).andReturn(null);		
+		// complete context setup
+		EasyMock.expect(context.put(CommandRunnerImpl.EXECUTION_RESULT_CONTEXT_KEY, childResult)).andReturn(null);
 		EasyMock.replay(context);
-				
+
 		// run
 		commandRunner.setExecutionResult(executionResult);
 		commandRunner.run(command, randomDescription, context);
-		
-		// test 
-		
+
+		// test
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(command);
 		EasyMock.verify(context);
 		EasyMock.verify(childResult);
-		
+
 	}
-	
 
 	/**
-	 * Test that the method LastExecutionSucceeded() returns true of command succeeds.
-	 *  
-	 * @throws Exception If test fails.
+	 * Test that the method LastExecutionSucceeded() returns true of command
+	 * succeeds.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
 	 */
 	@Test
 	public void testLastExecutionSucceededReturnsTrueIfSuccess() throws Exception {
-		
+
 		// complete command setup
 		EasyMock.expect(command.execute(context)).andReturn(false);
 		EasyMock.replay(command);
 
 		// create child mock result
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
-		EasyMock.expect( childResult.getState()).andReturn(ExecutionState.SUCCESS);						
-		EasyMock.replay( childResult);
-		
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
+		EasyMock.expect(childResult.getState()).andReturn(ExecutionState.SUCCESS);
+		EasyMock.replay(childResult);
+
 		// complete result setup
 		EasyMock.expect(executionResult.addChild(randomDescription)).andReturn(childResult);
 		EasyMock.replay(executionResult);
 
-		// complete context setup		
-		EasyMock.expect(context.put(CommandRunnerImpl.EXECUTION_RESULT_CONTEXT_KEY, childResult)).andReturn(null);		
+		// complete context setup
+		EasyMock.expect(context.put(CommandRunnerImpl.EXECUTION_RESULT_CONTEXT_KEY, childResult)).andReturn(null);
 		EasyMock.replay(context);
-				
+
 		// run
 		commandRunner.setExecutionResult(executionResult);
 		commandRunner.run(command, randomDescription, context);
-		
-		// test 
-		assertTrue(commandRunner.lastExecutionSucceeded());		
-		
+
+		// test
+		assertTrue(commandRunner.lastExecutionSucceeded());
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(command);
 		EasyMock.verify(context);
-		EasyMock.verify(childResult);		
+		EasyMock.verify(childResult);
 	}
-	
-    /**
-     * Test that runner rejects undefined command name.
-     * 
-     * @throws Exception
-     */
-    @Test( expected = IllegalArgumentException.class )
-    public void testRunMethodRejectsUndefinedCommand() throws Exception
-    {
+
+	/**
+	 * Test that runner rejects undefined command name.
+	 * 
+	 * @throws Exception
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testRunMethodRejectsUndefinedCommand() throws Exception {
 		// complete mock setup
 		EasyMock.replay(command);
 		EasyMock.replay(executionResult);
 		EasyMock.replay(context);
-				
+
 		// run
 		commandRunner.setExecutionResult(executionResult);
 		commandRunner.run(null, randomDescription, context);
-		
-		// test 
-		assertTrue(commandRunner.lastExecutionSucceeded());		
-		
+
+		// test
+		assertTrue(commandRunner.lastExecutionSucceeded());
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(command);
 		EasyMock.verify(context);
-    }
+	}
 
-    /**
-     * Test that runner rejects undefined description.
-     * 
-     * @throws Exception
-     */
-    @Test( expected = IllegalArgumentException.class )
-    public void testRunMethodRejectsUndefinedDescription() throws Exception
-    {
+	/**
+	 * Test that runner rejects undefined description.
+	 * 
+	 * @throws Exception
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testRunMethodRejectsUndefinedDescription() throws Exception {
 		// complete mock setup
 		EasyMock.replay(command);
 		EasyMock.replay(executionResult);
 		EasyMock.replay(context);
-				
+
 		// run
 		commandRunner.setExecutionResult(executionResult);
-		commandRunner.run(command, (String)null, context);
-		
-		// test 
-		assertTrue(commandRunner.lastExecutionSucceeded());		
-		
+		commandRunner.run(command, (String) null, context);
+
+		// test
+		assertTrue(commandRunner.lastExecutionSucceeded());
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(command);
 		EasyMock.verify(context);
-    }
+	}
 
-    /**
-     * Test that runner rejects undefined context.
-     * 
-     * @throws Exception
-     */
-    @Test( expected = IllegalArgumentException.class )
-    public void testRunMethodRejectsUndefinedContext() throws Exception
-    {
+	/**
+	 * Test that runner rejects undefined context.
+	 * 
+	 * @throws Exception
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testRunMethodRejectsUndefinedContext() throws Exception {
 		// complete mock setup
 		EasyMock.replay(command);
 		EasyMock.replay(executionResult);
 		EasyMock.replay(context);
-				
+
 		// run
 		commandRunner.setExecutionResult(executionResult);
 		commandRunner.run(command, randomDescription, null);
-		
-		// test 
-		assertTrue(commandRunner.lastExecutionSucceeded());		
-		
+
+		// test
+		assertTrue(commandRunner.lastExecutionSucceeded());
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(command);
 		EasyMock.verify(context);
-    }
+	}
 
-    /**
-     * Test that runner rejects undefined command.
-     * 
-     * @throws Exception
-     */
-    @Test( expected = IllegalArgumentException.class )
-    public void testRunMethodRejectsUndefinedCommand2() throws Exception
-    {
+	/**
+	 * Test that runner rejects undefined command.
+	 * 
+	 * @throws Exception
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testRunMethodRejectsUndefinedCommand2() throws Exception {
 		// complete mock setup
 		EasyMock.replay(command);
 		EasyMock.replay(executionResult);
 		EasyMock.replay(context);
-				
+
 		// run
 		commandRunner.setExecutionResult(executionResult);
 		commandRunner.run(null, executionResult, context);
-		
-		// test 
-		assertTrue(commandRunner.lastExecutionSucceeded());		
-		
+
+		// test
+		assertTrue(commandRunner.lastExecutionSucceeded());
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(command);
 		EasyMock.verify(context);
-    }
-    
-    /**
-     * Test that runner rejects undefined result.
-     * 
-     * @throws Exception
-     */
-    @Test( expected = IllegalArgumentException.class )
-    public void testRunMethodRejectsUndefinedResult() throws Exception
-    {
+	}
+
+	/**
+	 * Test that runner rejects undefined result.
+	 * 
+	 * @throws Exception
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testRunMethodRejectsUndefinedResult() throws Exception {
 		// complete mock setup
 		EasyMock.replay(command);
 		EasyMock.replay(executionResult);
 		EasyMock.replay(context);
-				
+
 		// run
 		commandRunner.setExecutionResult(executionResult);
-		commandRunner.run(command, (ExecutionResult)null, context);
-		
-		// test 
-		assertTrue(commandRunner.lastExecutionSucceeded());		
-		
+		commandRunner.run(command, (ExecutionResult) null, context);
+
+		// test
+		assertTrue(commandRunner.lastExecutionSucceeded());
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(command);
 		EasyMock.verify(context);
-    }
-    
-    /**
-     * Test that runner rejects undefined context.
-     * 
-     * @throws Exception
-     */
-    @Test( expected = IllegalArgumentException.class )
-    public void testRunMethodRejectsUndefinedContext2() throws Exception
-    {
+	}
+
+	/**
+	 * Test that runner rejects undefined context.
+	 * 
+	 * @throws Exception
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testRunMethodRejectsUndefinedContext2() throws Exception {
 		// complete mock setup
 		EasyMock.replay(command);
 		EasyMock.replay(executionResult);
 		EasyMock.replay(context);
-				
+
 		// run
 		commandRunner.setExecutionResult(executionResult);
 		commandRunner.run(command, executionResult, null);
-		
-		// test 
-		assertTrue(commandRunner.lastExecutionSucceeded());		
-		
+
+		// test
+		assertTrue(commandRunner.lastExecutionSucceeded());
+
 		// verify mocks
-		EasyMock.verify(executionResult);				
+		EasyMock.verify(executionResult);
 		EasyMock.verify(command);
 		EasyMock.verify(context);
-    }
-    
+	}
+
 }

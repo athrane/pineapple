@@ -33,112 +33,109 @@ import com.alpha.pineapple.execution.ExecutionResult;
  */
 public interface CommandRunner {
 
-    /**
-     * <p>
-     * Execute a Chain command with a Chain context object a input. Information
-     * about the result of the execution is stored in the returned execution
-     * result object.
-     * </p>
-     *
-     * <p>
-     * If the runner has a defined root execution result object, then a new
-     * execution result object is created and added as a child object to the
-     * root execution result object. If no root execution result object is
-     * defined then one is created and the child result object is added to new
-     * root.
-     * </p>
-     *
-     * <p>
-     * The created execution result object which is used to describe the
-     * execution of the command, is also added to the command context under the
-     * key <code>execution-result</code>. this enables command objects to update
-     * the execution result object with information the outcome of the execution
-     * of the command.
-     * </p>
-     * 
-     * @param command
-     *            The command which should executed with the supplied context.
-     * 
-     * @param description
-     *            Human readable description of the command which should be
-     *            executed.
-     * 
-     * @param context
-     *            The context which should be used during command execution.
-     * 
-     * @return Execution result which contains information describing the the
-     *         result of the execution of the command, including the provided
-     *         description.
-     */
-    public ExecutionResult run(Command command, String description, Context context);
+	/**
+	 * <p>
+	 * Execute a Chain command with a Chain context object a input. Information
+	 * about the result of the execution is stored in the returned execution result
+	 * object.
+	 * </p>
+	 *
+	 * <p>
+	 * If the runner has a defined root execution result object, then a new
+	 * execution result object is created and added as a child object to the root
+	 * execution result object. If no root execution result object is defined then
+	 * one is created and the child result object is added to new root.
+	 * </p>
+	 *
+	 * <p>
+	 * The created execution result object which is used to describe the execution
+	 * of the command, is also added to the command context under the key
+	 * <code>execution-result</code>. this enables command objects to update the
+	 * execution result object with information the outcome of the execution of the
+	 * command.
+	 * </p>
+	 * 
+	 * @param command
+	 *            The command which should executed with the supplied context.
+	 * 
+	 * @param description
+	 *            Human readable description of the command which should be
+	 *            executed.
+	 * 
+	 * @param context
+	 *            The context which should be used during command execution.
+	 * 
+	 * @return Execution result which contains information describing the the result
+	 *         of the execution of the command, including the provided description.
+	 */
+	public ExecutionResult run(Command command, String description, Context context);
 
-    /**
-     * <p>
-     * Execute a Chain command with a Chain context object a input. Information
-     * about the result of the execution is stored in the supplied execution
-     * result object.
-     * </p>
-     *
-     * <p>
-     * If the runner has a defined root execution result object, then it is
-     * ignored and the supplied execution object is updated in isolation to
-     * contain the result of execution of the command. The root execution result
-     * object isn't updated in any way.
-     * </p>
-     *
-     * <p>
-     * The created execution result object which is used to describe the
-     * execution of the command, is also added to the command context under the
-     * key <code>execution-result</code>. this enables command objects to update
-     * the execution result object with information the outcome of the execution
-     * of the command.
-     * </p>
-     * 
-     * @param command
-     *            The command which should executed with the supplied context.
-     * 
-     * @param result
-     *            Execution result which contains information describing the the
-     *            result of the execution of the command, including the provided
-     *            description.
-     * 
-     * @param context
-     *            The context which should be used during command execution.
-     * 
-     * @return Execution result which contains information describing the the
-     *         result of the execution of the command, including the provided
-     *         description.
-     */
-    public ExecutionResult run(Command command, ExecutionResult result, Context context);
+	/**
+	 * <p>
+	 * Execute a Chain command with a Chain context object a input. Information
+	 * about the result of the execution is stored in the supplied execution result
+	 * object.
+	 * </p>
+	 *
+	 * <p>
+	 * If the runner has a defined root execution result object, then it is ignored
+	 * and the supplied execution object is updated in isolation to contain the
+	 * result of execution of the command. The root execution result object isn't
+	 * updated in any way.
+	 * </p>
+	 *
+	 * <p>
+	 * The created execution result object which is used to describe the execution
+	 * of the command, is also added to the command context under the key
+	 * <code>execution-result</code>. this enables command objects to update the
+	 * execution result object with information the outcome of the execution of the
+	 * command.
+	 * </p>
+	 * 
+	 * @param command
+	 *            The command which should executed with the supplied context.
+	 * 
+	 * @param result
+	 *            Execution result which contains information describing the the
+	 *            result of the execution of the command, including the provided
+	 *            description.
+	 * 
+	 * @param context
+	 *            The context which should be used during command execution.
+	 * 
+	 * @return Execution result which contains information describing the the result
+	 *         of the execution of the command, including the provided description.
+	 */
+	public ExecutionResult run(Command command, ExecutionResult result, Context context);
 
-    /**
-     * Set the root execution result object for the command runner.
-     * 
-     * @param result
-     *            The root execution result object.
-     */
-    public void setExecutionResult(ExecutionResult result);
+	/**
+	 * Set the root execution result object for the command runner.
+	 * 
+	 * @param result
+	 *            The root execution result object.
+	 */
+	public void setExecutionResult(ExecutionResult result);
 
-    /**
-     * Get the root execution result object for the command runner. If no result
-     * is defined then one is created and returned.
-     * 
-     * @return The root execution result object for the command runner.
-     */
-    public ExecutionResult getExecutionResult();
+	/**
+	 * Get the root execution result object for the command runner. If no result is
+	 * defined then one is created and returned.
+	 * 
+	 * @return The root execution result object for the command runner.
+	 */
+	public ExecutionResult getExecutionResult();
 
-    /**
-     * Create new Chain context.
-     * 
-     * @return new Chain context instance.
-     */
-    public Context createContext();
+	/**
+	 * Create new Chain context.
+	 * 
+	 * @return new Chain context instance.
+	 */
+	public Context createContext();
 
-    /**
-     * Return true if the last execution succeeded.
-     * 
-     * @return true if the last execution succeeded.
-     */
-    public boolean lastExecutionSucceeded();
+	/**
+	 * Return true if the last execution succeeded.
+	 * 
+	 * @return true if the last execution succeeded.
+	 */
+	public boolean lastExecutionSucceeded();
 
 }

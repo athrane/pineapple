@@ -34,51 +34,50 @@ import org.springframework.test.context.TestExecutionListener;
  */
 public class NameAwareTestExecutionListener implements TestExecutionListener {
 
-    /**
-     * Logger object.
-     */
-    static Logger logger = Logger.getLogger(NameAwareTestExecutionListener.class.getName());
+	/**
+	 * Logger object.
+	 */
+	static Logger logger = Logger.getLogger(NameAwareTestExecutionListener.class.getName());
 
-    /**
-     * Name of the currently execution test method.
-     */
-    static String testMethodName;
+	/**
+	 * Name of the currently execution test method.
+	 */
+	static String testMethodName;
 
-    public void afterTestMethod(TestContext testContext) throws Exception {
-	testMethodName = "";
-    }
+	public void afterTestMethod(TestContext testContext) throws Exception {
+		testMethodName = "";
+	}
 
-    public void beforeTestMethod(TestContext testContext) throws Exception {
+	public void beforeTestMethod(TestContext testContext) throws Exception {
 
-	// get the current test method
-	Method testMethod = testContext.getTestMethod();
+		// get the current test method
+		Method testMethod = testContext.getTestMethod();
 
-	// get simple name
-	testMethodName = testMethod.getName();
-    }
+		// get simple name
+		testMethodName = testMethod.getName();
+	}
 
-    public void prepareTestInstance(TestContext testContext) throws Exception {
-	// no implementation here.
-    }
+	public void prepareTestInstance(TestContext testContext) throws Exception {
+		// no implementation here.
+	}
 
-    /**
-     * Return the name of current test method executing. This method will only
-     * return a method during execution of a test method after execution or if
-     * this method is invoke will no test running then the method will return
-     * "".
-     * 
-     * @return the name of the current test method executing.
-     */
-    public static String getCurrentTestMethodName() {
-	return testMethodName;
-    }
+	/**
+	 * Return the name of current test method executing. This method will only
+	 * return a method during execution of a test method after execution or if this
+	 * method is invoke will no test running then the method will return "".
+	 * 
+	 * @return the name of the current test method executing.
+	 */
+	public static String getCurrentTestMethodName() {
+		return testMethodName;
+	}
 
-    public void afterTestClass(TestContext testContext) throws Exception {
-	// no implementation
-    }
+	public void afterTestClass(TestContext testContext) throws Exception {
+		// no implementation
+	}
 
-    public void beforeTestClass(TestContext testContext) throws Exception {
-	// no implementation
-    }
+	public void beforeTestClass(TestContext testContext) throws Exception {
+		// no implementation
+	}
 
 }

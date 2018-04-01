@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.filesystem.test.matchers;
 
 import static org.junit.Assert.assertFalse;
@@ -47,7 +46,7 @@ public class IsVfsFileWriteableTest {
 	 */
 	@SuppressWarnings("unchecked")
 	Matcher matcher;
-	
+
 	/**
 	 * Mock description.
 	 */
@@ -59,25 +58,25 @@ public class IsVfsFileWriteableTest {
 	FileSystemSession session;
 
 	/**
-	 *  Mock file object.
+	 * Mock file object.
 	 */
 	FileObject fileObject;
-	
+
 	@Before
 	public void setUp() throws Exception {
-				
-		// create mock session 
-		session = EasyMock.createMock( FileSystemSession.class);
+
+		// create mock session
+		session = EasyMock.createMock(FileSystemSession.class);
 
 		// create mock file object
-		fileObject = EasyMock.createMock( FileObject.class);
-				
-		// create matcher		
-		matcher = IsVfsFileWriteable.isVfsFileWriteable(session);				
+		fileObject = EasyMock.createMock(FileObject.class);
+
+		// create matcher
+		matcher = IsVfsFileWriteable.isVfsFileWriteable(session);
 	}
 
 	@After
-	public void tearDown() throws Exception {		
+	public void tearDown() throws Exception {
 		matcher = null;
 		session = null;
 		fileObject = null;
@@ -86,78 +85,81 @@ public class IsVfsFileWriteableTest {
 	/**
 	 * Test positive match if file object is writeable.
 	 * 
-	 * @throws Exception If test fails.
+	 * @throws Exception
+	 *             If test fails.
 	 */
 	@Test
-	public void testIsPositiveMatchIfFileObjectIsWriteable() throws Exception  {
-				
+	public void testIsPositiveMatchIfFileObjectIsWriteable() throws Exception {
+
 		String path = "/some-path";
 
 		// complete mock set setup
-		EasyMock.expect( fileObject.isWriteable()).andReturn(true);	
-		EasyMock.replay( fileObject );		
-		
+		EasyMock.expect(fileObject.isWriteable()).andReturn(true);
+		EasyMock.replay(fileObject);
+
 		// complete mock set setup
-		EasyMock.expect( session.resolveFile(path)).andReturn(fileObject);	
-		EasyMock.replay( session );		
-		
+		EasyMock.expect(session.resolveFile(path)).andReturn(fileObject);
+		EasyMock.replay(session);
+
 		// test
-		assertTrue(matcher.matches( path ));		
+		assertTrue(matcher.matches(path));
 
 		// verify mocks
-		EasyMock.verify( session );
-		EasyMock.verify( fileObject );		
+		EasyMock.verify(session);
+		EasyMock.verify(fileObject);
 	}
 
 	/**
 	 * Test negative match if file object isn't writeable.
 	 * 
-	 * @throws Exception If test fails.
+	 * @throws Exception
+	 *             If test fails.
 	 */
 	@Test
-	public void testIsNegativeMatchIfFileObjectIsntWriteable() throws Exception  {
-				
+	public void testIsNegativeMatchIfFileObjectIsntWriteable() throws Exception {
+
 		String path = "/some-path";
 
 		// complete mock set setup
-		EasyMock.expect( fileObject.isWriteable()).andReturn(false);	
-		EasyMock.replay( fileObject );		
-		
+		EasyMock.expect(fileObject.isWriteable()).andReturn(false);
+		EasyMock.replay(fileObject);
+
 		// complete mock set setup
-		EasyMock.expect( session.resolveFile(path)).andReturn(fileObject);	
-		EasyMock.replay( session );		
-		
+		EasyMock.expect(session.resolveFile(path)).andReturn(fileObject);
+		EasyMock.replay(session);
+
 		// test
-		assertFalse(matcher.matches( path ));		
+		assertFalse(matcher.matches(path));
 
 		// verify mocks
-		EasyMock.verify( session );
-		EasyMock.verify( fileObject );		
+		EasyMock.verify(session);
+		EasyMock.verify(fileObject);
 	}
 
 	/**
 	 * Test negative match if session throws exception.
 	 * 
-	 * @throws Exception If test fails.
+	 * @throws Exception
+	 *             If test fails.
 	 */
 	@Test
-	public void testIsNegativeMatchIfSessionThrowsException() throws Exception  {
-				
+	public void testIsNegativeMatchIfSessionThrowsException() throws Exception {
+
 		String path = "/some-path";
 
 		// complete mock set setup
-		EasyMock.replay( fileObject );		
-		
+		EasyMock.replay(fileObject);
+
 		// complete mock set setup
-		EasyMock.expect( session.resolveFile(path)).andThrow(new SessionException("..."));	
-		EasyMock.replay( session );		
-		
+		EasyMock.expect(session.resolveFile(path)).andThrow(new SessionException("..."));
+		EasyMock.replay(session);
+
 		// test
-		assertFalse(matcher.matches( path ));		
+		assertFalse(matcher.matches(path));
 
 		// verify mocks
-		EasyMock.verify( session );
-		EasyMock.verify( fileObject );		
+		EasyMock.verify(session);
+		EasyMock.verify(fileObject);
 	}
-	
+
 }

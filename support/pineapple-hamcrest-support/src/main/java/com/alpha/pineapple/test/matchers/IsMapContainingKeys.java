@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import java.util.HashSet;
@@ -37,13 +36,13 @@ import org.hamcrest.TypeSafeMatcher;
 /**
  * Matches if a map contains an expected pair of keys.
  */
-public class IsMapContainingKeys<K,V> extends TypeSafeMatcher<Map<K,V>> {
+public class IsMapContainingKeys<K, V> extends TypeSafeMatcher<Map<K, V>> {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-	
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	/**
 	 * Expected Map keys.
 	 */
@@ -52,57 +51,58 @@ public class IsMapContainingKeys<K,V> extends TypeSafeMatcher<Map<K,V>> {
 	/**
 	 * IsMapContainingKeys constructor.
 	 * 
-	 * @param expectedKeys Map with expected set of keys.
+	 * @param expectedKeys
+	 *            Map with expected set of keys.
 	 */
 	public IsMapContainingKeys(Set<K> expectedKeys) {
 		this.expectedKeys = expectedKeys;
 	}
 
 	@Override
-	protected boolean matchesSafely(Map<K,V> map) {
-		
+	protected boolean matchesSafely(Map<K, V> map) {
+
 		// get actual keys
 		Set<K> actualKeys = map.keySet();
-		
+
 		// match that the actual key set contains AT LEAST the expected keys
 		return actualKeys.containsAll(expectedKeys);
 	}
 
 	public void describeTo(Description description) {
-		description.appendText("isMapContainingKeys(");		
-		description.appendValue(expectedKeys);		
-		description.appendText(")");			
+		description.appendText("isMapContainingKeys(");
+		description.appendValue(expectedKeys);
+		description.appendText(")");
 	}
-			
-    @Override
-	protected void describeMismatchSafely(Map<K,V> map, Description mismatchDescription) {
+
+	@Override
+	protected void describeMismatchSafely(Map<K, V> map, Description mismatchDescription) {
 
 		// create set to old missing keys
-    	Set<K> missingKeys = new HashSet<K>();
-    	
+		Set<K> missingKeys = new HashSet<K>();
+
 		// get actual keys
 		Set<K> actualKeys = map.keySet();
 
 		// iterate over the expected keys
 		for (K key : expectedKeys) {
-			
+
 			// add key if is is missing
-			if( !actualKeys.contains( key) ) {
+			if (!actualKeys.contains(key)) {
 				missingKeys.add(key);
 			}
 		}
 
-    	String[] keySetArray = missingKeys.toArray(new String[missingKeys.size()]);
-    	String keysAsString = ReflectionToStringBuilder.toString( keySetArray);
-    	    			
-        // create description
-    	mismatchDescription.appendText("didnt contain the expected keys ");    	
-    	mismatchDescription.appendText( keysAsString );
+		String[] keySetArray = missingKeys.toArray(new String[missingKeys.size()]);
+		String keysAsString = ReflectionToStringBuilder.toString(keySetArray);
+
+		// create description
+		mismatchDescription.appendText("didnt contain the expected keys ");
+		mismatchDescription.appendText(keysAsString);
 	}
 
 	@Factory
-    public static <K,V> Matcher<Map<K,V>> containsKekys(Set<K> expectedKeys) {
-        return new IsMapContainingKeys<K, V>(expectedKeys);
-    }
-	
+	public static <K, V> Matcher<Map<K, V>> containsKekys(Set<K> expectedKeys) {
+		return new IsMapContainingKeys<K, V>(expectedKeys);
+	}
+
 }

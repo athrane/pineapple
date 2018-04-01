@@ -34,71 +34,71 @@ import org.junit.Test;
  * Unit test of the class {@link CredentialInfoImpl }.
  */
 public class CredentialInfoTest {
-    /**
-     * Object under test.
-     */
-    CredentialInfo info;
+	/**
+	 * Object under test.
+	 */
+	CredentialInfo info;
 
-    /**
-     * Random ID.
-     */
-    String randomId;
+	/**
+	 * Random ID.
+	 */
+	String randomId;
 
-    /**
-     * Random user.
-     */
-    String randomUser;
+	/**
+	 * Random user.
+	 */
+	String randomUser;
 
-    /**
-     * Random password.
-     */
-    String randomPassword;
+	/**
+	 * Random password.
+	 */
+	String randomPassword;
 
-    @Before
-    public void setUp() throws Exception {
-	randomId = RandomStringUtils.randomAlphabetic(10);
-	randomUser = RandomStringUtils.randomAlphabetic(10);
-	randomPassword = RandomStringUtils.randomAlphabetic(10);
-    }
+	@Before
+	public void setUp() throws Exception {
+		randomId = RandomStringUtils.randomAlphabetic(10);
+		randomUser = RandomStringUtils.randomAlphabetic(10);
+		randomPassword = RandomStringUtils.randomAlphabetic(10);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	info = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		info = null;
+	}
 
-    /**
-     * Constructor test, i.e. that cache entry can be created.
-     */
-    @Test
-    public void testCanCreateInstance() {
-	info = new CredentialInfoImpl(randomId, randomUser, randomPassword);
+	/**
+	 * Constructor test, i.e. that cache entry can be created.
+	 */
+	@Test
+	public void testCanCreateInstance() {
+		info = new CredentialInfoImpl(randomId, randomUser, randomPassword);
 
-	// test
-	assertNotNull(info);
-    }
+		// test
+		assertNotNull(info);
+	}
 
-    /**
-     * Constructor rejects undefined id.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorRejectsUndefinedId() {
-	info = new CredentialInfoImpl(null, randomUser, randomPassword);
-    }
+	/**
+	 * Constructor rejects undefined id.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testConstructorRejectsUndefinedId() {
+		info = new CredentialInfoImpl(null, randomUser, randomPassword);
+	}
 
-    /**
-     * Constructor rejects undefined user.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorRejectsUndefinedUser() {
-	info = new CredentialInfoImpl(randomId, null, randomPassword);
-    }
+	/**
+	 * Constructor rejects undefined user.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testConstructorRejectsUndefinedUser() {
+		info = new CredentialInfoImpl(randomId, null, randomPassword);
+	}
 
-    /**
-     * Constructor rejects undefined password.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorRejectsUndefinedPassword() {
-	info = new CredentialInfoImpl(randomId, randomUser, null);
-    }
+	/**
+	 * Constructor rejects undefined password.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testConstructorRejectsUndefinedPassword() {
+		info = new CredentialInfoImpl(randomId, randomUser, null);
+	}
 
 }

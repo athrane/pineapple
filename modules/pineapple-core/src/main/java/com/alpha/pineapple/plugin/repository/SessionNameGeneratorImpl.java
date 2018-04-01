@@ -34,27 +34,27 @@ import com.alpha.pineapple.plugin.PluginSession;
  */
 public class SessionNameGeneratorImpl implements BeanNameGenerator {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
-	String sessionName = PluginSession.class.getName();
+	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
+		String sessionName = PluginSession.class.getName();
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    StringBuilder message = new StringBuilder();
-	    message.append("Generated session name <");
-	    message.append(sessionName);
-	    message.append("> for bean <");
-	    message.append(definition);
-	    message.append(">.");
-	    logger.debug(message.toString());
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Generated session name <");
+			message.append(sessionName);
+			message.append("> for bean <");
+			message.append(definition);
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
+		return sessionName;
+
 	}
-
-	return sessionName;
-
-    }
 
 }

@@ -28,31 +28,31 @@ package com.alpha.pineapple.credential;
  */
 public class CredentialAlreadyExitsException extends Exception {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * CredentialAlreadyExitsException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public CredentialAlreadyExitsException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * CredentialAlreadyExitsException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public CredentialAlreadyExitsException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * CredentialAlreadyExitsException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public CredentialAlreadyExitsException(String message) {
-	super(message);
-    }
+	/**
+	 * CredentialAlreadyExitsException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public CredentialAlreadyExitsException(String message) {
+		super(message);
+	}
 
 }

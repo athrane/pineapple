@@ -27,91 +27,88 @@ package com.alpha.pineapple.docker.model;
  */
 public interface InfoBuilder {
 
-    /**
-     * Create Docker container info.
-     * 
-     * @param id
-     *            container name.
-     * @param info
-     *            image info.
-     * 
-     * @return Docker container info.
-     * 
-     * @throws IllegalArgumentException
-     *             if info is null.
-     */
-    public ContainerInfo buildContainerInfo(String name, ImageInfo info);
+	/**
+	 * Create Docker container info.
+	 * 
+	 * @param id
+	 *            container name.
+	 * @param info
+	 *            image info.
+	 * 
+	 * @return Docker container info.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if info is null.
+	 */
+	public ContainerInfo buildContainerInfo(String name, ImageInfo info);
 
-    /**
-     * Create Docker instance info.
-     * 
-     * @param id
-     *            container ID.
-     * @param info
-     *            container info.
-     * 
-     * @return Docker container instance info.
-     * 
-     * @throws IllegalArgumentException
-     *             if id is null.
-     * @throws IllegalArgumentException
-     *             if id is empty.
-     * @throws IllegalArgumentException
-     *             if info is null.
-     */
-    public ContainerInstanceInfo buildInstanceInfo(String id, ContainerInfo info);
+	/**
+	 * Create Docker instance info.
+	 * 
+	 * @param id
+	 *            container ID.
+	 * @param info
+	 *            container info.
+	 * 
+	 * @return Docker container instance info.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if id is null.
+	 * @throws IllegalArgumentException
+	 *             if id is empty.
+	 * @throws IllegalArgumentException
+	 *             if info is null.
+	 */
+	public ContainerInstanceInfo buildInstanceInfo(String id, ContainerInfo info);
 
-    /**
-     * Create Default Docker image info with repository and tag:
-     * "centos:latest".
-     * 
-     * @return Docker image info with with repository and tag:
-     *         "centos:latest".
-     */
-    public ImageInfo buildImageInfo();
+	/**
+	 * Create Default Docker image info with repository and tag: "centos:latest".
+	 * 
+	 * @return Docker image info with with repository and tag: "centos:latest".
+	 */
+	public ImageInfo buildImageInfo();
 
-    /**
-     * Create Docker image info.
-     * 
-     * @param repository
-     *            image repository.
-     * @param tag
-     *            image tag.
-     * 
-     * @return Docker image info.
-     * 
-     * @throws IllegalArgumentException
-     *             if repository is null.
-     * @throws IllegalArgumentException
-     *             if tag null.
-     */
-    public ImageInfo buildImageInfo(String repository, String tag);
+	/**
+	 * Create Docker image info.
+	 * 
+	 * @param repository
+	 *            image repository.
+	 * @param tag
+	 *            image tag.
+	 * 
+	 * @return Docker image info.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if repository is null.
+	 * @throws IllegalArgumentException
+	 *             if tag null.
+	 */
+	public ImageInfo buildImageInfo(String repository, String tag);
 
-    /**
-     * Create Docker image info with "latest" tag.
-     * 
-     * @param repository
-     *            image repository.
-     * 
-     * @return Docker image info with "latest" tag.
-     * 
-     * @throws IllegalArgumentException
-     *             if repository is null.
-     */
-    public ImageInfo buildImageInfo(String repository);
+	/**
+	 * Create Docker image info with "latest" tag.
+	 * 
+	 * @param repository
+	 *            image repository.
+	 * 
+	 * @return Docker image info with "latest" tag.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if repository is null.
+	 */
+	public ImageInfo buildImageInfo(String repository);
 
-    /**
-     * Create Docker image info from fully qualified name, i.e.
-     * "repository:tag".
-     * 
-     * @param repository
-     *            image fully qualified name, i.e. "repository:tag".
-     * 
-     * @return Docker image info.
-     * 
-     * @throws IllegalArgumentException
-     *             if name is null.
-     */
-    public ImageInfo buildImageInfoFromFQName(String image);
+	/**
+	 * Create Docker image info from fully qualified name, i.e. "repository:tag".
+	 * 
+	 * @param repository
+	 *            image fully qualified name, i.e. "repository:tag".
+	 * 
+	 * @return Docker image info.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if name is null.
+	 */
+	public ImageInfo buildImageInfoFromFQName(String image);
 
 }

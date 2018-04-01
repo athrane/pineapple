@@ -54,135 +54,135 @@ import com.alpha.springutils.DirectoryTestExecutionListener;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class CopyExampleModulesCommandIntegrationTest {
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command copyExampleModulesCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command copyExampleModulesCommand;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Mock execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Mock execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Random value.
-     */
-    String randomValue;
+	/**
+	 * Random value.
+	 */
+	String randomValue;
 
-    /**
-     * Random value.
-     */
-    String randomValue2;
+	/**
+	 * Random value.
+	 */
+	String randomValue2;
 
-    /**
-     * Random value.
-     */
-    String randomValue3;
+	/**
+	 * Random value.
+	 */
+	String randomValue3;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	randomValue = RandomStringUtils.randomAlphabetic(10);
-	randomValue2 = RandomStringUtils.randomAlphabetic(10);
+		randomValue = RandomStringUtils.randomAlphabetic(10);
+		randomValue2 = RandomStringUtils.randomAlphabetic(10);
 
-	// create context
-	context = new ContextBase();
+		// create context
+		context = new ContextBase();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("Root result");
-    }
+		// create execution result
+		executionResult = new ExecutionResultImpl("Root result");
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that command can execute successfully.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanCopyExamples() throws Exception {
-	// destination directory
-	File destinationDir = new File(testDirectory, randomValue);
+	/**
+	 * Test that command can execute successfully.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanCopyExamples() throws Exception {
+		// destination directory
+		File destinationDir = new File(testDirectory, randomValue);
 
-	// test
-	assertFalse(destinationDir.exists());
+		// test
+		assertFalse(destinationDir.exists());
 
-	// setup context
-	context.put(CopyExampleModulesCommand.DESTINATION_DIR_KEY, destinationDir);
-	context.put(CopyExampleModulesCommand.EXECUTIONRESULT_KEY, executionResult);
+		// setup context
+		context.put(CopyExampleModulesCommand.DESTINATION_DIR_KEY, destinationDir);
+		context.put(CopyExampleModulesCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// execute command
-	copyExampleModulesCommand.execute(context);
+		// execute command
+		copyExampleModulesCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertFalse(executionResult.isExecuting());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertFalse(executionResult.isExecuting());
+	}
 
-    /**
-     * Test that destination directory is created.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDestinationDirectoryIsCreated() throws Exception {
-	// destination directory
-	File destinationDir = new File(testDirectory, randomValue);
+	/**
+	 * Test that destination directory is created.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDestinationDirectoryIsCreated() throws Exception {
+		// destination directory
+		File destinationDir = new File(testDirectory, randomValue);
 
-	// test
-	assertFalse(destinationDir.exists());
+		// test
+		assertFalse(destinationDir.exists());
 
-	// setup context
-	context.put(CopyExampleModulesCommand.DESTINATION_DIR_KEY, destinationDir);
-	context.put(CopyExampleModulesCommand.EXECUTIONRESULT_KEY, executionResult);
+		// setup context
+		context.put(CopyExampleModulesCommand.DESTINATION_DIR_KEY, destinationDir);
+		context.put(CopyExampleModulesCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// execute command
-	copyExampleModulesCommand.execute(context);
+		// execute command
+		copyExampleModulesCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertFalse(executionResult.isExecuting());
-	assertTrue(destinationDir.exists());
-	assertTrue(destinationDir.isDirectory());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertFalse(executionResult.isExecuting());
+		assertTrue(destinationDir.exists());
+		assertTrue(destinationDir.isDirectory());
+	}
 
-    /**
-     * Test that destination directory isn't empty.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDestinationDirectoryIsntEmpty() throws Exception {
-	// destination directory
-	File destinationDir = new File(testDirectory, randomValue);
+	/**
+	 * Test that destination directory isn't empty.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDestinationDirectoryIsntEmpty() throws Exception {
+		// destination directory
+		File destinationDir = new File(testDirectory, randomValue);
 
-	// test
-	assertFalse(destinationDir.exists());
+		// test
+		assertFalse(destinationDir.exists());
 
-	// setup context
-	context.put(CopyExampleModulesCommand.DESTINATION_DIR_KEY, destinationDir);
-	context.put(CopyExampleModulesCommand.EXECUTIONRESULT_KEY, executionResult);
+		// setup context
+		context.put(CopyExampleModulesCommand.DESTINATION_DIR_KEY, destinationDir);
+		context.put(CopyExampleModulesCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// execute command
-	copyExampleModulesCommand.execute(context);
+		// execute command
+		copyExampleModulesCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertFalse(executionResult.isExecuting());
-	assertTrue(destinationDir.listFiles().length > 0);
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertFalse(executionResult.isExecuting());
+		assertTrue(destinationDir.listFiles().length > 0);
+	}
 
 }

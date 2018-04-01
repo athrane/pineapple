@@ -40,51 +40,50 @@ import com.alpha.pineapple.plugin.Operation;
  */
 public class RetrySessionHandlerFactoryImpl implements SessionHandlerFactory {
 
-    /**
-     * Factory which create session handler initialized with Spring
-     * dependencies.
-     */
-    @javax.annotation.Resource
-    ObjectFactory<RetrySessionHandlerImpl> springRetrySessionHandlerFactory;
+	/**
+	 * Factory which create session handler initialized with Spring dependencies.
+	 */
+	@javax.annotation.Resource
+	ObjectFactory<RetrySessionHandlerImpl> springRetrySessionHandlerFactory;
 
-    /**
-     * SessionHandler factory method.
-     * 
-     * Session handler is created with Spring dependencies and then initialized
-     * with required Pineapple data objects (e.g. {@linkplain Resource} and
-     * {@linkplain Credential} and {@linkplain Operation} which is proxied by
-     * the session handler.
-     * 
-     * @param resource
-     *            Resource object.
-     * @param credential
-     *            Credential object.
-     * @param operation
-     *            Operation object.
-     */
-    public Operation getInstance(Resource resource, Credential credential, Operation operation) {
-	Validate.notNull(resource, "resource is undefined.");
-	Validate.notNull(operation, "operation is undefined.");
+	/**
+	 * SessionHandler factory method.
+	 * 
+	 * Session handler is created with Spring dependencies and then initialized with
+	 * required Pineapple data objects (e.g. {@linkplain Resource} and
+	 * {@linkplain Credential} and {@linkplain Operation} which is proxied by the
+	 * session handler.
+	 * 
+	 * @param resource
+	 *            Resource object.
+	 * @param credential
+	 *            Credential object.
+	 * @param operation
+	 *            Operation object.
+	 */
+	public Operation getInstance(Resource resource, Credential credential, Operation operation) {
+		Validate.notNull(resource, "resource is undefined.");
+		Validate.notNull(operation, "operation is undefined.");
 
-	// create session handler from Spring context and initialize
-	if (credential == null)
-	    credential = getNullCredential();
-	RetrySessionHandlerImpl sessionHandler = springRetrySessionHandlerFactory.getObject();
-	sessionHandler.initialize(resource, credential, operation);
-	return sessionHandler;
-    }
+		// create session handler from Spring context and initialize
+		if (credential == null)
+			credential = getNullCredential();
+		RetrySessionHandlerImpl sessionHandler = springRetrySessionHandlerFactory.getObject();
+		sessionHandler.initialize(resource, credential, operation);
+		return sessionHandler;
+	}
 
-    /**
-     * Create null credential.
-     * 
-     * @return null credential.
-     */
-    Credential getNullCredential() {
-	Credential nullCredential = new Credential();
-	nullCredential.setId("");
-	nullCredential.setPassword("");
-	nullCredential.setUser("");
-	return nullCredential;
-    }
+	/**
+	 * Create null credential.
+	 * 
+	 * @return null credential.
+	 */
+	Credential getNullCredential() {
+		Credential nullCredential = new Credential();
+		nullCredential.setId("");
+		nullCredential.setPassword("");
+		nullCredential.setUser("");
+		return nullCredential;
+	}
 
 }

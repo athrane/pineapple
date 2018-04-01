@@ -30,43 +30,42 @@ import java.util.concurrent.TimeUnit;
  **/
 public class ConcurrencyUtils {
 
-    /**
-     * Wait one second using a {@linkplain CountDownLatch} which times out.
-     * 
-     * @throws InterruptedException
-     *             If operation is intercepted.
-     */
-    public static void waitOneSec() throws InterruptedException {
-	waitSomeSeconds(1);
-    }
+	/**
+	 * Wait one second using a {@linkplain CountDownLatch} which times out.
+	 * 
+	 * @throws InterruptedException
+	 *             If operation is intercepted.
+	 */
+	public static void waitOneSec() throws InterruptedException {
+		waitSomeSeconds(1);
+	}
 
-    /**
-     * Wait some seconds using a {@linkplain CountDownLatch} which times out.
-     * 
-     * @param seconds
-     *            seconds to wait.
-     * 
-     * @throws InterruptedException
-     *             If operation is intercepted.
-     */
-    public static void waitSomeSeconds(int seconds) throws InterruptedException {
-	CountDownLatch latch = new CountDownLatch(1);
-	latch.await(seconds, TimeUnit.SECONDS);
-    }
+	/**
+	 * Wait some seconds using a {@linkplain CountDownLatch} which times out.
+	 * 
+	 * @param seconds
+	 *            seconds to wait.
+	 * 
+	 * @throws InterruptedException
+	 *             If operation is intercepted.
+	 */
+	public static void waitSomeSeconds(int seconds) throws InterruptedException {
+		CountDownLatch latch = new CountDownLatch(1);
+		latch.await(seconds, TimeUnit.SECONDS);
+	}
 
-    /**
-     * Wait some milliseconds using a {@linkplain CountDownLatch} which times
-     * out.
-     * 
-     * @param millis
-     *            milli seconds to wait.
-     * 
-     * @throws InterruptedException
-     *             If operation is intercepted.
-     */
-    public static void waitSomeMilliseconds(int millis) throws InterruptedException {
-	CountDownLatch latch = new CountDownLatch(1);
-	latch.await(millis, TimeUnit.MILLISECONDS);
-    }
+	/**
+	 * Wait some milliseconds using a {@linkplain CountDownLatch} which times out.
+	 * 
+	 * @param millis
+	 *            milli seconds to wait.
+	 * 
+	 * @throws InterruptedException
+	 *             If operation is intercepted.
+	 */
+	public static void waitSomeMilliseconds(int millis) throws InterruptedException {
+		CountDownLatch latch = new CountDownLatch(1);
+		latch.await(millis, TimeUnit.MILLISECONDS);
+	}
 
 }

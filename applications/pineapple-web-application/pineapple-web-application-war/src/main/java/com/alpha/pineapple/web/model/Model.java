@@ -30,18 +30,18 @@ package com.alpha.pineapple.web.model;
  */
 public interface Model {
 
-    /**
-     * Set environment.
-     * 
-     * @param environment
-     *            environment name.
-     */
-    public void setEnvironment(String environment);
+	/**
+	 * Set environment.
+	 * 
+	 * @param environment
+	 *            environment name.
+	 */
+	public void setEnvironment(String environment);
 
-    /**
-     * Get environment.
-     * 
-     * @return environment.
-     */
-    public String getEnvironment();
+	/**
+	 * Get environment.
+	 * 
+	 * @return environment.
+	 */
+	public String getEnvironment();
 }

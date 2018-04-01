@@ -27,45 +27,45 @@ package com.alpha.pineapple.resource;
  * repository.
  */
 public interface EnvironmentInfo {
-    /**
-     * Get environment ID.
-     * 
-     * @return environment ID.
-     */
-    String getId();
+	/**
+	 * Get environment ID.
+	 * 
+	 * @return environment ID.
+	 */
+	String getId();
 
-    /**
-     * Get description of the environment.
-     * 
-     * @return description.
-     */
-    String getDescription();
+	/**
+	 * Get description of the environment.
+	 * 
+	 * @return description.
+	 */
+	String getDescription();
 
-    /**
-     * Return true if info contains resource info with requested ID.
-     * 
-     * @param id
-     *            resource ID.
-     * 
-     * @return true if info contains resource info with requested ID.
-     */
-    boolean containsResource(String id);
+	/**
+	 * Return true if info contains resource info with requested ID.
+	 * 
+	 * @param id
+	 *            resource ID.
+	 * 
+	 * @return true if info contains resource info with requested ID.
+	 */
+	boolean containsResource(String id);
 
-    /**
-     * Get resource info. Returns null if resource isn't registered.
-     * 
-     * @param id
-     *            resource ID.
-     * 
-     * @return resource info. Returns null if resource isn't registered.
-     */
-    ResourceInfo getResource(String id);
+	/**
+	 * Get resource info. Returns null if resource isn't registered.
+	 * 
+	 * @param id
+	 *            resource ID.
+	 * 
+	 * @return resource info. Returns null if resource isn't registered.
+	 */
+	ResourceInfo getResource(String id);
 
-    /**
-     * Get resource info's.
-     * 
-     * @return resource info's.
-     */
-    ResourceInfo[] getResources();
+	/**
+	 * Get resource info's.
+	 * 
+	 * @return resource info's.
+	 */
+	ResourceInfo[] getResources();
 
 }

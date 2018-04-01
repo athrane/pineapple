@@ -27,31 +27,31 @@ package com.alpha.pineapple.exception;
  */
 public class LoadConfigurationFailedException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * LoadConfigurationFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public LoadConfigurationFailedException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * LoadConfigurationFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public LoadConfigurationFailedException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * LoadConfigurationFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public LoadConfigurationFailedException(String message) {
-	super(message);
-    }
+	/**
+	 * LoadConfigurationFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public LoadConfigurationFailedException(String message) {
+		super(message);
+	}
 
 }

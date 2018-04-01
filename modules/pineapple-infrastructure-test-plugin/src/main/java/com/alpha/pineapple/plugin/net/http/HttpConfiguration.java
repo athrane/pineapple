@@ -20,19 +20,19 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.http;
 
 /**
- * HTTP configuration object which is used to configure 
- * the <code>InvokeHttpGetMethodCommand</code>.  
+ * HTTP configuration object which is used to configure the
+ * <code>InvokeHttpGetMethodCommand</code>.
  */
 public interface HttpConfiguration {
-	
+
 	/**
 	 * Set the proxy host.
 	 * 
-	 * @param host Proxy host name.
+	 * @param host
+	 *            Proxy host name.
 	 */
 	void setProxyHost(String host);
 
@@ -42,11 +42,12 @@ public interface HttpConfiguration {
 	 * @return the proxy host.
 	 */
 	String getProxyHost();
-	
+
 	/**
 	 * Set the proxy port.
 	 * 
-	 * @param host Proxy port.
+	 * @param host
+	 *            Proxy port.
 	 */
 	void setProxyPort(int port);
 
@@ -60,7 +61,8 @@ public interface HttpConfiguration {
 	/**
 	 * Set the TCP socket time out.
 	 * 
-	 * @param timeout TCP socket time out in milliseconds.
+	 * @param timeout
+	 *            TCP socket time out in milliseconds.
 	 */
 	void setTcpSocketTimeout(int timeout);
 
@@ -70,11 +72,12 @@ public interface HttpConfiguration {
 	 * @return TCP socket time out in milliseconds.
 	 */
 	int getTcpSocketTimeout();
-		
+
 	/**
 	 * Set the HTTP follow redirects behavior.
 	 * 
-	 * @param followRedirects If true then the HTTP client should follow redirects. 
+	 * @param followRedirects
+	 *            If true then the HTTP client should follow redirects.
 	 */
 	void setHttpFollowRedirects(boolean followRedirects);
 
@@ -84,5 +87,5 @@ public interface HttpConfiguration {
 	 * @return true if HTTP client should follow redirects.
 	 */
 	boolean getHttpFollowRedirects();
-	
+
 }

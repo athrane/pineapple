@@ -34,48 +34,47 @@ import com.alpha.pineapple.web.zk.asynctask.event.GenericEvent;
  */
 public interface EventDispatcher {
 
-    /**
-     * Register ZK {@linkplain Desktop} with event dispatcher.
-     * 
-     * Registration of the ZK desktop allows the dispatcher to forward ZK events
-     * to desktop.
-     * 
-     * @param desktop
-     *            ZK desktop which is registered.
-     */
-    void register(Desktop desktop);
+	/**
+	 * Register ZK {@linkplain Desktop} with event dispatcher.
+	 * 
+	 * Registration of the ZK desktop allows the dispatcher to forward ZK events to
+	 * desktop.
+	 * 
+	 * @param desktop
+	 *            ZK desktop which is registered.
+	 */
+	void register(Desktop desktop);
 
-    /**
-     * Unregister ZK {@linkplain Desktop} from event dispatcher.
-     * 
-     * Will clear the connection to the used ZK {@linkplain Desktop}. After a
-     * reset, the dispatch will NOT dispatch ZK events since there is no target
-     * desktop.
-     * 
-     * @param desktop
-     *            ZK desktop.
-     */
-    void unregister(Desktop desktop);
+	/**
+	 * Unregister ZK {@linkplain Desktop} from event dispatcher.
+	 * 
+	 * Will clear the connection to the used ZK {@linkplain Desktop}. After a reset,
+	 * the dispatch will NOT dispatch ZK events since there is no target desktop.
+	 * 
+	 * @param desktop
+	 *            ZK desktop.
+	 */
+	void unregister(Desktop desktop);
 
-    /**
-     * Dispatch ZK event.
-     * 
-     * @param zkEvent
-     *            which is dispatched.
-     * @param eventListener
-     *            target event listener to whom the event is dispatched.
-     */
-    void dispatchZkEvent(Event zkEvent, EventListener<Event> eventListener);
+	/**
+	 * Dispatch ZK event.
+	 * 
+	 * @param zkEvent
+	 *            which is dispatched.
+	 * @param eventListener
+	 *            target event listener to whom the event is dispatched.
+	 */
+	void dispatchZkEvent(Event zkEvent, EventListener<Event> eventListener);
 
-    /**
-     * Dispatch ZK event.
-     * 
-     * A {@linkplain GenericEvent} is dispatched. The generic event carries no
-     * arguments.
-     * 
-     * @param eventListener
-     *            target event listener to whom the event is dispatched.
-     */
-    void dispatchZkEvent(EventListener<Event> eventListener);
+	/**
+	 * Dispatch ZK event.
+	 * 
+	 * A {@linkplain GenericEvent} is dispatched. The generic event carries no
+	 * arguments.
+	 * 
+	 * @param eventListener
+	 *            target event listener to whom the event is dispatched.
+	 */
+	void dispatchZkEvent(EventListener<Event> eventListener);
 
 }

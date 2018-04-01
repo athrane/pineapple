@@ -60,175 +60,175 @@ import com.alpha.testutils.TestUtilsTestConstants;
 @ActiveProfiles("integration-test")
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-	DirectoryTestExecutionListener.class })
+		DirectoryTestExecutionListener.class })
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class CredentialProviderIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    CoreFactory coreFactory;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	CoreFactory coreFactory;
 
-    /**
-     * Credential provider.
-     */
-    CredentialProvider provider;
+	/**
+	 * Credential provider.
+	 */
+	CredentialProvider provider;
 
-    /**
-     * Object mother for credential provider
-     */
-    @Resource
-    ObjectMotherCredentialProvider providerMother;
+	/**
+	 * Object mother for credential provider
+	 */
+	@Resource
+	ObjectMotherCredentialProvider providerMother;
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * File based credential provider implementation.
-     */
-    @Resource
-    FileBasedCredentialProviderImpl uninitializedFileBasedCredentialProvider;
+	/**
+	 * File based credential provider implementation.
+	 */
+	@Resource
+	FileBasedCredentialProviderImpl uninitializedFileBasedCredentialProvider;
 
-    /**
-     * Object mother for environment configuration.
-     */
-    ObjectMotherEnvironmentConfiguration envConfigMother;
+	/**
+	 * Object mother for environment configuration.
+	 */
+	ObjectMotherEnvironmentConfiguration envConfigMother;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	// create environment configuration object mother
-	envConfigMother = new ObjectMotherEnvironmentConfiguration();
+		// create environment configuration object mother
+		envConfigMother = new ObjectMotherEnvironmentConfiguration();
 
-	// create credential provider
-	provider = providerMother.createEmptyCredentialProvider();
+		// create credential provider
+		provider = providerMother.createEmptyCredentialProvider();
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// clear the pineapple.home.dir system property
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+		// clear the pineapple.home.dir system property
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
 
-	// fail if the the pineapple.home.dir system property is set
-	assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
-    }
+		// fail if the the pineapple.home.dir system property is set
+		assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
+	}
 
-    @After
-    public void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 
-	// clear the pineapple.home.dir system setting
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
-    }
+		// clear the pineapple.home.dir system setting
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+	}
 
-    /**
-     * Factory test, i.e. that credential provider can be created from
-     * {@link CoreFactory}.
-     * 
-     * @throws CoreException
-     *             If test fails.
-     */
-    @Test
-    public void testCanCreateCredentialProviderFromFactory() throws CoreException {
-	// create credentials file
-	Configuration credentialConfig = envConfigMother.createEnvConfigWithSingleCredential();
-	envConfigMother.marshallToCredentialsFile(credentialConfig, testDirectory);
+	/**
+	 * Factory test, i.e. that credential provider can be created from
+	 * {@link CoreFactory}.
+	 * 
+	 * @throws CoreException
+	 *             If test fails.
+	 */
+	@Test
+	public void testCanCreateCredentialProviderFromFactory() throws CoreException {
+		// create credentials file
+		Configuration credentialConfig = envConfigMother.createEnvConfigWithSingleCredential();
+		envConfigMother.marshallToCredentialsFile(credentialConfig, testDirectory);
 
-	// create credential file
-	File file = envConfigMother.createCredentialsFileName(testDirectory);
+		// create credential file
+		File file = envConfigMother.createCredentialsFileName(testDirectory);
 
-	// create core component
-	CredentialProvider credentialProvider = coreFactory.createCredentialProvider(file);
+		// create core component
+		CredentialProvider credentialProvider = coreFactory.createCredentialProvider(file);
 
-	// test
-	assertNotNull(credentialProvider);
-    }
+		// test
+		assertNotNull(credentialProvider);
+	}
 
-    /**
-     * Factory test, i.e. that credential provider can be created from
-     * {@link CoreFactory}.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testCanCreatedCredentialProviderContainsExpectedUser() throws Exception {
-	// create credentials file
-	Configuration credentialConfig = envConfigMother.createEnvConfigWithSingleCredential();
-	envConfigMother.marshallToCredentialsFile(credentialConfig, testDirectory);
+	/**
+	 * Factory test, i.e. that credential provider can be created from
+	 * {@link CoreFactory}.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testCanCreatedCredentialProviderContainsExpectedUser() throws Exception {
+		// create credentials file
+		Configuration credentialConfig = envConfigMother.createEnvConfigWithSingleCredential();
+		envConfigMother.marshallToCredentialsFile(credentialConfig, testDirectory);
 
-	// create credential file
-	File file = envConfigMother.createCredentialsFileName(testDirectory);
+		// create credential file
+		File file = envConfigMother.createCredentialsFileName(testDirectory);
 
-	// create provider
-	CredentialProvider credentialProvider = coreFactory.createCredentialProvider(file);
+		// create provider
+		CredentialProvider credentialProvider = coreFactory.createCredentialProvider(file);
 
-	// get credential
-	Credential credential = credentialProvider.get(TestUtilsTestConstants.environmentIdOne,
-		TestUtilsTestConstants.credentialIdOne);
+		// get credential
+		Credential credential = credentialProvider.get(TestUtilsTestConstants.environmentIdOne,
+				TestUtilsTestConstants.credentialIdOne);
 
-	// test
-	assertEquals(TestUtilsTestConstants.credentialIdOne, credential.getId());
-	assertEquals("some-user", credential.getUser());
-	assertEquals("some-password", credential.getPassword());
-    }
+		// test
+		assertEquals(TestUtilsTestConstants.credentialIdOne, credential.getId());
+		assertEquals("some-user", credential.getUser());
+		assertEquals("some-password", credential.getPassword());
+	}
 
-    /**
-     * Factory test.
-     * 
-     * If the factory is created with its dependencies injected by Spring, then
-     * it will return the same provider instance when the factory method is
-     * invoked as returned by the spring context.
-     * 
-     * @throws CoreException
-     *             If test fails.
-     */
-    @Test
-    public void testFactoryWithInjectedDependeciesReturnsSameProviderInstanceAsSpringContext() throws CoreException {
-	// create credentials file
-	Configuration credentialConfig = envConfigMother.createEnvConfigWithSingleCredential();
-	envConfigMother.marshallToCredentialsFile(credentialConfig, testDirectory);
+	/**
+	 * Factory test.
+	 * 
+	 * If the factory is created with its dependencies injected by Spring, then it
+	 * will return the same provider instance when the factory method is invoked as
+	 * returned by the spring context.
+	 * 
+	 * @throws CoreException
+	 *             If test fails.
+	 */
+	@Test
+	public void testFactoryWithInjectedDependeciesReturnsSameProviderInstanceAsSpringContext() throws CoreException {
+		// create credentials file
+		Configuration credentialConfig = envConfigMother.createEnvConfigWithSingleCredential();
+		envConfigMother.marshallToCredentialsFile(credentialConfig, testDirectory);
 
-	// create credential file
-	File file = envConfigMother.createCredentialsFileName(testDirectory);
+		// create credential file
+		File file = envConfigMother.createCredentialsFileName(testDirectory);
 
-	// create provider
-	CredentialProvider credentialProvider = coreFactory.createCredentialProvider(file);
+		// create provider
+		CredentialProvider credentialProvider = coreFactory.createCredentialProvider(file);
 
-	// test
-	assertEquals(uninitializedFileBasedCredentialProvider, credentialProvider);
-    }
+		// test
+		assertEquals(uninitializedFileBasedCredentialProvider, credentialProvider);
+	}
 
-    /**
-     * Factory test.
-     * 
-     * If the factory is created with its dependencies injected by Spring, then
-     * it will return the same provider instance when invoked multiple times,
-     * e.g. the method is idempotent.
-     * 
-     * @throws CoreException
-     *             If test fails.
-     */
-    @Test
-    public void testFactoryWithInjectedDependeciesIsIdempotentForProviderFactoryMethod() throws CoreException {
-	// create credentials file
-	Configuration credentialConfig = envConfigMother.createEnvConfigWithSingleCredential();
-	envConfigMother.marshallToCredentialsFile(credentialConfig, testDirectory);
+	/**
+	 * Factory test.
+	 * 
+	 * If the factory is created with its dependencies injected by Spring, then it
+	 * will return the same provider instance when invoked multiple times, e.g. the
+	 * method is idempotent.
+	 * 
+	 * @throws CoreException
+	 *             If test fails.
+	 */
+	@Test
+	public void testFactoryWithInjectedDependeciesIsIdempotentForProviderFactoryMethod() throws CoreException {
+		// create credentials file
+		Configuration credentialConfig = envConfigMother.createEnvConfigWithSingleCredential();
+		envConfigMother.marshallToCredentialsFile(credentialConfig, testDirectory);
 
-	// create credential file
-	File file = envConfigMother.createCredentialsFileName(testDirectory);
+		// create credential file
+		File file = envConfigMother.createCredentialsFileName(testDirectory);
 
-	// create provider
-	CredentialProvider credentialProvider = coreFactory.createCredentialProvider(file);
+		// create provider
+		CredentialProvider credentialProvider = coreFactory.createCredentialProvider(file);
 
-	// create provider
-	CredentialProvider credentialProvider2 = coreFactory.createCredentialProvider(file);
+		// create provider
+		CredentialProvider credentialProvider2 = coreFactory.createCredentialProvider(file);
 
-	// test
-	assertEquals(uninitializedFileBasedCredentialProvider, credentialProvider);
-	assertEquals(uninitializedFileBasedCredentialProvider, credentialProvider2);
-    }
+		// test
+		assertEquals(uninitializedFileBasedCredentialProvider, credentialProvider);
+		assertEquals(uninitializedFileBasedCredentialProvider, credentialProvider2);
+	}
 
 }

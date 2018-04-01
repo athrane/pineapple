@@ -29,59 +29,59 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * Implementation of the {@link CredentialInfo} interface.
  */
 public class CredentialInfoImpl implements CredentialInfo {
-    /**
-     * Credential ID.
-     */
-    String id;
+	/**
+	 * Credential ID.
+	 */
+	String id;
 
-    /**
-     * user.
-     */
-    String user;
+	/**
+	 * user.
+	 */
+	String user;
 
-    /**
-     * password.
-     */
-    String password;
+	/**
+	 * password.
+	 */
+	String password;
 
-    /**
-     * CredentialInfoImpl constructor.
-     * 
-     * @param id
-     *            resource ID.
-     * @param user
-     *            user name.
-     * @param password
-     *            password.
-     */
-    public CredentialInfoImpl(String id, String user, String password) {
-	// validate parameters
-	Validate.notNull(id, "id is undefined.");
-	Validate.notNull(user, "user is undefined.");
-	Validate.notNull(password, "password is undefined.");
-	this.id = id;
-	this.user = user;
-	this.password = password;
-    }
+	/**
+	 * CredentialInfoImpl constructor.
+	 * 
+	 * @param id
+	 *            resource ID.
+	 * @param user
+	 *            user name.
+	 * @param password
+	 *            password.
+	 */
+	public CredentialInfoImpl(String id, String user, String password) {
+		// validate parameters
+		Validate.notNull(id, "id is undefined.");
+		Validate.notNull(user, "user is undefined.");
+		Validate.notNull(password, "password is undefined.");
+		this.id = id;
+		this.user = user;
+		this.password = password;
+	}
 
-    @Override
-    public String getId() {
-	return id;
-    }
+	@Override
+	public String getId() {
+		return id;
+	}
 
-    @Override
-    public String getUser() {
-	return user;
-    }
+	@Override
+	public String getUser() {
+		return user;
+	}
 
-    @Override
-    public String getPassword() {
-	return password;
-    }
+	@Override
+	public String getPassword() {
+		return password;
+	}
 
-    @Override
-    public String toString() {
-	return ToStringBuilder.reflectionToString(this);
-    }
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
 
 }

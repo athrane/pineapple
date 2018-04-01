@@ -52,101 +52,101 @@ import reactor.function.Consumer;
  */
 public class CreateReportImpl implements Consumer<Event<ExecutionResultNotification>> {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Report repository.
-     */
-    @Resource
-    ReportRepository reportRepository;
+	/**
+	 * Report repository.
+	 */
+	@Resource
+	ReportRepository reportRepository;
 
-    /**
-     * Runtime directory resolver.
-     */
-    @Resource
-    RuntimeDirectoryProvider runtimeDirectoryProvider;
+	/**
+	 * Runtime directory resolver.
+	 */
+	@Resource
+	RuntimeDirectoryProvider runtimeDirectoryProvider;
 
-    /**
-     * Report generator.
-     */
-    @Resource
-    ResultListener reportGenerator;
+	/**
+	 * Report generator.
+	 */
+	@Resource
+	ResultListener reportGenerator;
 
-    /**
-     * Web application reactor.
-     */
-    @Resource
-    Reactor webAppReactor;
+	/**
+	 * Web application reactor.
+	 */
+	@Resource
+	Reactor webAppReactor;
 
-    @Override
-    public void accept(Event<ExecutionResultNotification> t) {
-	
-	try {
+	@Override
+	public void accept(Event<ExecutionResultNotification> t) {
 
-	    // get notification
-	    ExecutionResultNotification notification = t.getData();
+		try {
 
-	    // exit if execution is completed
-	    if (!isExecutionCompleted(notification))
-		return;
+			// get notification
+			ExecutionResultNotification notification = t.getData();
 
-	    // initialize report generator
-	    ReportGeneratorInfo generatorInfo = (ReportGeneratorInfo) reportGenerator;
-	    generatorInfo.setReportDirectory(runtimeDirectoryProvider.getReportsDirectory());
+			// exit if execution is completed
+			if (!isExecutionCompleted(notification))
+				return;
 
-	    // generate report
-	    reportGenerator.notify(notification);
+			// initialize report generator
+			ReportGeneratorInfo generatorInfo = (ReportGeneratorInfo) reportGenerator;
+			generatorInfo.setReportDirectory(runtimeDirectoryProvider.getReportsDirectory());
 
-	    // exit if no report was generated
-	    Map<String, String> messages = notification.getResult().getMessages();
-	    if (!messages.containsKey(ExecutionResult.MSG_REPORT))
-		return;
+			// generate report
+			reportGenerator.notify(notification);
 
-	    // log exception if report generation failed.
+			// exit if no report was generated
+			Map<String, String> messages = notification.getResult().getMessages();
+			if (!messages.containsKey(ExecutionResult.MSG_REPORT))
+				return;
 
-	    // get generated report id
-	    String reportId = messages.get(ExecutionResult.MSG_REPORT);
+			// log exception if report generation failed.
 
-	    // update report repository with new execution
-	    reportRepository.add(reportId, notification.getResult());
+			// get generated report id
+			String reportId = messages.get(ExecutionResult.MSG_REPORT);
 
-	    // post created report event
-	    webAppReactor.notify(REACTOR_TOPIC_SERVICE_CREATED_REPORT, Event.wrap(REACTOR_EVENT_CREATED_REPORT));
+			// update report repository with new execution
+			reportRepository.add(reportId, notification.getResult());
 
-	} catch (Exception e) {
-	    logger.error(StackTraceHelper.getStrackTrace(e));
+			// post created report event
+			webAppReactor.notify(REACTOR_TOPIC_SERVICE_CREATED_REPORT, Event.wrap(REACTOR_EVENT_CREATED_REPORT));
+
+		} catch (Exception e) {
+			logger.error(StackTraceHelper.getStrackTrace(e));
+		}
+
 	}
 
-    }
+	/**
+	 * Return true if execution is completed, i.e. the root result signals that it
+	 * isn't running anymore.
+	 * 
+	 * @param result
+	 *            The execution result to test.
+	 * 
+	 * @return true if execution is completed, i.e. the root result signals that it
+	 *         isn't running anymore.
+	 */
+	boolean isExecutionCompleted(ExecutionResultNotification ern) {
+		if (!ern.getResult().isRoot())
+			return false;
+		return (!isResultExecuting(ern));
+	}
 
-    /**
-     * Return true if execution is completed, i.e. the root result signals that
-     * it isn't running anymore.
-     * 
-     * @param result
-     *            The execution result to test.
-     * 
-     * @return true if execution is completed, i.e. the root result signals that
-     *         it isn't running anymore.
-     */
-    boolean isExecutionCompleted(ExecutionResultNotification ern) {
-	if (!ern.getResult().isRoot())
-	    return false;
-	return (!isResultExecuting(ern));
-    }
-
-    /**
-     * Return true if execution is running of a non-root result.
-     * 
-     * @param result
-     *            The execution result to test.
-     * 
-     * @return true if execution is running of a non-root result.
-     */
-    boolean isResultExecuting(ExecutionResultNotification ern) {
-	return (ern.getState().equals(ExecutionResult.ExecutionState.EXECUTING));
-    }
+	/**
+	 * Return true if execution is running of a non-root result.
+	 * 
+	 * @param result
+	 *            The execution result to test.
+	 * 
+	 * @return true if execution is running of a non-root result.
+	 */
+	boolean isResultExecuting(ExecutionResultNotification ern) {
+		return (ern.getState().equals(ExecutionResult.ExecutionState.EXECUTING));
+	}
 }

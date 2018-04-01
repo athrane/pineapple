@@ -39,37 +39,37 @@ import java.util.MissingResourceException;
  */
 public interface MessageProvider {
 
-    /**
-     * Get resolve message from resource bundle with compound message values
-     * substituted into the resolved message.
-     * 
-     * @param key
-     *            Message key in resource bundle.
-     * @param args
-     *            Array of compound message values. If the args array is null
-     *            then no value Substitution is attempted.
-     * @return message with compound message values substituted into the
-     *         resolved message.
-     * 
-     * @throws MissingResourceException
-     *             if no message with the key could be found.
-     * @throws IllegalArgumentException
-     *             if the key is undefined.
-     */
-    public String getMessage(String key, Object[] args);
+	/**
+	 * Get resolve message from resource bundle with compound message values
+	 * substituted into the resolved message.
+	 * 
+	 * @param key
+	 *            Message key in resource bundle.
+	 * @param args
+	 *            Array of compound message values. If the args array is null then
+	 *            no value Substitution is attempted.
+	 * @return message with compound message values substituted into the resolved
+	 *         message.
+	 * 
+	 * @throws MissingResourceException
+	 *             if no message with the key could be found.
+	 * @throws IllegalArgumentException
+	 *             if the key is undefined.
+	 */
+	public String getMessage(String key, Object[] args);
 
-    /**
-     * Get resolve message from resource bundle.
-     * 
-     * @param key
-     *            Message key in resource bundle.
-     * @return resolved message.
-     * 
-     * @throws MissingResourceException
-     *             if no message with the key could be found.
-     * @throws IllegalArgumentException
-     *             if the key is undefined.
-     */
-    public String getMessage(String key);
+	/**
+	 * Get resolve message from resource bundle.
+	 * 
+	 * @param key
+	 *            Message key in resource bundle.
+	 * @return resolved message.
+	 * 
+	 * @throws MissingResourceException
+	 *             if no message with the key could be found.
+	 * @throws IllegalArgumentException
+	 *             if the key is undefined.
+	 */
+	public String getMessage(String key);
 
 }

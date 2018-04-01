@@ -90,569 +90,565 @@ import com.alpha.testutils.ObjectMotherModule;
 @WebAppConfiguration
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/webapp-config.xml")
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-	DirectoryTestExecutionListener.class })
+		DirectoryTestExecutionListener.class })
 public class ExecuteControllerIntegrationTest {
 
-    /**
-     * First list index.
-     */
-    final static int FIRST_INDEX = 0;
-
-    /**
-     * Event capturing result listener.
-     */
-    class CapturingResultListener implements ResultListener {
+	/**
+	 * First list index.
+	 */
+	final static int FIRST_INDEX = 0;
 
 	/**
-	 * Captured result notfications.
+	 * Event capturing result listener.
 	 */
-	List<ExecutionResultNotification> notifications;
+	class CapturingResultListener implements ResultListener {
+
+		/**
+		 * Captured result notfications.
+		 */
+		List<ExecutionResultNotification> notifications;
+
+		/**
+		 * Captured root results.
+		 */
+		List<ExecutionResult> rootResults;
+
+		/**
+		 * CapturingResultListener constructor.
+		 */
+		public CapturingResultListener() {
+			super();
+			notifications = new CopyOnWriteArrayList<ExecutionResultNotification>();
+		}
+
+		@Override
+		public void notify(ExecutionResultNotification notification) {
+			notifications.add(notification);
+		}
+
+	}
 
 	/**
-	 * Captured root results.
+	 * Current test directory.
 	 */
-	List<ExecutionResult> rootResults;
+	File testDirectory;
 
 	/**
-	 * CapturingResultListener constructor.
+	 * Web application context
 	 */
-	public CapturingResultListener() {
-	    super();
-	    notifications = new CopyOnWriteArrayList<ExecutionResultNotification>();
+	@Resource
+	WebApplicationContext wac;
+
+	/**
+	 * Web application core component factory.
+	 */
+	@Resource
+	WebAppCoreFactory webAppCoreFactory;
+
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
+	/**
+	 * Object mother for environment configuration.
+	 */
+	ObjectMotherEnvironmentConfiguration envConfigMother;
+
+	/**
+	 * Core component.
+	 * 
+	 * Initialize by web application core component factory.
+	 */
+	PineappleCore coreComponent;
+
+	/**
+	 * Mock MVC.
+	 */
+	MockMvc mockMvc;
+
+	/**
+	 * Modules directory.
+	 */
+	File modulesDir;
+
+	/**
+	 * Conf directory.
+	 */
+	File confDir;
+
+	/**
+	 * Object mother for module.
+	 */
+	ObjectMotherModule moduleMother;
+
+	/**
+	 * Random execution ID.
+	 */
+	String randomExecutionID;
+
+	/**
+	 * Random module.
+	 */
+	String randomModule;
+
+	/**
+	 * Random operation.
+	 */
+	String randomOperation;
+
+	/**
+	 * Random environment.
+	 */
+	String randomEnvironment;
+
+	/**
+	 * Random resource name.
+	 */
+	String randomResource;
+
+	/**
+	 * Capturing result listener.
+	 */
+	CapturingResultListener capturingListener;
+
+	@Before
+	public void setUp() throws Exception {
+		randomExecutionID = RandomStringUtils.randomAlphabetic(10);
+		randomModule = RandomStringUtils.randomAlphabetic(10);
+		randomOperation = RandomStringUtils.randomAlphabetic(10);
+		randomEnvironment = RandomStringUtils.randomAlphabetic(10);
+		randomResource = RandomStringUtils.randomAlphabetic(10) + "-resource";
+
+		// create module object mother
+		moduleMother = new ObjectMotherModule();
+
+		// create environment configuration object mother
+		envConfigMother = new ObjectMotherEnvironmentConfiguration();
+
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+
+		// define directory names
+		modulesDir = new File(testDirectory, "modules");
+		confDir = new File(testDirectory, "conf");
+
+		// create listener
+		capturingListener = new CapturingResultListener();
+
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+
+		// initialize Spring MVC mock
+		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).alwaysDo(print()).build();
+
 	}
 
-	@Override
-	public void notify(ExecutionResultNotification notification) {
-	    notifications.add(notification);
+	@After
+	public void tearDown() throws Exception {
+
+		// clear the pineapple.home.dir system setting
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+
+		// remove result listener
+		if (coreComponent == null)
+			return;
+		coreComponent.removeListener(capturingListener);
 	}
 
-    }
+	/**
+	 * Create environment configuration and module.
+	 * 
+	 * The environment configuration contains a random environment with resource for
+	 * hello world plugin.
+	 * 
+	 * The module contains a model which uses the hello world plugin.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	void createEnvConfigurationAndModule() throws Exception {
+		// create pineapple runtime sub directories, e.g conf and modules
+		confDir.mkdirs();
+		modulesDir.mkdirs();
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+		// create module
+		moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, randomResource);
 
-    /**
-     * Web application context
-     */
-    @Resource
-    WebApplicationContext wac;
+		// create environment configuration and save it
+		Configuration configuration = envConfigMother.createEnvConfigWithSingleResource(randomEnvironment,
+				randomResource, pluginIdHelloWorld);
+		File resourcesFile = envConfigMother.createResourcesFileName(confDir);
+		envConfigMother.jaxbMarshall(configuration, resourcesFile);
 
-    /**
-     * Web application core component factory.
-     */
-    @Resource
-    WebAppCoreFactory webAppCoreFactory;
-
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
-
-    /**
-     * Object mother for environment configuration.
-     */
-    ObjectMotherEnvironmentConfiguration envConfigMother;
-
-    /**
-     * Core component.
-     * 
-     * Initialize by web application core component factory.
-     */
-    PineappleCore coreComponent;
-
-    /**
-     * Mock MVC.
-     */
-    MockMvc mockMvc;
-
-    /**
-     * Modules directory.
-     */
-    File modulesDir;
-
-    /**
-     * Conf directory.
-     */
-    File confDir;
-
-    /**
-     * Object mother for module.
-     */
-    ObjectMotherModule moduleMother;
-
-    /**
-     * Random execution ID.
-     */
-    String randomExecutionID;
-
-    /**
-     * Random module.
-     */
-    String randomModule;
-
-    /**
-     * Random operation.
-     */
-    String randomOperation;
-
-    /**
-     * Random environment.
-     */
-    String randomEnvironment;
-
-    /**
-     * Random resource name.
-     */
-    String randomResource;
-
-    /**
-     * Capturing result listener.
-     */
-    CapturingResultListener capturingListener;
-
-    @Before
-    public void setUp() throws Exception {
-	randomExecutionID = RandomStringUtils.randomAlphabetic(10);
-	randomModule = RandomStringUtils.randomAlphabetic(10);
-	randomOperation = RandomStringUtils.randomAlphabetic(10);
-	randomEnvironment = RandomStringUtils.randomAlphabetic(10);
-	randomResource = RandomStringUtils.randomAlphabetic(10) + "-resource";
-
-	// create module object mother
-	moduleMother = new ObjectMotherModule();
-
-	// create environment configuration object mother
-	envConfigMother = new ObjectMotherEnvironmentConfiguration();
-
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
-
-	// define directory names
-	modulesDir = new File(testDirectory, "modules");
-	confDir = new File(testDirectory, "conf");
-
-	// create listener
-	capturingListener = new CapturingResultListener();
-
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
-
-	// initialize Spring MVC mock
-	mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).alwaysDo(print()).build();
-
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
-	// clear the pineapple.home.dir system setting
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
-
-	// remove result listener
-	if (coreComponent == null)
-	    return;
-	coreComponent.removeListener(capturingListener);
-    }
-
-    /**
-     * Create environment configuration and module.
-     * 
-     * The environment configuration contains a random environment with resource
-     * for hello world plugin.
-     * 
-     * The module contains a model which uses the hello world plugin.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    void createEnvConfigurationAndModule() throws Exception {
-	// create pineapple runtime sub directories, e.g conf and modules
-	confDir.mkdirs();
-	modulesDir.mkdirs();
-
-	// create module
-	moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, randomResource);
-
-	// create environment configuration and save it
-	Configuration configuration = envConfigMother.createEnvConfigWithSingleResource(randomEnvironment,
-		randomResource, pluginIdHelloWorld);
-	File resourcesFile = envConfigMother.createResourcesFileName(confDir);
-	envConfigMother.jaxbMarshall(configuration, resourcesFile);
-
-	// create credentials configuration and save it
-	Configuration credentialsConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
-	File credentialsFile = envConfigMother.createCredentialsFileName(confDir);
-	envConfigMother.jaxbMarshall(credentialsConfiguration, credentialsFile);
-    }
-
-    /**
-     * Configure core component.
-     * 
-     * Re-create and re-initialize core component to make it initialize itself
-     * from the defined Pineapple home directory system property. See class note
-     * above!!
-     * 
-     * Capturing event listener is registered.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    void reinitializeCoreComponent() throws Exception {
-	coreComponent = webAppCoreFactory.createCore();
-	coreComponent.addListener(capturingListener);
-
-	// TODO: FIX THIS
-	coreComponent.getAdministration().getModuleRepository().initialize();
-    }
-
-    /**
-     * Wait until execution is completed.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    void waitForOperationToComplete() throws Exception {
-
-	// wait for first result
-	while (capturingListener.notifications.isEmpty()) {
-	    ConcurrencyUtils.waitSomeMilliseconds(10);
+		// create credentials configuration and save it
+		Configuration credentialsConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+		File credentialsFile = envConfigMother.createCredentialsFileName(confDir);
+		envConfigMother.jaxbMarshall(credentialsConfiguration, credentialsFile);
 	}
 
-	// get first result
-	ExecutionResultNotification notification = capturingListener.notifications.get(FIRST_INDEX);
+	/**
+	 * Configure core component.
+	 * 
+	 * Re-create and re-initialize core component to make it initialize itself from
+	 * the defined Pineapple home directory system property. See class note above!!
+	 * 
+	 * Capturing event listener is registered.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	void reinitializeCoreComponent() throws Exception {
+		coreComponent = webAppCoreFactory.createCore();
+		coreComponent.addListener(capturingListener);
 
-	// wait until completed
-	while (notification.getResult().isExecuting()) {
+		// TODO: FIX THIS
+		coreComponent.getAdministration().getModuleRepository().initialize();
 	}
-    }
 
-    /**
-     * Test that POST "Execute" service invocation returns HTTP 201.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testPostExecute_ReturnsHttpCreated() throws Exception {
-	createEnvConfigurationAndModule();
-	reinitializeCoreComponent();
+	/**
+	 * Wait until execution is completed.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	void waitForOperationToComplete() throws Exception {
 
-	// execute operation asynchronously
-	mockMvc.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
-		.accept(MediaType.APPLICATION_XML)).andExpect(status().isCreated());
+		// wait for first result
+		while (capturingListener.notifications.isEmpty()) {
+			ConcurrencyUtils.waitSomeMilliseconds(10);
+		}
 
-	// wait to avoid untimely test tear down
-	waitForOperationToComplete();
-    }
+		// get first result
+		ExecutionResultNotification notification = capturingListener.notifications.get(FIRST_INDEX);
 
-    /**
-     * Test that POST "Execute" service invocation returns location header.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testPostExecute_ReturnsLocationHeader() throws Exception {
-	createEnvConfigurationAndModule();
-	reinitializeCoreComponent();
+		// wait until completed
+		while (notification.getResult().isExecuting()) {
+		}
+	}
 
-	// execute operation
-	mockMvc.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
-		.accept(MediaType.APPLICATION_XML)).andExpect(status().isCreated())
-		.andExpect(header().string(LOCATION_HEADER, StringContains.containsString(REST_EXECUTE_URI)));
+	/**
+	 * Test that POST "Execute" service invocation returns HTTP 201.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testPostExecute_ReturnsHttpCreated() throws Exception {
+		createEnvConfigurationAndModule();
+		reinitializeCoreComponent();
 
-	// wait to avoid untimely test tear down
-	waitForOperationToComplete();
-    }
+		// execute operation asynchronously
+		mockMvc.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
+				.accept(MediaType.APPLICATION_XML)).andExpect(status().isCreated());
 
-    /**
-     * Test that POST "Execute" service invocation returns content type
-     * "application/xml".
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testPostExecute_ReturnsContentTypeApplicationXml() throws Exception {
-	createEnvConfigurationAndModule();
+		// wait to avoid untimely test tear down
+		waitForOperationToComplete();
+	}
 
-	// execute operation
-	mockMvc.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
-		.accept(MediaType.APPLICATION_XML)).andExpect(content().contentType(MediaType.APPLICATION_XML));
-    }
+	/**
+	 * Test that POST "Execute" service invocation returns location header.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testPostExecute_ReturnsLocationHeader() throws Exception {
+		createEnvConfigurationAndModule();
+		reinitializeCoreComponent();
 
-    /**
-     * Test that POST "Execute" service invocation returns encoding "utf-8".
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testPostExecute_ReturnsEncodingUtf8_FIXME() throws Exception {
-	createEnvConfigurationAndModule();
+		// execute operation
+		mockMvc.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
+				.accept(MediaType.APPLICATION_XML)).andExpect(status().isCreated())
+				.andExpect(header().string(LOCATION_HEADER, StringContains.containsString(REST_EXECUTE_URI)));
 
-	// execute operation
-	mockMvc.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
-		.accept(MediaType.APPLICATION_XML)).andExpect(content().encoding("utf-8"));
+		// wait to avoid untimely test tear down
+		waitForOperationToComplete();
+	}
 
-	// wait to avoid untimely test tear down
-	waitForOperationToComplete();
-    }
+	/**
+	 * Test that POST "Execute" service invocation returns content type
+	 * "application/xml".
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testPostExecute_ReturnsContentTypeApplicationXml() throws Exception {
+		createEnvConfigurationAndModule();
 
-    /**
-     * Test that POST "Execute" service invocation returns HTTP 404 for
-     * execution of an unknown module.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testPostExecute_ReturnsNotFoundForUnknownModule() throws Exception {
-	mockMvc.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, randomOperation, randomEnvironment)
-		.accept(MediaType.TEXT_PLAIN)).andExpect(status().isNotFound());
-    }
+		// execute operation
+		mockMvc.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
+				.accept(MediaType.APPLICATION_XML)).andExpect(content().contentType(MediaType.APPLICATION_XML));
+	}
 
-    /**
-     * Test that POST "Execute" service invocation returns error message for
-     * execution of an unknown module which contains the name of the unknown
-     * module.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testPostExecute_ReturnsErrorMessageForUnknownModule() throws Exception {
-	mockMvc.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, randomOperation, randomEnvironment)
-		.accept(MediaType.TEXT_PLAIN)).andExpect(content().string(StringContains.containsString(randomModule)));
-    }
+	/**
+	 * Test that POST "Execute" service invocation returns encoding "utf-8".
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testPostExecute_ReturnsEncodingUtf8_FIXME() throws Exception {
+		createEnvConfigurationAndModule();
 
-    /**
-     * Test that GET "Get Operation Status" service invocation returns HTTP 200.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetOperationStatus_ReturnsHttpOk() throws Exception {
-	createEnvConfigurationAndModule();
-	reinitializeCoreComponent();
+		// execute operation
+		mockMvc.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
+				.accept(MediaType.APPLICATION_XML)).andExpect(content().encoding("utf-8"));
 
-	// execute operation
-	MvcResult mvcResult = mockMvc
-		.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
-			.accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isCreated())
-		.andExpect(header().string(LOCATION_HEADER, StringContains.containsString(REST_EXECUTE_URI)))
-		.andReturn();
+		// wait to avoid untimely test tear down
+		waitForOperationToComplete();
+	}
 
-	// wait to avoid untimely test tear down
-	waitForOperationToComplete();
+	/**
+	 * Test that POST "Execute" service invocation returns HTTP 404 for execution of
+	 * an unknown module.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testPostExecute_ReturnsNotFoundForUnknownModule() throws Exception {
+		mockMvc.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, randomOperation, randomEnvironment)
+				.accept(MediaType.TEXT_PLAIN)).andExpect(status().isNotFound());
+	}
 
-	// get execution ID
-	String locationHeader = mvcResult.getResponse().getHeader(LOCATION_HEADER);
-	String executionID = locationHeader.substring(locationHeader.lastIndexOf("/"));
+	/**
+	 * Test that POST "Execute" service invocation returns error message for
+	 * execution of an unknown module which contains the name of the unknown module.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testPostExecute_ReturnsErrorMessageForUnknownModule() throws Exception {
+		mockMvc.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, randomOperation, randomEnvironment)
+				.accept(MediaType.TEXT_PLAIN)).andExpect(content().string(StringContains.containsString(randomModule)));
+	}
 
-	// get status
-	mockMvc.perform(get(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isOk());
-    }
+	/**
+	 * Test that GET "Get Operation Status" service invocation returns HTTP 200.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetOperationStatus_ReturnsHttpOk() throws Exception {
+		createEnvConfigurationAndModule();
+		reinitializeCoreComponent();
 
-    /**
-     * Test that GET "Get Operation Status" service invocation returns HTTP 200
-     * despite multiple invocations.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetOperationStatus_ReturnsHttpOkWithMultipleIncocations() throws Exception {
-	createEnvConfigurationAndModule();
-	reinitializeCoreComponent();
+		// execute operation
+		MvcResult mvcResult = mockMvc
+				.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
+						.accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isCreated())
+				.andExpect(header().string(LOCATION_HEADER, StringContains.containsString(REST_EXECUTE_URI)))
+				.andReturn();
 
-	// execute operation
-	MvcResult mvcResult = mockMvc
-		.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
-			.accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isCreated())
-		.andExpect(header().string(LOCATION_HEADER, StringContains.containsString(REST_EXECUTE_URI)))
-		.andReturn();
+		// wait to avoid untimely test tear down
+		waitForOperationToComplete();
 
-	// wait to avoid untimely test tear down
-	waitForOperationToComplete();
+		// get execution ID
+		String locationHeader = mvcResult.getResponse().getHeader(LOCATION_HEADER);
+		String executionID = locationHeader.substring(locationHeader.lastIndexOf("/"));
 
-	// get execution ID
-	String locationHeader = mvcResult.getResponse().getHeader(LOCATION_HEADER);
-	String executionID = locationHeader.substring(locationHeader.lastIndexOf("/"));
+		// get status
+		mockMvc.perform(get(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isOk());
+	}
 
-	// get status
-	mockMvc.perform(get(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isOk());
+	/**
+	 * Test that GET "Get Operation Status" service invocation returns HTTP 200
+	 * despite multiple invocations.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetOperationStatus_ReturnsHttpOkWithMultipleIncocations() throws Exception {
+		createEnvConfigurationAndModule();
+		reinitializeCoreComponent();
 
-	// get status
-	mockMvc.perform(get(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isOk());
+		// execute operation
+		MvcResult mvcResult = mockMvc
+				.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
+						.accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isCreated())
+				.andExpect(header().string(LOCATION_HEADER, StringContains.containsString(REST_EXECUTE_URI)))
+				.andReturn();
 
-	// get status
-	mockMvc.perform(get(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isOk());
-    }
+		// wait to avoid untimely test tear down
+		waitForOperationToComplete();
 
-    /**
-     * Test that GET "Get Operation Status" service invocation returns HTTP 404
-     * for deleted execution ID.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetOperationStatus_ReturnsHttpNotFoundForDeleteExecutionId() throws Exception {
-	createEnvConfigurationAndModule();
-	reinitializeCoreComponent();
+		// get execution ID
+		String locationHeader = mvcResult.getResponse().getHeader(LOCATION_HEADER);
+		String executionID = locationHeader.substring(locationHeader.lastIndexOf("/"));
 
-	// execute operation
-	MvcResult mvcResult = mockMvc
-		.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
-			.accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isCreated())
-		.andExpect(header().string(LOCATION_HEADER, StringContains.containsString(REST_EXECUTE_URI)))
-		.andReturn();
+		// get status
+		mockMvc.perform(get(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isOk());
 
-	// wait to avoid untimely test tear down
-	waitForOperationToComplete();
+		// get status
+		mockMvc.perform(get(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isOk());
 
-	// get execution ID
-	String locationHeader = mvcResult.getResponse().getHeader(LOCATION_HEADER);
-	String executionID = locationHeader.substring(locationHeader.lastIndexOf("/"));
+		// get status
+		mockMvc.perform(get(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isOk());
+	}
 
-	// delete status
-	mockMvc.perform(delete(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isOk());
+	/**
+	 * Test that GET "Get Operation Status" service invocation returns HTTP 404 for
+	 * deleted execution ID.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetOperationStatus_ReturnsHttpNotFoundForDeleteExecutionId() throws Exception {
+		createEnvConfigurationAndModule();
+		reinitializeCoreComponent();
 
-	// get status
-	mockMvc.perform(get(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isNotFound());
-    }
+		// execute operation
+		MvcResult mvcResult = mockMvc
+				.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
+						.accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isCreated())
+				.andExpect(header().string(LOCATION_HEADER, StringContains.containsString(REST_EXECUTE_URI)))
+				.andReturn();
 
-    /**
-     * Test that GET "Get Operation Status" service invocation fails with HTTP
-     * 404.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetOperationStatus_ReturnsNotFoundForUnknownExecutionId() throws Exception {
-	mockMvc.perform(get(REST_EXECUTE_STATUS_URI, randomExecutionID).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isNotFound());
-    }
+		// wait to avoid untimely test tear down
+		waitForOperationToComplete();
 
-    /**
-     * Test that POST "Get Operation Status" service invocation fails with HTTP
-     * 405.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testPostGetOperationStatus_ReturnsMethodNotAllowed() throws Exception {
-	mockMvc.perform(post(REST_EXECUTE_STATUS_URI, randomExecutionID).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isMethodNotAllowed());
-    }
+		// get execution ID
+		String locationHeader = mvcResult.getResponse().getHeader(LOCATION_HEADER);
+		String executionID = locationHeader.substring(locationHeader.lastIndexOf("/"));
 
-    /**
-     * Test that DELETE "Delete Operation Status" service invocation returns
-     * HTTP 200 for known execution ID.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testDeleteOperationStatus_ReturnsHttpOk() throws Exception {
-	createEnvConfigurationAndModule();
-	reinitializeCoreComponent();
+		// delete status
+		mockMvc.perform(delete(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isOk());
 
-	// execute operation
-	MvcResult mvcResult = mockMvc
-		.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
-			.accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isCreated())
-		.andExpect(header().string(LOCATION_HEADER, StringContains.containsString(REST_EXECUTE_URI)))
-		.andReturn();
+		// get status
+		mockMvc.perform(get(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isNotFound());
+	}
 
-	// wait to avoid untimely test tear down
-	waitForOperationToComplete();
+	/**
+	 * Test that GET "Get Operation Status" service invocation fails with HTTP 404.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetOperationStatus_ReturnsNotFoundForUnknownExecutionId() throws Exception {
+		mockMvc.perform(get(REST_EXECUTE_STATUS_URI, randomExecutionID).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isNotFound());
+	}
 
-	// get execution ID
-	String locationHeader = mvcResult.getResponse().getHeader(LOCATION_HEADER);
-	String executionID = locationHeader.substring(locationHeader.lastIndexOf("/"));
+	/**
+	 * Test that POST "Get Operation Status" service invocation fails with HTTP 405.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testPostGetOperationStatus_ReturnsMethodNotAllowed() throws Exception {
+		mockMvc.perform(post(REST_EXECUTE_STATUS_URI, randomExecutionID).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isMethodNotAllowed());
+	}
 
-	// delete status
-	mockMvc.perform(delete(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isOk());
-    }
+	/**
+	 * Test that DELETE "Delete Operation Status" service invocation returns HTTP
+	 * 200 for known execution ID.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testDeleteOperationStatus_ReturnsHttpOk() throws Exception {
+		createEnvConfigurationAndModule();
+		reinitializeCoreComponent();
 
-    /**
-     * Test that DELETE "Delete Operation Status" service invocation fails for
-     * unknown execution ID
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testDeleteOperationStatus_ReturnsNotFoundForUnknownExecutionId() throws Exception {
-	mockMvc.perform(delete(REST_EXECUTE_STATUS_URI, randomExecutionID).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isNotFound());
-    }
+		// execute operation
+		MvcResult mvcResult = mockMvc
+				.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
+						.accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isCreated())
+				.andExpect(header().string(LOCATION_HEADER, StringContains.containsString(REST_EXECUTE_URI)))
+				.andReturn();
 
-    /**
-     * Test that DELETE "Delete Operation Status" service invocation returns
-     * HTTP 404 for deleted execution ID.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testDeleteOperationStatus_ReturnsHttpNotFoundForDeletedExecutionId() throws Exception {
-	createEnvConfigurationAndModule();
-	reinitializeCoreComponent();
+		// wait to avoid untimely test tear down
+		waitForOperationToComplete();
 
-	// execute operation
-	MvcResult mvcResult = mockMvc
-		.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
-			.accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isCreated())
-		.andExpect(header().string(LOCATION_HEADER, StringContains.containsString(REST_EXECUTE_URI)))
-		.andReturn();
+		// get execution ID
+		String locationHeader = mvcResult.getResponse().getHeader(LOCATION_HEADER);
+		String executionID = locationHeader.substring(locationHeader.lastIndexOf("/"));
 
-	// wait to avoid untimely test tear down
-	waitForOperationToComplete();
+		// delete status
+		mockMvc.perform(delete(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isOk());
+	}
 
-	// get execution ID
-	String locationHeader = mvcResult.getResponse().getHeader(LOCATION_HEADER);
-	String executionID = locationHeader.substring(locationHeader.lastIndexOf("/"));
+	/**
+	 * Test that DELETE "Delete Operation Status" service invocation fails for
+	 * unknown execution ID
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testDeleteOperationStatus_ReturnsNotFoundForUnknownExecutionId() throws Exception {
+		mockMvc.perform(delete(REST_EXECUTE_STATUS_URI, randomExecutionID).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isNotFound());
+	}
 
-	// delete status
-	mockMvc.perform(delete(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isOk());
+	/**
+	 * Test that DELETE "Delete Operation Status" service invocation returns HTTP
+	 * 404 for deleted execution ID.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testDeleteOperationStatus_ReturnsHttpNotFoundForDeletedExecutionId() throws Exception {
+		createEnvConfigurationAndModule();
+		reinitializeCoreComponent();
 
-	// delete status sencond time
-	mockMvc.perform(delete(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isNotFound());
-    }
+		// execute operation
+		MvcResult mvcResult = mockMvc
+				.perform(post(REST_EXECUTE_EXECUTE_URI, randomModule, helloWorldOperation, randomEnvironment)
+						.accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isCreated())
+				.andExpect(header().string(LOCATION_HEADER, StringContains.containsString(REST_EXECUTE_URI)))
+				.andReturn();
 
-    /**
-     * Test that POST "Delete Operation Status" service invocation fails with
-     * HTTP 405.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testPostDeleteOperationStatus_ReturnsMethodNotAllowed() throws Exception {
-	mockMvc.perform(post(REST_EXECUTE_STATUS_URI, randomExecutionID).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isMethodNotAllowed());
-    }
+		// wait to avoid untimely test tear down
+		waitForOperationToComplete();
+
+		// get execution ID
+		String locationHeader = mvcResult.getResponse().getHeader(LOCATION_HEADER);
+		String executionID = locationHeader.substring(locationHeader.lastIndexOf("/"));
+
+		// delete status
+		mockMvc.perform(delete(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isOk());
+
+		// delete status sencond time
+		mockMvc.perform(delete(REST_EXECUTE_STATUS_URI, executionID).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isNotFound());
+	}
+
+	/**
+	 * Test that POST "Delete Operation Status" service invocation fails with HTTP
+	 * 405.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testPostDeleteOperationStatus_ReturnsMethodNotAllowed() throws Exception {
+		mockMvc.perform(post(REST_EXECUTE_STATUS_URI, randomExecutionID).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isMethodNotAllowed());
+	}
 
 }

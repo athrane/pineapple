@@ -28,31 +28,31 @@ package com.alpha.pineapple.resource;
 @Deprecated
 public class SaveConfigurationFailedException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * SaveConfigurationFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public SaveConfigurationFailedException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * SaveConfigurationFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public SaveConfigurationFailedException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * SaveConfigurationFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public SaveConfigurationFailedException(String message) {
-	super(message);
-    }
+	/**
+	 * SaveConfigurationFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public SaveConfigurationFailedException(String message) {
+		super(message);
+	}
 
 }

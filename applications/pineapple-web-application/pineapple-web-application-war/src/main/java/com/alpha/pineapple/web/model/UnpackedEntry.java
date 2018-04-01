@@ -29,63 +29,63 @@ package com.alpha.pineapple.web.model;
  */
 public class UnpackedEntry {
 
-    /**
-     * Entry name.
-     */
-    String name;
+	/**
+	 * Entry name.
+	 */
+	String name;
 
-    /**
-     * Entry type.
-     */
-    String type;
+	/**
+	 * Entry type.
+	 */
+	String type;
 
-    /**
-     * Entry size in KB.
-     */
-    String size;
+	/**
+	 * Entry size in KB.
+	 */
+	String size;
 
-    /**
-     * Constructor.
-     * 
-     * @param name
-     *            Entry name.
-     * @param type
-     *            Entry type.
-     * @param size
-     *            Entry size in KB.
-     */
-    public UnpackedEntry(String name, String type, String size) {
-	super();
-	this.name = name;
-	this.type = type;
-	this.size = size;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param name
+	 *            Entry name.
+	 * @param type
+	 *            Entry type.
+	 * @param size
+	 *            Entry size in KB.
+	 */
+	public UnpackedEntry(String name, String type, String size) {
+		super();
+		this.name = name;
+		this.type = type;
+		this.size = size;
+	}
 
-    /**
-     * Return name.
-     * 
-     * @return name.
-     */
-    public String getName() {
-	return name;
-    }
+	/**
+	 * Return name.
+	 * 
+	 * @return name.
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Return type.
-     * 
-     * @return type.
-     */
-    public String getType() {
-	return type;
-    }
+	/**
+	 * Return type.
+	 * 
+	 * @return type.
+	 */
+	public String getType() {
+		return type;
+	}
 
-    /**
-     * Return size.
-     * 
-     * @return size.
-     */
-    public String getSize() {
-	return size;
-    }
+	/**
+	 * Return size.
+	 * 
+	 * @return size.
+	 */
+	public String getSize() {
+		return size;
+	}
 
 }

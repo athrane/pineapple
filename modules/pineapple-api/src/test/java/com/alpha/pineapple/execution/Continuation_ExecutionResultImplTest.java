@@ -47,214 +47,214 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class Continuation_ExecutionResultImplTest {
 
-    // can't include the MessageProviderAnswerImpl from pineapple-test-utils
-    // project
-    // due to circular Maven dependencies.
-    public class MessageProviderAnswerImpl implements IAnswer<String> {
+	// can't include the MessageProviderAnswerImpl from pineapple-test-utils
+	// project
+	// due to circular Maven dependencies.
+	public class MessageProviderAnswerImpl implements IAnswer<String> {
 
-	public String answer() throws Throwable {
+		public String answer() throws Throwable {
 
-	    // get current arguments
-	    Object[] args = EasyMock.getCurrentArguments();
+			// get current arguments
+			Object[] args = EasyMock.getCurrentArguments();
 
-	    // return key as answer
-	    String key = (String) args[0];
-	    return key;
+			// return key as answer
+			String key = (String) args[0];
+			return key;
+		}
 	}
-    }
 
-    final static String DESCRIPTION = "a description";
+	final static String DESCRIPTION = "a description";
 
-    /**
-     * Object under test.
-     */
-    ExecutionResultImpl result;
+	/**
+	 * Object under test.
+	 */
+	ExecutionResultImpl result;
 
-    /**
-     * mock result repository.
-     */
-    ResultRepository repository;
+	/**
+	 * mock result repository.
+	 */
+	ResultRepository repository;
 
-    /**
-     * Mock message provider.
-     */
-    MessageProvider messageProvider;
+	/**
+	 * Mock message provider.
+	 */
+	MessageProvider messageProvider;
 
-    /**
-     * Random value.
-     */
-    String randomDescription;
+	/**
+	 * Random value.
+	 */
+	String randomDescription;
 
-    /**
-     * Random value.
-     */
-    String randomDescription2;
+	/**
+	 * Random value.
+	 */
+	String randomDescription2;
 
-    /**
-     * Random value.
-     */
-    String randomMessage;
+	/**
+	 * Random value.
+	 */
+	String randomMessage;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	randomDescription = RandomStringUtils.randomAlphabetic(10);
-	randomDescription2 = RandomStringUtils.randomAlphabetic(10);
-	randomMessage = RandomStringUtils.randomAlphabetic(10);
+		randomDescription = RandomStringUtils.randomAlphabetic(10);
+		randomDescription2 = RandomStringUtils.randomAlphabetic(10);
+		randomMessage = RandomStringUtils.randomAlphabetic(10);
 
-	// create mock repository
-	repository = EasyMock.createMock(ResultRepository.class);
+		// create mock repository
+		repository = EasyMock.createMock(ResultRepository.class);
 
-	messageProvider = createMessageProviderWithArgs();
-    }
-
-    /**
-     * Create message provider which accept messages with arguments.
-     * 
-     * @return message provider which accept messages with arguments.
-     */
-    MessageProvider createMessageProviderWithArgs() {
-
-	// create mock provider
-	MessageProvider messageProvider = EasyMock.createMock(MessageProvider.class);
-
-	// complete mock source initialization
-	IAnswer<String> answer = new MessageProviderAnswerImpl();
-
-	EasyMock.expect(
-		messageProvider.getMessage((String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject()));
-	EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-
-	EasyMock.replay(messageProvider);
-
-	return messageProvider;
-    }
-
-    /**
-     * Create message provider which accept messages with no arguments.
-     * 
-     * @return message provider which accept messages with no arguments.
-     */
-    MessageProvider createMessageProviderWithNoArgs() {
-
-	// create mock provider
-	MessageProvider messageProvider = EasyMock.createMock(MessageProvider.class);
-
-	// complete mock source initialization
-	IAnswer<String> answer = new MessageProviderAnswerImpl();
-
-	EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
-	EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-
-	EasyMock.replay(messageProvider);
-
-	return messageProvider;
-    }
-
-    @After
-    public void tearDown() throws Exception {
-	result = null;
-	repository = null;
-	messageProvider = null;
-    }
-
-    /**
-     * Test that the continuation policy is updated as expected when
-     * setCancelled() is invoked.
-     */
-    @Test
-    public void testCancelUpdatesTheContinuationPolicy() {
-	result = new ExecutionResultImpl(repository, randomDescription);
-	ContinuationPolicy policy = result.getContinuationPolicy();
-	result.setCancelled();
-
-	// test
-	assertNotNull(policy);
-	assertFalse(policy.continueExecution());
-	assertTrue(policy.isContinueOnFailure());
-	assertTrue(policy.isCancelled());
-	assertNull(policy.getFailedResult());
-    }
-
-    /**
-     * Test that interrupted exception is thrown when attempting to create child
-     * after cancellation.
-     */
-    @Test(expected = InterruptedExecutionException.class)
-    public void testCreatingChildAfterCancellationThrowsException() {
-	result = new ExecutionResultImpl(repository, randomDescription);
-	result.setCancelled();
-
-	// add child to trigger exception
-	result.addChild(randomDescription2);
-    }
-
-    /**
-     * Test that interrupted state is set when attempting to create child after
-     * cancellation.
-     */
-    @Test()
-    public void testCreatingChildAfterCancellationSetsInterruptedState() {
-	result = new ExecutionResultImpl(repository, randomDescription);
-	result.setCancelled();
-
-	try {
-	    // add child to trigger exception
-	    result.addChild(randomDescription2);
-
-	} catch (InterruptedExecutionException e) {
-
-	    // test
-	    assertEquals(ExecutionState.INTERRUPTED, result.getState());
+		messageProvider = createMessageProviderWithArgs();
 	}
-    }
 
-    /**
-     * Test that interrupted exception is thrown when attempting to create child
-     * after a failure.
-     */
-    @Test(expected = InterruptedExecutionException.class)
-    public void testCreatingChildAfterAbortOnFailureThrowsException() {
-	result = new ExecutionResultImpl(repository, randomDescription);
-	result.getContinuationPolicy().disableContinueOnFailure();
+	/**
+	 * Create message provider which accept messages with arguments.
+	 * 
+	 * @return message provider which accept messages with arguments.
+	 */
+	MessageProvider createMessageProviderWithArgs() {
 
-	// add child and set failure
-	ExecutionResult child = result.addChild(randomDescription2);
-	child.setState(ExecutionState.FAILURE);
+		// create mock provider
+		MessageProvider messageProvider = EasyMock.createMock(MessageProvider.class);
 
-	// add child to trigger exception
-	result.addChild(randomDescription2);
-    }
+		// complete mock source initialization
+		IAnswer<String> answer = new MessageProviderAnswerImpl();
 
-    /**
-     * Test that interrupted state is set when attempting to create child after
-     * failure.
-     */
-    @Test()
-    public void testCreatingChildAfterAbortSetsInterruptedState() {
-	result = new ExecutionResultImpl(repository, randomDescription);
-	result.getContinuationPolicy().disableContinueOnFailure();
+		EasyMock.expect(
+				messageProvider.getMessage((String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject()));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
 
-	// declare
-	ExecutionResult child = null;
-	ExecutionResult child2 = null;
+		EasyMock.replay(messageProvider);
 
-	try {
-	    // add child and set failure
-	    child = result.addChild(randomDescription2);
-	    child.setState(ExecutionState.FAILURE);
-
-	    // add child to trigger exception
-	    result.addChild(randomDescription2);
-
-	} catch (InterruptedExecutionException e) {
-
-	    // test
-	    assertEquals(ExecutionState.INTERRUPTED, result.getState()); // root
-									 // result
-	    assertEquals(ExecutionState.FAILURE, child.getState()); // child #1
-	    assertNull(child2); // child #2 was never created
+		return messageProvider;
 	}
-    }
+
+	/**
+	 * Create message provider which accept messages with no arguments.
+	 * 
+	 * @return message provider which accept messages with no arguments.
+	 */
+	MessageProvider createMessageProviderWithNoArgs() {
+
+		// create mock provider
+		MessageProvider messageProvider = EasyMock.createMock(MessageProvider.class);
+
+		// complete mock source initialization
+		IAnswer<String> answer = new MessageProviderAnswerImpl();
+
+		EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+
+		EasyMock.replay(messageProvider);
+
+		return messageProvider;
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		result = null;
+		repository = null;
+		messageProvider = null;
+	}
+
+	/**
+	 * Test that the continuation policy is updated as expected when setCancelled()
+	 * is invoked.
+	 */
+	@Test
+	public void testCancelUpdatesTheContinuationPolicy() {
+		result = new ExecutionResultImpl(repository, randomDescription);
+		ContinuationPolicy policy = result.getContinuationPolicy();
+		result.setCancelled();
+
+		// test
+		assertNotNull(policy);
+		assertFalse(policy.continueExecution());
+		assertTrue(policy.isContinueOnFailure());
+		assertTrue(policy.isCancelled());
+		assertNull(policy.getFailedResult());
+	}
+
+	/**
+	 * Test that interrupted exception is thrown when attempting to create child
+	 * after cancellation.
+	 */
+	@Test(expected = InterruptedExecutionException.class)
+	public void testCreatingChildAfterCancellationThrowsException() {
+		result = new ExecutionResultImpl(repository, randomDescription);
+		result.setCancelled();
+
+		// add child to trigger exception
+		result.addChild(randomDescription2);
+	}
+
+	/**
+	 * Test that interrupted state is set when attempting to create child after
+	 * cancellation.
+	 */
+	@Test()
+	public void testCreatingChildAfterCancellationSetsInterruptedState() {
+		result = new ExecutionResultImpl(repository, randomDescription);
+		result.setCancelled();
+
+		try {
+			// add child to trigger exception
+			result.addChild(randomDescription2);
+
+		} catch (InterruptedExecutionException e) {
+
+			// test
+			assertEquals(ExecutionState.INTERRUPTED, result.getState());
+		}
+	}
+
+	/**
+	 * Test that interrupted exception is thrown when attempting to create child
+	 * after a failure.
+	 */
+	@Test(expected = InterruptedExecutionException.class)
+	public void testCreatingChildAfterAbortOnFailureThrowsException() {
+		result = new ExecutionResultImpl(repository, randomDescription);
+		result.getContinuationPolicy().disableContinueOnFailure();
+
+		// add child and set failure
+		ExecutionResult child = result.addChild(randomDescription2);
+		child.setState(ExecutionState.FAILURE);
+
+		// add child to trigger exception
+		result.addChild(randomDescription2);
+	}
+
+	/**
+	 * Test that interrupted state is set when attempting to create child after
+	 * failure.
+	 */
+	@Test()
+	public void testCreatingChildAfterAbortSetsInterruptedState() {
+		result = new ExecutionResultImpl(repository, randomDescription);
+		result.getContinuationPolicy().disableContinueOnFailure();
+
+		// declare
+		ExecutionResult child = null;
+		ExecutionResult child2 = null;
+
+		try {
+			// add child and set failure
+			child = result.addChild(randomDescription2);
+			child.setState(ExecutionState.FAILURE);
+
+			// add child to trigger exception
+			result.addChild(randomDescription2);
+
+		} catch (InterruptedExecutionException e) {
+
+			// test
+			assertEquals(ExecutionState.INTERRUPTED, result.getState()); // root
+			// result
+			assertEquals(ExecutionState.FAILURE, child.getState()); // child #1
+			assertNull(child2); // child #2 was never created
+		}
+	}
 
 }

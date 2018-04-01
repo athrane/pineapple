@@ -71,501 +71,501 @@ import com.alpha.springutils.DirectoryTestExecutionListener;
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/webapp-config.xml")
 public class ReportRepositoryIntegrationTest {
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
-
-    /**
-     * Subject under test.
-     */
-    @Resource
-    ReportRepository reportRepository;
-
-    /**
-     * Web application core component factory.
-     */
-    @Resource
-    WebAppCoreFactory webAppCoreFactory;
-
-    /**
-     * Execution result factory.
-     */
-    @Resource
-    ExecutionResultFactory executionResultFactory;
-
-    /**
-     * Report directory.
-     */
-    File reportsDir;
-
-    /**
-     * Random value.
-     */
-    String randomName;
-
-    /**
-     * Random value.
-     */
-    String randomName2;
-
-    /**
-     * Random value.
-     */
-    String randomDescription;
-
-    /**
-     * Core component.
-     * 
-     * Initialize by web application core component factory.
-     */
-    PineappleCore coreComponent;
-
-    /**
-     * Execution result.
-     */
-    ExecutionResult result;
-
-    @Before
-    public void setUp() throws Exception {
-	randomName = RandomStringUtils.randomAlphabetic(10);
-	randomName2 = RandomStringUtils.randomAlphabetic(10);
-	randomDescription = RandomStringUtils.randomAlphabetic(10);
-
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
-
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
-
-	// create reports directory in the defined home directory
-	reportsDir = new File(testDirectory, REPORTS_DIR);
-	reportsDir.mkdir();
-
-	result = executionResultFactory.startExecution(randomDescription);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
-	// clear the pineapple.home.dir system property
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
-
-	// fail if the the pineapple.home.dir system property is set
-	assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
-    }
-
-    /**
-     * Test that instance can be retrieved from application context.
-     */
-    @Test
-    public void testGetInstanceFromContext() {
-	assertNotNull(reportRepository);
-    }
-
-    /**
-     * Test that initialized repository returns expected execution result.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testInitializeContainsExpectedResult() throws Exception {
-	reportRepository.initialize(result);
-	assertTrue(result.isExecuting());
-	assertEquals(1, result.getChildren().length);
-	assertTrue(result.getFirstChild().isSuccess());
-    }
-
-    /**
-     * Test that no reports are defined after first initialization.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testNoReportsAreDefinedAfterFirstInitialization() throws Exception {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-
-	assertNotNull(reportRepository.getReports());
-	assertEquals(0, reportRepository.getReports().count());
-    }
-
-    /**
-     * Test report can be added to repository.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testAddReport() throws Exception {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-
-	// create report directory with same name as report ID
-	File reportDirectory = new File(reportsDir, randomName);
-	reportDirectory.mkdir();
-
-	// register report
-	ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
-	Report report = reportRepository.add(randomName, reportResult);
-
-	// test report is generated
-	assertNotNull(report);
-	assertNotNull(reportRepository.getReports());
-	assertEquals(1, reportRepository.getReports().count());
-    }
-
-    /**
-     * Test multiple reports can be added to repository.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testAddMultipleReports() throws Exception {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-
-	// create report directory with same name as report ID
-	File reportDirectory = new File(reportsDir, randomName);
-	reportDirectory.mkdir();
-
-	// register report
-	ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
-	Report report = reportRepository.add(randomName, reportResult);
-
-	// test report is generated
-	assertNotNull(report);
-
-	// create report directory with same name as report ID
-	reportDirectory = new File(reportsDir, randomName2);
-	reportDirectory.mkdir();
-
-	// register report
-	reportResult = executionResultFactory.startExecution(randomDescription);
-	report = reportRepository.add(randomName2, reportResult);
-
-	// test report is generated
-	assertNotNull(report);
-
-	assertNotNull(reportRepository.getReports());
-	assertEquals(2, reportRepository.getReports().count());
-    }
-
-    /**
-     * Test that addition of report with undefined id fails.
-     * 
-     * @throws Exception
-     *             if test fails
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testFailsToCreateReportWithUndefinedId() throws Exception {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-
-	// create report directory with same name as report ID
-	File reportDirectory = new File(reportsDir, randomName);
-	reportDirectory.mkdir();
-	ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
-	reportRepository.add(null, reportResult);
-    }
-
-    /**
-     * Test that addition of report with empty id fails.
-     * 
-     * @throws Exception
-     *             if test fails
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testFailsToCreateReportWithEmptyId() throws Exception {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-
-	// create report directory with same name as report ID
-	File reportDirectory = new File(reportsDir, randomName);
-	reportDirectory.mkdir();
-	ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
-	reportRepository.add("", reportResult);
-    }
-
-    /**
-     * Test that addition of report with non-existing directory return null.
-     * 
-     * @throws Exception
-     *             if test fails
-     */
-    @Test
-    public void testCreationOFReportWithNonexistingDirectoryReturnsNull() throws Exception {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-
-	ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
-	assertNull(reportRepository.add(randomName, reportResult));
-    }
-
-    /**
-     * Test that reports are retained after initialization.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testReportsAreRetainedAfterInitialization() throws Exception {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-
-	// create report directory with same name as report ID
-	File reportDirectory = new File(reportsDir, randomName);
-	reportDirectory.mkdir();
-	ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
-	reportRepository.add(randomName, reportResult);
-
-	// create report directory with same name as report ID
-	reportDirectory = new File(reportsDir, randomName2);
-	reportDirectory.mkdir();
-	reportResult = executionResultFactory.startExecution(randomDescription);
-	reportRepository.add(randomName2, reportResult);
-
-	reportRepository.initialize(result);
-
-	// test
-	assertNotNull(reportRepository.getReports());
-	assertEquals(2, reportRepository.getReports().count());
-    }
-
-    /**
-     * Test that empty repository can be initialized multiple times.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testEmptyRepositoryCanBeInitializedMultipleTimes() throws Exception {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-	assertNotNull(reportRepository.getReports());
-	assertEquals(0, reportRepository.getReports().count());
-
-	reportRepository.initialize(result);
-	assertTrue(result.getChildren()[1].isSuccess());
-
-	reportRepository.initialize(result);
-	assertTrue(result.getChildren()[2].isSuccess());
-
-	reportRepository.initialize(result);
-	assertTrue(result.getChildren()[3].isSuccess());
-    }
-
-    /**
-     * Test that repository can be initialized multiple times.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testRepositoryCanBeInitializedMultipleTimes() throws Exception {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-
-	// create report directory with same name as report ID
-	File reportDirectory = new File(reportsDir, randomName);
-	reportDirectory.mkdir();
-	ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
-	reportRepository.add(randomName, reportResult);
-
-	assertNotNull(reportRepository.getReports());
-	assertEquals(1, reportRepository.getReports().count());
-
-	reportRepository.initialize(result);
-	assertTrue(result.getChildren()[1].isSuccess());
-
-	reportRepository.initialize(result);
-	assertTrue(result.getChildren()[2].isSuccess());
-
-	reportRepository.initialize(result);
-	assertTrue(result.getChildren()[3].isSuccess());
-	assertNotNull(reportRepository.getReports());
-	assertEquals(1, reportRepository.getReports().count());
-    }
-
-    /**
-     * Can get empty set of reports.
-     */
-    @Test
-    public void testGetEmptySetOfReports() {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-
-	assertEquals(0, reportRepository.getReports().count());
-    }
-
-    /**
-     * Can get set of reports with one report.
-     */
-    @Test
-    public void testGetSetOfReportsWithOneReport() {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-	assertEquals(0, reportRepository.getReports().count());
-
-	// create report directory with same name as report ID
-	File reportDirectory = new File(reportsDir, randomName);
-	reportDirectory.mkdir();
-	ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
-	reportRepository.add(randomName, reportResult);
-
-	// test
-	assertEquals(1, reportRepository.getReports().count());
-    }
-
-    /**
-     * Can get set of reports with multiple reports.
-     */
-    @Test
-    public void testGetSetOfReportsWithMultipleReports() {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-	assertEquals(0, reportRepository.getReports().count());
-
-	// create report directory with same name as report ID
-	File reportDirectory = new File(reportsDir, randomName);
-	reportDirectory.mkdir();
-	ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
-	reportRepository.add(randomName, reportResult);
-
-	// create report directory with same name as report ID
-	reportDirectory = new File(reportsDir, randomName2);
-	reportDirectory.mkdir();
-	reportResult = executionResultFactory.startExecution(randomDescription);
-	reportRepository.add(randomName2, reportResult);
-
-	// test
-	assertEquals(2, reportRepository.getReports().count());
-    }
-
-    /**
-     * Can delete get empty set of reports.
-     */
-    @Test
-    public void testDeleteEmptySetOfReports() {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-	assertEquals(0, reportRepository.getReports().count());
-	reportRepository.deleteAll();
-	assertEquals(0, reportRepository.getReports().count());
-    }
-
-    /**
-     * Can delete set of reports with one report.
-     */
-    @Test
-    public void testDeleteSetOfReportsWithOneReport() {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-	assertEquals(0, reportRepository.getReports().count());
-
-	// create report directory with same name as report ID
-	File reportDirectory = new File(reportsDir, randomName);
-	reportDirectory.mkdir();
-	ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
-	reportRepository.add(randomName, reportResult);
-	assertEquals(1, reportRepository.getReports().count());
-
-	// delete
-	reportRepository.deleteAll();
-	assertEquals(0, reportRepository.getReports().count());
-    }
-
-    /**
-     * Can delete set of reports with multiple reports.
-     */
-    @Test
-    public void testDeleteSetOfReportsWithMultipleReports() {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-	assertEquals(0, reportRepository.getReports().count());
-
-	// create report directory with same name as report ID
-	File reportDirectory = new File(reportsDir, randomName);
-	reportDirectory.mkdir();
-	ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
-	reportRepository.add(randomName, reportResult);
-
-	// create report directory with same name as report ID
-	reportDirectory = new File(reportsDir, randomName2);
-	reportDirectory.mkdir();
-	reportResult = executionResultFactory.startExecution(randomDescription);
-	reportRepository.add(randomName2, reportResult);
-	assertEquals(2, reportRepository.getReports().count());
-
-	// delete
-	reportRepository.deleteAll();
-	assertEquals(0, reportRepository.getReports().count());
-    }
-
-    /**
-     * Can delete single report.
-     */
-    @Test
-    public void testDeleteSingleReport() {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-	assertEquals(0, reportRepository.getReports().count());
-
-	// create report directory with same name as report ID
-	File reportDirectory = new File(reportsDir, randomName);
-	reportDirectory.mkdir();
-	ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
-	reportRepository.add(randomName, reportResult);
-	assertEquals(1, reportRepository.getReports().count());
-
-	// delete
-	reportRepository.delete(randomName);
-	assertEquals(0, reportRepository.getReports().count());
-    }
-
-    /**
-     * Can delete single unknown report.
-     */
-    @Test
-    public void testDeleteSingleUnknownReport() {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-	assertEquals(0, reportRepository.getReports().count());
-
-	// delete
-	reportRepository.delete(randomName);
-	assertEquals(0, reportRepository.getReports().count());
-    }
-
-    /**
-     * Fails to delete single report with undefined id.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testFailsToDeleteSingleReportWithUndefinedId() {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-	assertEquals(0, reportRepository.getReports().count());
-
-	// delete
-	reportRepository.delete(null);
-	assertEquals(0, reportRepository.getReports().count());
-    }
-
-    /**
-     * Fails to delete single report with empty id.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testFailsToDeleteSingleReportWithEmptyId() {
-	reportRepository.initialize(result);
-	assertTrue(result.getFirstChild().isSuccess());
-	assertEquals(0, reportRepository.getReports().count());
-
-	// delete
-	reportRepository.delete("");
-	assertEquals(0, reportRepository.getReports().count());
-    }
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
+
+	/**
+	 * Subject under test.
+	 */
+	@Resource
+	ReportRepository reportRepository;
+
+	/**
+	 * Web application core component factory.
+	 */
+	@Resource
+	WebAppCoreFactory webAppCoreFactory;
+
+	/**
+	 * Execution result factory.
+	 */
+	@Resource
+	ExecutionResultFactory executionResultFactory;
+
+	/**
+	 * Report directory.
+	 */
+	File reportsDir;
+
+	/**
+	 * Random value.
+	 */
+	String randomName;
+
+	/**
+	 * Random value.
+	 */
+	String randomName2;
+
+	/**
+	 * Random value.
+	 */
+	String randomDescription;
+
+	/**
+	 * Core component.
+	 * 
+	 * Initialize by web application core component factory.
+	 */
+	PineappleCore coreComponent;
+
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult result;
+
+	@Before
+	public void setUp() throws Exception {
+		randomName = RandomStringUtils.randomAlphabetic(10);
+		randomName2 = RandomStringUtils.randomAlphabetic(10);
+		randomDescription = RandomStringUtils.randomAlphabetic(10);
+
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+
+		// create reports directory in the defined home directory
+		reportsDir = new File(testDirectory, REPORTS_DIR);
+		reportsDir.mkdir();
+
+		result = executionResultFactory.startExecution(randomDescription);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+
+		// clear the pineapple.home.dir system property
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+
+		// fail if the the pineapple.home.dir system property is set
+		assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
+	}
+
+	/**
+	 * Test that instance can be retrieved from application context.
+	 */
+	@Test
+	public void testGetInstanceFromContext() {
+		assertNotNull(reportRepository);
+	}
+
+	/**
+	 * Test that initialized repository returns expected execution result.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testInitializeContainsExpectedResult() throws Exception {
+		reportRepository.initialize(result);
+		assertTrue(result.isExecuting());
+		assertEquals(1, result.getChildren().length);
+		assertTrue(result.getFirstChild().isSuccess());
+	}
+
+	/**
+	 * Test that no reports are defined after first initialization.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testNoReportsAreDefinedAfterFirstInitialization() throws Exception {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+
+		assertNotNull(reportRepository.getReports());
+		assertEquals(0, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Test report can be added to repository.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testAddReport() throws Exception {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+
+		// create report directory with same name as report ID
+		File reportDirectory = new File(reportsDir, randomName);
+		reportDirectory.mkdir();
+
+		// register report
+		ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
+		Report report = reportRepository.add(randomName, reportResult);
+
+		// test report is generated
+		assertNotNull(report);
+		assertNotNull(reportRepository.getReports());
+		assertEquals(1, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Test multiple reports can be added to repository.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testAddMultipleReports() throws Exception {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+
+		// create report directory with same name as report ID
+		File reportDirectory = new File(reportsDir, randomName);
+		reportDirectory.mkdir();
+
+		// register report
+		ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
+		Report report = reportRepository.add(randomName, reportResult);
+
+		// test report is generated
+		assertNotNull(report);
+
+		// create report directory with same name as report ID
+		reportDirectory = new File(reportsDir, randomName2);
+		reportDirectory.mkdir();
+
+		// register report
+		reportResult = executionResultFactory.startExecution(randomDescription);
+		report = reportRepository.add(randomName2, reportResult);
+
+		// test report is generated
+		assertNotNull(report);
+
+		assertNotNull(reportRepository.getReports());
+		assertEquals(2, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Test that addition of report with undefined id fails.
+	 * 
+	 * @throws Exception
+	 *             if test fails
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testFailsToCreateReportWithUndefinedId() throws Exception {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+
+		// create report directory with same name as report ID
+		File reportDirectory = new File(reportsDir, randomName);
+		reportDirectory.mkdir();
+		ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
+		reportRepository.add(null, reportResult);
+	}
+
+	/**
+	 * Test that addition of report with empty id fails.
+	 * 
+	 * @throws Exception
+	 *             if test fails
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testFailsToCreateReportWithEmptyId() throws Exception {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+
+		// create report directory with same name as report ID
+		File reportDirectory = new File(reportsDir, randomName);
+		reportDirectory.mkdir();
+		ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
+		reportRepository.add("", reportResult);
+	}
+
+	/**
+	 * Test that addition of report with non-existing directory return null.
+	 * 
+	 * @throws Exception
+	 *             if test fails
+	 */
+	@Test
+	public void testCreationOFReportWithNonexistingDirectoryReturnsNull() throws Exception {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+
+		ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
+		assertNull(reportRepository.add(randomName, reportResult));
+	}
+
+	/**
+	 * Test that reports are retained after initialization.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testReportsAreRetainedAfterInitialization() throws Exception {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+
+		// create report directory with same name as report ID
+		File reportDirectory = new File(reportsDir, randomName);
+		reportDirectory.mkdir();
+		ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
+		reportRepository.add(randomName, reportResult);
+
+		// create report directory with same name as report ID
+		reportDirectory = new File(reportsDir, randomName2);
+		reportDirectory.mkdir();
+		reportResult = executionResultFactory.startExecution(randomDescription);
+		reportRepository.add(randomName2, reportResult);
+
+		reportRepository.initialize(result);
+
+		// test
+		assertNotNull(reportRepository.getReports());
+		assertEquals(2, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Test that empty repository can be initialized multiple times.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testEmptyRepositoryCanBeInitializedMultipleTimes() throws Exception {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+		assertNotNull(reportRepository.getReports());
+		assertEquals(0, reportRepository.getReports().count());
+
+		reportRepository.initialize(result);
+		assertTrue(result.getChildren()[1].isSuccess());
+
+		reportRepository.initialize(result);
+		assertTrue(result.getChildren()[2].isSuccess());
+
+		reportRepository.initialize(result);
+		assertTrue(result.getChildren()[3].isSuccess());
+	}
+
+	/**
+	 * Test that repository can be initialized multiple times.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testRepositoryCanBeInitializedMultipleTimes() throws Exception {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+
+		// create report directory with same name as report ID
+		File reportDirectory = new File(reportsDir, randomName);
+		reportDirectory.mkdir();
+		ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
+		reportRepository.add(randomName, reportResult);
+
+		assertNotNull(reportRepository.getReports());
+		assertEquals(1, reportRepository.getReports().count());
+
+		reportRepository.initialize(result);
+		assertTrue(result.getChildren()[1].isSuccess());
+
+		reportRepository.initialize(result);
+		assertTrue(result.getChildren()[2].isSuccess());
+
+		reportRepository.initialize(result);
+		assertTrue(result.getChildren()[3].isSuccess());
+		assertNotNull(reportRepository.getReports());
+		assertEquals(1, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Can get empty set of reports.
+	 */
+	@Test
+	public void testGetEmptySetOfReports() {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+
+		assertEquals(0, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Can get set of reports with one report.
+	 */
+	@Test
+	public void testGetSetOfReportsWithOneReport() {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+		assertEquals(0, reportRepository.getReports().count());
+
+		// create report directory with same name as report ID
+		File reportDirectory = new File(reportsDir, randomName);
+		reportDirectory.mkdir();
+		ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
+		reportRepository.add(randomName, reportResult);
+
+		// test
+		assertEquals(1, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Can get set of reports with multiple reports.
+	 */
+	@Test
+	public void testGetSetOfReportsWithMultipleReports() {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+		assertEquals(0, reportRepository.getReports().count());
+
+		// create report directory with same name as report ID
+		File reportDirectory = new File(reportsDir, randomName);
+		reportDirectory.mkdir();
+		ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
+		reportRepository.add(randomName, reportResult);
+
+		// create report directory with same name as report ID
+		reportDirectory = new File(reportsDir, randomName2);
+		reportDirectory.mkdir();
+		reportResult = executionResultFactory.startExecution(randomDescription);
+		reportRepository.add(randomName2, reportResult);
+
+		// test
+		assertEquals(2, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Can delete get empty set of reports.
+	 */
+	@Test
+	public void testDeleteEmptySetOfReports() {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+		assertEquals(0, reportRepository.getReports().count());
+		reportRepository.deleteAll();
+		assertEquals(0, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Can delete set of reports with one report.
+	 */
+	@Test
+	public void testDeleteSetOfReportsWithOneReport() {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+		assertEquals(0, reportRepository.getReports().count());
+
+		// create report directory with same name as report ID
+		File reportDirectory = new File(reportsDir, randomName);
+		reportDirectory.mkdir();
+		ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
+		reportRepository.add(randomName, reportResult);
+		assertEquals(1, reportRepository.getReports().count());
+
+		// delete
+		reportRepository.deleteAll();
+		assertEquals(0, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Can delete set of reports with multiple reports.
+	 */
+	@Test
+	public void testDeleteSetOfReportsWithMultipleReports() {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+		assertEquals(0, reportRepository.getReports().count());
+
+		// create report directory with same name as report ID
+		File reportDirectory = new File(reportsDir, randomName);
+		reportDirectory.mkdir();
+		ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
+		reportRepository.add(randomName, reportResult);
+
+		// create report directory with same name as report ID
+		reportDirectory = new File(reportsDir, randomName2);
+		reportDirectory.mkdir();
+		reportResult = executionResultFactory.startExecution(randomDescription);
+		reportRepository.add(randomName2, reportResult);
+		assertEquals(2, reportRepository.getReports().count());
+
+		// delete
+		reportRepository.deleteAll();
+		assertEquals(0, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Can delete single report.
+	 */
+	@Test
+	public void testDeleteSingleReport() {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+		assertEquals(0, reportRepository.getReports().count());
+
+		// create report directory with same name as report ID
+		File reportDirectory = new File(reportsDir, randomName);
+		reportDirectory.mkdir();
+		ExecutionResult reportResult = executionResultFactory.startExecution(randomDescription);
+		reportRepository.add(randomName, reportResult);
+		assertEquals(1, reportRepository.getReports().count());
+
+		// delete
+		reportRepository.delete(randomName);
+		assertEquals(0, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Can delete single unknown report.
+	 */
+	@Test
+	public void testDeleteSingleUnknownReport() {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+		assertEquals(0, reportRepository.getReports().count());
+
+		// delete
+		reportRepository.delete(randomName);
+		assertEquals(0, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Fails to delete single report with undefined id.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testFailsToDeleteSingleReportWithUndefinedId() {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+		assertEquals(0, reportRepository.getReports().count());
+
+		// delete
+		reportRepository.delete(null);
+		assertEquals(0, reportRepository.getReports().count());
+	}
+
+	/**
+	 * Fails to delete single report with empty id.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testFailsToDeleteSingleReportWithEmptyId() {
+		reportRepository.initialize(result);
+		assertTrue(result.getFirstChild().isSuccess());
+		assertEquals(0, reportRepository.getReports().count());
+
+		// delete
+		reportRepository.delete("");
+		assertEquals(0, reportRepository.getReports().count());
+	}
 
 }

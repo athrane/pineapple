@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.agent.command;
 
 import static com.alpha.pineapple.plugin.agent.AgentConstants.REFRESH_ENVIRONMENT_CONFIGURATION_URI;
@@ -41,91 +40,94 @@ import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.plugin.agent.session.AgentSession;
 
 /**
- * <p>Implementation of the <code>org.apache.commons.chain.Command</code> interface which 
- * refreshes the environment configuration.
+ * <p>
+ * Implementation of the <code>org.apache.commons.chain.Command</code> interface
+ * which refreshes the environment configuration.
  * 
- * <p>Precondition for execution of the command is definition of these keys in 
- * the context:
+ * <p>
+ * Precondition for execution of the command is definition of these keys in the
+ * context:
  * 
  * <ul>
- * <li><code>session</code> defines the agent session used communicate with an agent. 
- * The type is <code>com.alpha.pineapple.plugin.agent.session.AgentSession</code>.</li>
+ * <li><code>session</code> defines the agent session used communicate with an
+ * agent. The type is
+ * <code>com.alpha.pineapple.plugin.agent.session.AgentSession</code>.</li>
  * 
- * <li><code>execution-result</code> contains execution result object which collects
- * information about the execution of the test. The type is 
- * <code>com.alpha.pineapple.plugin.execution.ExecutionResult</code>.</li>   
+ * <li><code>execution-result</code> contains execution result object which
+ * collects information about the execution of the test. The type is
+ * <code>com.alpha.pineapple.plugin.execution.ExecutionResult</code>.</li>
  * </ul>
- * </p>      
+ * </p>
  * 
- * <p>Postcondition after execution of the command is: 
+ * <p>
+ * Postcondition after execution of the command is:
  * 
- * <ul> 
+ * <ul>
  * <li>The the state of the supplied <code>ExecutionResult</code> is updated
- * with <code>ExecutionState.SUCCESS</code> if the test succeeded. If the 
- * test failed then the <code>ExecutionState.FAILURE</code> is returned.</li>
- * <li>If the test fails due to an exception then the exception isn't caught, 
- * but passed on the the invoker whose responsibility it is to catch it and update 
- * the <code>ExecutionResult</code> with the state <code>ExecutionState.ERROR</code>.
- * </li>
- * </ul>  
- * </p>           
+ * with <code>ExecutionState.SUCCESS</code> if the test succeeded. If the test
+ * failed then the <code>ExecutionState.FAILURE</code> is returned.</li>
+ * <li>If the test fails due to an exception then the exception isn't caught,
+ * but passed on the the invoker whose responsibility it is to catch it and
+ * update the <code>ExecutionResult</code> with the state
+ * <code>ExecutionState.ERROR</code>.</li>
+ * </ul>
+ * </p>
  */
 public class RefreshEnvironmentConfigurationCommand implements Command {
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */    
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
 	public static final String SESSION_KEY = "session";
-    
-    /**
-     * Key used to identify property in context: Contains execution result object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
-    
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-            
-    /**
-     * Plugin session.
-     */
-    @Initialize( SESSION_KEY )
-    @ValidateValue( ValidationPolicy.NOT_NULL )        
-    AgentSession session;
-    
-    /**
-     * Defines execution result object.
-     */
-    @Initialize( EXECUTIONRESULT_KEY )
-    @ValidateValue( ValidationPolicy.NOT_NULL )    
-    ExecutionResult executionResult;
-                
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
-            
-    public boolean execute( Context context ) throws Exception
-    {        
-        // initialize command
-        CommandInitializer initializer = new CommandInitializerImpl();
-        initializer.initialize( context, this );
 
-        try {
-        	
-	        // refresh 
-	        session.httpPost(REFRESH_ENVIRONMENT_CONFIGURATION_URI);
-	        
-	        // set result        
-			executionResult.completeAsSuccessful(messageProvider, "recc.refresh_environment_configuration_completed");		
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-		} catch(Exception e) {			
-			executionResult.completeAsError(messageProvider, "recc.error", e);								
-		}	
-        
-        return Command.CONTINUE_PROCESSING;        
-    }
-    		
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	AgentSession session;
+
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
+
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
+
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
+
+		try {
+
+			// refresh
+			session.httpPost(REFRESH_ENVIRONMENT_CONFIGURATION_URI);
+
+			// set result
+			executionResult.completeAsSuccessful(messageProvider, "recc.refresh_environment_configuration_completed");
+
+		} catch (Exception e) {
+			executionResult.completeAsError(messageProvider, "recc.error", e);
+		}
+
+		return Command.CONTINUE_PROCESSING;
+	}
+
 }

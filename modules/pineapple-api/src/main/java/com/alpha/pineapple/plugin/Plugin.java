@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Plugin {
-    String unmarshaller() default "unmarshaller";
+	String unmarshaller() default "unmarshaller";
 
-    String configFile() default "";
+	String configFile() default "";
 }

@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettingsNetworkValue;
 
 @XmlJavaTypeAdapter(InspectedContainerNetworkSettingsNetworksMapAdapter.class)
-public class InspectedContainerNetworkSettingsNetworksMap extends HashMap<String, InspectedContainerNetworkSettingsNetworkValue> {
+public class InspectedContainerNetworkSettingsNetworksMap
+		extends HashMap<String, InspectedContainerNetworkSettingsNetworkValue> {
 
 }

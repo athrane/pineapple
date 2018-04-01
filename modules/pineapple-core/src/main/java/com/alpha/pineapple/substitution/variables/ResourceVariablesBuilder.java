@@ -30,12 +30,12 @@ import com.alpha.pineapple.model.configuration.Resource;
  */
 public interface ResourceVariablesBuilder extends VariablesBuilder {
 
-    /**
-     * Set resource to build variables from.
-     * 
-     * @param resource
-     *            resource.
-     */
-    public void setResource(Resource resource);
+	/**
+	 * Set resource to build variables from.
+	 * 
+	 * @param resource
+	 *            resource.
+	 */
+	public void setResource(Resource resource);
 
 }

@@ -37,40 +37,40 @@ import com.alpha.pineapple.docker.model.rest.ObjectFactory;
  * type.
  */
 public class InspectedContainerNetworkSettingsNetworksMapAdapter
-	extends XmlAdapter<InspectedContainerNetworkSettingsNetworks, InspectedContainerNetworkSettingsNetworksMap> {
+		extends XmlAdapter<InspectedContainerNetworkSettingsNetworks, InspectedContainerNetworkSettingsNetworksMap> {
 
-    /**
-     * Object factory.
-     */
-    ObjectFactory objectFactory = new ObjectFactory();
+	/**
+	 * Object factory.
+	 */
+	ObjectFactory objectFactory = new ObjectFactory();
 
-    @Override
-    public InspectedContainerNetworkSettingsNetworks marshal(InspectedContainerNetworkSettingsNetworksMap map)
-	    throws Exception {
-	InspectedContainerNetworkSettingsNetworks networks = objectFactory
-		.createInspectedContainerNetworkSettingsNetworks();
-	Set<Entry<String, InspectedContainerNetworkSettingsNetworkValue>> entries = map.entrySet();
-	
-	for (Entry<String, InspectedContainerNetworkSettingsNetworkValue> entry : entries) {
-	    InspectedContainerNetworkSettingsNetwork network = objectFactory
-		    .createInspectedContainerNetworkSettingsNetwork();
-	    network.setKey(entry.getKey());
-	    network.setValue(entry.getValue());
-	    networks.getNetwork().add(network);
+	@Override
+	public InspectedContainerNetworkSettingsNetworks marshal(InspectedContainerNetworkSettingsNetworksMap map)
+			throws Exception {
+		InspectedContainerNetworkSettingsNetworks networks = objectFactory
+				.createInspectedContainerNetworkSettingsNetworks();
+		Set<Entry<String, InspectedContainerNetworkSettingsNetworkValue>> entries = map.entrySet();
+
+		for (Entry<String, InspectedContainerNetworkSettingsNetworkValue> entry : entries) {
+			InspectedContainerNetworkSettingsNetwork network = objectFactory
+					.createInspectedContainerNetworkSettingsNetwork();
+			network.setKey(entry.getKey());
+			network.setValue(entry.getValue());
+			networks.getNetwork().add(network);
+		}
+		return networks;
+
 	}
-	return networks;
 
-    }
+	@Override
+	public InspectedContainerNetworkSettingsNetworksMap unmarshal(InspectedContainerNetworkSettingsNetworks value)
+			throws Exception {
+		InspectedContainerNetworkSettingsNetworksMap map = new InspectedContainerNetworkSettingsNetworksMap();
+		for (InspectedContainerNetworkSettingsNetwork network : value.getNetwork()) {
 
-    @Override
-    public InspectedContainerNetworkSettingsNetworksMap unmarshal(InspectedContainerNetworkSettingsNetworks value)
-	    throws Exception {
-	InspectedContainerNetworkSettingsNetworksMap map = new InspectedContainerNetworkSettingsNetworksMap();
-	for (InspectedContainerNetworkSettingsNetwork network : value.getNetwork()) {
-
-	    map.put(network.getKey(), network.getValue());
+			map.put(network.getKey(), network.getValue());
+		}
+		return map;
 	}
-	return map;
-    }
 
 }

@@ -35,159 +35,159 @@ import com.alpha.pineapple.docker.session.DockerSession;
  */
 public interface Mapper {
 
-    /**
-     * Map command to image info.
-     * 
-     * @param command
-     *            model command.
-     * 
-     * @return image info.
-     */
-    ImageInfo mapImageForCreation(Image command);
+	/**
+	 * Map command to image info.
+	 * 
+	 * @param command
+	 *            model command.
+	 * 
+	 * @return image info.
+	 */
+	ImageInfo mapImageForCreation(Image command);
 
-    /**
-     * Map command to command context.
-     * 
-     * @param command
-     *            model command.
-     * 
-     * @return image info.
-     */
-    ImageInfo mapImageForDeletion(Image command);
+	/**
+	 * Map command to command context.
+	 * 
+	 * @param command
+	 *            model command.
+	 * 
+	 * @return image info.
+	 */
+	ImageInfo mapImageForDeletion(Image command);
 
-    /**
-     * Map command to tagged source image info.
-     * 
-     * @param command
-     *            model command.
-     * @param session
-     *            operation session.
-     * 
-     * @return image info.
-     */
-    ImageInfo mapTaggedSourceImageForCreation(TaggedImage command);
+	/**
+	 * Map command to tagged source image info.
+	 * 
+	 * @param command
+	 *            model command.
+	 * @param session
+	 *            operation session.
+	 * 
+	 * @return image info.
+	 */
+	ImageInfo mapTaggedSourceImageForCreation(TaggedImage command);
 
-    /**
-     * Map command to tagged target image info.
-     * 
-     * @param command
-     *            model command.
-     * @param session
-     *            operation session.
-     * 
-     * @return image info.
-     */
-    ImageInfo mapTaggedTargetImageImageForCreation(TaggedImage command);
+	/**
+	 * Map command to tagged target image info.
+	 * 
+	 * @param command
+	 *            model command.
+	 * @param session
+	 *            operation session.
+	 * 
+	 * @return image info.
+	 */
+	ImageInfo mapTaggedTargetImageImageForCreation(TaggedImage command);
 
-    /**
-     * Map command to command context.
-     * 
-     * @param command
-     *            model command.
-     * 
-     * @return image info.
-     */
-    ImageInfo mapTaggedImageForDeletion(TaggedImage command);
+	/**
+	 * Map command to command context.
+	 * 
+	 * @param command
+	 *            model command.
+	 * 
+	 * @return image info.
+	 */
+	ImageInfo mapTaggedImageForDeletion(TaggedImage command);
 
-    /**
-     * Map command to image info.
-     * 
-     * @param command
-     *            model command.
-     * 
-     * @return mapped image info.
-     */
-    ImageInfo mapImageFromDockerfileForCreation(ImageFromDockerfile command);
+	/**
+	 * Map command to image info.
+	 * 
+	 * @param command
+	 *            model command.
+	 * 
+	 * @return mapped image info.
+	 */
+	ImageInfo mapImageFromDockerfileForCreation(ImageFromDockerfile command);
 
-    /**
-     * Resolve the pull image behavior from the model.
-     * 
-     * @param command
-     *            model command.
-     * 
-     * @return pull image behavior resolved from the model.
-     */
-    Boolean getPullImageBehavior(ImageFromDockerfile command);
+	/**
+	 * Resolve the pull image behavior from the model.
+	 * 
+	 * @param command
+	 *            model command.
+	 * 
+	 * @return pull image behavior resolved from the model.
+	 */
+	Boolean getPullImageBehavior(ImageFromDockerfile command);
 
-    /**
-     * Map command to command context.
-     * 
-     * @param command
-     *            model command.
-     * 
-     * @return mapped image info.
-     */
-    ImageInfo mapImageFromDockerfileForDeletion(ImageFromDockerfile command);
+	/**
+	 * Map command to command context.
+	 * 
+	 * @param command
+	 *            model command.
+	 * 
+	 * @return mapped image info.
+	 */
+	ImageInfo mapImageFromDockerfileForDeletion(ImageFromDockerfile command);
 
-    /**
-     * Map session to command context.
-     * 
-     * @param context
-     *            command context.
-     * @param session
-     *            operation session.
-     */
-    void mapListImages(Context context, DockerSession session);
+	/**
+	 * Map session to command context.
+	 * 
+	 * @param context
+	 *            command context.
+	 * @param session
+	 *            operation session.
+	 */
+	void mapListImages(Context context, DockerSession session);
 
-    /**
-     * Map session to command context.
-     * 
-     * @param context
-     *            command context.
-     * @param session
-     *            operation session.
-     */
-    void mapListContainers(Context context, DockerSession session);
+	/**
+	 * Map session to command context.
+	 * 
+	 * @param context
+	 *            command context.
+	 * @param session
+	 *            operation session.
+	 */
+	void mapListContainers(Context context, DockerSession session);
 
-    /**
-     * Map command to container info.
-     * 
-     * @param command
-     *            model command.
-     * @param containerConfigs
-     *            referenced container configurations.
-     * 
-     * @return container info.
-     */
-    ContainerInfo mapContainerForCreation(Container command, Map<String, ContainerConfiguration> containerConfigs);
+	/**
+	 * Map command to container info.
+	 * 
+	 * @param command
+	 *            model command.
+	 * @param containerConfigs
+	 *            referenced container configurations.
+	 * 
+	 * @return container info.
+	 */
+	ContainerInfo mapContainerForCreation(Container command, Map<String, ContainerConfiguration> containerConfigs);
 
-    /**
-     * Map command to command context.
-     * 
-     * @param command
-     *            model command.
-     * @param context
-     *            command context.
-     * @param session
-     *            operation session.
-     * 
-     * @return container info.
-     */
-    ContainerInfo mapContainerForDeletion(Container command);
+	/**
+	 * Map command to command context.
+	 * 
+	 * @param command
+	 *            model command.
+	 * @param context
+	 *            command context.
+	 * @param session
+	 *            operation session.
+	 * 
+	 * @return container info.
+	 */
+	ContainerInfo mapContainerForDeletion(Container command);
 
-    /**
-     * Map command to command context.
-     * 
-     * @param command
-     *            model command.
-     * @param context
-     *            command context.
-     * @param session
-     *            operation session.
-     * 
-     * @return container info.
-     */
-    ContainerInfo mapContainerForControl(Container command);
+	/**
+	 * Map command to command context.
+	 * 
+	 * @param command
+	 *            model command.
+	 * @param context
+	 *            command context.
+	 * @param session
+	 *            operation session.
+	 * 
+	 * @return container info.
+	 */
+	ContainerInfo mapContainerForControl(Container command);
 
-    /**
-     * Process docker model to extract container configurations into a map.
-     * Configurations are stored by their ID. If the ID is null or empty then a
-     * configuration isn't added to the map.
-     * 
-     * @param dockerModel
-     *            plugin model.
-     * @return map of container configurations registered by ID.
-     */
-    Map<String, ContainerConfiguration> extractContainerDefinitions(Docker dockerModel);
+	/**
+	 * Process docker model to extract container configurations into a map.
+	 * Configurations are stored by their ID. If the ID is null or empty then a
+	 * configuration isn't added to the map.
+	 * 
+	 * @param dockerModel
+	 *            plugin model.
+	 * @return map of container configurations registered by ID.
+	 */
+	Map<String, ContainerConfiguration> extractContainerDefinitions(Docker dockerModel);
 
 }

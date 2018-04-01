@@ -27,78 +27,78 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Exception class for signalling a captured error from {@linkplain RestTemplate}
- * .
+ * Exception class for signalling a captured error from
+ * {@linkplain RestTemplate} .
  */
 public class RestResponseException extends RuntimeException {
 
-    /**
-     * HTTP status code.
-     */
-    HttpStatus statusCode;
+	/**
+	 * HTTP status code.
+	 */
+	HttpStatus statusCode;
 
-    /**
-     * HTTP body.
-     */
-    String body;
+	/**
+	 * HTTP body.
+	 */
+	String body;
 
-    /**
-     * HTTP headers.
-     */
-    HttpHeaders headers;
+	/**
+	 * HTTP headers.
+	 */
+	HttpHeaders headers;
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * RestResponseException constructor.
-     * 
-     * @param statusCode
-     *            HTTP status code.
-     * @param body
-     *            HTTP body.
-     * @param headers
-     *            HTTP headers.
-     */
-    public RestResponseException(HttpStatus statusCode, String body, HttpHeaders headers) {
-	this.statusCode = statusCode;
-	this.body = body;
-	this.headers = headers;
-    }
+	/**
+	 * RestResponseException constructor.
+	 * 
+	 * @param statusCode
+	 *            HTTP status code.
+	 * @param body
+	 *            HTTP body.
+	 * @param headers
+	 *            HTTP headers.
+	 */
+	public RestResponseException(HttpStatus statusCode, String body, HttpHeaders headers) {
+		this.statusCode = statusCode;
+		this.body = body;
+		this.headers = headers;
+	}
 
-    /**
-     * Return HTTP headers.
-     * 
-     * @return HTTP headers.
-     */
-    public HttpHeaders getHeaders() {
-	return headers;
-    }
+	/**
+	 * Return HTTP headers.
+	 * 
+	 * @return HTTP headers.
+	 */
+	public HttpHeaders getHeaders() {
+		return headers;
+	}
 
-    /**
-     * Return HTTP status code.
-     * 
-     * @return HTTP status code.
-     */
-    public HttpStatus getStatusCode() {
-	return statusCode;
-    }
+	/**
+	 * Return HTTP status code.
+	 * 
+	 * @return HTTP status code.
+	 */
+	public HttpStatus getStatusCode() {
+		return statusCode;
+	}
 
-    /**
-     * Return HTTP body.
-     * 
-     * @return HTTP body.
-     */
-    public String getBody() {
-	return body;
-    }
+	/**
+	 * Return HTTP body.
+	 * 
+	 * @return HTTP body.
+	 */
+	public String getBody() {
+		return body;
+	}
 
-    @Override
-    public String getMessage() {
-	return new StringBuilder().append("Docker host reported error: ").append(getBody())
-		.append(". Reported status code:").append(getStatusCode()).toString();
-    }
+	@Override
+	public String getMessage() {
+		return new StringBuilder().append("Docker host reported error: ").append(getBody())
+				.append(". Reported status code:").append(getStatusCode()).toString();
+	}
 
 }

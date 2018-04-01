@@ -59,198 +59,198 @@ import com.alpha.testutils.DockerTestHelper;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.docker-config.xml" })
 public class DeleteImageCommandSystemTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command deleteImageCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command deleteImageCommand;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Docker session.
-     */
-    DockerSession session;
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
 
-    /**
-     * Docker helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
+	/**
+	 * Docker helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    /**
-     * Base image info.
-     */
-    ImageInfo baseImageInfo;
+	/**
+	 * Base image info.
+	 */
+	ImageInfo baseImageInfo;
 
-    /**
-     * Tagged image info.
-     */
-    ImageInfo taggedImageInfo;
+	/**
+	 * Tagged image info.
+	 */
+	ImageInfo taggedImageInfo;
 
-    /**
-     * Docker info objects builder.
-     */
-    @Resource
-    InfoBuilder dockerInfoBuilder;
+	/**
+	 * Docker info objects builder.
+	 */
+	@Resource
+	InfoBuilder dockerInfoBuilder;
 
-    /**
-     * Random repository.
-     */
-    String randomRepository;
+	/**
+	 * Random repository.
+	 */
+	String randomRepository;
 
-    /**
-     * Random tag.
-     */
-    String randomTag;
+	/**
+	 * Random tag.
+	 */
+	String randomTag;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-	randomRepository = RandomStringUtils.randomAlphabetic(10).toLowerCase();
-	randomTag = RandomStringUtils.randomNumeric(2);
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		randomRepository = RandomStringUtils.randomAlphabetic(10).toLowerCase();
+		randomTag = RandomStringUtils.randomNumeric(2);
 
-	// create context
-	context = new ContextBase();
+		// create context
+		context = new ContextBase();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("root");
+		// create execution result
+		executionResult = new ExecutionResultImpl("root");
 
-	// create session
-	session = dockerHelper.createDefaultSession();
+		// create session
+		session = dockerHelper.createDefaultSession();
 
-	// create image info's
-	baseImageInfo = dockerHelper.createDefaultTinyImageInfo();
-	taggedImageInfo = dockerHelper.createDefaultTaggedImageInfo();
-    }
+		// create image info's
+		baseImageInfo = dockerHelper.createDefaultTinyImageInfo();
+		taggedImageInfo = dockerHelper.createDefaultTaggedImageInfo();
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-	dockerHelper.deleteImage(session, baseImageInfo);
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+		dockerHelper.deleteImage(session, baseImageInfo);
+	}
 
-    /**
-     * Test that command instance can be created in application context.
-     */
-    @Test
-    public void testCanGetInstance() throws Exception {
-	assertNotNull(deleteImageCommand);
-    }
+	/**
+	 * Test that command instance can be created in application context.
+	 */
+	@Test
+	public void testCanGetInstance() throws Exception {
+		assertNotNull(deleteImageCommand);
+	}
 
-    /**
-     * Test that command can delete base image and returns single successful
-     * root result.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDeleteImageFromBaseRepository() throws Exception {
-	dockerHelper.createImage(session, baseImageInfo);
-	assertTrue(dockerClient.imageExists(session, baseImageInfo));
+	/**
+	 * Test that command can delete base image and returns single successful root
+	 * result.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDeleteImageFromBaseRepository() throws Exception {
+		dockerHelper.createImage(session, baseImageInfo);
+		assertTrue(dockerClient.imageExists(session, baseImageInfo));
 
-	// setup context
-	context.put(DeleteImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(DeleteImageCommand.SESSION_KEY, session);
-	context.put(DeleteImageCommand.IMAGE_INFO_KEY, baseImageInfo);
+		// setup context
+		context.put(DeleteImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(DeleteImageCommand.SESSION_KEY, session);
+		context.put(DeleteImageCommand.IMAGE_INFO_KEY, baseImageInfo);
 
-	// execute command
-	deleteImageCommand.execute(context);
+		// execute command
+		deleteImageCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertFalse(dockerClient.imageExists(session, baseImageInfo));
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertFalse(dockerClient.imageExists(session, baseImageInfo));
+	}
 
-    /**
-     * Test that command can delete tagged image in user repository and returns
-     * single successful root result.
-     * 
-     * Please notice: The "default tiny image" is used for testing.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDeleteImageFromUserRepository() throws Exception {
-	dockerHelper.createImage(session, baseImageInfo);
-	dockerHelper.tagImage(session, baseImageInfo, taggedImageInfo);
-	assertTrue(dockerClient.imageExists(session, taggedImageInfo));
+	/**
+	 * Test that command can delete tagged image in user repository and returns
+	 * single successful root result.
+	 * 
+	 * Please notice: The "default tiny image" is used for testing.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDeleteImageFromUserRepository() throws Exception {
+		dockerHelper.createImage(session, baseImageInfo);
+		dockerHelper.tagImage(session, baseImageInfo, taggedImageInfo);
+		assertTrue(dockerClient.imageExists(session, taggedImageInfo));
 
-	// setup context
-	context.put(DeleteImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(DeleteImageCommand.SESSION_KEY, session);
-	context.put(DeleteImageCommand.IMAGE_INFO_KEY, taggedImageInfo);
+		// setup context
+		context.put(DeleteImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(DeleteImageCommand.SESSION_KEY, session);
+		context.put(DeleteImageCommand.IMAGE_INFO_KEY, taggedImageInfo);
 
-	// execute command
-	deleteImageCommand.execute(context);
+		// execute command
+		deleteImageCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertFalse(dockerClient.imageExists(session, taggedImageInfo));
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertFalse(dockerClient.imageExists(session, taggedImageInfo));
+	}
 
-    /**
-     * Test that command succeeds in deletion of unknown image from the base
-     * repository.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testSucceedsInDeletionOfUnknownImageFromBaseRepository() throws Exception {
+	/**
+	 * Test that command succeeds in deletion of unknown image from the base
+	 * repository.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSucceedsInDeletionOfUnknownImageFromBaseRepository() throws Exception {
 
-	// fails test if image already exists
-	assertFalse(dockerClient.imageExists(session, taggedImageInfo));
+		// fails test if image already exists
+		assertFalse(dockerClient.imageExists(session, taggedImageInfo));
 
-	// setup context
-	context.put(DeleteImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(DeleteImageCommand.SESSION_KEY, session);
-	context.put(DeleteImageCommand.IMAGE_INFO_KEY, taggedImageInfo);
+		// setup context
+		context.put(DeleteImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(DeleteImageCommand.SESSION_KEY, session);
+		context.put(DeleteImageCommand.IMAGE_INFO_KEY, taggedImageInfo);
 
-	// execute command
-	deleteImageCommand.execute(context);
+		// execute command
+		deleteImageCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
-    /**
-     * Test that command can delete tagged image with a versioned tag and
-     * returns single successful root result.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDeleteImageWithVersionedTag() throws Exception {
-	dockerHelper.createImage(session, baseImageInfo);
-	taggedImageInfo = dockerInfoBuilder.buildImageInfo(randomRepository, randomTag);
-	dockerHelper.tagImage(session, baseImageInfo, taggedImageInfo);
-	assertTrue(dockerClient.imageExists(session, taggedImageInfo));
+	/**
+	 * Test that command can delete tagged image with a versioned tag and returns
+	 * single successful root result.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDeleteImageWithVersionedTag() throws Exception {
+		dockerHelper.createImage(session, baseImageInfo);
+		taggedImageInfo = dockerInfoBuilder.buildImageInfo(randomRepository, randomTag);
+		dockerHelper.tagImage(session, baseImageInfo, taggedImageInfo);
+		assertTrue(dockerClient.imageExists(session, taggedImageInfo));
 
-	// setup context
-	context.put(DeleteImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(DeleteImageCommand.SESSION_KEY, session);
-	context.put(DeleteImageCommand.IMAGE_INFO_KEY, taggedImageInfo);
+		// setup context
+		context.put(DeleteImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(DeleteImageCommand.SESSION_KEY, session);
+		context.put(DeleteImageCommand.IMAGE_INFO_KEY, taggedImageInfo);
 
-	// execute command
-	deleteImageCommand.execute(context);
+		// execute command
+		deleteImageCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertFalse(dockerClient.imageExists(session, taggedImageInfo));
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertFalse(dockerClient.imageExists(session, taggedImageInfo));
+	}
 
 }

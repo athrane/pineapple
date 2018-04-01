@@ -36,17 +36,17 @@ import com.alpha.pineapple.web.WebApplicationConstants;
  */
 public class TreeNodeStartTimeConverter implements Converter<String, Object, Component> {
 
-    @Override
-    public Object coerceToBean(String arg0, Component arg1, BindContext arg2) {
-	return IGNORED_VALUE;
-    }
+	@Override
+	public Object coerceToBean(String arg0, Component arg1, BindContext arg2) {
+		return IGNORED_VALUE;
+	}
 
-    @Override
-    public String coerceToUi(Object arg0, Component arg1, BindContext arg2) {
-	if (arg0 == null)
-	    return "INTERNAL ERROR";
-	final ExecutionResult result = (ExecutionResult) arg0;
-	return WebApplicationConstants.SIMPLE_DATE_FORMAT.format(result.getStartTime());
-    }
+	@Override
+	public String coerceToUi(Object arg0, Component arg1, BindContext arg2) {
+		if (arg0 == null)
+			return "INTERNAL ERROR";
+		final ExecutionResult result = (ExecutionResult) arg0;
+		return WebApplicationConstants.SIMPLE_DATE_FORMAT.format(result.getStartTime());
+	}
 
 }

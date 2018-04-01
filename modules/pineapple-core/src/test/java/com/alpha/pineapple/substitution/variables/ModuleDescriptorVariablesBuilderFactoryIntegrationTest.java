@@ -45,50 +45,50 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class ModuleDescriptorVariablesBuilderFactoryIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    ObjectFactory<ModuleDescriptorVariablesBuilderImpl> moduleDescriptorVariablesBuilderFactory;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	ObjectFactory<ModuleDescriptorVariablesBuilderImpl> moduleDescriptorVariablesBuilderFactory;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that factory can be looked up from the context.
-     */
-    @Test
-    public void testCanGetFactoryFromContext() {
-	assertNotNull(moduleDescriptorVariablesBuilderFactory);
-    }
+	/**
+	 * Test that factory can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetFactoryFromContext() {
+		assertNotNull(moduleDescriptorVariablesBuilderFactory);
+	}
 
-    /**
-     * Test builder can be created from factory.
-     */
-    @Test
-    public void testCanCreateBuilder() {
-	assertNotNull(moduleDescriptorVariablesBuilderFactory.getObject());
-    }
+	/**
+	 * Test builder can be created from factory.
+	 */
+	@Test
+	public void testCanCreateBuilder() {
+		assertNotNull(moduleDescriptorVariablesBuilderFactory.getObject());
+	}
 
-    /**
-     * Test that each created builder is a Spring prototype.
-     */
-    @Test
-    public void testCreatedBuilderIsSpringProtototype() {
-	ModuleDescriptorVariablesBuilder builder = moduleDescriptorVariablesBuilderFactory.getObject();
-	ModuleDescriptorVariablesBuilder builder2 = moduleDescriptorVariablesBuilderFactory.getObject();
-	assertFalse(builder.hashCode() == builder2.hashCode());
-    }
+	/**
+	 * Test that each created builder is a Spring prototype.
+	 */
+	@Test
+	public void testCreatedBuilderIsSpringProtototype() {
+		ModuleDescriptorVariablesBuilder builder = moduleDescriptorVariablesBuilderFactory.getObject();
+		ModuleDescriptorVariablesBuilder builder2 = moduleDescriptorVariablesBuilderFactory.getObject();
+		assertFalse(builder.hashCode() == builder2.hashCode());
+	}
 
 }

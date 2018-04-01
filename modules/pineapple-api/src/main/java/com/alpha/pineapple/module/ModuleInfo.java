@@ -29,61 +29,61 @@ import java.io.File;
  */
 public interface ModuleInfo {
 
-    /**
-     * Get Id of module.
-     * 
-     * @return Id of module.
-     */
-    public String getId();
+	/**
+	 * Get Id of module.
+	 * 
+	 * @return Id of module.
+	 */
+	public String getId();
 
-    /**
-     * Get the environments for which the module contains module models.
-     * 
-     * @return the environments for which the module contains module models.
-     */
-    public String[] getModelEnvironments();
+	/**
+	 * Get the environments for which the module contains module models.
+	 * 
+	 * @return the environments for which the module contains module models.
+	 */
+	public String[] getModelEnvironments();
 
-    /**
-     * Return true if module contains module model for requested environment.
-     * 
-     * @return true if module contains module model for requested environment.
-     */
-    public boolean containsModel(String environment);
+	/**
+	 * Return true if module contains module model for requested environment.
+	 * 
+	 * @return true if module contains module model for requested environment.
+	 */
+	public boolean containsModel(String environment);
 
-    /**
-     * Get directory where module is located.
-     * 
-     * @return directory where module is located.
-     */
-    public File getDirectory();
+	/**
+	 * Get directory where module is located.
+	 * 
+	 * @return directory where module is located.
+	 */
+	public File getDirectory();
 
-    /**
-     * Returns true if the module descriptor is defined.
-     * 
-     * @return true if the module descriptor is defined.
-     */
-    public boolean isDescriptorDefined();
+	/**
+	 * Returns true if the module descriptor is defined.
+	 * 
+	 * @return true if the module descriptor is defined.
+	 */
+	public boolean isDescriptorDefined();
 
-    /**
-     * Add environment to module, e.g. a module model.
-     * 
-     * Please notice that adding an environment doesn't result in the creation
-     * of a module model since this interface is a meta data interface.
-     * 
-     * @param environment
-     *            added to the module.
-     */
-    public void addEnvironment(String environment);
+	/**
+	 * Add environment to module, e.g. a module model.
+	 * 
+	 * Please notice that adding an environment doesn't result in the creation of a
+	 * module model since this interface is a meta data interface.
+	 * 
+	 * @param environment
+	 *            added to the module.
+	 */
+	public void addEnvironment(String environment);
 
-    /**
-     * Delete environment from module e.g. a module model.
-     * 
-     * Please notice that deleting an environment doesn't result in the deletion
-     * of a module model since this interface is a meta data interface.
-     * 
-     * @param environment
-     *            deleted from the module.
-     */
-    public void deleteEnvironment(String environment);
+	/**
+	 * Delete environment from module e.g. a module model.
+	 * 
+	 * Please notice that deleting an environment doesn't result in the deletion of
+	 * a module model since this interface is a meta data interface.
+	 * 
+	 * @param environment
+	 *            deleted from the module.
+	 */
+	public void deleteEnvironment(String environment);
 
 }

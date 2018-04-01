@@ -49,342 +49,341 @@ import com.alpha.pineapple.test.AssertionHelper;
  */
 public class VariableSubstitutionProviderImpl implements VariableSubstitutionProvider {
 
-    /**
-     * Default file encoding.
-     */
-    static final String DEFAULT_FILEENCODING_UTF_8 = "UTF-8";
+	/**
+	 * Default file encoding.
+	 */
+	static final String DEFAULT_FILEENCODING_UTF_8 = "UTF-8";
 
-    /**
-     * Default maximum legal file for value substitution (in bytes). Current
-     * maximum is 1 MB.
-     */
-    static final long DEFAULT_MAXIMUM_SIZE = 1 * (1024 * 1024);
+	/**
+	 * Default maximum legal file for value substitution (in bytes). Current maximum
+	 * is 1 MB.
+	 */
+	static final long DEFAULT_MAXIMUM_SIZE = 1 * (1024 * 1024);
 
-    /**
-     * Null file returned if substitution process fails.
-     */
-    static final File NULL_FILE = null;
+	/**
+	 * Null file returned if substitution process fails.
+	 */
+	static final File NULL_FILE = null;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Runtime directory provider.
-     */
-    @Resource
-    RuntimeDirectoryProvider coreRuntimeDirectoryProvider;
+	/**
+	 * Runtime directory provider.
+	 */
+	@Resource
+	RuntimeDirectoryProvider coreRuntimeDirectoryProvider;
 
-    /**
-     * Assertion helper.
-     */
-    @Resource
-    AssertionHelper assertionHelper;
+	/**
+	 * Assertion helper.
+	 */
+	@Resource
+	AssertionHelper assertionHelper;
 
-    /**
-     * Model variable substitutor.
-     */
-    @Resource
-    ModelVariableSubstitutor modelVariableSubstitutor;
+	/**
+	 * Model variable substitutor.
+	 */
+	@Resource
+	ModelVariableSubstitutor modelVariableSubstitutor;
 
-    /**
-     * Execution context repository.
-     */
-    @Resource
-    ExecutionContextRepository executionContextRepository;
+	/**
+	 * Execution context repository.
+	 */
+	@Resource
+	ExecutionContextRepository executionContextRepository;
 
-    @Override
-    public String substitute(String source, ExecutionResult result) throws VariableSubstitutionException {
-	ExecutionResult substitutionResult = createSubstitutionResultHeader(result);
+	@Override
+	public String substitute(String source, ExecutionResult result) throws VariableSubstitutionException {
+		ExecutionResult substitutionResult = createSubstitutionResultHeader(result);
 
-	try {
+		try {
 
-	    // create null session
-	    Session nullSession = new NullSessionImpl();
-	    nullSession.connect(new com.alpha.pineapple.model.configuration.Resource(), new Credential());
+			// create null session
+			Session nullSession = new NullSessionImpl();
+			nullSession.connect(new com.alpha.pineapple.model.configuration.Resource(), new Credential());
 
-	    // substitute
-	    String processedContent = resolveVariables(source, nullSession, result);
+			// substitute
+			String processedContent = resolveVariables(source, nullSession, result);
 
-	    // complete as success and return
-	    substitutionResult.completeAsSuccessful(messageProvider, "dvpp.varsub_info_complete");
-	    return processedContent;
+			// complete as success and return
+			substitutionResult.completeAsSuccessful(messageProvider, "dvpp.varsub_info_complete");
+			return processedContent;
 
-	} catch (SessionConnectException e) {
+		} catch (SessionConnectException e) {
 
-	    // complete as error and re-throw
-	    Object[] args = { e.getCause() };
-	    substitutionResult.completeAsError(messageProvider, "dvpp.varsub_info_error", args, e);
-	    String message = messageProvider.getMessage("dvpp.varsub_info_error", args);
-	    throw new VariableSubstitutionException(message, e);
-	}
-    }
-
-    @Override
-    public String substitute(String source, Session session, ExecutionResult result)
-	    throws VariableSubstitutionException {
-	ExecutionResult substitutionResult = createSubstitutionResultHeader(result);
-
-	// substitute
-	String processedContent = resolveVariables(source, session, result);
-
-	// complete as success and return
-	substitutionResult.completeAsSuccessful(messageProvider, "dvpp.varsub_info_complete");
-	return processedContent;
-    }
-
-    @Override
-    public File createSubstitutedFile(File source, ExecutionResult result) throws VariableSubstitutionException {
-	ExecutionResult substitutionResult = createSubstitutionResultHeader(result);
-
-	try {
-	    // create null session
-	    Session nullSession = new NullSessionImpl();
-	    nullSession.connect(new com.alpha.pineapple.model.configuration.Resource(), new Credential());
-
-	    // substitute
-	    validateFileIsFitforSubstitution(source, substitutionResult);
-	    String sourceFileContent = loadSourceFile(source);
-	    File destinationFile = createDestinationFileName(source);
-	    deletePreviousFile(destinationFile);
-	    String processedContent = resolveVariables(sourceFileContent, nullSession, result);
-	    saveProcessedFile(destinationFile, processedContent);
-
-	    // complete as success and return
-	    substitutionResult.completeAsSuccessful(messageProvider, "dvpp.varsub_info_complete");
-	    return destinationFile;
-
-	} catch (SourceFileValidationFailureException e) {
-
-	    // complete as error and re-throw
-	    substitutionResult.completeAsError(messageProvider, "dvpp.varsub_validation_error", e);
-	    throw e;
-
-	} catch (VariableSubstitutionException e) {
-
-	    // complete as error and re-throw
-	    Object[] args = { e.getCause() };
-	    substitutionResult.completeAsError(messageProvider, "dvpp.varsub_info_error", args, e);
-	    throw e;
-
-	} catch (SessionConnectException e) {
-
-	    // complete as error and re-throw
-	    Object[] args = { e.getCause() };
-	    substitutionResult.completeAsError(messageProvider, "dvpp.varsub_info_error", args, e);
-	    String message = messageProvider.getMessage("dvpp.varsub_info_error", args);
-	    throw new VariableSubstitutionException(message, e);
-	}
-    }
-
-    @Override
-    public File createSubstitutedFile(File source, Session session, ExecutionResult result)
-	    throws VariableSubstitutionException {
-	ExecutionResult substitutionResult = createSubstitutionResultHeader(result);
-
-	try {
-
-	    // substitute
-	    validateFileIsFitforSubstitution(source, substitutionResult);
-	    String sourceFileContent = loadSourceFile(source);
-	    File destinationFile = createDestinationFileName(source);
-	    deletePreviousFile(destinationFile);
-	    String processedContent = resolveVariables(sourceFileContent, session, result);
-	    saveProcessedFile(destinationFile, processedContent);
-
-	    // complete as success and return
-	    substitutionResult.completeAsSuccessful(messageProvider, "dvpp.varsub_info_complete");
-	    return destinationFile;
-
-	} catch (SourceFileValidationFailureException e) {
-
-	    // complete as error and re-throw
-	    substitutionResult.completeAsError(messageProvider, "dvpp.varsub_validation_error", e);
-	    throw e;
-
-	} catch (VariableSubstitutionException e) {
-
-	    // complete as error and re-throw
-	    Object[] args = { e.getCause() };
-	    substitutionResult.completeAsError(messageProvider, "dvpp.varsub_info_error", args, e);
-	    throw e;
+			// complete as error and re-throw
+			Object[] args = { e.getCause() };
+			substitutionResult.completeAsError(messageProvider, "dvpp.varsub_info_error", args, e);
+			String message = messageProvider.getMessage("dvpp.varsub_info_error", args);
+			throw new VariableSubstitutionException(message, e);
+		}
 	}
 
-    }
+	@Override
+	public String substitute(String source, Session session, ExecutionResult result)
+			throws VariableSubstitutionException {
+		ExecutionResult substitutionResult = createSubstitutionResultHeader(result);
 
-    /**
-     * Perform variable substitution on content.
-     * 
-     * The properties defined on the resource contained by the plugin session is
-     * used for variable resolution.
-     * 
-     * @param source
-     *            source content which is processed for variables.
-     * @param session
-     *            plugin session.
-     * 
-     * @return processed file content.
-     * 
-     * @throws VariableSubstitutionException
-     *             if variable substitution fails.
-     */
-    String resolveVariables(String source, Session session, ExecutionResult result)
-	    throws VariableSubstitutionException {
+		// substitute
+		String processedContent = resolveVariables(source, session, result);
 
-	// execution context for operation
-	Context executionContext = executionContextRepository.get(result);
-
-	// get module and model from context
-	Module module = (Module) executionContext.get(CoreConstants.MODULE_KEY);
-	Models model = (Models) executionContext.get(CoreConstants.MODULE_MODEL_KEY);
-
-	// create variable substituted string
-	return modelVariableSubstitutor.createObjectWithSubstitution(module, model, session.getResource(), source);
-    }
-
-    /**
-     * Validate file is fit for substitution. It is validated whether file is a
-     * file and whether file size is smaller than maximum size.
-     * 
-     * @throws VariableSubstitutionException
-     *             if validation fails.
-     */
-    void validateFileIsFitforSubstitution(File source, ExecutionResult result) throws VariableSubstitutionException {
-
-	// assert file is valid
-	ExecutionResult assertionResult = assertionHelper.assertFileExist(source, messageProvider,
-		"dvpp.assert_sourcefile_exists", result);
-
-	// add file path info to execution result
-	String messageHeader = messageProvider.getMessage("dvpp.assert_sourcefile_exists_info");
-	assertionResult.addMessage(messageHeader, source.getAbsolutePath());
-
-	// throw exception on failure
-	if (!assertionResult.isSuccess()) {
-	    String message = messageProvider.getMessage("dvpp.createvarsubtempfile_sourcefile_exists_failure");
-	    throw new SourceFileValidationFailureException(message);
+		// complete as success and return
+		substitutionResult.completeAsSuccessful(messageProvider, "dvpp.varsub_info_complete");
+		return processedContent;
 	}
 
-	// assert file size valid
-	assertionResult = assertionHelper.assertFileSizeIsSmaller(source, DEFAULT_MAXIMUM_SIZE, messageProvider,
-		"dvpp.assert_sourcefile_size", result);
+	@Override
+	public File createSubstitutedFile(File source, ExecutionResult result) throws VariableSubstitutionException {
+		ExecutionResult substitutionResult = createSubstitutionResultHeader(result);
 
-	// add file size info to execution result
-	messageHeader = messageProvider.getMessage("dvpp.assert_sourcefile_size_info");
-	assertionResult.addMessage(messageHeader, Long.toString(source.length()));
+		try {
+			// create null session
+			Session nullSession = new NullSessionImpl();
+			nullSession.connect(new com.alpha.pineapple.model.configuration.Resource(), new Credential());
 
-	// add maximum file size info to execution result
-	messageHeader = messageProvider.getMessage("dvpp.assert_sourcefile_max_size_info");
-	assertionResult.addMessage(messageHeader, Long.toString(DEFAULT_MAXIMUM_SIZE));
+			// substitute
+			validateFileIsFitforSubstitution(source, substitutionResult);
+			String sourceFileContent = loadSourceFile(source);
+			File destinationFile = createDestinationFileName(source);
+			deletePreviousFile(destinationFile);
+			String processedContent = resolveVariables(sourceFileContent, nullSession, result);
+			saveProcessedFile(destinationFile, processedContent);
 
-	// throw exception on failure
-	if (!assertionResult.isSuccess()) {
-	    Object[] arg = { DEFAULT_MAXIMUM_SIZE };
-	    String message = messageProvider.getMessage("dvpp.createvarsubtempfile_sourcefile_size_failure", arg);
-	    throw new SourceFileValidationFailureException(message);
+			// complete as success and return
+			substitutionResult.completeAsSuccessful(messageProvider, "dvpp.varsub_info_complete");
+			return destinationFile;
+
+		} catch (SourceFileValidationFailureException e) {
+
+			// complete as error and re-throw
+			substitutionResult.completeAsError(messageProvider, "dvpp.varsub_validation_error", e);
+			throw e;
+
+		} catch (VariableSubstitutionException e) {
+
+			// complete as error and re-throw
+			Object[] args = { e.getCause() };
+			substitutionResult.completeAsError(messageProvider, "dvpp.varsub_info_error", args, e);
+			throw e;
+
+		} catch (SessionConnectException e) {
+
+			// complete as error and re-throw
+			Object[] args = { e.getCause() };
+			substitutionResult.completeAsError(messageProvider, "dvpp.varsub_info_error", args, e);
+			String message = messageProvider.getMessage("dvpp.varsub_info_error", args);
+			throw new VariableSubstitutionException(message, e);
+		}
 	}
-    }
 
-    /**
-     * Save processed file.
-     * 
-     * @param destinationFile
-     *            destination file name.
-     * @param processedContent
-     *            processed file content.
-     * 
-     * @throws VariableSubstitutionException
-     *             if save fails.
-     */
-    void saveProcessedFile(File destinationFile, String processedContent) throws VariableSubstitutionException {
-	try {
-	    FileUtils.write(destinationFile, processedContent, DEFAULT_FILEENCODING_UTF_8);
+	@Override
+	public File createSubstitutedFile(File source, Session session, ExecutionResult result)
+			throws VariableSubstitutionException {
+		ExecutionResult substitutionResult = createSubstitutionResultHeader(result);
 
-	} catch (IOException e) {
-	    Object[] args = { destinationFile.getAbsolutePath() };
-	    String message = messageProvider.getMessage("dvpp.createvarsubtempfile_save_failure", args);
-	    throw new VariableSubstitutionException(message, e);
+		try {
+
+			// substitute
+			validateFileIsFitforSubstitution(source, substitutionResult);
+			String sourceFileContent = loadSourceFile(source);
+			File destinationFile = createDestinationFileName(source);
+			deletePreviousFile(destinationFile);
+			String processedContent = resolveVariables(sourceFileContent, session, result);
+			saveProcessedFile(destinationFile, processedContent);
+
+			// complete as success and return
+			substitutionResult.completeAsSuccessful(messageProvider, "dvpp.varsub_info_complete");
+			return destinationFile;
+
+		} catch (SourceFileValidationFailureException e) {
+
+			// complete as error and re-throw
+			substitutionResult.completeAsError(messageProvider, "dvpp.varsub_validation_error", e);
+			throw e;
+
+		} catch (VariableSubstitutionException e) {
+
+			// complete as error and re-throw
+			Object[] args = { e.getCause() };
+			substitutionResult.completeAsError(messageProvider, "dvpp.varsub_info_error", args, e);
+			throw e;
+		}
+
 	}
-    }
 
-    /**
-     * Delete existing destination file if it exists.
-     * 
-     * @param destinationFile
-     *            to be deleted.
-     * 
-     * @throws VariableSubstitutionException
-     *             if deletion fails.
-     */
-    void deletePreviousFile(File destinationFile) throws VariableSubstitutionException {
+	/**
+	 * Perform variable substitution on content.
+	 * 
+	 * The properties defined on the resource contained by the plugin session is
+	 * used for variable resolution.
+	 * 
+	 * @param source
+	 *            source content which is processed for variables.
+	 * @param session
+	 *            plugin session.
+	 * 
+	 * @return processed file content.
+	 * 
+	 * @throws VariableSubstitutionException
+	 *             if variable substitution fails.
+	 */
+	String resolveVariables(String source, Session session, ExecutionResult result)
+			throws VariableSubstitutionException {
 
-	try {
-	    if (destinationFile.exists())
-		FileUtils.forceDelete(destinationFile);
+		// execution context for operation
+		Context executionContext = executionContextRepository.get(result);
 
-	} catch (IOException e) {
-	    Object[] args = { destinationFile.getAbsolutePath() };
-	    String message = messageProvider.getMessage("dvpp.createvarsubtempfile_delete_failure", args);
-	    throw new VariableSubstitutionException(message, e);
+		// get module and model from context
+		Module module = (Module) executionContext.get(CoreConstants.MODULE_KEY);
+		Models model = (Models) executionContext.get(CoreConstants.MODULE_MODEL_KEY);
+
+		// create variable substituted string
+		return modelVariableSubstitutor.createObjectWithSubstitution(module, model, session.getResource(), source);
 	}
-    }
 
-    /**
-     * Create destination file name. The destination file will be placed in the
-     * used temp directory.
-     * 
-     * @param source
-     *            source file.
-     * 
-     * @return path to destination file which is located in the used temp
-     *         directory.
-     */
-    File createDestinationFileName(File source) {
-	File tempDirectory = coreRuntimeDirectoryProvider.getTempDirectory();
+	/**
+	 * Validate file is fit for substitution. It is validated whether file is a file
+	 * and whether file size is smaller than maximum size.
+	 * 
+	 * @throws VariableSubstitutionException
+	 *             if validation fails.
+	 */
+	void validateFileIsFitforSubstitution(File source, ExecutionResult result) throws VariableSubstitutionException {
 
-	// create destination file
-	String destinationFileName = new StringBuilder().append(this.getClass().getCanonicalName()).append("-")
-		.append(source.getName()).toString();
-	File destinationFile = new File(tempDirectory, destinationFileName);
+		// assert file is valid
+		ExecutionResult assertionResult = assertionHelper.assertFileExist(source, messageProvider,
+				"dvpp.assert_sourcefile_exists", result);
 
-	return destinationFile;
-    }
+		// add file path info to execution result
+		String messageHeader = messageProvider.getMessage("dvpp.assert_sourcefile_exists_info");
+		assertionResult.addMessage(messageHeader, source.getAbsolutePath());
 
-    /**
-     * Load source file into string with default encoding.
-     * 
-     * @param source
-     *            path to source file.
-     * 
-     * @throws VariableSubstitutionException
-     *             if loading fails.
-     */
-    String loadSourceFile(File source) throws VariableSubstitutionException {
-	try {
-	    return FileUtils.readFileToString(source, DEFAULT_FILEENCODING_UTF_8);
+		// throw exception on failure
+		if (!assertionResult.isSuccess()) {
+			String message = messageProvider.getMessage("dvpp.createvarsubtempfile_sourcefile_exists_failure");
+			throw new SourceFileValidationFailureException(message);
+		}
 
-	} catch (IOException e) {
-	    Object[] args = { source.getAbsolutePath() };
-	    String message = messageProvider.getMessage("dvpp.createvarsubtempfile_load_failure", args);
-	    throw new VariableSubstitutionException(message, e);
+		// assert file size valid
+		assertionResult = assertionHelper.assertFileSizeIsSmaller(source, DEFAULT_MAXIMUM_SIZE, messageProvider,
+				"dvpp.assert_sourcefile_size", result);
+
+		// add file size info to execution result
+		messageHeader = messageProvider.getMessage("dvpp.assert_sourcefile_size_info");
+		assertionResult.addMessage(messageHeader, Long.toString(source.length()));
+
+		// add maximum file size info to execution result
+		messageHeader = messageProvider.getMessage("dvpp.assert_sourcefile_max_size_info");
+		assertionResult.addMessage(messageHeader, Long.toString(DEFAULT_MAXIMUM_SIZE));
+
+		// throw exception on failure
+		if (!assertionResult.isSuccess()) {
+			Object[] arg = { DEFAULT_MAXIMUM_SIZE };
+			String message = messageProvider.getMessage("dvpp.createvarsubtempfile_sourcefile_size_failure", arg);
+			throw new SourceFileValidationFailureException(message);
+		}
 	}
-    }
 
-    /**
-     * Create substitution result.
-     * 
-     * @param result
-     *            parent result
-     * 
-     * @return substitution result.
-     */
-    ExecutionResult createSubstitutionResultHeader(ExecutionResult result) {
-	// create execution result for substitution
-	String substitutionHeader = messageProvider.getMessage("dvpp.varsub_info");
-	ExecutionResult validationResult = result.addChild(substitutionHeader);
-	return validationResult;
-    }
+	/**
+	 * Save processed file.
+	 * 
+	 * @param destinationFile
+	 *            destination file name.
+	 * @param processedContent
+	 *            processed file content.
+	 * 
+	 * @throws VariableSubstitutionException
+	 *             if save fails.
+	 */
+	void saveProcessedFile(File destinationFile, String processedContent) throws VariableSubstitutionException {
+		try {
+			FileUtils.write(destinationFile, processedContent, DEFAULT_FILEENCODING_UTF_8);
+
+		} catch (IOException e) {
+			Object[] args = { destinationFile.getAbsolutePath() };
+			String message = messageProvider.getMessage("dvpp.createvarsubtempfile_save_failure", args);
+			throw new VariableSubstitutionException(message, e);
+		}
+	}
+
+	/**
+	 * Delete existing destination file if it exists.
+	 * 
+	 * @param destinationFile
+	 *            to be deleted.
+	 * 
+	 * @throws VariableSubstitutionException
+	 *             if deletion fails.
+	 */
+	void deletePreviousFile(File destinationFile) throws VariableSubstitutionException {
+
+		try {
+			if (destinationFile.exists())
+				FileUtils.forceDelete(destinationFile);
+
+		} catch (IOException e) {
+			Object[] args = { destinationFile.getAbsolutePath() };
+			String message = messageProvider.getMessage("dvpp.createvarsubtempfile_delete_failure", args);
+			throw new VariableSubstitutionException(message, e);
+		}
+	}
+
+	/**
+	 * Create destination file name. The destination file will be placed in the used
+	 * temp directory.
+	 * 
+	 * @param source
+	 *            source file.
+	 * 
+	 * @return path to destination file which is located in the used temp directory.
+	 */
+	File createDestinationFileName(File source) {
+		File tempDirectory = coreRuntimeDirectoryProvider.getTempDirectory();
+
+		// create destination file
+		String destinationFileName = new StringBuilder().append(this.getClass().getCanonicalName()).append("-")
+				.append(source.getName()).toString();
+		File destinationFile = new File(tempDirectory, destinationFileName);
+
+		return destinationFile;
+	}
+
+	/**
+	 * Load source file into string with default encoding.
+	 * 
+	 * @param source
+	 *            path to source file.
+	 * 
+	 * @throws VariableSubstitutionException
+	 *             if loading fails.
+	 */
+	String loadSourceFile(File source) throws VariableSubstitutionException {
+		try {
+			return FileUtils.readFileToString(source, DEFAULT_FILEENCODING_UTF_8);
+
+		} catch (IOException e) {
+			Object[] args = { source.getAbsolutePath() };
+			String message = messageProvider.getMessage("dvpp.createvarsubtempfile_load_failure", args);
+			throw new VariableSubstitutionException(message, e);
+		}
+	}
+
+	/**
+	 * Create substitution result.
+	 * 
+	 * @param result
+	 *            parent result
+	 * 
+	 * @return substitution result.
+	 */
+	ExecutionResult createSubstitutionResultHeader(ExecutionResult result) {
+		// create execution result for substitution
+		String substitutionHeader = messageProvider.getMessage("dvpp.varsub_info");
+		ExecutionResult validationResult = result.addChild(substitutionHeader);
+		return validationResult;
+	}
 
 }

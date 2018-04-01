@@ -27,9 +27,9 @@ package com.alpha.testutils;
  */
 public interface DockerTestConstants {
 
-    /**
-     * Test Default connect timeout (in ms).
-     */
-    public static final int TEST_TIMEOUT = 10000;
+	/**
+	 * Test Default connect timeout (in ms).
+	 */
+	public static final int TEST_TIMEOUT = 10000;
 
 }

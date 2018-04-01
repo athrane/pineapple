@@ -81,104 +81,102 @@ import com.alpha.pineapple.plugin.agent.utils.RestResponseException;
  */
 public class DeleteScheduledOperationCommand implements Command {
 
-    /**
-     * URL name variable.
-     */
-    static final String URL_VAR_NAME = "name";
+	/**
+	 * URL name variable.
+	 */
+	static final String URL_VAR_NAME = "name";
 
-    /**
-     * Key used to identify property in context: Name of the scheduled
-     * operation.
-     */
-    public static final String NAME_KEY = URL_VAR_NAME;
+	/**
+	 * Key used to identify property in context: Name of the scheduled operation.
+	 */
+	public static final String NAME_KEY = URL_VAR_NAME;
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Scheduled operation name.
-     */
-    @Initialize(NAME_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    String name;
+	/**
+	 * Scheduled operation name.
+	 */
+	@Initialize(NAME_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String name;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    AgentSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	AgentSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// delete module
-	doDelete(context);
+		// delete module
+		doDelete(context);
 
-	return Command.CONTINUE_PROCESSING;
-    }
-
-    /**
-     * Delete module.
-     * 
-     * @param context
-     *            Command context.
-     * 
-     * @throws Exception
-     *             If deletion fails.
-     */
-    void doDelete(Context context) {
-	try {
-	    // add message
-	    addModuleNameMessage();
-
-	    // create URL variables
-	    Map<String, String> urlVariables = Collections.singletonMap(URL_VAR_NAME, name);
-
-	    // post
-	    session.httpDelete(DELETE_SCHEDULED_OPERATION_URI, urlVariables);
-
-	    // complete result
-	    executionResult.completeAsSuccessful(messageProvider, "dsoc.delete_operation_completed");
-
-	} catch (RestResponseException e) {
-	    executionResult.addMessage("HTTP Headers", e.getHeaders().toString());
-	    executionResult.addMessage("HTTP Status Code", e.getStatusCode().toString());
-	    executionResult.addMessage("HTTP Body", e.getBody());
-	    executionResult.completeAsError(messageProvider, "dsoc.error", e);
-	} catch (Exception e) {
-	    executionResult.completeAsError(messageProvider, "dsoc.error", e);
+		return Command.CONTINUE_PROCESSING;
 	}
-    }
 
-    /**
-     * Add scheduled operation name message to execution result.
-     */
-    void addModuleNameMessage() {
-	String key = messageProvider.getMessage("dsoc.delete_scheduled_operation_info_key");
-	executionResult.addMessage(key, name);
-    }
+	/**
+	 * Delete module.
+	 * 
+	 * @param context
+	 *            Command context.
+	 * 
+	 * @throws Exception
+	 *             If deletion fails.
+	 */
+	void doDelete(Context context) {
+		try {
+			// add message
+			addModuleNameMessage();
+
+			// create URL variables
+			Map<String, String> urlVariables = Collections.singletonMap(URL_VAR_NAME, name);
+
+			// post
+			session.httpDelete(DELETE_SCHEDULED_OPERATION_URI, urlVariables);
+
+			// complete result
+			executionResult.completeAsSuccessful(messageProvider, "dsoc.delete_operation_completed");
+
+		} catch (RestResponseException e) {
+			executionResult.addMessage("HTTP Headers", e.getHeaders().toString());
+			executionResult.addMessage("HTTP Status Code", e.getStatusCode().toString());
+			executionResult.addMessage("HTTP Body", e.getBody());
+			executionResult.completeAsError(messageProvider, "dsoc.error", e);
+		} catch (Exception e) {
+			executionResult.completeAsError(messageProvider, "dsoc.error", e);
+		}
+	}
+
+	/**
+	 * Add scheduled operation name message to execution result.
+	 */
+	void addModuleNameMessage() {
+		String key = messageProvider.getMessage("dsoc.delete_scheduled_operation_info_key");
+		executionResult.addMessage(key, name);
+	}
 }

@@ -27,5 +27,5 @@ package com.alpha.pineapple.command.initialization;
  * using the {@link Initialize} annotation.
  */
 public enum ValidationPolicy {
-    NOT_NULL, NOT_EMPTY
+	NOT_NULL, NOT_EMPTY
 }

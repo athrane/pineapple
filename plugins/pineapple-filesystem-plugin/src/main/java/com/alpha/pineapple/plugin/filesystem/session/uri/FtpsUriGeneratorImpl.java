@@ -20,21 +20,25 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.filesystem.session.uri;
 
 /**
- * Implementation of the {@link VfsUriGenerator} interface for the FTPS protocol.
+ * Implementation of the {@link VfsUriGenerator} interface for the FTPS
+ * protocol.
  */
 public class FtpsUriGeneratorImpl extends AbstractUriGeneratorImpl {
 
 	/**
 	 * FtpsUriGeneratorImpl constructor.
 	 * 
-	 * @param host Host to generate URI's for.
-	 * @param port TCP port used to access the host. 
-	 * @param user User name used to access the host.  
-	 * @param password Password used to access the host. 
+	 * @param host
+	 *            Host to generate URI's for.
+	 * @param port
+	 *            TCP port used to access the host.
+	 * @param user
+	 *            User name used to access the host.
+	 * @param password
+	 *            Password used to access the host.
 	 */
 	public FtpsUriGeneratorImpl(String host, String port, String user, String password) {
 		setFields(host, port, user, password);
@@ -48,15 +52,15 @@ public class FtpsUriGeneratorImpl extends AbstractUriGeneratorImpl {
 		uri.append(password);
 		uri.append("@");
 		uri.append(host);
-		
+
 		// add port if defined
 		if (isPortDefined()) {
 			uri.append(":");
 			uri.append(port);
 		}
-		
-		uri.append(path);		
+
+		uri.append(path);
 		return uri.toString();
 	}
-		
+
 }

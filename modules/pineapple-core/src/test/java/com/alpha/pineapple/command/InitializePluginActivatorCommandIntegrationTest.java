@@ -54,86 +54,86 @@ import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class InitializePluginActivatorCommandIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command initializePluginActivatorCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command initializePluginActivatorCommand;
 
-    /**
-     * Object mother for credential provider
-     */
-    @Resource
-    ObjectMotherCredentialProvider providerMother;
+	/**
+	 * Object mother for credential provider
+	 */
+	@Resource
+	ObjectMotherCredentialProvider providerMother;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Chain context.
-     */
-    Context context;
+	/**
+	 * Chain context.
+	 */
+	Context context;
 
-    /**
-     * Object mother for environment configuration.
-     */
-    ObjectMotherEnvironmentConfiguration envConfigMother;
+	/**
+	 * Object mother for environment configuration.
+	 */
+	ObjectMotherEnvironmentConfiguration envConfigMother;
 
-    @Before
-    public void setUp() throws Exception {
-	// create context
-	context = new ContextBase();
+	@Before
+	public void setUp() throws Exception {
+		// create context
+		context = new ContextBase();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("Root result");
+		// create execution result
+		executionResult = new ExecutionResultImpl("Root result");
 
-	// create environment configuration object mother
-	envConfigMother = new ObjectMotherEnvironmentConfiguration();
-    }
+		// create environment configuration object mother
+		envConfigMother = new ObjectMotherEnvironmentConfiguration();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	executionResult = null;
-	context = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		executionResult = null;
+		context = null;
+	}
 
-    /**
-     * Test that command can be looked up from context.
-     */
-    @Test
-    public void testCanCreateInstance() {
-	// test
-	assertNotNull(initializePluginActivatorCommand);
-    }
+	/**
+	 * Test that command can be looked up from context.
+	 */
+	@Test
+	public void testCanCreateInstance() {
+		// test
+		assertNotNull(initializePluginActivatorCommand);
+	}
 
-    /**
-     * Test that command can successfully execute with empty input.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanSuccessfullyExecuteWithEmptyInput() throws Exception {
-	// create execution result
-	ExecutionResult childResult = executionResult.addChild("Test plugin activator initialization..");
+	/**
+	 * Test that command can successfully execute with empty input.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanSuccessfullyExecuteWithEmptyInput() throws Exception {
+		// create execution result
+		ExecutionResult childResult = executionResult.addChild("Test plugin activator initialization..");
 
-	// create arguments
-	Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
-	CredentialProvider provider = providerMother.createEmptyCredentialProvider();
+		// create arguments
+		Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+		CredentialProvider provider = providerMother.createEmptyCredentialProvider();
 
-	// set parameters
-	context.put(InitializePluginActivatorCommand.CREDENTIAL_PROVIDER_KEY, provider);
-	context.put(InitializePluginActivatorCommand.RESOURCES_KEY, envConfiguration);
-	context.put(InitializePluginActivatorCommand.EXECUTIONRESULT_KEY, childResult);
+		// set parameters
+		context.put(InitializePluginActivatorCommand.CREDENTIAL_PROVIDER_KEY, provider);
+		context.put(InitializePluginActivatorCommand.RESOURCES_KEY, envConfiguration);
+		context.put(InitializePluginActivatorCommand.EXECUTIONRESULT_KEY, childResult);
 
-	// execute HTTP test command
-	initializePluginActivatorCommand.execute(context);
+		// execute HTTP test command
+		initializePluginActivatorCommand.execute(context);
 
-	// test
-	assertEquals(ExecutionState.SUCCESS, childResult.getState());
-    }
+		// test
+		assertEquals(ExecutionState.SUCCESS, childResult.getState());
+	}
 
 }

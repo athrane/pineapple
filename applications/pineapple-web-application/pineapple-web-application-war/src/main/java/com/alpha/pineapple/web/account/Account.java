@@ -23,11 +23,11 @@ package com.alpha.pineapple.web.account;
 
 public interface Account {
 
-    /**
-     * Return user name.
-     * 
-     * @return user name.
-     */
-    public String getUsername();
+	/**
+	 * Return user name.
+	 * 
+	 * @return user name.
+	 */
+	public String getUsername();
 
 }

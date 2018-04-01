@@ -20,25 +20,26 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.ssh.model;
 
 import org.apache.commons.chain.Context;
 
 import com.alpha.pineapple.plugin.ssh.session.SshSession;
 
-
 /**
  * Maps values from the schema generated objects into the command context.
  */
 public interface Mapper {
-	
+
 	/**
 	 * Map model command to command context.
 	 * 
-	 * @param command model command.
-	 * @param context command context.
-	 * @param session plugin session.
-	 */	
-	void mapSecureCopy(SecureCopy command, Context context, SshSession session);		
+	 * @param command
+	 *            model command.
+	 * @param context
+	 *            command context.
+	 * @param session
+	 *            plugin session.
+	 */
+	void mapSecureCopy(SecureCopy command, Context context, SshSession session);
 }

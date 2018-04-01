@@ -27,45 +27,45 @@ package com.alpha.pineapple.web.model;
  */
 public class ExecutionResultProperty {
 
-    /**
-     * Key.
-     */
-    String key;
+	/**
+	 * Key.
+	 */
+	String key;
 
-    /**
-     * Value.
-     */
-    String value;
+	/**
+	 * Value.
+	 */
+	String value;
 
-    /**
-     * ExecutionResultProperty constructor.
-     * 
-     * @param key
-     *            property key.
-     * @param value
-     *            property value.
-     */
-    public ExecutionResultProperty(String key, String value) {
-	this.key = key;
-	this.value = value;
-    }
+	/**
+	 * ExecutionResultProperty constructor.
+	 * 
+	 * @param key
+	 *            property key.
+	 * @param value
+	 *            property value.
+	 */
+	public ExecutionResultProperty(String key, String value) {
+		this.key = key;
+		this.value = value;
+	}
 
-    /**
-     * Return key.
-     * 
-     * @return key.
-     */
-    public String getKey() {
-	return key;
-    }
+	/**
+	 * Return key.
+	 * 
+	 * @return key.
+	 */
+	public String getKey() {
+		return key;
+	}
 
-    /**
-     * Return value.
-     * 
-     * @return value.
-     */
-    public String getValue() {
-	return value;
-    }
+	/**
+	 * Return value.
+	 * 
+	 * @return value.
+	 */
+	public String getValue() {
+		return value;
+	}
 
 }

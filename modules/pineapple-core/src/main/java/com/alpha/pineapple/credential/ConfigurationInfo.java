@@ -28,58 +28,58 @@ package com.alpha.pineapple.credential;
  */
 public interface ConfigurationInfo {
 
-    /**
-     * Get environment info's. If no environments are registered then an empty
-     * array is returned.
-     * 
-     * @return array of environment info's.
-     */
-    EnvironmentInfo[] getEnvironments();
+	/**
+	 * Get environment info's. If no environments are registered then an empty array
+	 * is returned.
+	 * 
+	 * @return array of environment info's.
+	 */
+	EnvironmentInfo[] getEnvironments();
 
-    /**
-     * Returns true of configuration info contains environment,
-     * 
-     * @param id
-     *            environment ID.
-     * 
-     * @return true of configuration info contains environment,
-     */
-    boolean containsEnvironment(String id);
+	/**
+	 * Returns true of configuration info contains environment,
+	 * 
+	 * @param id
+	 *            environment ID.
+	 * 
+	 * @return true of configuration info contains environment,
+	 */
+	boolean containsEnvironment(String id);
 
-    /**
-     * Get environment Info. Returns null if environment isn't defined.
-     * 
-     * @param id
-     *            environment ID.
-     * 
-     * @return environment info.
-     */
-    EnvironmentInfo getEnvironment(String id);
+	/**
+	 * Get environment Info. Returns null if environment isn't defined.
+	 * 
+	 * @param id
+	 *            environment ID.
+	 * 
+	 * @return environment info.
+	 */
+	EnvironmentInfo getEnvironment(String id);
 
-    /**
-     * Add environment.
-     * 
-     * Please notice that addition of an environment through this method doesn't
-     * result in the environment configuration being persisted. In order to
-     * create an persisted environment create the environment through the
-     * credential provider.
-     * 
-     * @param environmentInfo
-     *            environment info.
-     */
-    void addEnvironment(EnvironmentInfo environmentInfo);
+	/**
+	 * Add environment.
+	 * 
+	 * Please notice that addition of an environment through this method doesn't
+	 * result in the environment configuration being persisted. In order to create
+	 * an persisted environment create the environment through the credential
+	 * provider.
+	 * 
+	 * @param environmentInfo
+	 *            environment info.
+	 */
+	void addEnvironment(EnvironmentInfo environmentInfo);
 
-    /**
-     * Delete environment.
-     *
-     * Please notice that deletion of an environment through this method doesn't
-     * result in the environment configuration being persisted. In order to
-     * persist the removal of an environment delete the environment through the
-     * credential provider.
-     * 
-     * @param environmentInfo
-     *            environment info.
-     */
-    void deleteEnvironment(EnvironmentInfo environmentInfo);
+	/**
+	 * Delete environment.
+	 *
+	 * Please notice that deletion of an environment through this method doesn't
+	 * result in the environment configuration being persisted. In order to persist
+	 * the removal of an environment delete the environment through the credential
+	 * provider.
+	 * 
+	 * @param environmentInfo
+	 *            environment info.
+	 */
+	void deleteEnvironment(EnvironmentInfo environmentInfo);
 
 }

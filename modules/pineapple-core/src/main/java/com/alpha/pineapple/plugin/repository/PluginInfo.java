@@ -28,109 +28,109 @@ import org.springframework.context.ApplicationContext;
  * Interface for plugin meta data.
  */
 public interface PluginInfo {
-    /**
-     * Returns true if input marshalling is enabled for plugin.
-     * 
-     * @return true if input marshalling is enabled for plugin.
-     */
-    public boolean isInputMarshallingEnabled();
+	/**
+	 * Returns true if input marshalling is enabled for plugin.
+	 * 
+	 * @return true if input marshalling is enabled for plugin.
+	 */
+	public boolean isInputMarshallingEnabled();
 
-    /**
-     * Set input marshalling state for for plugin.
-     * 
-     * @param inputMarshallingEnabled
-     *            set input marshalling state for for plugin.
-     */
-    public void setInputMarshallingEnabled(boolean inputMarshallingEnabled);
+	/**
+	 * Set input marshalling state for for plugin.
+	 * 
+	 * @param inputMarshallingEnabled
+	 *            set input marshalling state for for plugin.
+	 */
+	public void setInputMarshallingEnabled(boolean inputMarshallingEnabled);
 
-    /**
-     * Returns true if session handling is enabled for plugin.
-     * 
-     * @return true if session handling is enabled for plugin.
-     */
-    public boolean isSessionHandlingEnabled();
+	/**
+	 * Returns true if session handling is enabled for plugin.
+	 * 
+	 * @return true if session handling is enabled for plugin.
+	 */
+	public boolean isSessionHandlingEnabled();
 
-    /**
-     * Set session handling state for for plugin.
-     * 
-     * @param sessionHandlingEnabled
-     *            session handling state for for plugin.
-     */
-    public void setSessionHandlingEnabled(boolean sessionHandlingEnabled);
+	/**
+	 * Set session handling state for for plugin.
+	 * 
+	 * @param sessionHandlingEnabled
+	 *            session handling state for for plugin.
+	 */
+	public void setSessionHandlingEnabled(boolean sessionHandlingEnabled);
 
-    /**
-     * get unmarshaller ID.
-     * 
-     * @return unmarshaller ID.
-     */
-    public String getUnmarshallerId();
+	/**
+	 * get unmarshaller ID.
+	 * 
+	 * @return unmarshaller ID.
+	 */
+	public String getUnmarshallerId();
 
-    /**
-     * Set unmarshaller ID.
-     * 
-     * @param unmarshallerId
-     *            unmarshaller ID.
-     */
-    public void setUnmarshallerId(String unmarshallerId);
+	/**
+	 * Set unmarshaller ID.
+	 * 
+	 * @param unmarshallerId
+	 *            unmarshaller ID.
+	 */
+	public void setUnmarshallerId(String unmarshallerId);
 
-    /**
-     * Set plugin ID.
-     * 
-     * @param pluginId
-     *            plugin Id.
-     */
-    public void setPluginId(String pluginId);
+	/**
+	 * Set plugin ID.
+	 * 
+	 * @param pluginId
+	 *            plugin Id.
+	 */
+	public void setPluginId(String pluginId);
 
-    /**
-     * Get plugin Id.
-     * 
-     * @return plugin Id.
-     */
-    public String getPluginId();
+	/**
+	 * Get plugin Id.
+	 * 
+	 * @return plugin Id.
+	 */
+	public String getPluginId();
 
-    /**
-     * Set configuration file name for plugin.
-     * 
-     * @param configFileName
-     *            configuration file name for plugin.
-     */
-    public void setConfigFileName(String configFileName);
+	/**
+	 * Set configuration file name for plugin.
+	 * 
+	 * @param configFileName
+	 *            configuration file name for plugin.
+	 */
+	public void setConfigFileName(String configFileName);
 
-    /**
-     * configuration file name for plugin.
-     * 
-     * @return configuration file name for plugin.
-     */
-    public String getConfigFileName();
+	/**
+	 * configuration file name for plugin.
+	 * 
+	 * @return configuration file name for plugin.
+	 */
+	public String getConfigFileName();
 
-    /**
-     * Get Spring application context for plugin.
-     * 
-     * @return Spring application context for plugin.
-     */
-    public ApplicationContext getContext();
+	/**
+	 * Get Spring application context for plugin.
+	 * 
+	 * @return Spring application context for plugin.
+	 */
+	public ApplicationContext getContext();
 
-    /**
-     * Set Spring application context for plugin.
-     * 
-     * @param context
-     *            Spring application context for plugin.
-     */
-    public void setContext(ApplicationContext context);
+	/**
+	 * Set Spring application context for plugin.
+	 * 
+	 * @param context
+	 *            Spring application context for plugin.
+	 */
+	public void setContext(ApplicationContext context);
 
-    /**
-     * Set session ID for plugin.
-     * 
-     * @param sessionId
-     *            session ID for plugin.
-     */
-    public void setSessionId(String sessionId);
+	/**
+	 * Set session ID for plugin.
+	 * 
+	 * @param sessionId
+	 *            session ID for plugin.
+	 */
+	public void setSessionId(String sessionId);
 
-    /**
-     * Get session ID for plugin.
-     * 
-     * @return session ID for plugin.
-     */
-    public String getSessionId();
+	/**
+	 * Get session ID for plugin.
+	 * 
+	 * @return session ID for plugin.
+	 */
+	public String getSessionId();
 
 }

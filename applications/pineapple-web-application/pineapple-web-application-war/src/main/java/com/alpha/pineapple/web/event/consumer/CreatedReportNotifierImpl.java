@@ -52,26 +52,26 @@ import com.alpha.pineapple.web.event.EventDispatcher;
  */
 public class CreatedReportNotifierImpl implements EventListener<Event>, Consumer<reactor.event.Event<String>> {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
-    
-    /**
-     * Reactor-to-ZK event dispatcher.
-     */
-    @Resource
-    EventDispatcher eventDispatcher;
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    @Override
-    public void onEvent(Event evt) throws Exception {
-	BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, EventQueues.APPLICATION,
-		COMPLETED_REPORT_CREATION_GLOBALCOMMAND, NULL_GLOBALCOMMAND_ARGS);
-    }
+	/**
+	 * Reactor-to-ZK event dispatcher.
+	 */
+	@Resource
+	EventDispatcher eventDispatcher;
 
-    @Override
-    public void accept(reactor.event.Event<String> t) {
-	eventDispatcher.dispatchZkEvent(this);
-    }
+	@Override
+	public void onEvent(Event evt) throws Exception {
+		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, EventQueues.APPLICATION,
+				COMPLETED_REPORT_CREATION_GLOBALCOMMAND, NULL_GLOBALCOMMAND_ARGS);
+	}
+
+	@Override
+	public void accept(reactor.event.Event<String> t) {
+		eventDispatcher.dispatchZkEvent(this);
+	}
 
 }

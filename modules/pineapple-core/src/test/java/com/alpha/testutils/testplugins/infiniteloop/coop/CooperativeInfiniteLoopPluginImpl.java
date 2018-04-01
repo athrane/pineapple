@@ -43,32 +43,32 @@ import com.alpha.pineapple.session.Session;
 @Plugin()
 @PluginOperation(OperationNames.WILDCARD_OPERATION)
 public class CooperativeInfiniteLoopPluginImpl implements Operation {
-    public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.infiniteloop.coop";
+	public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.infiniteloop.coop";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    @Override
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-	try {
-	    // infinite loop
-	    while (true) {
+	@Override
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+		try {
+			// infinite loop
+			while (true) {
 
-		// co-operatively test for cancellation
-		if (!result.getContinuationPolicy().continueExecution()) {
-		    result.setState(ExecutionState.INTERRUPTED);
-		    return;
+				// co-operatively test for cancellation
+				if (!result.getContinuationPolicy().continueExecution()) {
+					result.setState(ExecutionState.INTERRUPTED);
+					return;
+				}
+
+				logger.debug("Will wait for 100 ms.");
+				ConcurrencyUtils.waitSomeMilliseconds(100);
+			}
+		} catch (InterruptedException e) {
+			result.setState(ExecutionState.ERROR);
+			throw new PluginExecutionFailedException("Plugin execution was interrupted due to: " + e.getMessage(), e);
 		}
-
-		logger.debug("Will wait for 100 ms.");
-		ConcurrencyUtils.waitSomeMilliseconds(100);
-	    }
-	} catch (InterruptedException e) {
-	    result.setState(ExecutionState.ERROR);
-	    throw new PluginExecutionFailedException("Plugin execution was interrupted due to: " + e.getMessage(), e);
 	}
-    }
 
 }

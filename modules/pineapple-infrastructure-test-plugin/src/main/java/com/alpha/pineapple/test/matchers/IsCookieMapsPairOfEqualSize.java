@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import org.hamcrest.Description;
@@ -34,23 +33,23 @@ import com.alpha.pineapple.plugin.net.http.CookieMapPair;
  * Matches if a pair of cookies maps contains key sets of equal size.
  */
 public class IsCookieMapsPairOfEqualSize extends TypeSafeMatcher<CookieMapPair> {
-		
+
 	public void describeTo(Description description) {
-		description.appendText("pair of cookie maps of equal size");		
+		description.appendText("pair of cookie maps of equal size");
 	}
-		
-    @Override
+
+	@Override
 	protected void describeMismatchSafely(CookieMapPair pair, Description mismatchDescription) {
-    	
+
 		// get sizes
 		int size1 = pair.getFirstMap().keySet().size();
 		int size2 = pair.getSecondMap().keySet().size();
 
-        // create description
-    	mismatchDescription.appendText("contained pair of cookie maps of size ");    	
-    	mismatchDescription.appendValue( size1 );
-    	mismatchDescription.appendText("and ");
-    	mismatchDescription.appendValue( size2 );
+		// create description
+		mismatchDescription.appendText("contained pair of cookie maps of size ");
+		mismatchDescription.appendValue(size1);
+		mismatchDescription.appendText("and ");
+		mismatchDescription.appendValue(size2);
 	}
 
 	@Override
@@ -59,14 +58,14 @@ public class IsCookieMapsPairOfEqualSize extends TypeSafeMatcher<CookieMapPair> 
 		// get sizes
 		int size1 = pair.getFirstMap().keySet().size();
 		int size2 = pair.getSecondMap().keySet().size();
-		
+
 		// do match
-		return (size1 == size2); 		
+		return (size1 == size2);
 	}
 
 	@Factory
-    public static Matcher<CookieMapPair> equalSize() {
-        return new IsCookieMapsPairOfEqualSize();
-    }
-    
+	public static Matcher<CookieMapPair> equalSize() {
+		return new IsCookieMapsPairOfEqualSize();
+	}
+
 }

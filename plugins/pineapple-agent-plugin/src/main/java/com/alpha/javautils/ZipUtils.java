@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class ZipUtils {
-	
+
 	/**
 	 * Null implementation of the {@linkplain ZipProgressCallback} interface.
 	 */
@@ -46,126 +46,135 @@ public class ZipUtils {
 
 		@Override
 		public void entryProcessed(ZipArchiveEntry entry) {
-		}		
+		}
 	}
 
 	/**
 	 * Null progress call back implementation.
 	 */
-    private static final ZipProgressCallback NULL_PROGRESS_CALLBACK = new NullProgressCallbackImpl();
-	
+	private static final ZipProgressCallback NULL_PROGRESS_CALLBACK = new NullProgressCallbackImpl();
+
 	/**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Compress the content of a folder into a ZIP archive.
 	 * 
-	 * @param targetDirectory directory whose content is packed.
-	 * @param archiveFile File name of ZIP archive.
-	 * @param progress ZIP progress callback object which can be used by 
-	 * client to continuously notified about the compression operation.  
+	 * @param targetDirectory
+	 *            directory whose content is packed.
+	 * @param archiveFile
+	 *            File name of ZIP archive.
+	 * @param progress
+	 *            ZIP progress callback object which can be used by client to
+	 *            continuously notified about the compression operation.
 	 * 
-	 * @throws Exception if archiving fails.
+	 * @throws Exception
+	 *             if archiving fails.
 	 */
 	public void zipFolder(File targetDirectory, File archiveFile, ZipProgressCallback progress) throws Exception {
-		
+
 		// creates streams
-		final OutputStream fos = new FileOutputStream(archiveFile); 
+		final OutputStream fos = new FileOutputStream(archiveFile);
 		ArchiveOutputStream aos = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.ZIP, fos);
 
 		// exit if target directory isn't a folder
-		if(!targetDirectory.isDirectory()) {
-			logger.debug("DEBUG is directory will exit.");			
+		if (!targetDirectory.isDirectory()) {
+			logger.debug("DEBUG is directory will exit.");
 			// TODO: throw exception
 			return;
 		}
-		
+
 		// add directory to archive
 		internalAddEntryToArchive(aos, targetDirectory, "", progress);
-		
+
 		// close
 		aos.finish();
-	    aos.close();		
-	    fos.close();	    
+		aos.close();
+		fos.close();
 	}
-	
-	
+
 	/**
 	 * Add entry to archive.
 	 * 
-	 * @param os archive output stream.
-	 * @param source file object for entry to add.
-	 * @param archivePath internal path in archive.
-	 * @param progress ZIP progress callback object which can be used by 
-	 * client to continuously notified about the compression operation.  
+	 * @param os
+	 *            archive output stream.
+	 * @param source
+	 *            file object for entry to add.
+	 * @param archivePath
+	 *            internal path in archive.
+	 * @param progress
+	 *            ZIP progress callback object which can be used by client to
+	 *            continuously notified about the compression operation.
 	 * 
-	 * @throws Exception if archiving fails.
+	 * @throws Exception
+	 *             if archiving fails.
 	 */
-	void internalAddEntryToArchive(ArchiveOutputStream os, 
-			File source, 
-			String archivePath,
+	void internalAddEntryToArchive(ArchiveOutputStream os, File source, String archivePath,
 			ZipProgressCallback progress) throws Exception {
-		
+
 		// declare
-        FileInputStream is = null;
-        
-        // calculate entry name
-        String entryName = archivePath + source.getName();
-		
-        // handle file
-        if (source.isFile()) {
-            try {
-            	
-            	// create and add archive entry
-            	ZipArchiveEntry zipEntry = new ZipArchiveEntry(source, entryName);
-            	os.putArchiveEntry(zipEntry);
-            	
-            	// copy entry content into archive
-                is = new FileInputStream(source);
-                IOUtils.copy(is, os);
-                
-                // notify call back
-                progress.entryProcessed(zipEntry);
-                                
-                os.closeArchiveEntry();
-            	            	
-            } finally {
-            	is.close(); 
-            }
-                                    
-            return;
-        }
+		FileInputStream is = null;
 
-        // handle directory
-        
-        // create and add archive entry
-        ZipArchiveEntry zipEntry = new ZipArchiveEntry(source, entryName);
-        os.putArchiveEntry(zipEntry);
-        
-        // notify call back
-        progress.entryProcessed(zipEntry);
-                        
-        os.closeArchiveEntry();
+		// calculate entry name
+		String entryName = archivePath + source.getName();
 
-        // add children recursively
-        File[] children = source.listFiles();        
-        if (children != null) {
-            for (File child : children) 
-            	internalAddEntryToArchive(os, child, entryName + "/", progress);
-        }        
+		// handle file
+		if (source.isFile()) {
+			try {
+
+				// create and add archive entry
+				ZipArchiveEntry zipEntry = new ZipArchiveEntry(source, entryName);
+				os.putArchiveEntry(zipEntry);
+
+				// copy entry content into archive
+				is = new FileInputStream(source);
+				IOUtils.copy(is, os);
+
+				// notify call back
+				progress.entryProcessed(zipEntry);
+
+				os.closeArchiveEntry();
+
+			} finally {
+				is.close();
+			}
+
+			return;
+		}
+
+		// handle directory
+
+		// create and add archive entry
+		ZipArchiveEntry zipEntry = new ZipArchiveEntry(source, entryName);
+		os.putArchiveEntry(zipEntry);
+
+		// notify call back
+		progress.entryProcessed(zipEntry);
+
+		os.closeArchiveEntry();
+
+		// add children recursively
+		File[] children = source.listFiles();
+		if (children != null) {
+			for (File child : children)
+				internalAddEntryToArchive(os, child, entryName + "/", progress);
+		}
 	}
-    
+
 	/**
 	 * Compress the content of a folder into a ZIP archive.
 	 * 
-	 * @param targetDirectory directory whose content is packed.
-	 * @param archiveFile File name of ZIP archive.
-	 * @throws Exception if archiving fails.
+	 * @param targetDirectory
+	 *            directory whose content is packed.
+	 * @param archiveFile
+	 *            File name of ZIP archive.
+	 * @throws Exception
+	 *             if archiving fails.
 	 */
 	public void zipFolder(File targetDirectory, File archiveFile) throws Exception {
 		zipFolder(targetDirectory, archiveFile, NULL_PROGRESS_CALLBACK);
 	}
-		
+
 }

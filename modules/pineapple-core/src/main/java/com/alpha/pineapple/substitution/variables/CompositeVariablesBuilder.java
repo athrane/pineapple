@@ -46,14 +46,14 @@ package com.alpha.pineapple.substitution.variables;
  */
 public interface CompositeVariablesBuilder extends VariablesBuilder {
 
-    /**
-     * Register named variable builder.
-     * 
-     * @param name
-     *            builder name.
-     * @param builder
-     *            builder.
-     */
-    public void addBuilder(String name, VariablesBuilder builder);
+	/**
+	 * Register named variable builder.
+	 * 
+	 * @param name
+	 *            builder name.
+	 * @param builder
+	 *            builder.
+	 */
+	public void addBuilder(String name, VariablesBuilder builder);
 
 }

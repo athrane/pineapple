@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.testutils;
 
 import org.apache.log4j.Logger;
@@ -29,40 +28,39 @@ import com.alpha.pineapple.plugin.filesystem.model.Filesystem;
 import com.alpha.pineapple.plugin.filesystem.model.ObjectFactory;
 
 /**
- * Implementation of the ObjectMother pattern, 
- * provides helper functions for unit testing by creating content for operations.
+ * Implementation of the ObjectMother pattern, provides helper functions for
+ * unit testing by creating content for operations.
  */
-public class ObjectMotherContent
-{
+public class ObjectMotherContent {
 	/**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-    
-    /**
-     * File system object factory.
-     */
-	ObjectFactory fileSystemFactory;    
-        
-    /**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
+	/**
+	 * File system object factory.
+	 */
+	ObjectFactory fileSystemFactory;
+
+	/**
 	 * ObjectMotherContent constructor.
 	 */
 	public ObjectMotherContent() {
 		super();
 
-        // create test case factory
-        fileSystemFactory = new com.alpha.pineapple.plugin.filesystem.model.ObjectFactory();		
+		// create test case factory
+		fileSystemFactory = new com.alpha.pineapple.plugin.filesystem.model.ObjectFactory();
 	}
 
 	/**
-     * Create empty file system document.
-     * 
-     * @return empty file system document.
-     */
-    public Filesystem createEmptyFilesystem() {
-        
-    	Filesystem fsDoc = fileSystemFactory.createFilesystem();          
-        return fsDoc;        
-    }
-	
+	 * Create empty file system document.
+	 * 
+	 * @return empty file system document.
+	 */
+	public Filesystem createEmptyFilesystem() {
+
+		Filesystem fsDoc = fileSystemFactory.createFilesystem();
+		return fsDoc;
+	}
+
 }

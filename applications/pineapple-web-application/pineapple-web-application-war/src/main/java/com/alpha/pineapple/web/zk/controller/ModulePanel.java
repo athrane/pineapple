@@ -47,90 +47,90 @@ import com.alpha.pineapple.web.model.SessionState;
  */
 public class ModulePanel extends SelectorComposer<Window> {
 
-    /**
-     * Serial Version UID.
-     */
-    static final long serialVersionUID = 6470043898269443180L;
+	/**
+	 * Serial Version UID.
+	 */
+	static final long serialVersionUID = 6470043898269443180L;
 
-    /**
-     * JSON document field.
-     */
-    static final String JSON_DOCUMENT_FIELD = "editor-document";
+	/**
+	 * JSON document field.
+	 */
+	static final String JSON_DOCUMENT_FIELD = "editor-document";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @WireVariable
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@WireVariable
+	MessageProvider webMessageProvider;
 
-    /**
-     * Session state.
-     */
-    @WireVariable
-    SessionState sessionState;
+	/**
+	 * Session state.
+	 */
+	@WireVariable
+	SessionState sessionState;
 
-    /**
-     * Session state.
-     */
-    @WireVariable
-    ModuleRepository moduleRepository;
+	/**
+	 * Session state.
+	 */
+	@WireVariable
+	ModuleRepository moduleRepository;
 
-    /**
-     * ZK Window.
-     */
-    @Wire
-    Window modulePanelWindow;
+	/**
+	 * ZK Window.
+	 */
+	@Wire
+	Window modulePanelWindow;
 
-    /**
-     * Event handler for the requestedDocumentToSave event from the client side
-     * (e.g. the java script module-panle.js).
-     * 
-     * @param evt
-     *            Event object.
-     */
-    @Listen("onRequestedDocumentToSave = #modulePanelWindow")
-    public void saveDocument(Event evt) {
+	/**
+	 * Event handler for the requestedDocumentToSave event from the client side
+	 * (e.g. the java script module-panle.js).
+	 * 
+	 * @param evt
+	 *            Event object.
+	 */
+	@Listen("onRequestedDocumentToSave = #modulePanelWindow")
+	public void saveDocument(Event evt) {
 
-	// get module info
-	ModuleInfo info = sessionState.getModuleInfo();
+		// get module info
+		ModuleInfo info = sessionState.getModuleInfo();
 
-	// get selected model
-	String environment = sessionState.getEnvironment();
+		// get selected model
+		String environment = sessionState.getEnvironment();
 
-	// get updated model
-	Object data = evt.getData();
+		// get updated model
+		Object data = evt.getData();
 
-	// exit save if model isn't an JSON object.
-	if (!(data instanceof JSONObject)) {
+		// exit save if model isn't an JSON object.
+		if (!(data instanceof JSONObject)) {
 
-	    Object[] args = { environment, info.getId(), data.getClass() };
-	    String msg = webMessageProvider.getMessage("mp.save_model_failed", args);
-	    logger.error(msg);
+			Object[] args = { environment, info.getId(), data.getClass() };
+			String msg = webMessageProvider.getMessage("mp.save_model_failed", args);
+			logger.error(msg);
 
-	    // message box to user
-	    String header = webMessageProvider.getMessage("mp.save_model_failed_header_msgbox", args);
-	    msg = webMessageProvider.getMessage("mp.save_model_failed_msgbox", args);
-	    Messagebox.show(msg, header, Messagebox.OK, Messagebox.EXCLAMATION);
-	    return;
+			// message box to user
+			String header = webMessageProvider.getMessage("mp.save_model_failed_header_msgbox", args);
+			msg = webMessageProvider.getMessage("mp.save_model_failed_msgbox", args);
+			Messagebox.show(msg, header, Messagebox.OK, Messagebox.EXCLAMATION);
+			return;
+		}
+
+		// type cast to JSON object
+		JSONObject jsonObject = (JSONObject) data;
+
+		// get model
+		String model = (String) jsonObject.get(JSON_DOCUMENT_FIELD);
+
+		// save model
+		moduleRepository.saveModel(info, environment, model);
+
+		// post notification that model was saved successfully
+		Clients.showNotification(webMessageProvider.getMessage("mp.save_model_info"), POST_STYLE, null, POST_LOCATION,
+				POST_DURATION);
 	}
-
-	// type cast to JSON object
-	JSONObject jsonObject = (JSONObject) data;
-
-	// get model
-	String model = (String) jsonObject.get(JSON_DOCUMENT_FIELD);
-
-	// save model
-	moduleRepository.saveModel(info, environment, model);
-
-	// post notification that model was saved successfully
-	Clients.showNotification(webMessageProvider.getMessage("mp.save_model_info"), POST_STYLE, null, POST_LOCATION,
-		POST_DURATION);
-    }
 
 }

@@ -20,15 +20,12 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.command.initialization;
 
 /**
- * ValidateValue policies which can be defined for a field which is initialized 
+ * ValidateValue policies which can be defined for a field which is initialized
  * using the {@link Initialize} annotation.
  */
-public enum ValidationPolicy
-{
-    NOT_NULL,
-    NOT_EMPTY
+public enum ValidationPolicy {
+	NOT_NULL, NOT_EMPTY
 }

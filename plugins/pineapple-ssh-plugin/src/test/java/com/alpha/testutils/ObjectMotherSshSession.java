@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.testutils;
 
 import static com.alpha.testutils.SshTestConstants.TEST_TIMEOUT;
@@ -39,119 +38,118 @@ import com.alpha.pineapple.plugin.ssh.utils.JSchLog4JLogger;
 import com.alpha.pineapple.resource.ResourcePropertyGetter;
 import com.jcraft.jsch.JSch;
 
-
 /**
- * Implementation of the ObjectMother pattern, 
- * provides helper functions for unit testing SSH sessions.
+ * Implementation of the ObjectMother pattern, provides helper functions for
+ * unit testing SSH sessions.
  * 
  * Please notice that this class mirrors the dependencies of the
- * {@linkplain SshSessionImpl} class since it inject all dependencies 
- * into the session class.
+ * {@linkplain SshSessionImpl} class since it inject all dependencies into the
+ * session class.
  */
 public class ObjectMotherSshSession {
-	
-	/**
-     * Spring configuration file for the SSH plugin.
-     */    
-    static final String SSH_SPRING_CONFIG = "/com.alpha.pineapple.plugin.ssh-config.xml";
-    
-	/**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );    
 
-    /**
-     * Message provider for I18N support.
-     */
+	/**
+	 * Spring configuration file for the SSH plugin.
+	 */
+	static final String SSH_SPRING_CONFIG = "/com.alpha.pineapple.plugin.ssh-config.xml";
+
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
+	/**
+	 * Message provider for I18N support.
+	 */
 	@Resource
-    MessageProvider messageProvider;        
-            
-    /**
-     * Resource property getter.
-     */
-	@Resource	
-    ResourcePropertyGetter propertyGetter;
-    
-    /**
+	MessageProvider messageProvider;
+
+	/**
+	 * Resource property getter.
+	 */
+	@Resource
+	ResourcePropertyGetter propertyGetter;
+
+	/**
 	 * JSCH log4j logger.
-     */
-    @Resource
-    JSchLog4JLogger jschLogger;
-    
-    /**
-     * SSH library.
-     */
-    @Resource    
+	 */
+	@Resource
+	JSchLog4JLogger jschLogger;
+
+	/**
+	 * SSH library.
+	 */
+	@Resource
 	JSch jsch;
-	
+
 	/**
 	 * Inject Spring dependencies in to session.
 	 * 
-	 * @param session session to inject dependencies into. 
+	 * @param session
+	 *            session to inject dependencies into.
 	 */
 	void injectSpringDependencies(SshSession session) {
-		ReflectionTestUtils.setField( session, "messageProvider", messageProvider);    
-		ReflectionTestUtils.setField( session, "propertyGetter", propertyGetter );
-		ReflectionTestUtils.setField( session, "jschLogger", jschLogger);    
-		ReflectionTestUtils.setField( session, "jsch", jsch );
-	}
-	
-    /**
-     * Create connected SSH session using password authentication.
-     * 
-     * @param host SSH host used to establish connection.
-     * @param port TCP port where connection is established.    
-	 * @param user user name.
-	 * @param password password.
-     * 
-     * @return connected SSH session.
-     */
-	public SshSession createConnectedSshSessionWithPasswordAuthentication(String host, int port, String user, String password) {
-		
-        // declare session
-        SshSessionImpl session;
-        
-        try
-        {
-            // create session
-            session = new SshSessionImpl();            
-            injectSpringDependencies(session);
-            session.setLogger();
-            
-            // connect
-            session.connect(host, port, user, password, TEST_TIMEOUT);         
-            return session;
-        }
-        catch ( Exception e )
-        {
-            fail( StackTraceHelper.getStrackTrace( e ) );
-            return null;
-        }		
+		ReflectionTestUtils.setField(session, "messageProvider", messageProvider);
+		ReflectionTestUtils.setField(session, "propertyGetter", propertyGetter);
+		ReflectionTestUtils.setField(session, "jschLogger", jschLogger);
+		ReflectionTestUtils.setField(session, "jsch", jsch);
 	}
 
-    /**
-     * Create unconnected SSH session.
-     * 
-     * @return unconnected SSH session.
-     */
-	public SshSession createUnconnectedSshSession() {
-		
-        // declare session
-        SshSession session;
-        
-        try
-        {
-            // create session
-            session = new SshSessionImpl();            
-            injectSpringDependencies(session);        
-            
-            return session;
-        }
-        catch ( Exception e )
-        {
-            fail( StackTraceHelper.getStrackTrace( e ) );
-            return null;
-        }		
+	/**
+	 * Create connected SSH session using password authentication.
+	 * 
+	 * @param host
+	 *            SSH host used to establish connection.
+	 * @param port
+	 *            TCP port where connection is established.
+	 * @param user
+	 *            user name.
+	 * @param password
+	 *            password.
+	 * 
+	 * @return connected SSH session.
+	 */
+	public SshSession createConnectedSshSessionWithPasswordAuthentication(String host, int port, String user,
+			String password) {
+
+		// declare session
+		SshSessionImpl session;
+
+		try {
+			// create session
+			session = new SshSessionImpl();
+			injectSpringDependencies(session);
+			session.setLogger();
+
+			// connect
+			session.connect(host, port, user, password, TEST_TIMEOUT);
+			return session;
+		} catch (Exception e) {
+			fail(StackTraceHelper.getStrackTrace(e));
+			return null;
+		}
 	}
-	
+
+	/**
+	 * Create unconnected SSH session.
+	 * 
+	 * @return unconnected SSH session.
+	 */
+	public SshSession createUnconnectedSshSession() {
+
+		// declare session
+		SshSession session;
+
+		try {
+			// create session
+			session = new SshSessionImpl();
+			injectSpringDependencies(session);
+
+			return session;
+		} catch (Exception e) {
+			fail(StackTraceHelper.getStrackTrace(e));
+			return null;
+		}
+	}
+
 }

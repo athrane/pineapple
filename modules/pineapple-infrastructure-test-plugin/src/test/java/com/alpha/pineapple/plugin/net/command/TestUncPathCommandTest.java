@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.command;
 
 import static org.junit.Assert.fail;
@@ -43,120 +42,114 @@ import com.alpha.pineapple.i18n.MessageProvider;
 /**
  * Unit test of the class {@link TestUncPathCommand}.
  */
-public class TestUncPathCommandTest
-{
+public class TestUncPathCommandTest {
 
-    /**
-     * Command under test.
-     */
-    Command command;
+	/**
+	 * Command under test.
+	 */
+	Command command;
 
-    /**
-     * Chain context.
-     */
-    Context context;
-    
+	/**
+	 * Chain context.
+	 */
+	Context context;
+
 	/**
 	 * Mock execution result.
 	 */
-	ExecutionResult executionResult; 
-    
-    /**
-     * Mock message provider.
-     */
-    MessageProvider messageProvider;
+	ExecutionResult executionResult;
 
-    @Before
-    public void setUp() throws Exception
-    {
-        // create command
-        command = new TestUncPathCommand();
+	/**
+	 * Mock message provider.
+	 */
+	MessageProvider messageProvider;
 
-        // create context
-        context = new ContextBase();
-                
-        // create mock result
-        executionResult = EasyMock.createMock( ExecutionResult.class );
+	@Before
+	public void setUp() throws Exception {
+		// create command
+		command = new TestUncPathCommand();
 
-        // create mock provider
-        messageProvider = EasyMock.createMock( MessageProvider.class );
-                
-        // inject message source
-        ReflectionTestUtils.setField( command, "messageProvider", messageProvider, MessageProvider.class );
-        
-        // complete mock source initialization        
-        IAnswer<String> answer = new MessageProviderAnswerImpl(); 
-        
-        EasyMock.expect( messageProvider.getMessage(
-        		(String) EasyMock.isA( String.class )));
-        EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-        
-        EasyMock.replay(messageProvider);        
-    }
+		// create context
+		context = new ContextBase();
 
-    @After
-    public void tearDown() throws Exception
-    {
-        command = null;
-        context = null;
-        executionResult = null;
-        messageProvider = null;
-    }
-   
+		// create mock result
+		executionResult = EasyMock.createMock(ExecutionResult.class);
+
+		// create mock provider
+		messageProvider = EasyMock.createMock(MessageProvider.class);
+
+		// inject message source
+		ReflectionTestUtils.setField(command, "messageProvider", messageProvider, MessageProvider.class);
+
+		// complete mock source initialization
+		IAnswer<String> answer = new MessageProviderAnswerImpl();
+
+		EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+
+		EasyMock.replay(messageProvider);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		command = null;
+		context = null;
+		executionResult = null;
+		messageProvider = null;
+	}
+
 	/**
 	 * Test that undefined execution result is rejected.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(expected = CommandInitializationFailedException.class)
 	public void testRejectsUndefinedExecutionResult() throws Exception {
-				
+
 		// setup parameters
-		context.put(TestUncPathCommand.HOSTNAME_KEY, "tiamat");		
-		context.put(TestUncPathCommand.SHARE_KEY, 80);		
-		
+		context.put(TestUncPathCommand.HOSTNAME_KEY, "tiamat");
+		context.put(TestUncPathCommand.SHARE_KEY, 80);
+
 		// execute command
 		command.execute(context);
 
 		// test
 		fail("Test should never reach here.");
-	}	    
-	
-    
-    /**
-     * Test that command fails if host is undefined in context.
-     * 
-     * @throws Exception
-     */
-    @SuppressWarnings("unchecked")
-	@Test( expected = CommandInitializationFailedException.class )
-    public void testCommandFailsIfHostIsUndefinedInContext() throws Exception
-    {        
-        // setup parameters
-		context.put(TestUncPathCommand.EXECUTIONRESULT_KEY, executionResult );    	            
-        context.put(TestUncPathCommand.SHARE_KEY, "some-unc-path" );            
+	}
 
-        // execute command
-        command.execute( context );
-        
-        fail( "Test should never reach here." );
-    }
+	/**
+	 * Test that command fails if host is undefined in context.
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfHostIsUndefinedInContext() throws Exception {
+		// setup parameters
+		context.put(TestUncPathCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(TestUncPathCommand.SHARE_KEY, "some-unc-path");
 
-    /**
-     * Test that command fails if share is undefined in context.
-     * @throws Exception 
-     */
-    @SuppressWarnings("unchecked")
-	@Test( expected = CommandInitializationFailedException.class )
-    public void testCommandFailsIfShareIsUndefinedInContext() throws Exception
-    {        
-        // setup parameters
-		context.put(TestUncPathCommand.EXECUTIONRESULT_KEY, executionResult );
-        context.put(TestUncPathCommand.HOSTNAME_KEY, "wintermute" );		
-         
-        // execute command
-        command.execute( context );
-        
-        fail( "Test should never reach here." );
-    }
-    
+		// execute command
+		command.execute(context);
+
+		fail("Test should never reach here.");
+	}
+
+	/**
+	 * Test that command fails if share is undefined in context.
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfShareIsUndefinedInContext() throws Exception {
+		// setup parameters
+		context.put(TestUncPathCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(TestUncPathCommand.HOSTNAME_KEY, "wintermute");
+
+		// execute command
+		command.execute(context);
+
+		fail("Test should never reach here.");
+	}
+
 }

@@ -35,133 +35,133 @@ import com.alpha.pineapple.model.configuration.Resource;
  */
 public class ResourceInfoImpl implements ResourceInfo {
 
-    /**
-     * Resource configuration marshaller.
-     */
-    @javax.annotation.Resource
-    @Deprecated
-    ResourceConfigurationMarshaller resourceConfigurationMarshaller;
+	/**
+	 * Resource configuration marshaller.
+	 */
+	@javax.annotation.Resource
+	@Deprecated
+	ResourceConfigurationMarshaller resourceConfigurationMarshaller;
 
-    /**
-     * Resource ID.
-     */
-    String id;
+	/**
+	 * Resource ID.
+	 */
+	String id;
 
-    /**
-     * Plugin ID.
-     */
-    String pluginId;
+	/**
+	 * Plugin ID.
+	 */
+	String pluginId;
 
-    /**
-     * CredentialIdRef
-     */
-    String credentialIdRef;
+	/**
+	 * CredentialIdRef
+	 */
+	String credentialIdRef;
 
-    /**
-     * Resource properties.
-     */
-    Map<String, ResourcePropertyInfo> properties;
+	/**
+	 * Resource properties.
+	 */
+	Map<String, ResourcePropertyInfo> properties;
 
-    /**
-     * ResourceInfoImpl constructor.
-     * 
-     * @param id
-     *            resource ID.
-     * @param pluginId
-     *            plugin ID.
-     * @param credentialRefId
-     *            credential Reference ID.
-     * @param properties
-     *            resource properties.
-     * @param resourceConfigurationMarshaller
-     *            resource configuration marshaller.
-     * 
-     * @throws IllegalArgumentException
-     *             if the resource parameter is undefined.
-     */
-    public ResourceInfoImpl(String id, String pluginId, String credentialRefId,
-	    Map<String, ResourcePropertyInfo> properties,
-	    ResourceConfigurationMarshaller resourceConfigurationMarshaller) {
-	// validate parameters
-	Validate.notNull(id, "id is undefined.");
-	Validate.notNull(pluginId, "pluginId is undefined.");
-	Validate.notNull(properties, "properties is undefined.");
-	this.id = id;
-	this.pluginId = pluginId;
-	this.credentialIdRef = credentialRefId;
-	this.properties = properties;
-	this.resourceConfigurationMarshaller = resourceConfigurationMarshaller;
-    }
-
-    public Resource getResource() {
-	return resourceConfigurationMarshaller.mapToResource(this);
-    }
-
-    public String getPluginId() {
-	return pluginId;
-    }
-
-    @Override
-    public String getId() {
-	return id;
-    }
-
-    @Override
-    public String getCredentialIdRef() {
-	return credentialIdRef;
-    }
-
-    @Override
-    public boolean containsProperty(String key) {
-	return properties.containsKey(key);
-    }
-
-    @Override
-    public ResourcePropertyInfo getProperty(String key) throws PropertyNotFoundException {
-	if (!this.containsProperty(key)) {
-	    StringBuilder message = new StringBuilder().append("Failed to get property: ").append(key);
-	    throw new PropertyNotFoundException(message.toString());
+	/**
+	 * ResourceInfoImpl constructor.
+	 * 
+	 * @param id
+	 *            resource ID.
+	 * @param pluginId
+	 *            plugin ID.
+	 * @param credentialRefId
+	 *            credential Reference ID.
+	 * @param properties
+	 *            resource properties.
+	 * @param resourceConfigurationMarshaller
+	 *            resource configuration marshaller.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the resource parameter is undefined.
+	 */
+	public ResourceInfoImpl(String id, String pluginId, String credentialRefId,
+			Map<String, ResourcePropertyInfo> properties,
+			ResourceConfigurationMarshaller resourceConfigurationMarshaller) {
+		// validate parameters
+		Validate.notNull(id, "id is undefined.");
+		Validate.notNull(pluginId, "pluginId is undefined.");
+		Validate.notNull(properties, "properties is undefined.");
+		this.id = id;
+		this.pluginId = pluginId;
+		this.credentialIdRef = credentialRefId;
+		this.properties = properties;
+		this.resourceConfigurationMarshaller = resourceConfigurationMarshaller;
 	}
-	return properties.get(key);
-    }
 
-    @Override
-    public String getPropertyValue(String key, String defaultValue) {
-	if (!this.containsProperty(key))
-	    return defaultValue;
-	return properties.get(key).getValue();
-    }
+	public Resource getResource() {
+		return resourceConfigurationMarshaller.mapToResource(this);
+	}
 
-    @Override
-    public ResourcePropertyInfo[] getProperties() {
-	Collection<ResourcePropertyInfo> values = properties.values();
-	return (ResourcePropertyInfo[]) values.toArray(new ResourcePropertyInfo[values.size()]);
-    }
+	public String getPluginId() {
+		return pluginId;
+	}
 
-    /**
-     * Add property.
-     * 
-     * @param propertyInfo
-     *            property info object.
-     */
-    public void addProperty(ResourcePropertyInfo propertyInfo) {
-	properties.put(propertyInfo.getKey(), propertyInfo);
-    }
+	@Override
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * Delete property.
-     * 
-     * @param resourceInfo
-     */
-    public void deleteProperty(ResourcePropertyInfo propertyInfo) {
-	if (!containsProperty(propertyInfo.getKey()))
-	    return;
-	properties.remove(propertyInfo.getKey());
-    }
+	@Override
+	public String getCredentialIdRef() {
+		return credentialIdRef;
+	}
 
-    @Override
-    public String toString() {
-	return ToStringBuilder.reflectionToString(this);
-    }
+	@Override
+	public boolean containsProperty(String key) {
+		return properties.containsKey(key);
+	}
+
+	@Override
+	public ResourcePropertyInfo getProperty(String key) throws PropertyNotFoundException {
+		if (!this.containsProperty(key)) {
+			StringBuilder message = new StringBuilder().append("Failed to get property: ").append(key);
+			throw new PropertyNotFoundException(message.toString());
+		}
+		return properties.get(key);
+	}
+
+	@Override
+	public String getPropertyValue(String key, String defaultValue) {
+		if (!this.containsProperty(key))
+			return defaultValue;
+		return properties.get(key).getValue();
+	}
+
+	@Override
+	public ResourcePropertyInfo[] getProperties() {
+		Collection<ResourcePropertyInfo> values = properties.values();
+		return (ResourcePropertyInfo[]) values.toArray(new ResourcePropertyInfo[values.size()]);
+	}
+
+	/**
+	 * Add property.
+	 * 
+	 * @param propertyInfo
+	 *            property info object.
+	 */
+	public void addProperty(ResourcePropertyInfo propertyInfo) {
+		properties.put(propertyInfo.getKey(), propertyInfo);
+	}
+
+	/**
+	 * Delete property.
+	 * 
+	 * @param resourceInfo
+	 */
+	public void deleteProperty(ResourcePropertyInfo propertyInfo) {
+		if (!containsProperty(propertyInfo.getKey()))
+			return;
+		properties.remove(propertyInfo.getKey());
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
 
 }

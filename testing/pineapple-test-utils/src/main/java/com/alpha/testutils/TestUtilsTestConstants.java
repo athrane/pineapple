@@ -28,91 +28,91 @@ import java.io.File;
  * Definition of constants used in the test cases.
  */
 public class TestUtilsTestConstants {
-    /**
-     * Runtime directory used by unit test to store data.
-     */
-    public static String TEST_RUNTIME_ROOT_DIRECTORY = new File(System.getProperty("java.io.tmpdir")).getAbsolutePath();
+	/**
+	 * Runtime directory used by unit test to store data.
+	 */
+	public static String TEST_RUNTIME_ROOT_DIRECTORY = new File(System.getProperty("java.io.tmpdir")).getAbsolutePath();
 
-    /**
-     * Default directory for directory based unit tests.
-     */
-    public static final String TEST_DEFAULT_DIRECTORY = "testcases";
+	/**
+	 * Default directory for directory based unit tests.
+	 */
+	public static final String TEST_DEFAULT_DIRECTORY = "testcases";
 
-    /**
-     * Plugin id for hello world plugin.
-     */
-    public static final String pluginIdHelloWorld = "com.alpha.pineapple.plugin.helloworld";
+	/**
+	 * Plugin id for hello world plugin.
+	 */
+	public static final String pluginIdHelloWorld = "com.alpha.pineapple.plugin.helloworld";
 
-    /**
-     * Resource id for Test-Resource used in unit tests.
-     */
-    public static final String resourceIdTestResource = "test-resource-resource-id";
+	/**
+	 * Resource id for Test-Resource used in unit tests.
+	 */
+	public static final String resourceIdTestResource = "test-resource-resource-id";
 
-    /**
-     * Plugin id for Test-Resource used in unit tests.
-     */
-    public static final String pluginIdTestResource = "com.alpha.pineapple.plugin.test";
+	/**
+	 * Plugin id for Test-Resource used in unit tests.
+	 */
+	public static final String pluginIdTestResource = "com.alpha.pineapple.plugin.test";
 
-    /**
-     * Credential id, used to access the Test-Resource in the unit tests.
-     */
-    public static final String credentialIdTestResource = "test-resource-credential-id";
+	/**
+	 * Credential id, used to access the Test-Resource in the unit tests.
+	 */
+	public static final String credentialIdTestResource = "test-resource-credential-id";
 
-    /**
-     * Resource id for WebLogic JMX Edit MBean server used in unit tests.
-     */
-    public static final String resourceIdWLSEdit = "wls-edit";
+	/**
+	 * Resource id for WebLogic JMX Edit MBean server used in unit tests.
+	 */
+	public static final String resourceIdWLSEdit = "wls-edit";
 
-    /**
-     * Resource id for Test-Resource used in unit tests.
-     */
-    public static final String resourceIdNetworkResource = "network-test";
+	/**
+	 * Resource id for Test-Resource used in unit tests.
+	 */
+	public static final String resourceIdNetworkResource = "network-test";
 
-    /**
-     * The operation supported by the test plugin in the
-     * com.alpha.pineapple.plugin.test package.
-     */
-    public static final String helloWorldOperation = "hello-world";
+	/**
+	 * The operation supported by the test plugin in the
+	 * com.alpha.pineapple.plugin.test package.
+	 */
+	public static final String helloWorldOperation = "hello-world";
 
-    /**
-     * The target environment used in unit tests.
-     */
-    @Deprecated
-    public static String targetEnvironment = "jotun-environment";
+	/**
+	 * The target environment used in unit tests.
+	 */
+	@Deprecated
+	public static String targetEnvironment = "jotun-environment";
 
-    /**
-     * File name for credentials file used in unit tests.
-     */
-    public static final String credentialsFileName = "credentials.xml";
+	/**
+	 * File name for credentials file used in unit tests.
+	 */
+	public static final String credentialsFileName = "credentials.xml";
 
-    /**
-     * Credential identifier, used in unit tests.
-     */
-    public static final String credentialIdOne = "credential-1";
+	/**
+	 * Credential identifier, used in unit tests.
+	 */
+	public static final String credentialIdOne = "credential-1";
 
-    /**
-     * Credential identifier, used in unit tests.
-     */
-    public static final String credentialIdTwo = "credential-2";
+	/**
+	 * Credential identifier, used in unit tests.
+	 */
+	public static final String credentialIdTwo = "credential-2";
 
-    /**
-     * The environment used in unit tests.
-     */
-    public static String environmentIdOne = "environment-1";
+	/**
+	 * The environment used in unit tests.
+	 */
+	public static String environmentIdOne = "environment-1";
 
-    /**
-     * Test-Resource user.
-     */
-    public static final String userTestResource = "test-user";
+	/**
+	 * Test-Resource user.
+	 */
+	public static final String userTestResource = "test-user";
 
-    /**
-     * Test-Resource password.
-     */
-    public static final String passwordTestResource = "test-password";
+	/**
+	 * Test-Resource password.
+	 */
+	public static final String passwordTestResource = "test-password";
 
-    /**
-     * File name for credentials file used in unit tests.
-     */
-    public static final String resourcesFileName = "resources.xml";
+	/**
+	 * File name for credentials file used in unit tests.
+	 */
+	public static final String resourcesFileName = "resources.xml";
 
 }

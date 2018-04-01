@@ -97,171 +97,170 @@ import com.alpha.pineapple.model.module.model.Trigger;
  */
 public class InvokeTriggersCommand implements Command {
 
-    /**
-     * Key used to identify property in context: Contains contains the execution
-     * result object for aggregated module model where the triggers are defined.
-     */
-    public static final String MODEL_RESULT_KEY = "model-result";
+	/**
+	 * Key used to identify property in context: Contains contains the execution
+	 * result object for aggregated module model where the triggers are defined.
+	 */
+	public static final String MODEL_RESULT_KEY = "model-result";
 
-    /**
-     * Key used to identify property in context: Contains the aggregated model
-     * where the triggers are defined
-     */
-    public static final String AGGREGATED_MODEL_KEY = "aggregated-model";
+	/**
+	 * Key used to identify property in context: Contains the aggregated model where
+	 * the triggers are defined
+	 */
+	public static final String AGGREGATED_MODEL_KEY = "aggregated-model";
 
-    /**
-     * Key used to identify property in context: The execution info which
-     * contains information about the operation which should be executed.
-     */
-    public static final String EXECUTION_INFO_KEY = CoreConstants.EXECUTION_INFO_KEY;
+	/**
+	 * Key used to identify property in context: The execution info which contains
+	 * information about the operation which should be executed.
+	 */
+	public static final String EXECUTION_INFO_KEY = CoreConstants.EXECUTION_INFO_KEY;
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Trigger resolver.
-     */
-    @Resource
-    ResultTriggerResolver resultTriggerResolver;
+	/**
+	 * Trigger resolver.
+	 */
+	@Resource
+	ResultTriggerResolver resultTriggerResolver;
 
-    /**
-     * Trigger resolver.
-     */
-    @Resource
-    OperationTriggerResolver operationTriggerResolver;
+	/**
+	 * Trigger resolver.
+	 */
+	@Resource
+	OperationTriggerResolver operationTriggerResolver;
 
-    /**
-     * Result repository.
-     */
-    @Resource
-    ResultRepository resultRepository;
+	/**
+	 * Result repository.
+	 */
+	@Resource
+	ResultRepository resultRepository;
 
-    /**
-     * Administration provider.
-     */
-    @Resource
-    Administration administrationProvider;
+	/**
+	 * Administration provider.
+	 */
+	@Resource
+	Administration administrationProvider;
 
-    /**
-     * Aggregated model result object.
-     */
-    @Initialize(MODEL_RESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult modelResult;
+	/**
+	 * Aggregated model result object.
+	 */
+	@Initialize(MODEL_RESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult modelResult;
 
-    /**
-     * Aggregated model.
-     */
-    @Initialize(AGGREGATED_MODEL_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    AggregatedModel model;
+	/**
+	 * Aggregated model.
+	 */
+	@Initialize(AGGREGATED_MODEL_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	AggregatedModel model;
 
-    /**
-     * Execution info.
-     */
-    @Initialize(EXECUTION_INFO_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionInfo executionInfo;
+	/**
+	 * Execution info.
+	 */
+	@Initialize(EXECUTION_INFO_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionInfo executionInfo;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    public boolean execute(Context context) throws Exception {
+	public boolean execute(Context context) throws Exception {
 
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// resolve triggers
-	Stream<Trigger> triggers = model.getTrigger().stream();
-	Stream<Trigger> resolvedTriggers = resultTriggerResolver.resolve(triggers, modelResult.getState());
-	resolvedTriggers = operationTriggerResolver.resolve(resolvedTriggers, executionInfo.getOperation());
+		// resolve triggers
+		Stream<Trigger> triggers = model.getTrigger().stream();
+		Stream<Trigger> resolvedTriggers = resultTriggerResolver.resolve(triggers, modelResult.getState());
+		resolvedTriggers = operationTriggerResolver.resolve(resolvedTriggers, executionInfo.getOperation());
 
-	// execute triggers
-	resolvedTriggers.forEach(this::executeTrigger);
+		// execute triggers
+		resolvedTriggers.forEach(this::executeTrigger);
 
-	// add message if no triggers where executed
-	if (executionResult.getNumberOfChildren() == 0) {
-	    Object[] args = { modelResult.getState(), executionInfo.getOperation() };
-	    String message = messageProvider.getMessage("itc.no_triggers_executed", args);
-	    executionResult.addMessage(MSG_TRIGGER_RESOLUTION, message);
+		// add message if no triggers where executed
+		if (executionResult.getNumberOfChildren() == 0) {
+			Object[] args = { modelResult.getState(), executionInfo.getOperation() };
+			String message = messageProvider.getMessage("itc.no_triggers_executed", args);
+			executionResult.addMessage(MSG_TRIGGER_RESOLUTION, message);
+		}
+
+		// compute state
+		executionResult.completeAsComputed(messageProvider, "itc.succeed", null, "itc.failed", null);
+
+		return Command.CONTINUE_PROCESSING;
 	}
 
-	// compute state
-	executionResult.completeAsComputed(messageProvider, "itc.succeed", null, "itc.failed", null);
+	/**
+	 * Execute trigger resolved from model.
+	 * 
+	 * @param trigger
+	 *            resolved trigger to execute.
+	 */
+	void executeTrigger(Trigger trigger) {
 
-	return Command.CONTINUE_PROCESSING;
-    }
+		// get operation task
+		OperationTask operationTask = administrationProvider.getOperationTask();
 
-    /**
-     * Execute trigger resolved from model.
-     * 
-     * @param trigger
-     *            resolved trigger to execute.
-     */
-    void executeTrigger(Trigger trigger) {
+		// create description
+		String description = generateTriggerDescription(trigger);
 
-	// get operation task
-	OperationTask operationTask = administrationProvider.getOperationTask();
+		// declare info objects
+		ExecutionInfo executionInfo = null;
 
-	// create description
-	String description = generateTriggerDescription(trigger);
+		try {
 
-	// declare info objects
-	ExecutionInfo executionInfo = null;
+			// execute trigger
+			executionInfo = operationTask.executeComposite(trigger.getOperation(), trigger.getEnvironment(),
+					trigger.getModule(), description, executionResult);
 
-	try {
+		} catch (Exception e) {
 
-	    // execute trigger
-	    executionInfo = operationTask.executeComposite(trigger.getOperation(), trigger.getEnvironment(),
-		    trigger.getModule(), description, executionResult);
+			// declare result
+			ExecutionResult triggerResult = null;
 
-	} catch (Exception e) {
+			// if execution info is undefined then add execution result for
+			// trigger to describe the error
+			if (executionInfo == null) {
+				triggerResult = executionResult.addChild(description);
+			} else {
+				triggerResult = executionInfo.getResult();
+			}
 
-	    // declare result
-	    ExecutionResult triggerResult = null;
-
-	    // if execution info is undefined then add execution result for
-	    // trigger to describe the error
-	    if (executionInfo == null) {
-		triggerResult = executionResult.addChild(description);
-	    } else {
-		triggerResult = executionInfo.getResult();
-	    }
-
-	    // terminate execute with execution
-	    Object[] args = { e.getMessage() };
-	    triggerResult.completeAsError(messageProvider, "itc.error", args, e);
+			// terminate execute with execution
+			Object[] args = { e.getMessage() };
+			triggerResult.completeAsError(messageProvider, "itc.error", args, e);
+		}
 	}
-    }
 
-    /**
-     * Generate trigger description.
-     * 
-     * @param trigger
-     *            trigger to invoke.
-     * @return trigger description.
-     */
-    String generateTriggerDescription(Trigger trigger) {
-	if (trigger.getName() != null) {
-	    Object[] args = { trigger.getName() };
-	    return messageProvider.getMessage("itc.named_trigger_info", args);
+	/**
+	 * Generate trigger description.
+	 * 
+	 * @param trigger
+	 *            trigger to invoke.
+	 * @return trigger description.
+	 */
+	String generateTriggerDescription(Trigger trigger) {
+		if (trigger.getName() != null) {
+			Object[] args = { trigger.getName() };
+			return messageProvider.getMessage("itc.named_trigger_info", args);
+		}
+		Object[] args = { trigger.getModule(), trigger.getEnvironment(), trigger.getOperation() };
+		return messageProvider.getMessage("itc.unnamed_trigger_info", args);
 	}
-	Object[] args = { trigger.getModule(), trigger.getEnvironment(), trigger.getOperation() };
-	return messageProvider.getMessage("itc.unnamed_trigger_info", args);
-    }
 
 }

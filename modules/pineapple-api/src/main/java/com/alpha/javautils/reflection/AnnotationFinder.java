@@ -34,49 +34,49 @@ import org.apache.log4j.Logger;
  */
 public class AnnotationFinder {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Search object for fields which are annotated by a specific annotation.
-     * 
-     * @param annotatedObject
-     *            The object whose fields are searched for annotation.
-     * @param annotationClass
-     *            The annotation to search for.
-     * 
-     * @return Array of {@link Field} which are the fields on the searched
-     *         object which are annotated which specific annotation.
-     * 
-     * @IllegalArgumentException If the parameter annotatedObject is undefined.
-     * @IllegalArgumentException If the parameter annotation is undefined.
-     */
-    public Field[] findAnnotatedFields(Object annotatedObject, Class<? extends Annotation> annotationClass) {
+	/**
+	 * Search object for fields which are annotated by a specific annotation.
+	 * 
+	 * @param annotatedObject
+	 *            The object whose fields are searched for annotation.
+	 * @param annotationClass
+	 *            The annotation to search for.
+	 * 
+	 * @return Array of {@link Field} which are the fields on the searched object
+	 *         which are annotated which specific annotation.
+	 * 
+	 * @IllegalArgumentException If the parameter annotatedObject is undefined.
+	 * @IllegalArgumentException If the parameter annotation is undefined.
+	 */
+	public Field[] findAnnotatedFields(Object annotatedObject, Class<? extends Annotation> annotationClass) {
 
-	// validate parameters
-	Validate.notNull(annotatedObject, "annotatedObject is undefined");
-	Validate.notNull(annotationClass, "annotation is undefined");
+		// validate parameters
+		Validate.notNull(annotatedObject, "annotatedObject is undefined");
+		Validate.notNull(annotationClass, "annotation is undefined");
 
-	// get fields
-	Field[] fields = annotatedObject.getClass().getDeclaredFields();
+		// get fields
+		Field[] fields = annotatedObject.getClass().getDeclaredFields();
 
-	// create result set
-	ArrayList<Field> result = new ArrayList<Field>();
+		// create result set
+		ArrayList<Field> result = new ArrayList<Field>();
 
-	// iterate over the fields
-	for (Field field : fields) {
+		// iterate over the fields
+		for (Field field : fields) {
 
-	    // if annotation is defined all it to result.
-	    if (field.isAnnotationPresent(annotationClass)) {
+			// if annotation is defined all it to result.
+			if (field.isAnnotationPresent(annotationClass)) {
 
-		// add result
-		result.add(field);
-	    }
+				// add result
+				result.add(field);
+			}
+		}
+
+		return result.toArray(new Field[result.size()]);
+
 	}
-
-	return result.toArray(new Field[result.size()]);
-
-    }
 }

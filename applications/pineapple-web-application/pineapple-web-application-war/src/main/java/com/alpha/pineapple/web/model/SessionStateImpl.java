@@ -35,170 +35,170 @@ import com.alpha.pineapple.model.report.Report;
  */
 public class SessionStateImpl implements SessionState {
 
-    /**
-     * The empty string.
-     */
-    static final String EMPTY_STRING = "";
+	/**
+	 * The empty string.
+	 */
+	static final String EMPTY_STRING = "";
 
-    /**
-     * Module Info.
-     */
-    ModuleInfo moduleInfo;
+	/**
+	 * Module Info.
+	 */
+	ModuleInfo moduleInfo;
 
-    /**
-     * Current selected operation.
-     */
-    String operation = EMPTY_STRING;
+	/**
+	 * Current selected operation.
+	 */
+	String operation = EMPTY_STRING;
 
-    /**
-     * Current selected environment.
-     */
-    String environment = EMPTY_STRING;
+	/**
+	 * Current selected environment.
+	 */
+	String environment = EMPTY_STRING;
 
-    /**
-     * Last executed operation
-     */
-    String lastExecutedOperation = EMPTY_STRING;
+	/**
+	 * Last executed operation
+	 */
+	String lastExecutedOperation = EMPTY_STRING;
 
-    /**
-     * Selected report.
-     */
-    Report report;
+	/**
+	 * Selected report.
+	 */
+	Report report;
 
-    /**
-     * Define tab which request focus in the workspace.
-     */
-    WorkspaceTabs tabRequestingFocus = WorkspaceTabs.MODULE;
+	/**
+	 * Define tab which request focus in the workspace.
+	 */
+	WorkspaceTabs tabRequestingFocus = WorkspaceTabs.MODULE;
 
-    /**
-     * Defines whether debug information should be shown in the application.
-     */
-    boolean isDebugInfoEnabled = false;
+	/**
+	 * Defines whether debug information should be shown in the application.
+	 */
+	boolean isDebugInfoEnabled = false;
 
-    /**
-     * Execution ID
-     */
-    String executionId;
+	/**
+	 * Execution ID
+	 */
+	String executionId;
 
-    /**
-     * Selected user activity.
-     */
-    Activity activity;
+	/**
+	 * Selected user activity.
+	 */
+	Activity activity;
 
-    /**
-     * Selected scheduled operation.
-     */
-    ScheduledOperation scheduledOperation;
+	/**
+	 * Selected scheduled operation.
+	 */
+	ScheduledOperation scheduledOperation;
 
-    /**
-     * User account.
-     */
-    AccountImpl account;
+	/**
+	 * User account.
+	 */
+	AccountImpl account;
 
-    public SessionStateImpl() {
-	String username = System.getProperty("user.name");
-	account = new AccountImpl(username);
-    }
+	public SessionStateImpl() {
+		String username = System.getProperty("user.name");
+		account = new AccountImpl(username);
+	}
 
-    public ModuleInfo getModuleInfo() {
-	return moduleInfo;
-    }
+	public ModuleInfo getModuleInfo() {
+		return moduleInfo;
+	}
 
-    public void setModuleInfo(ModuleInfo info) {
-	this.moduleInfo = info;
-	this.environment = EMPTY_STRING;
-	this.operation = EMPTY_STRING;
-	this.report = null;
-    }
+	public void setModuleInfo(ModuleInfo info) {
+		this.moduleInfo = info;
+		this.environment = EMPTY_STRING;
+		this.operation = EMPTY_STRING;
+		this.report = null;
+	}
 
-    public String getOperation() {
-	return operation;
-    }
+	public String getOperation() {
+		return operation;
+	}
 
-    public void setOperation(String operation) {
-	this.operation = operation;
-    }
+	public void setOperation(String operation) {
+		this.operation = operation;
+	}
 
-    public String getEnvironment() {
-	return environment;
-    }
+	public String getEnvironment() {
+		return environment;
+	}
 
-    public void setEnvironment(String environment) {
-	this.environment = environment;
-    }
+	public void setEnvironment(String environment) {
+		this.environment = environment;
+	}
 
-    public void setReport(Report report) {
-	this.report = report;
-    }
+	public void setReport(Report report) {
+		this.report = report;
+	}
 
-    @Override
-    public Report getReport() {
-	return report;
-    }
+	@Override
+	public Report getReport() {
+		return report;
+	}
 
-    @Override
-    public boolean isDebugInfoEnabled() {
-	return isDebugInfoEnabled;
-    }
+	@Override
+	public boolean isDebugInfoEnabled() {
+		return isDebugInfoEnabled;
+	}
 
-    @Override
-    public void setDebugInfoEnabled(boolean value) {
-	isDebugInfoEnabled = value;
-    }
+	@Override
+	public void setDebugInfoEnabled(boolean value) {
+		isDebugInfoEnabled = value;
+	}
 
-    @Override
-    public void setRequestTabFocus(WorkspaceTabs tab) {
-	this.tabRequestingFocus = tab;
-    }
+	@Override
+	public void setRequestTabFocus(WorkspaceTabs tab) {
+		this.tabRequestingFocus = tab;
+	}
 
-    @Override
-    public WorkspaceTabs getRequestTabFocus() {
-	return tabRequestingFocus;
-    }
+	@Override
+	public WorkspaceTabs getRequestTabFocus() {
+		return tabRequestingFocus;
+	}
 
-    @Override
-    public void setLastExecutedOperation() {
-	lastExecutedOperation = operation;
-    }
+	@Override
+	public void setLastExecutedOperation() {
+		lastExecutedOperation = operation;
+	}
 
-    @Override
-    public String getLastExecutedOperation() {
-	return lastExecutedOperation;
-    }
+	@Override
+	public String getLastExecutedOperation() {
+		return lastExecutedOperation;
+	}
 
-    @Override
-    public void setExecutionId(String id) {
-	this.executionId = id;
-    }
+	@Override
+	public void setExecutionId(String id) {
+		this.executionId = id;
+	}
 
-    @Override
-    public String getExecutionId() {
-	return executionId;
-    }
+	@Override
+	public String getExecutionId() {
+		return executionId;
+	}
 
-    @Override
-    public void setActivity(Activity activity) {
-	this.activity = activity;
-    }
+	@Override
+	public void setActivity(Activity activity) {
+		this.activity = activity;
+	}
 
-    @Override
-    public Activity getActivity() {
-	return this.activity;
-    }
+	@Override
+	public Activity getActivity() {
+		return this.activity;
+	}
 
-    @Override
-    public Account getAccount() {
-	return account;
-    }
+	@Override
+	public Account getAccount() {
+		return account;
+	}
 
-    @Override
-    public ScheduledOperation getScheduledOperation() {
-	return scheduledOperation;
-    }
+	@Override
+	public ScheduledOperation getScheduledOperation() {
+		return scheduledOperation;
+	}
 
-    @Override
-    public void setScheduledOperation(ScheduledOperation scheduledOperation) {
-	this.scheduledOperation = scheduledOperation;
-    }
+	@Override
+	public void setScheduledOperation(ScheduledOperation scheduledOperation) {
+		this.scheduledOperation = scheduledOperation;
+	}
 
 }

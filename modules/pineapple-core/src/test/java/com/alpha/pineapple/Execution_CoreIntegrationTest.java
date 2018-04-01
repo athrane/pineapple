@@ -68,492 +68,490 @@ import com.alpha.testutils.ObjectMotherModule;
 @ActiveProfiles("integration-test")
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-	DirectoryTestExecutionListener.class })
+		DirectoryTestExecutionListener.class })
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class Execution_CoreIntegrationTest {
 
-    /**
-     * NULL credential reference.
-     */
-    static final String NULL_CRED_REF = null;
+	/**
+	 * NULL credential reference.
+	 */
+	static final String NULL_CRED_REF = null;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Core factory.
-     */
-    @Resource
-    CoreFactory coreFactory;
+	/**
+	 * Core factory.
+	 */
+	@Resource
+	CoreFactory coreFactory;
 
-    /**
-     * Object mother for credential provider
-     */
-    @Resource
-    ObjectMotherCredentialProvider providerMother;
+	/**
+	 * Object mother for credential provider
+	 */
+	@Resource
+	ObjectMotherCredentialProvider providerMother;
 
-    /**
-     * Credential provider.
-     */
-    CredentialProvider provider;
+	/**
+	 * Credential provider.
+	 */
+	CredentialProvider provider;
 
-    /**
-     * Object mother for environment configuration.
-     */
-    ObjectMotherEnvironmentConfiguration envConfigMother;
+	/**
+	 * Object mother for environment configuration.
+	 */
+	ObjectMotherEnvironmentConfiguration envConfigMother;
 
-    /**
-     * Object mother for module.
-     */
-    ObjectMotherModule moduleMother;
+	/**
+	 * Object mother for module.
+	 */
+	ObjectMotherModule moduleMother;
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Modules directory.
-     */
-    File modulesDir;
+	/**
+	 * Modules directory.
+	 */
+	File modulesDir;
 
-    /**
-     * Conf directory.
-     */
-    File confDir;
+	/**
+	 * Conf directory.
+	 */
+	File confDir;
 
-    /**
-     * Random file name.
-     */
-    String randomResourceXmlName;
+	/**
+	 * Random file name.
+	 */
+	String randomResourceXmlName;
 
-    /**
-     * Random directory name.
-     */
-    String randomDirName;
+	/**
+	 * Random directory name.
+	 */
+	String randomDirName;
 
-    /**
-     * Random environment..
-     */
-    String randomEnvironment;
+	/**
+	 * Random environment..
+	 */
+	String randomEnvironment;
 
-    /**
-     * Random module.
-     */
-    String randomModule;
+	/**
+	 * Random module.
+	 */
+	String randomModule;
 
-    /**
-     * Random resource name.
-     */
-    String randomResourceName;
+	/**
+	 * Random resource name.
+	 */
+	String randomResourceName;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	randomResourceXmlName = RandomStringUtils.randomAlphabetic(10) + ".xml";
-	randomDirName = RandomStringUtils.randomAlphabetic(10);
-	randomEnvironment = RandomStringUtils.randomAlphabetic(10);
-	randomModule = RandomStringUtils.randomAlphabetic(10) + "-module";
-	randomResourceName = RandomStringUtils.randomAlphabetic(10) + "-resource";
+		randomResourceXmlName = RandomStringUtils.randomAlphabetic(10) + ".xml";
+		randomDirName = RandomStringUtils.randomAlphabetic(10);
+		randomEnvironment = RandomStringUtils.randomAlphabetic(10);
+		randomModule = RandomStringUtils.randomAlphabetic(10) + "-module";
+		randomResourceName = RandomStringUtils.randomAlphabetic(10) + "-resource";
 
-	// create environment configuration object mother
-	envConfigMother = new ObjectMotherEnvironmentConfiguration();
+		// create environment configuration object mother
+		envConfigMother = new ObjectMotherEnvironmentConfiguration();
 
-	// create module object mother
-	moduleMother = new ObjectMotherModule();
+		// create module object mother
+		moduleMother = new ObjectMotherModule();
 
-	// create credential provider
-	provider = providerMother.createEmptyCredentialProvider();
+		// create credential provider
+		provider = providerMother.createEmptyCredentialProvider();
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// define directory names
-	modulesDir = new File(testDirectory, "modules");
-	confDir = new File(testDirectory, "conf");
+		// define directory names
+		modulesDir = new File(testDirectory, "modules");
+		confDir = new File(testDirectory, "conf");
 
-	// clear the pineapple.home.dir system property
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+		// clear the pineapple.home.dir system property
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
 
-	// fail if the the pineapple.home.dir system property is set
-	assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
-	// clear the pineapple.home.dir system setting
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
-    }
-
-    /**
-     * Wait until module execution is completed
-     * 
-     * @param executionInfo
-     *            Execution info.
-     * @throws InterruptedException
-     *             if test fails
-     */
-    void waitForOperationToComplete(ExecutionInfo executionInfo) throws InterruptedException {
-	while (executionInfo.getResult().isExecuting()) {
-	    ConcurrencyUtils.waitSomeMilliseconds(2);
+		// fail if the the pineapple.home.dir system property is set
+		assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
 	}
-    }
 
-    /**
-     * Get execution result from core which contains the state of the
-     * initialization
-     * 
-     * @param core
-     *            The core component.
-     * 
-     * @return execution result from core which contains the state of the
-     *         initialization
-     */
-    ExecutionResult getInitializationResultFromCore(PineappleCore core) {
-	CoreImpl coreImpl = (CoreImpl) core;
-	ExecutionResult result = coreImpl.getInitializationInfo();
-	return result;
-    }
+	@After
+	public void tearDown() throws Exception {
 
-    /**
-     * Create custom environment configuration.
-     * 
-     * @return resource file.
-     */
-    File createCustomEnvConfig() {
-	// create pineapple runtime sub directories, e.g conf and modules
-	confDir.mkdirs();
-	modulesDir.mkdirs();
+		// clear the pineapple.home.dir system setting
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+	}
 
-	// create environment configuration and save it
-	Configuration configuration = envConfigMother.createEnvConfigWithSingleResource(randomEnvironment,
-		randomResourceName, pluginIdHelloWorld);
-	File resourcesFile = envConfigMother.createResourcesFileName(confDir);
-	envConfigMother.jaxbMarshall(configuration, resourcesFile);
-	return resourcesFile;
-    }
+	/**
+	 * Wait until module execution is completed
+	 * 
+	 * @param executionInfo
+	 *            Execution info.
+	 * @throws InterruptedException
+	 *             if test fails
+	 */
+	void waitForOperationToComplete(ExecutionInfo executionInfo) throws InterruptedException {
+		while (executionInfo.getResult().isExecuting()) {
+			ConcurrencyUtils.waitSomeMilliseconds(2);
+		}
+	}
 
-    /**
-     * Test that test operation can be executed with empty test model with a
-     * generated default configuration
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testOperationSucceeds_WithEmptyModel_WithDefaultEnvConfig() throws Exception {
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+	/**
+	 * Get execution result from core which contains the state of the initialization
+	 * 
+	 * @param core
+	 *            The core component.
+	 * 
+	 * @return execution result from core which contains the state of the
+	 *         initialization
+	 */
+	ExecutionResult getInitializationResultFromCore(PineappleCore core) {
+		CoreImpl coreImpl = (CoreImpl) core;
+		ExecutionResult result = coreImpl.getInitializationInfo();
+		return result;
+	}
 
-	// create core component
-	PineappleCore core = coreFactory.createCore();
-	assertTrue(getInitializationResultFromCore(core).isSuccess());
-	moduleMother.createModuleWithSingleEmptyModel(modulesDir, randomModule, randomEnvironment);
-	core.getAdministration().getModuleRepository().initialize();
-	core.getAdministration().getResourceRepository().createEnvironment(randomEnvironment,
-		"description for" + randomEnvironment);
-	core.getAdministration().getResourceRepository().create(randomEnvironment, randomResourceName,
-		pluginIdHelloWorld, NULL_CRED_REF);
+	/**
+	 * Create custom environment configuration.
+	 * 
+	 * @return resource file.
+	 */
+	File createCustomEnvConfig() {
+		// create pineapple runtime sub directories, e.g conf and modules
+		confDir.mkdirs();
+		modulesDir.mkdirs();
 
-	// execute operation
-	ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
-	waitForOperationToComplete(executionInfo);
-	ConcurrencyUtils.waitOneSec();
+		// create environment configuration and save it
+		Configuration configuration = envConfigMother.createEnvConfigWithSingleResource(randomEnvironment,
+				randomResourceName, pluginIdHelloWorld);
+		File resourcesFile = envConfigMother.createResourcesFileName(confDir);
+		envConfigMother.jaxbMarshall(configuration, resourcesFile);
+		return resourcesFile;
+	}
 
-	// test
-	assertTrue(executionInfo.getResult().isSuccess());
-    }
+	/**
+	 * Test that test operation can be executed with empty test model with a
+	 * generated default configuration
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testOperationSucceeds_WithEmptyModel_WithDefaultEnvConfig() throws Exception {
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-    /**
-     * Test that test operation can be executed with empty test model with a
-     * custom environment configuration
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testOperationSucceeds_WithEmptyModel_WithCustomConfig() throws Exception {
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// create core component
+		PineappleCore core = coreFactory.createCore();
+		assertTrue(getInitializationResultFromCore(core).isSuccess());
+		moduleMother.createModuleWithSingleEmptyModel(modulesDir, randomModule, randomEnvironment);
+		core.getAdministration().getModuleRepository().initialize();
+		core.getAdministration().getResourceRepository().createEnvironment(randomEnvironment,
+				"description for" + randomEnvironment);
+		core.getAdministration().getResourceRepository().create(randomEnvironment, randomResourceName,
+				pluginIdHelloWorld, NULL_CRED_REF);
 
-	// create core component
-	File resourcesFile = createCustomEnvConfig();
-	moduleMother.createModuleWithSingleEmptyModel(modulesDir, randomModule, randomEnvironment);
-	PineappleCore core = coreFactory.createCore(provider, resourcesFile);
-	assertTrue(getInitializationResultFromCore(core).isSuccess());
+		// execute operation
+		ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
+		waitForOperationToComplete(executionInfo);
+		ConcurrencyUtils.waitOneSec();
 
-	// execute operation
-	ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
-	waitForOperationToComplete(executionInfo);
-	ConcurrencyUtils.waitOneSec();
+		// test
+		assertTrue(executionInfo.getResult().isSuccess());
+	}
 
-	// test
-	assertTrue(executionInfo.getResult().isSuccess());
-    }
+	/**
+	 * Test that test operation can be executed with empty test model with a custom
+	 * environment configuration
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testOperationSucceeds_WithEmptyModel_WithCustomConfig() throws Exception {
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-    /**
-     * Test that execution of test operation fails with a simple test model with
-     * a custom environment configuration due to non-existing module.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testOperationFailsDueToNonExistingModule_WithCustomConfig() throws Exception {
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// create core component
+		File resourcesFile = createCustomEnvConfig();
+		moduleMother.createModuleWithSingleEmptyModel(modulesDir, randomModule, randomEnvironment);
+		PineappleCore core = coreFactory.createCore(provider, resourcesFile);
+		assertTrue(getInitializationResultFromCore(core).isSuccess());
 
-	// create core component
-	File resourcesFile = createCustomEnvConfig();
-	PineappleCore core = coreFactory.createCore(provider, resourcesFile);
-	assertTrue(getInitializationResultFromCore(core).isSuccess());
+		// execute operation
+		ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
+		waitForOperationToComplete(executionInfo);
+		ConcurrencyUtils.waitOneSec();
 
-	// execute operation
-	ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
-	waitForOperationToComplete(executionInfo);
-	ConcurrencyUtils.waitOneSec();
+		// test
+		assertTrue(executionInfo.getResult().isSuccess());
+	}
 
-	assertFalse(executionInfo.getResult().isSuccess());
-	Map<String, String> messages = executionInfo.getResult().getMessages();
-	String message = messages.get(ExecutionResult.MSG_STACKTRACE);
-	assertTrue(message.contains("com.alpha.pineapple.module.ModuleNotFoundException: Failed to locate module "));
-    }
+	/**
+	 * Test that execution of test operation fails with a simple test model with a
+	 * custom environment configuration due to non-existing module.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testOperationFailsDueToNonExistingModule_WithCustomConfig() throws Exception {
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-    /**
-     * Test that execution of test operation fails with a simple test model with
-     * a custom environment configuration due to module doen't contain model for
-     * selected non-existing environment.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testOperationFailsDueToNonExistingModel_WithCustomConfig() throws Exception {
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// create core component
+		File resourcesFile = createCustomEnvConfig();
+		PineappleCore core = coreFactory.createCore(provider, resourcesFile);
+		assertTrue(getInitializationResultFromCore(core).isSuccess());
 
-	// create core component
-	File resourcesFile = createCustomEnvConfig();
-	moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, pluginIdHelloWorld);
-	PineappleCore core = coreFactory.createCore(provider, resourcesFile);
-	assertTrue(getInitializationResultFromCore(core).isSuccess());
+		// execute operation
+		ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
+		waitForOperationToComplete(executionInfo);
+		ConcurrencyUtils.waitOneSec();
 
-	// execute operation
-	ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, "non-existing-env", randomModule);
-	waitForOperationToComplete(executionInfo);
-	ConcurrencyUtils.waitOneSec();
+		assertFalse(executionInfo.getResult().isSuccess());
+		Map<String, String> messages = executionInfo.getResult().getMessages();
+		String message = messages.get(ExecutionResult.MSG_STACKTRACE);
+		assertTrue(message.contains("com.alpha.pineapple.module.ModuleNotFoundException: Failed to locate module "));
+	}
 
-	// test
-	assertFalse(executionInfo.getResult().isSuccess());
-	Map<String, String> messages = executionInfo.getResult().getMessages();
-	String message = messages.get(ExecutionResult.MSG_STACKTRACE);
-	assertTrue(message
-		.contains("com.alpha.pineapple.module.ModelNotFoundException: Failed to locate model for environment"));
-    }
+	/**
+	 * Test that execution of test operation fails with a simple test model with a
+	 * custom environment configuration due to module doen't contain model for
+	 * selected non-existing environment.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testOperationFailsDueToNonExistingModel_WithCustomConfig() throws Exception {
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-    /**
-     * Test that execution of test operation fails with a simple test model with
-     * a custom environment configuration due resource not defined for selected
-     * environment.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testOperationFailsDueToNonExistingResource_WithCustomConfig() throws Exception {
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// create core component
+		File resourcesFile = createCustomEnvConfig();
+		moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, pluginIdHelloWorld);
+		PineappleCore core = coreFactory.createCore(provider, resourcesFile);
+		assertTrue(getInitializationResultFromCore(core).isSuccess());
 
-	// create core component
-	File resourcesFile = createCustomEnvConfig();
-	moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, pluginIdHelloWorld);
-	PineappleCore core = coreFactory.createCore(provider, resourcesFile);
-	assertTrue(getInitializationResultFromCore(core).isSuccess());
+		// execute operation
+		ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, "non-existing-env", randomModule);
+		waitForOperationToComplete(executionInfo);
+		ConcurrencyUtils.waitOneSec();
 
-	// execute operation
-	ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
-	waitForOperationToComplete(executionInfo);
-	ConcurrencyUtils.waitOneSec();
+		// test
+		assertFalse(executionInfo.getResult().isSuccess());
+		Map<String, String> messages = executionInfo.getResult().getMessages();
+		String message = messages.get(ExecutionResult.MSG_STACKTRACE);
+		assertTrue(message
+				.contains("com.alpha.pineapple.module.ModelNotFoundException: Failed to locate model for environment"));
+	}
 
-	// test
-	assertFalse(executionInfo.getResult().isSuccess());
-	Map<String, String> messages = executionInfo.getResult().getMessages();
-	String message = messages.get(ExecutionResult.MSG_STACKTRACE);
-	assertTrue(
-		message.contains("com.alpha.pineapple.resource.ResourceNotFoundException: Failed to locate resource"));
-    }
+	/**
+	 * Test that execution of test operation fails with a simple test model with a
+	 * custom environment configuration due resource not defined for selected
+	 * environment.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testOperationFailsDueToNonExistingResource_WithCustomConfig() throws Exception {
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-    /**
-     * Test that execution of XYZ operation fails with a simple test model with
-     * a custom environment configuration due operation not supported for
-     * plugin.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testOperationFailsDueToUnspportedOperation_WithCustomConfig() throws Exception {
-	String randomOperation = RandomStringUtils.randomAlphabetic(8);
+		// create core component
+		File resourcesFile = createCustomEnvConfig();
+		moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, pluginIdHelloWorld);
+		PineappleCore core = coreFactory.createCore(provider, resourcesFile);
+		assertTrue(getInitializationResultFromCore(core).isSuccess());
 
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// execute operation
+		ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
+		waitForOperationToComplete(executionInfo);
+		ConcurrencyUtils.waitOneSec();
 
-	// create core component
-	File resourcesFile = createCustomEnvConfig();
-	moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, randomResourceName);
-	PineappleCore core = coreFactory.createCore(provider, resourcesFile);
-	assertTrue(getInitializationResultFromCore(core).isSuccess());
+		// test
+		assertFalse(executionInfo.getResult().isSuccess());
+		Map<String, String> messages = executionInfo.getResult().getMessages();
+		String message = messages.get(ExecutionResult.MSG_STACKTRACE);
+		assertTrue(
+				message.contains("com.alpha.pineapple.resource.ResourceNotFoundException: Failed to locate resource"));
+	}
 
-	// execute operation
-	ExecutionInfo executionInfo = core.executeOperation(randomOperation, randomEnvironment, randomModule);
-	waitForOperationToComplete(executionInfo);
-	ConcurrencyUtils.waitOneSec();
+	/**
+	 * Test that execution of XYZ operation fails with a simple test model with a
+	 * custom environment configuration due operation not supported for plugin.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testOperationFailsDueToUnspportedOperation_WithCustomConfig() throws Exception {
+		String randomOperation = RandomStringUtils.randomAlphabetic(8);
 
-	// test
-	assertFalse(executionInfo.getResult().isSuccess());
-	ExecutionResult[] childResults = executionInfo.getResult().getChildren();
-	assertEquals(1, childResults.length);
-	ExecutionResult operationResult = childResults[0];
-	assertFalse(operationResult.isSuccess());
-	Map<String, String> messages = operationResult.getMessages();
-	String message = messages.get(ExecutionResult.MSG_STACKTRACE);
-	assertTrue(message.contains("com.alpha.pineapple.plugin.repository.OperationNotSupportedException"));
-    }
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-    /**
-     * Test that test operation can be executed twice with empty model. with a
-     * generated default configuration
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testOperationTwiceSucceeds_WithEmptyModel_WithDefaultEnvConfig() throws Exception {
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// create core component
+		File resourcesFile = createCustomEnvConfig();
+		moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, randomResourceName);
+		PineappleCore core = coreFactory.createCore(provider, resourcesFile);
+		assertTrue(getInitializationResultFromCore(core).isSuccess());
 
-	// create core component
-	PineappleCore core = coreFactory.createCore();
-	assertTrue(getInitializationResultFromCore(core).isSuccess());
-	moduleMother.createModuleWithSingleEmptyModel(modulesDir, randomModule, randomEnvironment);
-	core.getAdministration().getModuleRepository().initialize();
-	core.getAdministration().getResourceRepository().createEnvironment(randomEnvironment,
-		"description for" + randomEnvironment);
-	core.getAdministration().getResourceRepository().create(randomEnvironment, randomResourceName,
-		pluginIdHelloWorld, NULL_CRED_REF);
+		// execute operation
+		ExecutionInfo executionInfo = core.executeOperation(randomOperation, randomEnvironment, randomModule);
+		waitForOperationToComplete(executionInfo);
+		ConcurrencyUtils.waitOneSec();
 
-	// execute operation
-	ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
-	waitForOperationToComplete(executionInfo);
-	ConcurrencyUtils.waitOneSec();
+		// test
+		assertFalse(executionInfo.getResult().isSuccess());
+		ExecutionResult[] childResults = executionInfo.getResult().getChildren();
+		assertEquals(1, childResults.length);
+		ExecutionResult operationResult = childResults[0];
+		assertFalse(operationResult.isSuccess());
+		Map<String, String> messages = operationResult.getMessages();
+		String message = messages.get(ExecutionResult.MSG_STACKTRACE);
+		assertTrue(message.contains("com.alpha.pineapple.plugin.repository.OperationNotSupportedException"));
+	}
 
-	// test
-	assertTrue(executionInfo.getResult().isSuccess());
+	/**
+	 * Test that test operation can be executed twice with empty model. with a
+	 * generated default configuration
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testOperationTwiceSucceeds_WithEmptyModel_WithDefaultEnvConfig() throws Exception {
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// execute operation
-	ExecutionInfo executionInfo2 = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
-	waitForOperationToComplete(executionInfo2);
-	ConcurrencyUtils.waitOneSec();
+		// create core component
+		PineappleCore core = coreFactory.createCore();
+		assertTrue(getInitializationResultFromCore(core).isSuccess());
+		moduleMother.createModuleWithSingleEmptyModel(modulesDir, randomModule, randomEnvironment);
+		core.getAdministration().getModuleRepository().initialize();
+		core.getAdministration().getResourceRepository().createEnvironment(randomEnvironment,
+				"description for" + randomEnvironment);
+		core.getAdministration().getResourceRepository().create(randomEnvironment, randomResourceName,
+				pluginIdHelloWorld, NULL_CRED_REF);
 
-	// test
-	assertTrue(executionInfo.getResult().isSuccess());
-    }
+		// execute operation
+		ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
+		waitForOperationToComplete(executionInfo);
+		ConcurrencyUtils.waitOneSec();
 
-    /**
-     * Test that test operation can be executed twice with empty model. with a
-     * custom configuration
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testOperationTwiceSucceeds_WithEmptyModel_WithCustomConfig() throws Exception {
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// test
+		assertTrue(executionInfo.getResult().isSuccess());
 
-	// create core component
-	File resourcesFile = createCustomEnvConfig();
-	moduleMother.createModuleWithSingleEmptyModel(modulesDir, randomModule, randomEnvironment);
-	PineappleCore core = coreFactory.createCore(provider, resourcesFile);
-	assertTrue(getInitializationResultFromCore(core).isSuccess());
+		// execute operation
+		ExecutionInfo executionInfo2 = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
+		waitForOperationToComplete(executionInfo2);
+		ConcurrencyUtils.waitOneSec();
 
-	// execute operation
-	ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
-	waitForOperationToComplete(executionInfo);
-	ConcurrencyUtils.waitOneSec();
+		// test
+		assertTrue(executionInfo.getResult().isSuccess());
+	}
 
-	// test
-	assertTrue(executionInfo.getResult().isSuccess());
+	/**
+	 * Test that test operation can be executed twice with empty model. with a
+	 * custom configuration
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testOperationTwiceSucceeds_WithEmptyModel_WithCustomConfig() throws Exception {
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// execute operation
-	ExecutionInfo executionInfo2 = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
-	waitForOperationToComplete(executionInfo2);
-	ConcurrencyUtils.waitOneSec();
+		// create core component
+		File resourcesFile = createCustomEnvConfig();
+		moduleMother.createModuleWithSingleEmptyModel(modulesDir, randomModule, randomEnvironment);
+		PineappleCore core = coreFactory.createCore(provider, resourcesFile);
+		assertTrue(getInitializationResultFromCore(core).isSuccess());
 
-	// test
-	assertTrue(executionInfo.getResult().isSuccess());
-    }
+		// execute operation
+		ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
+		waitForOperationToComplete(executionInfo);
+		ConcurrencyUtils.waitOneSec();
 
-    /**
-     * Test that test operation can be executed with simple test model with a
-     * custom environment configuration
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testOperationSucceeds_WithSimpleModelAndHelloWorldPlugin_WithCustomConfig() throws Exception {
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// test
+		assertTrue(executionInfo.getResult().isSuccess());
 
-	// create core component
-	File resourcesFile = createCustomEnvConfig();
-	moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, randomResourceName);
-	PineappleCore core = coreFactory.createCore(provider, resourcesFile);
-	assertTrue(getInitializationResultFromCore(core).isSuccess());
+		// execute operation
+		ExecutionInfo executionInfo2 = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
+		waitForOperationToComplete(executionInfo2);
+		ConcurrencyUtils.waitOneSec();
 
-	// execute operation
-	ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
-	waitForOperationToComplete(executionInfo);
-	ConcurrencyUtils.waitOneSec();
+		// test
+		assertTrue(executionInfo.getResult().isSuccess());
+	}
 
-	// test
-	assertTrue(executionInfo.getResult().isSuccess());
-    }
+	/**
+	 * Test that test operation can be executed with simple test model with a custom
+	 * environment configuration
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testOperationSucceeds_WithSimpleModelAndHelloWorldPlugin_WithCustomConfig() throws Exception {
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-    /**
-     * Test that test operation can be executed with simple test model with a
-     * generated default configuration
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testOperationSucceeds_WithSimpleModelAndHelloWorldPlugin_WithDefaultEnvConfig() throws Exception {
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// create core component
+		File resourcesFile = createCustomEnvConfig();
+		moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, randomResourceName);
+		PineappleCore core = coreFactory.createCore(provider, resourcesFile);
+		assertTrue(getInitializationResultFromCore(core).isSuccess());
 
-	// create core component
-	PineappleCore core = coreFactory.createCore();
-	assertTrue(getInitializationResultFromCore(core).isSuccess());
-	moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, randomResourceName);
-	core.getAdministration().getResourceRepository().createEnvironment(randomEnvironment,
-		"description for" + randomEnvironment);
-	core.getAdministration().getResourceRepository().create(randomEnvironment, randomResourceName,
-		pluginIdHelloWorld, NULL_CRED_REF);
-	core = coreFactory.createCore(); // "create" new core to get full
-					 // re-initialization
+		// execute operation
+		ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
+		waitForOperationToComplete(executionInfo);
+		ConcurrencyUtils.waitOneSec();
 
-	// execute operation
-	ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
-	waitForOperationToComplete(executionInfo);
-	ConcurrencyUtils.waitOneSec();
+		// test
+		assertTrue(executionInfo.getResult().isSuccess());
+	}
 
-	// test
-	assertTrue(executionInfo.getResult().isSuccess());
-    }
+	/**
+	 * Test that test operation can be executed with simple test model with a
+	 * generated default configuration
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testOperationSucceeds_WithSimpleModelAndHelloWorldPlugin_WithDefaultEnvConfig() throws Exception {
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+
+		// create core component
+		PineappleCore core = coreFactory.createCore();
+		assertTrue(getInitializationResultFromCore(core).isSuccess());
+		moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, randomResourceName);
+		core.getAdministration().getResourceRepository().createEnvironment(randomEnvironment,
+				"description for" + randomEnvironment);
+		core.getAdministration().getResourceRepository().create(randomEnvironment, randomResourceName,
+				pluginIdHelloWorld, NULL_CRED_REF);
+		core = coreFactory.createCore(); // "create" new core to get full
+		// re-initialization
+
+		// execute operation
+		ExecutionInfo executionInfo = core.executeOperation(helloWorldOperation, randomEnvironment, randomModule);
+		waitForOperationToComplete(executionInfo);
+		ConcurrencyUtils.waitOneSec();
+
+		// test
+		assertTrue(executionInfo.getResult().isSuccess());
+	}
 
 }

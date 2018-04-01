@@ -38,74 +38,74 @@ import com.alpha.pineapple.web.spring.rest.SystemController;
  */
 public class SystemInfoPanel {
 
-    /**
-     * System controller.
-     */
-    @WireVariable
-    SystemController systemController;
+	/**
+	 * System controller.
+	 */
+	@WireVariable
+	SystemController systemController;
 
-    /**
-     * System info model.
-     */
-    @WireVariable
-    SystemInfoModel systemInfoModel;
+	/**
+	 * System info model.
+	 */
+	@WireVariable
+	SystemInfoModel systemInfoModel;
 
-    /**
-     * Get Pineapple initialization status.
-     * 
-     * @return Pineapple initialization status.
-     */
-    public String getStatus() {
-	try {
-	    return systemController.getSimpleInitializationStatus();
-	} catch (Exception e) {
-	    return e.getMessage();
+	/**
+	 * Get Pineapple initialization status.
+	 * 
+	 * @return Pineapple initialization status.
+	 */
+	public String getStatus() {
+		try {
+			return systemController.getSimpleInitializationStatus();
+		} catch (Exception e) {
+			return e.getMessage();
+		}
 	}
-    }
 
-    /**
-     * Get Pineapple version.
-     * 
-     * @return Pineapple version.
-     */
-    public String getVersion() {
-	return systemController.getVersion();
-    }
+	/**
+	 * Get Pineapple version.
+	 * 
+	 * @return Pineapple version.
+	 */
+	public String getVersion() {
+		return systemController.getVersion();
+	}
 
-    /**
-     * Get Pineapple home directory.
-     * 
-     * @return Pineapple home directory.
-     */
-    public String getHomeDirectory() {
-	return systemInfoModel.getHomeDirectory();
-    }
+	/**
+	 * Get Pineapple home directory.
+	 * 
+	 * @return Pineapple home directory.
+	 */
+	public String getHomeDirectory() {
+		return systemInfoModel.getHomeDirectory();
+	}
 
-    /**
-     * Get Pineapple modules directory.
-     * 
-     * @return Pineapple modules directory.
-     */
-    public String getModulesDirectory() {
-	return systemInfoModel.getModulesDirectory();
-    }
+	/**
+	 * Get Pineapple modules directory.
+	 * 
+	 * @return Pineapple modules directory.
+	 */
+	public String getModulesDirectory() {
+		return systemInfoModel.getModulesDirectory();
+	}
 
-    /**
-     * Get Pineapple reports directory.
-     * 
-     * @return Pineapple reports directory.
-     */
-    public String getReportsDirectory() {
-	return systemInfoModel.getReportsDirectory();
-    }
+	/**
+	 * Get Pineapple reports directory.
+	 * 
+	 * @return Pineapple reports directory.
+	 */
+	public String getReportsDirectory() {
+		return systemInfoModel.getReportsDirectory();
+	}
 
-    /**
-     * Get Pineapple temp. directory.
-     * 
-     * @return Pineapple temp. directory.
-     */
-    public String getTempDirectory() {
-	return systemInfoModel.getTempDirectory();
-    }
+	/**
+	 * Get Pineapple temp. directory.
+	 * 
+	 * @return Pineapple temp. directory.
+	 */
+	public String getTempDirectory() {
+		return systemInfoModel.getTempDirectory();
+	}
 
 }

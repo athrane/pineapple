@@ -20,12 +20,10 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.everyItem;
-
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,17 +35,18 @@ import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 
 /**
- * Matches if the values in a collection are matching a single value in a legal range of values.
+ * Matches if the values in a collection are matching a single value in a legal
+ * range of values.
  */
 public class IsMatchingSingleValueInRange<T> extends TypeSafeMatcher<Iterable<T>> {
 
-    /**
-     * Range of legal values.
-     */
+	/**
+	 * Range of legal values.
+	 */
 	final Collection<T> range;
 
 	/**
-	 * First value stored in iteration. 
+	 * First value stored in iteration.
 	 */
 	T firstValue;
 
@@ -57,32 +56,33 @@ public class IsMatchingSingleValueInRange<T> extends TypeSafeMatcher<Iterable<T>
 	boolean collectionWasEmpty;
 
 	/**
-	 * Whether matcher has been invoked. 
+	 * Whether matcher has been invoked.
 	 */
 	boolean hasBeenInvoked = false;
-	
+
 	/**
 	 * IsMatchingSingleValueInRange constructor.
 	 * 
-	 * @param range Collection containing range of legal values.
+	 * @param range
+	 *            Collection containing range of legal values.
 	 */
 	public IsMatchingSingleValueInRange(Collection<T> range) {
 		this.range = range;
 	}
-		
+
 	@Override
 	protected boolean matchesSafely(Iterable<T> items) {
-				
+
 		// reset flags
 		collectionWasEmpty = false;
 		hasBeenInvoked = true;
-		
+
 		// exit if iterable doesn't contain any items
 		if (Matchers.emptyIterable().matches(items)) {
 			collectionWasEmpty = true;
 			return true;
 		}
-		
+
 		// exit if values isn't in legal range
 		if (!PineappleMatchers.isInLegalRange(range).matches(items)) {
 			return false;
@@ -90,67 +90,66 @@ public class IsMatchingSingleValueInRange<T> extends TypeSafeMatcher<Iterable<T>
 
 		// get first value
 		firstValue = items.iterator().next();
-		
+
 		// assert all values are equal
-		if(!everyItem(equalTo(firstValue)).matches(items)) {
-			return false;			
+		if (!everyItem(equalTo(firstValue)).matches(items)) {
+			return false;
 		}
 
 		// return success
-        return true;				
+		return true;
 	}
 
 	public void describeTo(Description description) {
-		
-		// create message if matcher found empty collection		
+
+		// create message if matcher found empty collection
 		if (collectionWasEmpty) {
 			description.appendText("every item is matching single value in range ");
 			description.appendValue(range);
 			description.appendText(" as collection was empty");
 			return;
 		}
-		
+
 		// create message if matcher has been invoked
-		if(hasBeenInvoked) {
+		if (hasBeenInvoked) {
 			description.appendText("every item is matching single value ");
 			description.appendValue(firstValue);
-			description.appendText(" in range ");		
+			description.appendText(" in range ");
 			description.appendValue(range);
-			
+
 			// clear flag
 			hasBeenInvoked = false;
-			
+
 			return;
 		}
-		
+
 		// create message if matcher hasn't been invoked
 		description.appendText("every item is matching single value ");
-		description.appendText(" in range ");		
-		description.appendValue(range);				
+		description.appendText(" in range ");
+		description.appendValue(range);
 	}
-	
-    @Override
-	protected void describeMismatchSafely(Iterable<T> items, Description mismatchDescription) {
-    				    	    	
-    	// create illegal values
-    	Collection<T> illegalValues = new ArrayList<T>();
-    	
-		// iterate over the values
-        for (T item : items) {
-        	// collect all of the encountered values.
-        	if(!illegalValues.contains( item )) {
-        		illegalValues.add(item);
-        	}
-        }
 
-		// create text        
-    	mismatchDescription.appendText("the items contained the illegal values ");    	
-    	mismatchDescription.appendValue(illegalValues);    	
+	@Override
+	protected void describeMismatchSafely(Iterable<T> items, Description mismatchDescription) {
+
+		// create illegal values
+		Collection<T> illegalValues = new ArrayList<T>();
+
+		// iterate over the values
+		for (T item : items) {
+			// collect all of the encountered values.
+			if (!illegalValues.contains(item)) {
+				illegalValues.add(item);
+			}
+		}
+
+		// create text
+		mismatchDescription.appendText("the items contained the illegal values ");
+		mismatchDescription.appendValue(illegalValues);
 	}
-		
-	
+
 	@Factory
-	public static <T> Matcher<Iterable<T>> matchingSingleValueInRange( Collection<T> legalValues) {
+	public static <T> Matcher<Iterable<T>> matchingSingleValueInRange(Collection<T> legalValues) {
 		return new IsMatchingSingleValueInRange<T>(legalValues);
 	}
 

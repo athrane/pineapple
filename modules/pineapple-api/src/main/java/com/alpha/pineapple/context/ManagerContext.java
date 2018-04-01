@@ -30,40 +30,40 @@ import org.apache.commons.chain.Context;
 @Deprecated
 public interface ManagerContext extends Context {
 
-    /**
-     * Key used to identify property in context: Versioned name of the current
-     * Pineapple module.
-     */
-    public static final String MODULE_ID_KEY = "module-id";
+	/**
+	 * Key used to identify property in context: Versioned name of the current
+	 * Pineapple module.
+	 */
+	public static final String MODULE_ID_KEY = "module-id";
 
-    /**
-     * Key used to identify property in context: Defines the runtime root
-     * directory where the Pineapple modules can be found.
-     */
-    public static final String RUNTIME_ROOT_DIR_KEY = "runtime-root-directory";
+	/**
+	 * Key used to identify property in context: Defines the runtime root directory
+	 * where the Pineapple modules can be found.
+	 */
+	public static final String RUNTIME_ROOT_DIR_KEY = "runtime-root-directory";
 
-    /**
-     * Key used to identify property in context: Contains the target environment
-     * a management operation.
-     */
-    public static final String ENVIRONMENT_KEY = "environment";
+	/**
+	 * Key used to identify property in context: Contains the target environment a
+	 * management operation.
+	 */
+	public static final String ENVIRONMENT_KEY = "environment";
 
-    /**
-     * Key used to identify property in context: Contains credential provider
-     * instance which contains security information used to access resources.
-     */
-    public static final String CREDENTIAL_PROVIDER_KEY = "credential-provider";
+	/**
+	 * Key used to identify property in context: Contains credential provider
+	 * instance which contains security information used to access resources.
+	 */
+	public static final String CREDENTIAL_PROVIDER_KEY = "credential-provider";
 
-    /**
-     * Key used to identify property in context: Contains resources
-     * configuration object.
-     */
-    public static final String RESOURCES_KEY = "resources";
+	/**
+	 * Key used to identify property in context: Contains resources configuration
+	 * object.
+	 */
+	public static final String RESOURCES_KEY = "resources";
 
-    /**
-     * Key used to identify property in context: Name of the current management
-     * operation.
-     */
-    public static final String OPERATION_KEY = "operation";
+	/**
+	 * Key used to identify property in context: Name of the current management
+	 * operation.
+	 */
+	public static final String OPERATION_KEY = "operation";
 
 }

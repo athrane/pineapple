@@ -30,85 +30,85 @@ import java.util.TreeMap;
  */
 public class EnvironmentInfoImpl implements EnvironmentInfo {
 
-    /**
-     * Environment ID.
-     */
-    String id;
+	/**
+	 * Environment ID.
+	 */
+	String id;
 
-    /**
-     * Description.
-     */
-    String description;
+	/**
+	 * Description.
+	 */
+	String description;
 
-    /**
-     * Resource info's.
-     */
-    TreeMap<String, ResourceInfo> resourceInfos;
+	/**
+	 * Resource info's.
+	 */
+	TreeMap<String, ResourceInfo> resourceInfos;
 
-    /**
-     * EnvironmentInfoImpl constructor.
-     * 
-     * @param description
-     *            environment description.
-     * @param resourceInfos
-     *            Resource info's.
-     */
-    public EnvironmentInfoImpl(String id, String description, TreeMap<String, ResourceInfo> resourceInfos) {
-	super();
-	this.id = id;
-	this.description = description;
-	this.resourceInfos = resourceInfos;
-    }
+	/**
+	 * EnvironmentInfoImpl constructor.
+	 * 
+	 * @param description
+	 *            environment description.
+	 * @param resourceInfos
+	 *            Resource info's.
+	 */
+	public EnvironmentInfoImpl(String id, String description, TreeMap<String, ResourceInfo> resourceInfos) {
+		super();
+		this.id = id;
+		this.description = description;
+		this.resourceInfos = resourceInfos;
+	}
 
-    @Override
-    public String getId() {
-	return id;
-    }
+	@Override
+	public String getId() {
+		return id;
+	}
 
-    @Override
-    public String getDescription() {
-	return description;
-    }
+	@Override
+	public String getDescription() {
+		return description;
+	}
 
-    @Override
-    public boolean containsResource(String id) {
-	return resourceInfos.containsKey(id);
-    }
+	@Override
+	public boolean containsResource(String id) {
+		return resourceInfos.containsKey(id);
+	}
 
-    @Override
-    public ResourceInfo getResource(String id) {
-	if (!containsResource(id))
-	    return null;
-	return resourceInfos.get(id);
-    }
+	@Override
+	public ResourceInfo getResource(String id) {
+		if (!containsResource(id))
+			return null;
+		return resourceInfos.get(id);
+	}
 
-    @Override
-    public ResourceInfo[] getResources() {
-	Collection<ResourceInfo> values = resourceInfos.values();
-	return (ResourceInfo[]) values.toArray(new ResourceInfo[values.size()]);
-    }
+	@Override
+	public ResourceInfo[] getResources() {
+		Collection<ResourceInfo> values = resourceInfos.values();
+		return (ResourceInfo[]) values.toArray(new ResourceInfo[values.size()]);
+	}
 
-    /**
-     * Add resource
-     * 
-     * @param resourceInfo
-     *            resource to add.
-     */
-    void addResource(ResourceInfo resourceInfo) {
-	if (containsResource(resourceInfo.getId()))
-	    return;
-	resourceInfos.put(resourceInfo.getId(), resourceInfo);
-    }
+	/**
+	 * Add resource
+	 * 
+	 * @param resourceInfo
+	 *            resource to add.
+	 */
+	void addResource(ResourceInfo resourceInfo) {
+		if (containsResource(resourceInfo.getId()))
+			return;
+		resourceInfos.put(resourceInfo.getId(), resourceInfo);
+	}
 
-    /**
-     * Delete resource.
-     * 
-     * @param resourceInfo
-     */
-    public void deleteResource(ResourceInfo resourceInfo) {
-	if (!containsResource(resourceInfo.getId()))
-	    return;
-	resourceInfos.remove(resourceInfo.getId());
-    }
+	/**
+	 * Delete resource.
+	 * 
+	 * @param resourceInfo
+	 */
+	public void deleteResource(ResourceInfo resourceInfo) {
+		if (!containsResource(resourceInfo.getId()))
+			return;
+		resourceInfos.remove(resourceInfo.getId());
+	}
 
 }

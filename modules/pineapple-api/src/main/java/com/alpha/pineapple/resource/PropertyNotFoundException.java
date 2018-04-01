@@ -27,31 +27,31 @@ package com.alpha.pineapple.resource;
  */
 public class PropertyNotFoundException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * PropertyNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public PropertyNotFoundException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * PropertyNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public PropertyNotFoundException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * PropertyNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public PropertyNotFoundException(String message) {
-	super(message);
-    }
+	/**
+	 * PropertyNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public PropertyNotFoundException(String message) {
+		super(message);
+	}
 
 }

@@ -34,30 +34,30 @@ import com.alpha.pineapple.execution.ExecutionResult;
  */
 public class TreeNodeStateConverter implements Converter<String, Object, Component> {
 
-    @Override
-    public Object coerceToBean(String arg0, Component arg1, BindContext arg2) {
-	return IGNORED_VALUE;
-    }
-
-    @Override
-    public String coerceToUi(Object arg0, Component arg1, BindContext arg2) {
-	if (arg0 == null)
-	    return "INTERNAL ERROR";
-	final ExecutionResult.ExecutionState state = (ExecutionResult.ExecutionState) arg0;
-	switch (state) {
-	case EXECUTING:
-	    return "Running";
-	case SUCCESS:
-	    return "Success";
-	case FAILURE:
-	    return "Failure";
-	case ERROR:
-	    return "Error";
-	case INTERRUPTED:
-	    return "Interrupted";
-	default:
-	    return "Unknown state";
+	@Override
+	public Object coerceToBean(String arg0, Component arg1, BindContext arg2) {
+		return IGNORED_VALUE;
 	}
-    }
+
+	@Override
+	public String coerceToUi(Object arg0, Component arg1, BindContext arg2) {
+		if (arg0 == null)
+			return "INTERNAL ERROR";
+		final ExecutionResult.ExecutionState state = (ExecutionResult.ExecutionState) arg0;
+		switch (state) {
+		case EXECUTING:
+			return "Running";
+		case SUCCESS:
+			return "Success";
+		case FAILURE:
+			return "Failure";
+		case ERROR:
+			return "Error";
+		case INTERRUPTED:
+			return "Interrupted";
+		default:
+			return "Unknown state";
+		}
+	}
 
 }

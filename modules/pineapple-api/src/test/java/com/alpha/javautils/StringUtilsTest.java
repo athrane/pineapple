@@ -33,42 +33,42 @@ import org.junit.Test;
  */
 public class StringUtilsTest {
 
-    @Before
-    public void setUp() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    @Test
-    public void testRemoveEnclosingBracketsReturnsNull() {
-	assertNull(StringUtils.removeEnclosingBrackets(null));
-    }
+	@Test
+	public void testRemoveEnclosingBracketsReturnsNull() {
+		assertNull(StringUtils.removeEnclosingBrackets(null));
+	}
 
-    @Test
-    public void testRemoveEnclosingBracketsReturnsSourceForNonBracketInput() {
-	String value = RandomStringUtils.randomAlphanumeric(10);
-	assertEquals(value, StringUtils.removeEnclosingBrackets(value));
-    }
+	@Test
+	public void testRemoveEnclosingBracketsReturnsSourceForNonBracketInput() {
+		String value = RandomStringUtils.randomAlphanumeric(10);
+		assertEquals(value, StringUtils.removeEnclosingBrackets(value));
+	}
 
-    @Test
-    public void testRemoveEnclosingBracketsReturnsSourceForInputWithStartingBracketOnly() {
-	String value = "[" + RandomStringUtils.randomAlphanumeric(10);
-	assertEquals(value, StringUtils.removeEnclosingBrackets(value));
-    }
+	@Test
+	public void testRemoveEnclosingBracketsReturnsSourceForInputWithStartingBracketOnly() {
+		String value = "[" + RandomStringUtils.randomAlphanumeric(10);
+		assertEquals(value, StringUtils.removeEnclosingBrackets(value));
+	}
 
-    @Test
-    public void testRemoveEnclosingBracketsReturnsSourceForInputWithEndingBracketOnly() {
-	String value = RandomStringUtils.randomAlphanumeric(10) + "]";
-	assertEquals(value, StringUtils.removeEnclosingBrackets(value));
-    }
+	@Test
+	public void testRemoveEnclosingBracketsReturnsSourceForInputWithEndingBracketOnly() {
+		String value = RandomStringUtils.randomAlphanumeric(10) + "]";
+		assertEquals(value, StringUtils.removeEnclosingBrackets(value));
+	}
 
-    @Test
-    public void testRemoveEnclosingBracketsReturnsResuilyWithRemovedBrackets() {
-	String value = RandomStringUtils.randomAlphanumeric(10);
-	String bracketedValue = "[" + value + "]";
-	assertEquals(value, StringUtils.removeEnclosingBrackets(bracketedValue));
-    }
+	@Test
+	public void testRemoveEnclosingBracketsReturnsResuilyWithRemovedBrackets() {
+		String value = RandomStringUtils.randomAlphanumeric(10);
+		String bracketedValue = "[" + value + "]";
+		assertEquals(value, StringUtils.removeEnclosingBrackets(bracketedValue));
+	}
 
 }

@@ -88,138 +88,137 @@ import com.alpha.pineapple.nio.TarArchiverVisitorImpl;
  */
 public class CreateTarArchiveCommand implements Command {
 
-    /**
-     * Key used to identify property in context: Source directory.
-     */
-    public static final String SOURCE_DIRECTORY_KEY = "source-directory";
+	/**
+	 * Key used to identify property in context: Source directory.
+	 */
+	public static final String SOURCE_DIRECTORY_KEY = "source-directory";
 
-    /**
-     * Key used to identify property in context: TAR archive.
-     */
-    public static final String TAR_ARCHIVE_KEY = "tar-archive";
+	/**
+	 * Key used to identify property in context: TAR archive.
+	 */
+	public static final String TAR_ARCHIVE_KEY = "tar-archive";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Source directory.
-     */
-    @Initialize(SOURCE_DIRECTORY_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    File sourceDirectory;
+	/**
+	 * Source directory.
+	 */
+	@Initialize(SOURCE_DIRECTORY_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	File sourceDirectory;
 
-    /**
-     * Target directory.
-     */
-    @Initialize(TAR_ARCHIVE_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    File tarArchive;
+	/**
+	 * Target directory.
+	 */
+	@Initialize(TAR_ARCHIVE_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	File tarArchive;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	createTarArchive(context);
+		createTarArchive(context);
 
-	return Command.CONTINUE_PROCESSING;
-    }
-
-    @SuppressWarnings("unchecked")
-    void createTarArchive(Context context) {
-
-	// validate source directory exists
-	if (!sourceDirectory.exists()) {
-	    Object[] args = { sourceDirectory };
-	    executionResult.completeAsFailure(messageProvider, "ctac.validate_sourcedirectory_exist_failed", args);
-	    return;
+		return Command.CONTINUE_PROCESSING;
 	}
 
-	// validate source directory is an directory
-	if (!sourceDirectory.isDirectory()) {
-	    Object[] args = { sourceDirectory };
-	    executionResult.completeAsFailure(messageProvider, "ctac.validate_sourcedirectory_isdir_failed", args);
-	    return;
+	@SuppressWarnings("unchecked")
+	void createTarArchive(Context context) {
+
+		// validate source directory exists
+		if (!sourceDirectory.exists()) {
+			Object[] args = { sourceDirectory };
+			executionResult.completeAsFailure(messageProvider, "ctac.validate_sourcedirectory_exist_failed", args);
+			return;
+		}
+
+		// validate source directory is an directory
+		if (!sourceDirectory.isDirectory()) {
+			Object[] args = { sourceDirectory };
+			executionResult.completeAsFailure(messageProvider, "ctac.validate_sourcedirectory_isdir_failed", args);
+			return;
+		}
+
+		// TODO: validate target directory exists otherwise create it
+
+		// delete file if it exists
+		if (tarArchive.exists()) {
+			boolean succeded = tarArchive.delete();
+
+			// handle failure to delete file
+			if (!succeded) {
+				Object[] args = { tarArchive };
+				executionResult.completeAsFailure(messageProvider, "ctac.delete_oldtararchive_failed", args);
+				return;
+			}
+		}
+
+		// TODO: validate source directory contains DockerFile.
+
+		FileOutputStream fileOutStream = null;
+		TarArchiveOutputStream tarOutStream = null;
+
+		try {
+
+			// create TAR stream
+			fileOutStream = new FileOutputStream(tarArchive);
+			// GzipCompressorOutputStream gzipOutStream = new
+			// GzipCompressorOutputStream(fileOutStream);
+			tarOutStream = new TarArchiveOutputStream(fileOutStream);
+			// TarArchiveOutputStream tarOutStream = new
+			// TarArchiveOutputStream(gzipOutStream);
+			tarOutStream.setLongFileMode(LONGFILE_POSIX);
+			tarOutStream.setBigNumberMode(BIGNUMBER_POSIX);
+
+			// create TAR visitor
+			FileVisitor<Path> tarVisitor = new TarArchiverVisitorImpl(sourceDirectory, tarOutStream);
+
+			// traverse source directory
+			Files.walkFileTree(sourceDirectory.toPath(), EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
+					tarVisitor);
+
+			// store tar archive file
+			context.put(TAR_ARCHIVE_KEY, tarArchive);
+
+			// complete as success
+			Object[] args = { tarArchive, sourceDirectory };
+			executionResult.completeAsSuccessful(messageProvider, "ctac.succeed", args);
+			return;
+
+		} catch (Exception e) {
+
+			// complete with error
+			executionResult.completeAsError(messageProvider, "ctac.create_archive_error", e);
+
+		} finally {
+
+			// close streams
+			IOUtils.closeQuietly(tarOutStream);
+			IOUtils.closeQuietly(fileOutStream);
+		}
 	}
-
-	// TODO: validate target directory exists otherwise create it
-
-	// delete file if it exists
-	if (tarArchive.exists()) {
-	    boolean succeded = tarArchive.delete();
-
-	    // handle failure to delete file
-	    if (!succeded) {
-		Object[] args = { tarArchive };
-		executionResult.completeAsFailure(messageProvider, "ctac.delete_oldtararchive_failed", args);
-		return;
-	    }
-	}
-
-	// TODO: validate source directory contains DockerFile.
-
-	FileOutputStream fileOutStream = null;
-	TarArchiveOutputStream tarOutStream = null;
-
-	try {
-
-	    // create TAR stream
-	    fileOutStream = new FileOutputStream(tarArchive);
-	    // GzipCompressorOutputStream gzipOutStream = new
-	    // GzipCompressorOutputStream(fileOutStream);
-	    tarOutStream = new TarArchiveOutputStream(fileOutStream);
-	    // TarArchiveOutputStream tarOutStream = new
-	    // TarArchiveOutputStream(gzipOutStream);
-	    tarOutStream.setLongFileMode(LONGFILE_POSIX);
-	    tarOutStream.setBigNumberMode(BIGNUMBER_POSIX);
-
-	    // create TAR visitor
-	    FileVisitor<Path> tarVisitor = new TarArchiverVisitorImpl(sourceDirectory, tarOutStream);
-
-	    // traverse source directory
-	    Files.walkFileTree(sourceDirectory.toPath(), EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
-		    tarVisitor);
-
-	    // store tar archive file
-	    context.put(TAR_ARCHIVE_KEY, tarArchive);
-
-	    // complete as success
-	    Object[] args = { tarArchive, sourceDirectory };
-	    executionResult.completeAsSuccessful(messageProvider, "ctac.succeed", args);
-	    return;
-
-	} catch (Exception e) {
-
-	    // complete with error
-	    executionResult.completeAsError(messageProvider, "ctac.create_archive_error", e);
-
-	} finally {
-
-	    // close streams
-	    IOUtils.closeQuietly(tarOutStream);
-	    IOUtils.closeQuietly(fileOutStream);
-	}
-    }
 
 }

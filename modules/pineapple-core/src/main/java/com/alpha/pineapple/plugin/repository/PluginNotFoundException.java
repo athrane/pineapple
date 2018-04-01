@@ -28,31 +28,31 @@ package com.alpha.pineapple.plugin.repository;
  */
 public class PluginNotFoundException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * PluginNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public PluginNotFoundException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * PluginNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public PluginNotFoundException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * PluginNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public PluginNotFoundException(String message) {
-	super(message);
-    }
+	/**
+	 * PluginNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public PluginNotFoundException(String message) {
+		super(message);
+	}
 
 }

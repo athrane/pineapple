@@ -52,71 +52,71 @@ import com.alpha.pineapple.plugin.agent.session.AgentSession;
  */
 public class RefreshEnvironmentConfigurationCommandTest {
 
-    /**
-     * Object under test.
-     */
-    Command command;    
-    
+	/**
+	 * Object under test.
+	 */
+	Command command;
+
 	/**
 	 * Context.
 	 */
 	Context context;
-    	
+
 	/**
 	 * Mock execution result.
-	 */	
+	 */
 	ExecutionResult executionResult;
 
-    /**
-     * Mock message provider.
-     */
-    MessageProvider messageProvider;    
-	
-    /**
-     * Object factory.
-     */
+	/**
+	 * Mock message provider.
+	 */
+	MessageProvider messageProvider;
+
+	/**
+	 * Object factory.
+	 */
 	ObjectFactory resultModelObjectFactory;
-    
-    /**
-     * Random value.
-     */
-    String randomValue;
-        
-    /**
-     * Random value.
-     */
-    String randomValue2;
 
-    /**
-     * Random value.
-     */
-    String randomEnvironment;
-        
-    /**
-     * Random value.
-     */
-    String randomOperation;
+	/**
+	 * Random value.
+	 */
+	String randomValue;
 
-    /**
-     * Random value.
-     */
-    String randomModule;
+	/**
+	 * Random value.
+	 */
+	String randomValue2;
 
-    /**
-     * Random host.
-     */
-    String randomHost;
-    
-    /**
-     * Random correlation ID.
-     */
-    Integer randomCorrelationId;    
-    
-    /**
-     * Mock session
-     */
-    AgentSession session;
-        
+	/**
+	 * Random value.
+	 */
+	String randomEnvironment;
+
+	/**
+	 * Random value.
+	 */
+	String randomOperation;
+
+	/**
+	 * Random value.
+	 */
+	String randomModule;
+
+	/**
+	 * Random host.
+	 */
+	String randomHost;
+
+	/**
+	 * Random correlation ID.
+	 */
+	Integer randomCorrelationId;
+
+	/**
+	 * Mock session
+	 */
+	AgentSession session;
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -124,45 +124,43 @@ public class RefreshEnvironmentConfigurationCommandTest {
 	public void setUp() throws Exception {
 		randomValue = RandomStringUtils.randomAlphabetic(10);
 		randomValue2 = RandomStringUtils.randomAlphabetic(10);
-		randomEnvironment = RandomStringUtils.randomAlphabetic(10);		
-		randomOperation = RandomStringUtils.randomAlphabetic(10);		
+		randomEnvironment = RandomStringUtils.randomAlphabetic(10);
+		randomOperation = RandomStringUtils.randomAlphabetic(10);
 		randomModule = RandomStringUtils.randomAlphabetic(10);
 		randomCorrelationId = new Integer(RandomUtils.nextInt());
-		randomHost = RandomStringUtils.randomAlphabetic(10);		
-		
+		randomHost = RandomStringUtils.randomAlphabetic(10);
+
 		// create object factory
-        resultModelObjectFactory = new ObjectFactory();
-        
-        // create command
-        command = new RefreshEnvironmentConfigurationCommand();
-        
+		resultModelObjectFactory = new ObjectFactory();
+
+		// create command
+		command = new RefreshEnvironmentConfigurationCommand();
+
 		// create context
 		context = new ContextBase();
-        
-        // create execution result
-        executionResult = EasyMock.createMock( ExecutionResult.class );
 
-        // create mock session
-        session = EasyMock.createMock( AgentSession.class );
-        
-        // create mock provider
-        messageProvider = EasyMock.createMock( MessageProvider.class );
-        
-        // inject
-        ReflectionTestUtils.setField( command, "messageProvider", messageProvider);
-        
-        // complete mock source initialization        
-        IAnswer<String> answer = new MessageProviderAnswerImpl(); 
+		// create execution result
+		executionResult = EasyMock.createMock(ExecutionResult.class);
 
-        EasyMock.expect( messageProvider.getMessage(
-        		(String) EasyMock.isA( String.class )));
-        EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-        EasyMock.expect( messageProvider.getMessage(
-        		(String) EasyMock.isA( String.class ), 
-        		(Object[]) EasyMock.anyObject()));
-        EasyMock.expectLastCall().andAnswer(answer).anyTimes();        
-        EasyMock.replay(messageProvider);
-		
+		// create mock session
+		session = EasyMock.createMock(AgentSession.class);
+
+		// create mock provider
+		messageProvider = EasyMock.createMock(MessageProvider.class);
+
+		// inject
+		ReflectionTestUtils.setField(command, "messageProvider", messageProvider);
+
+		// complete mock source initialization
+		IAnswer<String> answer = new MessageProviderAnswerImpl();
+
+		EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+		EasyMock.expect(
+				messageProvider.getMessage((String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject()));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+		EasyMock.replay(messageProvider);
+
 	}
 
 	/**
@@ -175,101 +173,98 @@ public class RefreshEnvironmentConfigurationCommandTest {
 	/**
 	 * Create result map with root result.
 	 * 
-	 * @param result root result.
+	 * @param result
+	 *            root result.
 	 * 
 	 * @return result map with root result.
 	 */
 	Map<Integer, ExecutionResult> createResultMap(ExecutionResult result) {
-        Map<Integer, ExecutionResult> resultsMap = new HashMap<Integer, ExecutionResult>();        
+		Map<Integer, ExecutionResult> resultsMap = new HashMap<Integer, ExecutionResult>();
 		resultsMap.put(ExecutionResultMapperImpl.LOCAL_ROOT_INDEX_INTEGER, result);
 		return resultsMap;
 	}
-	
-	
-    /**
-     * Test that command fails if context is undefined.
-     */
-    @Test( expected = IllegalArgumentException.class )
-    public void testRejectsUndefinedContext() throws Exception
-    {
-        // create context
-        context = null;
+
+	/**
+	 * Test that command fails if context is undefined.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testRejectsUndefinedContext() throws Exception {
+		// create context
+		context = null;
 
 		// complete mock execution result setup
-		EasyMock.replay(executionResult); 
-                
-        // execute command
-        command.execute( context );
-        
-		// Verify mocks		
-		EasyMock.verify(executionResult);		        
-    }
-    
-    /**
-     * Test that command fails if execution results property is undefined.
-     */
-    @SuppressWarnings("unchecked")
-	@Test( expected = CommandInitializationFailedException.class )
-    public void testCommandFailsIfExecutionResultKeyIsUndefinedInContext() throws Exception
-    {
+		EasyMock.replay(executionResult);
+
+		// execute command
+		command.execute(context);
+
+		// Verify mocks
+		EasyMock.verify(executionResult);
+	}
+
+	/**
+	 * Test that command fails if execution results property is undefined.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfExecutionResultKeyIsUndefinedInContext() throws Exception {
 		// complete mock execution result setup
-		EasyMock.replay(executionResult); 
-    	
-        // setup context
-		context.put( RefreshEnvironmentConfigurationCommand.SESSION_KEY, session);     		
+		EasyMock.replay(executionResult);
 
-        // execute command
-        command.execute( context );
-        
-		// Verify mocks		
-		EasyMock.verify(executionResult);		                
-    }
+		// setup context
+		context.put(RefreshEnvironmentConfigurationCommand.SESSION_KEY, session);
 
-    /**
-     * Test that command fails if session property is undefined.
-     */
-    @SuppressWarnings("unchecked")
-	@Test( expected = CommandInitializationFailedException.class )
-    public void testCommandFailsIfSessionKeyIsUndefinedInContext() throws Exception
-    {
+		// execute command
+		command.execute(context);
+
+		// Verify mocks
+		EasyMock.verify(executionResult);
+	}
+
+	/**
+	 * Test that command fails if session property is undefined.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfSessionKeyIsUndefinedInContext() throws Exception {
 		// complete mock execution result setup
-		EasyMock.replay(executionResult); 
-    	
-        // setup context
-		context.put( RefreshEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);        
+		EasyMock.replay(executionResult);
 
-        // execute command
-        command.execute( context );
-        
-		// Verify mocks		
-		EasyMock.verify(executionResult);		                
-    }
-    
-    /**
-     * Test that command can execute operation which returns single successful root result.
-     */
-    @SuppressWarnings("unchecked")
+		// setup context
+		context.put(RefreshEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);
+
+		// execute command
+		command.execute(context);
+
+		// Verify mocks
+		EasyMock.verify(executionResult);
+	}
+
+	/**
+	 * Test that command can execute operation which returns single successful root
+	 * result.
+	 */
+	@SuppressWarnings("unchecked")
 	@Test
-    public void testCommandCanExecuteOperaton() throws Exception
-    {    	
+	public void testCommandCanExecuteOperaton() throws Exception {
 		// complete mock execution result setup
 		executionResult.completeAsSuccessful(messageProvider, "recc.refresh_environment_configuration_completed");
-		EasyMock.replay(executionResult); 
-		
+		EasyMock.replay(executionResult);
+
 		// complete mock session setup
-		session.httpPost(REFRESH_ENVIRONMENT_CONFIGURATION_URI);	
-		EasyMock.replay(session); 		
-				
-        // setup context
-		context.put( RefreshEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);        
-		context.put( RefreshEnvironmentConfigurationCommand.SESSION_KEY, session);     
-		
-        // execute command
-        command.execute( context );
-        
-		// Verify mocks		
-		EasyMock.verify(executionResult);		              
-		EasyMock.verify(session);		             
-    }
-    
+		session.httpPost(REFRESH_ENVIRONMENT_CONFIGURATION_URI);
+		EasyMock.replay(session);
+
+		// setup context
+		context.put(RefreshEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(RefreshEnvironmentConfigurationCommand.SESSION_KEY, session);
+
+		// execute command
+		command.execute(context);
+
+		// Verify mocks
+		EasyMock.verify(executionResult);
+		EasyMock.verify(session);
+	}
+
 }

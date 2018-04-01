@@ -35,17 +35,17 @@ import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
  */
 public class ExecutionStateTextConverter implements Converter<String, Object, Component> {
 
-    @Override
-    public Object coerceToBean(String arg0, Component arg1, BindContext arg2) {
-	return IGNORED_VALUE;
-    }
+	@Override
+	public Object coerceToBean(String arg0, Component arg1, BindContext arg2) {
+		return IGNORED_VALUE;
+	}
 
-    @Override
-    public String coerceToUi(Object arg0, Component arg1, BindContext arg2) {
-	if (arg0 == null)
-	    return "INTERNAL ERROR";
-	final String result = (String) arg0;
-	return WordUtils.capitalizeFully(result);
-    }
+	@Override
+	public String coerceToUi(Object arg0, Component arg1, BindContext arg2) {
+		if (arg0 == null)
+			return "INTERNAL ERROR";
+		final String result = (String) arg0;
+		return WordUtils.capitalizeFully(result);
+	}
 
 }

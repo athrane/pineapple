@@ -56,96 +56,96 @@ import com.alpha.testutils.ObjectMotherContent;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.plugin.docker-config.xml" })
 public class TestOperationSystemTest {
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    TestOperation testOperation;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	TestOperation testOperation;
 
-    /**
-     * Docker helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
-    
-    /**
-     * Object mother for the docker model.
-     */
-    ObjectMotherContent contentMother;
+	/**
+	 * Docker helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
 
-    /**
-     * Docker session.
-     */
-    DockerSession session;
-    
-    /**
-     * Execution result.
-     */
-    ExecutionResult result;
+	/**
+	 * Object mother for the docker model.
+	 */
+	ObjectMotherContent contentMother;
 
-    /**
-     * Random value.
-     */
-    String randomRepo;
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
 
-    /**
-     * Random value.
-     */
-    String randomTag;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult result;
 
-    /**
-     * Random value.
-     */
-    String randomRepo2;
+	/**
+	 * Random value.
+	 */
+	String randomRepo;
 
-    /**
-     * Random value.
-     */
-    String randomTag2;
+	/**
+	 * Random value.
+	 */
+	String randomTag;
 
-    @Before
-    public void setUp() throws Exception {
-	randomRepo = RandomStringUtils.randomAlphanumeric(10);
-	randomTag = RandomStringUtils.randomAlphanumeric(10);
-	randomRepo2 = RandomStringUtils.randomAlphanumeric(10);
-	randomTag2 = RandomStringUtils.randomAlphanumeric(10);
+	/**
+	 * Random value.
+	 */
+	String randomRepo2;
 
-	// create mock session
-	session = EasyMock.createMock(DockerSession.class);
+	/**
+	 * Random value.
+	 */
+	String randomTag2;
 
-	// create execution result
-	result = new ExecutionResultImpl("Root result");
+	@Before
+	public void setUp() throws Exception {
+		randomRepo = RandomStringUtils.randomAlphanumeric(10);
+		randomTag = RandomStringUtils.randomAlphanumeric(10);
+		randomRepo2 = RandomStringUtils.randomAlphanumeric(10);
+		randomTag2 = RandomStringUtils.randomAlphanumeric(10);
 
-	// create content mother
-	contentMother = new ObjectMotherContent();
-	
-	// create session
-	session = dockerHelper.createDefaultSessionWithLoggingInterceptor();
-    }
+		// create mock session
+		session = EasyMock.createMock(DockerSession.class);
 
-    @After
-    public void tearDown() throws Exception {
-    }
+		// create execution result
+		result = new ExecutionResultImpl("Root result");
 
-    /**
-     * Test that the operation can execute with a minimal model.
-     */
-    @Test
-    public void testCanExecuteWithMinimalModel() throws Exception {
+		// create content mother
+		contentMother = new ObjectMotherContent();
 
-	// create content
-	Object content = contentMother.createEmptyDockerModel();
+		// create session
+		session = dockerHelper.createDefaultSessionWithLoggingInterceptor();
+	}
 
-	// invoke operation
-	testOperation.execute(content, session, result);
+	@After
+	public void tearDown() throws Exception {
+	}
 
-	// test
-	assertTrue(result.isSuccess());
-    }
-    
+	/**
+	 * Test that the operation can execute with a minimal model.
+	 */
+	@Test
+	public void testCanExecuteWithMinimalModel() throws Exception {
+
+		// create content
+		Object content = contentMother.createEmptyDockerModel();
+
+		// invoke operation
+		testOperation.execute(content, session, result);
+
+		// test
+		assertTrue(result.isSuccess());
+	}
+
 }

@@ -48,208 +48,208 @@ import com.alpha.pineapple.session.SessionDisconnectException;
  * the plugin session class.
  */
 public class RetrySessionHandlerImpl implements Operation {
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Pineapple operation
-     */
-    Operation operation;
+	/**
+	 * Pineapple operation
+	 */
+	Operation operation;
 
-    /**
-     * Resource object.
-     */
-    com.alpha.pineapple.model.configuration.Resource resource;
+	/**
+	 * Resource object.
+	 */
+	com.alpha.pineapple.model.configuration.Resource resource;
 
-    /**
-     * Credential object.
-     */
-    Credential credential;
+	/**
+	 * Credential object.
+	 */
+	Credential credential;
 
-    /**
-     * Session retry proxy factory.
-     */
-    @Resource
-    SessionRetryProxyFactory sessionRetryProxyFactory;
+	/**
+	 * Session retry proxy factory.
+	 */
+	@Resource
+	SessionRetryProxyFactory sessionRetryProxyFactory;
 
-    /**
-     * Initialize session handler.
-     * 
-     * @param resource
-     *            Resource object.
-     * @param credential
-     *            Credential object.
-     * @param operation
-     *            Operation object.
-     */
-    void initialize(com.alpha.pineapple.model.configuration.Resource resource, Credential credential,
-	    Operation operation) {
-	this.resource = resource;
-	this.credential = credential;
-	this.operation = operation;
-    }
-
-    public void execute(Object content, Session session, ExecutionResult result) {
-
-	try {
-	    // validate arguments
-	    Validate.notNull(result, "result is undefined");
-
-	    // if session is null then skip session handling
-	    // invoke operation with null session
-	    if (session == null) {
-		addExecutionResultNullSessionMessage(result);
-		operation.execute(content, null, result);
-		return;
-	    }
-
-	    // encapsulate session with retry proxy
-	    Session retrySession = sessionRetryProxyFactory.decorateWithProxy(session, result);
-
-	    // connect with retry session
-	    addExecutionResultSessionConnectMessage(result);
-	    retrySession.connect(resource, credential);
-	    addExecutionResultSessionConnectedMessage(result);
-
-	    // execute operation
-	    operation.execute(content, session, result);
-	    disconnectSession(result, session);
-
-	} catch (SessionConnectException e) {
-	    // throw runtime exception to channel the exception to invoking part
-	    // of the core
-	    throw new RuntimeException(e);
-	} catch (SessionDisconnectException e) {
-	    addExecutionResultSessionDisconnectFailureMessage(result, e);
-
-	    // throw runtime exception to channel the exception to invoking part
-	    // of the core
-	    throw new RuntimeException(e);
-	} catch (PluginExecutionFailedException e) {
-	    disconnectSessionAndHandleException(session, result);
-
-	    // throw runtime exception to channel the exception to invoking part
-	    // of the core
-	    throw new RuntimeException(e);
-	} catch (IllegalArgumentException e) {
-	    disconnectSessionAndHandleException(session, result);
-
-	    // throw runtime exception to channel the exception to invoking part
-	    // of the core
-	    throw new RuntimeException(e);
+	/**
+	 * Initialize session handler.
+	 * 
+	 * @param resource
+	 *            Resource object.
+	 * @param credential
+	 *            Credential object.
+	 * @param operation
+	 *            Operation object.
+	 */
+	void initialize(com.alpha.pineapple.model.configuration.Resource resource, Credential credential,
+			Operation operation) {
+		this.resource = resource;
+		this.credential = credential;
+		this.operation = operation;
 	}
-    }
 
-    /**
-     * Disconnect session and handle any exception.
-     * 
-     * @param session
-     *            session to disconnect.
-     * @param result
-     *            execution result.
-     */
-    void disconnectSessionAndHandleException(Session session, ExecutionResult result) {
-	try {
-	    // disconnect session
-	    disconnectSession(result, session);
+	public void execute(Object content, Session session, ExecutionResult result) {
 
-	} catch (Exception e) {
-	    addExecutionResultSessionDisconnectFailureMessage(result, e);
+		try {
+			// validate arguments
+			Validate.notNull(result, "result is undefined");
+
+			// if session is null then skip session handling
+			// invoke operation with null session
+			if (session == null) {
+				addExecutionResultNullSessionMessage(result);
+				operation.execute(content, null, result);
+				return;
+			}
+
+			// encapsulate session with retry proxy
+			Session retrySession = sessionRetryProxyFactory.decorateWithProxy(session, result);
+
+			// connect with retry session
+			addExecutionResultSessionConnectMessage(result);
+			retrySession.connect(resource, credential);
+			addExecutionResultSessionConnectedMessage(result);
+
+			// execute operation
+			operation.execute(content, session, result);
+			disconnectSession(result, session);
+
+		} catch (SessionConnectException e) {
+			// throw runtime exception to channel the exception to invoking part
+			// of the core
+			throw new RuntimeException(e);
+		} catch (SessionDisconnectException e) {
+			addExecutionResultSessionDisconnectFailureMessage(result, e);
+
+			// throw runtime exception to channel the exception to invoking part
+			// of the core
+			throw new RuntimeException(e);
+		} catch (PluginExecutionFailedException e) {
+			disconnectSessionAndHandleException(session, result);
+
+			// throw runtime exception to channel the exception to invoking part
+			// of the core
+			throw new RuntimeException(e);
+		} catch (IllegalArgumentException e) {
+			disconnectSessionAndHandleException(session, result);
+
+			// throw runtime exception to channel the exception to invoking part
+			// of the core
+			throw new RuntimeException(e);
+		}
 	}
-    }
 
-    /**
-     * Disconnect session and add session disconnection info.
-     * 
-     * @param result
-     *            execution result.
-     * @param session
-     *            session to disconnect.
-     * @throws SessionDisconnectException
-     */
-    void disconnectSession(ExecutionResult result, Session session) throws SessionDisconnectException {
-	addExecutionResultSessionDisconnectMessage(result);
-	session.disconnect();
-	addExecutionResultSessionDisconnectedMessage(result);
-    }
+	/**
+	 * Disconnect session and handle any exception.
+	 * 
+	 * @param session
+	 *            session to disconnect.
+	 * @param result
+	 *            execution result.
+	 */
+	void disconnectSessionAndHandleException(Session session, ExecutionResult result) {
+		try {
+			// disconnect session
+			disconnectSession(result, session);
 
-    /**
-     * Add null session handling information to execution result.
-     * 
-     * @param result
-     *            execution result.
-     */
-    void addExecutionResultNullSessionMessage(ExecutionResult result) {
-	String message = messageProvider.getMessage("sh.execute_nullsession_info");
-	result.addMessage(MSG_SESSION, message);
-    }
+		} catch (Exception e) {
+			addExecutionResultSessionDisconnectFailureMessage(result, e);
+		}
+	}
 
-    /**
-     * Add session connecting information to execution result.
-     * 
-     * @param result
-     *            execution result.
-     */
-    void addExecutionResultSessionConnectMessage(ExecutionResult result) {
-	Object[] args = { resource.getId() };
-	String message = messageProvider.getMessage("sh.execute_session_connect_info", args);
-	result.addMessage(MSG_SESSION, message);
-    }
+	/**
+	 * Disconnect session and add session disconnection info.
+	 * 
+	 * @param result
+	 *            execution result.
+	 * @param session
+	 *            session to disconnect.
+	 * @throws SessionDisconnectException
+	 */
+	void disconnectSession(ExecutionResult result, Session session) throws SessionDisconnectException {
+		addExecutionResultSessionDisconnectMessage(result);
+		session.disconnect();
+		addExecutionResultSessionDisconnectedMessage(result);
+	}
 
-    /**
-     * Add session connected information to execution result.
-     * 
-     * @param result
-     *            execution result.
-     */
-    void addExecutionResultSessionConnectedMessage(ExecutionResult result) {
-	String message = messageProvider.getMessage("sh.execute_session_connected_info");
-	result.addMessage(MSG_SESSION, message);
-    }
+	/**
+	 * Add null session handling information to execution result.
+	 * 
+	 * @param result
+	 *            execution result.
+	 */
+	void addExecutionResultNullSessionMessage(ExecutionResult result) {
+		String message = messageProvider.getMessage("sh.execute_nullsession_info");
+		result.addMessage(MSG_SESSION, message);
+	}
 
-    /**
-     * Add session disconnecting information to execution result.
-     * 
-     * @param result
-     *            execution result.
-     */
-    void addExecutionResultSessionDisconnectMessage(ExecutionResult result) {
-	Object[] args = { resource.getId() };
-	String message = messageProvider.getMessage("sh.execute_session_disconnect_info", args);
-	result.addMessage(MSG_SESSION, message);
-    }
+	/**
+	 * Add session connecting information to execution result.
+	 * 
+	 * @param result
+	 *            execution result.
+	 */
+	void addExecutionResultSessionConnectMessage(ExecutionResult result) {
+		Object[] args = { resource.getId() };
+		String message = messageProvider.getMessage("sh.execute_session_connect_info", args);
+		result.addMessage(MSG_SESSION, message);
+	}
 
-    /**
-     * Add session disconnected information to execution result.
-     * 
-     * @param result
-     *            execution result.
-     */
-    void addExecutionResultSessionDisconnectedMessage(ExecutionResult result) {
-	String message = messageProvider.getMessage("sh.execute_session_disconnected_info");
-	result.addMessage(MSG_SESSION, message);
-    }
+	/**
+	 * Add session connected information to execution result.
+	 * 
+	 * @param result
+	 *            execution result.
+	 */
+	void addExecutionResultSessionConnectedMessage(ExecutionResult result) {
+		String message = messageProvider.getMessage("sh.execute_session_connected_info");
+		result.addMessage(MSG_SESSION, message);
+	}
 
-    /**
-     * Add session disconnect failure information to execution result.
-     * 
-     * @param result
-     *            execution result.
-     * @param sde
-     *            exception thrown during session disconnect.
-     */
-    void addExecutionResultSessionDisconnectFailureMessage(ExecutionResult result, Exception sde) {
-	Object[] args = { StackTraceHelper.getStrackTrace(sde) };
-	String message = messageProvider.getMessage("sh.execute_session_disconnect_error", args);
-	result.addMessage(MSG_SESSION, message);
-    }
+	/**
+	 * Add session disconnecting information to execution result.
+	 * 
+	 * @param result
+	 *            execution result.
+	 */
+	void addExecutionResultSessionDisconnectMessage(ExecutionResult result) {
+		Object[] args = { resource.getId() };
+		String message = messageProvider.getMessage("sh.execute_session_disconnect_info", args);
+		result.addMessage(MSG_SESSION, message);
+	}
+
+	/**
+	 * Add session disconnected information to execution result.
+	 * 
+	 * @param result
+	 *            execution result.
+	 */
+	void addExecutionResultSessionDisconnectedMessage(ExecutionResult result) {
+		String message = messageProvider.getMessage("sh.execute_session_disconnected_info");
+		result.addMessage(MSG_SESSION, message);
+	}
+
+	/**
+	 * Add session disconnect failure information to execution result.
+	 * 
+	 * @param result
+	 *            execution result.
+	 * @param sde
+	 *            exception thrown during session disconnect.
+	 */
+	void addExecutionResultSessionDisconnectFailureMessage(ExecutionResult result, Exception sde) {
+		Object[] args = { StackTraceHelper.getStrackTrace(sde) };
+		String message = messageProvider.getMessage("sh.execute_session_disconnect_error", args);
+		result.addMessage(MSG_SESSION, message);
+	}
 
 }

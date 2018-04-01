@@ -36,71 +36,69 @@ import com.alpha.pineapple.session.Session;
  * and operations.
  */
 public interface PluginActivator {
-    /**
-     * intialize plugin activator.
-     * 
-     * @param provider
-     *            Credential provider which provides access to resource
-     *            credentials.
-     * @param resourceRepository
-     *            Resource repository which provides access to resources.
-     * @param pluginRepository
-     *            Plugin repository which provides access to registered plugins.
-     */
-    public void initialize(CredentialProvider provider, ResourceRepository resourceRepository,
-	    PluginRuntimeRepository pluginRepository);
+	/**
+	 * intialize plugin activator.
+	 * 
+	 * @param provider
+	 *            Credential provider which provides access to resource credentials.
+	 * @param resourceRepository
+	 *            Resource repository which provides access to resources.
+	 * @param pluginRepository
+	 *            Plugin repository which provides access to registered plugins.
+	 */
+	public void initialize(CredentialProvider provider, ResourceRepository resourceRepository,
+			PluginRuntimeRepository pluginRepository);
 
-    /**
-     * Resolved operation.
-     * 
-     * @param environment
-     *            Environment where resource is defined.
-     * @param resource
-     *            Resource id.
-     * @param operation
-     *            Operation id.
-     * @return operation resolved from environment, resource id and operation
-     *         id.
-     */
-    public Operation getOperation(String environment, String resource, String operation);
+	/**
+	 * Resolved operation.
+	 * 
+	 * @param environment
+	 *            Environment where resource is defined.
+	 * @param resource
+	 *            Resource id.
+	 * @param operation
+	 *            Operation id.
+	 * @return operation resolved from environment, resource id and operation id.
+	 */
+	public Operation getOperation(String environment, String resource, String operation);
 
-    /**
-     * Resolve unmarshaller.
-     * 
-     * @param environment
-     *            Environment where resource is defined.
-     * @param resource
-     *            Resource id.
-     * 
-     * @return unmarshaller resolved from environment and resource id.
-     * 
-     * @throws randomPluginId
-     *             If unmarshaller resolutiob fails.
-     */
-    public Unmarshaller getUnmarshaller(String environment, String resource) throws PluginExecutionFailedException;
+	/**
+	 * Resolve unmarshaller.
+	 * 
+	 * @param environment
+	 *            Environment where resource is defined.
+	 * @param resource
+	 *            Resource id.
+	 * 
+	 * @return unmarshaller resolved from environment and resource id.
+	 * 
+	 * @throws randomPluginId
+	 *             If unmarshaller resolutiob fails.
+	 */
+	public Unmarshaller getUnmarshaller(String environment, String resource) throws PluginExecutionFailedException;
 
-    /**
-     * Resolve session.
-     * 
-     * @param environment
-     *            Environment where resource is defined.
-     * @param resource
-     *            Resource id.
-     * 
-     * @return session resolved from environment and resource id.
-     */
-    public Session getSession(String environment, String resource);
+	/**
+	 * Resolve session.
+	 * 
+	 * @param environment
+	 *            Environment where resource is defined.
+	 * @param resource
+	 *            Resource id.
+	 * 
+	 * @return session resolved from environment and resource id.
+	 */
+	public Session getSession(String environment, String resource);
 
-    /**
-     * Returns true if input marshalling is enabled for resource.
-     * 
-     * @param environment
-     *            Environment where resource is defined.
-     * @param resource
-     *            Resource id.
-     * 
-     * @return true if input marshalling is enabled for resource.
-     */
-    public boolean isInputMarshallingEnabled(String environment, String resource);
+	/**
+	 * Returns true if input marshalling is enabled for resource.
+	 * 
+	 * @param environment
+	 *            Environment where resource is defined.
+	 * @param resource
+	 *            Resource id.
+	 * 
+	 * @return true if input marshalling is enabled for resource.
+	 */
+	public boolean isInputMarshallingEnabled(String environment, String resource);
 
 }

@@ -95,14 +95,13 @@ public class TestContainerCommand implements Command {
 	public static final String SESSION_KEY = "session";
 
 	/**
-	 * Key used to identify property in context: Contains execution result
-	 * object,.
+	 * Key used to identify property in context: Contains execution result object,.
 	 */
 	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
 	/**
-	 * Key used to identify property in context: Container info for the
-	 * container to access.
+	 * Key used to identify property in context: Container info for the container to
+	 * access.
 	 */
 	public static final String CONTAINER_INFO_KEY = "container-info";
 

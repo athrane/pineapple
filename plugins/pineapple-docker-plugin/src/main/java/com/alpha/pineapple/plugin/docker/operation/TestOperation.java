@@ -60,144 +60,144 @@ import com.fasterxml.jackson.core.type.ResolvedType;
 @PluginOperation(OperationNames.TEST)
 public class TestOperation implements Operation {
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Operation utilities.
-     */
-    @Resource
-    OperationUtils operationUtils;
+	/**
+	 * Operation utilities.
+	 */
+	@Resource
+	OperationUtils operationUtils;
 
-    /**
-     * Model mapper object.
-     */
-    @Resource
-    Mapper mapper;
+	/**
+	 * Model mapper object.
+	 */
+	@Resource
+	Mapper mapper;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-	// validate parameters
-	Validate.notNull(content, "content is undefined.");
-	Validate.notNull(session, "session is undefined.");
-	Validate.notNull(result, "result is undefined.");
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+		// validate parameters
+		Validate.notNull(content, "content is undefined.");
+		Validate.notNull(session, "session is undefined.");
+		Validate.notNull(result, "result is undefined.");
 
-	// validate parameters
-	operationUtils.validateContentType(content, DockerConstants.LEGAL_CONTENT_TYPES);
-	operationUtils.validateSessionType(session, DockerSession.class);
+		// validate parameters
+		operationUtils.validateContentType(content, DockerConstants.LEGAL_CONTENT_TYPES);
+		operationUtils.validateSessionType(session, DockerSession.class);
 
-	try {
+		try {
 
-	    // type cast model
-	    Docker pluginModel = (Docker) content;
+			// type cast model
+			Docker pluginModel = (Docker) content;
 
-	    // type cast session
-	    DockerSession dockerSession = (DockerSession) session;
+			// type cast session
+			DockerSession dockerSession = (DockerSession) session;
 
-	    // process model
-	    processModel(pluginModel, dockerSession, result);
+			// process model
+			processModel(pluginModel, dockerSession, result);
 
-	    // compute execution state from children
-	    result.completeAsComputed(messageProvider, "t.completed", null, "t.failed", null);
-	} catch (Exception e) {
-	    Object[] args = { e };
-	    String message = messageProvider.getMessage("t.error", args);
-	    throw new PluginExecutionFailedException(message, e);
+			// compute execution state from children
+			result.completeAsComputed(messageProvider, "t.completed", null, "t.failed", null);
+		} catch (Exception e) {
+			Object[] args = { e };
+			String message = messageProvider.getMessage("t.error", args);
+			throw new PluginExecutionFailedException(message, e);
+		}
 	}
-    }
 
-    /**
-     * Process model commands.
-     * 
-     * @param dockerModel
-     *            plugin model.
-     * @param session
-     *            Docker session.
-     * @param result
-     *            execution result.
-     */
-    void processModel(Docker dockerModel, DockerSession session, ExecutionResult result) {
+	/**
+	 * Process model commands.
+	 * 
+	 * @param dockerModel
+	 *            plugin model.
+	 * @param session
+	 *            Docker session.
+	 * @param result
+	 *            execution result.
+	 */
+	void processModel(Docker dockerModel, DockerSession session, ExecutionResult result) {
 
-	Map<String, ContainerConfiguration> containerConfigs = mapper.extractContainerDefinitions(dockerModel);
+		Map<String, ContainerConfiguration> containerConfigs = mapper.extractContainerDefinitions(dockerModel);
 
-	List<DockerCommand> agentCommands = dockerModel.getCommands();
-	for (DockerCommand command : agentCommands) {
+		List<DockerCommand> agentCommands = dockerModel.getCommands();
+		for (DockerCommand command : agentCommands) {
 
-	    // enforce continuation policy
-	    if (!result.getContinuationPolicy().continueExecution()) {
-		String message = messageProvider.getMessage("t.contination_policy_enforcement_info");
-		result.addMessage(ExecutionResult.MSG_MESSAGE, message);
-		return;
-	    }
+			// enforce continuation policy
+			if (!result.getContinuationPolicy().continueExecution()) {
+				String message = messageProvider.getMessage("t.contination_policy_enforcement_info");
+				result.addMessage(ExecutionResult.MSG_MESSAGE, message);
+				return;
+			}
 
-	    if (command instanceof Container) {
-		testContainer(session, (Container) command, containerConfigs, result);
-		continue;
-	    }
+			if (command instanceof Container) {
+				testContainer(session, (Container) command, containerConfigs, result);
+				continue;
+			}
+		}
 	}
-    }
 
-    /**
-     * Test container configuration.
-     * 
-     * @param session
-     *            Docker session.
-     * @param command
-     *            create container command.
-     * @param containerConfigs
-     *            container configurations.
-     * @param result
-     *            execution result
-     */
-    void testContainer(DockerSession session, Container command, Map<String, ContainerConfiguration> containerConfigs,
-	    ExecutionResult result) {
+	/**
+	 * Test container configuration.
+	 * 
+	 * @param session
+	 *            Docker session.
+	 * @param command
+	 *            create container command.
+	 * @param containerConfigs
+	 *            container configurations.
+	 * @param result
+	 *            execution result
+	 */
+	void testContainer(DockerSession session, Container command, Map<String, ContainerConfiguration> containerConfigs,
+			ExecutionResult result) {
 
-	ContainerState expectedState = resolveStateFromModel(command);
-	ContainerInfo info = mapper.mapContainerForCreation(command, containerConfigs);
-	dockerClient.testContainer(session, info, expectedState, result);
-    }
-
-    /**
-     * Resolve container state as a string from plugin model.
-     * 
-     * @param command
-     *            plugin command.
-     * 
-     * @return container state from plugin model.
-     */
-    ContainerState resolveStateFromModel(Container command) {
-	CommandControlState state = CommandControlState.RUNNING;
-	if (isStateDirectiveDefined(command))
-	    state = command.getState();
-	switch (state) {
-	case STOPPED:
-	    return ContainerState.STOPPED;
-	case PAUSED:
-	    return ContainerState.PAUSED;
-	case RUNNING:
-	default:
-	    return ContainerState.RUNNING;
+		ContainerState expectedState = resolveStateFromModel(command);
+		ContainerInfo info = mapper.mapContainerForCreation(command, containerConfigs);
+		dockerClient.testContainer(session, info, expectedState, result);
 	}
-    }
 
-    /**
-     * Returns true if container state directive is defined.
-     * 
-     * @param command
-     *            create container command.
-     * 
-     * @return true if container state directive is defined.
-     */
-    boolean isStateDirectiveDefined(Container command) {
-	return (command.getState() != null);
-    }
+	/**
+	 * Resolve container state as a string from plugin model.
+	 * 
+	 * @param command
+	 *            plugin command.
+	 * 
+	 * @return container state from plugin model.
+	 */
+	ContainerState resolveStateFromModel(Container command) {
+		CommandControlState state = CommandControlState.RUNNING;
+		if (isStateDirectiveDefined(command))
+			state = command.getState();
+		switch (state) {
+		case STOPPED:
+			return ContainerState.STOPPED;
+		case PAUSED:
+			return ContainerState.PAUSED;
+		case RUNNING:
+		default:
+			return ContainerState.RUNNING;
+		}
+	}
+
+	/**
+	 * Returns true if container state directive is defined.
+	 * 
+	 * @param command
+	 *            create container command.
+	 * 
+	 * @return true if container state directive is defined.
+	 */
+	boolean isStateDirectiveDefined(Container command) {
+		return (command.getState() != null);
+	}
 
 }

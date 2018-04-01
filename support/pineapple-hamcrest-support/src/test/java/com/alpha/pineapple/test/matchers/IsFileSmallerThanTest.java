@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import static org.junit.Assert.assertFalse;
@@ -47,9 +46,9 @@ import com.alpha.springutils.DirectoryTestExecutionListener;
 /**
  * Unit test of the {@link DoesFileExist} class.
  */
-@RunWith( SpringJUnit4ClassRunner.class )
-@TestExecutionListeners( DirectoryTestExecutionListener.class )
-@ContextConfiguration( locations = { "/com.alpha.pineapple.hamcrest-config.xml" } )
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestExecutionListeners(DirectoryTestExecutionListener.class)
+@ContextConfiguration(locations = { "/com.alpha.pineapple.hamcrest-config.xml" })
 public class IsFileSmallerThanTest {
 
 	/**
@@ -57,35 +56,35 @@ public class IsFileSmallerThanTest {
 	 */
 	@SuppressWarnings("unchecked")
 	Matcher matcher;
-	
+
 	/**
-     * Current test directory.
-     */
+	 * Current test directory.
+	 */
 	File testDirectory;
-		
-    /**
-     * Random file name.
-     */
-    String randomFileName;
-	
+
+	/**
+	 * Random file name.
+	 */
+	String randomFileName;
+
 	/**
 	 * Mock description.
 	 */
 	Description description;
-	
+
 	@Before
 	public void setUp() throws Exception {
-		randomFileName = RandomStringUtils.randomAlphabetic(10)+"-.txt";		
-						
+		randomFileName = RandomStringUtils.randomAlphabetic(10) + "-.txt";
+
 		// create mock description
-		description = EasyMock.createMock( Description.class);
-	
-        // get the test directory
-        testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();		
+		description = EasyMock.createMock(Description.class);
+
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 	}
 
 	@After
-	public void tearDown() throws Exception {		
+	public void tearDown() throws Exception {
 		matcher = null;
 		description = null;
 		testDirectory = null;
@@ -94,45 +93,47 @@ public class IsFileSmallerThanTest {
 	/**
 	 * Test that smaller file is a positive match
 	 * 
-	 * @throws Exception if test fails.
+	 * @throws Exception
+	 *             if test fails.
 	 */
 	@Test
 	public void testSmallerFileIsPositiveMatch() throws Exception {
-		long legalSize = 1024 * 1024 *1 ; //  1MB				
-		
-    	// create file bigger then the maximum siz
-		File localFile = new File(testDirectory, randomFileName);		
-    	RandomAccessFile randomFile = new RandomAccessFile(localFile, "rw");
-        randomFile.setLength(legalSize-100);    	
-    	randomFile.close();		
+		long legalSize = 1024 * 1024 * 1; // 1MB
 
-    	// create matcher
-		matcher = IsFileSizeSmaller.isFileSizeSmaller(legalSize);		
-		
+		// create file bigger then the maximum siz
+		File localFile = new File(testDirectory, randomFileName);
+		RandomAccessFile randomFile = new RandomAccessFile(localFile, "rw");
+		randomFile.setLength(legalSize - 100);
+		randomFile.close();
+
+		// create matcher
+		matcher = IsFileSizeSmaller.isFileSizeSmaller(legalSize);
+
 		// test
-		assertTrue(matcher.matches( localFile));		
+		assertTrue(matcher.matches(localFile));
 	}
 
 	/**
 	 * Test that larger file is a negative match
 	 * 
-	 * @throws Exception if test fails.
+	 * @throws Exception
+	 *             if test fails.
 	 */
 	@Test
 	public void testLargerFileIsNegativeMatch() throws Exception {
-		long legalSize = 1024 * 1024 *1 ; //  1MB				
-		
-    	// create file bigger then the maximum siz
-		File localFile = new File(testDirectory, randomFileName);		
-    	RandomAccessFile randomFile = new RandomAccessFile(localFile, "rw");
-        randomFile.setLength(legalSize+100);    	
-    	randomFile.close();		
+		long legalSize = 1024 * 1024 * 1; // 1MB
 
-    	// create matcher
-		matcher = IsFileSizeSmaller.isFileSizeSmaller(legalSize);		
-		
+		// create file bigger then the maximum siz
+		File localFile = new File(testDirectory, randomFileName);
+		RandomAccessFile randomFile = new RandomAccessFile(localFile, "rw");
+		randomFile.setLength(legalSize + 100);
+		randomFile.close();
+
+		// create matcher
+		matcher = IsFileSizeSmaller.isFileSizeSmaller(legalSize);
+
 		// test
-		assertFalse(matcher.matches( localFile));		
+		assertFalse(matcher.matches(localFile));
 	}
-		
+
 }

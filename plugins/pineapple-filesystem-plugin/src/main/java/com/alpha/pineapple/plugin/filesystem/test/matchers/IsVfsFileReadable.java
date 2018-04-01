@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.filesystem.test.matchers;
 
 import org.apache.commons.vfs2.FileObject;
@@ -35,12 +34,12 @@ import com.alpha.pineapple.plugin.filesystem.session.FileSystemSession;
  * 
  */
 public class IsVfsFileReadable extends TypeSafeMatcher<String> {
-	
+
 	/**
 	 * Last recorded exception.
 	 */
 	Exception lastException;
-	
+
 	/**
 	 * File system session.
 	 */
@@ -48,64 +47,63 @@ public class IsVfsFileReadable extends TypeSafeMatcher<String> {
 
 	/**
 	 * Last recorded path.
-	 */	
+	 */
 	Object lastPath;
-	
+
 	/**
 	 * IsVfsFileResolvable constructor.
-	 * @param session File system session.
+	 * 
+	 * @param session
+	 *            File system session.
 	 */
 	IsVfsFileReadable(FileSystemSession session) {
 		this.session = session;
 	}
 
 	public boolean matchesSafely(String path) {
-		    	    	    	    	
-        try
-        {
-            // store input
-        	lastPath = path;
-        	lastException = null;            
-        	
-        	// resolve file
-        	FileObject resolvedFile = session.resolveFile(path);        	        	
-        	return (resolvedFile.isReadable());
-        }
-        catch ( Exception e )
-        {
-        	// record exception
-        	lastException =  e;
-        	
-        	// fail test
-        	return false;
-        } 
-		
+
+		try {
+			// store input
+			lastPath = path;
+			lastException = null;
+
+			// resolve file
+			FileObject resolvedFile = session.resolveFile(path);
+			return (resolvedFile.isReadable());
+		} catch (Exception e) {
+			// record exception
+			lastException = e;
+
+			// fail test
+			return false;
+		}
+
 	}
 
 	public void describeTo(Description description) {
 		description.appendText("current session has read access to ");
-		description.appendValue( lastPath );		
+		description.appendValue(lastPath);
 	}
-	
+
 	@Override
 	protected void describeMismatchSafely(String item, Description mismatchDescription) {
-		
-        // create description due to exception
-    	if (lastException != null) {
-    		mismatchDescription.appendText("file object resolution failed due to exception ");    		
-    		mismatchDescription.appendValue(lastException.toString());    		
-    		return;
-    	} 
-		
-        // create description
-    	mismatchDescription.appendText("current session doesn't have read access to ");    	
-    	mismatchDescription.appendValue(item);    	
-    	mismatchDescription.appendText(" at the target resource");    	    	    	    			
+
+		// create description due to exception
+		if (lastException != null) {
+			mismatchDescription.appendText("file object resolution failed due to exception ");
+			mismatchDescription.appendValue(lastException.toString());
+			return;
+		}
+
+		// create description
+		mismatchDescription.appendText("current session doesn't have read access to ");
+		mismatchDescription.appendValue(item);
+		mismatchDescription.appendText(" at the target resource");
 	}
-	
+
 	@Factory
-    public static Matcher<String> isVfsFileReadable(FileSystemSession session) {
-        return new IsVfsFileReadable(session);
-    }
-    
+	public static Matcher<String> isVfsFileReadable(FileSystemSession session) {
+		return new IsVfsFileReadable(session);
+	}
+
 }

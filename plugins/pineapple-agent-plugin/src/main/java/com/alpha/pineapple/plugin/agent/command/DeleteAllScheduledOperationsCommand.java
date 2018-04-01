@@ -78,74 +78,73 @@ import com.alpha.pineapple.plugin.agent.utils.RestResponseException;
  */
 public class DeleteAllScheduledOperationsCommand implements Command {
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    AgentSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	AgentSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// delete module
-	doDelete(context);
+		// delete module
+		doDelete(context);
 
-	return Command.CONTINUE_PROCESSING;
-    }
-
-    /**
-     * Delete module.
-     * 
-     * @param context
-     *            Command context.
-     * 
-     * @throws Exception
-     *             If deletion fails.
-     */
-    void doDelete(Context context) {
-	try {
-
-	    // post
-	    session.httpDelete(DELETE_MODULE_URI);
-
-	    // complete result
-	    executionResult.completeAsSuccessful(messageProvider, "dasoc.delete_operations_completed");
-
-	} catch (RestResponseException e) {
-	    executionResult.addMessage("HTTP Headers", e.getHeaders().toString());
-	    executionResult.addMessage("HTTP Status Code", e.getStatusCode().toString());
-	    executionResult.addMessage("HTTP Body", e.getBody());
-	    executionResult.completeAsError(messageProvider, "dasoc.error", e);
-	} catch (Exception e) {
-	    executionResult.completeAsError(messageProvider, "dasoc.error", e);
+		return Command.CONTINUE_PROCESSING;
 	}
-    }
+
+	/**
+	 * Delete module.
+	 * 
+	 * @param context
+	 *            Command context.
+	 * 
+	 * @throws Exception
+	 *             If deletion fails.
+	 */
+	void doDelete(Context context) {
+		try {
+
+			// post
+			session.httpDelete(DELETE_MODULE_URI);
+
+			// complete result
+			executionResult.completeAsSuccessful(messageProvider, "dasoc.delete_operations_completed");
+
+		} catch (RestResponseException e) {
+			executionResult.addMessage("HTTP Headers", e.getHeaders().toString());
+			executionResult.addMessage("HTTP Status Code", e.getStatusCode().toString());
+			executionResult.addMessage("HTTP Body", e.getBody());
+			executionResult.completeAsError(messageProvider, "dasoc.error", e);
+		} catch (Exception e) {
+			executionResult.completeAsError(messageProvider, "dasoc.error", e);
+		}
+	}
 
 }

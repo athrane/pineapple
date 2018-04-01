@@ -47,40 +47,40 @@ import com.alpha.springutils.DirectoryTestExecutionListener;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirectoryTestExecutionListener.class })
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class DirectoryBasedModuleRepositoryImplIntegrationTest {
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Object under test.
-     */
-    @Resource(name = "moduleRepository")
-    ModuleRepository moduleRepository;
+	/**
+	 * Object under test.
+	 */
+	@Resource(name = "moduleRepository")
+	ModuleRepository moduleRepository;
 
-    /**
-     * Random value.
-     */
-    String randomName;
+	/**
+	 * Random value.
+	 */
+	String randomName;
 
-    @Before
-    public void setUp() throws Exception {
-	randomName = RandomStringUtils.randomAlphabetic(10);
+	@Before
+	public void setUp() throws Exception {
+		randomName = RandomStringUtils.randomAlphabetic(10);
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
-    }
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that module repository can be looked up from the context.
-     */
-    @Test
-    public void testCanGetRepositoryFromContext() {
-	assertNotNull(moduleRepository);
-    }
+	/**
+	 * Test that module repository can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetRepositoryFromContext() {
+		assertNotNull(moduleRepository);
+	}
 
 }

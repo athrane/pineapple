@@ -41,69 +41,68 @@ import com.alpha.pineapple.model.configuration.Configuration;
  */
 public class ObjectMotherCredentialProvider {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Object mother for environment configuration.
-     */
-    ObjectMotherEnvironmentConfiguration envConfigMother = new ObjectMotherEnvironmentConfiguration();
+	/**
+	 * Object mother for environment configuration.
+	 */
+	ObjectMotherEnvironmentConfiguration envConfigMother = new ObjectMotherEnvironmentConfiguration();
 
-    /**
-     * Core factory.
-     */
-    @Resource
-    CoreFactory coreFactory;
+	/**
+	 * Core factory.
+	 */
+	@Resource
+	CoreFactory coreFactory;
 
-    /**
-     * Create credential provider object for unit testing.
-     * 
-     * The credential provider is empty, i.e. it doesn't contain any
-     * credentials.
-     * 
-     * @return empty credential provider object for unit testing..
-     * 
-     * @throws Exception
-     *             if creation fails.
-     */
-    public CredentialProvider createEmptyCredentialProvider() throws Exception {
-	assertNotNull("The ObjectMotherCredentialProvider class is only intended for usage in integration tests",
-		coreFactory);
+	/**
+	 * Create credential provider object for unit testing.
+	 * 
+	 * The credential provider is empty, i.e. it doesn't contain any credentials.
+	 * 
+	 * @return empty credential provider object for unit testing..
+	 * 
+	 * @throws Exception
+	 *             if creation fails.
+	 */
+	public CredentialProvider createEmptyCredentialProvider() throws Exception {
+		assertNotNull("The ObjectMotherCredentialProvider class is only intended for usage in integration tests",
+				coreFactory);
 
-	// create credentials configuration
-	Configuration configuration;
-	configuration = envConfigMother.createEmptyEnvironmentConfiguration();
+		// create credentials configuration
+		Configuration configuration;
+		configuration = envConfigMother.createEmptyEnvironmentConfiguration();
 
-	// create credential provider
-	CredentialProvider provider = coreFactory.createCredentialProvider(configuration);
+		// create credential provider
+		CredentialProvider provider = coreFactory.createCredentialProvider(configuration);
 
-	return provider;
-    }
+		return provider;
+	}
 
-    /**
-     * Create credential provider object for unit testing. The credential
-     * provider is configured with a single credential for access to the
-     * Test-Resource using the constants defined in the class CoreTestConstants.
-     * 
-     * @return credential provider object for unit testing, which contains
-     *         Test-Resource credential.
-     * @throws Exception
-     *             if creation fails.
-     */
-    public CredentialProvider createProviderWithTestResourceCredential() throws Exception {
-	assertNotNull("The ObjectMotherCredentialProvider class is only intended for usage in integration tests",
-		coreFactory);
+	/**
+	 * Create credential provider object for unit testing. The credential provider
+	 * is configured with a single credential for access to the Test-Resource using
+	 * the constants defined in the class CoreTestConstants.
+	 * 
+	 * @return credential provider object for unit testing, which contains
+	 *         Test-Resource credential.
+	 * @throws Exception
+	 *             if creation fails.
+	 */
+	public CredentialProvider createProviderWithTestResourceCredential() throws Exception {
+		assertNotNull("The ObjectMotherCredentialProvider class is only intended for usage in integration tests",
+				coreFactory);
 
-	// create environment configuration
-	Configuration configuration;
-	configuration = envConfigMother.createEnvConfigWithTestResourceCredential();
+		// create environment configuration
+		Configuration configuration;
+		configuration = envConfigMother.createEnvConfigWithTestResourceCredential();
 
-	// create credential provider
-	CredentialProvider provider = coreFactory.createCredentialProvider(configuration);
+		// create credential provider
+		CredentialProvider provider = coreFactory.createCredentialProvider(configuration);
 
-	return provider;
-    }
+		return provider;
+	}
 
 }

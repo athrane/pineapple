@@ -38,17 +38,17 @@ import com.alpha.pineapple.credential.CredentialInfoImpl;
  */
 public class PasswordEncryptingCredentialInfoFactoryImpl implements CredentialInfoFactory {
 
-    /**
-     * Text encryptor.
-     */
-    @Resource
-    PBEStringEncryptor textEncryptor;
+	/**
+	 * Text encryptor.
+	 */
+	@Resource
+	PBEStringEncryptor textEncryptor;
 
-    @Override
-    public CredentialInfo createCredentialInfo(String id, String user, String password) {
-	String encryptedPassword = new StringBuilder().append(ENCRYPTED_PREFIX).append(textEncryptor.encrypt(password))
-		.toString();
-	return new CredentialInfoImpl(id, user, encryptedPassword);
-    }
+	@Override
+	public CredentialInfo createCredentialInfo(String id, String user, String password) {
+		String encryptedPassword = new StringBuilder().append(ENCRYPTED_PREFIX).append(textEncryptor.encrypt(password))
+				.toString();
+		return new CredentialInfoImpl(id, user, encryptedPassword);
+	}
 
 }

@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.command;
 
 import java.io.File;
@@ -40,141 +39,142 @@ import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.i18n.MessageProvider;
 
 /**
- * <p>Implementation of the <code>org.apache.commons.chain.Command</code>  interface which 
- * asserts whether a UNC path can be accessed. This can be used to test 
- * unprotected shares on Windows servers.</p>
+ * <p>
+ * Implementation of the <code>org.apache.commons.chain.Command</code> interface
+ * which asserts whether a UNC path can be accessed. This can be used to test
+ * unprotected shares on Windows servers.
+ * </p>
  * 
- * <p>Precondition for execution of the command is definition of these keys in 
- * the context:
+ * <p>
+ * Precondition for execution of the command is definition of these keys in the
+ * context:
  * 
  * <ul>
- * <li><code>hostname</code> defines name of the host. The type is 
+ * <li><code>hostname</code> defines name of the host. The type is
  * <code>java.lang.String</code>.</li>
  * 
- * <li><code>share</code> defines the shares name which should be accessed. 
- * The type is<code>java.lang.String</code>.</li>
+ * <li><code>share</code> defines the shares name which should be accessed. The
+ * type is<code>java.lang.String</code>.</li>
  * 
- * <li><code>execution-result</code> contains execution result object which collects
- * information about the execution of the test. The type is 
- * <code>com.alpha.pineapple.plugin.execution.ExecutionResult</code>.</li>   
+ * <li><code>execution-result</code> contains execution result object which
+ * collects information about the execution of the test. The type is
+ * <code>com.alpha.pineapple.plugin.execution.ExecutionResult</code>.</li>
  * </ul>
- * </p>      
+ * </p>
  * 
- * <p>Postcondition after execution of the command is: 
- * <ul> 
+ * <p>
+ * Postcondition after execution of the command is:
+ * <ul>
  * <li>The the state of the supplied <code>ExecutionResult</code> is updated
- * with <code>ExecutionState.SUCCESS</code> if the test succeeded. If the 
- * test failed then the <code>ExecutionState.FAILURE</code> is returned.</li>
- * <li>If the test fails due to an exception then the exception isn't caught, 
- * but passed on the the invoker whose responsibility it is to catch it and update 
- * the <code>ExecutionResult</code> with the state <code>ExecutionState.ERROR</code>.
- * </li>
- * </ul>  
- * </p>        
+ * with <code>ExecutionState.SUCCESS</code> if the test succeeded. If the test
+ * failed then the <code>ExecutionState.FAILURE</code> is returned.</li>
+ * <li>If the test fails due to an exception then the exception isn't caught,
+ * but passed on the the invoker whose responsibility it is to catch it and
+ * update the <code>ExecutionResult</code> with the state
+ * <code>ExecutionState.ERROR</code>.</li>
+ * </ul>
+ * </p>
  */
 
 public class TestUncPathCommand implements Command {
 
-    /**
-     * Key used to identify property in context: Name of <machine> in the mapping drive to \\<machine>\<share>
-     */
-    public static final String HOSTNAME_KEY = "hostname";
+	/**
+	 * Key used to identify property in context: Name of <machine> in the mapping
+	 * drive to \\<machine>\<share>
+	 */
+	public static final String HOSTNAME_KEY = "hostname";
 
-    /**
-     * Key used to identify property in context: Name of <share> in the mapping drive to \\<machine>\<share>
-     */
-    public static final String SHARE_KEY = "share";
+	/**
+	 * Key used to identify property in context: Name of <share> in the mapping
+	 * drive to \\<machine>\<share>
+	 */
+	public static final String SHARE_KEY = "share";
 
-    /**
-     * Key used to identify property in context: Contains execution result object.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
-        
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-    
-    /**
-     * Name of <machine> in the mapping drive to \\<machine>\<share>
-     */
-    @Initialize( HOSTNAME_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )    
-    String hostname;
+	/**
+	 * Key used to identify property in context: Contains execution result object.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Name of <share> in the mapping drive to \\<machine>\<share>
-     */
-    @Initialize( SHARE_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )        
-    String share;
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize( EXECUTIONRESULT_KEY )
-    @ValidateValue( ValidationPolicy.NOT_NULL )    
-    ExecutionResult executionResult;
+	/**
+	 * Name of <machine> in the mapping drive to \\<machine>\<share>
+	 */
+	@Initialize(HOSTNAME_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String hostname;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
-    
-    public boolean execute( Context context ) throws Exception 
-    {    
-        // log debug message
-        if ( logger.isDebugEnabled() ) 
-        {
-        	logger.debug( messageProvider.getMessage("tupc.start" ) );        	
-        }
-    	
-        // initialize command
-        CommandInitializer initializer =  new CommandInitializerImpl();
-        initializer.initialize( context, this );
-        
-        // run test
-        doTest( context );
+	/**
+	 * Name of <share> in the mapping drive to \\<machine>\<share>
+	 */
+	@Initialize(SHARE_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String share;
 
-        // log debug message
-        if ( logger.isDebugEnabled() ) 
-        {
-        	logger.debug( messageProvider.getMessage("tupc.completed" ) );        	
-        }
-        
-        return Command.CONTINUE_PROCESSING;
-    }
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    
-    /**
-     * Do test.
-     * 
-     * @param context
-     *            Command context.
-     * 
-     * @throws Exception
-     *             If test execution fails.
-     */
-    void doTest( Context context ) throws Exception
-    {
-    	// create UNC path
-        String fileString = "\\\\" + this.hostname + "\\" + this.share;
-    	File f = new File(fileString);
-    	f.exists();
-        
-        // assert
-        if (f.exists()) {
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-            // set successful result
-        	Object[] args = { fileString };
-        	executionResult.completeAsSuccessful(messageProvider, "tupc.succeed", args);    		
-    		return;            	            	
-        }
-        
-        // set failed result
-    	Object[] args = { fileString };
-    	executionResult.completeAsFailure(messageProvider, "tupc.succeed", args);    		
-    }    
-        
+	public boolean execute(Context context) throws Exception {
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			logger.debug(messageProvider.getMessage("tupc.start"));
+		}
+
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
+
+		// run test
+		doTest(context);
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			logger.debug(messageProvider.getMessage("tupc.completed"));
+		}
+
+		return Command.CONTINUE_PROCESSING;
+	}
+
+	/**
+	 * Do test.
+	 * 
+	 * @param context
+	 *            Command context.
+	 * 
+	 * @throws Exception
+	 *             If test execution fails.
+	 */
+	void doTest(Context context) throws Exception {
+		// create UNC path
+		String fileString = "\\\\" + this.hostname + "\\" + this.share;
+		File f = new File(fileString);
+		f.exists();
+
+		// assert
+		if (f.exists()) {
+
+			// set successful result
+			Object[] args = { fileString };
+			executionResult.completeAsSuccessful(messageProvider, "tupc.succeed", args);
+			return;
+		}
+
+		// set failed result
+		Object[] args = { fileString };
+		executionResult.completeAsFailure(messageProvider, "tupc.succeed", args);
+	}
+
 }

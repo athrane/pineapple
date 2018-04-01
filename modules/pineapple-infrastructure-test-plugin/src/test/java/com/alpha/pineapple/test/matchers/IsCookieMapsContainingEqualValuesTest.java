@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import static org.junit.Assert.assertFalse;
@@ -46,23 +45,23 @@ public class IsCookieMapsContainingEqualValuesTest {
 	 */
 	@SuppressWarnings("unchecked")
 	Matcher matcher;
-	
+
 	/**
 	 * Mock description.
 	 */
 	Description description;
-	
+
 	@Before
 	public void setUp() throws Exception {
-				
+
 		matcher = IsCookieMapsContainingEqualValues.containsEqualValues();
-		
+
 		// create mock description
-		description = EasyMock.createMock( Description.class);	
+		description = EasyMock.createMock(Description.class);
 	}
 
 	@After
-	public void tearDown() throws Exception {		
+	public void tearDown() throws Exception {
 		matcher = null;
 		description = null;
 	}
@@ -74,30 +73,31 @@ public class IsCookieMapsContainingEqualValuesTest {
 	 */
 	Cookie[] createEmptyCookieArray() {
 		return new Cookie[0];
-	}	
+	}
 
 	/**
 	 * create uninitialized cookie array of some size.
 	 *
-	 * @param size array size.
-	 *  
+	 * @param size
+	 *            array size.
+	 * 
 	 * @return cookie array of some size.
 	 */
 	Cookie[] createCookieArray(int size) {
 		return new Cookie[size];
-	}	
-	
+	}
+
 	/**
 	 * Test that empty collection succeeds.
 	 */
 	@Test
 	public void testSucceedsWithEmptyCollection() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-						
+
 		// test
-		assertTrue(matcher.matches( cookieCollection ));		
+		assertTrue(matcher.matches(cookieCollection));
 	}
 
 	/**
@@ -106,14 +106,14 @@ public class IsCookieMapsContainingEqualValuesTest {
 	@Test
 	public void testSucceedsWithOneEmptyMap() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
 
 		// add cookie map
-		cookieCollection.add( createEmptyCookieArray());				
+		cookieCollection.add(createEmptyCookieArray());
 
 		// test
-		assertTrue(matcher.matches( cookieCollection ));				
+		assertTrue(matcher.matches(cookieCollection));
 	}
 
 	/**
@@ -122,341 +122,317 @@ public class IsCookieMapsContainingEqualValuesTest {
 	@Test
 	public void testSucceedsWithTwoEmptyMaps() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
 
 		// add cookie map
-		cookieCollection.add( createEmptyCookieArray());				
-		cookieCollection.add( createEmptyCookieArray());		
+		cookieCollection.add(createEmptyCookieArray());
+		cookieCollection.add(createEmptyCookieArray());
 
 		// test
-		assertTrue(matcher.matches( cookieCollection ));				
+		assertTrue(matcher.matches(cookieCollection));
 	}
-	
+
 	/**
-	 * Test that collection with two maps,
-	 * containing one identical cookie, 
+	 * Test that collection with two maps, containing one identical cookie,
 	 * succeeds.
 	 */
 	@Test
 	public void testSucceedsWithTwoMapsWithOneIdenticalCookie() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-		
+
 		// add cookie maps
 		Cookie[] cookies1 = createCookieArray(1);
 		cookies1[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
 		Cookie[] cookies2 = createCookieArray(1);
-		cookies2[0] = new Cookie("some-domain", "cookie-name", "cookie-value");		
-		
-		cookieCollection.add( cookies1 );						
-		cookieCollection.add( cookies2 );		
+		cookies2[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
+
+		cookieCollection.add(cookies1);
+		cookieCollection.add(cookies2);
 
 		// test
-		assertTrue(matcher.matches( cookieCollection ));				
+		assertTrue(matcher.matches(cookieCollection));
 	}
 
 	/**
-	 * Test that collection with two maps,
-	 * containing two identical cookies, 
+	 * Test that collection with two maps, containing two identical cookies,
 	 * succeeds.
 	 */
 	@Test
 	public void testSucceedsWithTwoMapsWithTwoIdenticalCookies() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-		
+
 		// add cookie maps
 		Cookie[] cookies1 = createCookieArray(2);
 		cookies1[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
-		cookies1[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");		
+		cookies1[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");
 		Cookie[] cookies2 = createCookieArray(2);
-		cookies2[0] = new Cookie("some-domain", "cookie-name", "cookie-value");		
-		cookies2[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");		
-		
-		cookieCollection.add( cookies1 );						
-		cookieCollection.add( cookies2 );		
+		cookies2[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
+		cookies2[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");
+
+		cookieCollection.add(cookies1);
+		cookieCollection.add(cookies2);
 
 		// test
-		assertTrue(matcher.matches( cookieCollection ));				
+		assertTrue(matcher.matches(cookieCollection));
 	}
 
 	/**
-	 * Test that collection with three maps,
-	 * containing two identical cookies, 
+	 * Test that collection with three maps, containing two identical cookies,
 	 * succeeds.
 	 */
 	@Test
 	public void testSucceedsWithThreeMapsWithTwoIdenticalCookies() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-		
+
 		// add cookie maps
 		Cookie[] cookies1 = createCookieArray(2);
 		cookies1[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
-		cookies1[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");		
+		cookies1[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");
 		Cookie[] cookies2 = createCookieArray(2);
-		cookies2[0] = new Cookie("some-domain", "cookie-name", "cookie-value");		
-		cookies2[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");		
+		cookies2[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
+		cookies2[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");
 		Cookie[] cookies3 = createCookieArray(2);
-		cookies3[0] = new Cookie("some-domain", "cookie-name", "cookie-value");		
-		cookies3[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");		
-		
-		cookieCollection.add( cookies1 );						
-		cookieCollection.add( cookies2 );		
-		cookieCollection.add( cookies3 );
-		
+		cookies3[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
+		cookies3[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");
+
+		cookieCollection.add(cookies1);
+		cookieCollection.add(cookies2);
+		cookieCollection.add(cookies3);
+
 		// test
-		assertTrue(matcher.matches( cookieCollection ));				
+		assertTrue(matcher.matches(cookieCollection));
 	}
 
 	/**
-	 * Test that collection with two maps,
-	 * containing one cookie, with different values  
-	 * fails.
+	 * Test that collection with two maps, containing one cookie, with different
+	 * values fails.
 	 */
 	@Test
 	public void testFailsWithTwoMapsWithOneCookieWithDifferentValues() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-		
+
 		// add cookie maps
 		Cookie[] cookies1 = createCookieArray(1);
 		cookies1[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
 		Cookie[] cookies2 = createCookieArray(1);
-		cookies2[0] = new Cookie("some-domain", "cookie-name", "another-cookie-value");		
-		
-		cookieCollection.add( cookies1 );						
-		cookieCollection.add( cookies2 );		
+		cookies2[0] = new Cookie("some-domain", "cookie-name", "another-cookie-value");
+
+		cookieCollection.add(cookies1);
+		cookieCollection.add(cookies2);
 
 		// test
-		assertFalse(matcher.matches( cookieCollection ));				
+		assertFalse(matcher.matches(cookieCollection));
 	}
-			
 
 	/**
-	 * Test that collection with two maps,
-	 * containing one cookie, with empty ("") values  
-	 * succeeds.
+	 * Test that collection with two maps, containing one cookie, with empty ("")
+	 * values succeeds.
 	 */
 	@Test
 	public void testSucceedsWithTwoMapsWithOneCookieWithEmptyValues() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-		
+
 		// add cookie maps
 		Cookie[] cookies1 = createCookieArray(1);
-		cookies1[0] = new Cookie("some-domain", "cookie-name", "" );
+		cookies1[0] = new Cookie("some-domain", "cookie-name", "");
 		Cookie[] cookies2 = createCookieArray(1);
-		cookies2[0] = new Cookie("some-domain", "cookie-name", "" );		
-		
-		cookieCollection.add( cookies1 );						
-		cookieCollection.add( cookies2 );		
+		cookies2[0] = new Cookie("some-domain", "cookie-name", "");
+
+		cookieCollection.add(cookies1);
+		cookieCollection.add(cookies2);
 
 		// test
-		assertTrue(matcher.matches( cookieCollection ));				
+		assertTrue(matcher.matches(cookieCollection));
 	}
 
 	/**
-	 * Test that collection with two maps,
-	 * each containing one different cookie,  
+	 * Test that collection with two maps, each containing one different cookie,
 	 * fails.
 	 */
 	@Test
 	public void testFailsWithTwoMapsWithOneDifferentCookie() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-		
+
 		// add cookie maps
 		Cookie[] cookies1 = createCookieArray(1);
 		cookies1[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
 		Cookie[] cookies2 = createCookieArray(1);
-		cookies2[0] = new Cookie("some-domain", "another-cookie-name", "cookie-value");		
-		
-		cookieCollection.add( cookies1 );						
-		cookieCollection.add( cookies2 );		
+		cookies2[0] = new Cookie("some-domain", "another-cookie-name", "cookie-value");
+
+		cookieCollection.add(cookies1);
+		cookieCollection.add(cookies2);
 
 		// test
-		assertFalse(matcher.matches( cookieCollection ));				
+		assertFalse(matcher.matches(cookieCollection));
 	}
-	
 
 	/**
-	 * Test that collection with two maps,
-	 * each containing one different cookie,  
+	 * Test that collection with two maps, each containing one different cookie,
 	 * fails.
 	 */
 	@Test
 	public void testFailsWithTwoMapsWithOneDifferentCookie2() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-		
+
 		// add cookie maps
 		Cookie[] cookies1 = createCookieArray(2);
 		cookies1[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
-		cookies1[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");		
+		cookies1[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");
 		Cookie[] cookies2 = createCookieArray(2);
 		cookies2[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
-		cookies2[1] = new Cookie("some-domain", "another-cookie-name", "cookie-value2");		
+		cookies2[1] = new Cookie("some-domain", "another-cookie-name", "cookie-value2");
 
-		
-		cookieCollection.add( cookies1 );						
-		cookieCollection.add( cookies2 );		
+		cookieCollection.add(cookies1);
+		cookieCollection.add(cookies2);
 
 		// test
-		assertFalse(matcher.matches( cookieCollection ));				
+		assertFalse(matcher.matches(cookieCollection));
 	}
 
 	/**
-	 * Test that collection with two maps,
-	 * of different size, 
-	 * fails.
+	 * Test that collection with two maps, of different size, fails.
 	 */
 	@Test
 	public void testFailsWithTwoMapsOfdifferentSize() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-		
+
 		// add cookie maps
 		Cookie[] cookies1 = createCookieArray(1);
 		cookies1[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
 		Cookie[] cookies2 = createCookieArray(2);
-		cookies2[0] = new Cookie("some-domain", "cookie-name", "cookie-value");		
-		cookies2[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");		
-		
-		cookieCollection.add( cookies1 );						
-		cookieCollection.add( cookies2 );		
+		cookies2[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
+		cookies2[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");
+
+		cookieCollection.add(cookies1);
+		cookieCollection.add(cookies2);
 
 		// test
-		assertFalse(matcher.matches( cookieCollection ));				
+		assertFalse(matcher.matches(cookieCollection));
 	}
 
 	/**
-	 * Test that collection with two maps,
-	 * of different size, 
-	 * fails.
+	 * Test that collection with two maps, of different size, fails.
 	 */
 	@Test
 	public void testFailsWithTwoMapsOfdifferentSize2() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-		
+
 		// add cookie maps
 		Cookie[] cookies1 = createCookieArray(1);
 		cookies1[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
 		Cookie[] cookies2 = createCookieArray(2);
-		cookies2[0] = new Cookie("some-domain", "cookie-name", "cookie-value");		
-		cookies2[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");		
-		
-		cookieCollection.add( cookies2 );						
-		cookieCollection.add( cookies1 );		
+		cookies2[0] = new Cookie("some-domain", "cookie-name", "cookie-value");
+		cookies2[1] = new Cookie("some-domain", "cookie-name2", "cookie-value2");
+
+		cookieCollection.add(cookies2);
+		cookieCollection.add(cookies1);
 
 		// test
-		assertFalse(matcher.matches( cookieCollection ));				
+		assertFalse(matcher.matches(cookieCollection));
 	}
-	
+
 	/**
-	 * Test that collection with one map,
-	 * which is null, 
-	 * fails.
+	 * Test that collection with one map, which is null, fails.
 	 */
 	@Test
 	public void testFailsWithOneMapWhichIsNull() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-		
-		// add cookie maps		
-		cookieCollection.add( null );								
+
+		// add cookie maps
+		cookieCollection.add(null);
 
 		// test
-		assertFalse(matcher.matches( cookieCollection ));				
+		assertFalse(matcher.matches(cookieCollection));
 	}
-	
+
 	/**
-	 * Test that collection with two maps,
-	 * which is null, 
-	 * fails.
+	 * Test that collection with two maps, which is null, fails.
 	 */
 	@Test
 	public void testFailsWithTwoMapsWhichIsNull() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-		
-		// add cookie maps		
-		cookieCollection.add( null );								
-		cookieCollection.add( null );		
+
+		// add cookie maps
+		cookieCollection.add(null);
+		cookieCollection.add(null);
 
 		// test
-		assertFalse(matcher.matches( cookieCollection ));				
-	}	
-			
-	
+		assertFalse(matcher.matches(cookieCollection));
+	}
+
 	/**
-	 * Test that mismatch description can be created for 
-	 * one map which is null. 
+	 * Test that mismatch description can be created for one map which is null.
 	 */
 	@Test
 	public void testCanDescribeMismatchForOneMapWhichIsNull() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-		
-		// add cookie maps		
-		cookieCollection.add( null );								
+
+		// add cookie maps
+		cookieCollection.add(null);
 
 		// describe mismatch
-		matcher.describeMismatch(cookieCollection, this.description);				
-	}	
-	
+		matcher.describeMismatch(cookieCollection, this.description);
+	}
 
 	/**
-	 * Test that mismatch description can be created for 
-	 * two maps which is null. 
+	 * Test that mismatch description can be created for two maps which is null.
 	 */
 	@Test
 	public void testCanDescribeMismatchForTwoMapsWhichIsNull() {
 
-		// initialize cookie collection 
+		// initialize cookie collection
 		ArrayList<Cookie[]> cookieCollection = new ArrayList<Cookie[]>();
-		
-		// add cookie maps		
-		cookieCollection.add( null );
-		cookieCollection.add( null );								
-		
+
+		// add cookie maps
+		cookieCollection.add(null);
+		cookieCollection.add(null);
+
 		// describe mismatch
-		matcher.describeMismatch(cookieCollection, this.description);				
-	}			
-	
-	
+		matcher.describeMismatch(cookieCollection, this.description);
+	}
+
 	/**
 	 * Test that matcher creates a description.
 	 */
 	@Test
 	public void testDescribeTo() {
-	
+
 		// complete mock description setup
-		EasyMock.expect( description.appendText( (String) EasyMock.isA( String.class) ) );
-		EasyMock.expectLastCall().andReturn( description );
-		EasyMock.replay( description );		
-		
+		EasyMock.expect(description.appendText((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.replay(description);
+
 		// invoke matcher
 		matcher.describeTo(description);
-		
+
 		// test
 		EasyMock.verify(description);
-		
+
 	}
 
-	
 }

@@ -29,14 +29,14 @@ import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
  */
 public class DefaultExecutionResultFactoryImpl implements ExecutionResultFactory {
 
-    @Override
-    public ExecutionResult startExecution(String description) {
-	return new ExecutionResultImpl(description);
-    }
+	@Override
+	public ExecutionResult startExecution(String description) {
+		return new ExecutionResultImpl(description);
+	}
 
-    @Override
-    public ExecutionResultNotification createNotification(ExecutionResult result, ExecutionState state) {
-	return ExecutionResultNotificationImpl.getInstance(result, state);
-    }
+	@Override
+	public ExecutionResultNotification createNotification(ExecutionResult result, ExecutionState state) {
+		return ExecutionResultNotificationImpl.getInstance(result, state);
+	}
 
 }

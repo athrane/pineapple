@@ -20,46 +20,44 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.http;
-
-
 
 /**
  * Defines an ordered sequence of HTTP invocation results.
  */
-public interface HttpInvocationSequence
-{
-    
-    /**
-     * Append an invocation result to the end of the sequence
-     *  
-     * @param result the invocation result to add.
-     */
-    public void appendResult( HttpInvocationResult result );
-    
-    /**
-     * Return the invocation sequence as an array.
-     * 
-     * @return The invocation sequence as an array.
-     */
-    public HttpInvocationResult[] getSequence();
-    
-    /**
-     * Get the sequence name.
-     * 
-     * @return the sequence name.
-     */
-    public String getName();
+public interface HttpInvocationSequence {
 
-    /**
-     * Returns iterator which supports iteration over the results in the sequence.
-     * 
-     * @param propertyInfo Property info which defines the property which there should
-     * be iterated over. 
-     * 
-     * @return iterator which supports iteration over the results in the sequence.
-     */
-	public Iterable<Object> getIntraSequencePropertyIterator( ResponsePropertyInfo propertyInfo );
-    
+	/**
+	 * Append an invocation result to the end of the sequence
+	 * 
+	 * @param result
+	 *            the invocation result to add.
+	 */
+	public void appendResult(HttpInvocationResult result);
+
+	/**
+	 * Return the invocation sequence as an array.
+	 * 
+	 * @return The invocation sequence as an array.
+	 */
+	public HttpInvocationResult[] getSequence();
+
+	/**
+	 * Get the sequence name.
+	 * 
+	 * @return the sequence name.
+	 */
+	public String getName();
+
+	/**
+	 * Returns iterator which supports iteration over the results in the sequence.
+	 * 
+	 * @param propertyInfo
+	 *            Property info which defines the property which there should be
+	 *            iterated over.
+	 * 
+	 * @return iterator which supports iteration over the results in the sequence.
+	 */
+	public Iterable<Object> getIntraSequencePropertyIterator(ResponsePropertyInfo propertyInfo);
+
 }

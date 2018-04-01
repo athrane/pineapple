@@ -33,22 +33,22 @@ import org.junit.Test;
  */
 public class StackTraceHelperTest {
 
-    @Before
-    public void setUp() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    @Test
-    public void testGetMethodName() {
+	@Test
+	public void testGetMethodName() {
 
-	// get method name
-	String name = StackTraceHelper.getMethodName();
+		// get method name
+		String name = StackTraceHelper.getMethodName();
 
-	// test
-	assertEquals("testGetMethodName", name);
-    }
+		// test
+		assertEquals("testGetMethodName", name);
+	}
 
 }

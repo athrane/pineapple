@@ -20,42 +20,38 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.command;
 
 /**
  * Exception class for signaling errors in Chain commands.
  */
-public class CommandException extends Exception
-{
+public class CommandException extends Exception {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * CommandException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public CommandException( String message )
-    {
-        super( message );
-    }
+	/**
+	 * CommandException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public CommandException(String message) {
+		super(message);
+	}
 
-    /**
-     * CommandException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public CommandException( String message, Throwable cause )
-    {
-        super( message, cause );
-    }
+	/**
+	 * CommandException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public CommandException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
 }

@@ -20,9 +20,7 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.filesystem.session;
-
 
 import org.apache.commons.vfs2.FileObject;
 
@@ -32,14 +30,16 @@ import com.alpha.pineapple.session.SessionException;
 /**
  * Session which provides access to a virtual filesystem.
  */
-public interface FileSystemSession extends Session
-{
+public interface FileSystemSession extends Session {
 	/**
 	 * Resolves file object in the remote virtual file system.
-	 * @param path Path to the file/directory in the remote virtual file system.
-	 *   
+	 * 
+	 * @param path
+	 *            Path to the file/directory in the remote virtual file system.
+	 * 
 	 * @return Resolved VFS file object.
-	 * @throws SessionException If file resolution fails. 
+	 * @throws SessionException
+	 *             If file resolution fails.
 	 */
 	FileObject resolveFile(String path) throws SessionException;
 }

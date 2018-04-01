@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.http;
 
 import java.util.Iterator;
@@ -35,21 +34,21 @@ public class InterSequencePropertyIteratorImpl implements Iterable<Object> {
 
 	class InterIteratorImpl implements Iterator<Object> {
 
-	    /**
-	     * Logger object.
-	     */
-	    Logger logger = Logger.getLogger( this.getClass().getName() );
-		
+		/**
+		 * Logger object.
+		 */
+		Logger logger = Logger.getLogger(this.getClass().getName());
+
 		/**
 		 * first array index.
 		 */
-	    private static final int FIRST_INDEX = 0;
-		
+		private static final int FIRST_INDEX = 0;
+
 		/**
 		 * HTTP invocation sequences.
 		 */
 		HttpInvocationSequence[] sequences;
-		
+
 		/**
 		 * Index.
 		 */
@@ -57,55 +56,55 @@ public class InterSequencePropertyIteratorImpl implements Iterable<Object> {
 
 		/**
 		 * Property info which controls the iteration.
-		 */		
+		 */
 		ResponsePropertyInfo propertyInfo;
-		
+
 		public InterIteratorImpl(ResponsePropertyInfo propertyInfo, HttpInvocationSequence[] sequences) {
 			this.propertyInfo = propertyInfo;
 			this.sequences = sequences;
 			this.index = 0;
 		}
-		
+
 		public boolean hasNext() {
 			return (index < sequences.length);
 		}
 
 		public Object next() {
-			
+
 			// get sequence
 			HttpInvocationSequence sequence = sequences[index];
-			
+
 			// get result
 			HttpInvocationResult result = sequence.getSequence()[FIRST_INDEX];
-			
+
 			// get property value
 			Object value = result.getProperty(propertyInfo.getName());
 
 			// increment index
 			index++;
-			
-	        // log debug message
-	        if ( logger.isDebugEnabled() ) {
-	            StringBuilder message = new StringBuilder();
-	            message.append( "Iterator returned property value <" );
-	            message.append( ReflectionToStringBuilder.toString( value) );
-	            message.append( ">." );            
-	            logger.debug( message.toString() );        	        	
-	        }	        
-	        
-	        return value;
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder message = new StringBuilder();
+				message.append("Iterator returned property value <");
+				message.append(ReflectionToStringBuilder.toString(value));
+				message.append(">.");
+				logger.debug(message.toString());
+			}
+
+			return value;
 		}
 
 		public void remove() {
 		}
-				
+
 	}
-	
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-	
+
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	/**
 	 * HTTP invocation result set.
 	 */
@@ -115,38 +114,39 @@ public class InterSequencePropertyIteratorImpl implements Iterable<Object> {
 	 * Property info which controls the iteration.
 	 */
 	ResponsePropertyInfo propertyInfo;
-		
+
 	/**
 	 * InterSequencePropertyIteratorImpl constructor.
 	 * 
-     * @param propertyInfo Property info which defines the property which there should
-     * be iterated over.  
+	 * @param propertyInfo
+	 *            Property info which defines the property which there should be
+	 *            iterated over.
 	 * 
-	 * @param resultSet HTTP invocation result which is iterated over.  
+	 * @param resultSet
+	 *            HTTP invocation result which is iterated over.
 	 */
-	public InterSequencePropertyIteratorImpl( ResponsePropertyInfo propertyInfo, HttpInvocationsSet resultSet) {		
-		this.propertyInfo = propertyInfo;		
+	public InterSequencePropertyIteratorImpl(ResponsePropertyInfo propertyInfo, HttpInvocationsSet resultSet) {
+		this.propertyInfo = propertyInfo;
 		this.resultset = resultSet;
 	}
 
 	public Iterator<Object> iterator() {
-		
+
 		// get sequences
 		HttpInvocationSequence[] sequences = this.resultset.getSequences();
 
-        // log debug message
-        if ( logger.isDebugEnabled() ) {
-            StringBuilder message = new StringBuilder();
-            message.append( "Created inter sequence property iterator for property <" );
-            message.append( propertyInfo.getName() );
-            message.append( "> which will iterate over sequence of <" );
-            message.append( sequences.length );        
-            message.append( "> results." );            
-            logger.debug( message.toString() );        	        	
-        }		
-		
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Created inter sequence property iterator for property <");
+			message.append(propertyInfo.getName());
+			message.append("> which will iterate over sequence of <");
+			message.append(sequences.length);
+			message.append("> results.");
+			logger.debug(message.toString());
+		}
+
 		return new InterIteratorImpl(propertyInfo, sequences);
 	}
 
-	
 }

@@ -40,53 +40,53 @@ import com.alpha.javautils.reflection.GetterMethodMatcher;
  */
 public class JaxbGetterMethodMatcherImpl implements GetterMethodMatcher {
 
-    /**
-     * Start index for get-XX substrings.
-     */
-    static final int GET_INDEX = 3;
+	/**
+	 * Start index for get-XX substrings.
+	 */
+	static final int GET_INDEX = 3;
 
-    /**
-     * Start index for is-XX substrings.
-     */
-    static final int IS_INDEX = 2;
+	/**
+	 * Start index for is-XX substrings.
+	 */
+	static final int IS_INDEX = 2;
 
-    public boolean isMatch(Method method) {
-	// get declaring class
-	Class<?> declaringClass = method.getDeclaringClass();
+	public boolean isMatch(Method method) {
+		// get declaring class
+		Class<?> declaringClass = method.getDeclaringClass();
 
-	// return unsuccessful result if method doesn't reside in model package
-	if (!classIsDeclaredInPackage(declaringClass, PLUGIN_MODEL_PACKAGE))
-	    return false;
+		// return unsuccessful result if method doesn't reside in model package
+		if (!classIsDeclaredInPackage(declaringClass, PLUGIN_MODEL_PACKAGE))
+			return false;
 
-	// get method name
-	String methodName = method.getName();
+		// get method name
+		String methodName = method.getName();
 
-	// return unsuccessful result if method take arguments
-	if (!isMethodWithNoParameters(method))
-	    return false;
+		// return unsuccessful result if method take arguments
+		if (!isMethodWithNoParameters(method))
+			return false;
 
-	// return if method start with 'getXX'
-	if (methodName.startsWith("get"))
-	    return true;
+		// return if method start with 'getXX'
+		if (methodName.startsWith("get"))
+			return true;
 
-	// return if method start with 'isXX'
-	return (methodName.startsWith("is"));
-    }
-
-    public String resolveAttributeFromGetterMethod(Method method) {
-
-	// get method name
-	String methodName = method.getName();
-
-	// strip 'get' from method
-	if (methodName.startsWith("get")) {
-	    String strippedName = methodName.substring(GET_INDEX);
-	    return strippedName;
+		// return if method start with 'isXX'
+		return (methodName.startsWith("is"));
 	}
 
-	// strip 'is' from method
-	String strippedName = methodName.substring(IS_INDEX);
-	return strippedName;
-    }
+	public String resolveAttributeFromGetterMethod(Method method) {
+
+		// get method name
+		String methodName = method.getName();
+
+		// strip 'get' from method
+		if (methodName.startsWith("get")) {
+			String strippedName = methodName.substring(GET_INDEX);
+			return strippedName;
+		}
+
+		// strip 'is' from method
+		String strippedName = methodName.substring(IS_INDEX);
+		return strippedName;
+	}
 
 }

@@ -30,17 +30,17 @@ import com.alpha.pineapple.credential.CredentialInfo;
  */
 public interface CredentialInfoFactory {
 
-    /**
-     * Create credential info.
-     * 
-     * @param id
-     *            credential ID.
-     * @param user
-     *            user name.
-     * @param password
-     *            password.
-     * 
-     * @return created credential info
-     */
-    CredentialInfo createCredentialInfo(String id, String user, String password);
+	/**
+	 * Create credential info.
+	 * 
+	 * @param id
+	 *            credential ID.
+	 * @param user
+	 *            user name.
+	 * @param password
+	 *            password.
+	 * 
+	 * @return created credential info
+	 */
+	CredentialInfo createCredentialInfo(String id, String user, String password);
 }

@@ -38,85 +38,85 @@ import com.alpha.pineapple.substitution.variables.Variables;
  */
 public class CglibVariableSubstitutionInterceptorImpl implements MethodInterceptor {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Proxied object.
-     */
-    Object proxiedObject;
+	/**
+	 * Proxied object.
+	 */
+	Object proxiedObject;
 
-    /**
-     * Factory.
-     */
-    VariableSubstitutedProxyFactory factory;
+	/**
+	 * Factory.
+	 */
+	VariableSubstitutedProxyFactory factory;
 
-    /**
-     * Variable resolver.
-     */
-    VariableResolver resolver;
+	/**
+	 * Variable resolver.
+	 */
+	VariableResolver resolver;
 
-    /**
-     * Variables.
-     */
-    Variables variables;
+	/**
+	 * Variables.
+	 */
+	Variables variables;
 
-    /**
-     * ProxyInterceptorImpl constructor.
-     * 
-     * @param proxiedObject
-     *            object which proxied.
-     */
-    CglibVariableSubstitutionInterceptorImpl(VariableSubstitutedProxyFactory factory, Variables variables,
-	    VariableResolver resolver, Object proxiedObject) {
-	this.factory = factory;
-	this.proxiedObject = proxiedObject;
-	this.variables = variables;
-	this.resolver = resolver;
-    }
-
-    @Override
-    public Object intercept(Object target, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
-
-	// invoke method on proxied object
-	Object returnValue = method.invoke(proxiedObject, args);
-
-	// exit if value is null
-	if (returnValue == null)
-	    return null;
-
-	// process string for substitution
-	if (isStringType(returnValue)) {
-	    String strValue = returnValue.toString();
-
-	    // substitute variables
-	    String processedValue = resolver.resolve(variables, strValue);
-
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		logger.debug("Processed string: " + strValue + " => " + processedValue);
-	    }
-
-	    return processedValue;
+	/**
+	 * ProxyInterceptorImpl constructor.
+	 * 
+	 * @param proxiedObject
+	 *            object which proxied.
+	 */
+	CglibVariableSubstitutionInterceptorImpl(VariableSubstitutedProxyFactory factory, Variables variables,
+			VariableResolver resolver, Object proxiedObject) {
+		this.factory = factory;
+		this.proxiedObject = proxiedObject;
+		this.variables = variables;
+		this.resolver = resolver;
 	}
 
-	// process non string object by decorating it with a proxy
-	return factory.decorateWithProxy(returnValue);
-    }
+	@Override
+	public Object intercept(Object target, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
 
-    /**
-     * Return true if target object type is string.
-     * 
-     * @param targetObject
-     *            target object.
-     * 
-     * @return true if target object type is string.
-     */
-    public boolean isStringType(Object targetObject) {
-	Class<?> returnType = targetObject.getClass();
-	return String.class.isAssignableFrom(returnType);
-    }
+		// invoke method on proxied object
+		Object returnValue = method.invoke(proxiedObject, args);
+
+		// exit if value is null
+		if (returnValue == null)
+			return null;
+
+		// process string for substitution
+		if (isStringType(returnValue)) {
+			String strValue = returnValue.toString();
+
+			// substitute variables
+			String processedValue = resolver.resolve(variables, strValue);
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				logger.debug("Processed string: " + strValue + " => " + processedValue);
+			}
+
+			return processedValue;
+		}
+
+		// process non string object by decorating it with a proxy
+		return factory.decorateWithProxy(returnValue);
+	}
+
+	/**
+	 * Return true if target object type is string.
+	 * 
+	 * @param targetObject
+	 *            target object.
+	 * 
+	 * @return true if target object type is string.
+	 */
+	public boolean isStringType(Object targetObject) {
+		Class<?> returnType = targetObject.getClass();
+		return String.class.isAssignableFrom(returnType);
+	}
 
 }

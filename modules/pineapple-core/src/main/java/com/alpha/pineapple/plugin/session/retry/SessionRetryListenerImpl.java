@@ -66,58 +66,58 @@ import com.alpha.pineapple.session.SessionConnectException;
  */
 public class SessionRetryListenerImpl implements SessionRetryListener {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Result which captures retry information.
-     */
-    ExecutionResult result;
+	/**
+	 * Result which captures retry information.
+	 */
+	ExecutionResult result;
 
-    @Override
-    public <T, E extends Throwable> void close(RetryContext context, RetryCallback<T, E> callback,
-	    Throwable throwable) {
-	// no-op
-    }
-
-    @Override
-    public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback,
-	    Throwable throwable) {
-
-	// get exception
-	Object[] args = { throwable.getMessage() };
-	String message = null;
-
-	// handle session connection error
-	if (throwable instanceof SessionConnectException) {
-	    message = messageProvider.getMessage("srl.session_connect_error", args);
-	} else {
-	    message = messageProvider.getMessage("srl.default_error", args);
+	@Override
+	public <T, E extends Throwable> void close(RetryContext context, RetryCallback<T, E> callback,
+			Throwable throwable) {
+		// no-op
 	}
 
-	// add result message
-	if (result == null)
-	    return;
-	result.addMessage(MSG_SESSION, message);
-	return;
-    }
+	@Override
+	public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback,
+			Throwable throwable) {
 
-    @Override
-    public <T, E extends Throwable> boolean open(RetryContext context, RetryCallback<T, E> callback) {
-	return true; // proceed with first retry
-    }
+		// get exception
+		Object[] args = { throwable.getMessage() };
+		String message = null;
 
-    @Override
-    public void setResult(ExecutionResult result) {
-	this.result = result;
-    }
+		// handle session connection error
+		if (throwable instanceof SessionConnectException) {
+			message = messageProvider.getMessage("srl.session_connect_error", args);
+		} else {
+			message = messageProvider.getMessage("srl.default_error", args);
+		}
+
+		// add result message
+		if (result == null)
+			return;
+		result.addMessage(MSG_SESSION, message);
+		return;
+	}
+
+	@Override
+	public <T, E extends Throwable> boolean open(RetryContext context, RetryCallback<T, E> callback) {
+		return true; // proceed with first retry
+	}
+
+	@Override
+	public void setResult(ExecutionResult result) {
+		this.result = result;
+	}
 
 }

@@ -29,13 +29,13 @@ import com.alpha.pineapple.execution.ExecutionResultException;
  */
 public class CommandFacadeException extends ExecutionResultException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = -2645655614604534316L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = -2645655614604534316L;
 
-    public CommandFacadeException(ExecutionResult result) {
-	super(result);
-    }
+	public CommandFacadeException(ExecutionResult result) {
+		super(result);
+	}
 
 }

@@ -89,99 +89,98 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class StartContainerCommand implements Command {
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Container info for the
-     * container to access.
-     */
-    public static final String CONTAINER_INFO_KEY = "container-info";
+	/**
+	 * Key used to identify property in context: Container info for the container to
+	 * access.
+	 */
+	public static final String CONTAINER_INFO_KEY = "container-info";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Container info.
-     */
-    @Initialize(CONTAINER_INFO_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ContainerInfo containerInfo;
+	/**
+	 * Container info.
+	 */
+	@Initialize(CONTAINER_INFO_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ContainerInfo containerInfo;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// fail if container doesn't exists in repository
-	if (!dockerClient.containerExists(session, containerInfo)) {
-	    Object[] args = { containerInfo };
-	    executionResult.completeAsFailure(messageProvider, "scc.start_container_notfound_failure", args);
-	    return Command.CONTINUE_PROCESSING;
+		// fail if container doesn't exists in repository
+		if (!dockerClient.containerExists(session, containerInfo)) {
+			Object[] args = { containerInfo };
+			executionResult.completeAsFailure(messageProvider, "scc.start_container_notfound_failure", args);
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// if container is paused then unpause
+		if (dockerClient.isContainerPaused(session, containerInfo)) {
+			String message = messageProvider.getMessage("scc.start_container_unpause");
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+			dockerClient.unpauseContainer(session, containerInfo, executionResult);
+		}
+
+		// get container name
+		Map<String, String> uriVariables = new HashMap<String, String>();
+		uriVariables.put("id", containerInfo.getName());
+
+		// post to start container
+		String stringMessage = session.httpPostForObject(START_CONTAINER_URI, uriVariables, String.class);
+
+		// capture any returned string message
+		if (isStringMessageDefined(stringMessage)) {
+			Object[] args = { stringMessage };
+			String message = messageProvider.getMessage("scc.message_info", args);
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+		}
+
+		// complete result
+		Object[] args = { containerInfo.getName() };
+		executionResult.completeAsSuccessful(messageProvider, "scc.start_container_completed", args);
+
+		return Command.CONTINUE_PROCESSING;
 	}
-
-	// if container is paused then unpause
-	if (dockerClient.isContainerPaused(session, containerInfo)) {
-	    String message = messageProvider.getMessage("scc.start_container_unpause");
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-	    dockerClient.unpauseContainer(session, containerInfo, executionResult);
-	}
-
-	// get container name
-	Map<String, String> uriVariables = new HashMap<String, String>();
-	uriVariables.put("id", containerInfo.getName());
-
-	// post to start container
-	String stringMessage = session.httpPostForObject(START_CONTAINER_URI, uriVariables, String.class);
-
-	// capture any returned string message
-	if (isStringMessageDefined(stringMessage)) {
-	    Object[] args = { stringMessage };
-	    String message = messageProvider.getMessage("scc.message_info", args);
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-	}
-
-	// complete result
-	Object[] args = { containerInfo.getName() };
-	executionResult.completeAsSuccessful(messageProvider, "scc.start_container_completed", args);
-
-	return Command.CONTINUE_PROCESSING;
-    }
 
 }

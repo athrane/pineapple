@@ -27,31 +27,31 @@ package com.alpha.pineapple.credential;
  */
 public class EnvironmentNotFoundException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * EnvironmentNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public EnvironmentNotFoundException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * EnvironmentNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public EnvironmentNotFoundException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * EnvironmentNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public EnvironmentNotFoundException(String message) {
-	super(message);
-    }
+	/**
+	 * EnvironmentNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public EnvironmentNotFoundException(String message) {
+		super(message);
+	}
 
 }

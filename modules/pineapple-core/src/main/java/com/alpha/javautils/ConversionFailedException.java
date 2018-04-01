@@ -27,31 +27,31 @@ package com.alpha.javautils;
  */
 public class ConversionFailedException extends Exception {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * ConversionFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public ConversionFailedException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * ConversionFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public ConversionFailedException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * ConversionFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public ConversionFailedException(String message) {
-	super(message);
-    }
+	/**
+	 * ConversionFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public ConversionFailedException(String message) {
+		super(message);
+	}
 
 }

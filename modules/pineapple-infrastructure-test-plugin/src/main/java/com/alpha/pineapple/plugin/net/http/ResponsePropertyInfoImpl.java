@@ -20,15 +20,14 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.http;
 
 import org.hamcrest.Matcher;
 
 public class ResponsePropertyInfoImpl implements ResponsePropertyInfo {
-			
+
 	boolean isTestingInterSequences;
-	
+
 	boolean isTestingIntraSequence;
 
 	Matcher<?> intraSequenceMatcher;
@@ -37,7 +36,7 @@ public class ResponsePropertyInfoImpl implements ResponsePropertyInfo {
 
 	String name;
 
-	String xpath;			
+	String xpath;
 
 	/**
 	 * ResponsePropertyInfoImpl
@@ -45,12 +44,9 @@ public class ResponsePropertyInfoImpl implements ResponsePropertyInfo {
 	 * @param intraSequenceMatcher
 	 * @param interSequenceMatcher
 	 */
-	public ResponsePropertyInfoImpl(
-			String name,
-			String xpath,
-			Matcher<?> intraSequenceMatcher, 
+	public ResponsePropertyInfoImpl(String name, String xpath, Matcher<?> intraSequenceMatcher,
 			Matcher<?> interSequenceMatcher) {
-		
+
 		super();
 		this.name = name;
 		this.xpath = xpath;
@@ -67,11 +63,11 @@ public class ResponsePropertyInfoImpl implements ResponsePropertyInfo {
 	}
 
 	public boolean isTestingInterSequences() {
-		return (interSequenceMatcher != null );
+		return (interSequenceMatcher != null);
 	}
 
 	public boolean isTestingIntraSequence() {
-		return (intraSequenceMatcher != null );
+		return (intraSequenceMatcher != null);
 	}
 
 	public String getName() {
@@ -82,5 +78,4 @@ public class ResponsePropertyInfoImpl implements ResponsePropertyInfo {
 		return xpath;
 	}
 
-	
 }

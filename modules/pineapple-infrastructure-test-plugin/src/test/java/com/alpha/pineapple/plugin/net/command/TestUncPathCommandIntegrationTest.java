@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.command;
 
 import static org.junit.Assert.assertEquals;
@@ -46,75 +45,68 @@ import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
 /**
  * integration test of the class {@link TestUncPathCommand}.
  */
-@RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration( locations = { "/com.alpha.pineapple.plugin.net-config.xml" } )
-public class TestUncPathCommandIntegrationTest
-{
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/com.alpha.pineapple.plugin.net-config.xml" })
+public class TestUncPathCommandIntegrationTest {
 
-    /**
-     * Chain context.
-     */
-    Context context;
-    
-    /**
-     * Command under test.
-     */
-    @Resource( name="testUncPathCommand")	
-    Command command;
+	/**
+	 * Chain context.
+	 */
+	Context context;
+
+	/**
+	 * Command under test.
+	 */
+	@Resource(name = "testUncPathCommand")
+	Command command;
 
 	/**
 	 * Execution result.
 	 */
-	ExecutionResult executionResult;    
-        
-    @Before
-    public void setUp() throws Exception
-    {
-        // create context
-        context = new ContextBase();
-        
-        // create execution result
-		executionResult = new ExecutionResultImpl("Root result" );
-        
-    }
+	ExecutionResult executionResult;
 
-    @After
-    public void tearDown() throws Exception
-    {
-        command = null;
-        context = null;
-        executionResult = null;
-    }
+	@Before
+	public void setUp() throws Exception {
+		// create context
+		context = new ContextBase();
 
-    /**
-     * Test that command signal test-error of the name can't resolve to 
-     * expected IP address.
-     */
-    @SuppressWarnings( "unchecked" )
-    @Test
-    public void testTestCaseFailsIfShareCantBeAccessed()
-    {
+		// create execution result
+		executionResult = new ExecutionResultImpl("Root result");
 
-        try
-        {
-        	// create execution result        	
-        	ExecutionResult childResult = executionResult.addChild("Test UNC path.");        	
-        	
-            // setup parameters
-    		context.put( TestUncPathCommand.EXECUTIONRESULT_KEY, childResult );        	        	
-            context.put( TestUncPathCommand.HOSTNAME_KEY, "wintermute" );            
-            context.put( TestUncPathCommand.SHARE_KEY, "non-existing-share-name" );            
+	}
 
-            // execute command
-            command.execute( context );
+	@After
+	public void tearDown() throws Exception {
+		command = null;
+		context = null;
+		executionResult = null;
+	}
 
-            // test
-            assertEquals( ExecutionState.FAILURE, childResult.getState());
-        }
-        catch ( Exception e )
-        {
-            fail( StackTraceHelper.getStrackTrace( e ) );
-        }
-    }
-    
+	/**
+	 * Test that command signal test-error of the name can't resolve to expected IP
+	 * address.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testTestCaseFailsIfShareCantBeAccessed() {
+
+		try {
+			// create execution result
+			ExecutionResult childResult = executionResult.addChild("Test UNC path.");
+
+			// setup parameters
+			context.put(TestUncPathCommand.EXECUTIONRESULT_KEY, childResult);
+			context.put(TestUncPathCommand.HOSTNAME_KEY, "wintermute");
+			context.put(TestUncPathCommand.SHARE_KEY, "non-existing-share-name");
+
+			// execute command
+			command.execute(context);
+
+			// test
+			assertEquals(ExecutionState.FAILURE, childResult.getState());
+		} catch (Exception e) {
+			fail(StackTraceHelper.getStrackTrace(e));
+		}
+	}
+
 }

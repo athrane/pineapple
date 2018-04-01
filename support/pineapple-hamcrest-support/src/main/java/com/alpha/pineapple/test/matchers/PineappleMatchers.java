@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import java.io.File;
@@ -34,52 +33,51 @@ import org.hamcrest.Matcher;
 
 /**
  *
- * Helper class which provides static factory methods for
- * easy access to matcher instances.
+ * Helper class which provides static factory methods for easy access to matcher
+ * instances.
  * 
- * Inspired by the {@link CoreMatchers}.  
+ * Inspired by the {@link CoreMatchers}.
  */
 public class PineappleMatchers {
 
-    @Factory
-    public static <T> Matcher<Iterable<T>> isInLegalRange(Collection<T> range) {    	
-        return IsInLegalRange.isInLegalRange(range);
-    }
-
-    @Factory
-    public static <T> Matcher<Iterable<T>> matchingSingleValueInRange(Collection<T> range) {
-    	return IsMatchingSingleValueInRange.matchingSingleValueInRange(range);
-    }
-    
-    @Factory
-    public static <T> Matcher<Iterable<T>> distributedAcrossRange(Collection<T> range) {   
-    	return IsDistributedAcrossRange.distributedAcrossRange(range );
-    }
-
-            	
 	@Factory
-    public static Matcher<Object[]> isArrayEmpty() {
-        return IsArrayEmpty.isArrayEmpty();
-    }
-	
-	@Factory
-    public static <K,V> Matcher<Map<K,V>> mapContainsKekys(Set<K> expectedKeys) {
-        return IsMapContainingKeys.containsKekys(expectedKeys);
-    }
+	public static <T> Matcher<Iterable<T>> isInLegalRange(Collection<T> range) {
+		return IsInLegalRange.isInLegalRange(range);
+	}
 
 	@Factory
-    public static Matcher<File> doesFileExist() {
-        return DoesFileExist.doesFileExist();
-    }
+	public static <T> Matcher<Iterable<T>> matchingSingleValueInRange(Collection<T> range) {
+		return IsMatchingSingleValueInRange.matchingSingleValueInRange(range);
+	}
 
 	@Factory
-    public static Matcher<File> doesDirectoryExist() {
-        return DoesDirectoryExist.doesDirectoryExist();
-    }
+	public static <T> Matcher<Iterable<T>> distributedAcrossRange(Collection<T> range) {
+		return IsDistributedAcrossRange.distributedAcrossRange(range);
+	}
 
 	@Factory
-    public static Matcher<File> isFileSizeSmaller(long legalSize) {		
-        return IsFileSizeSmaller.isFileSizeSmaller(legalSize);
-    }
-	
+	public static Matcher<Object[]> isArrayEmpty() {
+		return IsArrayEmpty.isArrayEmpty();
+	}
+
+	@Factory
+	public static <K, V> Matcher<Map<K, V>> mapContainsKekys(Set<K> expectedKeys) {
+		return IsMapContainingKeys.containsKekys(expectedKeys);
+	}
+
+	@Factory
+	public static Matcher<File> doesFileExist() {
+		return DoesFileExist.doesFileExist();
+	}
+
+	@Factory
+	public static Matcher<File> doesDirectoryExist() {
+		return DoesDirectoryExist.doesDirectoryExist();
+	}
+
+	@Factory
+	public static Matcher<File> isFileSizeSmaller(long legalSize) {
+		return IsFileSizeSmaller.isFileSizeSmaller(legalSize);
+	}
+
 }

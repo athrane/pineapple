@@ -33,37 +33,37 @@ import org.junit.Test;
  */
 public class ClassUtilsTest {
 
-    @Before
-    public void setUp() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    @Test
-    public void testStringIsValidClass() {
-	assertTrue(ClassUtils.isValidClass(String.class.getName()));
-    }
+	@Test
+	public void testStringIsValidClass() {
+		assertTrue(ClassUtils.isValidClass(String.class.getName()));
+	}
 
-    @Test
-    public void testClassUtilsIsValidClass() {
-	assertTrue(ClassUtils.isValidClass(ClassUtils.class.getName()));
-    }
+	@Test
+	public void testClassUtilsIsValidClass() {
+		assertTrue(ClassUtils.isValidClass(ClassUtils.class.getName()));
+	}
 
-    @Test
-    public void testIsValidClassFailsIfNameIsNull() {
-	assertFalse(ClassUtils.isValidClass(null));
-    }
+	@Test
+	public void testIsValidClassFailsIfNameIsNull() {
+		assertFalse(ClassUtils.isValidClass(null));
+	}
 
-    @Test
-    public void testIsValidClassFailsIfNameIsEmpty() {
-	assertFalse(ClassUtils.isValidClass(""));
-    }
+	@Test
+	public void testIsValidClassFailsIfNameIsEmpty() {
+		assertFalse(ClassUtils.isValidClass(""));
+	}
 
-    @Test
-    public void testIsValidClassFailsIfClassDoesntExist() {
-	assertFalse(ClassUtils.isValidClass("somenonexistingclass"));
-    }
+	@Test
+	public void testIsValidClassFailsIfClassDoesntExist() {
+		assertFalse(ClassUtils.isValidClass("somenonexistingclass"));
+	}
 
 }

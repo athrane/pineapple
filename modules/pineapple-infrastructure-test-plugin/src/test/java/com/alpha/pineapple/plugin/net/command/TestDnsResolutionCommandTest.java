@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.command;
 
 import static org.junit.Assert.fail;
@@ -47,158 +46,141 @@ import com.alpha.pineapple.test.Asserter;
 /**
  * Unit test of the class {@link TestDnsResolutionCommand}.
  */
-public class TestDnsResolutionCommandTest
-{
+public class TestDnsResolutionCommandTest {
 
 	/**
 	 * Host name for local host
 	 */
-    static final String LOCALHOST_IP = "127.0.0.1";
-
-    /**
-     * IP address for local host.
-     */
-    static final String LOCALHOST_HOST = "localhost";
+	static final String LOCALHOST_IP = "127.0.0.1";
 
 	/**
-     * Command under test.
-     */
-    Command command;
+	 * IP address for local host.
+	 */
+	static final String LOCALHOST_HOST = "localhost";
 
-    /**
-     * Chain context.
-     */
-    Context context;
+	/**
+	 * Command under test.
+	 */
+	Command command;
+
+	/**
+	 * Chain context.
+	 */
+	Context context;
 
 	/**
 	 * Mock execution result.
 	 */
-	ExecutionResult executionResult; 
-	
-    /**
-     * Mock message provider.
-     */
-    MessageProvider messageProvider;
+	ExecutionResult executionResult;
+
+	/**
+	 * Mock message provider.
+	 */
+	MessageProvider messageProvider;
 
 	/**
 	 * Mock asserter.
 	 */
-	Asserter asserter; 
-    
-    
-    @Before
-    public void setUp() throws Exception
-    {
-        // create command
-        command = new TestDnsResolutionCommand();
+	Asserter asserter;
 
-        // create context
-        context = new ContextBase();
-        
-        // create mock result
-        executionResult = EasyMock.createMock( ExecutionResult.class );   
+	@Before
+	public void setUp() throws Exception {
+		// create command
+		command = new TestDnsResolutionCommand();
 
-        // create mock asserter
-        asserter = EasyMock.createMock( Asserter.class );
-                
-        // inject asserter
-        ReflectionTestUtils.setField( command, "asserter", asserter , Asserter.class );        
-        
-        // create mock provider
-        messageProvider = EasyMock.createMock( MessageProvider.class );
-                
-        // inject message source
-        ReflectionTestUtils.setField( command, "messageProvider", messageProvider, MessageProvider.class );
-        
-        // complete mock source initialization        
-        IAnswer<String> answer = new MessageProviderAnswerImpl(); 
-        
-        EasyMock.expect( messageProvider.getMessage(
-        		(String) EasyMock.isA( String.class )));
-        EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-        EasyMock.expect( messageProvider.getMessage(
-        		(String) EasyMock.isA( String.class ),
-        		(Object[]) EasyMock.isA( Object[].class )));
-        EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+		// create context
+		context = new ContextBase();
 
-        
-        EasyMock.replay(messageProvider);        
-    }
+		// create mock result
+		executionResult = EasyMock.createMock(ExecutionResult.class);
 
-    @After
-    public void tearDown() throws Exception
-    {
-        command = null;
-        context = null;
-        executionResult = null;
-        messageProvider = null;
-        asserter = null;
-    }
+		// create mock asserter
+		asserter = EasyMock.createMock(Asserter.class);
 
-    /**
-     * Test that command can resolve localhost to 127.0.0.1.
-     */
-    @SuppressWarnings( "unchecked" )
-    @Test
-    public void testResolveToLocalhost()
-    {
+		// inject asserter
+		ReflectionTestUtils.setField(command, "asserter", asserter, Asserter.class);
 
-        try
-        {
-        	// complete asserter initialization
-        	asserter.setExecutionResult(executionResult);
-    		EasyMock.expect( asserter.assertObject(
-    				EasyMock.anyObject(), 
-    				(Matcher) EasyMock.isA(Matcher.class), 
-    				(String) EasyMock.isA(String.class))).andReturn(executionResult).times(2);
-        	EasyMock.replay( asserter );
-        	
-    		// complete execution result initialization
-        	executionResult.completeAsComputed((MessageProvider) EasyMock.isA( MessageProvider.class ),
-        			(String) EasyMock.isA( String.class ), 
-        			(Object[]) EasyMock.isNull(), 
-        			(String) EasyMock.isA( String.class ),
-        			(Object[]) EasyMock.isNull());        	
-    		EasyMock.replay( executionResult );		
-        	
-            // setup parameters            
-    		context.put( TestDnsResolutionCommand.EXECUTIONRESULT_KEY, executionResult );        	
-            context.put( TestDnsResolutionCommand.HOSTNAME_KEY, LOCALHOST_HOST );
-            context.put( TestDnsResolutionCommand.IP_KEY, LOCALHOST_IP );
+		// create mock provider
+		messageProvider = EasyMock.createMock(MessageProvider.class);
 
-            // execute command
-            command.execute( context );
+		// inject message source
+		ReflectionTestUtils.setField(command, "messageProvider", messageProvider, MessageProvider.class);
 
-    		// verify mocks
-    		EasyMock.verify(executionResult);		
-            
-        }
-        catch ( Exception e )
-        {
-            fail( StackTraceHelper.getStrackTrace( e ) );
-        }
-    }
+		// complete mock source initialization
+		IAnswer<String> answer = new MessageProviderAnswerImpl();
 
-    
-    
+		EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+		EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class),
+				(Object[]) EasyMock.isA(Object[].class)));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+
+		EasyMock.replay(messageProvider);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		command = null;
+		context = null;
+		executionResult = null;
+		messageProvider = null;
+		asserter = null;
+	}
+
+	/**
+	 * Test that command can resolve localhost to 127.0.0.1.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testResolveToLocalhost() {
+
+		try {
+			// complete asserter initialization
+			asserter.setExecutionResult(executionResult);
+			EasyMock.expect(asserter.assertObject(EasyMock.anyObject(), (Matcher) EasyMock.isA(Matcher.class),
+					(String) EasyMock.isA(String.class))).andReturn(executionResult).times(2);
+			EasyMock.replay(asserter);
+
+			// complete execution result initialization
+			executionResult.completeAsComputed((MessageProvider) EasyMock.isA(MessageProvider.class),
+					(String) EasyMock.isA(String.class), (Object[]) EasyMock.isNull(),
+					(String) EasyMock.isA(String.class), (Object[]) EasyMock.isNull());
+			EasyMock.replay(executionResult);
+
+			// setup parameters
+			context.put(TestDnsResolutionCommand.EXECUTIONRESULT_KEY, executionResult);
+			context.put(TestDnsResolutionCommand.HOSTNAME_KEY, LOCALHOST_HOST);
+			context.put(TestDnsResolutionCommand.IP_KEY, LOCALHOST_IP);
+
+			// execute command
+			command.execute(context);
+
+			// verify mocks
+			EasyMock.verify(executionResult);
+
+		} catch (Exception e) {
+			fail(StackTraceHelper.getStrackTrace(e));
+		}
+	}
+
 	/**
 	 * Test that undefined execution result is rejected.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(expected = CommandInitializationFailedException.class)
 	public void testRejectsUndefinedExecutionResult() throws Exception {
-				
+
 		// setup parameters
-		context.put(TestDnsResolutionCommand.EXECUTIONRESULT_KEY, null );
-        context.put( TestDnsResolutionCommand.HOSTNAME_KEY, LOCALHOST_HOST );		
-        context.put( TestDnsResolutionCommand.IP_KEY, LOCALHOST_IP );
-		
+		context.put(TestDnsResolutionCommand.EXECUTIONRESULT_KEY, null);
+		context.put(TestDnsResolutionCommand.HOSTNAME_KEY, LOCALHOST_HOST);
+		context.put(TestDnsResolutionCommand.IP_KEY, LOCALHOST_IP);
+
 		// execute command
 		command.execute(context);
 
 		// test
 		fail("Test should never reach here.");
-	}	
+	}
 
 	/**
 	 * Test that undefined host is rejected.
@@ -206,19 +188,18 @@ public class TestDnsResolutionCommandTest
 	@SuppressWarnings("unchecked")
 	@Test(expected = CommandInitializationFailedException.class)
 	public void testRejectsUndefinedHost() throws Exception {
-				
+
 		// setup parameters
-		context.put(TestDnsResolutionCommand.EXECUTIONRESULT_KEY, executionResult );
-        context.put( TestDnsResolutionCommand.HOSTNAME_KEY, null );		
-        context.put( TestDnsResolutionCommand.IP_KEY, LOCALHOST_IP );
-		
+		context.put(TestDnsResolutionCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(TestDnsResolutionCommand.HOSTNAME_KEY, null);
+		context.put(TestDnsResolutionCommand.IP_KEY, LOCALHOST_IP);
+
 		// execute command
 		command.execute(context);
 
 		// test
 		fail("Test should never reach here.");
-	}	
-
+	}
 
 	/**
 	 * Test that undefined ip address is rejected.
@@ -226,106 +207,88 @@ public class TestDnsResolutionCommandTest
 	@SuppressWarnings("unchecked")
 	@Test(expected = CommandInitializationFailedException.class)
 	public void testRejectsUndefinedIpAddress() throws Exception {
-				
+
 		// setup parameters
-		context.put(TestDnsResolutionCommand.EXECUTIONRESULT_KEY, executionResult );
-        context.put( TestDnsResolutionCommand.HOSTNAME_KEY, LOCALHOST_HOST );		
-        context.put( TestDnsResolutionCommand.IP_KEY, null );
-		
+		context.put(TestDnsResolutionCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(TestDnsResolutionCommand.HOSTNAME_KEY, LOCALHOST_HOST);
+		context.put(TestDnsResolutionCommand.IP_KEY, null);
+
 		// execute command
 		command.execute(context);
 
 		// test
 		fail("Test should never reach here.");
-	}	
-	
-    
-    /**
-     * Test that command fails if the name can't resolve to 
-     * expected IP address.
-     */
-    @SuppressWarnings( "unchecked" )
-    @Test
-    public void testTestCaseFailsIfNameCanBeResolvedToIP()
-    {
-        try
-        {
-        	// complete asserter initialization
-        	asserter.setExecutionResult(executionResult);
-    		EasyMock.expect( asserter.assertObject(
-    				EasyMock.anyObject(), 
-    				(Matcher) EasyMock.isA(Matcher.class), 
-    				(String) EasyMock.isA(String.class))).andReturn(executionResult).times(2);
-        	EasyMock.replay( asserter );
-        	
-    		// complete execution result initialization
-        	executionResult.completeAsComputed((MessageProvider) EasyMock.isA( MessageProvider.class ),
-        			(String) EasyMock.isA( String.class ), 
-        			(Object[]) EasyMock.isNull(), 
-        			(String) EasyMock.isA( String.class ),
-        			(Object[]) EasyMock.isNull());        	
-    		EasyMock.replay( executionResult );		
-        	
-            // setup parameters
-    		context.put( TestDnsResolutionCommand.EXECUTIONRESULT_KEY, executionResult );    		
-            context.put( TestDnsResolutionCommand.HOSTNAME_KEY, LOCALHOST_HOST );
-            context.put( TestDnsResolutionCommand.IP_KEY, "1.1.1.1" );
+	}
 
-            // execute command
-            command.execute( context );
-            
-    		// verify mocks
-    		EasyMock.verify(executionResult);		
-            
-        }
-        catch ( Exception e )
-        {
-            fail( StackTraceHelper.getStrackTrace( e ) );
-        }
-    }
+	/**
+	 * Test that command fails if the name can't resolve to expected IP address.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testTestCaseFailsIfNameCanBeResolvedToIP() {
+		try {
+			// complete asserter initialization
+			asserter.setExecutionResult(executionResult);
+			EasyMock.expect(asserter.assertObject(EasyMock.anyObject(), (Matcher) EasyMock.isA(Matcher.class),
+					(String) EasyMock.isA(String.class))).andReturn(executionResult).times(2);
+			EasyMock.replay(asserter);
 
-    /**
-     * Test that command fails with an error if the name can't resolve to 
-     * expected IP address.
-     */
-    @SuppressWarnings( "unchecked" )
-    @Test
-    public void testTestCaseFailsWithErrorIfNameIsntAnHostName()
-    {
-        try
-        {
-        	// complete asserter initialization
-        	asserter.setExecutionResult(executionResult);
-    		EasyMock.expect( asserter.assertObject(
-    				EasyMock.anyObject(), 
-    				(Matcher) EasyMock.isA(Matcher.class), 
-    				(String) EasyMock.isA(String.class))).andReturn(executionResult).times(2);
-        	EasyMock.replay( asserter );
-        	
-    		// complete execution result initialization
-        	executionResult.completeAsComputed((MessageProvider) EasyMock.isA( MessageProvider.class ),
-        			(String) EasyMock.isA( String.class ), 
-        			(Object[]) EasyMock.isNull(), 
-        			(String) EasyMock.isA( String.class ),
-        			(Object[]) EasyMock.isNull());        	
-    		EasyMock.replay( executionResult );		
-        	
-            // setup parameters
-    		context.put( TestDnsResolutionCommand.EXECUTIONRESULT_KEY, executionResult );    		
-            context.put( TestDnsResolutionCommand.HOSTNAME_KEY, "not-an-host" );
-            context.put( TestDnsResolutionCommand.IP_KEY, LOCALHOST_IP );
+			// complete execution result initialization
+			executionResult.completeAsComputed((MessageProvider) EasyMock.isA(MessageProvider.class),
+					(String) EasyMock.isA(String.class), (Object[]) EasyMock.isNull(),
+					(String) EasyMock.isA(String.class), (Object[]) EasyMock.isNull());
+			EasyMock.replay(executionResult);
 
-            // execute command
-            command.execute( context );
-            
-    		// verify mocks
-    		EasyMock.verify(executionResult);		
-            
-        }
-        catch ( Exception e )
-        {
-            fail( StackTraceHelper.getStrackTrace( e ) );
-        }
-    }
-    
+			// setup parameters
+			context.put(TestDnsResolutionCommand.EXECUTIONRESULT_KEY, executionResult);
+			context.put(TestDnsResolutionCommand.HOSTNAME_KEY, LOCALHOST_HOST);
+			context.put(TestDnsResolutionCommand.IP_KEY, "1.1.1.1");
+
+			// execute command
+			command.execute(context);
+
+			// verify mocks
+			EasyMock.verify(executionResult);
+
+		} catch (Exception e) {
+			fail(StackTraceHelper.getStrackTrace(e));
+		}
+	}
+
+	/**
+	 * Test that command fails with an error if the name can't resolve to expected
+	 * IP address.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testTestCaseFailsWithErrorIfNameIsntAnHostName() {
+		try {
+			// complete asserter initialization
+			asserter.setExecutionResult(executionResult);
+			EasyMock.expect(asserter.assertObject(EasyMock.anyObject(), (Matcher) EasyMock.isA(Matcher.class),
+					(String) EasyMock.isA(String.class))).andReturn(executionResult).times(2);
+			EasyMock.replay(asserter);
+
+			// complete execution result initialization
+			executionResult.completeAsComputed((MessageProvider) EasyMock.isA(MessageProvider.class),
+					(String) EasyMock.isA(String.class), (Object[]) EasyMock.isNull(),
+					(String) EasyMock.isA(String.class), (Object[]) EasyMock.isNull());
+			EasyMock.replay(executionResult);
+
+			// setup parameters
+			context.put(TestDnsResolutionCommand.EXECUTIONRESULT_KEY, executionResult);
+			context.put(TestDnsResolutionCommand.HOSTNAME_KEY, "not-an-host");
+			context.put(TestDnsResolutionCommand.IP_KEY, LOCALHOST_IP);
+
+			// execute command
+			command.execute(context);
+
+			// verify mocks
+			EasyMock.verify(executionResult);
+
+		} catch (Exception e) {
+			fail(StackTraceHelper.getStrackTrace(e));
+		}
+	}
+
 }

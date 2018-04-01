@@ -11,62 +11,62 @@ import com.alpha.pineapple.web.zk.asynctask.event.visitor.UnpackModuleTaskEventV
  */
 public class FileUnpackUpdateEvent extends Event implements UnpackModuleTaskEvent {
 
-    private static final long serialVersionUID = 1016799256303068779L;
+	private static final long serialVersionUID = 1016799256303068779L;
 
-    public static final String NAME = "onFileUnpackUpdate";
+	public static final String NAME = "onFileUnpackUpdate";
 
-    /**
-     * Unpack percentage.
-     */
-    final int percentage;
+	/**
+	 * Unpack percentage.
+	 */
+	final int percentage;
 
-    /**
-     * Current size of unpacked file.
-     */
-    final long current;;
+	/**
+	 * Current size of unpacked file.
+	 */
+	final long current;;
 
-    /**
-     * Total size of file.
-     */
-    final long total;
+	/**
+	 * Total size of file.
+	 */
+	final long total;
 
-    public FileUnpackUpdateEvent(int percentage, long current, long total) {
-	super(NAME, null, null);
-	this.percentage = percentage;
-	this.current = current;
-	this.total = total;
-    }
+	public FileUnpackUpdateEvent(int percentage, long current, long total) {
+		super(NAME, null, null);
+		this.percentage = percentage;
+		this.current = current;
+		this.total = total;
+	}
 
-    /**
-     * Return percentage.
-     * 
-     * @return percentage.
-     */
-    public int getPercentage() {
-	return percentage;
-    }
+	/**
+	 * Return percentage.
+	 * 
+	 * @return percentage.
+	 */
+	public int getPercentage() {
+		return percentage;
+	}
 
-    /**
-     * Return total size.
-     * 
-     * @return total size.
-     */
-    public long getTotal() {
-	return total;
-    }
+	/**
+	 * Return total size.
+	 * 
+	 * @return total size.
+	 */
+	public long getTotal() {
+		return total;
+	}
 
-    /**
-     * Return size of current unpacked part.
-     * 
-     * @return size of current unpacked part.
-     */
-    public long getCurrent() {
-	return current;
-    }
+	/**
+	 * Return size of current unpacked part.
+	 * 
+	 * @return size of current unpacked part.
+	 */
+	public long getCurrent() {
+		return current;
+	}
 
-    @Override
-    public void accept(UnpackModuleTaskEventVisitor visitor) {
-	visitor.visit(this);
-    }
+	@Override
+	public void accept(UnpackModuleTaskEventVisitor visitor) {
+		visitor.visit(this);
+	}
 
 }

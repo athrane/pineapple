@@ -27,22 +27,22 @@ package com.alpha.pineapple.execution;
  */
 public interface ResourceResolver {
 
-    /**
-     * Return list of resolved target resources. Resolved targets are not
-     * guaranteed to be valid.
-     * 
-     * Supports the syntax for lists: {cn1, cn2}
-     * 
-     * Supports the syntax for regular expressions: regex:cn*
-     * 
-     * @param targetResource
-     *            target resource from model.
-     * @param environment
-     *            environment where resources are matched if target resource
-     *            defines a regular expression
-     * 
-     * @return list of resolved target resources.
-     */
-    String[] resolve(String targetResource, String environment);
+	/**
+	 * Return list of resolved target resources. Resolved targets are not guaranteed
+	 * to be valid.
+	 * 
+	 * Supports the syntax for lists: {cn1, cn2}
+	 * 
+	 * Supports the syntax for regular expressions: regex:cn*
+	 * 
+	 * @param targetResource
+	 *            target resource from model.
+	 * @param environment
+	 *            environment where resources are matched if target resource defines
+	 *            a regular expression
+	 * 
+	 * @return list of resolved target resources.
+	 */
+	String[] resolve(String targetResource, String environment);
 
 }

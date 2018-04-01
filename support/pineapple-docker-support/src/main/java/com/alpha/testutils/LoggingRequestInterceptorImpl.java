@@ -43,106 +43,106 @@ import org.springframework.web.client.RestTemplate;
  */
 public class LoggingRequestInterceptorImpl implements ClientHttpRequestInterceptor {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
-	    throws IOException {
-	handldeRequest(request, body);
+	@Override
+	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
+			throws IOException {
+		handldeRequest(request, body);
 
-	ClientHttpResponse response = execution.execute(request, body);
+		ClientHttpResponse response = execution.execute(request, body);
 
-	// log response
-	CachingClientHttpResponseWrapper bufferedResponse = new CachingClientHttpResponseWrapper(response);
-	handleResponse(bufferedResponse);
-	return bufferedResponse;
-    }
-
-    /**
-     * Handles request messages for logging.
-     * 
-     * @param request
-     *            HTTP request.
-     * @param request
-     *            body.
-     * @throws IOException
-     *             if logging fails
-     */
-    void handldeRequest(HttpRequest request, byte[] body) {
-	String bodyAsString = new String(body, Charset.forName("UTF-8"));
-	logger.debug("HTTP Request body: " + bodyAsString);
-    }
-
-    /**
-     * Handles response messages for logging.
-     * 
-     * @param response
-     *            cached HTTP response.
-     * @throws IOException
-     *             if logging fails
-     */
-    void handleResponse(CachingClientHttpResponseWrapper response) throws IOException {
-	if (logger.isDebugEnabled()) {
-	    logger.debug("HTTP Response status code: " + response.getStatusCode());
-	    logger.debug("HTTP Response text: " + response.getStatusText());
-	    logger.debug("HTTP Response body: " + response.getBodyContent());
-	}
-    }
-
-    /**
-     * Response wrapper implementation of {@link ClientHttpResponse} that reads
-     * the message body into memory for caching, thus allowing for multiple
-     * invocations of {@link #getBody()}.
-     */
-    class CachingClientHttpResponseWrapper implements ClientHttpResponse {
-
-	final ClientHttpResponse response;
-	byte[] body;
-
-	CachingClientHttpResponseWrapper(ClientHttpResponse response) {
-	    this.response = response;
+		// log response
+		CachingClientHttpResponseWrapper bufferedResponse = new CachingClientHttpResponseWrapper(response);
+		handleResponse(bufferedResponse);
+		return bufferedResponse;
 	}
 
-	public HttpStatus getStatusCode() throws IOException {
-	    return this.response.getStatusCode();
+	/**
+	 * Handles request messages for logging.
+	 * 
+	 * @param request
+	 *            HTTP request.
+	 * @param request
+	 *            body.
+	 * @throws IOException
+	 *             if logging fails
+	 */
+	void handldeRequest(HttpRequest request, byte[] body) {
+		String bodyAsString = new String(body, Charset.forName("UTF-8"));
+		logger.debug("HTTP Request body: " + bodyAsString);
 	}
 
-	public int getRawStatusCode() throws IOException {
-	    return this.response.getRawStatusCode();
-	}
-
-	public String getStatusText() throws IOException {
-	    return this.response.getStatusText();
-	}
-
-	public HttpHeaders getHeaders() {
-	    return this.response.getHeaders();
-	}
-
-	public InputStream getBody() throws IOException {
-	    if (this.body == null) {
-		if (response.getBody() != null) {
-		    this.body = FileCopyUtils.copyToByteArray(response.getBody());
-		} else {
-		    body = new byte[] {};
+	/**
+	 * Handles response messages for logging.
+	 * 
+	 * @param response
+	 *            cached HTTP response.
+	 * @throws IOException
+	 *             if logging fails
+	 */
+	void handleResponse(CachingClientHttpResponseWrapper response) throws IOException {
+		if (logger.isDebugEnabled()) {
+			logger.debug("HTTP Response status code: " + response.getStatusCode());
+			logger.debug("HTTP Response text: " + response.getStatusText());
+			logger.debug("HTTP Response body: " + response.getBodyContent());
 		}
-	    }
-	    return new ByteArrayInputStream(this.body);
 	}
 
-	public String getBodyContent() throws IOException {
-	    if (this.body == null) {
-		getBody();
-	    }
+	/**
+	 * Response wrapper implementation of {@link ClientHttpResponse} that reads the
+	 * message body into memory for caching, thus allowing for multiple invocations
+	 * of {@link #getBody()}.
+	 */
+	class CachingClientHttpResponseWrapper implements ClientHttpResponse {
 
-	    return new String(body, Charset.forName("UTF-8"));
-	}
+		final ClientHttpResponse response;
+		byte[] body;
 
-	public void close() {
-	    this.response.close();
+		CachingClientHttpResponseWrapper(ClientHttpResponse response) {
+			this.response = response;
+		}
+
+		public HttpStatus getStatusCode() throws IOException {
+			return this.response.getStatusCode();
+		}
+
+		public int getRawStatusCode() throws IOException {
+			return this.response.getRawStatusCode();
+		}
+
+		public String getStatusText() throws IOException {
+			return this.response.getStatusText();
+		}
+
+		public HttpHeaders getHeaders() {
+			return this.response.getHeaders();
+		}
+
+		public InputStream getBody() throws IOException {
+			if (this.body == null) {
+				if (response.getBody() != null) {
+					this.body = FileCopyUtils.copyToByteArray(response.getBody());
+				} else {
+					body = new byte[] {};
+				}
+			}
+			return new ByteArrayInputStream(this.body);
+		}
+
+		public String getBodyContent() throws IOException {
+			if (this.body == null) {
+				getBody();
+			}
+
+			return new String(body, Charset.forName("UTF-8"));
+		}
+
+		public void close() {
+			this.response.close();
+		}
 	}
-    }
 }

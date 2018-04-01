@@ -32,14 +32,14 @@ import org.zkoss.zk.ui.event.EventListener;
 @Deprecated
 public interface AsyncTask {
 
-    /**
-     * Asynchronous execution of task.
-     * 
-     * @param desktop
-     *            ZK desktop.
-     * @param eventListener
-     *            ZK Event listener.
-     */
-    public void runAsync(Desktop desktop, EventListener<Event> eventListener);
+	/**
+	 * Asynchronous execution of task.
+	 * 
+	 * @param desktop
+	 *            ZK desktop.
+	 * @param eventListener
+	 *            ZK Event listener.
+	 */
+	public void runAsync(Desktop desktop, EventListener<Event> eventListener);
 
 }

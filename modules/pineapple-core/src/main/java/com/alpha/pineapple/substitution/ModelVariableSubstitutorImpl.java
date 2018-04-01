@@ -42,72 +42,72 @@ import com.alpha.pineapple.substitution.variables.Variables;
  */
 public class ModelVariableSubstitutorImpl implements ModelVariableSubstitutor {
 
-    /**
-     * Logger object
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @javax.annotation.Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@javax.annotation.Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Resource variables builder Factory.
-     */
-    @javax.annotation.Resource
-    ObjectFactory<ResourceVariablesBuilder> resourceVariablesBuilderFactory;
+	/**
+	 * Resource variables builder Factory.
+	 */
+	@javax.annotation.Resource
+	ObjectFactory<ResourceVariablesBuilder> resourceVariablesBuilderFactory;
 
-    /**
-     * Model variables builder Factory.
-     */
-    @javax.annotation.Resource
-    ObjectFactory<ModelVariablesBuilder> modelVariablesBuilderFactory;
+	/**
+	 * Model variables builder Factory.
+	 */
+	@javax.annotation.Resource
+	ObjectFactory<ModelVariablesBuilder> modelVariablesBuilderFactory;
 
-    /**
-     * Module descriptor variables builder Factory.
-     */
-    @javax.annotation.Resource
-    ObjectFactory<ModuleDescriptorVariablesBuilder> moduleDescriptorVariablesBuilderFactory;
+	/**
+	 * Module descriptor variables builder Factory.
+	 */
+	@javax.annotation.Resource
+	ObjectFactory<ModuleDescriptorVariablesBuilder> moduleDescriptorVariablesBuilderFactory;
 
-    /**
-     * Composite variables builder Factory.
-     */
-    @javax.annotation.Resource
-    ObjectFactory<CompositeVariablesBuilder> compositeVariablesBuilderFactory;
+	/**
+	 * Composite variables builder Factory.
+	 */
+	@javax.annotation.Resource
+	ObjectFactory<CompositeVariablesBuilder> compositeVariablesBuilderFactory;
 
-    /**
-     * Variable substituted proxy factory Factory.
-     */
-    @javax.annotation.Resource
-    ObjectFactory<VariableSubstitutedProxyFactory> variableSubstitutedProxyFactoryFactory;
+	/**
+	 * Variable substituted proxy factory Factory.
+	 */
+	@javax.annotation.Resource
+	ObjectFactory<VariableSubstitutedProxyFactory> variableSubstitutedProxyFactoryFactory;
 
-    @Override
-    public <T> T createObjectWithSubstitution(Module module, Models model, Resource resource, T targetObject)
-	    throws VariableSubstitutionException {
-	Validate.notNull(module, "module is undefined.");
-	Validate.notNull(model, "model is undefined.");
-	Validate.notNull(resource, "resource is undefined.");
+	@Override
+	public <T> T createObjectWithSubstitution(Module module, Models model, Resource resource, T targetObject)
+			throws VariableSubstitutionException {
+		Validate.notNull(module, "module is undefined.");
+		Validate.notNull(model, "model is undefined.");
+		Validate.notNull(resource, "resource is undefined.");
 
-	// create variables from module, model and resource
-	ModuleDescriptorVariablesBuilder moduleBuilder = moduleDescriptorVariablesBuilderFactory.getObject();
-	moduleBuilder.setModel(module);
-	ModelVariablesBuilder modelBuilder = modelVariablesBuilderFactory.getObject();
-	modelBuilder.setModel(model);
-	ResourceVariablesBuilder resourceBuilder = resourceVariablesBuilderFactory.getObject();
-	resourceBuilder.setResource(resource);
+		// create variables from module, model and resource
+		ModuleDescriptorVariablesBuilder moduleBuilder = moduleDescriptorVariablesBuilderFactory.getObject();
+		moduleBuilder.setModel(module);
+		ModelVariablesBuilder modelBuilder = modelVariablesBuilderFactory.getObject();
+		modelBuilder.setModel(model);
+		ResourceVariablesBuilder resourceBuilder = resourceVariablesBuilderFactory.getObject();
+		resourceBuilder.setResource(resource);
 
-	// create composite variables
-	CompositeVariablesBuilder compositeVariablesBuilder = compositeVariablesBuilderFactory.getObject();
-	compositeVariablesBuilder.addBuilder("module", moduleBuilder);
-	compositeVariablesBuilder.addBuilder("model", modelBuilder);
-	compositeVariablesBuilder.addBuilder("resource", resourceBuilder);
-	Variables compositeVariables = compositeVariablesBuilder.getVariables();
+		// create composite variables
+		CompositeVariablesBuilder compositeVariablesBuilder = compositeVariablesBuilderFactory.getObject();
+		compositeVariablesBuilder.addBuilder("module", moduleBuilder);
+		compositeVariablesBuilder.addBuilder("model", modelBuilder);
+		compositeVariablesBuilder.addBuilder("resource", resourceBuilder);
+		Variables compositeVariables = compositeVariablesBuilder.getVariables();
 
-	VariableSubstitutedProxyFactory factory = variableSubstitutedProxyFactoryFactory.getObject();
-	factory.initialize(compositeVariables);
-	return factory.decorateWithProxy(targetObject);
-    }
+		VariableSubstitutedProxyFactory factory = variableSubstitutedProxyFactoryFactory.getObject();
+		factory.initialize(compositeVariables);
+		return factory.decorateWithProxy(targetObject);
+	}
 
 }

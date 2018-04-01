@@ -44,92 +44,92 @@ import com.alpha.pineapple.execution.ExecutionResultNotificationImpl;
 
 public class ReactorTest2 {
 
-    class NotificationConsumer implements Consumer<Event<ExecutionResultNotification>> {
+	class NotificationConsumer implements Consumer<Event<ExecutionResultNotification>> {
 
-	@Override
-	public void accept(Event<ExecutionResultNotification> t) {
-	    logger.debug("DEBUG: accept: " + t);
+		@Override
+		public void accept(Event<ExecutionResultNotification> t) {
+			logger.debug("DEBUG: accept: " + t);
+		}
+
 	}
 
-    }
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Object under test.
+	 */
+	ExecutionResultNotification notification;
 
-    /**
-     * Object under test.
-     */
-    ExecutionResultNotification notification;
+	/**
+	 * Mock execution result.
+	 */
+	ExecutionResult result;
 
-    /**
-     * Mock execution result.
-     */
-    ExecutionResult result;
+	/**
+	 * Reactor.
+	 */
+	Reactor webAppReactor;
 
-    /**
-     * Reactor.
-     */
-    Reactor webAppReactor;
+	/**
+	 * Reactor environment.
+	 */
+	Environment environment;
 
-    /**
-     * Reactor environment.
-     */
-    Environment environment;
+	/**
+	 * Reactor boundary.
+	 */
+	Boundary boundary;
 
-    /**
-     * Reactor boundary.
-     */
-    Boundary boundary;
+	@Before
+	public void setUp() throws Exception {
 
-    @Before
-    public void setUp() throws Exception {
+		// create mock result
+		result = EasyMock.createMock(ExecutionResult.class);
+		EasyMock.replay(result);
+		notification = ExecutionResultNotificationImpl.getInstance(result, ExecutionState.EXECUTING);
 
-	// create mock result
-	result = EasyMock.createMock(ExecutionResult.class);
-	EasyMock.replay(result);
-	notification = ExecutionResultNotificationImpl.getInstance(result, ExecutionState.EXECUTING);
+		environment = new Environment();
+		webAppReactor = Reactors.reactor().env(environment).dispatcher(Environment.RING_BUFFER).get();
 
-	environment = new Environment();
-	webAppReactor = Reactors.reactor().env(environment).dispatcher(Environment.RING_BUFFER).get();
+		boundary = new Boundary();
+	}
 
-	boundary = new Boundary();
-    }
+	@After
+	public void tearDown() {
+		environment.shutdown();
+	}
 
-    @After
-    public void tearDown() {
-	environment.shutdown();
-    }
+	@Test
+	public void testSelectionByClass() {
+		webAppReactor.on(T(ExecutionResultNotification.class), new NotificationConsumer());
+		webAppReactor.notify(notification.getClass(), Event.wrap(notification));
 
-    @Test
-    public void testSelectionByClass() {
-	webAppReactor.on(T(ExecutionResultNotification.class), new NotificationConsumer());
-	webAppReactor.notify(notification.getClass(), Event.wrap(notification));
+		// Wait for all Consumers to have been called
+		boundary.await();
+	}
 
-	// Wait for all Consumers to have been called
-	boundary.await();
-    }
+	@Test
+	public void testSelectionByString() {
+		String key = "ExecutionResultNotification";
+		webAppReactor.on($(key), new NotificationConsumer());
+		webAppReactor.notify(key, Event.wrap(notification));
 
-    @Test
-    public void testSelectionByString() {
-	String key = "ExecutionResultNotification";
-	webAppReactor.on($(key), new NotificationConsumer());
-	webAppReactor.notify(key, Event.wrap(notification));
+		// Wait for all Consumers to have been called
+		boundary.await();
+	}
 
-	// Wait for all Consumers to have been called
-	boundary.await();
-    }
+	@Test
+	public void testSelectionByString2() {
 
-    @Test
-    public void testSelectionByString2() {
+		String uri = "/webapp/service/notification";
+		webAppReactor.on($(uri), new NotificationConsumer());
+		webAppReactor.notify(uri, Event.wrap(notification));
 
-	String uri = "/webapp/service/notification";
-	webAppReactor.on($(uri), new NotificationConsumer());
-	webAppReactor.notify(uri, Event.wrap(notification));
-
-	// Wait for all Consumers to have been called
-	boundary.await();
-    }
+		// Wait for all Consumers to have been called
+		boundary.await();
+	}
 
 }

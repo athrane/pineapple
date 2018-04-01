@@ -31,21 +31,21 @@ import com.alpha.pineapple.plugin.Operation;
  */
 public interface SessionHandlerFactory {
 
-    /**
-     * SessionHandler factory method.
-     * 
-     * Session handler is created with Spring dependencies and then initialized
-     * with required Pineapple data objects (e.g. {@linkplain Resource} and
-     * {@linkplain Credential} and {@linkplain Operation} which is proxied by
-     * the session handler.
-     * 
-     * @param resource
-     *            Resource object.
-     * @param credential
-     *            Credential object.
-     * @param operation
-     *            Operation object.
-     */
-    public Operation getInstance(Resource resource, Credential credential, Operation operation);
+	/**
+	 * SessionHandler factory method.
+	 * 
+	 * Session handler is created with Spring dependencies and then initialized with
+	 * required Pineapple data objects (e.g. {@linkplain Resource} and
+	 * {@linkplain Credential} and {@linkplain Operation} which is proxied by the
+	 * session handler.
+	 * 
+	 * @param resource
+	 *            Resource object.
+	 * @param credential
+	 *            Credential object.
+	 * @param operation
+	 *            Operation object.
+	 */
+	public Operation getInstance(Resource resource, Credential credential, Operation operation);
 
 }

@@ -78,180 +78,179 @@ import com.alpha.pineapple.io.file.RuntimeDirectoryProvider;
  * </p>
  */
 public class InitializeHomeDirectoriesCommand implements Command {
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Runtime directory resolver.
-     */
-    @Resource
-    RuntimeDirectoryProvider runtimeDirectoryProvider;
+	/**
+	 * Runtime directory resolver.
+	 */
+	@Resource
+	RuntimeDirectoryProvider runtimeDirectoryProvider;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    public boolean execute(Context context) throws Exception {
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    logger.debug(messageProvider.getMessage("irdc.start"));
+	public boolean execute(Context context) throws Exception {
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			logger.debug(messageProvider.getMessage("irdc.start"));
+		}
+
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
+
+		// do initialization
+		doInitialization(context);
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			logger.debug(messageProvider.getMessage("irdc.completed"));
+		}
+
+		return Command.CONTINUE_PROCESSING;
 	}
 
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	/**
+	 * Initialize the operation.
+	 * 
+	 * @param context
+	 *            Command context.
+	 * 
+	 */
+	void doInitialization(Context context) throws CommandException {
 
-	// do initialization
-	doInitialization(context);
+		// get home directory
+		File homeDir = runtimeDirectoryProvider.getHomeDirectory();
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    logger.debug(messageProvider.getMessage("irdc.completed"));
+		// validate home is absolute directory
+		if (!homeDir.isAbsolute()) {
+			// create error message and exit
+			Object[] args = { homeDir.getAbsolutePath() };
+			executionResult.completeAsFailure(messageProvider, "irdc.homedir_notabsolute_failure", args);
+			return;
+		}
+
+		// if it doesn't exist create home directory
+		if (!homeDir.exists()) {
+
+			// create
+			try {
+				FileUtils.forceMkdir(homeDir);
+			} catch (Exception e) {
+				executionResult.completeAsError(messageProvider, "irdc.homedir_creation_error", e);
+				return;
+			}
+
+			// add message
+			Object[] args = { homeDir.getAbsolutePath() };
+			String message = messageProvider.getMessage("irdc.homedir_created_info", args);
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+
+		} else {
+			// add message
+			Object[] args = { homeDir.getAbsolutePath() };
+			String message = messageProvider.getMessage("irdc.homedir_exists_info", args);
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+		}
+
+		// get conf directory
+		File confDir = runtimeDirectoryProvider.getConfigurationDirectory();
+
+		// if it doesn't exist create configuration directory
+		if (!confDir.exists()) {
+
+			// create
+			try {
+				FileUtils.forceMkdir(confDir);
+			} catch (Exception e) {
+				executionResult.completeAsError(messageProvider, "irdc.confdir_creation_error", e);
+				return;
+			}
+
+			// add message
+			Object[] args = { confDir.getAbsolutePath() };
+			String message = messageProvider.getMessage("irdc.confdir_created_info", args);
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+
+		} else {
+			// add message
+			Object[] args = { confDir.getAbsolutePath() };
+			String message = messageProvider.getMessage("irdc.confdir_exists_info", args);
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+		}
+
+		// get modules directory
+		File modulesDir = runtimeDirectoryProvider.getModulesDirectory();
+
+		// if it doesn't exist create modules directory
+		if (!modulesDir.exists()) {
+
+			// create
+			try {
+				FileUtils.forceMkdir(modulesDir);
+			} catch (Exception e) {
+				executionResult.completeAsError(messageProvider, "irdc.modulesdir_creation_error", e);
+				return;
+			}
+
+			// add message
+			Object[] args = { modulesDir.getAbsolutePath() };
+			String message = messageProvider.getMessage("irdc.modulesdir_created_info", args);
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+
+		} else {
+			// add message
+			Object[] args = { modulesDir.getAbsolutePath() };
+			String message = messageProvider.getMessage("irdc.modulesdir_exists_info", args);
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+		}
+
+		// get reports directory
+		File reportsDir = runtimeDirectoryProvider.getReportsDirectory();
+
+		// if it doesn't exist create reports directory
+		if (!reportsDir.exists()) {
+
+			// create
+			try {
+				FileUtils.forceMkdir(reportsDir);
+			} catch (Exception e) {
+				executionResult.completeAsError(messageProvider, "irdc.reportsdir_creation_error", e);
+				return;
+			}
+
+			// add message
+			Object[] args = { reportsDir.getAbsolutePath() };
+			String message = messageProvider.getMessage("irdc.reportsdir_created_info", args);
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+
+		} else {
+			// add message
+			Object[] args = { reportsDir.getAbsolutePath() };
+			String message = messageProvider.getMessage("irdc.reportsdir_exists_info", args);
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+		}
+
+		// complete operation as successful
+		executionResult.completeAsSuccessful(messageProvider, "irdc.succeed");
 	}
-
-	return Command.CONTINUE_PROCESSING;
-    }
-
-    /**
-     * Initialize the operation.
-     * 
-     * @param context
-     *            Command context.
-     * 
-     */
-    void doInitialization(Context context) throws CommandException {
-
-	// get home directory
-	File homeDir = runtimeDirectoryProvider.getHomeDirectory();
-
-	// validate home is absolute directory
-	if (!homeDir.isAbsolute()) {
-	    // create error message and exit
-	    Object[] args = { homeDir.getAbsolutePath() };
-	    executionResult.completeAsFailure(messageProvider, "irdc.homedir_notabsolute_failure", args);
-	    return;
-	}
-
-	// if it doesn't exist create home directory
-	if (!homeDir.exists()) {
-
-	    // create
-	    try {
-		FileUtils.forceMkdir(homeDir);
-	    } catch (Exception e) {
-		executionResult.completeAsError(messageProvider, "irdc.homedir_creation_error", e);
-		return;
-	    }
-
-	    // add message
-	    Object[] args = { homeDir.getAbsolutePath() };
-	    String message = messageProvider.getMessage("irdc.homedir_created_info", args);
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-
-	} else {
-	    // add message
-	    Object[] args = { homeDir.getAbsolutePath() };
-	    String message = messageProvider.getMessage("irdc.homedir_exists_info", args);
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-	}
-
-	// get conf directory
-	File confDir = runtimeDirectoryProvider.getConfigurationDirectory();
-
-	// if it doesn't exist create configuration directory
-	if (!confDir.exists()) {
-
-	    // create
-	    try {
-		FileUtils.forceMkdir(confDir);
-	    } catch (Exception e) {
-		executionResult.completeAsError(messageProvider, "irdc.confdir_creation_error", e);
-		return;
-	    }
-
-	    // add message
-	    Object[] args = { confDir.getAbsolutePath() };
-	    String message = messageProvider.getMessage("irdc.confdir_created_info", args);
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-
-	} else {
-	    // add message
-	    Object[] args = { confDir.getAbsolutePath() };
-	    String message = messageProvider.getMessage("irdc.confdir_exists_info", args);
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-	}
-
-	// get modules directory
-	File modulesDir = runtimeDirectoryProvider.getModulesDirectory();
-
-	// if it doesn't exist create modules directory
-	if (!modulesDir.exists()) {
-
-	    // create
-	    try {
-		FileUtils.forceMkdir(modulesDir);
-	    } catch (Exception e) {
-		executionResult.completeAsError(messageProvider, "irdc.modulesdir_creation_error", e);
-		return;
-	    }
-
-	    // add message
-	    Object[] args = { modulesDir.getAbsolutePath() };
-	    String message = messageProvider.getMessage("irdc.modulesdir_created_info", args);
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-
-	} else {
-	    // add message
-	    Object[] args = { modulesDir.getAbsolutePath() };
-	    String message = messageProvider.getMessage("irdc.modulesdir_exists_info", args);
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-	}
-
-	// get reports directory
-	File reportsDir = runtimeDirectoryProvider.getReportsDirectory();
-
-	// if it doesn't exist create reports directory
-	if (!reportsDir.exists()) {
-
-	    // create
-	    try {
-		FileUtils.forceMkdir(reportsDir);
-	    } catch (Exception e) {
-		executionResult.completeAsError(messageProvider, "irdc.reportsdir_creation_error", e);
-		return;
-	    }
-
-	    // add message
-	    Object[] args = { reportsDir.getAbsolutePath() };
-	    String message = messageProvider.getMessage("irdc.reportsdir_created_info", args);
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-
-	} else {
-	    // add message
-	    Object[] args = { reportsDir.getAbsolutePath() };
-	    String message = messageProvider.getMessage("irdc.reportsdir_exists_info", args);
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-	}
-
-	// complete operation as successful
-	executionResult.completeAsSuccessful(messageProvider, "irdc.succeed");
-    }
 
 }

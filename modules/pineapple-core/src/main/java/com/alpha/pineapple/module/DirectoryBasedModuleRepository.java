@@ -30,12 +30,12 @@ import java.io.File;
  */
 public interface DirectoryBasedModuleRepository extends ModuleRepository {
 
-    /**
-     * Get module repository directory. If repository isn't initialized then
-     * null is returned.
-     * 
-     * @return module repository directory. If repository isn't initialized then
-     *         null is returned.
-     */
-    public File getModuleRepositoryDirectory();
+	/**
+	 * Get module repository directory. If repository isn't initialized then null is
+	 * returned.
+	 * 
+	 * @return module repository directory. If repository isn't initialized then
+	 *         null is returned.
+	 */
+	public File getModuleRepositoryDirectory();
 }

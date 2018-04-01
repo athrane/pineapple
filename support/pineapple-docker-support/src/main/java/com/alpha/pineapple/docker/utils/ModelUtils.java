@@ -86,8 +86,8 @@ public class ModelUtils {
 	 *            image creation object.
 	 * 
 	 * @return true if image creation object contains regular status update
-	 *         information in the status field. Returns false if the status
-	 *         field is null or empty.
+	 *         information in the status field. Returns false if the status field is
+	 *         null or empty.
 	 */
 	public static boolean containsStatusUpdate(JsonMessage info) {
 		Validate.notNull(info, "info is undefined");
@@ -100,16 +100,14 @@ public class ModelUtils {
 	}
 
 	/**
-	 * Returns true if image creation object contains a stream update
-	 * information in the stream field, i.e. it is defined with a non-null or
-	 * non-empty value.
+	 * Returns true if image creation object contains a stream update information in
+	 * the stream field, i.e. it is defined with a non-null or non-empty value.
 	 * 
 	 * @param info
 	 *            image creation object.
 	 * 
-	 * @return true if image creation object contains stream update information
-	 *         in the stream field. Returns false if the status field is null or
-	 *         empty.
+	 * @return true if image creation object contains stream update information in
+	 *         the stream field. Returns false if the status field is null or empty.
 	 */
 	public static boolean containsStreamUpdate(JsonMessage info) {
 		Validate.notNull(info, "info is undefined");
@@ -173,8 +171,8 @@ public class ModelUtils {
 	}
 
 	/**
-	 * Returns true if tag is defined in image name in container. The tag is
-	 * defined using the ":" separator.
+	 * Returns true if tag is defined in image name in container. The tag is defined
+	 * using the ":" separator.
 	 * 
 	 * @param image
 	 *            Docker image name .

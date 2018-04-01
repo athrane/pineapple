@@ -20,25 +20,25 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.filesystem.session.uri;
 
 /**
- * Implementation of the {@link VfsUriGenerator} interface to access the contents of ZIP files.
+ * Implementation of the {@link VfsUriGenerator} interface to access the
+ * contents of ZIP files.
  */
 public class ZipUriGeneratorImpl extends AbstractUriGeneratorImpl {
 
 	/**
-	 * FileUriGeneratorImpl constructor. 
+	 * FileUriGeneratorImpl constructor.
 	 */
 	public ZipUriGeneratorImpl() {
 	}
 
 	public String createUri(String path) {
 		StringBuilder uri = new StringBuilder();
-		uri.append("zip://");		
-		uri.append(path);		
+		uri.append("zip://");
+		uri.append(path);
 		return uri.toString();
 	}
-		
+
 }

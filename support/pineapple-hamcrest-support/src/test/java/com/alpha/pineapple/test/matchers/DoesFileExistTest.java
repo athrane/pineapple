@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import static org.junit.Assert.assertFalse;
@@ -48,9 +47,9 @@ import com.alpha.springutils.DirectoryTestExecutionListener;
 /**
  * Unit test of the {@link DoesFileExist} class.
  */
-@RunWith( SpringJUnit4ClassRunner.class )
-@TestExecutionListeners( DirectoryTestExecutionListener.class )
-@ContextConfiguration( locations = { "/com.alpha.pineapple.hamcrest-config.xml" } )
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestExecutionListeners(DirectoryTestExecutionListener.class)
+@ContextConfiguration(locations = { "/com.alpha.pineapple.hamcrest-config.xml" })
 public class DoesFileExistTest {
 
 	/**
@@ -58,31 +57,31 @@ public class DoesFileExistTest {
 	 */
 	@SuppressWarnings("unchecked")
 	Matcher matcher;
-	
+
 	/**
-     * Current test directory.
-     */
+	 * Current test directory.
+	 */
 	File testDirectory;
-		
+
 	/**
 	 * Mock description.
 	 */
 	Description description;
-	
+
 	@Before
 	public void setUp() throws Exception {
-				
+
 		matcher = DoesFileExist.doesFileExist();
-		
+
 		// create mock description
-		description = EasyMock.createMock( Description.class);
-	
-        // get the test directory
-        testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();		
+		description = EasyMock.createMock(Description.class);
+
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 	}
 
 	@After
-	public void tearDown() throws Exception {		
+	public void tearDown() throws Exception {
 		matcher = null;
 		description = null;
 		testDirectory = null;
@@ -90,7 +89,9 @@ public class DoesFileExistTest {
 
 	/**
 	 * Test that existing file is a positive match
-	 * @throws IOException if test fails.
+	 * 
+	 * @throws IOException
+	 *             if test fails.
 	 */
 	@Test
 	public void testExistingFileIsPositiveMatch() throws IOException {
@@ -101,12 +102,12 @@ public class DoesFileExistTest {
 		// create file content
 		Collection<String> lines = new ArrayList<String>();
 		lines.add("<hello-pineapple />");
-		
+
 		// write the file
-		FileUtils.writeLines(file, lines);				
-		
+		FileUtils.writeLines(file, lines);
+
 		// test
-		assertTrue(matcher.matches( file ));		
+		assertTrue(matcher.matches(file));
 	}
 
 	/**
@@ -116,12 +117,12 @@ public class DoesFileExistTest {
 	public void testNonExistingFileIsNegativeMatch() {
 
 		// initialize file
-		File file = new File(this.testDirectory, "unknwon-file.txt");		
-				
+		File file = new File(this.testDirectory, "unknwon-file.txt");
+
 		// test
-		assertFalse(matcher.matches( file ));		
+		assertFalse(matcher.matches(file));
 	}
-	
+
 	/**
 	 * Test directory is negative match.
 	 */
@@ -132,55 +133,54 @@ public class DoesFileExistTest {
 		File file = new File(this.testDirectory, "child-test-dir");
 
 		// create child test directory
-		assertTrue("Failed to create child test directory",  file.mkdirs());
-				
+		assertTrue("Failed to create child test directory", file.mkdirs());
+
 		// test
-		assertFalse(matcher.matches( file ));		
+		assertFalse(matcher.matches(file));
 	}
-	
-	
+
 	/**
 	 * Test that matcher creates a description.
 	 */
 	@Test
 	public void testDescribeTo() {
-	
+
 		// complete mock description setup
-		EasyMock.expect( description.appendText( (String) EasyMock.isA( String.class) ) );
-		EasyMock.expectLastCall().andReturn( description );
-		EasyMock.expect( description.appendText( (String) EasyMock.isA( String.class) ) );
-		EasyMock.expectLastCall().andReturn( description );		
-		EasyMock.replay( description );		
-		
+		EasyMock.expect(description.appendText((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.expect(description.appendText((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.replay(description);
+
 		// invoke matcher
 		matcher.describeTo(description);
-		
+
 		// test
 		EasyMock.verify(description);
-		
+
 	}
 
 	/**
 	 * Test that matcher creates a mismatch description .
-	 */	
+	 */
 	@Test
 	public void testDescribeMismatch() {
 
 		// initialize file
 		File file = new File("filename");
-					
+
 		// complete mock description setup
-		EasyMock.expect( description.appendText( (String) EasyMock.isA( String.class) ) );
-		EasyMock.expectLastCall().andReturn( description );
-		EasyMock.expect( description.appendValue( file ));		
-		EasyMock.expectLastCall().andReturn( description );
-		EasyMock.expect( description.appendText( (String) EasyMock.isA( String.class) ) );
-		EasyMock.expectLastCall().andReturn( description );		
-		EasyMock.replay( description );		
-		
+		EasyMock.expect(description.appendText((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.expect(description.appendValue(file));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.expect(description.appendText((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.replay(description);
+
 		// invoke matcher
-		matcher.describeMismatch( file, description);
-		
+		matcher.describeMismatch(file, description);
+
 		// test
 		EasyMock.verify(description);
 	}

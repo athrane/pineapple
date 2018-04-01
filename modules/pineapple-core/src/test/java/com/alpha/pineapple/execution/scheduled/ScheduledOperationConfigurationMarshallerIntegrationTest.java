@@ -61,191 +61,191 @@ import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class ScheduledOperationConfigurationMarshallerIntegrationTest {
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Subject under test.
-     */
-    @Resource(name = "scheduledOperationConfigurationMarshaller")
-    ScheduledOperationConfigurationMarshaller marshaller;
+	/**
+	 * Subject under test.
+	 */
+	@Resource(name = "scheduledOperationConfigurationMarshaller")
+	ScheduledOperationConfigurationMarshaller marshaller;
 
-    /**
-     * Runtime directory resolver.
-     */
-    @Resource
-    RuntimeDirectoryProvider runtimeDirectoryProvider;
+	/**
+	 * Runtime directory resolver.
+	 */
+	@Resource
+	RuntimeDirectoryProvider runtimeDirectoryProvider;
 
-    /**
-     * Object mother for environment configuration.
-     */
-    ObjectMotherEnvironmentConfiguration envConfigMother;
+	/**
+	 * Object mother for environment configuration.
+	 */
+	ObjectMotherEnvironmentConfiguration envConfigMother;
 
-    /**
-     * Random value.
-     */
-    String randomName;
+	/**
+	 * Random value.
+	 */
+	String randomName;
 
-    @Before
-    public void setUp() throws Exception {
-	randomName = RandomStringUtils.randomAlphabetic(10);
+	@Before
+	public void setUp() throws Exception {
+		randomName = RandomStringUtils.randomAlphabetic(10);
 
-	// create environment configuration object mother
-	envConfigMother = new ObjectMotherEnvironmentConfiguration();
+		// create environment configuration object mother
+		envConfigMother = new ObjectMotherEnvironmentConfiguration();
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	deleteOperationsConfiguration();
-    }
+		deleteOperationsConfiguration();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	deleteOperationsConfiguration();
+	@After
+	public void tearDown() throws Exception {
+		deleteOperationsConfiguration();
 
-	// clear the pineapple.home.dir system property
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+		// clear the pineapple.home.dir system property
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
 
-	// fail if the the pineapple.home.dir system property is set
-	assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
-    }
+		// fail if the the pineapple.home.dir system property is set
+		assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
+	}
 
-    /**
-     * Delete operations configuration file.
-     */
-    void deleteOperationsConfiguration() {
-	File operationsFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), OPERATIONS_FILE);
-	if (operationsFile.exists())
-	    FileUtils.deleteQuietly(operationsFile);
-    }
+	/**
+	 * Delete operations configuration file.
+	 */
+	void deleteOperationsConfiguration() {
+		File operationsFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), OPERATIONS_FILE);
+		if (operationsFile.exists())
+			FileUtils.deleteQuietly(operationsFile);
+	}
 
-    /**
-     * Test that instance can be retrieved from application context.
-     */
-    @Test
-    public void testGetInstanceFromContext() {
-	assertNotNull(marshaller);
-    }
+	/**
+	 * Test that instance can be retrieved from application context.
+	 */
+	@Test
+	public void testGetInstanceFromContext() {
+		assertNotNull(marshaller);
+	}
 
-    /**
-     * Test that empty configuration can be saved.
-     */
-    @Test
-    public void testSaveEmptyConfiguration() {
-	ScheduledOperations operations = envConfigMother.createEmptyScheduledOperationConfiguration();
-	ExecutionResult result = new ExecutionResultImpl("Save configuration");
-	marshaller.save(result, operations);
+	/**
+	 * Test that empty configuration can be saved.
+	 */
+	@Test
+	public void testSaveEmptyConfiguration() {
+		ScheduledOperations operations = envConfigMother.createEmptyScheduledOperationConfiguration();
+		ExecutionResult result = new ExecutionResultImpl("Save configuration");
+		marshaller.save(result, operations);
 
-	// get child result
-	ExecutionResult[] children = result.getChildren();
-	assertNotNull(children);
-	assertEquals(1, children.length);
-	ExecutionResult saveResult = result.getFirstChild();
+		// get child result
+		ExecutionResult[] children = result.getChildren();
+		assertNotNull(children);
+		assertEquals(1, children.length);
+		ExecutionResult saveResult = result.getFirstChild();
 
-	// test
-	assertTrue(saveResult.isSuccess());
-	File configFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), OPERATIONS_FILE);
-	assertTrue(configFile.exists());
-	assertTrue(configFile.isFile());
-    }
+		// test
+		assertTrue(saveResult.isSuccess());
+		File configFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), OPERATIONS_FILE);
+		assertTrue(configFile.exists());
+		assertTrue(configFile.isFile());
+	}
 
-    /**
-     * Test that configuration can be saved.
-     */
-    @Test
-    public void testSaveConfiguration() {
-	ScheduledOperations operations = envConfigMother
-		.createScheduledOperationConfigurationWithSingleOperation(randomName);
-	ExecutionResult result = new ExecutionResultImpl("Save configuration");
-	marshaller.save(result, operations);
+	/**
+	 * Test that configuration can be saved.
+	 */
+	@Test
+	public void testSaveConfiguration() {
+		ScheduledOperations operations = envConfigMother
+				.createScheduledOperationConfigurationWithSingleOperation(randomName);
+		ExecutionResult result = new ExecutionResultImpl("Save configuration");
+		marshaller.save(result, operations);
 
-	// get child result
-	ExecutionResult[] children = result.getChildren();
-	assertNotNull(children);
-	assertEquals(1, children.length);
-	ExecutionResult saveResult = result.getFirstChild();
+		// get child result
+		ExecutionResult[] children = result.getChildren();
+		assertNotNull(children);
+		assertEquals(1, children.length);
+		ExecutionResult saveResult = result.getFirstChild();
 
-	// test
-	assertTrue(saveResult.isSuccess());
-	File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), OPERATIONS_FILE);
-	assertTrue(resourcesFile.exists());
-	assertTrue(resourcesFile.isFile());
-    }
+		// test
+		assertTrue(saveResult.isSuccess());
+		File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), OPERATIONS_FILE);
+		assertTrue(resourcesFile.exists());
+		assertTrue(resourcesFile.isFile());
+	}
 
-    /**
-     * Test that empty configuration can be loaded.
-     */
-    @Test
-    public void testLoadEmptyConfiguration() {
-	ScheduledOperations operations = envConfigMother.createEmptyScheduledOperationConfiguration();
-	ExecutionResult result = new ExecutionResultImpl("Save configuration");
-	marshaller.save(result, operations);
+	/**
+	 * Test that empty configuration can be loaded.
+	 */
+	@Test
+	public void testLoadEmptyConfiguration() {
+		ScheduledOperations operations = envConfigMother.createEmptyScheduledOperationConfiguration();
+		ExecutionResult result = new ExecutionResultImpl("Save configuration");
+		marshaller.save(result, operations);
 
-	result = new ExecutionResultImpl("Load configuration");
-	ScheduledOperations loadedOperations = marshaller.load(result);
+		result = new ExecutionResultImpl("Load configuration");
+		ScheduledOperations loadedOperations = marshaller.load(result);
 
-	// get child result
-	ExecutionResult[] children = result.getChildren();
-	assertNotNull(children);
-	assertEquals(1, children.length);
-	ExecutionResult loadResult = result.getFirstChild();
+		// get child result
+		ExecutionResult[] children = result.getChildren();
+		assertNotNull(children);
+		assertEquals(1, children.length);
+		ExecutionResult loadResult = result.getFirstChild();
 
-	// test
-	assertTrue(loadResult.isSuccess());
-	assertNotNull(loadedOperations);
-	assertTrue(loadedOperations.getScheduledOperation().isEmpty());
-    }
+		// test
+		assertTrue(loadResult.isSuccess());
+		assertNotNull(loadedOperations);
+		assertTrue(loadedOperations.getScheduledOperation().isEmpty());
+	}
 
-    /**
-     * Test that configuration can be loaded with one scheduled operation.
-     */
-    @Test
-    public void testLoadConfiguration() {
-	ScheduledOperations operations = envConfigMother
-		.createScheduledOperationConfigurationWithSingleOperation(randomName);
-	ExecutionResult result = new ExecutionResultImpl("Save configuration");
-	marshaller.save(result, operations);
+	/**
+	 * Test that configuration can be loaded with one scheduled operation.
+	 */
+	@Test
+	public void testLoadConfiguration() {
+		ScheduledOperations operations = envConfigMother
+				.createScheduledOperationConfigurationWithSingleOperation(randomName);
+		ExecutionResult result = new ExecutionResultImpl("Save configuration");
+		marshaller.save(result, operations);
 
-	result = new ExecutionResultImpl("Load configuration");
-	ScheduledOperations loadedOperations = marshaller.load(result);
+		result = new ExecutionResultImpl("Load configuration");
+		ScheduledOperations loadedOperations = marshaller.load(result);
 
-	// get child result
-	ExecutionResult[] children = result.getChildren();
-	assertNotNull(children);
-	assertEquals(1, children.length);
-	ExecutionResult loadResult = result.getFirstChild();
+		// get child result
+		ExecutionResult[] children = result.getChildren();
+		assertNotNull(children);
+		assertEquals(1, children.length);
+		ExecutionResult loadResult = result.getFirstChild();
 
-	// test
-	assertTrue(loadResult.isSuccess());
-	assertNotNull(loadedOperations);
-	assertEquals(1, loadedOperations.getScheduledOperation().size());
-    }
+		// test
+		assertTrue(loadResult.isSuccess());
+		assertNotNull(loadedOperations);
+		assertEquals(1, loadedOperations.getScheduledOperation().size());
+	}
 
-    /**
-     * Test that non-existing configuration can be loaded 
-     * and then an empty configuration is returned.
-     */
-    @Test
-    public void testLoadNonExistingConfiguration() {
-	File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), OPERATIONS_FILE);
-	assertFalse(resourcesFile.exists());
-	
-	ExecutionResultImpl result = new ExecutionResultImpl("Load configuration");
-	ScheduledOperations loadedOperations = marshaller.load(result);
+	/**
+	 * Test that non-existing configuration can be loaded and then an empty
+	 * configuration is returned.
+	 */
+	@Test
+	public void testLoadNonExistingConfiguration() {
+		File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), OPERATIONS_FILE);
+		assertFalse(resourcesFile.exists());
 
-	// get child result
-	ExecutionResult[] children = result.getChildren();
-	assertNotNull(children);
-	assertEquals(0, children.length);
+		ExecutionResultImpl result = new ExecutionResultImpl("Load configuration");
+		ScheduledOperations loadedOperations = marshaller.load(result);
 
-	// test
-	assertNotNull(loadedOperations);
-	assertEquals(0, loadedOperations.getScheduledOperation().size());
-    }
-    
+		// get child result
+		ExecutionResult[] children = result.getChildren();
+		assertNotNull(children);
+		assertEquals(0, children.length);
+
+		// test
+		assertNotNull(loadedOperations);
+		assertEquals(0, loadedOperations.getScheduledOperation().size());
+	}
+
 }

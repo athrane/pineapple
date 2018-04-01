@@ -33,90 +33,90 @@ import com.alpha.pineapple.execution.ResultListener;
  * operations.
  */
 public interface PineappleCore {
-    /**
-     * Execute operation asynchronously.
-     * 
-     * @param operation
-     *            Name of the operation which should be executed.
-     * @param environment
-     *            Environment for which the operation should be executed.
-     * @param module
-     *            Module id.
-     * 
-     * @return returns an initialized execution info object which contains a new
-     *         {@link ExecutonResult} which reflects the state of the executing
-     *         operation.
-     */
-    ExecutionInfo executeOperation(String operation, String environment, String module);
+	/**
+	 * Execute operation asynchronously.
+	 * 
+	 * @param operation
+	 *            Name of the operation which should be executed.
+	 * @param environment
+	 *            Environment for which the operation should be executed.
+	 * @param module
+	 *            Module id.
+	 * 
+	 * @return returns an initialized execution info object which contains a new
+	 *         {@link ExecutonResult} which reflects the state of the executing
+	 *         operation.
+	 */
+	ExecutionInfo executeOperation(String operation, String environment, String module);
 
-    /**
-     * Cancel executing operation.
-     * 
-     * @param executionInfo
-     *            execution info for operation which should be cancelled.
-     */
-    void cancelOperation(ExecutionInfo executionInfo);
+	/**
+	 * Cancel executing operation.
+	 * 
+	 * @param executionInfo
+	 *            execution info for operation which should be cancelled.
+	 */
+	void cancelOperation(ExecutionInfo executionInfo);
 
-    /**
-     * Register execution result listener. The listener is notified during
-     * execution of an operation about how it proceeds.
-     * 
-     * @param listener
-     *            Execution result listener which is notified during execution
-     *            of operations.
-     */
-    void addListener(ResultListener listener);
+	/**
+	 * Register execution result listener. The listener is notified during execution
+	 * of an operation about how it proceeds.
+	 * 
+	 * @param listener
+	 *            Execution result listener which is notified during execution of
+	 *            operations.
+	 */
+	void addListener(ResultListener listener);
 
-    /**
-     * Register execution result listeners. A listener is notified during
-     * execution of an operation about how it operation proceeds.
-     * 
-     * @param listener
-     *            Execution result listener which is notified during execution
-     *            of operations.
-     */
-    void addListeners(ResultListener[] listeners);
+	/**
+	 * Register execution result listeners. A listener is notified during execution
+	 * of an operation about how it operation proceeds.
+	 * 
+	 * @param listener
+	 *            Execution result listener which is notified during execution of
+	 *            operations.
+	 */
+	void addListeners(ResultListener[] listeners);
 
-    /**
-     * Get set of registered execution result listeners.
-     * 
-     * @return listener set of registered execution result listeners.
-     */
-    ResultListener[] getListeners();
+	/**
+	 * Get set of registered execution result listeners.
+	 * 
+	 * @return listener set of registered execution result listeners.
+	 */
+	ResultListener[] getListeners();
 
-    /**
-     * Unregister execution result listener. The listener is notified during
-     * execution of operation about how it proceeds.
-     * 
-     * @param listener
-     *            Execution result listener which is notified during execution
-     *            of operations.
-     */
-    void removeListener(ResultListener listener);
+	/**
+	 * Unregister execution result listener. The listener is notified during
+	 * execution of operation about how it proceeds.
+	 * 
+	 * @param listener
+	 *            Execution result listener which is notified during execution of
+	 *            operations.
+	 */
+	void removeListener(ResultListener listener);
 
-    /**
-     * Get core component administration interface.
-     * 
-     * @return core component administration interface.
-     */
-    Administration getAdministration();
+	/**
+	 * Get core component administration interface.
+	 * 
+	 * @return core component administration interface.
+	 */
+	Administration getAdministration();
 
-    /**
-     * Get core component initialization info. The info is returned as a single
-     * string.
-     * 
-     * @return core component initialization info. If core component hasn't been
-     *         initialized a null message is returned.
-     */
-    String getInitializationInfoAsString();
+	/**
+	 * Get core component initialization info. The info is returned as a single
+	 * string.
+	 * 
+	 * @return core component initialization info. If core component hasn't been
+	 *         initialized a null message is returned.
+	 */
+	String getInitializationInfoAsString();
 
-    /**
-     * Get core component initialization info. The info is returned as a
-     * execution result.
-     * 
-     * @return core component initialization info. If core component hasn't been
-     *         initialized then null is returned.
-     */
-    ExecutionResult getInitializationInfo();
+	/**
+	 * Get core component initialization info. The info is returned as a execution
+	 * result.
+	 * 
+	 * @return core component initialization info. If core component hasn't been
+	 *         initialized then null is returned.
+	 */
+	ExecutionResult getInitializationInfo();
 
 }

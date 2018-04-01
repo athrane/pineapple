@@ -64,380 +64,380 @@ import com.alpha.testutils.DockerTestHelper;
 @ActiveProfiles("integration-test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-	DirectoryTestExecutionListener.class })
+		DirectoryTestExecutionListener.class })
 @ContextConfiguration(locations = { "/com.alpha.pineapple.docker-config.xml" })
 public class BuildImageCommandSystemTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command buildImageCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command buildImageCommand;
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Random repository.
-     */
-    String randomRepository;
+	/**
+	 * Random repository.
+	 */
+	String randomRepository;
 
-    /**
-     * Random tag.
-     */
-    String randomTag;
+	/**
+	 * Random tag.
+	 */
+	String randomTag;
 
-    /**
-     * Random archive.
-     */
-    String randomArchive;
+	/**
+	 * Random archive.
+	 */
+	String randomArchive;
 
-    /**
-     * Source directory for TAR archive.
-     */
-    File sourceDirectory;
+	/**
+	 * Source directory for TAR archive.
+	 */
+	File sourceDirectory;
 
-    /**
-     * Docker session.
-     */
-    DockerSession session;
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
 
-    /**
-     * Docker helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
+	/**
+	 * Docker helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
 
-    /**
-     * Docker info objects builder.
-     */
-    @Resource
-    InfoBuilder dockerInfoBuilder;
+	/**
+	 * Docker info objects builder.
+	 */
+	@Resource
+	InfoBuilder dockerInfoBuilder;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    /**
-     * Image info.
-     */
-    ImageInfo imageInfo;
+	/**
+	 * Image info.
+	 */
+	ImageInfo imageInfo;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-	randomRepository = RandomStringUtils.randomAlphabetic(10).toLowerCase();
-	randomTag = RandomStringUtils.randomAlphabetic(10);
-	randomArchive = RandomStringUtils.randomAlphabetic(10);
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		randomRepository = RandomStringUtils.randomAlphabetic(10).toLowerCase();
+		randomTag = RandomStringUtils.randomAlphabetic(10);
+		randomArchive = RandomStringUtils.randomAlphabetic(10);
 
-	// create context
-	context = new ContextBase();
+		// create context
+		context = new ContextBase();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("root");
+		// create execution result
+		executionResult = new ExecutionResultImpl("root");
 
-	// create session
-	session = dockerHelper.createDefaultSession();
+		// create session
+		session = dockerHelper.createDefaultSession();
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// create source directory for TAR archive
-	sourceDirectory = new File(testDirectory, RandomStringUtils.randomAlphabetic(10));
-    }
+		// create source directory for TAR archive
+		sourceDirectory = new File(testDirectory, RandomStringUtils.randomAlphabetic(10));
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-	if (imageInfo != null)
-	    dockerHelper.deleteImage(session, imageInfo);
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+		if (imageInfo != null)
+			dockerHelper.deleteImage(session, imageInfo);
+	}
 
-    /**
-     * Test that command instance can be created in application context.
-     */
-    @Test
-    public void testCanGetInstance() throws Exception {
-	assertNotNull(buildImageCommand);
-    }
+	/**
+	 * Test that command instance can be created in application context.
+	 */
+	@Test
+	public void testCanGetInstance() throws Exception {
+		assertNotNull(buildImageCommand);
+	}
 
-    /**
-     * Test that command can create tagged CentOS base image and return a single
-     * successful root result.
-     * 
-     * New image isn't pulled.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCreateTaggedCentosImage() throws Exception {
+	/**
+	 * Test that command can create tagged CentOS base image and return a single
+	 * successful root result.
+	 * 
+	 * New image isn't pulled.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCreateTaggedCentosImage() throws Exception {
 
-	// create image info for tagged built image
-	imageInfo = dockerHelper.createDefaultTaggedImageInfo();
+		// create image info for tagged built image
+		imageInfo = dockerHelper.createDefaultTaggedImageInfo();
 
-	// create TAR archive
-	ImageInfo imageInfo2 = dockerHelper.createDefaultCentOSImageInfo();
-	dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
-	File tarArhive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
-	dockerHelper.createTarArchive(sourceDirectory, tarArhive);
+		// create TAR archive
+		ImageInfo imageInfo2 = dockerHelper.createDefaultCentOSImageInfo();
+		dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
+		File tarArhive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
+		dockerHelper.createTarArchive(sourceDirectory, tarArhive);
 
-	// setup context
-	context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(BuildImageCommand.SESSION_KEY, session);
-	context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
-	context.put(BuildImageCommand.TAR_ARCHIVE_KEY, tarArhive);
-	context.put(BuildImageCommand.PULL_IMAGE_KEY, Boolean.valueOf(false));
+		// setup context
+		context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(BuildImageCommand.SESSION_KEY, session);
+		context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
+		context.put(BuildImageCommand.TAR_ARCHIVE_KEY, tarArhive);
+		context.put(BuildImageCommand.PULL_IMAGE_KEY, Boolean.valueOf(false));
 
-	// execute command
-	buildImageCommand.execute(context);
+		// execute command
+		buildImageCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
-	assertTrue(infos.length != 0);
-	assertTrue(dockerClient.imageExists(session, imageInfo));
-    }
-
-    /**
-     * Test that command can create tagged tiny base image and return a single
-     * successful root result.
-     * 
-     * New image isn't pulled.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCreateTaggedTinyImage() throws Exception {
-
-	// create image info for tagged built image
-	imageInfo = dockerHelper.createDefaultTaggedImageInfo();
-
-	// create TAR archive
-	ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(TEST_DOCKER_ROOT_BUSYBOX_IMAGE, LATEST_IMAGE_TAG);
-	dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
-	File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
-	dockerHelper.createTarArchive(sourceDirectory, tarArchive);
-
-	// setup context
-	context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(BuildImageCommand.SESSION_KEY, session);
-	context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
-	context.put(BuildImageCommand.TAR_ARCHIVE_KEY, tarArchive);
-	context.put(BuildImageCommand.PULL_IMAGE_KEY, Boolean.valueOf(false));
-
-	// execute command
-	buildImageCommand.execute(context);
-
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
-	assertTrue(infos.length != 0);
-	assertTrue(dockerClient.imageExists(session, imageInfo));
-    }
-
-    /**
-     * Test that command can create tagged tiny base image and return a single
-     * successful root result.
-     * 
-     * New image is pulled.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCreateTaggedTinyImageWithNewPulledImage() throws Exception {
-
-	// create image info for tagged built image
-	imageInfo = dockerHelper.createDefaultTaggedImageInfo();
-
-	// create TAR archive
-	ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(TEST_DOCKER_ROOT_BUSYBOX_IMAGE, LATEST_IMAGE_TAG);
-	dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
-	File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
-	dockerHelper.createTarArchive(sourceDirectory, tarArchive);
-
-	// setup context
-	context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(BuildImageCommand.SESSION_KEY, session);
-	context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
-	context.put(BuildImageCommand.TAR_ARCHIVE_KEY, tarArchive);
-	context.put(BuildImageCommand.PULL_IMAGE_KEY, Boolean.valueOf(true));
-
-	// execute command
-	buildImageCommand.execute(context);
-
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
-	assertTrue(infos.length != 0);
-	assertTrue(dockerClient.imageExists(session, imageInfo));
-    }
-
-    /**
-     * Test that command fails if TAR archive doesn't exist.
-     * 
-     * New image isn't pulled.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCommandFailsIfTarArchiveDoesntExist() throws Exception {
-	File tarArhive = new File("non-existing-tar-archive");
-
-	imageInfo = dockerInfoBuilder.buildImageInfo(DEFAULT_CENTOS_REPOSITORY, LATEST_IMAGE_TAG);
-
-	// setup context
-	context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(BuildImageCommand.SESSION_KEY, session);
-	context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
-	context.put(BuildImageCommand.TAR_ARCHIVE_KEY, tarArhive);
-	context.put(BuildImageCommand.PULL_IMAGE_KEY, Boolean.valueOf(false));
-
-	// execute command
-	buildImageCommand.execute(context);
-
-	// test
-	assertTrue(executionResult.isFailed());
-    }
-
-    /**
-     * Test that command can create tagged tiny base image and return a single
-     * successful root result.
-     * 
-     * New image isn't pulled.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCreateTaggedTinyImageWithMultipleLinesInDockerfile() throws Exception {
-
-	// create image info for tagged built image
-	imageInfo = dockerHelper.createDefaultTaggedImageInfo();
-
-	// create TAR archive
-	ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(TEST_DOCKER_ROOT_BUSYBOX_IMAGE, LATEST_IMAGE_TAG);
-	dockerHelper.createDockerFileWithFromAndMaintainerCommands(sourceDirectory, imageInfo2);
-	File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
-	dockerHelper.createTarArchive(sourceDirectory, tarArchive);
-
-	// setup context
-	context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(BuildImageCommand.SESSION_KEY, session);
-	context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
-	context.put(BuildImageCommand.TAR_ARCHIVE_KEY, tarArchive);
-	context.put(BuildImageCommand.PULL_IMAGE_KEY, Boolean.valueOf(false));
-
-	// execute command
-	buildImageCommand.execute(context);
-
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
-	assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+		assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
 		JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
-	assertTrue(infos.length != 0);
-	assertTrue(dockerClient.imageExists(session, imageInfo));
-    }
+		assertTrue(infos.length != 0);
+		assertTrue(dockerClient.imageExists(session, imageInfo));
+	}
 
-    /**
-     * Test that command fails if TAR archive is undefined in context.
-     */
-    @SuppressWarnings("unchecked")
-    @Test(expected = CommandInitializationFailedException.class)
-    public void testCommandFailsIfTarArchiveKeyIsUndefinedInContext() throws Exception {
+	/**
+	 * Test that command can create tagged tiny base image and return a single
+	 * successful root result.
+	 * 
+	 * New image isn't pulled.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCreateTaggedTinyImage() throws Exception {
 
-	imageInfo = dockerInfoBuilder.buildImageInfo(DEFAULT_CENTOS_REPOSITORY, LATEST_IMAGE_TAG);
+		// create image info for tagged built image
+		imageInfo = dockerHelper.createDefaultTaggedImageInfo();
 
-	// setup context
-	context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(BuildImageCommand.SESSION_KEY, session);
-	context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
+		// create TAR archive
+		ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(TEST_DOCKER_ROOT_BUSYBOX_IMAGE, LATEST_IMAGE_TAG);
+		dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
+		File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
+		dockerHelper.createTarArchive(sourceDirectory, tarArchive);
 
-	// execute command
-	buildImageCommand.execute(context);
-    }
+		// setup context
+		context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(BuildImageCommand.SESSION_KEY, session);
+		context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
+		context.put(BuildImageCommand.TAR_ARCHIVE_KEY, tarArchive);
+		context.put(BuildImageCommand.PULL_IMAGE_KEY, Boolean.valueOf(false));
 
-    /**
-     * Test that command fails if pull image is undefined in context.
-     */
-    @SuppressWarnings("unchecked")
-    @Test(expected = CommandInitializationFailedException.class)
-    public void testCommandFailsIfPullImageKeyIsUndefinedInContext() throws Exception {
+		// execute command
+		buildImageCommand.execute(context);
 
-	imageInfo = dockerInfoBuilder.buildImageInfo(DEFAULT_CENTOS_REPOSITORY, LATEST_IMAGE_TAG);
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+		assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+		JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
+		assertTrue(infos.length != 0);
+		assertTrue(dockerClient.imageExists(session, imageInfo));
+	}
 
-	// setup context
-	context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(BuildImageCommand.SESSION_KEY, session);
-	context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
-	context.put(BuildImageCommand.TAR_ARCHIVE_KEY, randomArchive);
+	/**
+	 * Test that command can create tagged tiny base image and return a single
+	 * successful root result.
+	 * 
+	 * New image is pulled.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCreateTaggedTinyImageWithNewPulledImage() throws Exception {
 
-	// execute command
-	buildImageCommand.execute(context);
-    }
+		// create image info for tagged built image
+		imageInfo = dockerHelper.createDefaultTaggedImageInfo();
 
-    /**
-     * Test that command succeeds if image already exists.
-     * 
-     * New image isn't pulled.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCommandIdempotent() throws Exception {
+		// create TAR archive
+		ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(TEST_DOCKER_ROOT_BUSYBOX_IMAGE, LATEST_IMAGE_TAG);
+		dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
+		File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
+		dockerHelper.createTarArchive(sourceDirectory, tarArchive);
 
-	// create image info for tagged built image
-	imageInfo = dockerHelper.createDefaultTaggedImageInfo();
+		// setup context
+		context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(BuildImageCommand.SESSION_KEY, session);
+		context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
+		context.put(BuildImageCommand.TAR_ARCHIVE_KEY, tarArchive);
+		context.put(BuildImageCommand.PULL_IMAGE_KEY, Boolean.valueOf(true));
 
-	// create TAR archive
-	ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(TEST_DOCKER_ROOT_BUSYBOX_IMAGE, LATEST_IMAGE_TAG);
-	dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
-	File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
-	dockerHelper.createTarArchive(sourceDirectory, tarArchive);
+		// execute command
+		buildImageCommand.execute(context);
 
-	// setup context
-	context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(BuildImageCommand.SESSION_KEY, session);
-	context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
-	context.put(BuildImageCommand.TAR_ARCHIVE_KEY, tarArchive);
-	context.put(BuildImageCommand.PULL_IMAGE_KEY, Boolean.valueOf(false));
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+		assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+		JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
+		assertTrue(infos.length != 0);
+		assertTrue(dockerClient.imageExists(session, imageInfo));
+	}
 
-	// execute command
-	buildImageCommand.execute(context);
+	/**
+	 * Test that command fails if TAR archive doesn't exist.
+	 * 
+	 * New image isn't pulled.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCommandFailsIfTarArchiveDoesntExist() throws Exception {
+		File tarArhive = new File("non-existing-tar-archive");
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertTrue(dockerClient.imageExists(session, imageInfo));
-	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+		imageInfo = dockerInfoBuilder.buildImageInfo(DEFAULT_CENTOS_REPOSITORY, LATEST_IMAGE_TAG);
 
-	// remove image creation infos
-	context.remove(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
+		// setup context
+		context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(BuildImageCommand.SESSION_KEY, session);
+		context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
+		context.put(BuildImageCommand.TAR_ARCHIVE_KEY, tarArhive);
+		context.put(BuildImageCommand.PULL_IMAGE_KEY, Boolean.valueOf(false));
 
-	// execute command
-	buildImageCommand.execute(context);
+		// execute command
+		buildImageCommand.execute(context);
 
-	// execute command - twice
-	assertTrue(executionResult.isSuccess());
-	assertTrue(dockerClient.imageExists(session, imageInfo));
-	assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+		// test
+		assertTrue(executionResult.isFailed());
+	}
 
-    }
+	/**
+	 * Test that command can create tagged tiny base image and return a single
+	 * successful root result.
+	 * 
+	 * New image isn't pulled.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCreateTaggedTinyImageWithMultipleLinesInDockerfile() throws Exception {
+
+		// create image info for tagged built image
+		imageInfo = dockerHelper.createDefaultTaggedImageInfo();
+
+		// create TAR archive
+		ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(TEST_DOCKER_ROOT_BUSYBOX_IMAGE, LATEST_IMAGE_TAG);
+		dockerHelper.createDockerFileWithFromAndMaintainerCommands(sourceDirectory, imageInfo2);
+		File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
+		dockerHelper.createTarArchive(sourceDirectory, tarArchive);
+
+		// setup context
+		context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(BuildImageCommand.SESSION_KEY, session);
+		context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
+		context.put(BuildImageCommand.TAR_ARCHIVE_KEY, tarArchive);
+		context.put(BuildImageCommand.PULL_IMAGE_KEY, Boolean.valueOf(false));
+
+		// execute command
+		buildImageCommand.execute(context);
+
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+		assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+		JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
+		assertTrue(infos.length != 0);
+		assertTrue(dockerClient.imageExists(session, imageInfo));
+	}
+
+	/**
+	 * Test that command fails if TAR archive is undefined in context.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfTarArchiveKeyIsUndefinedInContext() throws Exception {
+
+		imageInfo = dockerInfoBuilder.buildImageInfo(DEFAULT_CENTOS_REPOSITORY, LATEST_IMAGE_TAG);
+
+		// setup context
+		context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(BuildImageCommand.SESSION_KEY, session);
+		context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
+
+		// execute command
+		buildImageCommand.execute(context);
+	}
+
+	/**
+	 * Test that command fails if pull image is undefined in context.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfPullImageKeyIsUndefinedInContext() throws Exception {
+
+		imageInfo = dockerInfoBuilder.buildImageInfo(DEFAULT_CENTOS_REPOSITORY, LATEST_IMAGE_TAG);
+
+		// setup context
+		context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(BuildImageCommand.SESSION_KEY, session);
+		context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
+		context.put(BuildImageCommand.TAR_ARCHIVE_KEY, randomArchive);
+
+		// execute command
+		buildImageCommand.execute(context);
+	}
+
+	/**
+	 * Test that command succeeds if image already exists.
+	 * 
+	 * New image isn't pulled.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCommandIdempotent() throws Exception {
+
+		// create image info for tagged built image
+		imageInfo = dockerHelper.createDefaultTaggedImageInfo();
+
+		// create TAR archive
+		ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(TEST_DOCKER_ROOT_BUSYBOX_IMAGE, LATEST_IMAGE_TAG);
+		dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
+		File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
+		dockerHelper.createTarArchive(sourceDirectory, tarArchive);
+
+		// setup context
+		context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(BuildImageCommand.SESSION_KEY, session);
+		context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
+		context.put(BuildImageCommand.TAR_ARCHIVE_KEY, tarArchive);
+		context.put(BuildImageCommand.PULL_IMAGE_KEY, Boolean.valueOf(false));
+
+		// execute command
+		buildImageCommand.execute(context);
+
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertTrue(dockerClient.imageExists(session, imageInfo));
+		assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+
+		// remove image creation infos
+		context.remove(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
+
+		// execute command
+		buildImageCommand.execute(context);
+
+		// execute command - twice
+		assertTrue(executionResult.isSuccess());
+		assertTrue(dockerClient.imageExists(session, imageInfo));
+		assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+
+	}
 
 }

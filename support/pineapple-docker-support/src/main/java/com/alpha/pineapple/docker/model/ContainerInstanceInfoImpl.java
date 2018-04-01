@@ -26,37 +26,37 @@ package com.alpha.pineapple.docker.model;
  */
 public class ContainerInstanceInfoImpl implements ContainerInstanceInfo {
 
-    /**
-     * Container ID.
-     */
-    String id;
+	/**
+	 * Container ID.
+	 */
+	String id;
 
-    /**
-     * Container info.
-     */
-    ContainerInfo info;
+	/**
+	 * Container info.
+	 */
+	ContainerInfo info;
 
-    /**
-     * ContainerInfoImpl constructor.
-     * 
-     * @param id
-     *            Container ID.
-     * @param info
-     *            image info.
-     */
-    ContainerInstanceInfoImpl(String id, ContainerInfo info) {
-	this.id = id;
-	this.info = info;
-    }
+	/**
+	 * ContainerInfoImpl constructor.
+	 * 
+	 * @param id
+	 *            Container ID.
+	 * @param info
+	 *            image info.
+	 */
+	ContainerInstanceInfoImpl(String id, ContainerInfo info) {
+		this.id = id;
+		this.info = info;
+	}
 
-    @Override
-    public String getId() {
-	return id;
-    }
+	@Override
+	public String getId() {
+		return id;
+	}
 
-    @Override
-    public ContainerInfo getContainerInfo() {
-	return info;
-    }
+	@Override
+	public ContainerInfo getContainerInfo() {
+		return info;
+	}
 
 }

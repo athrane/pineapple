@@ -43,178 +43,178 @@ import com.alpha.pineapple.substitution.variables.Variables;
  */
 public class VariableSubstitutedProxyFactoryImpl implements VariableSubstitutedProxyFactory {
 
-    /**
-     * Logger object
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Reflection helper.
-     */
-    @Resource
-    ReflectionHelper reflectionHelper;
+	/**
+	 * Reflection helper.
+	 */
+	@Resource
+	ReflectionHelper reflectionHelper;
 
-    /**
-     * Variable resolver.
-     */
-    @Resource
-    VariableResolver resolver;
+	/**
+	 * Variable resolver.
+	 */
+	@Resource
+	VariableResolver resolver;
 
-    /**
-     * Substitution AOP advice.
-     */
-    @Resource
-    VariableSubstitutionInterceptor variableSubstitutionInterceptor;
+	/**
+	 * Substitution AOP advice.
+	 */
+	@Resource
+	VariableSubstitutionInterceptor variableSubstitutionInterceptor;
 
-    /**
-     * CGLIB call back filter types.
-     */
-    final Class<?>[] CALLBACK_TYPES = new Class<?>[] { CglibVariableSubstitutionInterceptorImpl.class };
+	/**
+	 * CGLIB call back filter types.
+	 */
+	final Class<?>[] CALLBACK_TYPES = new Class<?>[] { CglibVariableSubstitutionInterceptorImpl.class };
 
-    /**
-     * Variables.
-     */
-    Variables variables;
+	/**
+	 * Variables.
+	 */
+	Variables variables;
 
-    @Override
-    public void initialize(Variables variables) {
-	Validate.notNull(variables, "variables is undefined.");
+	@Override
+	public void initialize(Variables variables) {
+		Validate.notNull(variables, "variables is undefined.");
 
-	this.variables = variables;
-	variableSubstitutionInterceptor.setVariables(variables);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T decorateWithProxy(T targetObject) {
-	validateInitialization();
-
-	// if target object is null, immutable or primitive then skip proxying
-	// it
-	if (targetObject == null)
-	    return null;
-
-	// process string for substitution
-	if (reflectionHelper.isStringType(targetObject)) {
-	    String processedValue = resolver.resolve(variables, (String) targetObject);
-
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		logger.debug("Processed string: " + targetObject + " => " + processedValue);
-	    }
-
-	    return (T) processedValue;
+		this.variables = variables;
+		variableSubstitutionInterceptor.setVariables(variables);
 	}
 
-	if (reflectionHelper.isImmutable(targetObject))
-	    return targetObject;
-	if (reflectionHelper.isPrimitiveReturnType(targetObject))
-	    return targetObject;
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T decorateWithProxy(T targetObject) {
+		validateInitialization();
 
-	try {
+		// if target object is null, immutable or primitive then skip proxying
+		// it
+		if (targetObject == null)
+			return null;
 
-	    if (reflectionHelper.isPrivateClass(targetObject)) {
-		return createJdkProxy(targetObject);
-	    }
+		// process string for substitution
+		if (reflectionHelper.isStringType(targetObject)) {
+			String processedValue = resolver.resolve(variables, (String) targetObject);
 
-	    return createCglibProxy(targetObject);
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				logger.debug("Processed string: " + targetObject + " => " + processedValue);
+			}
 
-	} catch (Exception e) {
+			return (T) processedValue;
+		}
 
-	    Object[] args = { e.getMessage() };
-	    String message = messageProvider.getMessage("vspf.decorate_error", args);
-	    logger.error(message);
-	    logger.error(StackTraceHelper.getStrackTrace(e));
+		if (reflectionHelper.isImmutable(targetObject))
+			return targetObject;
+		if (reflectionHelper.isPrimitiveReturnType(targetObject))
+			return targetObject;
 
-	    // abort decoration and return original object
-	    return (T) targetObject;
-	}
-    }
+		try {
 
-    /**
-     * Create proxy for class.
-     * 
-     * Can handle classes with no no-arg constructor constructor (e.g. only
-     * constructor which requires arguments) since class creation is bypassing
-     * constructor through the usage of Objenesis.
-     * 
-     * Example of a class with no no-arg constructor is JaxbElement, which have
-     * multi-arg constructors.
-     * 
-     * @param targetObject
-     *            target object to proxy.
-     * 
-     * @return CGLIB proxy.
-     * 
-     */
-    @SuppressWarnings("unchecked")
-    <T> T createCglibProxy(T targetObject) {
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { targetObject };
-	    String message = messageProvider.getMessage("vspf.create_cglib_proxy_info", args);
-	    logger.debug(message);
+			if (reflectionHelper.isPrivateClass(targetObject)) {
+				return createJdkProxy(targetObject);
+			}
+
+			return createCglibProxy(targetObject);
+
+		} catch (Exception e) {
+
+			Object[] args = { e.getMessage() };
+			String message = messageProvider.getMessage("vspf.decorate_error", args);
+			logger.error(message);
+			logger.error(StackTraceHelper.getStrackTrace(e));
+
+			// abort decoration and return original object
+			return (T) targetObject;
+		}
 	}
 
-	final Enhancer enhancer = new Enhancer();
-	enhancer.setSuperclass(targetObject.getClass());
-	enhancer.setCallbackTypes(CALLBACK_TYPES);
-	final Class<?> proxyClass = enhancer.createClass();
-	final Callback[] callBacks = new Callback[] {
-		new CglibVariableSubstitutionInterceptorImpl(this, variables, resolver, targetObject) };
-	Enhancer.registerCallbacks(proxyClass, callBacks);
-	return (T) ObjenesisHelper.newInstance(proxyClass);
-    }
+	/**
+	 * Create proxy for class.
+	 * 
+	 * Can handle classes with no no-arg constructor constructor (e.g. only
+	 * constructor which requires arguments) since class creation is bypassing
+	 * constructor through the usage of Objenesis.
+	 * 
+	 * Example of a class with no no-arg constructor is JaxbElement, which have
+	 * multi-arg constructors.
+	 * 
+	 * @param targetObject
+	 *            target object to proxy.
+	 * 
+	 * @return CGLIB proxy.
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	<T> T createCglibProxy(T targetObject) {
+		if (logger.isDebugEnabled()) {
+			Object[] args = { targetObject };
+			String message = messageProvider.getMessage("vspf.create_cglib_proxy_info", args);
+			logger.debug(message);
+		}
 
-    /**
-     * Create JDK proxy.
-     * 
-     * @param targetObject
-     *            target object to proxy.
-     * 
-     * @return JDK proxy.
-     */
-    @SuppressWarnings("unchecked")
-    <T> T createJdkProxy(T targetObject) {
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { targetObject };
-	    String message = messageProvider.getMessage("vspf.create_jdk_proxy_info", args);
-	    logger.debug(message);
+		final Enhancer enhancer = new Enhancer();
+		enhancer.setSuperclass(targetObject.getClass());
+		enhancer.setCallbackTypes(CALLBACK_TYPES);
+		final Class<?> proxyClass = enhancer.createClass();
+		final Callback[] callBacks = new Callback[] {
+				new CglibVariableSubstitutionInterceptorImpl(this, variables, resolver, targetObject) };
+		Enhancer.registerCallbacks(proxyClass, callBacks);
+		return (T) ObjenesisHelper.newInstance(proxyClass);
 	}
 
-	// create factory for creation of JDK proxies (e.g. targetClass = false)
-	ProxyFactory factory = new ProxyFactory(targetObject);
-	factory.addAdvice(variableSubstitutionInterceptor);
-	factory.setProxyTargetClass(false);
+	/**
+	 * Create JDK proxy.
+	 * 
+	 * @param targetObject
+	 *            target object to proxy.
+	 * 
+	 * @return JDK proxy.
+	 */
+	@SuppressWarnings("unchecked")
+	<T> T createJdkProxy(T targetObject) {
+		if (logger.isDebugEnabled()) {
+			Object[] args = { targetObject };
+			String message = messageProvider.getMessage("vspf.create_jdk_proxy_info", args);
+			logger.debug(message);
+		}
 
-	// advice will not be change after proxy creation - freeze it to let
-	// Spring optimize calls
-	factory.setFrozen(true);
+		// create factory for creation of JDK proxies (e.g. targetClass = false)
+		ProxyFactory factory = new ProxyFactory(targetObject);
+		factory.addAdvice(variableSubstitutionInterceptor);
+		factory.setProxyTargetClass(false);
 
-	// add interfaces
-	Class<?> targetObjectType = targetObject.getClass();
-	Class<?>[] interfaces = targetObjectType.getInterfaces();
-	factory.setInterfaces(interfaces);
+		// advice will not be change after proxy creation - freeze it to let
+		// Spring optimize calls
+		factory.setFrozen(true);
 
-	// create proxy
-	return (T) factory.getProxy();
-    }
+		// add interfaces
+		Class<?> targetObjectType = targetObject.getClass();
+		Class<?>[] interfaces = targetObjectType.getInterfaces();
+		factory.setInterfaces(interfaces);
 
-    /**
-     * Validate factory is initialized.
-     */
-    void validateInitialization() {
-	if (variables != null)
-	    return;
+		// create proxy
+		return (T) factory.getProxy();
+	}
 
-	// handle uninitialized case
-	String message = messageProvider.getMessage("vspf.not_initialized_error");
-	throw new IllegalStateException(message);
-    }
+	/**
+	 * Validate factory is initialized.
+	 */
+	void validateInitialization() {
+		if (variables != null)
+			return;
+
+		// handle uninitialized case
+		String message = messageProvider.getMessage("vspf.not_initialized_error");
+		throw new IllegalStateException(message);
+	}
 
 }

@@ -20,27 +20,25 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.ssh;
 
 import com.alpha.pineapple.plugin.ssh.model.Ssh;
-
 
 /**
  * SSH Constants.
  */
 public interface SshConstants {
-	
+
 	/**
 	 * Legal content types supported by plugin operations.
 	 */
 	public static final Class<?>[] LEGAL_CONTENT_TYPES = { Ssh.class };
-	
+
 	/**
 	 * Default port.
 	 */
 	public static final String DEFAULT_PORT = "22";
-	
+
 	/**
 	 * Default connect timeout.
 	 */
@@ -48,7 +46,7 @@ public interface SshConstants {
 
 	/**
 	 * Default strict host key checking.
-	 */	
+	 */
 	public static final String DEFAULT_STRICT_HOSTKEY_CHECKING = "no";
 
 	/**
@@ -56,10 +54,9 @@ public interface SshConstants {
 	 */
 	public static final int EXECUTION_PAUSE = 100;
 
-    /**
-     * Value which defines when chmod is disabled.
-     */
-    public static final int DISABLE_CHMOD = -1;;
-	
-}
+	/**
+	 * Value which defines when chmod is disabled.
+	 */
+	public static final int DISABLE_CHMOD = -1;;
 
+}

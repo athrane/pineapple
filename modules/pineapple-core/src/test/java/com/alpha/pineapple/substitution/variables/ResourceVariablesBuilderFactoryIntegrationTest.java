@@ -44,50 +44,50 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class ResourceVariablesBuilderFactoryIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    ObjectFactory<ResourceVariablesBuilder> resourceVariablesBuilderFactory;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	ObjectFactory<ResourceVariablesBuilder> resourceVariablesBuilderFactory;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that factory can be looked up from the context.
-     */
-    @Test
-    public void testCanGetFactoryFromContext() {
-	assertNotNull(resourceVariablesBuilderFactory);
-    }
+	/**
+	 * Test that factory can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetFactoryFromContext() {
+		assertNotNull(resourceVariablesBuilderFactory);
+	}
 
-    /**
-     * Test builder can be created from factory.
-     */
-    @Test
-    public void testCanCreateBuilder() {
-	assertNotNull(resourceVariablesBuilderFactory.getObject());
-    }
+	/**
+	 * Test builder can be created from factory.
+	 */
+	@Test
+	public void testCanCreateBuilder() {
+		assertNotNull(resourceVariablesBuilderFactory.getObject());
+	}
 
-    /**
-     * Test that each created builder is a Spring prototype.
-     */
-    @Test
-    public void testCreatedBuilderIsSpringProtototype() {
-	ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
-	ResourceVariablesBuilder builder2 = resourceVariablesBuilderFactory.getObject();
-	assertFalse(builder.hashCode() == builder2.hashCode());
-    }
+	/**
+	 * Test that each created builder is a Spring prototype.
+	 */
+	@Test
+	public void testCreatedBuilderIsSpringProtototype() {
+		ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
+		ResourceVariablesBuilder builder2 = resourceVariablesBuilderFactory.getObject();
+		assertFalse(builder.hashCode() == builder2.hashCode());
+	}
 
 }

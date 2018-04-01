@@ -64,196 +64,196 @@ import com.alpha.testutils.DockerTestHelper;
 @ActiveProfiles("integration-test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-	DirectoryTestExecutionListener.class })
+		DirectoryTestExecutionListener.class })
 @ContextConfiguration(locations = { "/com.alpha.pineapple.docker-config.xml" })
 public class CreateTarArchiveIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command createTarArchiveCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command createTarArchiveCommand;
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Source directory for TAR archive.
-     */
-    File sourceDirectory;
+	/**
+	 * Source directory for TAR archive.
+	 */
+	File sourceDirectory;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Docker helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
+	/**
+	 * Docker helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
 
-    /**
-     * Docker info objects builder.
-     */
-    @Resource
-    InfoBuilder dockerInfoBuilder;
+	/**
+	 * Docker info objects builder.
+	 */
+	@Resource
+	InfoBuilder dockerInfoBuilder;
 
-    /**
-     * Random archive.
-     */
-    String randomArchive;
+	/**
+	 * Random archive.
+	 */
+	String randomArchive;
 
-    /**
-     * Random source directory.
-     */
-    String randomSourceDirectoryName;
+	/**
+	 * Random source directory.
+	 */
+	String randomSourceDirectoryName;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-	randomArchive = RandomStringUtils.randomAlphabetic(10);
-	randomSourceDirectoryName = RandomStringUtils.randomAlphabetic(10);
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		randomArchive = RandomStringUtils.randomAlphabetic(10);
+		randomSourceDirectoryName = RandomStringUtils.randomAlphabetic(10);
 
-	// create context
-	context = new ContextBase();
+		// create context
+		context = new ContextBase();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("root");
+		// create execution result
+		executionResult = new ExecutionResultImpl("root");
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// create source directory for TAR archive
-	sourceDirectory = new File(testDirectory, randomSourceDirectoryName);
-    }
+		// create source directory for TAR archive
+		sourceDirectory = new File(testDirectory, randomSourceDirectoryName);
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that command instance can be created in application context.
-     */
-    @Test
-    public void testCanGetInstance() throws Exception {
-	assertNotNull(createTarArchiveCommand);
-    }
+	/**
+	 * Test that command instance can be created in application context.
+	 */
+	@Test
+	public void testCanGetInstance() throws Exception {
+		assertNotNull(createTarArchiveCommand);
+	}
 
-    /**
-     * Test that TAR archive can be created.
-     */
-    @Test
-    public void testCanCreateArchive() throws Exception {
+	/**
+	 * Test that TAR archive can be created.
+	 */
+	@Test
+	public void testCanCreateArchive() throws Exception {
 
-	// create source directory with single docker file
-	ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(TEST_DOCKER_ROOT_BUSYBOX_IMAGE, LATEST_IMAGE_TAG);
-	dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
-	File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
+		// create source directory with single docker file
+		ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(TEST_DOCKER_ROOT_BUSYBOX_IMAGE, LATEST_IMAGE_TAG);
+		dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
+		File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
 
-	// create context
-	ContextBase context = new ContextBase();
-	context.put(CreateTarArchiveCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(CreateTarArchiveCommand.SOURCE_DIRECTORY_KEY, sourceDirectory);
-	context.put(CreateTarArchiveCommand.TAR_ARCHIVE_KEY, tarArchive);
+		// create context
+		ContextBase context = new ContextBase();
+		context.put(CreateTarArchiveCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(CreateTarArchiveCommand.SOURCE_DIRECTORY_KEY, sourceDirectory);
+		context.put(CreateTarArchiveCommand.TAR_ARCHIVE_KEY, tarArchive);
 
-	// execute command
-	createTarArchiveCommand.execute(context);
+		// execute command
+		createTarArchiveCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertTrue(PineappleMatchers.doesFileExist().matches(tarArchive));
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertTrue(PineappleMatchers.doesFileExist().matches(tarArchive));
+	}
 
-    /**
-     * Test that multiple TAR archive can be created in succession.
-     */
-    @Test
-    public void testCanCreateMultipleArchivesInSuccession() throws Exception {
+	/**
+	 * Test that multiple TAR archive can be created in succession.
+	 */
+	@Test
+	public void testCanCreateMultipleArchivesInSuccession() throws Exception {
 
-	// create source directory with single docker file
-	ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(TEST_DOCKER_ROOT_BUSYBOX_IMAGE, LATEST_IMAGE_TAG);
-	dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
-	File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
+		// create source directory with single docker file
+		ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(TEST_DOCKER_ROOT_BUSYBOX_IMAGE, LATEST_IMAGE_TAG);
+		dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
+		File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
 
-	// create context
-	ContextBase context = new ContextBase();
-	context.put(CreateTarArchiveCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(CreateTarArchiveCommand.SOURCE_DIRECTORY_KEY, sourceDirectory);
-	context.put(CreateTarArchiveCommand.TAR_ARCHIVE_KEY, tarArchive);
+		// create context
+		ContextBase context = new ContextBase();
+		context.put(CreateTarArchiveCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(CreateTarArchiveCommand.SOURCE_DIRECTORY_KEY, sourceDirectory);
+		context.put(CreateTarArchiveCommand.TAR_ARCHIVE_KEY, tarArchive);
 
-	// execute command
-	createTarArchiveCommand.execute(context);
+		// execute command
+		createTarArchiveCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertTrue(PineappleMatchers.doesFileExist().matches(tarArchive));
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertTrue(PineappleMatchers.doesFileExist().matches(tarArchive));
 
-	// execute command
-	createTarArchiveCommand.execute(context);
+		// execute command
+		createTarArchiveCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertTrue(PineappleMatchers.doesFileExist().matches(tarArchive));
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertTrue(PineappleMatchers.doesFileExist().matches(tarArchive));
+	}
 
-    /**
-     * Test that archive creation fails if source directory doesn't exist.
-     */
-    @Test
-    public void testCreationFailsIfSourceDirectoryDoesntExist() throws Exception {
-	File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
+	/**
+	 * Test that archive creation fails if source directory doesn't exist.
+	 */
+	@Test
+	public void testCreationFailsIfSourceDirectoryDoesntExist() throws Exception {
+		File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
 
-	// create context
-	ContextBase context = new ContextBase();
-	context.put(CreateTarArchiveCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(CreateTarArchiveCommand.SOURCE_DIRECTORY_KEY, sourceDirectory);
-	context.put(CreateTarArchiveCommand.TAR_ARCHIVE_KEY, tarArchive);
+		// create context
+		ContextBase context = new ContextBase();
+		context.put(CreateTarArchiveCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(CreateTarArchiveCommand.SOURCE_DIRECTORY_KEY, sourceDirectory);
+		context.put(CreateTarArchiveCommand.TAR_ARCHIVE_KEY, tarArchive);
 
-	// execute command
-	createTarArchiveCommand.execute(context);
+		// execute command
+		createTarArchiveCommand.execute(context);
 
-	// test
-	assertFalse(executionResult.isSuccess());
-	assertFalse(PineappleMatchers.doesFileExist().matches(tarArchive));
-    }
+		// test
+		assertFalse(executionResult.isSuccess());
+		assertFalse(PineappleMatchers.doesFileExist().matches(tarArchive));
+	}
 
-    /**
-     * Test that archive creation fails if source directory isn't a directory.
-     */
-    @Test
-    public void testCreationFailsIfSourceDirectoryIsntADirectory() throws Exception {
-	File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
+	/**
+	 * Test that archive creation fails if source directory isn't a directory.
+	 */
+	@Test
+	public void testCreationFailsIfSourceDirectoryIsntADirectory() throws Exception {
+		File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
 
-	// create file with source directory name
-	Collection<String> lines = new ArrayList<String>();
-	lines.add("MAINTAINER Pineapple");
-	FileUtils.writeLines(sourceDirectory, lines);
+		// create file with source directory name
+		Collection<String> lines = new ArrayList<String>();
+		lines.add("MAINTAINER Pineapple");
+		FileUtils.writeLines(sourceDirectory, lines);
 
-	// create context
-	ContextBase context = new ContextBase();
-	context.put(CreateTarArchiveCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(CreateTarArchiveCommand.SOURCE_DIRECTORY_KEY, sourceDirectory);
-	context.put(CreateTarArchiveCommand.TAR_ARCHIVE_KEY, tarArchive);
+		// create context
+		ContextBase context = new ContextBase();
+		context.put(CreateTarArchiveCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(CreateTarArchiveCommand.SOURCE_DIRECTORY_KEY, sourceDirectory);
+		context.put(CreateTarArchiveCommand.TAR_ARCHIVE_KEY, tarArchive);
 
-	// execute command
-	createTarArchiveCommand.execute(context);
+		// execute command
+		createTarArchiveCommand.execute(context);
 
-	// test
-	assertFalse(executionResult.isSuccess());
-	assertFalse(PineappleMatchers.doesFileExist().matches(tarArchive));
-    }
+		// test
+		assertFalse(executionResult.isSuccess());
+		assertFalse(PineappleMatchers.doesFileExist().matches(tarArchive));
+	}
 
 }

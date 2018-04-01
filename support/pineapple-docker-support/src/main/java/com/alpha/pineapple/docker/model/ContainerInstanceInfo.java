@@ -26,18 +26,18 @@ package com.alpha.pineapple.docker.model;
  */
 public interface ContainerInstanceInfo {
 
-    /**
-     * Return Docker container ID.
-     * 
-     * @return Docker container ID.
-     */
-    String getId();
+	/**
+	 * Return Docker container ID.
+	 * 
+	 * @return Docker container ID.
+	 */
+	String getId();
 
-    /**
-     * Return container info for created instance.
-     * 
-     * @return container info for created instance.
-     */
-    public ContainerInfo getContainerInfo();
+	/**
+	 * Return container info for created instance.
+	 * 
+	 * @return container info for created instance.
+	 */
+	public ContainerInfo getContainerInfo();
 
 }

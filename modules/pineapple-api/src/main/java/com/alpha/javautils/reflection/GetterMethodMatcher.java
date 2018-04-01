@@ -28,23 +28,23 @@ import java.lang.reflect.Method;
  * Interface for specification of getter method matching criteria.
  */
 public interface GetterMethodMatcher {
-    /**
-     * Returns true is method is a match.
-     * 
-     * @param method
-     *            the method to evaluate.
-     * 
-     * @return true is method is a match.
-     */
-    boolean isMatch(Method method);
+	/**
+	 * Returns true is method is a match.
+	 * 
+	 * @param method
+	 *            the method to evaluate.
+	 * 
+	 * @return true is method is a match.
+	 */
+	boolean isMatch(Method method);
 
-    /**
-     * Resolve attribute name from a getter method.
-     * 
-     * @param method
-     *            The getter method to resolve the attribute name from.
-     * 
-     * @return Resolved attribute name from a getter method.
-     */
-    String resolveAttributeFromGetterMethod(Method method);
+	/**
+	 * Resolve attribute name from a getter method.
+	 * 
+	 * @param method
+	 *            The getter method to resolve the attribute name from.
+	 * 
+	 * @return Resolved attribute name from a getter method.
+	 */
+	String resolveAttributeFromGetterMethod(Method method);
 }

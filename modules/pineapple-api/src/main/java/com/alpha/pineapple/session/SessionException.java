@@ -27,31 +27,31 @@ package com.alpha.pineapple.session;
  */
 public class SessionException extends Exception {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * SessionException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public SessionException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * SessionException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public SessionException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * SessionException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public SessionException(String message) {
-	super(message);
-    }
+	/**
+	 * SessionException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public SessionException(String message) {
+		super(message);
+	}
 
 }

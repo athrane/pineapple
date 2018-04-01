@@ -31,14 +31,14 @@ import com.alpha.pineapple.plugin.PluginSession;
 @PluginSession
 public class DockerPluginSessionImpl extends DockerSessionImpl {
 
-    /**
-     * PluginDockerSessionImpl no-arg constructor.
-     * 
-     * @throws Exception
-     *             If session creation fails.
-     */
-    public DockerPluginSessionImpl() throws Exception {
-	super();
-    }
+	/**
+	 * PluginDockerSessionImpl no-arg constructor.
+	 * 
+	 * @throws Exception
+	 *             If session creation fails.
+	 */
+	public DockerPluginSessionImpl() throws Exception {
+		super();
+	}
 
 }

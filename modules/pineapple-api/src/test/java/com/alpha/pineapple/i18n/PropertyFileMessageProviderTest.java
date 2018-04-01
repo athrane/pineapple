@@ -33,207 +33,207 @@ import org.junit.Test;
  */
 public class PropertyFileMessageProviderTest {
 
-    /**
-     * resource bundle name.
-     */
-    static final String BASE_NAME_1 = "test1";
+	/**
+	 * resource bundle name.
+	 */
+	static final String BASE_NAME_1 = "test1";
 
-    /**
-     * resource bundle name.
-     */
-    static final String NOEXISTING_BASE_NAME = "non.existing";
+	/**
+	 * resource bundle name.
+	 */
+	static final String NOEXISTING_BASE_NAME = "non.existing";
 
-    /**
-     * Object under test.
-     */
-    PropertyFileMessageProviderImpl provider;
+	/**
+	 * Object under test.
+	 */
+	PropertyFileMessageProviderImpl provider;
 
-    @Before
-    public void setUp() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	provider = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		provider = null;
+	}
 
-    /**
-     * Test that instance can be created.
-     * 
-     * @throws MessageProviderInitializationException
-     *             If test fails.
-     */
-    @Test
-    public void testCanCreateInstance() throws MessageProviderInitializationException {
+	/**
+	 * Test that instance can be created.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 *             If test fails.
+	 */
+	@Test
+	public void testCanCreateInstance() throws MessageProviderInitializationException {
 
-	provider = new PropertyFileMessageProviderImpl();
-    }
+		provider = new PropertyFileMessageProviderImpl();
+	}
 
-    /**
-     * Test that resource bundle can be initialized.
-     * 
-     * @throws MessageProviderInitializationException
-     *             If test fails.
-     */
-    @Test
-    public void testCanInitializeResourceBundle() throws MessageProviderInitializationException {
+	/**
+	 * Test that resource bundle can be initialized.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 *             If test fails.
+	 */
+	@Test
+	public void testCanInitializeResourceBundle() throws MessageProviderInitializationException {
 
-	provider = new PropertyFileMessageProviderImpl();
-	provider.setBasename(BASE_NAME_1);
-    }
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(BASE_NAME_1);
+	}
 
-    /**
-     * Test that provider initialization fails if property file doesn't exist.
-     * 
-     * @throws MessageProviderInitializationException
-     *             If test fails.
-     */
-    @Test(expected = MessageProviderInitializationException.class)
-    public void testFailsIfPropertyFileDoesntExist() throws MessageProviderInitializationException {
+	/**
+	 * Test that provider initialization fails if property file doesn't exist.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 *             If test fails.
+	 */
+	@Test(expected = MessageProviderInitializationException.class)
+	public void testFailsIfPropertyFileDoesntExist() throws MessageProviderInitializationException {
 
-	provider = new PropertyFileMessageProviderImpl();
-	provider.setBasename(NOEXISTING_BASE_NAME);
-    }
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(NOEXISTING_BASE_NAME);
+	}
 
-    /**
-     * Test that provider initialization fails if property file is null.
-     * 
-     * @throws MessageProviderInitializationException
-     *             If test fails.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testFailsIfPropertyFileIsUndefined() throws MessageProviderInitializationException {
+	/**
+	 * Test that provider initialization fails if property file is null.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 *             If test fails.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testFailsIfPropertyFileIsUndefined() throws MessageProviderInitializationException {
 
-	provider = new PropertyFileMessageProviderImpl();
-	provider.setBasename(null);
-    }
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(null);
+	}
 
-    /**
-     * Test that message with no argument can be resolved.
-     * 
-     * @throws MessageProviderInitializationException
-     */
-    @Test
-    public void testCanGetMessageWithNoArgs() throws MessageProviderInitializationException {
+	/**
+	 * Test that message with no argument can be resolved.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 */
+	@Test
+	public void testCanGetMessageWithNoArgs() throws MessageProviderInitializationException {
 
-	// create provider
-	provider = new PropertyFileMessageProviderImpl();
-	provider.setBasename(BASE_NAME_1);
+		// create provider
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(BASE_NAME_1);
 
-	// get key1 from bundle
-	String value = provider.getMessage("key1");
+		// get key1 from bundle
+		String value = provider.getMessage("key1");
 
-	// test
-	assertEquals("value1", value);
-    }
+		// test
+		assertEquals("value1", value);
+	}
 
-    /**
-     * Test that getMessage() method throws exception if key is null.
-     * 
-     * @throws MessageProviderInitializationException
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCanGetMessageWithNoArgsFailsIfKeyIsNull() throws Exception {
+	/**
+	 * Test that getMessage() method throws exception if key is null.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCanGetMessageWithNoArgsFailsIfKeyIsNull() throws Exception {
 
-	// create provider
-	provider = new PropertyFileMessageProviderImpl();
-	provider.setBasename(BASE_NAME_1);
+		// create provider
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(BASE_NAME_1);
 
-	// get key1 from bundle
-	String value = provider.getMessage(null);
-    }
+		// get key1 from bundle
+		String value = provider.getMessage(null);
+	}
 
-    /**
-     * Test that getMessage() method throws exception if key is null.
-     * 
-     * @throws MessageProviderInitializationException
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCanGetMessageFailsIfKeyIsNull() throws Exception {
+	/**
+	 * Test that getMessage() method throws exception if key is null.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCanGetMessageFailsIfKeyIsNull() throws Exception {
 
-	// create provider
-	provider = new PropertyFileMessageProviderImpl();
-	provider.setBasename(BASE_NAME_1);
+		// create provider
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(BASE_NAME_1);
 
-	// get key1 from bundle
-	String value = provider.getMessage(null, null);
-    }
+		// get key1 from bundle
+		String value = provider.getMessage(null, null);
+	}
 
-    /**
-     * Test that getMessage() method throws exception if key is null.
-     * 
-     * @throws MessageProviderInitializationException
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCanGetMessageFailsIfKeyIsNull2() throws Exception {
+	/**
+	 * Test that getMessage() method throws exception if key is null.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCanGetMessageFailsIfKeyIsNull2() throws Exception {
 
-	// create provider
-	provider = new PropertyFileMessageProviderImpl();
-	provider.setBasename(BASE_NAME_1);
+		// create provider
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(BASE_NAME_1);
 
-	// get key1 from bundle
-	Object[] args = { "param0", "param1" };
-	String value = provider.getMessage(null, args);
-    }
+		// get key1 from bundle
+		Object[] args = { "param0", "param1" };
+		String value = provider.getMessage(null, args);
+	}
 
-    /**
-     * Test that message with single argument can be resolved.
-     * 
-     * @throws MessageProviderInitializationException
-     */
-    @Test
-    public void testCanGetMessageWithOneArg() throws MessageProviderInitializationException {
+	/**
+	 * Test that message with single argument can be resolved.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 */
+	@Test
+	public void testCanGetMessageWithOneArg() throws MessageProviderInitializationException {
 
-	// create provider
-	provider = new PropertyFileMessageProviderImpl();
-	provider.setBasename(BASE_NAME_1);
+		// create provider
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(BASE_NAME_1);
 
-	// get key1 from bundle
-	Object[] args = { "XXX" };
-	String value = provider.getMessage("key2", args);
+		// get key1 from bundle
+		Object[] args = { "XXX" };
+		String value = provider.getMessage("key2", args);
 
-	// test
-	assertEquals("value is [XXX].", value);
-    }
+		// test
+		assertEquals("value is [XXX].", value);
+	}
 
-    /**
-     * Test that message with two arguments can be resolved.
-     * 
-     * @throws MessageProviderInitializationException
-     */
-    @Test
-    public void testCanGetMessageWithTwoArgs() throws MessageProviderInitializationException {
+	/**
+	 * Test that message with two arguments can be resolved.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 */
+	@Test
+	public void testCanGetMessageWithTwoArgs() throws MessageProviderInitializationException {
 
-	// create provider
-	provider = new PropertyFileMessageProviderImpl();
-	provider.setBasename(BASE_NAME_1);
+		// create provider
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(BASE_NAME_1);
 
-	// get key1 from bundle
-	Object[] args = { "XXX", "YYY" };
-	String value = provider.getMessage("key3", args);
+		// get key1 from bundle
+		Object[] args = { "XXX", "YYY" };
+		String value = provider.getMessage("key3", args);
 
-	// test
-	assertEquals("value is [XXX] and [YYY].", value);
-    }
+		// test
+		assertEquals("value is [XXX] and [YYY].", value);
+	}
 
-    /**
-     * Test that message with three arguments can be resolved.
-     * 
-     * @throws MessageProviderInitializationException
-     */
-    @Test
-    public void testCanGetMessageWithThreergs() throws MessageProviderInitializationException {
+	/**
+	 * Test that message with three arguments can be resolved.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 */
+	@Test
+	public void testCanGetMessageWithThreergs() throws MessageProviderInitializationException {
 
-	// create provider
-	provider = new PropertyFileMessageProviderImpl();
-	provider.setBasename(BASE_NAME_1);
+		// create provider
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(BASE_NAME_1);
 
-	// get key1 from bundle
-	Object[] args = { "XXX", "YYY", "ZZZ" };
-	String value = provider.getMessage("key4", args);
+		// get key1 from bundle
+		Object[] args = { "XXX", "YYY", "ZZZ" };
+		String value = provider.getMessage("key4", args);
 
-	// test
-	assertEquals("value is [XXX], [YYY] and [ZZZ].", value);
-    }
+		// test
+		assertEquals("value is [XXX], [YYY] and [ZZZ].", value);
+	}
 
 }

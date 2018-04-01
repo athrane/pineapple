@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.filesystem.operation;
 
 import java.util.List;
@@ -46,125 +45,111 @@ import com.alpha.pineapple.plugin.filesystem.model.Mapper;
 import com.alpha.pineapple.plugin.filesystem.session.FileSystemSession;
 import com.alpha.pineapple.session.Session;
 
-@PluginOperation( OperationNames.DEPLOY_CONFIGURATION )
-public class DeployConfiguration implements Operation
-{
+@PluginOperation(OperationNames.DEPLOY_CONFIGURATION)
+public class DeployConfiguration implements Operation {
 
 	/**
 	 * First list index.
 	 */
-	static final int FIRST_INDEX= 0;
-	
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
+	static final int FIRST_INDEX = 0;
 
-    /**
-     * VFS file resolution test command.
-     */
-    @Resource
-    Command testResolveVfsFileCommand;
-        
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
-    
-    /**
-     * Command runner
-     */
-    @Resource
-    CommandRunner commandRunner;   
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Model mapper object.
-     */   
-    @Resource    
-    Mapper mapper;
-    
-    
-               
-    public void execute( Object content, Session session, ExecutionResult executionResult ) throws PluginExecutionFailedException
-    {
-        // validate parameters
-        Validate.notNull( content, "content is undefined." );
-        Validate.notNull( session, "session is undefined." );
-        Validate.notNull( executionResult, "executionResult is undefined." );        
-    	
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-        	Object[] args = { content.getClass().getName(), content };    	        	
-        	String message = messageProvider.getMessage("dc.start", args );
-        	logger.debug( message );
-        }
+	/**
+	 * VFS file resolution test command.
+	 */
+	@Resource
+	Command testResolveVfsFileCommand;
 
-        // throw exception if required type isn't available
-        if ( !( content instanceof Filesystem ) )
-        {
-        	Object[] args = { Filesystem.class };    	        	
-        	String message = messageProvider.getMessage("dc.content_typecast_failed", args );
-            throw new PluginExecutionFailedException( message );
-        }
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-        // throw exception if required type isn't available
-        if ( !( session instanceof FileSystemSession ) )
-        {
-        	Object[] args = { FileSystemSession.class };    	        	
-        	String message = messageProvider.getMessage("dc.session_typecast_failed", args );
-            throw new PluginExecutionFailedException( message );
-        }
-                
-        // configure command runner with execution result
-        commandRunner.setExecutionResult( executionResult );
-        
-        try
-        {        	
-            // type cast to file system model object
-            Filesystem model = (Filesystem) content;
-            
-            // type cast to file system session 
-            FileSystemSession fileSystemSession = (FileSystemSession) session; 
-            
-            // do tests
-            createFileObjects(model, fileSystemSession);
-                                    
-            // compute execution state from children
-            executionResult.completeAsComputed(messageProvider, "dc.completed", null, "dc.failed", null );    		                        
-        }
-        catch ( Exception e )
-        {
-        	Object[] args = { e.toString() };    	        	
-        	String message = messageProvider.getMessage("dc.error", args );
-            throw new PluginExecutionFailedException( message, e );
-        }
-    }
+	/**
+	 * Command runner
+	 */
+	@Resource
+	CommandRunner commandRunner;
 
-    
-    void createFileObjects( Filesystem model, FileSystemSession fileSystemSession ) throws CommandException
-    {
-        // get root
-        List<FilesystemRoot> roots = model.getRoot();
-    	    	
-        for ( FilesystemRoot root : roots )
-        {
-        	// create description
-        	Object[] args = { root.getTargetPath() };
-        	String message = messageProvider.getMessage("dc.resolve_file_info", args );        	
-        	        	
-            // create context
-            Context context = commandRunner.createContext();
-        	
-            // map model content to context
-            mapper.mapVfsFilePropertiesTest( root, fileSystemSession, context );
-        	
-            // run test            
-            commandRunner.run(testResolveVfsFileCommand, message, context);
-        }
-    }
-    
-    
-    
+	/**
+	 * Model mapper object.
+	 */
+	@Resource
+	Mapper mapper;
+
+	public void execute(Object content, Session session, ExecutionResult executionResult)
+			throws PluginExecutionFailedException {
+		// validate parameters
+		Validate.notNull(content, "content is undefined.");
+		Validate.notNull(session, "session is undefined.");
+		Validate.notNull(executionResult, "executionResult is undefined.");
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { content.getClass().getName(), content };
+			String message = messageProvider.getMessage("dc.start", args);
+			logger.debug(message);
+		}
+
+		// throw exception if required type isn't available
+		if (!(content instanceof Filesystem)) {
+			Object[] args = { Filesystem.class };
+			String message = messageProvider.getMessage("dc.content_typecast_failed", args);
+			throw new PluginExecutionFailedException(message);
+		}
+
+		// throw exception if required type isn't available
+		if (!(session instanceof FileSystemSession)) {
+			Object[] args = { FileSystemSession.class };
+			String message = messageProvider.getMessage("dc.session_typecast_failed", args);
+			throw new PluginExecutionFailedException(message);
+		}
+
+		// configure command runner with execution result
+		commandRunner.setExecutionResult(executionResult);
+
+		try {
+			// type cast to file system model object
+			Filesystem model = (Filesystem) content;
+
+			// type cast to file system session
+			FileSystemSession fileSystemSession = (FileSystemSession) session;
+
+			// do tests
+			createFileObjects(model, fileSystemSession);
+
+			// compute execution state from children
+			executionResult.completeAsComputed(messageProvider, "dc.completed", null, "dc.failed", null);
+		} catch (Exception e) {
+			Object[] args = { e.toString() };
+			String message = messageProvider.getMessage("dc.error", args);
+			throw new PluginExecutionFailedException(message, e);
+		}
+	}
+
+	void createFileObjects(Filesystem model, FileSystemSession fileSystemSession) throws CommandException {
+		// get root
+		List<FilesystemRoot> roots = model.getRoot();
+
+		for (FilesystemRoot root : roots) {
+			// create description
+			Object[] args = { root.getTargetPath() };
+			String message = messageProvider.getMessage("dc.resolve_file_info", args);
+
+			// create context
+			Context context = commandRunner.createContext();
+
+			// map model content to context
+			mapper.mapVfsFilePropertiesTest(root, fileSystemSession, context);
+
+			// run test
+			commandRunner.run(testResolveVfsFileCommand, message, context);
+		}
+	}
+
 }

@@ -13,12 +13,12 @@ import com.alpha.pineapple.web.event.EventDispatcherImpl;
  */
 public class GenericEvent extends Event {
 
-    private static final long serialVersionUID = 1016799256303068779L;
+	private static final long serialVersionUID = 1016799256303068779L;
 
-    public static final String NAME = "onGenericEvent";
+	public static final String NAME = "onGenericEvent";
 
-    public GenericEvent() {
-	super(NAME, null, null);
-    }
+	public GenericEvent() {
+		super(NAME, null, null);
+	}
 
 }

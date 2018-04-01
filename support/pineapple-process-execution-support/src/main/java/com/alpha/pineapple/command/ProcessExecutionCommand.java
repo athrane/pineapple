@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.command;
 
 import java.io.ByteArrayOutputStream;
@@ -62,12 +61,13 @@ import com.alpha.pineapple.i18n.MessageProvider;
  * <li><code>executable</code> defines name of the executable. The type is
  * <code>java.lang.String</code>.</li>
  * 
- * <li><code>arguments</code> defines the arguments to the executable.
- * The type is <code>java.lang.String[]s</code>.</li>
+ * <li><code>arguments</code> defines the arguments to the executable. The type
+ * is <code>java.lang.String[]s</code>.</li>
  * 
- * <li><code>timeout</code> defines the time out in milliseconds before the executable
- * is killed. If no value is defined i.e. it is null or 0, the default value of 5000 
- * milliseconds is used. The type is <code>java.lang.Long</code>.</li> 
+ * <li><code>timeout</code> defines the time out in milliseconds before the
+ * executable is killed. If no value is defined i.e. it is null or 0, the
+ * default value of 5000 milliseconds is used. The type is
+ * <code>java.lang.Long</code>.</li>
  * 
  * <li><code>execution-result</code> contains execution result object which
  * collects information about the execution of the test. The type is
@@ -89,10 +89,10 @@ import com.alpha.pineapple.i18n.MessageProvider;
  * </p>
  */
 public class ProcessExecutionCommand implements Command {
-	
+
 	/**
-	 * Message id, to post messages capturing the standard out 
-	 * content from the process. 
+	 * Message id, to post messages capturing the standard out content from the
+	 * process.
 	 */
 	public static final String MSG_STANDARD_OUT = "Standard Out";
 
@@ -100,7 +100,7 @@ public class ProcessExecutionCommand implements Command {
 	 * String array separator.
 	 */
 	static final String CHAR_SEPARATOR = ",";
-	
+
 	/**
 	 * First array index.
 	 */
@@ -117,19 +117,19 @@ public class ProcessExecutionCommand implements Command {
 	public static final String EXECUTABLE_KEY = "executable";
 
 	/**
-	 * Key used to identify property in context: Defines the arguments to the executable.
+	 * Key used to identify property in context: Defines the arguments to the
+	 * executable.
 	 */
 	public static final String ARGUMENTS_KEY = "arguments";
 
 	/**
-	 * Key used to identify property in context: Defines the time out value for executable 
-	 * before it is killed.
+	 * Key used to identify property in context: Defines the time out value for
+	 * executable before it is killed.
 	 */
 	public static final String TIMEOUT_KEY = "timeout";
-	
+
 	/**
-	 * Key used to identify property in context: Contains execution result
-	 * object,.
+	 * Key used to identify property in context: Contains execution result object,.
 	 */
 	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
@@ -144,7 +144,7 @@ public class ProcessExecutionCommand implements Command {
 	@Initialize(EXECUTABLE_KEY)
 	@ValidateValue(ValidationPolicy.NOT_NULL)
 	String executable;
-		
+
 	/**
 	 * Defines the arguments to the executable.
 	 */
@@ -155,9 +155,9 @@ public class ProcessExecutionCommand implements Command {
 	/**
 	 * Defines the time out.
 	 */
-	@Initialize(TIMEOUT_KEY)	
+	@Initialize(TIMEOUT_KEY)
 	Long timeout;
-	
+
 	/**
 	 * Defines execution result object.
 	 */
@@ -168,7 +168,7 @@ public class ProcessExecutionCommand implements Command {
 	/**
 	 * Message provider for I18N support.
 	 */
-	@Resource(name="processExecutionMessageProvider")	
+	@Resource(name = "processExecutionMessageProvider")
 	MessageProvider messageProvider;
 
 	public boolean execute(Context context) throws Exception {
@@ -182,43 +182,43 @@ public class ProcessExecutionCommand implements Command {
 		initializer.initialize(context, this);
 
 		// add execution info
-        executionResult.addMessage("Executable", executable);
-        executionResult.addMessage("Arguments", StringUtils.join(arguments, CHAR_SEPARATOR ));
-        executionResult.addMessage("Timeout", createTimeOutDescription());
-		
+		executionResult.addMessage("Executable", executable);
+		executionResult.addMessage("Arguments", StringUtils.join(arguments, CHAR_SEPARATOR));
+		executionResult.addMessage("Timeout", createTimeOutDescription());
+
 		// resolve working directory
 		File workDirectory = resolveWorkDirectory();
 
-		// initialize the command line 
-		CommandLine commandLine = initializeCommandLine();			
-		
+		// initialize the command line
+		CommandLine commandLine = initializeCommandLine();
+
 		// create watchdog
 		ExecuteWatchdog watchdog = initializeWatchDog();
 
 		// create stream handler
 		ByteArrayOutputStream stdout = new ByteArrayOutputStream();
 		PumpStreamHandler streamHandler = new PumpStreamHandler(stdout);
-		
+
 		// initialize the executor
 		Executor executor = initializeExecutor(workDirectory, watchdog, streamHandler);
 
 		try {
-												
+
 			// execute process
 			int exitValue = executor.execute(commandLine);
-			
+
 			// capture stdout
-            captureOutput(stdout);
-			
-            // complete as failed if process fails
-            if (exitValue != 0) {
-            	
-    			// compute execution state from children
-        		Object[] args = { exitValue };            
-    			executionResult.completeAsFailure(messageProvider, "pec.exitvalue_failed", args);
-    			return Command.CONTINUE_PROCESSING;    			
-            } 
-						
+			captureOutput(stdout);
+
+			// complete as failed if process fails
+			if (exitValue != 0) {
+
+				// compute execution state from children
+				Object[] args = { exitValue };
+				executionResult.completeAsFailure(messageProvider, "pec.exitvalue_failed", args);
+				return Command.CONTINUE_PROCESSING;
+			}
+
 			// compute execution state from children
 			executionResult.completeAsComputed(messageProvider, "pec.completed", null, "pec.failed", null);
 
@@ -228,20 +228,19 @@ public class ProcessExecutionCommand implements Command {
 			}
 
 		} catch (Exception e) {
-			
+
 			// capture stdout
-            captureOutput(stdout);
-			
+			captureOutput(stdout);
+
 			Object[] args = { e.toString() };
 			executionResult.completeAsError(messageProvider, "pec.error", args, e);
 
-			
 		} finally {
-			
+
 			// close stdout
 			if (stdout != null) {
 				stdout.close();
-			}			
+			}
 		}
 
 		return Command.CONTINUE_PROCESSING;
@@ -253,8 +252,8 @@ public class ProcessExecutionCommand implements Command {
 	 * @return time out description.
 	 */
 	String createTimeOutDescription() {
-		Object[] args = { PROCESS_TIMEOUT };		
-		if((timeout == null) || (timeout.longValue() == 0 )) {
+		Object[] args = { PROCESS_TIMEOUT };
+		if ((timeout == null) || (timeout.longValue() == 0)) {
 			return messageProvider.getMessage("pec.timeout_info", args);
 		}
 		return timeout.toString();
@@ -265,35 +264,40 @@ public class ProcessExecutionCommand implements Command {
 	 * 
 	 * @return initialize watch dog with time out value.
 	 */
-	ExecuteWatchdog initializeWatchDog() {		
-		if (timeout == null) return new ExecuteWatchdog(PROCESS_TIMEOUT);			
-		if (timeout.longValue() == 0 ) return new ExecuteWatchdog(PROCESS_TIMEOUT);		
-		return new ExecuteWatchdog(timeout.longValue());		
+	ExecuteWatchdog initializeWatchDog() {
+		if (timeout == null)
+			return new ExecuteWatchdog(PROCESS_TIMEOUT);
+		if (timeout.longValue() == 0)
+			return new ExecuteWatchdog(PROCESS_TIMEOUT);
+		return new ExecuteWatchdog(timeout.longValue());
 	}
 
 	/**
-	 * Capture the process output and remove trailing white spaces 
-	 * and new line.
+	 * Capture the process output and remove trailing white spaces and new line.
 	 * 
-	 * @param stdout Stream where process output is captured from.
+	 * @param stdout
+	 *            Stream where process output is captured from.
 	 */
 	void captureOutput(ByteArrayOutputStream stdout) {
 		String stdString = StringUtils.chomp(stdout.toString().trim());
-        executionResult.addMessage(MSG_STANDARD_OUT, stdString );		
+		executionResult.addMessage(MSG_STANDARD_OUT, stdString);
 	}
 
 	/**
 	 * Initialize the executor.
 	 * 
-	 * @param workDirectory Process work directory.
-	 * @param watchdog Process watch dog.
-	 * @param streamHandler Process output capture.
+	 * @param workDirectory
+	 *            Process work directory.
+	 * @param watchdog
+	 *            Process watch dog.
+	 * @param streamHandler
+	 *            Process output capture.
 	 * 
 	 * @return initialized executor object.
 	 */
 	Executor initializeExecutor(File workDirectory, ExecuteWatchdog watchdog, PumpStreamHandler streamHandler) {
 		Executor executor = new DefaultExecutor();
-		executor.setExitValue(0);			
+		executor.setExitValue(0);
 		executor.setStreamHandler(streamHandler);
 		executor.setWatchdog(watchdog);
 		executor.setWorkingDirectory(workDirectory);
@@ -306,33 +310,33 @@ public class ProcessExecutionCommand implements Command {
 	 * @return initialized command line.
 	 */
 	CommandLine initializeCommandLine() {
-		
+
 		CommandLine commandLine = new CommandLine(executable);
 		commandLine.addArguments(arguments);
-		
+
 		// log debug message
-		if( logger.isDebugEnabled()) {
-			Object[] args = { commandLine.getExecutable(), ToStringBuilder.reflectionToString(commandLine.getArguments())};            
-			logger.debug( messageProvider.getMessage( "pec.argslist_info", args));				
+		if (logger.isDebugEnabled()) {
+			Object[] args = { commandLine.getExecutable(),
+					ToStringBuilder.reflectionToString(commandLine.getArguments()) };
+			logger.debug(messageProvider.getMessage("pec.argslist_info", args));
 		}
 		return commandLine;
 	}
 
 	/**
 	 * Resolve the work directory used by the process.
-	 *   
+	 * 
 	 * @return the work directory used by the process.
 	 */
 	File resolveWorkDirectory() {
-				
+
 		// configure process to use java temp dir
 		File tempDirectory = SystemUtils.getJavaIoTmpDir();
 
 		// log debug message
-		if ( logger.isDebugEnabled() )
-		{
-			Object[] args = { tempDirectory };            
-			logger.debug( messageProvider.getMessage( "pec.tempdir_info", args));
+		if (logger.isDebugEnabled()) {
+			Object[] args = { tempDirectory };
+			logger.debug(messageProvider.getMessage("pec.tempdir_info", args));
 		}
 		return tempDirectory;
 	}

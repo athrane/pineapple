@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.ssh.model;
 
 import static com.alpha.pineapple.plugin.ssh.SshConstants.DISABLE_CHMOD;
@@ -39,30 +38,30 @@ public class MapperImpl implements Mapper {
 	public void mapSecureCopy(SecureCopy command, Context context, SshSession session) {
 		context.put(SecureCopyToCommand.LOCAL_FILE_KEY, command.getSource());
 		context.put(SecureCopyToCommand.REMOTE_FILE_KEY, command.getDestination());
-		
-		//map chmod
-		int chmodValue = DISABLE_CHMOD; 
-		if(command.getChmod() != null) {
-			chmodValue = command.getChmod().intValue();
-		}		
-		context.put(SecureCopyToCommand.FILE_PERMISSIONS_KEY,new Integer(chmodValue)); 
 
-		//map chown
-		int chownValue = DISABLE_CHMOD; 
-		if(command.getChown() != null) {
+		// map chmod
+		int chmodValue = DISABLE_CHMOD;
+		if (command.getChmod() != null) {
+			chmodValue = command.getChmod().intValue();
+		}
+		context.put(SecureCopyToCommand.FILE_PERMISSIONS_KEY, new Integer(chmodValue));
+
+		// map chown
+		int chownValue = DISABLE_CHMOD;
+		if (command.getChown() != null) {
 			chownValue = command.getChown().intValue();
-		}		
+		}
 		context.put(SecureCopyToCommand.USER_OWNERSHIP_KEY, new Integer(chownValue));
 
-		//map chgrp
-		int chgrpValue = DISABLE_CHMOD; 
-		if(command.getChgrp() != null) {
+		// map chgrp
+		int chgrpValue = DISABLE_CHMOD;
+		if (command.getChgrp() != null) {
 			chgrpValue = command.getChgrp().intValue();
-		}				
+		}
 		context.put(SecureCopyToCommand.GROUP_OWNERSHIP_KEY, new Integer(chgrpValue));
-						
-		context.put(SecureCopyToCommand.SUBSTITUTE_VARIABLES_KEY, new Boolean(command.isSubstituteVariables()));		
+
+		context.put(SecureCopyToCommand.SUBSTITUTE_VARIABLES_KEY, new Boolean(command.isSubstituteVariables()));
 		context.put(SecureCopyToCommand.SESSION_KEY, session);
 	}
-	
+
 }

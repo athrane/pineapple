@@ -28,31 +28,31 @@ package com.alpha.pineapple.credential.encryption;
  */
 public class LoadCredentialProviderMasterPasswordFailedException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * LoadCredentialProviderMasterPasswordFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public LoadCredentialProviderMasterPasswordFailedException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * LoadCredentialProviderMasterPasswordFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public LoadCredentialProviderMasterPasswordFailedException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * LoadCredentialProviderMasterPasswordFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public LoadCredentialProviderMasterPasswordFailedException(String message) {
-	super(message);
-    }
+	/**
+	 * LoadCredentialProviderMasterPasswordFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public LoadCredentialProviderMasterPasswordFailedException(String message) {
+		super(message);
+	}
 
 }

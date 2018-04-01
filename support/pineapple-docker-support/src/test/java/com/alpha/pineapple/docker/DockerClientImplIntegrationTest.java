@@ -47,86 +47,86 @@ import com.alpha.pineapple.execution.ExecutionResult;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.docker-config.xml" })
 public class DockerClientImplIntegrationTest {
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    @Before
-    public void setUp() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that client instance can be created in application context.
-     */
-    @Test
-    public void testCanGetInstance() throws Exception {
-	assertNotNull(dockerClient);
-    }
+	/**
+	 * Test that client instance can be created in application context.
+	 */
+	@Test
+	public void testCanGetInstance() throws Exception {
+		assertNotNull(dockerClient);
+	}
 
-    /**
-     * Test that image creation client fails with undefined session.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreateImageFailsOnUndefinedSession() throws Exception {
-	ImageInfo info = EasyMock.createMock(ImageInfo.class);
-	ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
-	dockerClient.createImage(null, info, result);
-    }
+	/**
+	 * Test that image creation client fails with undefined session.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreateImageFailsOnUndefinedSession() throws Exception {
+		ImageInfo info = EasyMock.createMock(ImageInfo.class);
+		ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
+		dockerClient.createImage(null, info, result);
+	}
 
-    /**
-     * Test that image creation client fails with undefined image info.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreateImageFailsOnUndefinedImageInfo() throws Exception {
-	DockerSession session = EasyMock.createMock(DockerSession.class);
-	ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
-	dockerClient.createImage(session, null, result);
-    }
+	/**
+	 * Test that image creation client fails with undefined image info.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreateImageFailsOnUndefinedImageInfo() throws Exception {
+		DockerSession session = EasyMock.createMock(DockerSession.class);
+		ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
+		dockerClient.createImage(session, null, result);
+	}
 
-    /**
-     * Test that image creation client fails with undefined result.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreateImageFailsOnUndefinedResult() throws Exception {
-	DockerSession session = EasyMock.createMock(DockerSession.class);
-	ImageInfo info = EasyMock.createMock(ImageInfo.class);
-	dockerClient.createImage(session, info, null);
-    }
+	/**
+	 * Test that image creation client fails with undefined result.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreateImageFailsOnUndefinedResult() throws Exception {
+		DockerSession session = EasyMock.createMock(DockerSession.class);
+		ImageInfo info = EasyMock.createMock(ImageInfo.class);
+		dockerClient.createImage(session, info, null);
+	}
 
-    /**
-     * Test that container creation client fails with undefined session.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreateContainerFailsOnUndefinedSession() throws Exception {
-	ContainerInfo info = EasyMock.createMock(ContainerInfo.class);
-	ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
-	dockerClient.createContainer(null, info, result);
-    }
+	/**
+	 * Test that container creation client fails with undefined session.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreateContainerFailsOnUndefinedSession() throws Exception {
+		ContainerInfo info = EasyMock.createMock(ContainerInfo.class);
+		ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
+		dockerClient.createContainer(null, info, result);
+	}
 
-    /**
-     * Test that container creation client fails with undefined image info.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreateContainerFailsOnUndefinedImageInfo() throws Exception {
-	DockerSession session = EasyMock.createMock(DockerSession.class);
-	ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
-	dockerClient.createImage(session, null, result);
-    }
+	/**
+	 * Test that container creation client fails with undefined image info.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreateContainerFailsOnUndefinedImageInfo() throws Exception {
+		DockerSession session = EasyMock.createMock(DockerSession.class);
+		ExecutionResult result = EasyMock.createMock(ExecutionResult.class);
+		dockerClient.createImage(session, null, result);
+	}
 
-    /**
-     * Test that container creation client fails with undefined result.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreateContainerFailsOnUndefinedResult() throws Exception {
-	DockerSession session = EasyMock.createMock(DockerSession.class);
-	ContainerInfo info = EasyMock.createMock(ContainerInfo.class);
-	dockerClient.createContainer(session, info, null);
-    }
+	/**
+	 * Test that container creation client fails with undefined result.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreateContainerFailsOnUndefinedResult() throws Exception {
+		DockerSession session = EasyMock.createMock(DockerSession.class);
+		ContainerInfo info = EasyMock.createMock(ContainerInfo.class);
+		dockerClient.createContainer(session, info, null);
+	}
 
 }

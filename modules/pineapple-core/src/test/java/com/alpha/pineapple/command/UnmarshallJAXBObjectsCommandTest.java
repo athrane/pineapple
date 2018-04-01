@@ -51,172 +51,172 @@ import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 @TestExecutionListeners(DirectoryTestExecutionListener.class)
 public class UnmarshallJAXBObjectsCommandTest {
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Object under test.
-     */
-    Command command;
+	/**
+	 * Object under test.
+	 */
+	Command command;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Mock execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Mock execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Mock message provider.
-     */
-    MessageProvider messageProvider;
+	/**
+	 * Mock message provider.
+	 */
+	MessageProvider messageProvider;
 
-    /**
-     * Configuration object mother
-     */
-    ObjectMotherEnvironmentConfiguration configMother;
+	/**
+	 * Configuration object mother
+	 */
+	ObjectMotherEnvironmentConfiguration configMother;
 
-    @Before
-    public void setUp() throws Exception {
-	// create context
-	context = new ContextBase();
+	@Before
+	public void setUp() throws Exception {
+		// create context
+		context = new ContextBase();
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// configuration object mother
-	configMother = new ObjectMotherEnvironmentConfiguration();
+		// configuration object mother
+		configMother = new ObjectMotherEnvironmentConfiguration();
 
-	// create command
-	command = new UnmarshallJAXBObjectsCommand();
+		// create command
+		command = new UnmarshallJAXBObjectsCommand();
 
-	// create execution result
-	executionResult = EasyMock.createMock(ExecutionResult.class);
+		// create execution result
+		executionResult = EasyMock.createMock(ExecutionResult.class);
 
-	// create mock provider
-	messageProvider = EasyMock.createMock(MessageProvider.class);
+		// create mock provider
+		messageProvider = EasyMock.createMock(MessageProvider.class);
 
-	// inject message source
-	ReflectionTestUtils.setField(command, "messageProvider", messageProvider, MessageProvider.class);
+		// inject message source
+		ReflectionTestUtils.setField(command, "messageProvider", messageProvider, MessageProvider.class);
 
-	// complete mock source initialization
-	IAnswer<String> answer = new MessageProviderAnswerImpl();
+		// complete mock source initialization
+		IAnswer<String> answer = new MessageProviderAnswerImpl();
 
-	EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
-	EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-	EasyMock.expect(
-		messageProvider.getMessage((String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject()));
-	EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-	EasyMock.replay(messageProvider);
-    }
+		EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+		EasyMock.expect(
+				messageProvider.getMessage((String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject()));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+		EasyMock.replay(messageProvider);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	testDirectory = null;
-	configMother = null;
-	executionResult = null;
-	messageProvider = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		testDirectory = null;
+		configMother = null;
+		executionResult = null;
+		messageProvider = null;
+	}
 
-    /**
-     * Test that command fails if context is undefined.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testRejectsUndefinedContext() throws Exception {
-	// create context
-	context = null;
+	/**
+	 * Test that command fails if context is undefined.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testRejectsUndefinedContext() throws Exception {
+		// create context
+		context = null;
 
-	// complete mock execution result setup
-	EasyMock.replay(executionResult);
+		// complete mock execution result setup
+		EasyMock.replay(executionResult);
 
-	// execute command
-	command.execute(context);
+		// execute command
+		command.execute(context);
 
-	// Verify mocks
-	EasyMock.verify(executionResult);
-    }
+		// Verify mocks
+		EasyMock.verify(executionResult);
+	}
 
-    /**
-     * Test that command fails if file property is undefined.
-     */
-    @Test(expected = CommandInitializationFailedException.class)
-    public void testCommandFailsIfFileKeyIsUndefinedInContext() throws Exception {
-	// complete mock execution result setup
-	EasyMock.replay(executionResult);
+	/**
+	 * Test that command fails if file property is undefined.
+	 */
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfFileKeyIsUndefinedInContext() throws Exception {
+		// complete mock execution result setup
+		EasyMock.replay(executionResult);
 
-	// setup context
-	context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, this.getClass().getPackage());
-	context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
+		// setup context
+		context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, this.getClass().getPackage());
+		context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// execute command
-	command.execute(context);
+		// execute command
+		command.execute(context);
 
-	// Verify mocks
-	EasyMock.verify(executionResult);
-    }
+		// Verify mocks
+		EasyMock.verify(executionResult);
+	}
 
-    /**
-     * Test that command fails if file property is empty.
-     */
-    @Test(expected = CommandInitializationFailedException.class)
-    public void testCommandFailsIfFileKeyIsEmptyInContext() throws Exception {
-	// complete mock execution result setup
-	EasyMock.replay(executionResult);
+	/**
+	 * Test that command fails if file property is empty.
+	 */
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfFileKeyIsEmptyInContext() throws Exception {
+		// complete mock execution result setup
+		EasyMock.replay(executionResult);
 
-	// setup context
-	context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, new File(""));
-	context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, this.getClass().getPackage());
-	context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
+		// setup context
+		context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, new File(""));
+		context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, this.getClass().getPackage());
+		context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// execute command
-	command.execute(context);
+		// execute command
+		command.execute(context);
 
-	// Verify mocks
-	EasyMock.verify(executionResult);
-    }
+		// Verify mocks
+		EasyMock.verify(executionResult);
+	}
 
-    /**
-     * Test that command fails if file property contains String.
-     */
-    @Test(expected = CommandInitializationFailedException.class)
-    public void testCommandFailsIfFileKeyIsStringInContext() throws Exception {
-	// complete mock execution result setup
-	EasyMock.replay(executionResult);
+	/**
+	 * Test that command fails if file property contains String.
+	 */
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfFileKeyIsStringInContext() throws Exception {
+		// complete mock execution result setup
+		EasyMock.replay(executionResult);
 
-	// setup context
-	context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, "some-file");
-	context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, this.getClass().getPackage());
-	context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
+		// setup context
+		context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, "some-file");
+		context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, this.getClass().getPackage());
+		context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// execute command
-	command.execute(context);
+		// execute command
+		command.execute(context);
 
-	// Verify mocks
-	EasyMock.verify(executionResult);
-    }
+		// Verify mocks
+		EasyMock.verify(executionResult);
+	}
 
-    /**
-     * Test that command fails if package property is undefined.
-     */
-    @Test(expected = CommandInitializationFailedException.class)
-    public void testCommandFailsIfPackageKeyIsUndefinedInContext() throws Exception {
-	// complete mock execution result setup
-	EasyMock.replay(executionResult);
+	/**
+	 * Test that command fails if package property is undefined.
+	 */
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfPackageKeyIsUndefinedInContext() throws Exception {
+		// complete mock execution result setup
+		EasyMock.replay(executionResult);
 
-	// setup context
-	context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, new File("some file"));
-	context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
+		// setup context
+		context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, new File("some file"));
+		context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// execute command
-	command.execute(context);
+		// execute command
+		command.execute(context);
 
-	// Verify mocks
-	EasyMock.verify(executionResult);
-    }
+		// Verify mocks
+		EasyMock.verify(executionResult);
+	}
 
 }

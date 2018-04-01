@@ -29,54 +29,54 @@ package com.alpha.pineapple.command;
 @Deprecated
 public interface CommandNames {
 
-    /**
-     * Catalog name for core commands.
-     */
-    public static final String CATALOG = "com.alpha.pineapple.command";
+	/**
+	 * Catalog name for core commands.
+	 */
+	public static final String CATALOG = "com.alpha.pineapple.command";
 
-    /**
-     * Catalog name for the load-configuration command.
-     */
-    public static final String LOAD_CONFIGURATION = "load-configuration";
+	/**
+	 * Catalog name for the load-configuration command.
+	 */
+	public static final String LOAD_CONFIGURATION = "load-configuration";
 
-    /**
-     * Catalog name for the load-combined-configuration command.
-     */
-    public static final String LOAD_COMBINED_CONFIGURATION = "load-combined-configuration";
+	/**
+	 * Catalog name for the load-combined-configuration command.
+	 */
+	public static final String LOAD_COMBINED_CONFIGURATION = "load-combined-configuration";
 
-    /**
-     * Catalog name for the process-configuration command.
-     */
-    public static final String PROCESS_CONFIGURATION = "process-configuration";
+	/**
+	 * Catalog name for the process-configuration command.
+	 */
+	public static final String PROCESS_CONFIGURATION = "process-configuration";
 
-    /**
-     * Catalog name for the initialize-plugin-activator command.
-     */
-    public static final String INITIALIZE_PLUGINACTIVATOR = "initialize-plugin-activator";
+	/**
+	 * Catalog name for the initialize-plugin-activator command.
+	 */
+	public static final String INITIALIZE_PLUGINACTIVATOR = "initialize-plugin-activator";
 
-    /**
-     * Catalog name for the initialize-plugin-activator command.
-     */
-    public static final String INITIALIZE_PLUGINACTIVATOR_V2 = "initialize-plugin-activator-v2";
+	/**
+	 * Catalog name for the initialize-plugin-activator command.
+	 */
+	public static final String INITIALIZE_PLUGINACTIVATOR_V2 = "initialize-plugin-activator-v2";
 
-    /**
-     * Catalog name for the unmarshall-jaxb-objects command.
-     */
-    public static final String UNMARSHALL_JAXB_OBJECTS = "unmarshall-jaxb-objects";
+	/**
+	 * Catalog name for the unmarshall-jaxb-objects command.
+	 */
+	public static final String UNMARSHALL_JAXB_OBJECTS = "unmarshall-jaxb-objects";
 
-    /**
-     * Catalog name for the load-environment-configuration command.
-     */
-    public static final String LOAD_ENVIRONMENT_CONFIGURATION = "load-environment-configuration";
+	/**
+	 * Catalog name for the load-environment-configuration command.
+	 */
+	public static final String LOAD_ENVIRONMENT_CONFIGURATION = "load-environment-configuration";
 
-    /**
-     * Catalog name for the load-module command.
-     */
-    public static final String LOAD_MODULE = "load-module";
+	/**
+	 * Catalog name for the load-module command.
+	 */
+	public static final String LOAD_MODULE = "load-module";
 
-    /**
-     * Catalog name for the load-module-model command.
-     */
-    public static final String LOAD_MODULE_MODEL = "load-module-model";
+	/**
+	 * Catalog name for the load-module-model command.
+	 */
+	public static final String LOAD_MODULE_MODEL = "load-module-model";
 
 }

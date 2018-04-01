@@ -29,45 +29,45 @@ import java.lang.reflect.Constructor;
  */
 public class ReflectionHelper {
 
-    /**
-     * Create object instance for class which takes single String as constructor
-     * argument.
-     * 
-     * @param classs
-     *            Class to instantiate object from.
-     * @param argument
-     *            String argument which should be used as parameter when
-     *            invoking the constructor.
-     * 
-     * @return object instance of supplied class.
-     */
-    public Object createObject(Class classs, String argument) {
-	try {
-	    Class[] classArgs = { String.class };
-	    Constructor constructor;
-	    constructor = classs.getConstructor(classArgs);
-	    Object[] constructorArgs = new Object[] { argument };
-	    return constructor.newInstance(constructorArgs);
-	} catch (Exception e) {
-	    throw new InstantiationError("Object instantiation failed.");
+	/**
+	 * Create object instance for class which takes single String as constructor
+	 * argument.
+	 * 
+	 * @param classs
+	 *            Class to instantiate object from.
+	 * @param argument
+	 *            String argument which should be used as parameter when invoking
+	 *            the constructor.
+	 * 
+	 * @return object instance of supplied class.
+	 */
+	public Object createObject(Class classs, String argument) {
+		try {
+			Class[] classArgs = { String.class };
+			Constructor constructor;
+			constructor = classs.getConstructor(classArgs);
+			Object[] constructorArgs = new Object[] { argument };
+			return constructor.newInstance(constructorArgs);
+		} catch (Exception e) {
+			throw new InstantiationError("Object instantiation failed.");
+		}
 	}
-    }
 
-    /**
-     * Create object instance with no-arg constructor.
-     * 
-     * @param className
-     *            Class name to create instance of.
-     * 
-     * @return object instance of requested class.
-     */
-    public Object createObject(String className) {
-	try {
-	    Class classs = Class.forName(className);
-	    return classs.newInstance();
-	} catch (Exception e) {
-	    throw new InstantiationError("Object instantiation failed.");
+	/**
+	 * Create object instance with no-arg constructor.
+	 * 
+	 * @param className
+	 *            Class name to create instance of.
+	 * 
+	 * @return object instance of requested class.
+	 */
+	public Object createObject(String className) {
+		try {
+			Class classs = Class.forName(className);
+			return classs.newInstance();
+		} catch (Exception e) {
+			throw new InstantiationError("Object instantiation failed.");
+		}
 	}
-    }
 
 }

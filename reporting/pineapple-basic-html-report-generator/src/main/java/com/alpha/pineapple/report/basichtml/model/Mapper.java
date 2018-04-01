@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.report.basichtml.model;
 
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -31,41 +30,48 @@ import com.alpha.pineapple.model.report.basichtml.Result;
  * Maps execution results into schema generated objects.
  */
 public interface Mapper {
-	
-	/**
-	 * Create report root object.
-	 * @return report root object.
-	 */
-	public Report createReport(); 
-	
-	/**
-	 * Map operation result object into a report result object and
-	 * add it to the report.
-	 * 
-	 * @param reportRoot Report root object. 
-	 * @param result Execution result containing execution result for an operation.
-	 * 
-	 * @return report result object for operation. 
-	 */
-	public Result mapOperationToReport(Report reportRoot, ExecutionResult result);	
 
 	/**
-	 * Map model result object into a report result object and add it
-	 * to the supplied parent report result object. 
+	 * Create report root object.
 	 * 
-	 * @param operation Parent report result object which should represent a operation.
-	 * @param result Execution result containing execution result for a model.
-	 *  
+	 * @return report root object.
+	 */
+	public Report createReport();
+
+	/**
+	 * Map operation result object into a report result object and add it to the
+	 * report.
+	 * 
+	 * @param reportRoot
+	 *            Report root object.
+	 * @param result
+	 *            Execution result containing execution result for an operation.
+	 * 
+	 * @return report result object for operation.
+	 */
+	public Result mapOperationToReport(Report reportRoot, ExecutionResult result);
+
+	/**
+	 * Map model result object into a report result object and add it to the
+	 * supplied parent report result object.
+	 * 
+	 * @param operation
+	 *            Parent report result object which should represent a operation.
+	 * @param result
+	 *            Execution result containing execution result for a model.
+	 * 
 	 * @return report result object for model.
 	 */
 	public Result mapModelToReport(Result operation, ExecutionResult result);
-	
+
 	/**
-	 * Map model result object into a report result object and add it
-	 * to the supplied parent report result object. 
+	 * Map model result object into a report result object and add it to the
+	 * supplied parent report result object.
 	 * 
-	 * @param parent Parent report result object. 
-	 * @param result Execution result containing result for child.
+	 * @param parent
+	 *            Parent report result object.
+	 * @param result
+	 *            Execution result containing result for child.
 	 */
 	public Result mapChildResultToReport(Result parent, ExecutionResult result);
 }

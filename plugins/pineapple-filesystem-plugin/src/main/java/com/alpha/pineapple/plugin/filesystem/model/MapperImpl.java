@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.filesystem.model;
 
 import org.apache.commons.chain.Context;
@@ -35,10 +34,8 @@ public class MapperImpl implements Mapper {
 
 	@SuppressWarnings("unchecked")
 	public void mapVfsFilePropertiesTest(FilesystemRoot root, FileSystemSession fileSystemSession, Context context) {
-        context.put( TestVfsFilePropertiesCommand.SESSION_KEY, fileSystemSession );
-        context.put( TestVfsFilePropertiesCommand.PATH_KEY, root.targetPath );	
+		context.put(TestVfsFilePropertiesCommand.SESSION_KEY, fileSystemSession);
+		context.put(TestVfsFilePropertiesCommand.PATH_KEY, root.targetPath);
 	}
 
-	
-	
 }

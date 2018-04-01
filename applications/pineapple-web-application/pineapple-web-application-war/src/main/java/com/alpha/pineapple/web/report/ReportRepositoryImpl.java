@@ -56,170 +56,170 @@ import com.alpha.pineapple.model.report.Reports;
  */
 public class ReportRepositoryImpl implements ReportRepository {
 
-    /**
-     * Object factory.
-     */
-    @Resource
-    ObjectFactory reportModelObjectFactory;
+	/**
+	 * Object factory.
+	 */
+	@Resource
+	ObjectFactory reportModelObjectFactory;
 
-    /**
-     * Execution result factory.
-     */
-    @Resource
-    ExecutionResultFactory executionResultFactory;
+	/**
+	 * Execution result factory.
+	 */
+	@Resource
+	ExecutionResultFactory executionResultFactory;
 
-    /**
-     * Runtime directory resolver.
-     */
-    @Resource
-    RuntimeDirectoryProvider runtimeDirectoryProvider;
+	/**
+	 * Runtime directory resolver.
+	 */
+	@Resource
+	RuntimeDirectoryProvider runtimeDirectoryProvider;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider webMessageProvider;
 
-    /**
-     * Report set marshaller.
-     */
-    @Resource
-    ReportSetMarshaller reportSetMarshaller;
+	/**
+	 * Report set marshaller.
+	 */
+	@Resource
+	ReportSetMarshaller reportSetMarshaller;
 
-    /**
-     * Collection of reports.
-     */
-    Map<String, Report> reports = new ConcurrentHashMap<String, Report>();
+	/**
+	 * Collection of reports.
+	 */
+	Map<String, Report> reports = new ConcurrentHashMap<String, Report>();
 
-    /**
-     * Comparator for returning sorted stream of {@linkplain Report}.
-     */
-    Comparator<Report> byName = (e1, e2) -> e1.getDirectory().compareTo(e2.getDirectory());
+	/**
+	 * Comparator for returning sorted stream of {@linkplain Report}.
+	 */
+	Comparator<Report> byName = (e1, e2) -> e1.getDirectory().compareTo(e2.getDirectory());
 
-    /**
-     * Comparator for returning sorted stream of {@linkplain Report} in reverse
-     * order.
-     */
-    Comparator<Report> byNameReversed = byName.reversed();
+	/**
+	 * Comparator for returning sorted stream of {@linkplain Report} in reverse
+	 * order.
+	 */
+	Comparator<Report> byNameReversed = byName.reversed();
 
-    @Override
-    public void initialize(ExecutionResult result) {
+	@Override
+	public void initialize(ExecutionResult result) {
 
-	// delete without saving
-	reports.keySet().forEach(id -> reports.remove(id));
+		// delete without saving
+		reports.keySet().forEach(id -> reports.remove(id));
 
-	// load
-	String message = webMessageProvider.getMessage("rr.initialize_info");
-	ExecutionResult childResult = result.addChild(message);
-	load(childResult);
+		// load
+		String message = webMessageProvider.getMessage("rr.initialize_info");
+		ExecutionResult childResult = result.addChild(message);
+		load(childResult);
 
-	Object[] args = { this.reports.size() };
-	childResult.completeAsComputed(webMessageProvider, "rr.initialize_completed", args);
-    }
+		Object[] args = { this.reports.size() };
+		childResult.completeAsComputed(webMessageProvider, "rr.initialize_completed", args);
+	}
 
-    @Override
-    public void refresh() {
-	ExecutionResult result = executionResultFactory.startExecution("Refresh reports");
-	initialize(result);
-    }
+	@Override
+	public void refresh() {
+		ExecutionResult result = executionResultFactory.startExecution("Refresh reports");
+		initialize(result);
+	}
 
-    @Override
-    public Report add(String id, ExecutionResult result) {
-	Validate.notNull(id, "id is undefined.");
-	Validate.notEmpty(id, "id is empty.");
-	Validate.notNull(result, "result is undefined.");
+	@Override
+	public Report add(String id, ExecutionResult result) {
+		Validate.notNull(id, "id is undefined.");
+		Validate.notEmpty(id, "id is empty.");
+		Validate.notNull(result, "result is undefined.");
 
-	// return report if it exists
-	if (reports.containsKey(id))
-	    return reports.get(id);
+		// return report if it exists
+		if (reports.containsKey(id))
+			return reports.get(id);
 
-	// create report directory
-	File reportsDirectory = runtimeDirectoryProvider.getReportsDirectory();
-	File reportDirectory = new File(reportsDirectory, id);
+		// create report directory
+		File reportsDirectory = runtimeDirectoryProvider.getReportsDirectory();
+		File reportDirectory = new File(reportsDirectory, id);
 
-	// return null if report isn't valid.
-	if (!isValidReportDir(reportDirectory))
-	    return null;
+		// return null if report isn't valid.
+		if (!isValidReportDir(reportDirectory))
+			return null;
 
-	// get report information
-	Map<String, String> messages = result.getMessages();
-	String module = messages.get(MSG_MODULE);
-	String model = messages.get(MSG_ENVIRONMENT);
-	String operation = messages.get(MSG_OPERATION);
-	String resultAsString = result.getState().name();
-	long duration = result.getTime();
-	long start = result.getStartTime();
-	Date resultdate = new Date(start);
+		// get report information
+		Map<String, String> messages = result.getMessages();
+		String module = messages.get(MSG_MODULE);
+		String model = messages.get(MSG_ENVIRONMENT);
+		String operation = messages.get(MSG_OPERATION);
+		String resultAsString = result.getState().name();
+		long duration = result.getTime();
+		long start = result.getStartTime();
+		Date resultdate = new Date(start);
 
-	// add report
-	Report report = reportModelObjectFactory.createReport();
-	report.setId(id);
-	report.setModule(module);
-	report.setModel(model);
-	report.setOperation(operation);
-	// report.setResult(WordUtils.capitalizeFully(resultAsString));
-	report.setResult(resultAsString);
-	report.setStart(SIMPLE_DATE_FORMAT.format(resultdate));
-	report.setDuration(duration);
-	report.setDirectory(reportDirectory.getAbsolutePath());
-	reports.put(id, report);
+		// add report
+		Report report = reportModelObjectFactory.createReport();
+		report.setId(id);
+		report.setModule(module);
+		report.setModel(model);
+		report.setOperation(operation);
+		// report.setResult(WordUtils.capitalizeFully(resultAsString));
+		report.setResult(resultAsString);
+		report.setStart(SIMPLE_DATE_FORMAT.format(resultdate));
+		report.setDuration(duration);
+		report.setDirectory(reportDirectory.getAbsolutePath());
+		reports.put(id, report);
 
-	save();
-	return report;
-    }
+		save();
+		return report;
+	}
 
-    @Override
-    public Stream<Report> getReports() {
-	return reports.values().stream().sorted(byNameReversed);
-    }
+	@Override
+	public Stream<Report> getReports() {
+		return reports.values().stream().sorted(byNameReversed);
+	}
 
-    @Override
-    public void deleteAll() {
-	reports.keySet().forEach(report -> delete(report));
-    }
+	@Override
+	public void deleteAll() {
+		reports.keySet().forEach(report -> delete(report));
+	}
 
-    @Override
-    public void delete(String id) {
-	Validate.notNull(id, "id is undefined");
-	Validate.notEmpty(id, "id is empty");
+	@Override
+	public void delete(String id) {
+		Validate.notNull(id, "id is undefined");
+		Validate.notEmpty(id, "id is empty");
 
-	// exit if report doesn't exist
-	if (!reports.containsKey(id))
-	    return;
-	reports.remove(id);
+		// exit if report doesn't exist
+		if (!reports.containsKey(id))
+			return;
+		reports.remove(id);
 
-	save();
-    }
+		save();
+	}
 
-    /**
-     * Validate whether a file object represents a valid report directory.
-     * 
-     * @param reportDirectory
-     *            file which should be validated.
-     * 
-     * @return true if the file represents a valid report directory.
-     */
-    boolean isValidReportDir(File reportDirectory) {
-	return (reportDirectory.isDirectory());
-    }
+	/**
+	 * Validate whether a file object represents a valid report directory.
+	 * 
+	 * @param reportDirectory
+	 *            file which should be validated.
+	 * 
+	 * @return true if the file represents a valid report directory.
+	 */
+	boolean isValidReportDir(File reportDirectory) {
+		return (reportDirectory.isDirectory());
+	}
 
-    /**
-     * Load repository.
-     * 
-     * @param result
-     *            execution result for capture the outcome of the operation.
-     */
-    void load(ExecutionResult result) {
-	Reports modelReports = reportSetMarshaller.load(result);
-	reports = modelReports.getReport().stream()
-		.collect(Collectors.toConcurrentMap(Report::getId, Function.identity()));
-    }
+	/**
+	 * Load repository.
+	 * 
+	 * @param result
+	 *            execution result for capture the outcome of the operation.
+	 */
+	void load(ExecutionResult result) {
+		Reports modelReports = reportSetMarshaller.load(result);
+		reports = modelReports.getReport().stream()
+				.collect(Collectors.toConcurrentMap(Report::getId, Function.identity()));
+	}
 
-    /**
-     * Save repository.
-     */
-    void save() {
-	Reports modelReports = reportSetMarshaller.map(getReports());
-	reportSetMarshaller.save(modelReports);
-    }
+	/**
+	 * Save repository.
+	 */
+	void save() {
+		Reports modelReports = reportSetMarshaller.map(getReports());
+		reportSetMarshaller.save(modelReports);
+	}
 }

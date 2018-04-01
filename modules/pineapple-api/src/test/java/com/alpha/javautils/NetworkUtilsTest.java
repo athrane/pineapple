@@ -35,52 +35,52 @@ import org.junit.Test;
  */
 public class NetworkUtilsTest {
 
-    @Before
-    public void setUp() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    @Test
-    public void testIsValidIpPortReturnsTrueForMinValidPort() {
-	assertTrue(NetworkUtils.isValidPort(MIN_LEGAL_IP_PORT));
-    }
+	@Test
+	public void testIsValidIpPortReturnsTrueForMinValidPort() {
+		assertTrue(NetworkUtils.isValidPort(MIN_LEGAL_IP_PORT));
+	}
 
-    @Test
-    public void testIsValidIpPortReturnsTrueForMaxValidPort() {
-	assertTrue(NetworkUtils.isValidPort(MAX_LEGAL_IP_PORT));
-    }
+	@Test
+	public void testIsValidIpPortReturnsTrueForMaxValidPort() {
+		assertTrue(NetworkUtils.isValidPort(MAX_LEGAL_IP_PORT));
+	}
 
-    @Test
-    public void testIsValidIpPortReturnsFalseForInvalidPort() {
-	assertFalse(NetworkUtils.isValidPort(MIN_LEGAL_IP_PORT - 1));
-    }
+	@Test
+	public void testIsValidIpPortReturnsFalseForInvalidPort() {
+		assertFalse(NetworkUtils.isValidPort(MIN_LEGAL_IP_PORT - 1));
+	}
 
-    @Test
-    public void testIsValidIpPortReturnsFalseForInvalidPort2() {
-	assertFalse(NetworkUtils.isValidPort(MAX_LEGAL_IP_PORT + 1));
-    }
+	@Test
+	public void testIsValidIpPortReturnsFalseForInvalidPort2() {
+		assertFalse(NetworkUtils.isValidPort(MAX_LEGAL_IP_PORT + 1));
+	}
 
-    @Test
-    public void testValidateIpPortWithMinValidPort() {
-	NetworkUtils.validatePort(MIN_LEGAL_IP_PORT);
-    }
+	@Test
+	public void testValidateIpPortWithMinValidPort() {
+		NetworkUtils.validatePort(MIN_LEGAL_IP_PORT);
+	}
 
-    @Test
-    public void testValidateIpPortWithMaxValidPort() {
-	NetworkUtils.validatePort(MAX_LEGAL_IP_PORT);
-    }
+	@Test
+	public void testValidateIpPortWithMaxValidPort() {
+		NetworkUtils.validatePort(MAX_LEGAL_IP_PORT);
+	}
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testValidateIpPortWithInvalidPort() {
-	NetworkUtils.validatePort(MIN_LEGAL_IP_PORT - 1);
-    }
+	@Test(expected = IllegalArgumentException.class)
+	public void testValidateIpPortWithInvalidPort() {
+		NetworkUtils.validatePort(MIN_LEGAL_IP_PORT - 1);
+	}
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testValidateIpPortWithInvalidPort2() {
-	NetworkUtils.validatePort(MAX_LEGAL_IP_PORT + 1);
-    }
+	@Test(expected = IllegalArgumentException.class)
+	public void testValidateIpPortWithInvalidPort2() {
+		NetworkUtils.validatePort(MAX_LEGAL_IP_PORT + 1);
+	}
 
 }

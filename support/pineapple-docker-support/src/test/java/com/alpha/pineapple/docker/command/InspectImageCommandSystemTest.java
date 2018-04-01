@@ -56,90 +56,90 @@ import com.alpha.testutils.DockerTestHelper;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.docker-config.xml" })
 public class InspectImageCommandSystemTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command inspectImageCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command inspectImageCommand;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Docker session.
-     */
-    DockerSession session;
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
 
-    /**
-     * Docker helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
+	/**
+	 * Docker helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
 
-    /**
-     * Default image info (CentOS).
-     */
-    ImageInfo defaultImageInfo;
+	/**
+	 * Default image info (CentOS).
+	 */
+	ImageInfo defaultImageInfo;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
 
-	// create context
-	context = new ContextBase();
+		// create context
+		context = new ContextBase();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("root");
+		// create execution result
+		executionResult = new ExecutionResultImpl("root");
 
-	// create session
-	session = dockerHelper.createDefaultSession();
+		// create session
+		session = dockerHelper.createDefaultSession();
 
-	// create image and info's
-	defaultImageInfo = dockerHelper.createDefaultImage(session);
+		// create image and info's
+		defaultImageInfo = dockerHelper.createDefaultImage(session);
 
-    }
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that command instance can be created in application context.
-     */
-    @Test
-    public void testCanGetInstance() throws Exception {
-	assertNotNull(inspectImageCommand);
-    }
+	/**
+	 * Test that command instance can be created in application context.
+	 */
+	@Test
+	public void testCanGetInstance() throws Exception {
+		assertNotNull(inspectImageCommand);
+	}
 
-    /**
-     * Test that command can inspect image.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCommandCanInspectImage() throws Exception {
-	// setup context
-	context.put(EXECUTIONRESULT_KEY, executionResult);
-	context.put(SESSION_KEY, session);
-	context.put(IMAGE_INFO_KEY, defaultImageInfo);
+	/**
+	 * Test that command can inspect image.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCommandCanInspectImage() throws Exception {
+		// setup context
+		context.put(EXECUTIONRESULT_KEY, executionResult);
+		context.put(SESSION_KEY, session);
+		context.put(IMAGE_INFO_KEY, defaultImageInfo);
 
-	// execute command
-	inspectImageCommand.execute(context);
+		// execute command
+		inspectImageCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertTrue(context.containsKey(INSPECTED_IMAGE_KEY));
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertTrue(context.containsKey(INSPECTED_IMAGE_KEY));
+	}
 
 }

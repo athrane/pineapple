@@ -29,10 +29,10 @@ import java.util.Map;
  */
 public interface Variables {
 
-    /**
-     * Get map for variables for resolution.
-     * 
-     * @return map for variables for resolution.
-     */
-    public Map<String, String> getMap();
+	/**
+	 * Get map for variables for resolution.
+	 * 
+	 * @return map for variables for resolution.
+	 */
+	public Map<String, String> getMap();
 }

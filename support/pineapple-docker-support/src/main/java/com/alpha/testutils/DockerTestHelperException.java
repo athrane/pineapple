@@ -27,31 +27,31 @@ package com.alpha.testutils;
  */
 public class DockerTestHelperException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * DockerTestHelperException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public DockerTestHelperException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * DockerTestHelperException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public DockerTestHelperException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * DockerTestHelperException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public DockerTestHelperException(String message) {
-	super(message);
-    }
+	/**
+	 * DockerTestHelperException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public DockerTestHelperException(String message) {
+		super(message);
+	}
 
 }

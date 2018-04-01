@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.command;
 
 import javax.annotation.Resource;
@@ -41,147 +40,148 @@ import com.alpha.pineapple.test.Asserter;
 import com.alpha.pineapple.test.matchers.InfrastructureMatchers;
 
 /**
- * <p>Implementation of the <code>org.apache.commons.chain.Command</code> interface which 
- * asserts that a forward DNS lookup can resolve a host name to an IP address.</p>
+ * <p>
+ * Implementation of the <code>org.apache.commons.chain.Command</code> interface
+ * which asserts that a forward DNS lookup can resolve a host name to an IP
+ * address.
+ * </p>
  * 
- * <p>Precondition for execution of the command is definition of these keys in 
- * the context:
+ * <p>
+ * Precondition for execution of the command is definition of these keys in the
+ * context:
  * 
- * <ul> 
- * <li><code>hostname</code> defines name of the host. The type is 
+ * <ul>
+ * <li><code>hostname</code> defines name of the host. The type is
  * <code>java.lang.String</code>.</li>
  * 
- * <li><code>ip</code> defines the expected IP address to resolve the name to. 
+ * <li><code>ip</code> defines the expected IP address to resolve the name to.
  * The type is <code>java.lang.String</code>.</li>
  * 
- * <li><code>execution-result</code> contains execution result object which collects
- * information about the execution of the test. The type is 
- * <code>com.alpha.pineapple.plugin.execution.ExecutionResult</code>.</li>  
+ * <li><code>execution-result</code> contains execution result object which
+ * collects information about the execution of the test. The type is
+ * <code>com.alpha.pineapple.plugin.execution.ExecutionResult</code>.</li>
  * </ul>
- * </p>      
+ * </p>
  * 
- * <p>Postcondition after execution of the command is: 
- * <ul> 
+ * <p>
+ * Postcondition after execution of the command is:
+ * <ul>
  * <li>The the state of the supplied <code>ExecutionResult</code> is updated
- * with <code>ExecutionState.SUCCESS</code> if the test succeeded. If the 
- * test failed then the <code>ExecutionState.FAILURE</code> is returned.</li>
- * <li>If the test fails due to an exception then the exception isn't caught, 
- * but passed on the the invoker whose responsibility it is to catch it and update 
- * the <code>ExecutionResult</code> with the state <code>ExecutionState.ERROR</code>.
- * </li>
- * </ul>  
- * </p>        
+ * with <code>ExecutionState.SUCCESS</code> if the test succeeded. If the test
+ * failed then the <code>ExecutionState.FAILURE</code> is returned.</li>
+ * <li>If the test fails due to an exception then the exception isn't caught,
+ * but passed on the the invoker whose responsibility it is to catch it and
+ * update the <code>ExecutionResult</code> with the state
+ * <code>ExecutionState.ERROR</code>.</li>
+ * </ul>
+ * </p>
  */
-public class TestDnsForwardResolutionCommand implements Command
-{
-    /**
-     * Key used to identify property in context: Defines the host name to resolve.
-     */
-    public static final String HOSTNAME_KEY = "hostname";
+public class TestDnsForwardResolutionCommand implements Command {
+	/**
+	 * Key used to identify property in context: Defines the host name to resolve.
+	 */
+	public static final String HOSTNAME_KEY = "hostname";
 
-    /**
-     * Key used to identify property in context: Defines the expected IP address to resolve name to.
-     */
-    public static final String IP_KEY = "ip";  
-    
-    /**
-     * Key used to identify property in context: Contains execution result object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
-      
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-    
-    /**
-     * Host name.
-     */
-    @Initialize( HOSTNAME_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )    
-    String hostname;
+	/**
+	 * Key used to identify property in context: Defines the expected IP address to
+	 * resolve name to.
+	 */
+	public static final String IP_KEY = "ip";
 
-    /**
-     * Expected IP address.
-     */
-    @Initialize( IP_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )    
-    String ip;
- 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize( EXECUTIONRESULT_KEY )
-    @ValidateValue( ValidationPolicy.NOT_NULL )    
-    ExecutionResult executionResult;
-    
-    /**
-     * Hamcrest Matcher asserter.
-     */
-    @Resource    
-	Asserter asserter;    
-    
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
-    
-    /**
-     * Actual IP address.
-     */
-    String actualIP;
-    
-    public boolean execute( Context context ) throws Exception
-    {
-        // log debug message
-        if ( logger.isDebugEnabled() ) 
-        {
-        	logger.debug( messageProvider.getMessage("tdfrc.start") );        	
-        }
-        
-        // initialize command
-        CommandInitializer initializer = new CommandInitializerImpl();
-        initializer.initialize( context, this );
-        
-        // configure asserter with execution result		
-		asserter.setExecutionResult(executionResult);					        
-        
-        // run test
-        doTest( context );
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-        // log debug message
-        if ( logger.isDebugEnabled() ) 
-        {
-        	logger.debug( messageProvider.getMessage("tdfrc.completed") );        	
-        }
-        
-        return Command.CONTINUE_PROCESSING;
-    }
-      
-    /**
-     * Do test.
-     * 
-     * @param context
-     *            Command context.
-     * 
-     * @throws Exception
-     *             If test execution fails.
-     */
-    void doTest( Context context ) throws Exception
-    {
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
+	/**
+	 * Host name.
+	 */
+	@Initialize(HOSTNAME_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String hostname;
+
+	/**
+	 * Expected IP address.
+	 */
+	@Initialize(IP_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String ip;
+
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
+
+	/**
+	 * Hamcrest Matcher asserter.
+	 */
+	@Resource
+	Asserter asserter;
+
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
+
+	/**
+	 * Actual IP address.
+	 */
+	String actualIP;
+
+	public boolean execute(Context context) throws Exception {
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			logger.debug(messageProvider.getMessage("tdfrc.start"));
+		}
+
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
+
+		// configure asserter with execution result
+		asserter.setExecutionResult(executionResult);
+
+		// run test
+		doTest(context);
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			logger.debug(messageProvider.getMessage("tdfrc.completed"));
+		}
+
+		return Command.CONTINUE_PROCESSING;
+	}
+
+	/**
+	 * Do test.
+	 * 
+	 * @param context
+	 *            Command context.
+	 * 
+	 * @throws Exception
+	 *             If test execution fails.
+	 */
+	void doTest(Context context) throws Exception {
 		// create matcher
-    	Matcher hostIsResolvableMatcher = InfrastructureMatchers.isHostResolvableToSpecificIpAddress(ip);		
-    	        	
-    	// create assertion description
-    	Object[] args = {this.hostname, this.ip };        	
-    	String message = messageProvider.getMessage("tdfrc.assert_forward_dns_info", args );
-    	
-		// assert object        	
-    	asserter.assertObject(this.hostname, hostIsResolvableMatcher, message);
+		Matcher hostIsResolvableMatcher = InfrastructureMatchers.isHostResolvableToSpecificIpAddress(ip);
 
-        // compute result
-    	executionResult.completeAsComputed(messageProvider, "tdfrc.succeed", null, "tdfrc.failed", null );    	    	
-    }
-         
+		// create assertion description
+		Object[] args = { this.hostname, this.ip };
+		String message = messageProvider.getMessage("tdfrc.assert_forward_dns_info", args);
+
+		// assert object
+		asserter.assertObject(this.hostname, hostIsResolvableMatcher, message);
+
+		// compute result
+		executionResult.completeAsComputed(messageProvider, "tdfrc.succeed", null, "tdfrc.failed", null);
+	}
+
 }

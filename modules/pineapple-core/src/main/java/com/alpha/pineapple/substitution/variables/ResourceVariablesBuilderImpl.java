@@ -39,89 +39,89 @@ import com.alpha.pineapple.substitution.VariableSubstitutionException;
  */
 public class ResourceVariablesBuilderImpl implements ResourceVariablesBuilder {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @javax.annotation.Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@javax.annotation.Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Resource.
-     */
-    Resource resource;
+	/**
+	 * Resource.
+	 */
+	Resource resource;
 
-    /**
-     * Resource ID.
-     */
-    String resourceId;
+	/**
+	 * Resource ID.
+	 */
+	String resourceId;
 
-    @Override
-    public void setResource(Resource resource) {
-	this.resource = resource;
-    }
-
-    @Override
-    public Variables getVariables() throws VariableSubstitutionException {
-
-	// if resource is undefined throw exception
-	if (resource == null) {
-	    String message = messageProvider.getMessage("rvb.getvariables_resouce_notdefineded_error");
-	    throw new VariableSubstitutionException(message);
+	@Override
+	public void setResource(Resource resource) {
+		this.resource = resource;
 	}
 
-	// create variables data object
-	Map<String, String> variablesMap = new HashMap<String, String>();
-	DefaultVariablesImpl variables = new DefaultVariablesImpl(variablesMap);
+	@Override
+	public Variables getVariables() throws VariableSubstitutionException {
 
-	// get property list
-	List<Property> propertyList = resource.getProperty();
-	if (propertyList == null)
-	    return variables;
+		// if resource is undefined throw exception
+		if (resource == null) {
+			String message = messageProvider.getMessage("rvb.getvariables_resouce_notdefineded_error");
+			throw new VariableSubstitutionException(message);
+		}
 
-	// iterate over properties
-	for (Property property : propertyList) {
+		// create variables data object
+		Map<String, String> variablesMap = new HashMap<String, String>();
+		DefaultVariablesImpl variables = new DefaultVariablesImpl(variablesMap);
 
-	    // handle null key case
-	    if (property.getKey() == null) {
-		Object[] args = { resource.getId() };
-		String message = messageProvider.getMessage("rvb.initialize_null_key_warning", args);
-		logger.info(message);
-		continue;
-	    }
+		// get property list
+		List<Property> propertyList = resource.getProperty();
+		if (propertyList == null)
+			return variables;
 
-	    // handle empty key case
-	    if (property.getKey().isEmpty()) {
-		Object[] args = { resource.getId() };
-		String message = messageProvider.getMessage("rvb.initialize_empty_key_warning", args);
-		logger.info(message);
-		continue;
-	    }
+		// iterate over properties
+		for (Property property : propertyList) {
 
-	    // handle null value case
-	    if (property.getValue() == null) {
-		Object[] args = { resource.getId(), property.getKey() };
-		String message = messageProvider.getMessage("rvb.initialize_null_value_warning", args);
-		logger.info(message);
-		continue;
-	    }
+			// handle null key case
+			if (property.getKey() == null) {
+				Object[] args = { resource.getId() };
+				String message = messageProvider.getMessage("rvb.initialize_null_key_warning", args);
+				logger.info(message);
+				continue;
+			}
 
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		Object[] args = { property.getKey(), property.getValue(), resource.getId() };
-		String message = messageProvider.getMessage("rvb.initialize_variable_info", args);
-		logger.debug(message);
-	    }
+			// handle empty key case
+			if (property.getKey().isEmpty()) {
+				Object[] args = { resource.getId() };
+				String message = messageProvider.getMessage("rvb.initialize_empty_key_warning", args);
+				logger.info(message);
+				continue;
+			}
 
-	    // add property
-	    variablesMap.put(property.getKey(), property.getValue());
+			// handle null value case
+			if (property.getValue() == null) {
+				Object[] args = { resource.getId(), property.getKey() };
+				String message = messageProvider.getMessage("rvb.initialize_null_value_warning", args);
+				logger.info(message);
+				continue;
+			}
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				Object[] args = { property.getKey(), property.getValue(), resource.getId() };
+				String message = messageProvider.getMessage("rvb.initialize_variable_info", args);
+				logger.debug(message);
+			}
+
+			// add property
+			variablesMap.put(property.getKey(), property.getValue());
+		}
+
+		return variables;
 	}
-
-	return variables;
-    }
 
 }

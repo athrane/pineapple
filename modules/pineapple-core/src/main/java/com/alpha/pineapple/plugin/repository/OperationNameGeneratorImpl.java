@@ -34,47 +34,47 @@ import com.alpha.pineapple.plugin.PluginOperation;
  */
 public class OperationNameGeneratorImpl implements BeanNameGenerator {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
-	try {
-	    // get fully qualified class name
-	    String name = definition.getBeanClassName();
+	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
+		try {
+			// get fully qualified class name
+			String name = definition.getBeanClassName();
 
-	    // get operation class
-	    Class<?> operationClass = Class.forName(name);
+			// get operation class
+			Class<?> operationClass = Class.forName(name);
 
-	    // get operation annotation
-	    PluginOperation annotation = operationClass.getAnnotation(PluginOperation.class);
+			// get operation annotation
+			PluginOperation annotation = operationClass.getAnnotation(PluginOperation.class);
 
-	    // get operation id
-	    String operationId = annotation.value();
+			// get operation id
+			String operationId = annotation.value();
 
-	    // create operation name
-	    StringBuilder operationName = new StringBuilder();
-	    operationName.append(PluginOperation.class.getName());
-	    operationName.append(":");
-	    operationName.append(operationId);
+			// create operation name
+			StringBuilder operationName = new StringBuilder();
+			operationName.append(PluginOperation.class.getName());
+			operationName.append(":");
+			operationName.append(operationId);
 
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		StringBuilder message = new StringBuilder();
-		message.append("Generated operation name <");
-		message.append(operationName.toString());
-		message.append("> for bean <");
-		message.append(definition);
-		message.append(">.");
-		logger.debug(message.toString());
-	    }
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder message = new StringBuilder();
+				message.append("Generated operation name <");
+				message.append(operationName.toString());
+				message.append("> for bean <");
+				message.append(definition);
+				message.append(">.");
+				logger.debug(message.toString());
+			}
 
-	    return operationName.toString();
+			return operationName.toString();
 
-	} catch (ClassNotFoundException e) {
-	    throw new RuntimeException(e);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
 	}
-    }
 
 }

@@ -35,33 +35,33 @@ import com.alpha.pineapple.docker.model.rest.ObjectFactory;
  * the {@linkplain ContainerConfigurationLabels} JAXB generated type.
  */
 public class ContainerConfigurationLabelsMapAdapter
-	extends XmlAdapter<ContainerConfigurationLabels, ContainerConfigurationLabelsMap> {
+		extends XmlAdapter<ContainerConfigurationLabels, ContainerConfigurationLabelsMap> {
 
-    /**
-     * Object factory.
-     */
-    ObjectFactory objectFactory = new ObjectFactory();
+	/**
+	 * Object factory.
+	 */
+	ObjectFactory objectFactory = new ObjectFactory();
 
-    @Override
-    public ContainerConfigurationLabels marshal(ContainerConfigurationLabelsMap map) throws Exception {
-	ContainerConfigurationLabels target = objectFactory.createContainerConfigurationLabels();
-	Set<Entry<String, String>> entries = map.entrySet();
-	for (Entry<String, String> entry : entries) {
-	    ContainerConfigurationLabel label = objectFactory.createContainerConfigurationLabel();
-	    label.setKey(entry.getKey());
-	    label.setValue(entry.getValue());
-	    target.getLabel().add(label);
+	@Override
+	public ContainerConfigurationLabels marshal(ContainerConfigurationLabelsMap map) throws Exception {
+		ContainerConfigurationLabels target = objectFactory.createContainerConfigurationLabels();
+		Set<Entry<String, String>> entries = map.entrySet();
+		for (Entry<String, String> entry : entries) {
+			ContainerConfigurationLabel label = objectFactory.createContainerConfigurationLabel();
+			label.setKey(entry.getKey());
+			label.setValue(entry.getValue());
+			target.getLabel().add(label);
+		}
+		return target;
 	}
-	return target;
-    }
 
-    @Override
-    public ContainerConfigurationLabelsMap unmarshal(ContainerConfigurationLabels value) throws Exception {
-	ContainerConfigurationLabelsMap map = new ContainerConfigurationLabelsMap();
-	for (ContainerConfigurationLabel label : value.getLabel()) {
-	    map.put(label.getKey(), label.getValue());
+	@Override
+	public ContainerConfigurationLabelsMap unmarshal(ContainerConfigurationLabels value) throws Exception {
+		ContainerConfigurationLabelsMap map = new ContainerConfigurationLabelsMap();
+		for (ContainerConfigurationLabel label : value.getLabel()) {
+			map.put(label.getKey(), label.getValue());
+		}
+		return map;
 	}
-	return map;
-    }
 
 }

@@ -44,117 +44,117 @@ import com.alpha.pineapple.model.configuration.Resource;
  * Unit test of the class {@link ResourceInfoImpl }.
  */
 public class ResourceInfoTest {
-    /**
-     * Object under test.
-     */
-    ResourceInfo info;
+	/**
+	 * Object under test.
+	 */
+	ResourceInfo info;
 
-    /**
-     * Random ID.
-     */
-    String randomId;
+	/**
+	 * Random ID.
+	 */
+	String randomId;
 
-    /**
-     * Random plugin ID.
-     */
-    String randomPluginId;
+	/**
+	 * Random plugin ID.
+	 */
+	String randomPluginId;
 
-    /**
-     * Random ID.
-     */
-    String randomCredentialRefId;
+	/**
+	 * Random ID.
+	 */
+	String randomCredentialRefId;
 
-    /**
-     * Mock resource configuration marshaller.
-     */
-    ResourceConfigurationMarshaller marshaller;
+	/**
+	 * Mock resource configuration marshaller.
+	 */
+	ResourceConfigurationMarshaller marshaller;
 
-    @Before
-    public void setUp() throws Exception {
-	randomId = RandomStringUtils.randomAlphabetic(10);
-	randomPluginId = RandomStringUtils.randomAlphabetic(10);
-	randomCredentialRefId = RandomStringUtils.randomAlphabetic(10);
+	@Before
+	public void setUp() throws Exception {
+		randomId = RandomStringUtils.randomAlphabetic(10);
+		randomPluginId = RandomStringUtils.randomAlphabetic(10);
+		randomCredentialRefId = RandomStringUtils.randomAlphabetic(10);
 
-	// create marshaller
-	marshaller = createMock(ResourceConfigurationMarshaller.class);
-    }
+		// create marshaller
+		marshaller = createMock(ResourceConfigurationMarshaller.class);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	info = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		info = null;
+	}
 
-    /**
-     * Constructor test, i.e. that cache entry can be created.
-     */
-    @Test
-    public void testCanCreateInstance() {
-	Map<String, ResourcePropertyInfo> properties = new HashMap<String, ResourcePropertyInfo>();
-	info = new ResourceInfoImpl(randomId, randomPluginId, randomCredentialRefId, properties, marshaller);
+	/**
+	 * Constructor test, i.e. that cache entry can be created.
+	 */
+	@Test
+	public void testCanCreateInstance() {
+		Map<String, ResourcePropertyInfo> properties = new HashMap<String, ResourcePropertyInfo>();
+		info = new ResourceInfoImpl(randomId, randomPluginId, randomCredentialRefId, properties, marshaller);
 
-	// test
-	assertNotNull(info);
-    }
+		// test
+		assertNotNull(info);
+	}
 
-    /**
-     * Constructor rejects undefined id.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorRejectsUndefinedId() {
-	Map<String, ResourcePropertyInfo> properties = new HashMap<String, ResourcePropertyInfo>();
-	info = new ResourceInfoImpl(null, randomPluginId, randomCredentialRefId, properties, marshaller);
-    }
+	/**
+	 * Constructor rejects undefined id.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testConstructorRejectsUndefinedId() {
+		Map<String, ResourcePropertyInfo> properties = new HashMap<String, ResourcePropertyInfo>();
+		info = new ResourceInfoImpl(null, randomPluginId, randomCredentialRefId, properties, marshaller);
+	}
 
-    /**
-     * Constructor rejects undefined plugin id.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorRejectsUndefinedPluginId() {
-	Map<String, ResourcePropertyInfo> properties = new HashMap<String, ResourcePropertyInfo>();
-	info = new ResourceInfoImpl(randomId, null, randomCredentialRefId, properties, marshaller);
-    }
+	/**
+	 * Constructor rejects undefined plugin id.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testConstructorRejectsUndefinedPluginId() {
+		Map<String, ResourcePropertyInfo> properties = new HashMap<String, ResourcePropertyInfo>();
+		info = new ResourceInfoImpl(randomId, null, randomCredentialRefId, properties, marshaller);
+	}
 
-    /**
-     * Constructor accepts undefined credential reference id.
-     */
-    @Test
-    public void testConstructorAcceptsUndefinedCredentialReferenceId() {
-	Map<String, ResourcePropertyInfo> properties = new HashMap<String, ResourcePropertyInfo>();
-	info = new ResourceInfoImpl(randomId, randomPluginId, null, properties, marshaller);
+	/**
+	 * Constructor accepts undefined credential reference id.
+	 */
+	@Test
+	public void testConstructorAcceptsUndefinedCredentialReferenceId() {
+		Map<String, ResourcePropertyInfo> properties = new HashMap<String, ResourcePropertyInfo>();
+		info = new ResourceInfoImpl(randomId, randomPluginId, null, properties, marshaller);
 
-	// test
-	assertNotNull(info);
-    }
+		// test
+		assertNotNull(info);
+	}
 
-    /**
-     * Constructor rejects undefined properties.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorRejectsUndefinedProperties() {
-	info = new ResourceInfoImpl(randomId, randomPluginId, randomCredentialRefId, null, marshaller);
-    }
+	/**
+	 * Constructor rejects undefined properties.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testConstructorRejectsUndefinedProperties() {
+		info = new ResourceInfoImpl(randomId, randomPluginId, randomCredentialRefId, null, marshaller);
+	}
 
-    /**
-     * Can get resource.
-     */
-    @Test
-    public void testCanGetResource() {
+	/**
+	 * Can get resource.
+	 */
+	@Test
+	public void testCanGetResource() {
 
-	Resource resource = createMock(Resource.class);
+		Resource resource = createMock(Resource.class);
 
-	Map<String, ResourcePropertyInfo> properties = new HashMap<String, ResourcePropertyInfo>();
-	info = new ResourceInfoImpl(randomId, randomPluginId, randomCredentialRefId, properties, marshaller);
+		Map<String, ResourcePropertyInfo> properties = new HashMap<String, ResourcePropertyInfo>();
+		info = new ResourceInfoImpl(randomId, randomPluginId, randomCredentialRefId, properties, marshaller);
 
-	// create marshaller and inject
-	expect(marshaller.mapToResource(info)).andReturn(resource);
-	ReflectionTestUtils.setField(info, "resourceConfigurationMarshaller", marshaller);
-	replay(marshaller);
+		// create marshaller and inject
+		expect(marshaller.mapToResource(info)).andReturn(resource);
+		ReflectionTestUtils.setField(info, "resourceConfigurationMarshaller", marshaller);
+		replay(marshaller);
 
-	// test
-	assertEquals(resource, info.getResource());
+		// test
+		assertEquals(resource, info.getResource());
 
-	// verify mock
-	verify(marshaller);
-    }
+		// verify mock
+		verify(marshaller);
+	}
 
 }

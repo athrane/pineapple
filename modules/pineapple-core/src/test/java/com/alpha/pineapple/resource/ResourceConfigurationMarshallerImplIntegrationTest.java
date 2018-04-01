@@ -62,242 +62,241 @@ import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 
 public class ResourceConfigurationMarshallerImplIntegrationTest {
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Subject under test.
-     */
-    @Resource(name = "resourceConfigurationMarshaller")
-    ResourceConfigurationMarshaller marshaller;
+	/**
+	 * Subject under test.
+	 */
+	@Resource(name = "resourceConfigurationMarshaller")
+	ResourceConfigurationMarshaller marshaller;
 
-    /**
-     * Runtime directory resolver.
-     */
-    @Resource
-    RuntimeDirectoryProvider runtimeDirectoryProvider;
+	/**
+	 * Runtime directory resolver.
+	 */
+	@Resource
+	RuntimeDirectoryProvider runtimeDirectoryProvider;
 
-    /**
-     * Object mother for environment configuration.
-     */
-    ObjectMotherEnvironmentConfiguration envConfigMother;
+	/**
+	 * Object mother for environment configuration.
+	 */
+	ObjectMotherEnvironmentConfiguration envConfigMother;
 
-    /**
-     * Random environment id.
-     */
-    String randomEnvId;
+	/**
+	 * Random environment id.
+	 */
+	String randomEnvId;
 
-    /**
-     * Random environment id.
-     */
-    String randomEnvId2;
+	/**
+	 * Random environment id.
+	 */
+	String randomEnvId2;
 
-    /**
-     * Random description.
-     */
-    String randomDescription;
+	/**
+	 * Random description.
+	 */
+	String randomDescription;
 
-    /**
-     * Random resource id.
-     */
-    String randomResourceId;
+	/**
+	 * Random resource id.
+	 */
+	String randomResourceId;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	// initialize random fields
-	randomEnvId = RandomStringUtils.randomAlphabetic(10);
-	randomEnvId2 = RandomStringUtils.randomAlphabetic(10);
-	randomDescription = RandomStringUtils.randomAlphabetic(10);
-	randomResourceId = RandomStringUtils.randomAlphabetic(10);
+		// initialize random fields
+		randomEnvId = RandomStringUtils.randomAlphabetic(10);
+		randomEnvId2 = RandomStringUtils.randomAlphabetic(10);
+		randomDescription = RandomStringUtils.randomAlphabetic(10);
+		randomResourceId = RandomStringUtils.randomAlphabetic(10);
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// create environment configuration object mother
-	envConfigMother = new ObjectMotherEnvironmentConfiguration();
+		// create environment configuration object mother
+		envConfigMother = new ObjectMotherEnvironmentConfiguration();
 
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// delete resource configuration
-	File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), RESOURCE_FILE);
-	if (resourcesFile.exists())
-	    FileUtils.deleteQuietly(resourcesFile);
-    }
+		// delete resource configuration
+		File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), RESOURCE_FILE);
+		if (resourcesFile.exists())
+			FileUtils.deleteQuietly(resourcesFile);
+	}
 
-    @After
-    public void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 
-	// delete resource configuration
-	File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), RESOURCE_FILE);
-	if (resourcesFile.exists())
-	    FileUtils.deleteQuietly(resourcesFile);
+		// delete resource configuration
+		File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), RESOURCE_FILE);
+		if (resourcesFile.exists())
+			FileUtils.deleteQuietly(resourcesFile);
 
-	// clear the pineapple.home.dir system property
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+		// clear the pineapple.home.dir system property
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
 
-	// fail if the the pineapple.home.dir system property is set
-	assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
-    }
+		// fail if the the pineapple.home.dir system property is set
+		assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
+	}
 
-    /**
-     * Test that empty configuration can be saved.
-     */
-    @Test
-    public void testSaveEmptyConfiguration() {
-	Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
-	ExecutionResult result = new ExecutionResultImpl("Save resource configuration");
-	marshaller.save(result, envConfiguration);
+	/**
+	 * Test that empty configuration can be saved.
+	 */
+	@Test
+	public void testSaveEmptyConfiguration() {
+		Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+		ExecutionResult result = new ExecutionResultImpl("Save resource configuration");
+		marshaller.save(result, envConfiguration);
 
-	// get child result
-	ExecutionResult[] children = result.getChildren();
-	assertNotNull(children);
-	assertEquals(1, children.length);
-	ExecutionResult saveResult = children[0];
+		// get child result
+		ExecutionResult[] children = result.getChildren();
+		assertNotNull(children);
+		assertEquals(1, children.length);
+		ExecutionResult saveResult = children[0];
 
-	// test
-	assertTrue(saveResult.isSuccess());
-	File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), RESOURCE_FILE);
-	assertTrue(resourcesFile.exists());
-	assertTrue(resourcesFile.isFile());
-    }
+		// test
+		assertTrue(saveResult.isSuccess());
+		File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), RESOURCE_FILE);
+		assertTrue(resourcesFile.exists());
+		assertTrue(resourcesFile.isFile());
+	}
 
-    /**
-     * Test that configuration can be saved.
-     */
-    @Test
-    public void testSaveConfiguration() {
-	Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId);
-	ExecutionResult result = new ExecutionResultImpl("Save resource configuration");
-	marshaller.save(result, envConfiguration);
+	/**
+	 * Test that configuration can be saved.
+	 */
+	@Test
+	public void testSaveConfiguration() {
+		Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId);
+		ExecutionResult result = new ExecutionResultImpl("Save resource configuration");
+		marshaller.save(result, envConfiguration);
 
-	// get child result
-	ExecutionResult[] children = result.getChildren();
-	assertNotNull(children);
-	assertEquals(1, children.length);
-	ExecutionResult saveResult = children[0];
+		// get child result
+		ExecutionResult[] children = result.getChildren();
+		assertNotNull(children);
+		assertEquals(1, children.length);
+		ExecutionResult saveResult = children[0];
 
-	// test
-	assertTrue(saveResult.isSuccess());
-	File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), RESOURCE_FILE);
-	assertTrue(resourcesFile.exists());
-	assertTrue(resourcesFile.isFile());
-    }
+		// test
+		assertTrue(saveResult.isSuccess());
+		File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), RESOURCE_FILE);
+		assertTrue(resourcesFile.exists());
+		assertTrue(resourcesFile.isFile());
+	}
 
-    /**
-     * Test that resource configuration with no environments can be mapped.
-     */
-    @Test
-    public void testCanMapWithNoEnvironments() {
-	Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+	/**
+	 * Test that resource configuration with no environments can be mapped.
+	 */
+	@Test
+	public void testCanMapWithNoEnvironments() {
+		Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
 
-	// map
-	ConfigurationInfo configInfo = marshaller.map(envConfiguration);
+		// map
+		ConfigurationInfo configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertNotNull(configInfo);
-	assertNotNull(configInfo.getEnvironments());
-	assertEquals(0, configInfo.getEnvironments().length);
-    }
+		// test
+		assertNotNull(configInfo);
+		assertNotNull(configInfo.getEnvironments());
+		assertEquals(0, configInfo.getEnvironments().length);
+	}
 
-    /**
-     * Test that resource configuration with single environments can be mapped.
-     */
-    @Test
-    public void testCanMapWithOneEnvironments() {
-	Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId,
-		randomDescription);
+	/**
+	 * Test that resource configuration with single environments can be mapped.
+	 */
+	@Test
+	public void testCanMapWithOneEnvironments() {
+		Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId,
+				randomDescription);
 
-	// map
-	ConfigurationInfo configInfo = marshaller.map(envConfiguration);
+		// map
+		ConfigurationInfo configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertNotNull(configInfo);
-	assertNotNull(configInfo.getEnvironments());
-	assertEquals(1, configInfo.getEnvironments().length);
-    }
+		// test
+		assertNotNull(configInfo);
+		assertNotNull(configInfo.getEnvironments());
+		assertEquals(1, configInfo.getEnvironments().length);
+	}
 
-    /**
-     * Test that resource configuration with multiple environments can be
-     * mapped.
-     */
-    @Test
-    public void testCanMapMultipleEnvironments() {
-	// initialize repository
-	Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId,
-		randomDescription);
-	envConfigMother.addEnvironment(randomEnvId, envConfiguration.getEnvironments().getEnvironment());
-	envConfigMother.addEnvironment(randomEnvId2, envConfiguration.getEnvironments().getEnvironment());
+	/**
+	 * Test that resource configuration with multiple environments can be mapped.
+	 */
+	@Test
+	public void testCanMapMultipleEnvironments() {
+		// initialize repository
+		Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId,
+				randomDescription);
+		envConfigMother.addEnvironment(randomEnvId, envConfiguration.getEnvironments().getEnvironment());
+		envConfigMother.addEnvironment(randomEnvId2, envConfiguration.getEnvironments().getEnvironment());
 
-	// map
-	ConfigurationInfo configInfo = marshaller.map(envConfiguration);
+		// map
+		ConfigurationInfo configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertTrue(configInfo.containsEnvironment(randomEnvId));
-	assertTrue(configInfo.containsEnvironment(randomEnvId2));
-    }
+		// test
+		assertTrue(configInfo.containsEnvironment(randomEnvId));
+		assertTrue(configInfo.containsEnvironment(randomEnvId2));
+	}
 
-    /**
-     * Test that resource configuration with no environments can be mapped, then
-     * resource configuration with no environments can be mapped again and the
-     * number of environments is zero.
-     */
-    @Test
-    public void testCanMapWithNoEnvironmentsTwice() {
-	// map
-	Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
-	ConfigurationInfo configInfo = marshaller.map(envConfiguration);
+	/**
+	 * Test that resource configuration with no environments can be mapped, then
+	 * resource configuration with no environments can be mapped again and the
+	 * number of environments is zero.
+	 */
+	@Test
+	public void testCanMapWithNoEnvironmentsTwice() {
+		// map
+		Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+		ConfigurationInfo configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertNotNull(configInfo);
-	assertNotNull(configInfo.getEnvironments());
-	assertEquals(0, configInfo.getEnvironments().length);
+		// test
+		assertNotNull(configInfo);
+		assertNotNull(configInfo.getEnvironments());
+		assertEquals(0, configInfo.getEnvironments().length);
 
-	// map
-	envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
-	configInfo = marshaller.map(envConfiguration);
+		// map
+		envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+		configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertNotNull(configInfo);
-	assertNotNull(configInfo.getEnvironments());
-	assertEquals(0, configInfo.getEnvironments().length);
+		// test
+		assertNotNull(configInfo);
+		assertNotNull(configInfo.getEnvironments());
+		assertEquals(0, configInfo.getEnvironments().length);
 
-    }
+	}
 
-    /**
-     * Test that resource configuration with no environments can be mapped, then
-     * a environment is added to the configuration info, then resource
-     * configuration with no environments can be mapped again and the number of
-     * environments is zero.
-     */
-    @Test
-    public void testCanMapWithNoEnvironmentsTwiceDespiteAddingEnvironment() {
-	// map
-	Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
-	ConfigurationInfo configInfo = marshaller.map(envConfiguration);
+	/**
+	 * Test that resource configuration with no environments can be mapped, then a
+	 * environment is added to the configuration info, then resource configuration
+	 * with no environments can be mapped again and the number of environments is
+	 * zero.
+	 */
+	@Test
+	public void testCanMapWithNoEnvironmentsTwiceDespiteAddingEnvironment() {
+		// map
+		Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+		ConfigurationInfo configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertNotNull(configInfo);
-	assertNotNull(configInfo.getEnvironments());
-	assertEquals(0, configInfo.getEnvironments().length);
+		// test
+		assertNotNull(configInfo);
+		assertNotNull(configInfo.getEnvironments());
+		assertEquals(0, configInfo.getEnvironments().length);
 
-	// add environment
-	TreeMap<String, ResourceInfo> resourceInfos = new TreeMap<String, ResourceInfo>();
-	EnvironmentInfo environmentInfo = new EnvironmentInfoImpl(randomEnvId, randomDescription, resourceInfos);
-	configInfo.addEnvironment(environmentInfo);
+		// add environment
+		TreeMap<String, ResourceInfo> resourceInfos = new TreeMap<String, ResourceInfo>();
+		EnvironmentInfo environmentInfo = new EnvironmentInfoImpl(randomEnvId, randomDescription, resourceInfos);
+		configInfo.addEnvironment(environmentInfo);
 
-	// map
-	envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
-	configInfo = marshaller.map(envConfiguration);
+		// map
+		envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+		configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertNotNull(configInfo);
-	assertNotNull(configInfo.getEnvironments());
-	assertEquals(0, configInfo.getEnvironments().length);
+		// test
+		assertNotNull(configInfo);
+		assertNotNull(configInfo.getEnvironments());
+		assertEquals(0, configInfo.getEnvironments().length);
 
-    }
+	}
 
 }

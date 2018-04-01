@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.testutils.jetty;
 
 import java.io.IOException;
@@ -33,35 +32,35 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Simple sniffer servlet for testing. 
+ * Simple sniffer servlet for testing.
  */
 public class SnifferServlet extends HttpServlet {
 
 	/**
-	 * Serial Version UID. 
+	 * Serial Version UID.
 	 */
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {								
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().print("<h1>Welcome to some Pineapple test application</h1>");
-        response.getWriter().print("<system-properties>");
-        
-    	Properties p = System.getProperties();
-    	Enumeration keys = p.keys();
-    	while (keys.hasMoreElements()) {
-    	  String key = (String)keys.nextElement();
-    	  String value = (String)p.get(key);
-    	  response.getWriter().print("<" +  key + ">");    	  
-    	  response.getWriter().print( value );        
-    	  response.getWriter().print("</" +  key + ">");    	      	 
-    	}
-    	
-        response.getWriter().print("</system-properties>");
-    }
-	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		response.setContentType("text/html");
+		response.setStatus(HttpServletResponse.SC_OK);
+		response.getWriter().print("<h1>Welcome to some Pineapple test application</h1>");
+		response.getWriter().print("<system-properties>");
+
+		Properties p = System.getProperties();
+		Enumeration keys = p.keys();
+		while (keys.hasMoreElements()) {
+			String key = (String) keys.nextElement();
+			String value = (String) p.get(key);
+			response.getWriter().print("<" + key + ">");
+			response.getWriter().print(value);
+			response.getWriter().print("</" + key + ">");
+		}
+
+		response.getWriter().print("</system-properties>");
+	}
+
 }

@@ -129,8 +129,8 @@ public class ContainerInfoImplTest {
 	}
 
 	/**
-	 * Test that container configuration returns defined environment variables
-	 * list when queried.
+	 * Test that container configuration returns defined environment variables list
+	 * when queried.
 	 */
 	@Test
 	public void testContainerConfigurationInitiallyReturnsEnvironmentVariablesListWhenQueried() {
@@ -159,8 +159,7 @@ public class ContainerInfoImplTest {
 	}
 
 	/**
-	 * Test that container configuration returns defined command list when
-	 * queried.
+	 * Test that container configuration returns defined command list when queried.
 	 */
 	@Test
 	public void testContainerConfigurationInitiallyReturnsCommandListWhenQueried() {
@@ -219,8 +218,7 @@ public class ContainerInfoImplTest {
 	}
 
 	/**
-	 * Test that container configuration returns defined onbuild list when
-	 * queried.
+	 * Test that container configuration returns defined onbuild list when queried.
 	 */
 	@Test
 	public void testContainerConfigurationInitiallyReturnsOnbuildListWhenQueried() {
@@ -265,8 +263,8 @@ public class ContainerInfoImplTest {
 	}
 
 	/**
-	 * Test that container configuration returns initially undefined exposed
-	 * ports map.
+	 * Test that container configuration returns initially undefined exposed ports
+	 * map.
 	 */
 	@Test
 	public void testContainerConfigurationHasInitiallyUndefinedExposedPortsMap() {
@@ -295,8 +293,8 @@ public class ContainerInfoImplTest {
 	}
 
 	/**
-	 * Test that container configuration has initially undefined host
-	 * configuration, e.g null.
+	 * Test that container configuration has initially undefined host configuration,
+	 * e.g null.
 	 */
 	@Test
 	public void testContainerConfigurationHasInitiallyUndefinedHostConfig() {
@@ -478,8 +476,7 @@ public class ContainerInfoImplTest {
 	}
 
 	/**
-	 * Test that adding the same volume, then the second insert attempt is
-	 * ignored.
+	 * Test that adding the same volume, then the second insert attempt is ignored.
 	 */
 	@Test
 	public void testCanAddTheSameVolumeTwice() {
@@ -520,8 +517,8 @@ public class ContainerInfoImplTest {
 	}
 
 	/**
-	 * Test that container configuration has no environment variables defined,
-	 * i.e. the container is empty.
+	 * Test that container configuration has no environment variables defined, i.e.
+	 * the container is empty.
 	 */
 	@Test
 	public void testContainerConfigurationHasNoEnvironmentVariablesDefined() {

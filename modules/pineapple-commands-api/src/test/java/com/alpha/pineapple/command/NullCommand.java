@@ -20,9 +20,7 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.command;
-
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
@@ -31,26 +29,24 @@ import org.apache.log4j.Logger;
 /**
  * Null command used for unit testing.
  */
-public class NullCommand implements Command
-{
+public class NullCommand implements Command {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    public boolean execute( Context context ) throws Exception
-    {
-        // log debug message
-        if( logger.isDebugEnabled()) {            
-            StringBuilder message = new StringBuilder();
-            message.append( "Executing command <" );
-            message.append( this.getClass().getName());
-            message.append( ">." );
-            logger.debug( message.toString() );
-        }
-        
-        return Command.CONTINUE_PROCESSING;
-    }
+	public boolean execute(Context context) throws Exception {
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Executing command <");
+			message.append(this.getClass().getName());
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
+		return Command.CONTINUE_PROCESSING;
+	}
 
 }

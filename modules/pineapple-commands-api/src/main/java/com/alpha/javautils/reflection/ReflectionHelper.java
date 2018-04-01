@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.javautils.reflection;
 
 import java.lang.reflect.Constructor;
@@ -38,369 +37,378 @@ import com.alpha.javautils.StackTraceHelper;
 /**
  * Helper class which provides helper functions for reflection.
  */
-public class ReflectionHelper
-{
+public class ReflectionHelper {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-    
-    /**
-     * Converter bean.
-     */
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
+	/**
+	 * Converter bean.
+	 */
 	ConvertUtilsBean converterBean;
-    
+
 	/**
 	 * ReflectionHelper no-arg constructor.
 	 */
-    public ReflectionHelper() {
+	public ReflectionHelper() {
 		super();
 
 		converterBean = new ConvertUtilsBean();
 	}
 
 	/**
-     * Create object instance for class which takes single String as constructor argument.
-     * 
-     * @param classs
-     *            Class to instantiate object from.
-     * @param argument
-     *            String argument which should be used as parameter when invoking the constructor.
-     * 
-     * @return object instance of supplied class.
-     * 
-     * @throws InstantiationError If instance creation fails. 
-     */
-    public Object createObject( Class<?> classs, String argument )    
-    {
-        // validate parameters
-        Validate.notNull( classs, "classs is undefined." );
-        Validate.notNull( argument, "argument is undefined." );        
-        
-        try
-        {
-            // create string constructor argument
-            Class[] classArgs = { String.class };
-            
-            // get constructor
-            Constructor<?> constructor;            
-            constructor = classs.getConstructor( classArgs );
-            Object[] constructorArgs = new Object[] { argument };
-            return constructor.newInstance( constructorArgs );
-        }
-        catch ( Exception e )
-        {
-            // create error message
-            StringBuilder message = new StringBuilder();
-            message.append( "Object instantiation failed for class <" );
-            message.append( classs );
-            message.append( "> with exception <" );
-            message.append( StackTraceHelper.getStrackTrace( e ));
-            message.append( ">." );            
-            
-            // throw
-            throw new InstantiationError( message.toString() );
-        }
-    }
+	 * Create object instance for class which takes single String as constructor
+	 * argument.
+	 * 
+	 * @param classs
+	 *            Class to instantiate object from.
+	 * @param argument
+	 *            String argument which should be used as parameter when invoking
+	 *            the constructor.
+	 * 
+	 * @return object instance of supplied class.
+	 * 
+	 * @throws InstantiationError
+	 *             If instance creation fails.
+	 */
+	public Object createObject(Class<?> classs, String argument) {
+		// validate parameters
+		Validate.notNull(classs, "classs is undefined.");
+		Validate.notNull(argument, "argument is undefined.");
 
-    /**
-     * Create object instance with no-arg constructor.
-     * 
-     * @param className
-     *            Class name to create instance of.
-     * 
-     * @return object instance of requested class.
-     * 
-     * @throws InstantiationError If instance creation fails.
-     */
-    public Object createObject( String className )
-    {
-        // validate parameters
-        Validate.notNull( className, "className is undefined." );
-        Validate.notEmpty( className, "className is empty string." );
-                
-        try
-        {
-            Class<?> classs = Class.forName( className );                                    
-            return classs.newInstance();
-        }
-        catch ( Exception e )
-        {
-            // create error message
-            StringBuilder message = new StringBuilder();
-            message.append( "Object instantiation failed for class <" );
-            message.append( className );
-            message.append( "> with exception <" );
-            message.append( StackTraceHelper.getStrackTrace( e ));
-            message.append( ">." );            
-            
-            // throw
-            throw new InstantiationError( message.toString() );
-        }
-    }
+		try {
+			// create string constructor argument
+			Class[] classArgs = { String.class };
 
-    /**
-     * Get setter method from object. The target objects is searched for a setter method with the name set + &lt;
-     * field-name &gt;.
-     * 
-     * @param targetObject
-     *            The object which is searched for a setter method.
-     * @param field
-     *            Field on target object whose name is used to search for a corresponding setter method.
-     * 
-     * @return Setter method from target object.
-     * 
-     * @throws SecurityException If setter method resolution fails.
-     * @throws NoSuchMethodException If setter method resolution fails.
-     */
-    public Method getSetterMethod( Object targetObject, Field field ) throws SecurityException, NoSuchMethodException
-    {
-        // get field name
-        String fieldName = field.getName();
-        
-        // create setter method name
-        String setterName = createSetterMethodName( fieldName );
+			// get constructor
+			Constructor<?> constructor;
+			constructor = classs.getConstructor(classArgs);
+			Object[] constructorArgs = new Object[] { argument };
+			return constructor.newInstance(constructorArgs);
+		} catch (Exception e) {
+			// create error message
+			StringBuilder message = new StringBuilder();
+			message.append("Object instantiation failed for class <");
+			message.append(classs);
+			message.append("> with exception <");
+			message.append(StackTraceHelper.getStrackTrace(e));
+			message.append(">.");
 
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-            // create error message
-            StringBuilder message = new StringBuilder();
-            message.append( "Created setter method name <" );
-            message.append( setterName );
-            message.append( ">." );
+			// throw
+			throw new InstantiationError(message.toString());
+		}
+	}
 
-            logger.debug( message.toString() );
-        }
-               
-        // get class for target object
-        Class<? extends Object> targetClass = targetObject.getClass();
+	/**
+	 * Create object instance with no-arg constructor.
+	 * 
+	 * @param className
+	 *            Class name to create instance of.
+	 * 
+	 * @return object instance of requested class.
+	 * 
+	 * @throws InstantiationError
+	 *             If instance creation fails.
+	 */
+	public Object createObject(String className) {
+		// validate parameters
+		Validate.notNull(className, "className is undefined.");
+		Validate.notEmpty(className, "className is empty string.");
 
-        // define setter parameter type 
-        Class[] setterParamsType = { field.getType() };        
-        
-        // lookup setter method on target class
-        Method setterMethod;
-        setterMethod = targetClass.getMethod( setterName.toString(), setterParamsType );
+		try {
+			Class<?> classs = Class.forName(className);
+			return classs.newInstance();
+		} catch (Exception e) {
+			// create error message
+			StringBuilder message = new StringBuilder();
+			message.append("Object instantiation failed for class <");
+			message.append(className);
+			message.append("> with exception <");
+			message.append(StackTraceHelper.getStrackTrace(e));
+			message.append(">.");
 
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-            // create error message
-            StringBuilder message = new StringBuilder();
-            message.append( "Looked up setter method <" );
-            message.append( setterMethod );
-            message.append( "> on target object <" );
-            message.append( targetObject );
-            message.append( "> from field <" );
-            message.append( field );
-            message.append( ">." );
-            
-            logger.debug( message.toString() );
-        }
-        
-        return setterMethod;
-    }
+			// throw
+			throw new InstantiationError(message.toString());
+		}
+	}
 
-    /**
-     * Create setter method name from the name of the field.
-     *  
-     * @param String fieldName The name of the field..
-     * 
-     * @return Setter method name .
-     */
-    String createSetterMethodName( String fieldName )
-    {
-        // validate parameters
-        Validate.notNull( fieldName );
-        
-        // create setter method name
-        StringBuilder setterName = new StringBuilder();
-        setterName.append( "set" );
-        setterName.append( StringUtils.capitalize( fieldName ) );
-        return setterName.toString();
-    }
+	/**
+	 * Get setter method from object. The target objects is searched for a setter
+	 * method with the name set + &lt; field-name &gt;.
+	 * 
+	 * @param targetObject
+	 *            The object which is searched for a setter method.
+	 * @param field
+	 *            Field on target object whose name is used to search for a
+	 *            corresponding setter method.
+	 * 
+	 * @return Setter method from target object.
+	 * 
+	 * @throws SecurityException
+	 *             If setter method resolution fails.
+	 * @throws NoSuchMethodException
+	 *             If setter method resolution fails.
+	 */
+	public Method getSetterMethod(Object targetObject, Field field) throws SecurityException, NoSuchMethodException {
+		// get field name
+		String fieldName = field.getName();
 
-    /**
-     * Invoke setter method on target object.
-     * 
-     * @param targetObject
-     *            The object on which the setter method is invoked.
-     * @param field
-     *            Field on target object whose name is used to search for a setter method.
-     * @param setterParameter
-     *            The value which used when the setter method is invoked.
-     * 
-     * @throws SecurityException If setter method invocation fails.
-     * @throws NoSuchMethodException If setter method invocation fails.
-     * @throws IllegalArgumentException If setter method invocation fails.
-     * @throws IllegalAccessException If setter method invocation fails.
-     * @throws InvocationTargetException If setter method invocation fails.
-     */
-    public void invokeSetterMethod( Object targetObject, Field field, Object setterParameter )
-        throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException,
-        InvocationTargetException
-    {
-        // validate parameters
-        Validate.notNull( targetObject );
-        Validate.notNull( field );       
-        
-        // lookup setter
-        Method setterMethod = getSetterMethod( targetObject, field );
+		// create setter method name
+		String setterName = createSetterMethodName(fieldName);
 
-        // initialize parameter
-        Object[] setterArgs = new Object[] { setterParameter };
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			// create error message
+			StringBuilder message = new StringBuilder();
+			message.append("Created setter method name <");
+			message.append(setterName);
+			message.append(">.");
 
-        // invoke setter
-        setterMethod.invoke( targetObject, setterArgs );
+			logger.debug(message.toString());
+		}
 
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-            // create error message
-            StringBuilder message = new StringBuilder();
-            message.append( "Invoked setter method <" );
-            message.append( setterMethod );
-            message.append( "> on target object <" );
-            message.append( targetObject );
-            message.append( "> with parameter <" );
-            message.append( setterParameter );
-            message.append( ">." );
-            
-            logger.debug( message.toString() );
-        }        
-    }
+		// get class for target object
+		Class<? extends Object> targetClass = targetObject.getClass();
 
-    /**
-     * <p>Set field value on on target object.</p>
-     * 
-     * <p>If the type of the field is primitive (i.e. int) and the value 
-     * is <code>null</code> then the assign is skipped. As null assignments to
-     * primitives don't go well</p>
-     *
-     * <p>If the type of the value is String and the type of the field is primitive, then
-     * then String value to converted to the primitive type before the value is assigned.</p>
-     * 
-     * <p>If the type of the value is String and the type of the field is <code>String[]</code>, then
-     * then String value to converted to the string array entries before the value is assigned.</p>  
-     *  
-     * @param targetObject
-     *            The object on which the field is defined.
-     * @param field
-     *            Field on target object whose value is set.
-     * @param fieldValue
-     *            The value which is assigned to the field.
-     *             
-     * @throws IllegalAccessException If field assignment fails. 
-     * @throws IllegalArgumentException If field assignment fails. 
-     */    
-    public void setFieldValue( Object targetObject, Field field, Object fieldValue ) throws IllegalArgumentException, IllegalAccessException
-    {
-        // validate parameters
-        Validate.notNull( targetObject );
-        Validate.notNull( field );       
+		// define setter parameter type
+		Class[] setterParamsType = { field.getType() };
 
-        // make field accessible
-        if (!field.isAccessible()) {
-            field.setAccessible( true );
-        }
-        
-        // get field type
-        Class<?> fieldType = field.getType();
+		// lookup setter method on target class
+		Method setterMethod;
+		setterMethod = targetClass.getMethod(setterName.toString(), setterParamsType);
 
-        // skip assignment if value is null and type is primitive
-        if (fieldValue == null && fieldType.isPrimitive() ) {
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			// create error message
+			StringBuilder message = new StringBuilder();
+			message.append("Looked up setter method <");
+			message.append(setterMethod);
+			message.append("> on target object <");
+			message.append(targetObject);
+			message.append("> from field <");
+			message.append(field);
+			message.append(">.");
 
-            // log debug message
-            if ( logger.isDebugEnabled() )
-            {
-                // create error message
-                StringBuilder message = new StringBuilder();
-                message.append( "Skipping null value assignment to primitive field <" ); 
-                message.append( field );            
-                message.append( "> on target object <" );
-                message.append( targetObject );
-                message.append( ">." );
-                
-                logger.debug( message.toString() );
-            }        
+			logger.debug(message.toString());
+		}
 
-            // exit
-            return; 
-        }
-        
-        // convert value if type is string, and string isn't compatible with target type   
-        if(fieldValue instanceof String) {
-        	
-        	// assign value to string variable
-        	String valueAsString = (String) fieldValue; 
-        
-        	// target type is primitive then convert
-        	if (fieldType.isPrimitive()) {
-        		            	
-                // log debug message
-                if ( logger.isDebugEnabled() )
-                {
-                    // create error message
-                    StringBuilder message = new StringBuilder();
-                    message.append( "Converting field value of type String <" ); 
-                    message.append( fieldValue );            
-                    message.append( "> to primitive type  <" );
-                    message.append( fieldType );
-                    message.append( ">." );
-                    
-                    logger.debug( message.toString() );
-                }        
+		return setterMethod;
+	}
 
-            	// convert from string to primitive type
-            	fieldValue = converterBean.convert(valueAsString, fieldType);                
-        	}
+	/**
+	 * Create setter method name from the name of the field.
+	 * 
+	 * @param String
+	 *            fieldName The name of the field..
+	 * 
+	 * @return Setter method name .
+	 */
+	String createSetterMethodName(String fieldName) {
+		// validate parameters
+		Validate.notNull(fieldName);
 
-        	// if target type is string[] then convert string to string[]
-        	if (isStringArray(fieldType)) {
+		// create setter method name
+		StringBuilder setterName = new StringBuilder();
+		setterName.append("set");
+		setterName.append(StringUtils.capitalize(fieldName));
+		return setterName.toString();
+	}
 
-                // log debug message
-                if ( logger.isDebugEnabled() )
-                {
-                    // create error message
-                    StringBuilder message = new StringBuilder();
-                    message.append( "Converting field value of type String <" ); 
-                    message.append( fieldValue );            
-                    message.append( "> to String[] <" );
-                    message.append( fieldType );
-                    message.append( ">." );
-                    
-                    logger.debug( message.toString() );
-                }        
+	/**
+	 * Invoke setter method on target object.
+	 * 
+	 * @param targetObject
+	 *            The object on which the setter method is invoked.
+	 * @param field
+	 *            Field on target object whose name is used to search for a setter
+	 *            method.
+	 * @param setterParameter
+	 *            The value which used when the setter method is invoked.
+	 * 
+	 * @throws SecurityException
+	 *             If setter method invocation fails.
+	 * @throws NoSuchMethodException
+	 *             If setter method invocation fails.
+	 * @throws IllegalArgumentException
+	 *             If setter method invocation fails.
+	 * @throws IllegalAccessException
+	 *             If setter method invocation fails.
+	 * @throws InvocationTargetException
+	 *             If setter method invocation fails.
+	 */
+	public void invokeSetterMethod(Object targetObject, Field field, Object setterParameter) throws SecurityException,
+			NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+		// validate parameters
+		Validate.notNull(targetObject);
+		Validate.notNull(field);
 
-            	// convert from string to primitive type
-            	fieldValue = converterBean.convert(valueAsString, fieldType);                
-        		
-        	}
+		// lookup setter
+		Method setterMethod = getSetterMethod(targetObject, field);
 
-        }
-                       
-        // do assignment
-        field.set( targetObject, fieldValue );
-                
-    }
+		// initialize parameter
+		Object[] setterArgs = new Object[] { setterParameter };
 
-    /**
-     * Determine whether field type is <code>String[]</code>. 
-     * @param fieldType The field type to test.
-     * @return True if field type is <code>String[]</code>.
-     */
+		// invoke setter
+		setterMethod.invoke(targetObject, setterArgs);
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			// create error message
+			StringBuilder message = new StringBuilder();
+			message.append("Invoked setter method <");
+			message.append(setterMethod);
+			message.append("> on target object <");
+			message.append(targetObject);
+			message.append("> with parameter <");
+			message.append(setterParameter);
+			message.append(">.");
+
+			logger.debug(message.toString());
+		}
+	}
+
+	/**
+	 * <p>
+	 * Set field value on on target object.
+	 * </p>
+	 * 
+	 * <p>
+	 * If the type of the field is primitive (i.e. int) and the value is
+	 * <code>null</code> then the assign is skipped. As null assignments to
+	 * primitives don't go well
+	 * </p>
+	 *
+	 * <p>
+	 * If the type of the value is String and the type of the field is primitive,
+	 * then then String value to converted to the primitive type before the value is
+	 * assigned.
+	 * </p>
+	 * 
+	 * <p>
+	 * If the type of the value is String and the type of the field is
+	 * <code>String[]</code>, then then String value to converted to the string
+	 * array entries before the value is assigned.
+	 * </p>
+	 * 
+	 * @param targetObject
+	 *            The object on which the field is defined.
+	 * @param field
+	 *            Field on target object whose value is set.
+	 * @param fieldValue
+	 *            The value which is assigned to the field.
+	 * 
+	 * @throws IllegalAccessException
+	 *             If field assignment fails.
+	 * @throws IllegalArgumentException
+	 *             If field assignment fails.
+	 */
+	public void setFieldValue(Object targetObject, Field field, Object fieldValue)
+			throws IllegalArgumentException, IllegalAccessException {
+		// validate parameters
+		Validate.notNull(targetObject);
+		Validate.notNull(field);
+
+		// make field accessible
+		if (!field.isAccessible()) {
+			field.setAccessible(true);
+		}
+
+		// get field type
+		Class<?> fieldType = field.getType();
+
+		// skip assignment if value is null and type is primitive
+		if (fieldValue == null && fieldType.isPrimitive()) {
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				// create error message
+				StringBuilder message = new StringBuilder();
+				message.append("Skipping null value assignment to primitive field <");
+				message.append(field);
+				message.append("> on target object <");
+				message.append(targetObject);
+				message.append(">.");
+
+				logger.debug(message.toString());
+			}
+
+			// exit
+			return;
+		}
+
+		// convert value if type is string, and string isn't compatible with target type
+		if (fieldValue instanceof String) {
+
+			// assign value to string variable
+			String valueAsString = (String) fieldValue;
+
+			// target type is primitive then convert
+			if (fieldType.isPrimitive()) {
+
+				// log debug message
+				if (logger.isDebugEnabled()) {
+					// create error message
+					StringBuilder message = new StringBuilder();
+					message.append("Converting field value of type String <");
+					message.append(fieldValue);
+					message.append("> to primitive type  <");
+					message.append(fieldType);
+					message.append(">.");
+
+					logger.debug(message.toString());
+				}
+
+				// convert from string to primitive type
+				fieldValue = converterBean.convert(valueAsString, fieldType);
+			}
+
+			// if target type is string[] then convert string to string[]
+			if (isStringArray(fieldType)) {
+
+				// log debug message
+				if (logger.isDebugEnabled()) {
+					// create error message
+					StringBuilder message = new StringBuilder();
+					message.append("Converting field value of type String <");
+					message.append(fieldValue);
+					message.append("> to String[] <");
+					message.append(fieldType);
+					message.append(">.");
+
+					logger.debug(message.toString());
+				}
+
+				// convert from string to primitive type
+				fieldValue = converterBean.convert(valueAsString, fieldType);
+
+			}
+
+		}
+
+		// do assignment
+		field.set(targetObject, fieldValue);
+
+	}
+
+	/**
+	 * Determine whether field type is <code>String[]</code>.
+	 * 
+	 * @param fieldType
+	 *            The field type to test.
+	 * @return True if field type is <code>String[]</code>.
+	 */
 	boolean isStringArray(Class<?> fieldType) {
-		
-    	// exit if type isn't array		
-		if (! fieldType.isArray()) return false; 
-		
-    	// get component type
-    	Class<?> componentType = fieldType.getComponentType();
 
-    	// return true component type is string
-    	return componentType.equals(java.lang.String.class);
+		// exit if type isn't array
+		if (!fieldType.isArray())
+			return false;
+
+		// get component type
+		Class<?> componentType = fieldType.getComponentType();
+
+		// return true component type is string
+		return componentType.equals(java.lang.String.class);
 	}
 }
-

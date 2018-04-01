@@ -38,65 +38,65 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class ExecutionContextRepositoryImpl implements ExecutionContextRepository {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Collection of current contexts.
-     */
-    Map<ExecutionResult, Context> contexts = new HashMap<ExecutionResult, Context>();
+	/**
+	 * Collection of current contexts.
+	 */
+	Map<ExecutionResult, Context> contexts = new HashMap<ExecutionResult, Context>();
 
-    @Override
-    public void register(ExecutionInfo info, Context context) {
-	Validate.notNull(context, "context is undefined");
-	Validate.notNull(info, "info is undefined");
+	@Override
+	public void register(ExecutionInfo info, Context context) {
+		Validate.notNull(context, "context is undefined");
+		Validate.notNull(info, "info is undefined");
 
-	ExecutionResult result = info.getResult();
-	contexts.put(result, context);
-    }
-
-    @Override
-    public void unregister(Context context) {
-	Validate.notNull(context, "context is undefined");
-
-	if (!contexts.containsValue(context))
-	    return;
-	contexts.remove(context);
-    }
-
-    @Override
-    public Context get(ExecutionInfo info) {
-	Validate.notNull(info, "info is undefined");
-
-	ExecutionResult result = info.getResult();
-	if (!contexts.containsKey(result))
-	    return null;
-	return contexts.get(result);
-    }
-
-    @Override
-    public Context get(ExecutionResult result) {
-	Validate.notNull(result, "result is undefined");
-
-	// if context is defined return it
-	if (contexts.containsKey(result)) {
-	    return contexts.get(result);
+		ExecutionResult result = info.getResult();
+		contexts.put(result, context);
 	}
 
-	// exit if result is root result
-	if (result.isRoot())
-	    return null;
+	@Override
+	public void unregister(Context context) {
+		Validate.notNull(context, "context is undefined");
 
-	// try to resolve info using the parent result
-	return get(result.getParent());
-    }
+		if (!contexts.containsValue(context))
+			return;
+		contexts.remove(context);
+	}
+
+	@Override
+	public Context get(ExecutionInfo info) {
+		Validate.notNull(info, "info is undefined");
+
+		ExecutionResult result = info.getResult();
+		if (!contexts.containsKey(result))
+			return null;
+		return contexts.get(result);
+	}
+
+	@Override
+	public Context get(ExecutionResult result) {
+		Validate.notNull(result, "result is undefined");
+
+		// if context is defined return it
+		if (contexts.containsKey(result)) {
+			return contexts.get(result);
+		}
+
+		// exit if result is root result
+		if (result.isRoot())
+			return null;
+
+		// try to resolve info using the parent result
+		return get(result.getParent());
+	}
 
 }

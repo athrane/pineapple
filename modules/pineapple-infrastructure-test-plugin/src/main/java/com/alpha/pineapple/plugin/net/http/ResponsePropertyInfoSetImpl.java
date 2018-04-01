@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.http;
 
 import java.util.ArrayList;
@@ -31,11 +30,11 @@ import org.hamcrest.Matcher;
 
 public class ResponsePropertyInfoSetImpl implements ResponsePropertyInfoSet {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-	
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	/**
 	 * List of response property info objects.
 	 */
@@ -44,39 +43,38 @@ public class ResponsePropertyInfoSetImpl implements ResponsePropertyInfoSet {
 	public ResponsePropertyInfoSetImpl() {
 		this.properties = new ArrayList<ResponsePropertyInfo>();
 	}
-	
+
 	public ResponsePropertyInfo[] getProperties() {
-		return properties.toArray(new ResponsePropertyInfo[properties.size()] );		
+		return properties.toArray(new ResponsePropertyInfo[properties.size()]);
 	}
 
 	public void addProperty(String name, String xpath, Matcher<?> intra, Matcher<?> inter) {
-		
+
 		// validate parameters
 		Validate.notNull(name, "name is undefined");
-		Validate.notNull(xpath, "xpath is undefined");		
-		
+		Validate.notNull(xpath, "xpath is undefined");
+
 		// create property info
-		ResponsePropertyInfo property = new ResponsePropertyInfoImpl(name, xpath, intra, inter);		
-				
+		ResponsePropertyInfo property = new ResponsePropertyInfoImpl(name, xpath, intra, inter);
+
 		// add property
-		properties.add( property);
-		
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-            StringBuilder message = new StringBuilder();
-            message.append( "Successfully registered response property with name <" );
-            message.append( name );
-            message.append( ">, XPath expression <" );
-            message.append( xpath );
-            message.append( ">, intra matcher <" );
-            message.append( intra );
-            message.append( "> and inter matcher <" );
-            message.append( inter );
-            message.append( ">." );            
-            logger.debug( message.toString() );
-        }
-		
+		properties.add(property);
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Successfully registered response property with name <");
+			message.append(name);
+			message.append(">, XPath expression <");
+			message.append(xpath);
+			message.append(">, intra matcher <");
+			message.append(intra);
+			message.append("> and inter matcher <");
+			message.append(inter);
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
 	}
 
 }

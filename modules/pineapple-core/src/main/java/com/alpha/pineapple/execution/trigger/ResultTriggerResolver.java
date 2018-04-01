@@ -34,15 +34,15 @@ import com.alpha.pineapple.model.module.model.Trigger;
  */
 public interface ResultTriggerResolver {
 
-    /**
-     * Resolves stream of candidate list of trigger to execute.
-     * 
-     * @param triggers
-     *            list of candidate triggers to resolve..
-     * @param state
-     *            execution of model where triggers are defined.
-     * 
-     * @return stream of trigger to execute.
-     */
-    Stream<Trigger> resolve(Stream<Trigger> triggers, ExecutionState state);
+	/**
+	 * Resolves stream of candidate list of trigger to execute.
+	 * 
+	 * @param triggers
+	 *            list of candidate triggers to resolve..
+	 * @param state
+	 *            execution of model where triggers are defined.
+	 * 
+	 * @return stream of trigger to execute.
+	 */
+	Stream<Trigger> resolve(Stream<Trigger> triggers, ExecutionState state);
 }

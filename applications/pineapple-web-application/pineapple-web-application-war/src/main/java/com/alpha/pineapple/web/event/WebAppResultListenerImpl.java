@@ -41,18 +41,18 @@ import com.alpha.pineapple.execution.ResultListener;
  */
 public class WebAppResultListenerImpl implements ResultListener {
 
-    /**
-     * Web application reactor.
-     */
-    @Resource
-    Reactor webAppReactor;
+	/**
+	 * Web application reactor.
+	 */
+	@Resource
+	Reactor webAppReactor;
 
-    /**
-     * Post event with result notification as key.
-     */
-    @Override
-    public void notify(ExecutionResultNotification notification) {
-	webAppReactor.notify(REACTOR_TOPIC_SERVICE_NOTIFICATION, Event.wrap(notification));
-    }
+	/**
+	 * Post event with result notification as key.
+	 */
+	@Override
+	public void notify(ExecutionResultNotification notification) {
+		webAppReactor.notify(REACTOR_TOPIC_SERVICE_NOTIFICATION, Event.wrap(notification));
+	}
 
 }

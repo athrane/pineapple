@@ -33,47 +33,47 @@ import org.junit.Test;
  */
 public class ImageInfoImplTest {
 
-    /**
-     * Subject under test.
-     */
-    ImageInfoImpl imageInfo;
+	/**
+	 * Subject under test.
+	 */
+	ImageInfoImpl imageInfo;
 
-    /**
-     * Random repository.
-     */
-    String randomRepository;
+	/**
+	 * Random repository.
+	 */
+	String randomRepository;
 
-    /**
-     * Random tag.
-     */
-    String randomTag;
+	/**
+	 * Random tag.
+	 */
+	String randomTag;
 
-    @Before
-    public void setUp() throws Exception {
-	randomRepository = RandomStringUtils.randomAlphabetic(10).toLowerCase();
-	randomTag = RandomStringUtils.randomAlphabetic(10);
-    }
+	@Before
+	public void setUp() throws Exception {
+		randomRepository = RandomStringUtils.randomAlphabetic(10).toLowerCase();
+		randomTag = RandomStringUtils.randomAlphabetic(10);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    @Test
-    public void testIsTagDefined() {
-	imageInfo = new ImageInfoImpl(randomRepository, randomTag);
-	assertTrue(imageInfo.isTagDefined());
-    }
+	@Test
+	public void testIsTagDefined() {
+		imageInfo = new ImageInfoImpl(randomRepository, randomTag);
+		assertTrue(imageInfo.isTagDefined());
+	}
 
-    @Test
-    public void testIsTagDefinedReturnsFalseIfTagIsEmpty() {
-	imageInfo = new ImageInfoImpl(randomRepository, "");
-	assertFalse(imageInfo.isTagDefined());
-    }
+	@Test
+	public void testIsTagDefinedReturnsFalseIfTagIsEmpty() {
+		imageInfo = new ImageInfoImpl(randomRepository, "");
+		assertFalse(imageInfo.isTagDefined());
+	}
 
-    @Test
-    public void testIsTagDefinedReturnsFalseIfTagIsUndefined() {
-	imageInfo = new ImageInfoImpl(randomRepository, null);
-	assertFalse(imageInfo.isTagDefined());
-    }
+	@Test
+	public void testIsTagDefinedReturnsFalseIfTagIsUndefined() {
+		imageInfo = new ImageInfoImpl(randomRepository, null);
+		assertFalse(imageInfo.isTagDefined());
+	}
 
 }

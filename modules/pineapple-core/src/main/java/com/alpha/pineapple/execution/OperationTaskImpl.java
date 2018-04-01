@@ -50,500 +50,501 @@ import com.alpha.pineapple.module.ModuleRepository;
  */
 public class OperationTaskImpl implements OperationTask {
 
-    /**
-     * Default version for null modules.
-     */
-    static final String DEFAULT_NULL_VERSION = "1.0.0";
+	/**
+	 * Default version for null modules.
+	 */
+	static final String DEFAULT_NULL_VERSION = "1.0.0";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Execution context repository.
-     */
-    @Resource
-    ExecutionContextRepository executionContextRepository;
+	/**
+	 * Execution context repository.
+	 */
+	@Resource
+	ExecutionContextRepository executionContextRepository;
 
-    /**
-     * Result repository.
-     */
-    @Resource
-    ResultRepository resultRepository;
+	/**
+	 * Result repository.
+	 */
+	@Resource
+	ResultRepository resultRepository;
 
-    /**
-     * Module repository.
-     */
-    @Resource
-    ModuleRepository moduleRepository;
-    
-    /**
-     * Command runner
-     */
-    @Resource
-    CommandRunner commandRunner;
+	/**
+	 * Module repository.
+	 */
+	@Resource
+	ModuleRepository moduleRepository;
 
-    /**
-     * Initialize operation command.
-     */
-    @Resource
-    Command initializeOperationCommand;
+	/**
+	 * Command runner
+	 */
+	@Resource
+	CommandRunner commandRunner;
 
-    /**
-     * Unmarshall JAXB objects command.
-     */
-    @Resource
-    Command unmarshallJAXBObjectsCommand;
+	/**
+	 * Initialize operation command.
+	 */
+	@Resource
+	Command initializeOperationCommand;
 
-    /**
-     * Invoke plugins command.
-     */
-    @Resource
-    Command invokePluginsCommand;
+	/**
+	 * Unmarshall JAXB objects command.
+	 */
+	@Resource
+	Command unmarshallJAXBObjectsCommand;
 
-    public void execute(ExecutionInfo info) {
-	// validate parameters
-	Validate.notNull(info, "execution info is undefined.");
+	/**
+	 * Invoke plugins command.
+	 */
+	@Resource
+	Command invokePluginsCommand;
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { info.getModuleInfo().getId(), Thread.currentThread().getName() };
-	    String message = messageProvider.getMessage("aot.invoke_operation_info", args);
-	    logger.debug(message);
+	public void execute(ExecutionInfo info) {
+		// validate parameters
+		Validate.notNull(info, "execution info is undefined.");
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { info.getModuleInfo().getId(), Thread.currentThread().getName() };
+			String message = messageProvider.getMessage("aot.invoke_operation_info", args);
+			logger.debug(message);
+		}
+
+		// create detached result for initialization
+		ExecutionResult initResult = new ExecutionResultImpl("Initialization result");
+
+		// configure command runner with execution result
+		commandRunner.setExecutionResult(initResult);
+
+		// create and register context
+		Context context = commandRunner.createContext();
+		executionContextRepository.register(info, context);
+
+		// execute
+		executeWithRegisteredContext(info, context);
+
+		// unregister
+		executionContextRepository.unregister(context);
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { info.getModuleInfo().getId(), Thread.currentThread().getName() };
+			String message = messageProvider.getMessage("aot.invoke_operation_completed", args);
+			logger.debug(message);
+		}
 	}
 
-	// create detached result for initialization
-	ExecutionResult initResult = new ExecutionResultImpl("Initialization result");
+	@Override
+	public ExecutionInfo execute(String operation, String environment, String module) {
 
-	// configure command runner with execution result
-	commandRunner.setExecutionResult(initResult);
+		// get module info
+		ModuleInfo moduleInfo = moduleRepository.resolveModule(module, environment);
 
-	// create and register context
-	Context context = commandRunner.createContext();
-	executionContextRepository.register(info, context);
+		// create execution info
+		ExecutionInfo executionInfo = resultRepository.startExecution(moduleInfo, environment, operation);
 
-	// execute
-	executeWithRegisteredContext(info, context);
-
-	// unregister
-	executionContextRepository.unregister(context);
-
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { info.getModuleInfo().getId(), Thread.currentThread().getName() };
-	    String message = messageProvider.getMessage("aot.invoke_operation_completed", args);
-	    logger.debug(message);
-	}
-    }
-
-    @Override
-    public ExecutionInfo execute(String operation, String environment, String module) {
-
-	// get module info
-	ModuleInfo moduleInfo = moduleRepository.resolveModule(module, environment);
-
-	// create execution info
-	ExecutionInfo executionInfo = resultRepository.startExecution(moduleInfo, environment, operation);
-
-	execute(executionInfo);	
-	return executionInfo;
-    }
-    
-    @Override
-    public ExecutionInfo executeComposite(String operation, String environment, String module, String description, ExecutionResult result) {
-	
-	// get module info
-	ModuleInfo moduleInfo = moduleRepository.resolveModule(module, environment);
-	
-	// create execution info
-	ExecutionInfo executionInfo = resultRepository.startCompositeExecution(moduleInfo, environment, operation, description, result);
-
-	execute(executionInfo);	
-	return executionInfo;
-    }
-    
-    /**
-     * Execute operation with a registered context with the execution context
-     * repository.
-     * 
-     * @param info
-     *            execution info for the operation
-     * @param context
-     *            operation context.
-     */
-    void executeWithRegisteredContext(ExecutionInfo info, Context context) {
-
-	// initialize operation
-	ExecutionResult commandResult = initializeOperation(info, context);
-
-	// exit if command failed
-	if (!commandRunner.lastExecutionSucceeded()) {
-	    handleUnsuccessfulExecution(info, commandResult, "aot.initialize_operation_failed");
-	    return;
+		execute(executionInfo);
+		return executionInfo;
 	}
 
-	// load module
-	if (isModuleDefined(info)) {
-	    commandResult = loadModule(info, context);
+	@Override
+	public ExecutionInfo executeComposite(String operation, String environment, String module, String description,
+			ExecutionResult result) {
 
-	    // exit if command failed
-	    if (!commandRunner.lastExecutionSucceeded()) {
-		handleUnsuccessfulExecution(info, commandResult, "aot.load_module_failed");
-		return;
-	    }
-	} else {
-	    handleUndefinedModule(info, context);
+		// get module info
+		ModuleInfo moduleInfo = moduleRepository.resolveModule(module, environment);
+
+		// create execution info
+		ExecutionInfo executionInfo = resultRepository.startCompositeExecution(moduleInfo, environment, operation,
+				description, result);
+
+		execute(executionInfo);
+		return executionInfo;
 	}
 
-	// load model
-	commandResult = loadModuleModel(info, context);
+	/**
+	 * Execute operation with a registered context with the execution context
+	 * repository.
+	 * 
+	 * @param info
+	 *            execution info for the operation
+	 * @param context
+	 *            operation context.
+	 */
+	void executeWithRegisteredContext(ExecutionInfo info, Context context) {
 
-	// exit if command failed
-	if (!commandRunner.lastExecutionSucceeded()) {
-	    handleUnsuccessfulExecution(info, commandResult, "aot.load_modulemodel_failed");
-	    return;
+		// initialize operation
+		ExecutionResult commandResult = initializeOperation(info, context);
+
+		// exit if command failed
+		if (!commandRunner.lastExecutionSucceeded()) {
+			handleUnsuccessfulExecution(info, commandResult, "aot.initialize_operation_failed");
+			return;
+		}
+
+		// load module
+		if (isModuleDefined(info)) {
+			commandResult = loadModule(info, context);
+
+			// exit if command failed
+			if (!commandRunner.lastExecutionSucceeded()) {
+				handleUnsuccessfulExecution(info, commandResult, "aot.load_module_failed");
+				return;
+			}
+		} else {
+			handleUndefinedModule(info, context);
+		}
+
+		// load model
+		commandResult = loadModuleModel(info, context);
+
+		// exit if command failed
+		if (!commandRunner.lastExecutionSucceeded()) {
+			handleUnsuccessfulExecution(info, commandResult, "aot.load_modulemodel_failed");
+			return;
+		}
+
+		// invoke plugins
+		commandResult = invokePlugins(info, context);
+
+		// exit if command failed
+		if (!commandRunner.lastExecutionSucceeded()) {
+			handleUnsuccessfulExecution(info, commandResult, "aot.invoke_plugins_failed");
+			return;
+		}
+
 	}
 
-	// invoke plugins
-	commandResult = invokePlugins(info, context);
+	/**
+	 * initialize operation.
+	 * 
+	 * Returns true if the command succeeded.
+	 * 
+	 * @param info
+	 * @param context
+	 * 
+	 * @return command result Execution result for executed command.
+	 */
+	@SuppressWarnings("unchecked")
+	ExecutionResult initializeOperation(ExecutionInfo info, Context context) {
 
-	// exit if command failed
-	if (!commandRunner.lastExecutionSucceeded()) {
-	    handleUnsuccessfulExecution(info, commandResult, "aot.invoke_plugins_failed");
-	    return;
+		// setup context
+		context.put(InitializeOperationCommand.EXECUTION_INFO_KEY, info);
+
+		// get message
+		String message = messageProvider.getMessage("aot.initialize_operation_info");
+
+		// run command
+		ExecutionResult commandResult = commandRunner.run(initializeOperationCommand, message, context);
+
+		// command result message to operation message
+		addCommandMessageToOperationMessage(info, commandResult);
+
+		return commandResult;
 	}
 
-    }
+	/**
+	 * Load module.
+	 * 
+	 * @param info
+	 *            Execution info.
+	 * @param context
+	 *            Command context.
+	 * 
+	 * @return command result Execution result for executed command.
+	 */
+	@SuppressWarnings("unchecked")
+	ExecutionResult loadModule(ExecutionInfo info, Context context) {
 
-    /**
-     * initialize operation.
-     * 
-     * Returns true if the command succeeded.
-     * 
-     * @param info
-     * @param context
-     * 
-     * @return command result Execution result for executed command.
-     */
-    @SuppressWarnings("unchecked")
-    ExecutionResult initializeOperation(ExecutionInfo info, Context context) {
+		// get message
+		String message = messageProvider.getMessage("aot.load_module_info");
 
-	// setup context
-	context.put(InitializeOperationCommand.EXECUTION_INFO_KEY, info);
+		// get module file
+		File moduleFile = (File) context.get(InitializeOperationCommand.MODULE_FILE_KEY);
 
-	// get message
-	String message = messageProvider.getMessage("aot.initialize_operation_info");
+		Package packageName = Module.class.getPackage();
+		context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, moduleFile);
+		context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, packageName);
 
-	// run command
-	ExecutionResult commandResult = commandRunner.run(initializeOperationCommand, message, context);
+		// run command
+		ExecutionResult commandResult = commandRunner.run(unmarshallJAXBObjectsCommand, message, context);
 
-	// command result message to operation message
-	addCommandMessageToOperationMessage(info, commandResult);
+		// store result if command was successful
+		if (commandRunner.lastExecutionSucceeded()) {
 
-	return commandResult;
-    }
+			// get result
+			Object result = context.get(UnmarshallJAXBObjectsCommand.UNMARSHALLING_RESULT_KEY);
 
-    /**
-     * Load module.
-     * 
-     * @param info
-     *            Execution info.
-     * @param context
-     *            Command context.
-     * 
-     * @return command result Execution result for executed command.
-     */
-    @SuppressWarnings("unchecked")
-    ExecutionResult loadModule(ExecutionInfo info, Context context) {
+			// type cast to module
+			Module module = Module.class.cast(result);
 
-	// get message
-	String message = messageProvider.getMessage("aot.load_module_info");
+			// store result in context
+			context.put(InvokePluginsCommand.MODULE_KEY, module);
+		}
 
-	// get module file
-	File moduleFile = (File) context.get(InitializeOperationCommand.MODULE_FILE_KEY);
+		// add command result message to operation message
+		addCommandMessageToOperationMessage(info, commandResult);
 
-	Package packageName = Module.class.getPackage();
-	context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, moduleFile);
-	context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, packageName);
+		return commandResult;
 
-	// run command
-	ExecutionResult commandResult = commandRunner.run(unmarshallJAXBObjectsCommand, message, context);
-
-	// store result if command was successful
-	if (commandRunner.lastExecutionSucceeded()) {
-
-	    // get result
-	    Object result = context.get(UnmarshallJAXBObjectsCommand.UNMARSHALLING_RESULT_KEY);
-
-	    // type cast to module
-	    Module module = Module.class.cast(result);
-
-	    // store result in context
-	    context.put(InvokePluginsCommand.MODULE_KEY, module);
 	}
 
-	// add command result message to operation message
-	addCommandMessageToOperationMessage(info, commandResult);
+	/**
+	 * Handle case where module is undefined. A null module is created and added to
+	 * the command context.
+	 * 
+	 * @param info
+	 *            Execution info.
+	 * @param context
+	 *            Command context.
+	 */
+	@SuppressWarnings("unchecked")
+	void handleUndefinedModule(ExecutionInfo info, Context context) {
 
-	return commandResult;
+		// create null module
+		ObjectFactory moduleFactory = new ObjectFactory();
+		Module nullModule = moduleFactory.createModule();
 
-    }
+		// set id and version
+		nullModule.setId(info.getModuleInfo().getId());
+		nullModule.setVersion(DEFAULT_NULL_VERSION);
 
-    /**
-     * Handle case where module is undefined. A null module is created and added
-     * to the command context.
-     * 
-     * @param info
-     *            Execution info.
-     * @param context
-     *            Command context.
-     */
-    @SuppressWarnings("unchecked")
-    void handleUndefinedModule(ExecutionInfo info, Context context) {
+		// store result in context
+		context.put(InvokePluginsCommand.MODULE_KEY, nullModule);
 
-	// create null module
-	ObjectFactory moduleFactory = new ObjectFactory();
-	Module nullModule = moduleFactory.createModule();
+		// get message
+		Object[] args = { nullModule.getId(), nullModule.getVersion() };
+		String message = messageProvider.getMessage("aot.null_module_info", args);
 
-	// set id and version
-	nullModule.setId(info.getModuleInfo().getId());
-	nullModule.setVersion(DEFAULT_NULL_VERSION);
-
-	// store result in context
-	context.put(InvokePluginsCommand.MODULE_KEY, nullModule);
-
-	// get message
-	Object[] args = { nullModule.getId(), nullModule.getVersion() };
-	String message = messageProvider.getMessage("aot.null_module_info", args);
-
-	// add message to operation message
-	addMessageToOperationMessage(info, message);
-    }
-
-    /**
-     * Load module model.
-     * 
-     * @param info
-     *            Execution info.
-     * @param context
-     *            Command context.
-     * 
-     * @return command result Execution result for executed command.
-     */
-    @SuppressWarnings("unchecked")
-    ExecutionResult loadModuleModel(ExecutionInfo info, Context context) {
-
-	// get message
-	String message = messageProvider.getMessage("aot.load_modulemodel_info");
-
-	// get model file
-	File modelFile = (File) context.get(InitializeOperationCommand.MODULE_MODEL_FILE_KEY);
-
-	Package packageName = Models.class.getPackage();
-	context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, modelFile);
-	context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, packageName);
-
-	// run command
-	ExecutionResult commandResult = commandRunner.run(unmarshallJAXBObjectsCommand, message, context);
-
-	// store result if command was successful
-	if (commandRunner.lastExecutionSucceeded()) {
-
-	    // get result
-	    Object result = context.get(UnmarshallJAXBObjectsCommand.UNMARSHALLING_RESULT_KEY);
-
-	    // type cast to model
-	    Models model = Models.class.cast(result);
-
-	    // store result in context
-	    context.put(InvokePluginsCommand.MODULE_MODEL_KEY, model);
+		// add message to operation message
+		addMessageToOperationMessage(info, message);
 	}
 
-	// command result message to operation message
-	addCommandMessageToOperationMessage(info, commandResult);
+	/**
+	 * Load module model.
+	 * 
+	 * @param info
+	 *            Execution info.
+	 * @param context
+	 *            Command context.
+	 * 
+	 * @return command result Execution result for executed command.
+	 */
+	@SuppressWarnings("unchecked")
+	ExecutionResult loadModuleModel(ExecutionInfo info, Context context) {
 
-	return commandResult;
-    }
+		// get message
+		String message = messageProvider.getMessage("aot.load_modulemodel_info");
 
-    /**
-     * Invoke plugins.
-     * 
-     * @param info
-     *            Execution info.
-     * @param context
-     *            Command context.
-     * 
-     * @return command result Execution result for executed command.
-     */
-    ExecutionResult invokePlugins(ExecutionInfo info, Context context) {
+		// get model file
+		File modelFile = (File) context.get(InitializeOperationCommand.MODULE_MODEL_FILE_KEY);
 
-	// get operation result
-	ExecutionResult operationResult = info.getResult();
+		Package packageName = Models.class.getPackage();
+		context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, modelFile);
+		context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, packageName);
 
-	// run command with the operation execution result
-	ExecutionResult commandResult = commandRunner.run(invokePluginsCommand, operationResult, context);
+		// run command
+		ExecutionResult commandResult = commandRunner.run(unmarshallJAXBObjectsCommand, message, context);
 
-	return commandResult;
-    }
+		// store result if command was successful
+		if (commandRunner.lastExecutionSucceeded()) {
 
-    /**
-     * Add message from command to operation message.
-     * 
-     * @param info
-     *            execution info which contains the operation message to which
-     *            the command message is added.
-     * @param commandResult
-     *            command result whose message is added to the operation
-     *            message.
-     */
-    void addCommandMessageToOperationMessage(ExecutionInfo info, ExecutionResult commandResult) {
+			// get result
+			Object result = context.get(UnmarshallJAXBObjectsCommand.UNMARSHALLING_RESULT_KEY);
 
-	// get command message
-	Map<String, String> messages = commandResult.getMessages();
-	String commandMessage = messages.get(ExecutionResult.MSG_MESSAGE);
+			// type cast to model
+			Models model = Models.class.cast(result);
 
-	addMessageToOperationMessage(info, commandMessage);
-    }
+			// store result in context
+			context.put(InvokePluginsCommand.MODULE_MODEL_KEY, model);
+		}
 
-    /**
-     * Add message to operation message.
-     * 
-     * @param info
-     *            execution info which contains the operation message to which
-     *            the message is added.
-     * @param message
-     *            the message which is added to the operation message.
-     */
-    void addMessageToOperationMessage(ExecutionInfo info, String message) {
+		// command result message to operation message
+		addCommandMessageToOperationMessage(info, commandResult);
 
-	// get operation result
-	ExecutionResult operationResult = info.getResult();
-
-	// append initialize operation message
-	operationResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-    }
-
-    /**
-     * Handle unsuccessful operation.
-     * 
-     * @param info
-     *            execution info.
-     * @param commandResult
-     *            Command result.
-     * @param Message
-     *            key for failure.
-     */
-    void handleUnsuccessfulExecution(ExecutionInfo info, ExecutionResult commandResult, String key) {
-
-	// handle failure or error
-	if (isCompletedWithFailureOrError(commandResult.getState())) {
-	    failOperationAndAddStacktrace(info, commandResult, key);
+		return commandResult;
 	}
 
-	// handle interruption
-	if (isCompletedWithInterruption(commandResult.getState())) {
-	    interruptOperation(info, commandResult, key);
-	}
-    }
+	/**
+	 * Invoke plugins.
+	 * 
+	 * @param info
+	 *            Execution info.
+	 * @param context
+	 *            Command context.
+	 * 
+	 * @return command result Execution result for executed command.
+	 */
+	ExecutionResult invokePlugins(ExecutionInfo info, Context context) {
 
-    /**
-     * Mark operation as failed. If the command result contains a stack trace
-     * then it is added to the operation result.
-     * 
-     * @param info
-     *            execution info.
-     * @param commandResult
-     *            Command result.
-     * @param Message
-     *            key for failure.
-     */
-    void failOperationAndAddStacktrace(ExecutionInfo info, ExecutionResult commandResult, String key) {
+		// get operation result
+		ExecutionResult operationResult = info.getResult();
 
-	// get operation result
-	ExecutionResult operationResult = info.getResult();
+		// run command with the operation execution result
+		ExecutionResult commandResult = commandRunner.run(invokePluginsCommand, operationResult, context);
 
-	// set as failed if it isn't already reflected in the operation result
-	// if command result is from execution of plugin this can be the case
-	if (!isCompletedWithFailureOrError(operationResult.getState())) {
-	    operationResult.completeAsFailure(messageProvider, key);
+		return commandResult;
 	}
 
-	// add stack trace if it exists
-	Map<String, String> messages = commandResult.getMessages();
-	if (messages.containsKey(ExecutionResult.MSG_STACKTRACE)) {
-	    String commandMessage = messages.get(ExecutionResult.MSG_STACKTRACE);
-	    operationResult.addMessage(ExecutionResult.MSG_STACKTRACE, commandMessage);
+	/**
+	 * Add message from command to operation message.
+	 * 
+	 * @param info
+	 *            execution info which contains the operation message to which the
+	 *            command message is added.
+	 * @param commandResult
+	 *            command result whose message is added to the operation message.
+	 */
+	void addCommandMessageToOperationMessage(ExecutionInfo info, ExecutionResult commandResult) {
+
+		// get command message
+		Map<String, String> messages = commandResult.getMessages();
+		String commandMessage = messages.get(ExecutionResult.MSG_MESSAGE);
+
+		addMessageToOperationMessage(info, commandMessage);
 	}
-    }
 
-    /**
-     * Mark operation as interrupted.
-     * 
-     * @param info
-     *            execution info.
-     * @param commandResult
-     *            Command result.
-     * @param Message
-     *            key for interruption.
-     */
-    void interruptOperation(ExecutionInfo info, ExecutionResult commandResult, String key) {
+	/**
+	 * Add message to operation message.
+	 * 
+	 * @param info
+	 *            execution info which contains the operation message to which the
+	 *            message is added.
+	 * @param message
+	 *            the message which is added to the operation message.
+	 */
+	void addMessageToOperationMessage(ExecutionInfo info, String message) {
 
-	// get operation result
-	ExecutionResult operationResult = info.getResult();
+		// get operation result
+		ExecutionResult operationResult = info.getResult();
 
-	// set as interrupted if it isn't already reflected in the operation
-	// result
-	// if command result is from execution of plugin this can be the case
-	if (!isCompletedWithInterruption(operationResult.getState())) {
-	    operationResult.completeAsInterrupted(messageProvider, key);
+		// append initialize operation message
+		operationResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
 	}
-    }
 
-    /**
-     * Returns true if result completed with failure or error.
-     * 
-     * @param state
-     *            Execution state to test.
-     * 
-     * @return true if result completed with failure or error..
-     */
-    boolean isCompletedWithFailureOrError(ExecutionState state) {
-	if (state == ExecutionState.FAILURE)
-	    return true;
-	if (state == ExecutionState.ERROR)
-	    return true;
-	return false;
-    }
+	/**
+	 * Handle unsuccessful operation.
+	 * 
+	 * @param info
+	 *            execution info.
+	 * @param commandResult
+	 *            Command result.
+	 * @param Message
+	 *            key for failure.
+	 */
+	void handleUnsuccessfulExecution(ExecutionInfo info, ExecutionResult commandResult, String key) {
 
-    /**
-     * Returns true if result completed with interruption.
-     * 
-     * @param state
-     *            Execution state to test.
-     * 
-     * @return true if result completed with interruption.
-     */
-    boolean isCompletedWithInterruption(ExecutionState state) {
-	return (state == ExecutionState.INTERRUPTED);
-    }
+		// handle failure or error
+		if (isCompletedWithFailureOrError(commandResult.getState())) {
+			failOperationAndAddStacktrace(info, commandResult, key);
+		}
 
-    /**
-     * Return true if module is defined.
-     * 
-     * @param info
-     *            execution info.
-     * 
-     * @return true if module is defined.
-     */
-    boolean isModuleDefined(ExecutionInfo info) {
-	return info.getModuleInfo().isDescriptorDefined();
-    }
+		// handle interruption
+		if (isCompletedWithInterruption(commandResult.getState())) {
+			interruptOperation(info, commandResult, key);
+		}
+	}
+
+	/**
+	 * Mark operation as failed. If the command result contains a stack trace then
+	 * it is added to the operation result.
+	 * 
+	 * @param info
+	 *            execution info.
+	 * @param commandResult
+	 *            Command result.
+	 * @param Message
+	 *            key for failure.
+	 */
+	void failOperationAndAddStacktrace(ExecutionInfo info, ExecutionResult commandResult, String key) {
+
+		// get operation result
+		ExecutionResult operationResult = info.getResult();
+
+		// set as failed if it isn't already reflected in the operation result
+		// if command result is from execution of plugin this can be the case
+		if (!isCompletedWithFailureOrError(operationResult.getState())) {
+			operationResult.completeAsFailure(messageProvider, key);
+		}
+
+		// add stack trace if it exists
+		Map<String, String> messages = commandResult.getMessages();
+		if (messages.containsKey(ExecutionResult.MSG_STACKTRACE)) {
+			String commandMessage = messages.get(ExecutionResult.MSG_STACKTRACE);
+			operationResult.addMessage(ExecutionResult.MSG_STACKTRACE, commandMessage);
+		}
+	}
+
+	/**
+	 * Mark operation as interrupted.
+	 * 
+	 * @param info
+	 *            execution info.
+	 * @param commandResult
+	 *            Command result.
+	 * @param Message
+	 *            key for interruption.
+	 */
+	void interruptOperation(ExecutionInfo info, ExecutionResult commandResult, String key) {
+
+		// get operation result
+		ExecutionResult operationResult = info.getResult();
+
+		// set as interrupted if it isn't already reflected in the operation
+		// result
+		// if command result is from execution of plugin this can be the case
+		if (!isCompletedWithInterruption(operationResult.getState())) {
+			operationResult.completeAsInterrupted(messageProvider, key);
+		}
+	}
+
+	/**
+	 * Returns true if result completed with failure or error.
+	 * 
+	 * @param state
+	 *            Execution state to test.
+	 * 
+	 * @return true if result completed with failure or error..
+	 */
+	boolean isCompletedWithFailureOrError(ExecutionState state) {
+		if (state == ExecutionState.FAILURE)
+			return true;
+		if (state == ExecutionState.ERROR)
+			return true;
+		return false;
+	}
+
+	/**
+	 * Returns true if result completed with interruption.
+	 * 
+	 * @param state
+	 *            Execution state to test.
+	 * 
+	 * @return true if result completed with interruption.
+	 */
+	boolean isCompletedWithInterruption(ExecutionState state) {
+		return (state == ExecutionState.INTERRUPTED);
+	}
+
+	/**
+	 * Return true if module is defined.
+	 * 
+	 * @param info
+	 *            execution info.
+	 * 
+	 * @return true if module is defined.
+	 */
+	boolean isModuleDefined(ExecutionInfo info) {
+		return info.getModuleInfo().isDescriptorDefined();
+	}
 
 }

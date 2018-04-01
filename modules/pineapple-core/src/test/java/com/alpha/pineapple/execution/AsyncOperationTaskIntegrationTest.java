@@ -41,56 +41,58 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class AsyncOperationTaskIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    OperationTask asyncOperationTask;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	OperationTask asyncOperationTask;
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    ExecutionResultFactory executionResultFactory;
-    
-    @Before
-    public void setUp() throws Exception {
-    }
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	ExecutionResultFactory executionResultFactory;
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    /**
-     * Test that task can be looked up from the context.
-     */
-    @Test
-    public void testCanGetTaskFromContext() {
-	assertNotNull(asyncOperationTask);
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that execution of operation fails with {@linkplain UnsupportedOperationException}.
-     */
-    @Test(expected=UnsupportedOperationException.class)
-    public void testMethodFailsWithUnsupportedOperationException() {
-	String operation = RandomStringUtils.randomAlphabetic(10);
-	String environment = RandomStringUtils.randomAlphabetic(10);
-	String module = RandomStringUtils.randomAlphabetic(10);
-	asyncOperationTask.execute(operation, environment, module);
-    }
+	/**
+	 * Test that task can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetTaskFromContext() {
+		assertNotNull(asyncOperationTask);
+	}
 
-    /**
-     * Test that execution of operation fails with {@linkplain UnsupportedOperationException}.
-     */
-    @Test(expected=UnsupportedOperationException.class)
-    public void testMethodFailsWithUnsupportedOperationException2() {
-	String operation = RandomStringUtils.randomAlphabetic(10);
-	String environment = RandomStringUtils.randomAlphabetic(10);
-	String module = RandomStringUtils.randomAlphabetic(10);
-	String description = RandomStringUtils.randomAlphabetic(10);
-	ExecutionResult result = executionResultFactory.startExecution(description);
-	asyncOperationTask.executeComposite(operation, environment, module, description, result);
-    }
-    
+	/**
+	 * Test that execution of operation fails with
+	 * {@linkplain UnsupportedOperationException}.
+	 */
+	@Test(expected = UnsupportedOperationException.class)
+	public void testMethodFailsWithUnsupportedOperationException() {
+		String operation = RandomStringUtils.randomAlphabetic(10);
+		String environment = RandomStringUtils.randomAlphabetic(10);
+		String module = RandomStringUtils.randomAlphabetic(10);
+		asyncOperationTask.execute(operation, environment, module);
+	}
+
+	/**
+	 * Test that execution of operation fails with
+	 * {@linkplain UnsupportedOperationException}.
+	 */
+	@Test(expected = UnsupportedOperationException.class)
+	public void testMethodFailsWithUnsupportedOperationException2() {
+		String operation = RandomStringUtils.randomAlphabetic(10);
+		String environment = RandomStringUtils.randomAlphabetic(10);
+		String module = RandomStringUtils.randomAlphabetic(10);
+		String description = RandomStringUtils.randomAlphabetic(10);
+		ExecutionResult result = executionResultFactory.startExecution(description);
+		asyncOperationTask.executeComposite(operation, environment, module, description, result);
+	}
+
 }

@@ -40,26 +40,26 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class OperationTaskIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    OperationTask asyncOperationTask;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	OperationTask asyncOperationTask;
 
-    @Before
-    public void setUp() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that task can be looked up from the context.
-     */
-    @Test
-    public void testCanGetTaskFromContext() {
-	assertNotNull(asyncOperationTask);
-    }
+	/**
+	 * Test that task can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetTaskFromContext() {
+		assertNotNull(asyncOperationTask);
+	}
 
 }

@@ -31,19 +31,19 @@ import com.alpha.pineapple.web.spring.rest.SystemController;
  */
 public class FooterPanel {
 
-    /**
-     * System controller.
-     */
-    @WireVariable
-    SystemController systemController;
+	/**
+	 * System controller.
+	 */
+	@WireVariable
+	SystemController systemController;
 
-    /**
-     * Get Pineapple version.
-     * 
-     * @return Pineapple version.
-     */
-    public String getVersion() {
-	return systemController.getVersion();
-    }
+	/**
+	 * Get Pineapple version.
+	 * 
+	 * @return Pineapple version.
+	 */
+	public String getVersion() {
+		return systemController.getVersion();
+	}
 
 }

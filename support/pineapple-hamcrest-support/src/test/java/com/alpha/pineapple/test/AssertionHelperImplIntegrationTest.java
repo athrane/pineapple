@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test;
 
 import static org.junit.Assert.assertTrue;
@@ -55,9 +54,9 @@ import com.alpha.springutils.DirectoryTestExecutionListener;
 /**
  * integration test of the {@link AssertionHelperImpl} class.
  */
-@RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration( locations = { "/com.alpha.pineapple.hamcrest-config.xml" } )
-@TestExecutionListeners( {DependencyInjectionTestExecutionListener.class, DirectoryTestExecutionListener.class} )
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/com.alpha.pineapple.hamcrest-config.xml" })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirectoryTestExecutionListener.class })
 public class AssertionHelperImplIntegrationTest {
 
 	/**
@@ -65,12 +64,12 @@ public class AssertionHelperImplIntegrationTest {
 	 */
 	@Resource
 	AssertionHelper asserterHelper;
-	
+
 	/**
-     * Current test directory.
-     */
+	 * Current test directory.
+	 */
 	File testDirectory;
-		
+
 	/**
 	 * Execution result.
 	 */
@@ -80,12 +79,12 @@ public class AssertionHelperImplIntegrationTest {
 	 * Mock message provider.
 	 */
 	MessageProvider messageProvider;
-	
+
 	/**
 	 * Test directory.
 	 */
 	File directory;
-	
+
 	/**
 	 * Random directory name.
 	 */
@@ -93,42 +92,40 @@ public class AssertionHelperImplIntegrationTest {
 
 	/**
 	 * Random file name.
-	 */	
+	 */
 	String randomFileName;
-	
+
 	@Before
 	public void setUp() throws Exception {
-					
-        // get the test directory
-        testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-        // create mock result
-	    executionResult = new ExecutionResultImpl("root");				
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-        // create mock provider
-        messageProvider = EasyMock.createMock( MessageProvider.class );
-        
-        // complete mock source initialization        
-        IAnswer<String> answer = new MessageProviderAnswerImpl(); 
-        
-        EasyMock.expect( messageProvider.getMessage(
-        		(String) EasyMock.isA( String.class ),
-        		(Object[]) EasyMock.isA( Object[].class ) ));
-        EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-        
-        EasyMock.replay(messageProvider);                
-	    
-	    
+		// create mock result
+		executionResult = new ExecutionResultImpl("root");
+
+		// create mock provider
+		messageProvider = EasyMock.createMock(MessageProvider.class);
+
+		// complete mock source initialization
+		IAnswer<String> answer = new MessageProviderAnswerImpl();
+
+		EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class),
+				(Object[]) EasyMock.isA(Object[].class)));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+
+		EasyMock.replay(messageProvider);
+
 		// initialize random file name
 		randomFileName = RandomStringUtils.randomAlphabetic(10);
-		
+
 		// initialize directory
-		randomDirName = RandomStringUtils.randomAlphabetic(10);				
-		directory = new File( testDirectory, randomDirName);        
+		randomDirName = RandomStringUtils.randomAlphabetic(10);
+		directory = new File(testDirectory, randomDirName);
 	}
 
 	@After
-	public void tearDown() throws Exception {		
+	public void tearDown() throws Exception {
 		asserterHelper = null;
 		executionResult = null;
 		testDirectory = null;
@@ -137,17 +134,19 @@ public class AssertionHelperImplIntegrationTest {
 	/**
 	 * Test that existing directory is a positive match
 	 * 
-	 * @throws Exception if test fails.
+	 * @throws Exception
+	 *             if test fails.
 	 */
 	@Test
 	public void testExistingDirectoryIsPositiveMatch() throws Exception {
-				
+
 		// initialize directory
 		FileUtils.forceMkdir(directory);
-				
+
 		// test
-		ExecutionResult result = asserterHelper.assertDirectoryExist(directory, messageProvider, "key", executionResult);
-		assertTrue(result.getState() == ExecutionState.SUCCESS );		
+		ExecutionResult result = asserterHelper.assertDirectoryExist(directory, messageProvider, "key",
+				executionResult);
+		assertTrue(result.getState() == ExecutionState.SUCCESS);
 	}
 
 	/**
@@ -155,16 +154,18 @@ public class AssertionHelperImplIntegrationTest {
 	 */
 	@Test
 	public void testNonExistingDirectoryIsNegativeMatch() {
-									
+
 		// test
-		ExecutionResult result = asserterHelper.assertDirectoryExist(directory, messageProvider, "key", executionResult);
-		assertTrue(result.getState() != ExecutionState.SUCCESS );				
+		ExecutionResult result = asserterHelper.assertDirectoryExist(directory, messageProvider, "key",
+				executionResult);
+		assertTrue(result.getState() != ExecutionState.SUCCESS);
 	}
-	
+
 	/**
 	 * Test file is negative match.
 	 * 
-	 * @throws Exception If test fails
+	 * @throws Exception
+	 *             If test fails
 	 */
 	@Test
 	public void testFileIsFailure() throws Exception {
@@ -175,91 +176,95 @@ public class AssertionHelperImplIntegrationTest {
 		// create file content
 		Collection<String> lines = new ArrayList<String>();
 		lines.add("<hello-pineapple />");
-		
+
 		// write the file
-		FileUtils.writeLines(file, lines);				
+		FileUtils.writeLines(file, lines);
 
 		// test
 		ExecutionResult result = asserterHelper.assertDirectoryExist(file, messageProvider, "key", executionResult);
-		assertTrue(result.getState() == ExecutionState.FAILURE );						
+		assertTrue(result.getState() == ExecutionState.FAILURE);
 	}
 
 	/**
 	 * Test that existing file is a positive match
 	 * 
-	 * @throws Exception if test fails.
+	 * @throws Exception
+	 *             if test fails.
 	 */
 	@Test
 	public void testExistingFileIsPositiveMatch() throws Exception {
-				
+
 		// initialize file
 		File file = new File(this.testDirectory, randomFileName);
 
 		// create file content
 		Collection<String> lines = new ArrayList<String>();
 		lines.add("<hello-pineapple />");
-		
+
 		// write the file
-		FileUtils.writeLines(file, lines);				
-				
+		FileUtils.writeLines(file, lines);
+
 		// test
 		ExecutionResult result = asserterHelper.assertFileExist(file, messageProvider, "key", executionResult);
-		assertTrue(result.getState() == ExecutionState.SUCCESS );		
+		assertTrue(result.getState() == ExecutionState.SUCCESS);
 	}
-	
+
 	/**
 	 * Test that non existing file is a negative match
 	 * 
-	 * @throws Exception if test fails.
+	 * @throws Exception
+	 *             if test fails.
 	 */
 	@Test
 	public void testNonExistingFileIsFailure() throws Exception {
-				
+
 		// initialize file
 		File file = new File(this.testDirectory, randomFileName);
-				
+
 		// test
 		ExecutionResult result = asserterHelper.assertFileExist(file, messageProvider, "key", executionResult);
-		assertTrue(result.getState() == ExecutionState.FAILURE );		
+		assertTrue(result.getState() == ExecutionState.FAILURE);
 	}
 
 	/**
 	 * Test that existing file is a negative match
 	 * 
-	 * @throws Exception if test fails.
+	 * @throws Exception
+	 *             if test fails.
 	 */
 	@Test
 	public void testExistingFileIsNegativeMatch() throws Exception {
-				
+
 		// initialize file
 		File file = new File(this.testDirectory, randomFileName);
 
 		// create file content
 		Collection<String> lines = new ArrayList<String>();
 		lines.add("<hello-pineapple />");
-		
+
 		// write the file
-		FileUtils.writeLines(file, lines);				
-				
+		FileUtils.writeLines(file, lines);
+
 		// test
 		ExecutionResult result = asserterHelper.assertFileDoesntExist(file, messageProvider, "key", executionResult);
-		assertTrue(result.getState() == ExecutionState.FAILURE);		
+		assertTrue(result.getState() == ExecutionState.FAILURE);
 	}
-	
+
 	/**
 	 * Test that non existing file is a positive match
 	 * 
-	 * @throws Exception if test fails.
+	 * @throws Exception
+	 *             if test fails.
 	 */
 	@Test
 	public void testNonExistingFileIsPositiveMatch() throws Exception {
-				
+
 		// initialize file
 		File file = new File(this.testDirectory, randomFileName);
-				
+
 		// test
 		ExecutionResult result = asserterHelper.assertFileDoesntExist(file, messageProvider, "key", executionResult);
-		assertTrue(result.getState() == ExecutionState.SUCCESS);		
+		assertTrue(result.getState() == ExecutionState.SUCCESS);
 	}
-	
+
 }

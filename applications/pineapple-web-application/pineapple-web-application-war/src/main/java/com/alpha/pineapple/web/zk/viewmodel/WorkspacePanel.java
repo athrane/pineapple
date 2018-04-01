@@ -38,125 +38,125 @@ import com.alpha.pineapple.web.model.SessionState;
  */
 public class WorkspacePanel {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Session state.
-     */
-    @WireVariable
-    SessionState sessionState;
+	/**
+	 * Session state.
+	 */
+	@WireVariable
+	SessionState sessionState;
 
-    /**
-     * Get module name in ZK view. Will return null is no module is set.
-     * 
-     * @return module information.
-     */
-    public String getModuleName() {
-	ModuleInfo info = sessionState.getModuleInfo();
-	if (info == null)
-	    return "No module opened.";
-	;
-	return info.getId();
-    }
+	/**
+	 * Get module name in ZK view. Will return null is no module is set.
+	 * 
+	 * @return module information.
+	 */
+	public String getModuleName() {
+		ModuleInfo info = sessionState.getModuleInfo();
+		if (info == null)
+			return "No module opened.";
+		;
+		return info.getId();
+	}
 
-    /**
-     * Get model name in ZK view. Will return null is no model is set.
-     * 
-     * @return module information.
-     */
-    public String getModelName() {
-	String model = sessionState.getEnvironment();
-	if ((model == null) || model.isEmpty())
-	    return "No model selected.";
-	return model;
-    }
+	/**
+	 * Get model name in ZK view. Will return null is no model is set.
+	 * 
+	 * @return module information.
+	 */
+	public String getModelName() {
+		String model = sessionState.getEnvironment();
+		if ((model == null) || model.isEmpty())
+			return "No model selected.";
+		return model;
+	}
 
-    /**
-     * Get user name in ZK view. Will return "n/a" is no user is set.
-     * 
-     * @return module information.
-     */
-    public String getUserName() {
-	Account account = sessionState.getAccount();
-	if (account == null)
-	    return "n/a";
-	String userProperty = account.getUsername();
-	if (userProperty == null)
-	    return "n/a";
-	if (userProperty.isEmpty())
-	    return "n/a";
-	return userProperty;
-    }
+	/**
+	 * Get user name in ZK view. Will return "n/a" is no user is set.
+	 * 
+	 * @return module information.
+	 */
+	public String getUserName() {
+		Account account = sessionState.getAccount();
+		if (account == null)
+			return "n/a";
+		String userProperty = account.getUsername();
+		if (userProperty == null)
+			return "n/a";
+		if (userProperty.isEmpty())
+			return "n/a";
+		return userProperty;
+	}
 
-    /**
-     * Get host name in ZK view. Will return "n/a" is no host is set.
-     * 
-     * @return module information.
-     */
-    public String getHostName() {
-	Session zkSession = Sessions.getCurrent();
-	String localAddress = zkSession.getLocalAddr();
-	if (localAddress == null)
-	    return "n/a";
-	if (localAddress.isEmpty())
-	    return "n/a";
-	return localAddress;
-    }
+	/**
+	 * Get host name in ZK view. Will return "n/a" is no host is set.
+	 * 
+	 * @return module information.
+	 */
+	public String getHostName() {
+		Session zkSession = Sessions.getCurrent();
+		String localAddress = zkSession.getLocalAddr();
+		if (localAddress == null)
+			return "n/a";
+		if (localAddress.isEmpty())
+			return "n/a";
+		return localAddress;
+	}
 
-    /**
-     * Event handler for the global command "loadModule". The event is triggered
-     * from the open module modal view model which posts the global command.
-     * 
-     * The event handler will notify the MVVM binder that all properties needs
-     * to be refreshed in the view.
-     */
-    @GlobalCommand
-    @NotifyChange("*")
-    public void loadModule() {
-	// do nothing
-    }
+	/**
+	 * Event handler for the global command "loadModule". The event is triggered
+	 * from the open module modal view model which posts the global command.
+	 * 
+	 * The event handler will notify the MVVM binder that all properties needs to be
+	 * refreshed in the view.
+	 */
+	@GlobalCommand
+	@NotifyChange("*")
+	public void loadModule() {
+		// do nothing
+	}
 
-    /**
-     * Event handler for the global command "closeModule". The event is
-     * triggered from the menu controller which posts the global command.
-     * 
-     * The event handler will notify the MVVM binder that all properties needs
-     * to be refreshed in the view.
-     */
-    @GlobalCommand
-    @NotifyChange("*")
-    public void closeModule() {
-	// do nothing
-    }
+	/**
+	 * Event handler for the global command "closeModule". The event is triggered
+	 * from the menu controller which posts the global command.
+	 * 
+	 * The event handler will notify the MVVM binder that all properties needs to be
+	 * refreshed in the view.
+	 */
+	@GlobalCommand
+	@NotifyChange("*")
+	public void closeModule() {
+		// do nothing
+	}
 
-    /**
-     * Event handler for the global command "loadModel". The event is triggered
-     * from the module panel view (.zul) which posts the global command on
-     * selection of a model.
-     * 
-     * The event handler will notify the MVVM binder that the model name
-     * property needs to be refreshed in the view.
-     */
-    @GlobalCommand
-    @NotifyChange("modelName")
-    public void loadModel() {
-	// do nothing
-    }
+	/**
+	 * Event handler for the global command "loadModel". The event is triggered from
+	 * the module panel view (.zul) which posts the global command on selection of a
+	 * model.
+	 * 
+	 * The event handler will notify the MVVM binder that the model name property
+	 * needs to be refreshed in the view.
+	 */
+	@GlobalCommand
+	@NotifyChange("modelName")
+	public void loadModel() {
+		// do nothing
+	}
 
-    /**
-     * Event handler for the global command "deleteModelConfirmed". The event is
-     * triggered from the module panel modal view (.zul) which posts the global
-     * command on confirmed deletion of a a model.
-     * 
-     * The event handler will notify the MVVM binder that the model name
-     * property needs to be refreshed in the view.
-     */
-    @GlobalCommand
-    @NotifyChange("modelName")
-    public void deleteModelConfirmed() {
-	// do nothing
-    }
+	/**
+	 * Event handler for the global command "deleteModelConfirmed". The event is
+	 * triggered from the module panel modal view (.zul) which posts the global
+	 * command on confirmed deletion of a a model.
+	 * 
+	 * The event handler will notify the MVVM binder that the model name property
+	 * needs to be refreshed in the view.
+	 */
+	@GlobalCommand
+	@NotifyChange("modelName")
+	public void deleteModelConfirmed() {
+		// do nothing
+	}
 }

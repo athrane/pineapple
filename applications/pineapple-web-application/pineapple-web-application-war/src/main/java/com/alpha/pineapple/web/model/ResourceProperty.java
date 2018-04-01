@@ -27,45 +27,45 @@ package com.alpha.pineapple.web.model;
  */
 public class ResourceProperty {
 
-    /**
-     * Key.
-     */
-    String key;
+	/**
+	 * Key.
+	 */
+	String key;
 
-    /**
-     * Value.
-     */
-    String value;
+	/**
+	 * Value.
+	 */
+	String value;
 
-    /**
-     * ResourceProperty constructor.
-     * 
-     * @param key
-     *            property key.
-     * @param value
-     *            property value.
-     */
-    public ResourceProperty(String key, String value) {
-	this.key = key;
-	this.value = value;
-    }
+	/**
+	 * ResourceProperty constructor.
+	 * 
+	 * @param key
+	 *            property key.
+	 * @param value
+	 *            property value.
+	 */
+	public ResourceProperty(String key, String value) {
+		this.key = key;
+		this.value = value;
+	}
 
-    /**
-     * Return key.
-     * 
-     * @return key.
-     */
-    public String getKey() {
-	return key;
-    }
+	/**
+	 * Return key.
+	 * 
+	 * @return key.
+	 */
+	public String getKey() {
+		return key;
+	}
 
-    /**
-     * Return value.
-     * 
-     * @return value.
-     */
-    public String getValue() {
-	return value;
-    }
+	/**
+	 * Return value.
+	 * 
+	 * @return value.
+	 */
+	public String getValue() {
+		return value;
+	}
 
 }

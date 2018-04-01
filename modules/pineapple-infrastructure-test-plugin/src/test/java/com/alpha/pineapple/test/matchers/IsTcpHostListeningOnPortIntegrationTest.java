@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import static org.junit.Assert.*;
@@ -41,59 +40,58 @@ import com.alpha.testutils.ObjectMotherHttpServer;
 public class IsTcpHostListeningOnPortIntegrationTest {
 
 	/**
-	 * TCP port for  HTTP server.
+	 * TCP port for HTTP server.
 	 */
-    static final int HTTP_PORT = 3000;
-	
+	static final int HTTP_PORT = 3000;
+
 	/**
 	 * Object under test.
 	 */
 	@SuppressWarnings("unchecked")
 	Matcher matcher;
 
-    /**
-     * HTTP server object mother 
-     */
-    ObjectMotherHttpServer httpServerMother;
+	/**
+	 * HTTP server object mother
+	 */
+	ObjectMotherHttpServer httpServerMother;
 
-    /**
-     * HTTP server. 
-     */
-    Server httpServer;
-	
-	
+	/**
+	 * HTTP server.
+	 */
+	Server httpServer;
+
 	@Before
 	public void setUp() throws Exception {
-		
-        // create HTTP server object mother
-        httpServerMother = new ObjectMotherHttpServer();
 
-        // create HTTP server
-        httpServer = httpServerMother.createHttpServer(httpServerMother.getHostIPAddress(true), HTTP_PORT);									
+		// create HTTP server object mother
+		httpServerMother = new ObjectMotherHttpServer();
+
+		// create HTTP server
+		httpServer = httpServerMother.createHttpServer(httpServerMother.getHostIPAddress(true), HTTP_PORT);
 	}
 
 	@After
-	public void tearDown() throws Exception {		
-        httpServer.stop();
-        httpServer = null;
-        httpServerMother = null;        		
+	public void tearDown() throws Exception {
+		httpServer.stop();
+		httpServer = null;
+		httpServerMother = null;
 		matcher = null;
 	}
-			
+
 	/**
 	 * Test that matcher succeeds.
 	 */
 	@Test
 	public void testSucceedsListeningToLocalHostOn3000() {
-	
-    	// get host IP address
-    	String hostIpAddress = httpServerMother.getHostIPAddress(true);    	
-		
+
+		// get host IP address
+		String hostIpAddress = httpServerMother.getHostIPAddress(true);
+
 		// initialize matcher
 		matcher = IsTcpHostListeningOnPort.isTcpHostListeningOnPort(hostIpAddress);
-		
+
 		// invoke matcher to store host and port
-		assertTrue(matcher.matches( new Integer( HTTP_PORT )));				
+		assertTrue(matcher.matches(new Integer(HTTP_PORT)));
 	}
 
 }

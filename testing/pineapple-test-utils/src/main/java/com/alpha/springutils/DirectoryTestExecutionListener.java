@@ -38,98 +38,98 @@ import com.alpha.testutils.ObjectMotherIO;
  */
 public class DirectoryTestExecutionListener implements TestExecutionListener {
 
-    /**
-     * Logger object.
-     */
-    static Logger logger = Logger.getLogger(DirectoryTestExecutionListener.class.getName());
+	/**
+	 * Logger object.
+	 */
+	static Logger logger = Logger.getLogger(DirectoryTestExecutionListener.class.getName());
 
-    /**
-     * Current test directory.
-     */
-    static File testDirectory = null;
+	/**
+	 * Current test directory.
+	 */
+	static File testDirectory = null;
 
-    /**
-     * Determines whether directories should be deleted after execution of a
-     * test method.
-     */
-    static boolean deleteDirectories = false;
+	/**
+	 * Determines whether directories should be deleted after execution of a test
+	 * method.
+	 */
+	static boolean deleteDirectories = false;
 
-    public void afterTestMethod(TestContext testContext) throws Exception {
+	public void afterTestMethod(TestContext testContext) throws Exception {
 
-	if (deleteDirectories) {
-	    // delete directories and files
-	    ObjectMotherIO.deleteDirectory(testDirectory);
+		if (deleteDirectories) {
+			// delete directories and files
+			ObjectMotherIO.deleteDirectory(testDirectory);
+		}
 	}
-    }
 
-    public void beforeTestMethod(TestContext testContext) throws Exception {
+	public void beforeTestMethod(TestContext testContext) throws Exception {
 
-	// get the current test method
-	Method testMethod = testContext.getTestMethod();
+		// get the current test method
+		Method testMethod = testContext.getTestMethod();
 
-	// get simple name
-	String testMethodName = testMethod.getName();
+		// get simple name
+		String testMethodName = testMethod.getName();
 
-	// get class where method is declared
-	Class<?> declaringClass = testMethod.getDeclaringClass();
+		// get class where method is declared
+		Class<?> declaringClass = testMethod.getDeclaringClass();
 
-	// get class name
-	String simpleClassName = declaringClass.getSimpleName();
+		// get class name
+		String simpleClassName = declaringClass.getSimpleName();
 
-	// create test directory name
-	StringBuilder testDirectoryName = new StringBuilder();
-	testDirectoryName.append(simpleClassName);
-	testDirectoryName.append("-");
-	testDirectoryName.append(testMethodName);
+		// create test directory name
+		StringBuilder testDirectoryName = new StringBuilder();
+		testDirectoryName.append(simpleClassName);
+		testDirectoryName.append("-");
+		testDirectoryName.append(testMethodName);
 
-	// create directory for test
-	testDirectory = ObjectMotherIO.createTestMethodDirectory(testDirectoryName.toString());
+		// create directory for test
+		testDirectory = ObjectMotherIO.createTestMethodDirectory(testDirectoryName.toString());
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    StringBuilder message = new StringBuilder();
-	    message.append("Initialized test directory <");
-	    message.append(testDirectory.getAbsolutePath());
-	    message.append("> for method <");
-	    message.append(simpleClassName);
-	    message.append(".");
-	    message.append(testMethodName);
-	    message.append("(..)>.");
-	    logger.debug(message.toString());
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Initialized test directory <");
+			message.append(testDirectory.getAbsolutePath());
+			message.append("> for method <");
+			message.append(simpleClassName);
+			message.append(".");
+			message.append(testMethodName);
+			message.append("(..)>.");
+			logger.debug(message.toString());
+		}
 	}
-    }
 
-    public void prepareTestInstance(TestContext testContext) throws Exception {
-	// no implementation here.
-    }
+	public void prepareTestInstance(TestContext testContext) throws Exception {
+		// no implementation here.
+	}
 
-    /**
-     * Return the current test directory initialized as part of a test case
-     * execution.
-     * 
-     * @return the current test directory.
-     */
-    public static File getCurrentTestDirectory() {
-	return testDirectory;
-    }
+	/**
+	 * Return the current test directory initialized as part of a test case
+	 * execution.
+	 * 
+	 * @return the current test directory.
+	 */
+	public static File getCurrentTestDirectory() {
+		return testDirectory;
+	}
 
-    /**
-     * Set whether test directories should be deleted after execution of a test
-     * method. Default is false, which is directory is ignored after execution.
-     * 
-     * @param deletion
-     *            Flag which decides whether test directories should be deleted
-     *            after execution of a test method.
-     */
-    public static void setTestDirectoryDeletion(boolean deletion) {
-	deleteDirectories = deletion;
-    }
+	/**
+	 * Set whether test directories should be deleted after execution of a test
+	 * method. Default is false, which is directory is ignored after execution.
+	 * 
+	 * @param deletion
+	 *            Flag which decides whether test directories should be deleted
+	 *            after execution of a test method.
+	 */
+	public static void setTestDirectoryDeletion(boolean deletion) {
+		deleteDirectories = deletion;
+	}
 
-    public void afterTestClass(TestContext testContext) throws Exception {
-	// no implementation
-    }
+	public void afterTestClass(TestContext testContext) throws Exception {
+		// no implementation
+	}
 
-    public void beforeTestClass(TestContext testContext) throws Exception {
-	// no implementation
-    }
+	public void beforeTestClass(TestContext testContext) throws Exception {
+		// no implementation
+	}
 }

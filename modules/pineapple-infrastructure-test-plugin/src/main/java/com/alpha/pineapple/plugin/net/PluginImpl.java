@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net;
 
 import com.alpha.pineapple.plugin.Plugin;
@@ -29,6 +28,5 @@ import com.alpha.pineapple.plugin.Plugin;
  * Plugin class for the infrastructure test plugin.
  */
 @Plugin()
-public class PluginImpl
-{
+public class PluginImpl {
 }

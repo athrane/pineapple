@@ -43,67 +43,66 @@ import org.apache.log4j.PropertyConfigurator;
  */
 public class LoggingInitializer implements ServletContextListener {
 
-    /**
-     * Default name for log4j properties file.
-     */
-    public static final String DEFAULT_CONFIG = "log4j.properties";
+	/**
+	 * Default name for log4j properties file.
+	 */
+	public static final String DEFAULT_CONFIG = "log4j.properties";
 
-    /**
-     * Name of context-param in the web.xml which contains the path/file name of
-     * the log4j configuration file. Example value:
-     * /WEB-INF/config/log4j.properties
-     */
-    private static final String PARAM_NAME = "log4jConfig";
+	/**
+	 * Name of context-param in the web.xml which contains the path/file name of the
+	 * log4j configuration file. Example value: /WEB-INF/config/log4j.properties
+	 */
+	private static final String PARAM_NAME = "log4jConfig";
 
-    /**
-     * Default constructor.
-     */
-    public LoggingInitializer() {
-    }
-
-    /**
-     * @see ServletContextListener#contextInitialized(ServletContextEvent)
-     */
-    public void contextInitialized(ServletContextEvent sce) {
-	String config = sce.getServletContext().getInitParameter(PARAM_NAME);
-	if (null == config) {
-	    config = DEFAULT_CONFIG;
+	/**
+	 * Default constructor.
+	 */
+	public LoggingInitializer() {
 	}
-	URL url = determineUrl(sce.getServletContext(), config);
-	initializeLog4j(url);
-    }
 
-    private void initializeLog4j(URL url) {
-	if (null != url) {
-	    PropertyConfigurator.configure(url);
-	}
-    }
-
-    private URL determineUrl(ServletContext ctx, String config) {
-	URL ret = null;
-	try {
-	    ret = new URL(config);
-	} catch (MalformedURLException e) {
-	    try {
-		ret = ctx.getResource(config);
-	    } catch (MalformedURLException e2) {
-		File f = new File(config);
-		try {
-		    ret = f.toURL();
-		} catch (MalformedURLException e1) {
-		    System.err.println("Could not read log4j config: " + config + "\nWill default: " + DEFAULT_CONFIG);
-		    e1.printStackTrace();
-		    ret = Thread.currentThread().getContextClassLoader().getResource(DEFAULT_CONFIG);
+	/**
+	 * @see ServletContextListener#contextInitialized(ServletContextEvent)
+	 */
+	public void contextInitialized(ServletContextEvent sce) {
+		String config = sce.getServletContext().getInitParameter(PARAM_NAME);
+		if (null == config) {
+			config = DEFAULT_CONFIG;
 		}
-	    }
+		URL url = determineUrl(sce.getServletContext(), config);
+		initializeLog4j(url);
 	}
-	return ret;
-    }
 
-    /**
-     * @see ServletContextListener#contextDestroyed(ServletContextEvent)
-     */
-    public void contextDestroyed(ServletContextEvent sce) {
-    }
+	private void initializeLog4j(URL url) {
+		if (null != url) {
+			PropertyConfigurator.configure(url);
+		}
+	}
+
+	private URL determineUrl(ServletContext ctx, String config) {
+		URL ret = null;
+		try {
+			ret = new URL(config);
+		} catch (MalformedURLException e) {
+			try {
+				ret = ctx.getResource(config);
+			} catch (MalformedURLException e2) {
+				File f = new File(config);
+				try {
+					ret = f.toURL();
+				} catch (MalformedURLException e1) {
+					System.err.println("Could not read log4j config: " + config + "\nWill default: " + DEFAULT_CONFIG);
+					e1.printStackTrace();
+					ret = Thread.currentThread().getContextClassLoader().getResource(DEFAULT_CONFIG);
+				}
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * @see ServletContextListener#contextDestroyed(ServletContextEvent)
+	 */
+	public void contextDestroyed(ServletContextEvent sce) {
+	}
 
 }

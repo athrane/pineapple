@@ -64,197 +64,197 @@ import com.alpha.pineapple.module.ModuleInfo;
  */
 public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProvider {
 
-    /**
-     * Windows C drive.
-     */
-    static final String C_DRIVE = "C:";
+	/**
+	 * Windows C drive.
+	 */
+	static final String C_DRIVE = "C:";
 
-    /**
-     * Module path constant.
-     */
-    static final String MODULEPATH = "modulepath:";
+	/**
+	 * Module path constant.
+	 */
+	static final String MODULEPATH = "modulepath:";
 
-    /**
-     * Logger object
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Java System properties.
-     */
-    @Resource
-    Properties systemProperties;
+	/**
+	 * Java System properties.
+	 */
+	@Resource
+	Properties systemProperties;
 
-    /**
-     * Java system utilities.
-     */
-    @Resource
-    SystemUtils systemUtils;
+	/**
+	 * Java system utilities.
+	 */
+	@Resource
+	SystemUtils systemUtils;
 
-    /**
-     * File utilities.
-     */
-    @Resource
-    FileUtils fileUtils;
+	/**
+	 * File utilities.
+	 */
+	@Resource
+	FileUtils fileUtils;
 
-    /**
-     * Execution info provider.
-     */
-    @Resource
-    ExecutionInfoProvider coreExecutionInfoProvider;
+	/**
+	 * Execution info provider.
+	 */
+	@Resource
+	ExecutionInfoProvider coreExecutionInfoProvider;
 
-    @Override
-    public File getHomeDirectory() {
+	@Override
+	public File getHomeDirectory() {
 
-	// is home directory defined in system properties
-	if (systemUtils.isPineappleHomeDefined(systemProperties)) {
+		// is home directory defined in system properties
+		if (systemUtils.isPineappleHomeDefined(systemProperties)) {
 
-	    // get Pineapple home defined in system properties
-	    String pineappleHome = systemUtils.getSystemProperty(SystemUtils.PINEAPPLE_HOMEDIR, systemProperties);
-	    File pineappleHomeDir = new File(pineappleHome);
-	    return pineappleHomeDir;
-	}
+			// get Pineapple home defined in system properties
+			String pineappleHome = systemUtils.getSystemProperty(SystemUtils.PINEAPPLE_HOMEDIR, systemProperties);
+			File pineappleHomeDir = new File(pineappleHome);
+			return pineappleHomeDir;
+		}
 
-	// get system properties
-	String userHome = systemUtils.getSystemProperty(USER_HOME, systemProperties);
-	String userName = systemUtils.getSystemProperty(USER_NAME, systemProperties);
+		// get system properties
+		String userHome = systemUtils.getSystemProperty(USER_HOME, systemProperties);
+		String userName = systemUtils.getSystemProperty(USER_NAME, systemProperties);
 
-	// handle windows OS
-	if (systemUtils.isWindowsOperatingSystem(systemProperties)) {
+		// handle windows OS
+		if (systemUtils.isWindowsOperatingSystem(systemProperties)) {
 
-	    // validate if user.home is located in the document and settings
-	    // directory
-	    if (!fileUtils.isPathInDocumentsAndSettingsDir(userHome, userName)) {
+			// validate if user.home is located in the document and settings
+			// directory
+			if (!fileUtils.isPathInDocumentsAndSettingsDir(userHome, userName)) {
 
-		// construct home directory in in the document and settings
-		// directory
-		File rootDir = new File(C_DRIVE);
-		File documentAndSettingsDir = new File(rootDir, FileUtils.DOCUMENTS_AND_SETTINGS);
-		File userHomeDir = new File(documentAndSettingsDir, userName);
-		File pineappleHomeDir = new File(userHomeDir, PINEAPPLE_DIR);
+				// construct home directory in in the document and settings
+				// directory
+				File rootDir = new File(C_DRIVE);
+				File documentAndSettingsDir = new File(rootDir, FileUtils.DOCUMENTS_AND_SETTINGS);
+				File userHomeDir = new File(documentAndSettingsDir, userName);
+				File pineappleHomeDir = new File(userHomeDir, PINEAPPLE_DIR);
+				return pineappleHomeDir;
+			}
+
+			// use already set user home
+			File pineappleHomeDir = new File(userHome, PINEAPPLE_DIR);
+			return pineappleHomeDir;
+
+		}
+
+		// define default pineapple home directory
+		File pineappleHomeDir = new File(userHome, PINEAPPLE_DIR);
 		return pineappleHomeDir;
-	    }
-
-	    // use already set user home
-	    File pineappleHomeDir = new File(userHome, PINEAPPLE_DIR);
-	    return pineappleHomeDir;
-
 	}
 
-	// define default pineapple home directory
-	File pineappleHomeDir = new File(userHome, PINEAPPLE_DIR);
-	return pineappleHomeDir;
-    }
-
-    @Override
-    public File getChildDirectory(String childDirectory) {
-	return new File(getHomeDirectory(), childDirectory);
-    }
-
-    @Override
-    public File getModulesDirectory() {
-	return getChildDirectory(MODULES_DIR);
-    }
-
-    @Override
-    public File getConfigurationDirectory() {
-	return getChildDirectory(CONF_DIR);
-    }
-
-    @Override
-    public File getReportsDirectory() {
-	return getChildDirectory(REPORTS_DIR);
-    }
-
-    @Override
-    public File getTempDirectory() {
-
-	// get java.io.tmpdirfrom JVM
-	final String ioTempDirectory = systemUtils.getSystemProperty(JAVA_IO_TMPDIR, systemProperties);
-
-	// if OS isn't windows then exit
-	if (!systemUtils.isWindowsOperatingSystem(systemProperties)) {
-	    return new File(ioTempDirectory);
+	@Override
+	public File getChildDirectory(String childDirectory) {
+		return new File(getHomeDirectory(), childDirectory);
 	}
 
-	// if OS is windows then convert to long file names
-	try {
-	    // convert
-	    return fileUtils.convertToLongWindowsPath(ioTempDirectory);
-
-	} catch (ConversionFailedException e) {
-
-	    // log error
-	    Object[] args = { e.toString() };
-	    String message = messageProvider.getMessage("drdp.win_tempdir_conversion_failed", args);
-	    logger.error(message);
-
-	    // return unconverted path
-	    return new File(ioTempDirectory);
-	}
-    }
-
-    @Override
-    public File resolveModelPath(String path, ModuleInfo info) {
-	Validate.notNull(path, "path is undefined");
-	Validate.notEmpty(path, "path is empty");
-	Validate.notNull(info, "info is undefined");
-
-	// resolve path if it starts with 'modulepath:'
-	if (startsWithModulePathPrefix(path)) {
-	    String pathWithoutPrefix = path.substring(MODULEPATH.length());
-	    File resolvedFile = new File(info.getDirectory(), pathWithoutPrefix);
-	    return resolvedFile;
-
-	} else {
-	    // resolve path as file object
-	    return new File(path);
-	}
-    }
-
-    @Override
-    public File resolveModelPath(String path, ExecutionResult result) {
-	Validate.notNull(path, "path is undefined");
-	Validate.notEmpty(path, "path is empty");
-	Validate.notNull(result, "result is undefined");
-
-	// exit if prefix isn't present
-	if (!startsWithModulePathPrefix(path))
-	    return new File(path);
-
-	// get module info
-	ExecutionInfo executionInfo = coreExecutionInfoProvider.get(result);
-	ModuleInfo moduleInfo = executionInfo.getModuleInfo();
-
-	// resolve path
-	return resolveModelPath(path, moduleInfo);
-    }
-
-    @Override
-    public boolean startsWithModulePathPrefix(String path) {
-	return path.startsWith(MODULEPATH);
-    }
-
-    @Override
-    public File getCredentialProviderMasterPasswordFile() {
-
-	// is password file defined in system properties
-	if (systemUtils.isPineappleCredentialProviderPasswordHomeDefined(systemProperties)) {
-
-	    // get password file defined in system properties
-	    String passwordFile = systemUtils.getSystemProperty(SystemUtils.PINEAPPLE_CREDENTIALPROVIDER_PASSWORD_FILE,
-		    systemProperties);
-	    return new File(passwordFile);
+	@Override
+	public File getModulesDirectory() {
+		return getChildDirectory(MODULES_DIR);
 	}
 
-	// return default file
-	return new File(getConfigurationDirectory(), CRDENTIALPROVIDER_PASSWORD_FILE);
-    }
+	@Override
+	public File getConfigurationDirectory() {
+		return getChildDirectory(CONF_DIR);
+	}
+
+	@Override
+	public File getReportsDirectory() {
+		return getChildDirectory(REPORTS_DIR);
+	}
+
+	@Override
+	public File getTempDirectory() {
+
+		// get java.io.tmpdirfrom JVM
+		final String ioTempDirectory = systemUtils.getSystemProperty(JAVA_IO_TMPDIR, systemProperties);
+
+		// if OS isn't windows then exit
+		if (!systemUtils.isWindowsOperatingSystem(systemProperties)) {
+			return new File(ioTempDirectory);
+		}
+
+		// if OS is windows then convert to long file names
+		try {
+			// convert
+			return fileUtils.convertToLongWindowsPath(ioTempDirectory);
+
+		} catch (ConversionFailedException e) {
+
+			// log error
+			Object[] args = { e.toString() };
+			String message = messageProvider.getMessage("drdp.win_tempdir_conversion_failed", args);
+			logger.error(message);
+
+			// return unconverted path
+			return new File(ioTempDirectory);
+		}
+	}
+
+	@Override
+	public File resolveModelPath(String path, ModuleInfo info) {
+		Validate.notNull(path, "path is undefined");
+		Validate.notEmpty(path, "path is empty");
+		Validate.notNull(info, "info is undefined");
+
+		// resolve path if it starts with 'modulepath:'
+		if (startsWithModulePathPrefix(path)) {
+			String pathWithoutPrefix = path.substring(MODULEPATH.length());
+			File resolvedFile = new File(info.getDirectory(), pathWithoutPrefix);
+			return resolvedFile;
+
+		} else {
+			// resolve path as file object
+			return new File(path);
+		}
+	}
+
+	@Override
+	public File resolveModelPath(String path, ExecutionResult result) {
+		Validate.notNull(path, "path is undefined");
+		Validate.notEmpty(path, "path is empty");
+		Validate.notNull(result, "result is undefined");
+
+		// exit if prefix isn't present
+		if (!startsWithModulePathPrefix(path))
+			return new File(path);
+
+		// get module info
+		ExecutionInfo executionInfo = coreExecutionInfoProvider.get(result);
+		ModuleInfo moduleInfo = executionInfo.getModuleInfo();
+
+		// resolve path
+		return resolveModelPath(path, moduleInfo);
+	}
+
+	@Override
+	public boolean startsWithModulePathPrefix(String path) {
+		return path.startsWith(MODULEPATH);
+	}
+
+	@Override
+	public File getCredentialProviderMasterPasswordFile() {
+
+		// is password file defined in system properties
+		if (systemUtils.isPineappleCredentialProviderPasswordHomeDefined(systemProperties)) {
+
+			// get password file defined in system properties
+			String passwordFile = systemUtils.getSystemProperty(SystemUtils.PINEAPPLE_CREDENTIALPROVIDER_PASSWORD_FILE,
+					systemProperties);
+			return new File(passwordFile);
+		}
+
+		// return default file
+		return new File(getConfigurationDirectory(), CRDENTIALPROVIDER_PASSWORD_FILE);
+	}
 
 }

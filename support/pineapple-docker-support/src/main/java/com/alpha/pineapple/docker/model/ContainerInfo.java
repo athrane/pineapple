@@ -56,9 +56,8 @@ public interface ContainerInfo {
 	/**
 	 * Add exposed TCP port to container configuration.
 	 * 
-	 * The port is added with the expected Docker format &lt;port&gt;/tcp and a
-	 * null value object {@linkplain ContainerConfigurationExposedPortNullValue}
-	 * .
+	 * The port is added with the expected Docker format &lt;port&gt;/tcp and a null
+	 * value object {@linkplain ContainerConfigurationExposedPortNullValue} .
 	 * 
 	 * @param port
 	 *            number. Must be a value between 0 and 65535.
@@ -68,9 +67,8 @@ public interface ContainerInfo {
 	/**
 	 * Add exposed UDP port to container configuration.
 	 * 
-	 * The port is added with the expected Docker format &lt;port&gt;/tcp and a
-	 * null value object {@linkplain ContainerConfigurationExposedPortNullValue}
-	 * .
+	 * The port is added with the expected Docker format &lt;port&gt;/tcp and a null
+	 * value object {@linkplain ContainerConfigurationExposedPortNullValue} .
 	 * 
 	 * @param port
 	 *            number. Must be a value between 0 and 65535.

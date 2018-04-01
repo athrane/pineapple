@@ -195,9 +195,9 @@ public class MapperImpl implements Mapper {
 	}
 
 	/**
-	 * Returns true if reference is defined and valid. The reference is
-	 * considered valid if it isn't null, empty and references a defined
-	 * container configuration.
+	 * Returns true if reference is defined and valid. The reference is considered
+	 * valid if it isn't null, empty and references a defined container
+	 * configuration.
 	 * 
 	 * @param configurationRef
 	 *            configuration reference which is validated.
@@ -216,20 +216,18 @@ public class MapperImpl implements Mapper {
 	}
 
 	/**
-	 * Map container properties from source configuration to target
-	 * configuration.
+	 * Map container properties from source configuration to target configuration.
 	 * 
 	 * If a referenced configuration is defined then values from the referenced
-	 * configuration is used (if defined) if no value is defined on the
-	 * container.
+	 * configuration is used (if defined) if no value is defined on the container.
 	 * 
 	 * @param containerConfigs
 	 *            map of reference container configurations.
 	 * @param sourceContainerConfig
 	 *            source configuration defined on directly on the container.
 	 * @param targetContainerInfo
-	 *            target container info, which contains the container
-	 *            configuration that is applied to the created container.
+	 *            target container info, which contains the container configuration
+	 *            that is applied to the created container.
 	 */
 	void mapContainerProperties(Map<String, ContainerConfiguration> containerConfigs,
 			EmbeddedContainerConfiguration sourceContainerConfig, ContainerInfo targetContainerInfo) {

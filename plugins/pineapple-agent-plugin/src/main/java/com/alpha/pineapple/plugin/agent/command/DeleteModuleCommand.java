@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.agent.command;
 
 import static com.alpha.pineapple.plugin.agent.AgentConstants.DELETE_MODULE_URI;
@@ -44,137 +43,141 @@ import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.plugin.agent.session.AgentSession;
 
 /**
- * <p>Implementation of the <code>org.apache.commons.chain.Command</code> interface which 
- * deletes a module at Pineapple.
+ * <p>
+ * Implementation of the <code>org.apache.commons.chain.Command</code> interface
+ * which deletes a module at Pineapple.
  * 
- * <p>Precondition for execution of the command is definition of these keys in 
- * the context:
+ * <p>
+ * Precondition for execution of the command is definition of these keys in the
+ * context:
  * 
  * <ul>
- * <li><code>module</code> defines the name of the module. The type is 
+ * <li><code>module</code> defines the name of the module. The type is
  * <code>java.lang.String</code>.</li>
  * 
- * <li><code>session</code> defines the agent session used communicate with an agent. 
- * The type is <code>com.alpha.pineapple.plugin.agent.session.AgentSession</code>.</li>
+ * <li><code>session</code> defines the agent session used communicate with an
+ * agent. The type is
+ * <code>com.alpha.pineapple.plugin.agent.session.AgentSession</code>.</li>
  * 
- * <li><code>execution-result</code> contains execution result object which collects
- * information about the execution of the test. The type is 
- * <code>com.alpha.pineapple.plugin.execution.ExecutionResult</code>.</li>   
+ * <li><code>execution-result</code> contains execution result object which
+ * collects information about the execution of the test. The type is
+ * <code>com.alpha.pineapple.plugin.execution.ExecutionResult</code>.</li>
  * </ul>
- * </p>      
+ * </p>
  * 
- * <p>Postcondition after execution of the command is: 
+ * <p>
+ * Postcondition after execution of the command is:
  * 
- * <ul> 
+ * <ul>
  * <li>The the state of the supplied <code>ExecutionResult</code> is updated
- * with <code>ExecutionState.SUCCESS</code> if the test succeeded. If the 
- * test failed then the <code>ExecutionState.FAILURE</code> is returned.</li>
- * <li>If the test fails due to an exception then the exception isn't caught, 
- * but passed on the the invoker whose responsibility it is to catch it and update 
- * the <code>ExecutionResult</code> with the state <code>ExecutionState.ERROR</code>.
- * </li>
- * </ul>  
- * </p>           
+ * with <code>ExecutionState.SUCCESS</code> if the test succeeded. If the test
+ * failed then the <code>ExecutionState.FAILURE</code> is returned.</li>
+ * <li>If the test fails due to an exception then the exception isn't caught,
+ * but passed on the the invoker whose responsibility it is to catch it and
+ * update the <code>ExecutionResult</code> with the state
+ * <code>ExecutionState.ERROR</code>.</li>
+ * </ul>
+ * </p>
  */
 public class DeleteModuleCommand implements Command {
 
 	/**
-	 * URL module variable. 
+	 * URL module variable.
 	 */
 	static final String URL_VAR_MODULE = "module";
-	
-    /**
-     * Key used to identify property in context: Name of the module.
-     */
-    public static final String MODULE_KEY = URL_VAR_MODULE;
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */    
+	/**
+	 * Key used to identify property in context: Name of the module.
+	 */
+	public static final String MODULE_KEY = URL_VAR_MODULE;
+
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
 	public static final String SESSION_KEY = "session";
-    
-    /**
-     * Key used to identify property in context: Contains execution result object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
-    
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-        
-    /**
-     * Module name.
-     */
-    @Initialize( MODULE_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )        
-    String module;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize( SESSION_KEY )
-    @ValidateValue( ValidationPolicy.NOT_NULL )        
-    AgentSession session;
-    
-    /**
-     * Defines execution result object.
-     */
-    @Initialize( EXECUTIONRESULT_KEY )
-    @ValidateValue( ValidationPolicy.NOT_NULL )    
-    ExecutionResult executionResult;
-                
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
-    
-    public boolean execute( Context context ) throws Exception
-    {        
-        // initialize command
-        CommandInitializer initializer = new CommandInitializerImpl();
-        initializer.initialize( context, this );
-        
-        // delete module
-        doDelete( context );
-        
-        return Command.CONTINUE_PROCESSING;        
-    }
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Delete module.
-     * 
-     * @param context Command context.
-     * 
-     * @throws Exception If deletion fails.
-     */    
-	void doDelete( Context context )
-    {   
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
+	/**
+	 * Module name.
+	 */
+	@Initialize(MODULE_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String module;
+
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	AgentSession session;
+
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
+
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
+
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
+
+		// delete module
+		doDelete(context);
+
+		return Command.CONTINUE_PROCESSING;
+	}
+
+	/**
+	 * Delete module.
+	 * 
+	 * @param context
+	 *            Command context.
+	 * 
+	 * @throws Exception
+	 *             If deletion fails.
+	 */
+	void doDelete(Context context) {
 		try {
 			// add message
 			addModuleNameMessage();
-					
+
 			// create URL variables
 			Map<String, String> urlVariables = Collections.singletonMap(URL_VAR_MODULE, module);
-			
+
 			// post
 			session.httpDelete(DELETE_MODULE_URI, urlVariables);
-			
+
 			// complete result
 			executionResult.completeAsSuccessful(messageProvider, "demc.delete_module_completed");
-			
-		} catch(Exception e) {			
-			executionResult.completeAsError(messageProvider, "demc.error", e);								
-		}							
-    }
-	
+
+		} catch (Exception e) {
+			executionResult.completeAsError(messageProvider, "demc.error", e);
+		}
+	}
+
 	/**
 	 * Add module name message to execution result.
 	 */
 	void addModuleNameMessage() {
-		String key = messageProvider.getMessage("demc.delete_module_info_key");	
+		String key = messageProvider.getMessage("demc.delete_module_info_key");
 		executionResult.addMessage(key, module);
-		return;		
-	}	    		
+		return;
+	}
 }

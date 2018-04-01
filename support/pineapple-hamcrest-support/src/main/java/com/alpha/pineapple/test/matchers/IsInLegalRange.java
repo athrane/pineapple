@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import java.util.ArrayList;
@@ -37,60 +36,60 @@ import org.hamcrest.TypeSafeMatcher;
  */
 public class IsInLegalRange<T> extends TypeSafeMatcher<Iterable<T>> {
 
-    private final Collection<T> legalValues;	
-	
+	private final Collection<T> legalValues;
+
 	/**
 	 * IsInLegalRange constructor.
 	 * 
-	 * @param range Collection containing range of legal values. 
+	 * @param range
+	 *            Collection containing range of legal values.
 	 */
-	public IsInLegalRange(Collection<T> range) {		
-		this.legalValues = range;		
+	public IsInLegalRange(Collection<T> range) {
+		this.legalValues = range;
 	}
 
-	@Override	
+	@Override
 	public boolean matchesSafely(Iterable<T> item) {
-		
-		// iterate over the values
-        for (T currentItem : item) {
 
-        	// exit if values isn't defined in the legal range
-        	if(!legalValues.contains( currentItem )) return false;
-        }
-        
-        // return success
-        return true;		
+		// iterate over the values
+		for (T currentItem : item) {
+
+			// exit if values isn't defined in the legal range
+			if (!legalValues.contains(currentItem))
+				return false;
+		}
+
+		// return success
+		return true;
 	}
-		
-    public void describeTo(Description description) {
-        description.appendText("inLegalRange(")
-                .appendValue(legalValues)
-                .appendText(")");
-    }
-			
-    @Override
-	protected void describeMismatchSafely(Iterable<T> item, Description mismatchDescription) {
-    	
-    	// create illegal values
-    	ArrayList<T> illegalValues = new ArrayList<T>();
-    	
-		// iterate over the values
-        for (T currentItem : item) {
 
-        	// if values isn't defined in the legal range add it to list
-        	if(!legalValues.contains( currentItem )) {
-        		illegalValues.add(currentItem);
-        	}
-        }
-    	    	
-    	mismatchDescription.appendText("contained the illegal values [");
-    	mismatchDescription.appendText(ReflectionToStringBuilder.toString(illegalValues));
-    	mismatchDescription.appendText("]");				
+	public void describeTo(Description description) {
+		description.appendText("inLegalRange(").appendValue(legalValues).appendText(")");
+	}
+
+	@Override
+	protected void describeMismatchSafely(Iterable<T> item, Description mismatchDescription) {
+
+		// create illegal values
+		ArrayList<T> illegalValues = new ArrayList<T>();
+
+		// iterate over the values
+		for (T currentItem : item) {
+
+			// if values isn't defined in the legal range add it to list
+			if (!legalValues.contains(currentItem)) {
+				illegalValues.add(currentItem);
+			}
+		}
+
+		mismatchDescription.appendText("contained the illegal values [");
+		mismatchDescription.appendText(ReflectionToStringBuilder.toString(illegalValues));
+		mismatchDescription.appendText("]");
 	}
 
 	@Factory
-    public static <T> Matcher<Iterable<T>> isInLegalRange(Collection<T> legalValues) {
-        return new IsInLegalRange<T>(legalValues);
-    }
-    
+	public static <T> Matcher<Iterable<T>> isInLegalRange(Collection<T> legalValues) {
+		return new IsInLegalRange<T>(legalValues);
+	}
+
 }

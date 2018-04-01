@@ -28,31 +28,31 @@ package com.alpha.pineapple.resource;
  */
 public class PropertyAlreadyExistsException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * PropertyAlreadyExistsException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public PropertyAlreadyExistsException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * PropertyAlreadyExistsException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public PropertyAlreadyExistsException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * PropertyAlreadyExistsException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public PropertyAlreadyExistsException(String message) {
-	super(message);
-    }
+	/**
+	 * PropertyAlreadyExistsException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public PropertyAlreadyExistsException(String message) {
+		super(message);
+	}
 
 }

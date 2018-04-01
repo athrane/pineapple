@@ -37,46 +37,45 @@ import com.alpha.pineapple.model.report.Reports;
  */
 public interface ReportSetMarshaller {
 
-    /**
-     * Save configuration which contains the set of registered reports.
-     * 
-     * The report directory is resolved from the runtime directory provider. The
-     * configuration file is saved in the default reports file reports.xml.
-     * 
-     * @param reports
-     *            reports model which is saved.
-     * 
-     * @throws SaveConfigurationFailedException
-     *             if save fails.
-     */
+	/**
+	 * Save configuration which contains the set of registered reports.
+	 * 
+	 * The report directory is resolved from the runtime directory provider. The
+	 * configuration file is saved in the default reports file reports.xml.
+	 * 
+	 * @param reports
+	 *            reports model which is saved.
+	 * 
+	 * @throws SaveConfigurationFailedException
+	 *             if save fails.
+	 */
 
-    void save(Reports reports);
+	void save(Reports reports);
 
-    /**
-     * Load configuration file with the set of registered reports. If no file
-     * exist then an empty file is returned.
-     * 
-     * @param executionResult
-     *            A child execution result will be added to this result. The
-     *            child result will reflects the out come of the save operation.
-     *            If the save operation fails the state of the result object
-     *            will be failure or error and will contain a stack trace
-     *            message.
-     * @return loaded configuration file with the set of registered reports.
-     * 
-     * @throws LoadConfigrationFailedException
-     *             if save fails.
-     */
-    Reports load(ExecutionResult executionResult);
+	/**
+	 * Load configuration file with the set of registered reports. If no file exist
+	 * then an empty file is returned.
+	 * 
+	 * @param executionResult
+	 *            A child execution result will be added to this result. The child
+	 *            result will reflects the out come of the save operation. If the
+	 *            save operation fails the state of the result object will be
+	 *            failure or error and will contain a stack trace message.
+	 * @return loaded configuration file with the set of registered reports.
+	 * 
+	 * @throws LoadConfigrationFailedException
+	 *             if save fails.
+	 */
+	Reports load(ExecutionResult executionResult);
 
-    /**
-     * Map reports for saving.
-     * 
-     * @param reports
-     *            stream of {@linkplain Reports} which are mapped.
-     * 
-     * @return reports configuration which can be marshalled.
-     */
-    Reports map(Stream<Report> reports);
+	/**
+	 * Map reports for saving.
+	 * 
+	 * @param reports
+	 *            stream of {@linkplain Reports} which are mapped.
+	 * 
+	 * @return reports configuration which can be marshalled.
+	 */
+	Reports map(Stream<Report> reports);
 
 }

@@ -31,32 +31,32 @@ import com.alpha.pineapple.session.SessionDisconnectException;
 @PluginSession
 public class TestSessionImpl implements TestSession {
 
-    /**
-     * Resource.
-     */
-    Resource resource;
+	/**
+	 * Resource.
+	 */
+	Resource resource;
 
-    /**
-     * Resource credential.
-     */
-    Credential credential;
+	/**
+	 * Resource credential.
+	 */
+	Credential credential;
 
-    public void connect(Resource resource, Credential credential) throws SessionConnectException {
-	// store in fields
-	this.credential = credential;
-	this.resource = resource;
-    }
+	public void connect(Resource resource, Credential credential) throws SessionConnectException {
+		// store in fields
+		this.credential = credential;
+		this.resource = resource;
+	}
 
-    public void disconnect() throws SessionDisconnectException {
-	// TODO Auto-generated method stub
-    }
+	public void disconnect() throws SessionDisconnectException {
+		// TODO Auto-generated method stub
+	}
 
-    public Resource getResource() {
-	return this.resource;
-    }
+	public Resource getResource() {
+		return this.resource;
+	}
 
-    public Credential getCredential() {
-	return this.credential;
-    }
+	public Credential getCredential() {
+		return this.credential;
+	}
 
 }

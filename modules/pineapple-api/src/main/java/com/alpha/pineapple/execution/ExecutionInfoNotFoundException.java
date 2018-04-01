@@ -27,31 +27,31 @@ package com.alpha.pineapple.execution;
  */
 public class ExecutionInfoNotFoundException extends Exception {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * ExecutionInfoNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public ExecutionInfoNotFoundException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * ExecutionInfoNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public ExecutionInfoNotFoundException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * ExecutionInfoNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public ExecutionInfoNotFoundException(String message) {
-	super(message);
-    }
+	/**
+	 * ExecutionInfoNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public ExecutionInfoNotFoundException(String message) {
+		super(message);
+	}
 
 }

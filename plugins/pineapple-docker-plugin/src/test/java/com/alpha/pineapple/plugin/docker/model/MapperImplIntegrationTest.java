@@ -490,9 +490,8 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with empty container
-	 * configuration, i.e. the source container configuration is defined but
-	 * contains no values
+	 * Test container can be mapped for creation with empty container configuration,
+	 * i.e. the source container configuration is defined but contains no values
 	 * 
 	 * The values in the mapped container configuration are set by the
 	 * {@linkplain ContainerInfoImpl} during creation of the target container
@@ -520,12 +519,11 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains some
-	 * custom values.
-	 * 
-	 * A target configuration is created and mapped with the custom property
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains some custom
 	 * values.
+	 * 
+	 * A target configuration is created and mapped with the custom property values.
 	 */
 	@Test
 	public void testMapContainerForCreationWithCustomPropertyValues() throws Exception {
@@ -549,9 +547,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined commands.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * commands.
 	 * 
 	 * A target configuration is created and mapped with defined commands.
 	 */
@@ -581,9 +579,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined commands.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * commands.
 	 * 
 	 * A target configuration is created and mapped with defined commands.
 	 */
@@ -616,9 +614,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined commands.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * commands.
 	 * 
 	 * A target configuration is created and mapped with defined commands.
 	 */
@@ -653,9 +651,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined environments.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * environments.
 	 * 
 	 * A target configuration is created and mapped with defined environments.
 	 */
@@ -685,9 +683,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined environments.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * environments.
 	 * 
 	 * A target configuration is created and mapped with defined environments.
 	 */
@@ -719,9 +717,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined environments.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * environments.
 	 * 
 	 * A target configuration is created and mapped with defined environments.
 	 */
@@ -755,9 +753,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined environments.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * environments.
 	 * 
 	 * A target configuration is created and mapped with defined environments.
 	 */
@@ -787,9 +785,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined environments.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * environments.
 	 * 
 	 * A target configuration is created and mapped with defined environments.
 	 */
@@ -820,9 +818,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined environments.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * environments.
 	 * 
 	 * A target configuration is created and mapped with defined environments.
 	 */
@@ -854,9 +852,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined environments.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * environments.
 	 * 
 	 * A target configuration is created and mapped with defined environments.
 	 */
@@ -891,11 +889,11 @@ public class MapperImplIntegrationTest {
 	/**
 	 * Test container can be mapped for creation with referenced container
 	 * configuration, i.e. the source container configuration is undefined but a
-	 * referenced container configuration is defined and the values are set from
-	 * the referenced configuration.
+	 * referenced container configuration is defined and the values are set from the
+	 * referenced configuration.
 	 * 
-	 * A target configuration is created and mapped with values from the
-	 * referenced container configuration.
+	 * A target configuration is created and mapped with values from the referenced
+	 * container configuration.
 	 */
 	@Test
 	public void testMapContainerForCreationWithReferencedPropertyValues() throws Exception {
@@ -958,9 +956,9 @@ public class MapperImplIntegrationTest {
 
 	/**
 	 * Test container can be mapped for creation with source and referenced
-	 * container configuration, i.e. the source container configuration is
-	 * defined and a referenced container configuration is defined and the
-	 * values are set from the source configuration.
+	 * container configuration, i.e. the source container configuration is defined
+	 * and a referenced container configuration is defined and the values are set
+	 * from the source configuration.
 	 * 
 	 * A target configuration is created and mapped with values from the source
 	 * container configuration.
@@ -1000,9 +998,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined volumes.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * volumes.
 	 * 
 	 * A target configuration is created and mapped with defined volumes.
 	 */
@@ -1032,9 +1030,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined environments.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * environments.
 	 * 
 	 * A target configuration is created and mapped with defined volumes.
 	 */
@@ -1067,9 +1065,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined environments.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * environments.
 	 * 
 	 * A target configuration is created and mapped with defined volumes.
 	 */
@@ -1105,9 +1103,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined environments.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * environments.
 	 * 
 	 * A target configuration is created and mapped with defined volumes.
 	 */
@@ -1141,9 +1139,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined labels.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * labels.
 	 * 
 	 * A target configuration is created and mapped with defined labels.
 	 */
@@ -1173,9 +1171,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined labels.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * labels.
 	 * 
 	 * A target configuration is created and mapped with defined labels.
 	 */
@@ -1209,9 +1207,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined labels.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * labels.
 	 * 
 	 * A target configuration is created and mapped with defined labels.
 	 */
@@ -1247,9 +1245,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined labels.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * labels.
 	 * 
 	 * A target configuration is created and mapped with defined labels.
 	 */
@@ -1283,9 +1281,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined environments.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * environments.
 	 * 
 	 * A target configuration is created and mapped with defined environments.
 	 */
@@ -1317,9 +1315,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined environments.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * environments.
 	 * 
 	 * A target configuration is created and mapped with defined environments.
 	 */
@@ -1352,9 +1350,9 @@ public class MapperImplIntegrationTest {
 	}
 
 	/**
-	 * Test container can be mapped for creation with container configuration,
-	 * i.e. the source container configuration is defined and contains only
-	 * defined environments.
+	 * Test container can be mapped for creation with container configuration, i.e.
+	 * the source container configuration is defined and contains only defined
+	 * environments.
 	 * 
 	 * A target configuration is created and mapped with defined environments.
 	 */

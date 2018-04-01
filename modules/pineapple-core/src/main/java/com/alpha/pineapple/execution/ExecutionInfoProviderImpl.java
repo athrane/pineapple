@@ -36,43 +36,43 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class ExecutionInfoProviderImpl implements ExecutionInfoProvider {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Execution context repository.
-     */
-    @Resource
-    ExecutionContextRepository executionContextRepository;
+	/**
+	 * Execution context repository.
+	 */
+	@Resource
+	ExecutionContextRepository executionContextRepository;
 
-    public ExecutionInfo get(ExecutionResult result) {
-	Validate.notNull(result, "result is undefined.");
+	public ExecutionInfo get(ExecutionResult result) {
+		Validate.notNull(result, "result is undefined.");
 
-	// get context
-	Context context = executionContextRepository.get(result);
+		// get context
+		Context context = executionContextRepository.get(result);
 
-	// throw exception if context is undefined
-	if (context == null) {
-	    String message = messageProvider.getMessage("eip.context.not_found_error");
-	    throw new ExecutionInfoNotFoundException(message);
+		// throw exception if context is undefined
+		if (context == null) {
+			String message = messageProvider.getMessage("eip.context.not_found_error");
+			throw new ExecutionInfoNotFoundException(message);
+		}
+
+		// return info if defined in context
+		if (context.containsKey(CoreConstants.EXECUTION_INFO_KEY)) {
+			return (ExecutionInfo) context.get(CoreConstants.EXECUTION_INFO_KEY);
+		}
+
+		// throw exception
+		String message = messageProvider.getMessage("eip.info.not_found_error");
+		throw new ExecutionInfoNotFoundException(message);
 	}
-
-	// return info if defined in context
-	if (context.containsKey(CoreConstants.EXECUTION_INFO_KEY)) {
-	    return (ExecutionInfo) context.get(CoreConstants.EXECUTION_INFO_KEY);
-	}
-
-	// throw exception
-	String message = messageProvider.getMessage("eip.info.not_found_error");
-	throw new ExecutionInfoNotFoundException(message);
-    }
 
 }

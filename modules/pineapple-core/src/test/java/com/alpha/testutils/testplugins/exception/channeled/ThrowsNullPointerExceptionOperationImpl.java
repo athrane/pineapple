@@ -37,12 +37,12 @@ import com.alpha.pineapple.session.Session;
 @PluginOperation(ThrowsNullPointerExceptionOperationImpl.OPERATION_ID)
 public class ThrowsNullPointerExceptionOperationImpl implements Operation {
 
-    public static final String OPERATION_ID = "throwNullPointerException";
+	public static final String OPERATION_ID = "throwNullPointerException";
 
-    @Override
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-	NullPointerException e = new NullPointerException(result.getDescription());
-	throw new RuntimeException(e);
-    }
+	@Override
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+		NullPointerException e = new NullPointerException(result.getDescription());
+		throw new RuntimeException(e);
+	}
 
 }

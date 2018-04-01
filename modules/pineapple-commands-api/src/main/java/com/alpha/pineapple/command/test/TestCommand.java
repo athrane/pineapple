@@ -20,33 +20,34 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.command.test;
 
 import org.apache.commons.chain.Command;
 
 /**
- * Marker interface for Chain commands which implements a test. 
+ * Marker interface for Chain commands which implements a test.
  * 
- * The interface defines keys for test commands. Test commands should use 
- * these keys to report test results.
+ * The interface defines keys for test commands. Test commands should use these
+ * keys to report test results.
  */
 @Deprecated
-public interface TestCommand extends Command
-{
-    /**
-     * Key used to identify property in context: Describes the test in a human readable form.
-     */
-    public static final String DESCRIPTION_KEY = "description";
-    
-    /**
-     * Key used to identify property in context: Describes the result of the test in a human readable form.
-     */
-    public static final String MESSAGE_KEY = "message";
+public interface TestCommand extends Command {
+	/**
+	 * Key used to identify property in context: Describes the test in a human
+	 * readable form.
+	 */
+	public static final String DESCRIPTION_KEY = "description";
 
-    /**
-     * Key used to identify property in context: Defines the result of the test as a boolean value.
-     */
-    public static final String RESULT_KEY = "result";
+	/**
+	 * Key used to identify property in context: Describes the result of the test in
+	 * a human readable form.
+	 */
+	public static final String MESSAGE_KEY = "message";
+
+	/**
+	 * Key used to identify property in context: Defines the result of the test as a
+	 * boolean value.
+	 */
+	public static final String RESULT_KEY = "result";
 
 }

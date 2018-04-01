@@ -49,26 +49,26 @@ import com.alpha.springutils.DirectoryTestExecutionListener;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class DefaultRuntimeDirectoryProviderIntegrationTest {
 
-    /**
-     * Runtime directory resolver.
-     */
-    @Resource
-    RuntimeDirectoryProvider runtimeDirectoryProvider;
+	/**
+	 * Runtime directory resolver.
+	 */
+	@Resource
+	RuntimeDirectoryProvider runtimeDirectoryProvider;
 
-    @Before
-    public void setUp() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that provider can be looked up from the context.
-     */
-    @Test
-    public void testCanGetFactoryFromContext() {
-	assertNotNull(runtimeDirectoryProvider);
-    }
+	/**
+	 * Test that provider can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetFactoryFromContext() {
+		assertNotNull(runtimeDirectoryProvider);
+	}
 
 }

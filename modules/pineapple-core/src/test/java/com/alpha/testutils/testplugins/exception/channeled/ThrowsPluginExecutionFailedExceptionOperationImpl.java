@@ -38,12 +38,12 @@ import com.alpha.pineapple.session.Session;
 @PluginOperation(ThrowsPluginExecutionFailedExceptionOperationImpl.OPERATION_ID)
 public class ThrowsPluginExecutionFailedExceptionOperationImpl implements Operation {
 
-    public static final String OPERATION_ID = "throwPluginExecutionFailedException";
+	public static final String OPERATION_ID = "throwPluginExecutionFailedException";
 
-    @Override
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-	PluginExecutionFailedException e = new PluginExecutionFailedException(result.getDescription());
-	throw new RuntimeException(e);
-    }
+	@Override
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+		PluginExecutionFailedException e = new PluginExecutionFailedException(result.getDescription());
+		throw new RuntimeException(e);
+	}
 
 }

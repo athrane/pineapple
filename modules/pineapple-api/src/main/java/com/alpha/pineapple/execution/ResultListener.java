@@ -31,12 +31,12 @@ package com.alpha.pineapple.execution;
  */
 public interface ResultListener {
 
-    /**
-     * Notifies listener that a execution result object has changed its state.
-     * 
-     * @param notification
-     *            state change noticiation.
-     */
-    void notify(ExecutionResultNotification notification);
+	/**
+	 * Notifies listener that a execution result object has changed its state.
+	 * 
+	 * @param notification
+	 *            state change noticiation.
+	 */
+	void notify(ExecutionResultNotification notification);
 
 }

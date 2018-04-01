@@ -68,307 +68,306 @@ import com.alpha.testutils.testplugins.pluginprovider.runtimedirectories.PluginI
 @ActiveProfiles("integration-test")
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-	DirectoryTestExecutionListener.class })
+		DirectoryTestExecutionListener.class })
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class PluginProviders_CoreIntegrationTest {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    PineappleCore uninitializedPineappleCore;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	PineappleCore uninitializedPineappleCore;
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    CoreFactory coreFactory;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	CoreFactory coreFactory;
 
-    /**
-     * Object mother for credential provider
-     */
-    @Resource
-    ObjectMotherCredentialProvider providerMother;
+	/**
+	 * Object mother for credential provider
+	 */
+	@Resource
+	ObjectMotherCredentialProvider providerMother;
 
-    /**
-     * Credential provider.
-     */
-    CredentialProvider provider;
+	/**
+	 * Credential provider.
+	 */
+	CredentialProvider provider;
 
-    /**
-     * Object mother for environment configuration.
-     */
-    ObjectMotherEnvironmentConfiguration envConfigMother;
+	/**
+	 * Object mother for environment configuration.
+	 */
+	ObjectMotherEnvironmentConfiguration envConfigMother;
 
-    /**
-     * Object mother for module.
-     */
-    ObjectMotherModule moduleMother;
+	/**
+	 * Object mother for module.
+	 */
+	ObjectMotherModule moduleMother;
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Modules directory.
-     */
-    File modulesDir;
+	/**
+	 * Modules directory.
+	 */
+	File modulesDir;
 
-    /**
-     * Conf directory.
-     */
-    File confDir;
+	/**
+	 * Conf directory.
+	 */
+	File confDir;
 
-    /**
-     * Random file name.
-     */
-    String randomResourceXmlName;
+	/**
+	 * Random file name.
+	 */
+	String randomResourceXmlName;
 
-    /**
-     * Random directory name.
-     */
-    String randomDirName;
+	/**
+	 * Random directory name.
+	 */
+	String randomDirName;
 
-    /**
-     * Random environment..
-     */
-    String randomEnvironment;
+	/**
+	 * Random environment..
+	 */
+	String randomEnvironment;
 
-    /**
-     * Random module.
-     */
-    String randomModuleName;
+	/**
+	 * Random module.
+	 */
+	String randomModuleName;
 
-    /**
-     * Random resource name.
-     */
-    String randomResourceName;
+	/**
+	 * Random resource name.
+	 */
+	String randomResourceName;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	randomResourceXmlName = RandomStringUtils.randomAlphabetic(10) + ".xml";
-	randomDirName = RandomStringUtils.randomAlphabetic(10);
-	randomEnvironment = RandomStringUtils.randomAlphabetic(10);
-	randomModuleName = RandomStringUtils.randomAlphabetic(10) + "-module";
-	randomResourceName = RandomStringUtils.randomAlphabetic(10) + "-resource";
+		randomResourceXmlName = RandomStringUtils.randomAlphabetic(10) + ".xml";
+		randomDirName = RandomStringUtils.randomAlphabetic(10);
+		randomEnvironment = RandomStringUtils.randomAlphabetic(10);
+		randomModuleName = RandomStringUtils.randomAlphabetic(10) + "-module";
+		randomResourceName = RandomStringUtils.randomAlphabetic(10) + "-resource";
 
-	// create environment configuration object mother
-	envConfigMother = new ObjectMotherEnvironmentConfiguration();
+		// create environment configuration object mother
+		envConfigMother = new ObjectMotherEnvironmentConfiguration();
 
-	// create module object mother
-	moduleMother = new ObjectMotherModule();
+		// create module object mother
+		moduleMother = new ObjectMotherModule();
 
-	// create credential provider
-	provider = providerMother.createEmptyCredentialProvider();
+		// create credential provider
+		provider = providerMother.createEmptyCredentialProvider();
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// define directory names
-	modulesDir = new File(testDirectory, "modules");
-	confDir = new File(testDirectory, "conf");
+		// define directory names
+		modulesDir = new File(testDirectory, "modules");
+		confDir = new File(testDirectory, "conf");
 
-	// clear the pineapple.home.dir system property
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+		// clear the pineapple.home.dir system property
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
 
-	// fail if the the pineapple.home.dir system property is set
-	assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
-	// clear the pineapple.home.dir system setting
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
-    }
-
-    /**
-     * Get execution result from core which contains the state of the
-     * initialization
-     * 
-     * @param core
-     *            The core component.
-     * 
-     * @return execution result from core which contains the state of the
-     *         initialization
-     */
-    ExecutionResult getInitializationResultFromCore(PineappleCore core) {
-	CoreImpl coreImpl = (CoreImpl) core;
-	ExecutionResult result = coreImpl.getInitializationInfo();
-	return result;
-    }
-
-    /**
-     * Configures Pineapple with directories, environment configuration and
-     * start the core component.
-     * 
-     * @param pluginId
-     *            Name of plugin id to add as resource in the environment
-     *            configuration.
-     * 
-     * @return Running configured core component.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    PineappleCore configureAndStartPineapple(String pluginId) throws Exception {
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
-
-	// create pineapple runtime sub directories, e.g conf and modules
-	confDir.mkdirs();
-	modulesDir.mkdirs();
-
-	// create environment configuration and save it
-	Configuration configuration = envConfigMother.createEnvConfigWithSingleResource(randomEnvironment,
-		randomResourceName, pluginId);
-	File resourcesFile = envConfigMother.createResourcesFileName(confDir);
-	envConfigMother.jaxbMarshall(configuration, resourcesFile);
-
-	// create core component
-	PineappleCore core = coreFactory.createCore(provider, resourcesFile);
-
-	// test initialization was a success
-	assertTrue(getInitializationResultFromCore(core).isSuccess());
-
-	return core;
-    }
-
-    /**
-     * Execute operation.
-     * 
-     * @param core
-     *            core component.
-     * @param operation
-     *            operation name.
-     * 
-     * @return execution result.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    ExecutionInfo executeOperationAndWait(PineappleCore core, String operation) throws Exception {
-
-	// execute operation
-	ExecutionInfo executionInfo = core.executeOperation(operation, randomEnvironment, randomModuleName);
-
-	// wait until module execution is completed
-	while (executionInfo.getResult().isExecuting()) {
-	    ConcurrencyUtils.waitSomeMilliseconds(2);
+		// fail if the the pineapple.home.dir system property is set
+		assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
 	}
 
-	// sleep a sec for state to settle
-	ConcurrencyUtils.waitOneSec();
-	return executionInfo;
-    }
+	@After
+	public void tearDown() throws Exception {
 
-    /**
-     * Test that operation can be executed with plugin which can access the
-     * runtime directory provider.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testExecuteTestOperationSucceeds_CanAccessRuntimeDirectoryProvider() throws Exception {
-	PineappleCore core = configureAndStartPineapple(PluginImpl.PLUGIN_ID);
+		// clear the pineapple.home.dir system setting
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+	}
 
-	// create module
-	moduleMother.createModuleWithSingleModel(modulesDir, randomModuleName, randomEnvironment, randomResourceName);
-	core.getAdministration().getModuleRepository().initialize(); // refresh
-								     // modules
-								     // to pick
-								     // the
-								     // newly
-								     // create
-								     // one
+	/**
+	 * Get execution result from core which contains the state of the initialization
+	 * 
+	 * @param core
+	 *            The core component.
+	 * 
+	 * @return execution result from core which contains the state of the
+	 *         initialization
+	 */
+	ExecutionResult getInitializationResultFromCore(PineappleCore core) {
+		CoreImpl coreImpl = (CoreImpl) core;
+		ExecutionResult result = coreImpl.getInitializationInfo();
+		return result;
+	}
 
-	// execute
-	ExecutionInfo executionInfo = executeOperationAndWait(core, PluginImpl.OPERATION);
+	/**
+	 * Configures Pineapple with directories, environment configuration and start
+	 * the core component.
+	 * 
+	 * @param pluginId
+	 *            Name of plugin id to add as resource in the environment
+	 *            configuration.
+	 * 
+	 * @return Running configured core component.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	PineappleCore configureAndStartPineapple(String pluginId) throws Exception {
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// test
-	assertTrue(executionInfo.getResult().isSuccess());
+		// create pineapple runtime sub directories, e.g conf and modules
+		confDir.mkdirs();
+		modulesDir.mkdirs();
 
-	// get messages
-	Map<String, String> messages = executionInfo.getResult().getMessages();
+		// create environment configuration and save it
+		Configuration configuration = envConfigMother.createEnvConfigWithSingleResource(randomEnvironment,
+				randomResourceName, pluginId);
+		File resourcesFile = envConfigMother.createResourcesFileName(confDir);
+		envConfigMother.jaxbMarshall(configuration, resourcesFile);
 
-	// test
-	assertEquals("...", messages.get("toString"));
-    }
+		// create core component
+		PineappleCore core = coreFactory.createCore(provider, resourcesFile);
 
-    /**
-     * Test that operation can be executed with plugin which can access the
-     * runtime info provider.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testExecuteTestOperationSucceeds_CanAccessRuntimeInfoProvider() throws Exception {
-	PineappleCore core = configureAndStartPineapple(NoOperationImpl.PLUGIN_ID);
+		// test initialization was a success
+		assertTrue(getInitializationResultFromCore(core).isSuccess());
 
-	// create module
-	moduleMother.createModuleWithSingleModel(modulesDir, randomModuleName, randomEnvironment, randomResourceName);
-	core.getAdministration().getModuleRepository().initialize(); // refresh
-								     // modules
-								     // to pick
-								     // the
-								     // newly
-								     // create
-								     // one
+		return core;
+	}
 
-	// execute
-	ExecutionInfo executionInfo = executeOperationAndWait(core, NoOperationImpl.OPERATION);
+	/**
+	 * Execute operation.
+	 * 
+	 * @param core
+	 *            core component.
+	 * @param operation
+	 *            operation name.
+	 * 
+	 * @return execution result.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	ExecutionInfo executeOperationAndWait(PineappleCore core, String operation) throws Exception {
 
-	// test
-	assertTrue(executionInfo.getResult().isSuccess());
+		// execute operation
+		ExecutionInfo executionInfo = core.executeOperation(operation, randomEnvironment, randomModuleName);
 
-	// get messages
-	Map<String, String> messages = executionInfo.getResult().getMessages();
+		// wait until module execution is completed
+		while (executionInfo.getResult().isExecuting()) {
+			ConcurrencyUtils.waitSomeMilliseconds(2);
+		}
 
-	// test
-	assertEquals("...", messages.get("toString"));
-    }
+		// sleep a sec for state to settle
+		ConcurrencyUtils.waitOneSec();
+		return executionInfo;
+	}
 
-    /**
-     * Test that operation can be executed with plugin which can access the
-     * administration provider.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @Test
-    public void testExecuteTestOperationSucceeds_CanAccessAdministrationProvider() throws Exception {
-	PineappleCore core = configureAndStartPineapple(AdministrationProviderTestPluginImpl.PLUGIN_ID);
+	/**
+	 * Test that operation can be executed with plugin which can access the runtime
+	 * directory provider.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testExecuteTestOperationSucceeds_CanAccessRuntimeDirectoryProvider() throws Exception {
+		PineappleCore core = configureAndStartPineapple(PluginImpl.PLUGIN_ID);
 
-	// create module
-	moduleMother.createModuleWithSingleModel(modulesDir, randomModuleName, randomEnvironment, randomResourceName);
-	core.getAdministration().getModuleRepository().initialize(); // refresh
-								     // modules
-								     // to pick
-								     // the
-								     // newly
-								     // create
-								     // one
+		// create module
+		moduleMother.createModuleWithSingleModel(modulesDir, randomModuleName, randomEnvironment, randomResourceName);
+		core.getAdministration().getModuleRepository().initialize(); // refresh
+		// modules
+		// to pick
+		// the
+		// newly
+		// create
+		// one
 
-	// execute
-	ExecutionInfo executionInfo = executeOperationAndWait(core, AdministrationProviderTestPluginImpl.OPERATION);
+		// execute
+		ExecutionInfo executionInfo = executeOperationAndWait(core, PluginImpl.OPERATION);
 
-	// test
-	assertTrue(executionInfo.getResult().isSuccess());
+		// test
+		assertTrue(executionInfo.getResult().isSuccess());
 
-	// get messages
-	Map<String, String> messages = executionInfo.getResult().getMessages();
+		// get messages
+		Map<String, String> messages = executionInfo.getResult().getMessages();
 
-	// test
-	assertEquals("...", messages.get("toString"));
-    }
+		// test
+		assertEquals("...", messages.get("toString"));
+	}
+
+	/**
+	 * Test that operation can be executed with plugin which can access the runtime
+	 * info provider.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testExecuteTestOperationSucceeds_CanAccessRuntimeInfoProvider() throws Exception {
+		PineappleCore core = configureAndStartPineapple(NoOperationImpl.PLUGIN_ID);
+
+		// create module
+		moduleMother.createModuleWithSingleModel(modulesDir, randomModuleName, randomEnvironment, randomResourceName);
+		core.getAdministration().getModuleRepository().initialize(); // refresh
+		// modules
+		// to pick
+		// the
+		// newly
+		// create
+		// one
+
+		// execute
+		ExecutionInfo executionInfo = executeOperationAndWait(core, NoOperationImpl.OPERATION);
+
+		// test
+		assertTrue(executionInfo.getResult().isSuccess());
+
+		// get messages
+		Map<String, String> messages = executionInfo.getResult().getMessages();
+
+		// test
+		assertEquals("...", messages.get("toString"));
+	}
+
+	/**
+	 * Test that operation can be executed with plugin which can access the
+	 * administration provider.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testExecuteTestOperationSucceeds_CanAccessAdministrationProvider() throws Exception {
+		PineappleCore core = configureAndStartPineapple(AdministrationProviderTestPluginImpl.PLUGIN_ID);
+
+		// create module
+		moduleMother.createModuleWithSingleModel(modulesDir, randomModuleName, randomEnvironment, randomResourceName);
+		core.getAdministration().getModuleRepository().initialize(); // refresh
+		// modules
+		// to pick
+		// the
+		// newly
+		// create
+		// one
+
+		// execute
+		ExecutionInfo executionInfo = executeOperationAndWait(core, AdministrationProviderTestPluginImpl.OPERATION);
+
+		// test
+		assertTrue(executionInfo.getResult().isSuccess());
+
+		// get messages
+		Map<String, String> messages = executionInfo.getResult().getMessages();
+
+		// test
+		assertEquals("...", messages.get("toString"));
+	}
 
 }

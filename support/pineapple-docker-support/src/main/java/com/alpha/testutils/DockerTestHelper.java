@@ -120,8 +120,8 @@ public class DockerTestHelper {
 	ExecutionResultFactory executionResultFactory;
 
 	/**
-	 * Create connected Docker session with default settings: host:
-	 * 192.168.34.10 port: 8082 timeout: 5000
+	 * Create connected Docker session with default settings: host: 192.168.34.10
+	 * port: 8082 timeout: 5000
 	 * 
 	 * @return connected Docker session with default settings.
 	 */
@@ -131,8 +131,8 @@ public class DockerTestHelper {
 	}
 
 	/**
-	 * Create connected Docker session with default settings: host:
-	 * 192.168.34.10 port: 8082 timeout: 5000
+	 * Create connected Docker session with default settings: host: 192.168.34.10
+	 * port: 8082 timeout: 5000
 	 * 
 	 * @return connected Docker session with default settings and RestTemaplate
 	 *         configured with {@linkplain LoggingRequestInterceptorImpl} for
@@ -149,8 +149,8 @@ public class DockerTestHelper {
 	}
 
 	/**
-	 * Create connected Docker session with default settings: host:
-	 * 192.168.34.10 port: 8082 timeout: 5000
+	 * Create connected Docker session with default settings: host: 192.168.34.10
+	 * port: 8082 timeout: 5000
 	 * 
 	 * @param messageProvider
 	 *            I18N message provider.
@@ -203,8 +203,8 @@ public class DockerTestHelper {
 	}
 
 	/**
-	 * Create image info for tiny (as in small size in MB) image for repository
-	 * test of image operations.
+	 * Create image info for tiny (as in small size in MB) image for repository test
+	 * of image operations.
 	 * 
 	 * @return image info for randomized image.
 	 */
@@ -251,8 +251,8 @@ public class DockerTestHelper {
 	/**
 	 * Create default Docker image.
 	 * 
-	 * Pulls root CentOS image and tags root CentOS image into
-	 * "pineapple_ci/centos" repository which is intended to be used by tests.
+	 * Pulls root CentOS image and tags root CentOS image into "pineapple_ci/centos"
+	 * repository which is intended to be used by tests.
 	 * 
 	 * @param session
 	 *            Docker session.
@@ -621,9 +621,8 @@ public class DockerTestHelper {
 	/**
 	 * Create DockerFile in target directory with FROM command.
 	 * 
-	 * If target directory doesn't exist then it is created. the created Docker
-	 * file will contain a a FROM command with the image info supplied as
-	 * parameter.
+	 * If target directory doesn't exist then it is created. the created Docker file
+	 * will contain a a FROM command with the image info supplied as parameter.
 	 * 
 	 * @param targetDirectory
 	 *            directory where Docker it created.
@@ -657,9 +656,9 @@ public class DockerTestHelper {
 	/**
 	 * Create DockerFile in target directory with FROM and MAINTAINER commands.
 	 * 
-	 * If target directory doesn't exist then it is created. the created Docker
-	 * file will contain a MAINTAINER and a FROM command with the image info
-	 * supplied as parameter.
+	 * If target directory doesn't exist then it is created. the created Docker file
+	 * will contain a MAINTAINER and a FROM command with the image info supplied as
+	 * parameter.
 	 * 
 	 * @param targetDirectory
 	 *            directory where Docker it created.
@@ -746,8 +745,7 @@ public class DockerTestHelper {
 	}
 
 	/**
-	 * Get ID from container instance info while testing that the value is
-	 * defined.
+	 * Get ID from container instance info while testing that the value is defined.
 	 * 
 	 * @param container
 	 *            instance info

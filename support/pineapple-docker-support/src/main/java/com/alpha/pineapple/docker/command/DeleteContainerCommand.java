@@ -89,94 +89,93 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class DeleteContainerCommand implements Command {
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Container info for the
-     * container to access.
-     */
-    public static final String CONTAINER_INFO_KEY = "container-info";
+	/**
+	 * Key used to identify property in context: Container info for the container to
+	 * access.
+	 */
+	public static final String CONTAINER_INFO_KEY = "container-info";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Container info.
-     */
-    @Initialize(CONTAINER_INFO_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    ContainerInfo containerInfo;
+	/**
+	 * Container info.
+	 */
+	@Initialize(CONTAINER_INFO_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	ContainerInfo containerInfo;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// exit if container doesn't exists in repository
-	if (!dockerClient.containerExists(session, containerInfo)) {
-	    Object[] args = { containerInfo.getName() };
-	    executionResult.completeAsSuccessful(messageProvider, "dcc.delete_container_notfound_success", args);
-	    return Command.CONTINUE_PROCESSING;
+		// exit if container doesn't exists in repository
+		if (!dockerClient.containerExists(session, containerInfo)) {
+			Object[] args = { containerInfo.getName() };
+			executionResult.completeAsSuccessful(messageProvider, "dcc.delete_container_notfound_success", args);
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// start paused container
+		if (dockerClient.isContainerPaused(session, containerInfo)) {
+			dockerClient.startContainer(session, containerInfo, executionResult);
+		}
+
+		// stop container if it is running
+		if (dockerClient.isContainerRunning(session, containerInfo)) {
+			dockerClient.stopContainer(session, containerInfo, executionResult);
+		}
+
+		Map<String, String> uriVariables = new HashMap<String, String>();
+		uriVariables.put("id", containerInfo.getName());
+
+		// post to delete container
+		session.httpDelete(DELETE_CONTAINER_URI, uriVariables);
+
+		// complete result
+		Object[] args = { containerInfo.getName() };
+		executionResult.completeAsSuccessful(messageProvider, "dcc.delete_container_completed", args);
+
+		return Command.CONTINUE_PROCESSING;
 	}
-
-	// start paused container
-	if (dockerClient.isContainerPaused(session, containerInfo)) {
-	    dockerClient.startContainer(session, containerInfo, executionResult);
-	}
-
-	// stop container if it is running
-	if (dockerClient.isContainerRunning(session, containerInfo)) {
-	    dockerClient.stopContainer(session, containerInfo, executionResult);
-	}
-
-	Map<String, String> uriVariables = new HashMap<String, String>();
-	uriVariables.put("id", containerInfo.getName());
-
-	// post to delete container
-	session.httpDelete(DELETE_CONTAINER_URI, uriVariables);
-
-	// complete result
-	Object[] args = { containerInfo.getName() };
-	executionResult.completeAsSuccessful(messageProvider, "dcc.delete_container_completed", args);
-
-	return Command.CONTINUE_PROCESSING;
-    }
 
 }

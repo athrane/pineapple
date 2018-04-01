@@ -44,56 +44,56 @@ import com.alpha.pineapple.web.spring.rest.ScheduledOperationController;
  */
 public class ErrorMessageBoxHelper {
 
-    /**
-     * Spring REST scheduled operation controller.
-     */
-    @WireVariable
-    ScheduledOperationController scheduledOperationController;
+	/**
+	 * Spring REST scheduled operation controller.
+	 */
+	@WireVariable
+	ScheduledOperationController scheduledOperationController;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @WireVariable
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@WireVariable
+	MessageProvider webMessageProvider;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Log and show modal message box with exception.
-     * 
-     * @param e
-     *            exception to be reported.
-     */
-    public void showAndLogException(Exception e) {
-	Window modalWindow = null;
+	/**
+	 * Log and show modal message box with exception.
+	 * 
+	 * @param e
+	 *            exception to be reported.
+	 */
+	public void showAndLogException(Exception e) {
+		Window modalWindow = null;
 
-	try {
-	    // log error
-	    logger.error(StackTraceHelper.getStrackTrace(e));
+		try {
+			// log error
+			logger.error(StackTraceHelper.getStrackTrace(e));
 
-	    // add parameters
-	    Map<String, Object> args = new HashMap<>();
-	    args.put(ERROR_MESSAGE_MODAL_EXCEPTION_ARG, e);
+			// add parameters
+			Map<String, Object> args = new HashMap<>();
+			args.put(ERROR_MESSAGE_MODAL_EXCEPTION_ARG, e);
 
-	    // open modal window
-	    modalWindow = (Window) createComponents(ERROR_MESSAGE_MODAL_ZUL, NULL_PARENT_WINDOW, args);
-	    modalWindow.doModal();
+			// open modal window
+			modalWindow = (Window) createComponents(ERROR_MESSAGE_MODAL_ZUL, NULL_PARENT_WINDOW, args);
+			modalWindow.doModal();
 
-	} catch (Exception e2) {
+		} catch (Exception e2) {
 
-	    // show and log error message
-	    logger.error(StackTraceHelper.getStrackTrace(e2));
-	    Object[] args = { e2.getMessage() };
-	    String message = webMessageProvider.getMessage("embh.show_error_message_failed", args);
-	    Messagebox.show(message);
+			// show and log error message
+			logger.error(StackTraceHelper.getStrackTrace(e2));
+			Object[] args = { e2.getMessage() };
+			String message = webMessageProvider.getMessage("embh.show_error_message_failed", args);
+			Messagebox.show(message);
 
-	    // detach window
-	    if (modalWindow != null)
-		modalWindow.detach();
+			// detach window
+			if (modalWindow != null)
+				modalWindow.detach();
+		}
 	}
-    }
 
 }

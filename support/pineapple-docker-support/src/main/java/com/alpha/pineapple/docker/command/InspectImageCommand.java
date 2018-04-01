@@ -94,8 +94,7 @@ public class InspectImageCommand implements Command {
 	public static final String SESSION_KEY = "session";
 
 	/**
-	 * Key used to identify property in context: Contains execution result
-	 * object,.
+	 * Key used to identify property in context: Contains execution result object,.
 	 */
 	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
@@ -152,7 +151,7 @@ public class InspectImageCommand implements Command {
 		Map<String, String> uriVariables = new HashMap<String, String>();
 		uriVariables.put("id", imageInfo.getFullyQualifiedName());
 
-		// get to inspect image 
+		// get to inspect image
 		ImageInspect info = session.httpGetForObject(INSPECT_IMAGE_URI, uriVariables, ImageInspect.class);
 
 		// complete result

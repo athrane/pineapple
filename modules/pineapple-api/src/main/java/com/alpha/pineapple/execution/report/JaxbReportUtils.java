@@ -53,9 +53,8 @@ public class JaxbReportUtils {
 	static Logger logger = Logger.getLogger(JaxbReportUtils.class.getName());
 
 	/**
-	 * Create report from JAXB generated object structure by generating a
-	 * structure of {@linkplain ExecutionResult} for all properties and child
-	 * objects.
+	 * Create report from JAXB generated object structure by generating a structure
+	 * of {@linkplain ExecutionResult} for all properties and child objects.
 	 * 
 	 * @param result
 	 *            root execution result from which the child structure as added.
@@ -64,8 +63,8 @@ public class JaxbReportUtils {
 	 * @param methodMatcher
 	 *            method matcher which identifies getter methods to report on.
 	 * @param mapsPackageName
-	 *            Java package name where custom map implementations are located
-	 *            to support binding to maps instead of lists.
+	 *            Java package name where custom map implementations are located to
+	 *            support binding to maps instead of lists.
 	 * 
 	 * @throws Exception
 	 *             if reporting fails.
@@ -130,8 +129,8 @@ public class JaxbReportUtils {
 	 * @param methodMatcher
 	 *            method matcher which identifies getter methods to report on.
 	 * @param mapsPackageName
-	 *            Java package name where custom map implementations are located
-	 *            to support binding to maps instead of lists.
+	 *            Java package name where custom map implementations are located to
+	 *            support binding to maps instead of lists.
 	 * @param propertyName
 	 *            property name to report.
 	 * @param value
@@ -153,10 +152,12 @@ public class JaxbReportUtils {
 		for (String key : value.keySet()) {
 			Object mapValue = value.get(key);
 			ExecutionResult childResult = result.addChild(key);
-			
+
 			// null value
-			if( mapValue != null) reportOnObject(childResult, mapValue, methodMatcher, mapsPackageName);
-			else childResult.addMessage(key, "null");
+			if (mapValue != null)
+				reportOnObject(childResult, mapValue, methodMatcher, mapsPackageName);
+			else
+				childResult.addMessage(key, "null");
 			childResult.setState(ExecutionResult.ExecutionState.SUCCESS);
 		}
 	}
@@ -169,8 +170,8 @@ public class JaxbReportUtils {
 	 * @param methodMatcher
 	 *            method matcher which identifies getter methods to report on.
 	 * @param mapsPackageName
-	 *            Java package name where custom map implementations are located
-	 *            to support binding to maps instead of lists.
+	 *            Java package name where custom map implementations are located to
+	 *            support binding to maps instead of lists.
 	 * @param propertyName
 	 *            property name to report.
 	 * @param value
@@ -225,8 +226,8 @@ public class JaxbReportUtils {
 	 * @param methodMatcher
 	 *            method matcher which identifies getter methods to report on.
 	 * @param mapsPackageName
-	 *            Java package name where custom map implementations are located
-	 *            to support binding to maps instead of lists.
+	 *            Java package name where custom map implementations are located to
+	 *            support binding to maps instead of lists.
 	 * 
 	 * @throws Exception
 	 *             if reporting fails.
@@ -275,9 +276,8 @@ public class JaxbReportUtils {
 			// handle list object
 			if (methodReturnsObject(method, List.class)) {
 				/**
-				 * List<String> valueAsList = (List<String>) expectedValue;
-				 * String listAsString = Arrays.toString(valueAsList.toArray());
-				 * String valueAsString =
+				 * List<String> valueAsList = (List<String>) expectedValue; String listAsString
+				 * = Arrays.toString(valueAsList.toArray()); String valueAsString =
 				 * createReportFriendlyString(listAsString);
 				 * result.addMessage(propertyName,valueAsString);
 				 **/
@@ -287,8 +287,7 @@ public class JaxbReportUtils {
 			// handle map object
 			if (methodReturnsObjectInPackage(method, mapsPackageName)) {
 				/**
-				 * String valueAsString =
-				 * createReportFriendlyString(expectedValue);
+				 * String valueAsString = createReportFriendlyString(expectedValue);
 				 * result.addMessage(propertyName,valueAsString);
 				 **/
 				continue;

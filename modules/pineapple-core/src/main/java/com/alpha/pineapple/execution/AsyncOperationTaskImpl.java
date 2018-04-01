@@ -32,41 +32,41 @@ import com.alpha.pineapple.i18n.MessageProvider;
  * Implementation of the {@link OperationTask} interface which supports an
  * asynchronous task execution.
  * 
- * Please notice that only the method execute(ExecutionInfo info)
- * support asynchronous execution of an operation. The other two
- * methods throws an {@linkplain UnsupportedOperationException}.
+ * Please notice that only the method execute(ExecutionInfo info) support
+ * asynchronous execution of an operation. The other two methods throws an
+ * {@linkplain UnsupportedOperationException}.
  */
 public class AsyncOperationTaskImpl implements OperationTask {
 
-    /**
-     * Synchronous operation task.
-     */
-    @Resource
-    OperationTask operationTask;
+	/**
+	 * Synchronous operation task.
+	 */
+	@Resource
+	OperationTask operationTask;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    @Async
-    @Override
-    public void execute(ExecutionInfo info) {
-	operationTask.execute(info);
-    }
+	@Async
+	@Override
+	public void execute(ExecutionInfo info) {
+		operationTask.execute(info);
+	}
 
-    @Override
-    public ExecutionInfo execute(String operation, String environment, String module) {
-	String message = messageProvider.getMessage("aot.unspported_method");
-	throw new UnsupportedOperationException(message);
-    }
+	@Override
+	public ExecutionInfo execute(String operation, String environment, String module) {
+		String message = messageProvider.getMessage("aot.unspported_method");
+		throw new UnsupportedOperationException(message);
+	}
 
-    @Override
-    public ExecutionInfo executeComposite(String operation, String environment, String module, String description,
-	    ExecutionResult result) {
-	String message = messageProvider.getMessage("aot.unspported_method");
-	throw new UnsupportedOperationException(message);
-    }
+	@Override
+	public ExecutionInfo executeComposite(String operation, String environment, String module, String description,
+			ExecutionResult result) {
+		String message = messageProvider.getMessage("aot.unspported_method");
+		throw new UnsupportedOperationException(message);
+	}
 
 }

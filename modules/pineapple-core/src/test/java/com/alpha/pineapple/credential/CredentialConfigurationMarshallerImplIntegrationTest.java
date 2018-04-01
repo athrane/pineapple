@@ -60,294 +60,293 @@ import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 
 public class CredentialConfigurationMarshallerImplIntegrationTest {
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Subject under test.
-     */
-    @Resource(name = "defaultCredentialConfigurationMarshaller")
-    CredentialConfigurationMarshaller marshaller;
+	/**
+	 * Subject under test.
+	 */
+	@Resource(name = "defaultCredentialConfigurationMarshaller")
+	CredentialConfigurationMarshaller marshaller;
 
-    /**
-     * Runtime directory resolver.
-     */
-    @Resource
-    RuntimeDirectoryProvider runtimeDirectoryProvider;
+	/**
+	 * Runtime directory resolver.
+	 */
+	@Resource
+	RuntimeDirectoryProvider runtimeDirectoryProvider;
 
-    /**
-     * Object mother for environment configuration.
-     */
-    ObjectMotherEnvironmentConfiguration envConfigMother;
+	/**
+	 * Object mother for environment configuration.
+	 */
+	ObjectMotherEnvironmentConfiguration envConfigMother;
 
-    /**
-     * Random environment id.
-     */
-    String randomEnvId;
+	/**
+	 * Random environment id.
+	 */
+	String randomEnvId;
 
-    /**
-     * Random environment id.
-     */
-    String randomEnvId2;
+	/**
+	 * Random environment id.
+	 */
+	String randomEnvId2;
 
-    /**
-     * Random description.
-     */
-    String randomDescription;
+	/**
+	 * Random description.
+	 */
+	String randomDescription;
 
-    /**
-     * Random resource id.
-     */
-    String randomResourceId;
+	/**
+	 * Random resource id.
+	 */
+	String randomResourceId;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	// initialize random fields
-	randomEnvId = RandomStringUtils.randomAlphabetic(10);
-	randomEnvId2 = RandomStringUtils.randomAlphabetic(10);
-	randomDescription = RandomStringUtils.randomAlphabetic(10);
-	randomResourceId = RandomStringUtils.randomAlphabetic(10);
+		// initialize random fields
+		randomEnvId = RandomStringUtils.randomAlphabetic(10);
+		randomEnvId2 = RandomStringUtils.randomAlphabetic(10);
+		randomDescription = RandomStringUtils.randomAlphabetic(10);
+		randomResourceId = RandomStringUtils.randomAlphabetic(10);
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// create environment configuration object mother
-	envConfigMother = new ObjectMotherEnvironmentConfiguration();
+		// create environment configuration object mother
+		envConfigMother = new ObjectMotherEnvironmentConfiguration();
 
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// delete credential configuration
-	File crdentialsFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), CREDENTIALS_FILE);
-	if (crdentialsFile.exists())
-	    FileUtils.deleteQuietly(crdentialsFile);
-    }
+		// delete credential configuration
+		File crdentialsFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), CREDENTIALS_FILE);
+		if (crdentialsFile.exists())
+			FileUtils.deleteQuietly(crdentialsFile);
+	}
 
-    @After
-    public void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 
-	// delete credentials configuration
-	File credentialsFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), CREDENTIALS_FILE);
-	if (credentialsFile.exists())
-	    FileUtils.deleteQuietly(credentialsFile);
+		// delete credentials configuration
+		File credentialsFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), CREDENTIALS_FILE);
+		if (credentialsFile.exists())
+			FileUtils.deleteQuietly(credentialsFile);
 
-	// clear the pineapple.home.dir system property
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+		// clear the pineapple.home.dir system property
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
 
-	// fail if the the pineapple.home.dir system property is set
-	assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
-    }
+		// fail if the the pineapple.home.dir system property is set
+		assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
+	}
 
-    /**
-     * Test that empty configuration can be saved.
-     */
-    @Test
-    public void testSaveEmptyConfiguration() {
-	Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
-	marshaller.save(envConfiguration);
+	/**
+	 * Test that empty configuration can be saved.
+	 */
+	@Test
+	public void testSaveEmptyConfiguration() {
+		Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+		marshaller.save(envConfiguration);
 
-	// test
-	File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), CREDENTIALS_FILE);
-	assertTrue(resourcesFile.exists());
-	assertTrue(resourcesFile.isFile());
-    }
+		// test
+		File resourcesFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), CREDENTIALS_FILE);
+		assertTrue(resourcesFile.exists());
+		assertTrue(resourcesFile.isFile());
+	}
 
-    /**
-     * Test that configuration can be saved.
-     */
-    @Test
-    public void testSaveConfiguration() {
-	Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId);
-	marshaller.save(envConfiguration);
+	/**
+	 * Test that configuration can be saved.
+	 */
+	@Test
+	public void testSaveConfiguration() {
+		Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId);
+		marshaller.save(envConfiguration);
 
-	// test
-	File credentialsFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), CREDENTIALS_FILE);
-	assertTrue(credentialsFile.exists());
-	assertTrue(credentialsFile.isFile());
-    }
+		// test
+		File credentialsFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(), CREDENTIALS_FILE);
+		assertTrue(credentialsFile.exists());
+		assertTrue(credentialsFile.isFile());
+	}
 
-    /**
-     * Test that credentials configuration with no environments can be mapped.
-     */
-    @Test
-    public void testCanMapWithNoEnvironments() {
-	Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+	/**
+	 * Test that credentials configuration with no environments can be mapped.
+	 */
+	@Test
+	public void testCanMapWithNoEnvironments() {
+		Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
 
-	// map
-	ConfigurationInfo configInfo = marshaller.map(envConfiguration);
+		// map
+		ConfigurationInfo configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertNotNull(configInfo);
-	assertNotNull(configInfo.getEnvironments());
-	assertEquals(0, configInfo.getEnvironments().length);
-    }
+		// test
+		assertNotNull(configInfo);
+		assertNotNull(configInfo.getEnvironments());
+		assertEquals(0, configInfo.getEnvironments().length);
+	}
 
-    /**
-     * Test that resource configuration with single environments can be mapped.
-     */
-    @Test
-    public void testCanMapWithOneEnvironments() {
-	Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId,
-		randomDescription);
+	/**
+	 * Test that resource configuration with single environments can be mapped.
+	 */
+	@Test
+	public void testCanMapWithOneEnvironments() {
+		Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId,
+				randomDescription);
 
-	// map
-	ConfigurationInfo configInfo = marshaller.map(envConfiguration);
+		// map
+		ConfigurationInfo configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertNotNull(configInfo);
-	assertNotNull(configInfo.getEnvironments());
-	assertEquals(1, configInfo.getEnvironments().length);
-    }
+		// test
+		assertNotNull(configInfo);
+		assertNotNull(configInfo.getEnvironments());
+		assertEquals(1, configInfo.getEnvironments().length);
+	}
 
-    /**
-     * Test that resource configuration with multiple environments can be
-     * mapped.
-     */
-    @Test
-    public void testCanMapMultipleEnvironments() {
-	// initialize repository
-	Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId,
-		randomDescription);
-	envConfigMother.addEnvironment(randomEnvId, envConfiguration.getEnvironments().getEnvironment());
-	envConfigMother.addEnvironment(randomEnvId2, envConfiguration.getEnvironments().getEnvironment());
+	/**
+	 * Test that resource configuration with multiple environments can be mapped.
+	 */
+	@Test
+	public void testCanMapMultipleEnvironments() {
+		// initialize repository
+		Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId,
+				randomDescription);
+		envConfigMother.addEnvironment(randomEnvId, envConfiguration.getEnvironments().getEnvironment());
+		envConfigMother.addEnvironment(randomEnvId2, envConfiguration.getEnvironments().getEnvironment());
 
-	// map
-	ConfigurationInfo configInfo = marshaller.map(envConfiguration);
+		// map
+		ConfigurationInfo configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertTrue(configInfo.containsEnvironment(randomEnvId));
-	assertTrue(configInfo.containsEnvironment(randomEnvId2));
-    }
+		// test
+		assertTrue(configInfo.containsEnvironment(randomEnvId));
+		assertTrue(configInfo.containsEnvironment(randomEnvId2));
+	}
 
-    /**
-     * Test that credential configuration with no environments can be mapped,
-     * then credential configuration with no environments can be mapped again
-     * and the number of environments is zero.
-     */
-    @Test
-    public void testCanMapWithNoEnvironmentsTwice() {
-	// map
-	Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
-	ConfigurationInfo configInfo = marshaller.map(envConfiguration);
+	/**
+	 * Test that credential configuration with no environments can be mapped, then
+	 * credential configuration with no environments can be mapped again and the
+	 * number of environments is zero.
+	 */
+	@Test
+	public void testCanMapWithNoEnvironmentsTwice() {
+		// map
+		Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+		ConfigurationInfo configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertNotNull(configInfo);
-	assertNotNull(configInfo.getEnvironments());
-	assertEquals(0, configInfo.getEnvironments().length);
+		// test
+		assertNotNull(configInfo);
+		assertNotNull(configInfo.getEnvironments());
+		assertEquals(0, configInfo.getEnvironments().length);
 
-	// map
-	envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
-	configInfo = marshaller.map(envConfiguration);
+		// map
+		envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+		configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertNotNull(configInfo);
-	assertNotNull(configInfo.getEnvironments());
-	assertEquals(0, configInfo.getEnvironments().length);
+		// test
+		assertNotNull(configInfo);
+		assertNotNull(configInfo.getEnvironments());
+		assertEquals(0, configInfo.getEnvironments().length);
 
-    }
+	}
 
-    /**
-     * Test that credential configuration with no environments can be mapped,
-     * then a environment is added to the configuration info, then credential
-     * configuration with no environments can be mapped again and the number of
-     * environments is zero.
-     */
-    @Test
-    public void testCanMapWithNoEnvironmentsTwiceDespiteAddingEnvironment() {
-	// map
-	Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
-	ConfigurationInfo configInfo = marshaller.map(envConfiguration);
+	/**
+	 * Test that credential configuration with no environments can be mapped, then a
+	 * environment is added to the configuration info, then credential configuration
+	 * with no environments can be mapped again and the number of environments is
+	 * zero.
+	 */
+	@Test
+	public void testCanMapWithNoEnvironmentsTwiceDespiteAddingEnvironment() {
+		// map
+		Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+		ConfigurationInfo configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertNotNull(configInfo);
-	assertNotNull(configInfo.getEnvironments());
-	assertEquals(0, configInfo.getEnvironments().length);
+		// test
+		assertNotNull(configInfo);
+		assertNotNull(configInfo.getEnvironments());
+		assertEquals(0, configInfo.getEnvironments().length);
 
-	// add environment
-	TreeMap<String, CredentialInfo> resourceInfos = new TreeMap<String, CredentialInfo>();
-	EnvironmentInfo environmentInfo = new EnvironmentInfoImpl(randomEnvId, randomDescription, resourceInfos);
-	configInfo.addEnvironment(environmentInfo);
+		// add environment
+		TreeMap<String, CredentialInfo> resourceInfos = new TreeMap<String, CredentialInfo>();
+		EnvironmentInfo environmentInfo = new EnvironmentInfoImpl(randomEnvId, randomDescription, resourceInfos);
+		configInfo.addEnvironment(environmentInfo);
 
-	// map
-	envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
-	configInfo = marshaller.map(envConfiguration);
+		// map
+		envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+		configInfo = marshaller.map(envConfiguration);
 
-	// test
-	assertNotNull(configInfo);
-	assertNotNull(configInfo.getEnvironments());
-	assertEquals(0, configInfo.getEnvironments().length);
-    }
+		// test
+		assertNotNull(configInfo);
+		assertNotNull(configInfo.getEnvironments());
+		assertEquals(0, configInfo.getEnvironments().length);
+	}
 
-    /**
-     * Test that configuration can be loaded.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testLoadConfiguration() throws Exception {
-	Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId);
-	envConfigMother.marshallToCredentialsFile(envConfiguration, testDirectory);
+	/**
+	 * Test that configuration can be loaded.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testLoadConfiguration() throws Exception {
+		Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId);
+		envConfigMother.marshallToCredentialsFile(envConfiguration, testDirectory);
 
-	// load
-	File file = envConfigMother.createCredentialsFileName(testDirectory);
-	Configuration loadedConfiguration = marshaller.load(file);
+		// load
+		File file = envConfigMother.createCredentialsFileName(testDirectory);
+		Configuration loadedConfiguration = marshaller.load(file);
 
-	// test
-	assertNotNull(loadedConfiguration);
-    }
+		// test
+		assertNotNull(loadedConfiguration);
+	}
 
-    /**
-     * Test that loaded configuration contains expected environment.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testLoadedConfigurationContainsExpectedEnvironment() throws Exception {
-	Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId);
-	envConfigMother.marshallToCredentialsFile(envConfiguration, testDirectory);
+	/**
+	 * Test that loaded configuration contains expected environment.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testLoadedConfigurationContainsExpectedEnvironment() throws Exception {
+		Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleEnvironment(randomEnvId);
+		envConfigMother.marshallToCredentialsFile(envConfiguration, testDirectory);
 
-	// load
-	File file = envConfigMother.createCredentialsFileName(testDirectory);
-	Configuration loadedConfiguration = marshaller.load(file);
+		// load
+		File file = envConfigMother.createCredentialsFileName(testDirectory);
+		Configuration loadedConfiguration = marshaller.load(file);
 
-	// test
-	assertNotNull(loadedConfiguration.getEnvironments());
-	assertNotNull(loadedConfiguration.getEnvironments().getEnvironment());
-	assertEquals(1, loadedConfiguration.getEnvironments().getEnvironment().size());
-	assertEquals(randomEnvId, loadedConfiguration.getEnvironments().getEnvironment().get(0).getId());
-    }
+		// test
+		assertNotNull(loadedConfiguration.getEnvironments());
+		assertNotNull(loadedConfiguration.getEnvironments().getEnvironment());
+		assertEquals(1, loadedConfiguration.getEnvironments().getEnvironment().size());
+		assertEquals(randomEnvId, loadedConfiguration.getEnvironments().getEnvironment().get(0).getId());
+	}
 
-    /**
-     * Test that loading configuration fails if file path is illegal.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test(expected = CredentialsFileNotFoundException.class)
-    public void testLoadConfigurationFailsForIllegalFile() throws Exception {
+	/**
+	 * Test that loading configuration fails if file path is illegal.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test(expected = CredentialsFileNotFoundException.class)
+	public void testLoadConfigurationFailsForIllegalFile() throws Exception {
 
-	// load to trigger exception
-	File file = new File(randomDescription);
-	marshaller.load(file);
-    }
+		// load to trigger exception
+		File file = new File(randomDescription);
+		marshaller.load(file);
+	}
 
-    /**
-     * Test that loading configuration fails if file doesn't exist.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test(expected = CredentialsFileNotFoundException.class)
-    public void testLoadConfigurationFailsForNonExistingFile() throws Exception {
+	/**
+	 * Test that loading configuration fails if file doesn't exist.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test(expected = CredentialsFileNotFoundException.class)
+	public void testLoadConfigurationFailsForNonExistingFile() throws Exception {
 
-	// load to trigger exception
-	File file = new File(testDirectory, randomDescription);
-	marshaller.load(file);
-    }
+		// load to trigger exception
+		File file = new File(testDirectory, randomDescription);
+		marshaller.load(file);
+	}
 
 }

@@ -43,35 +43,35 @@ import com.alpha.pineapple.session.Session;
 @Plugin()
 @PluginOperation(OperationNames.WILDCARD_OPERATION)
 public class NonCoperativeInfiniteLoopPluginImpl implements Operation {
-    public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.infiniteloop.noncoop";
+	public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.infiniteloop.noncoop";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    @Override
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-	int counter = 0;
-	try {
-	    // infinite loop
-	    while (true) {
-		counter++;
+	@Override
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+		int counter = 0;
+		try {
+			// infinite loop
+			while (true) {
+				counter++;
 
-		// invoke addChild results to trigger cancellation
-		ExecutionResult child = result.addChild("result #" + Integer.toString(counter));
+				// invoke addChild results to trigger cancellation
+				ExecutionResult child = result.addChild("result #" + Integer.toString(counter));
 
-		// wait
-		logger.debug("Will wait for 100 ms.");
-		ConcurrencyUtils.waitSomeMilliseconds(100);
+				// wait
+				logger.debug("Will wait for 100 ms.");
+				ConcurrencyUtils.waitSomeMilliseconds(100);
 
-		// complete child
-		child.setState(ExecutionState.SUCCESS);
-	    }
-	} catch (InterruptedException e) {
-	    result.setState(ExecutionState.ERROR);
-	    throw new PluginExecutionFailedException("Plugin execution was interrupted due to: " + e.getMessage(), e);
+				// complete child
+				child.setState(ExecutionState.SUCCESS);
+			}
+		} catch (InterruptedException e) {
+			result.setState(ExecutionState.ERROR);
+			throw new PluginExecutionFailedException("Plugin execution was interrupted due to: " + e.getMessage(), e);
+		}
 	}
-    }
 
 }

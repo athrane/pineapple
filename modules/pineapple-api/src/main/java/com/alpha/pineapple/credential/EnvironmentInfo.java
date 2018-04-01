@@ -27,71 +27,71 @@ package com.alpha.pineapple.credential;
  * provider.
  */
 public interface EnvironmentInfo {
-    /**
-     * Get environment ID.
-     * 
-     * @return environment ID.
-     */
-    String getId();
+	/**
+	 * Get environment ID.
+	 * 
+	 * @return environment ID.
+	 */
+	String getId();
 
-    /**
-     * Get description of the environment.
-     * 
-     * @return description.
-     */
-    String getDescription();
+	/**
+	 * Get description of the environment.
+	 * 
+	 * @return description.
+	 */
+	String getDescription();
 
-    /**
-     * Return true if info contains credential info with requested ID.
-     * 
-     * @param id
-     *            credential ID.
-     * 
-     * @return true if info contains credential info with requested ID.
-     */
-    boolean containsCredential(String id);
+	/**
+	 * Return true if info contains credential info with requested ID.
+	 * 
+	 * @param id
+	 *            credential ID.
+	 * 
+	 * @return true if info contains credential info with requested ID.
+	 */
+	boolean containsCredential(String id);
 
-    /**
-     * Get credential info. Returns null if credential isn't registered.
-     * 
-     * @param id
-     *            credential ID.
-     * 
-     * @return credential info. Returns null if credential isn't registered.
-     */
-    CredentialInfo getCredential(String id);
+	/**
+	 * Get credential info. Returns null if credential isn't registered.
+	 * 
+	 * @param id
+	 *            credential ID.
+	 * 
+	 * @return credential info. Returns null if credential isn't registered.
+	 */
+	CredentialInfo getCredential(String id);
 
-    /**
-     * Get credential info's.
-     * 
-     * @return credential info's.
-     */
-    CredentialInfo[] getCredentials();
+	/**
+	 * Get credential info's.
+	 * 
+	 * @return credential info's.
+	 */
+	CredentialInfo[] getCredentials();
 
-    /**
-     * Add credential.
-     * 
-     * Please notice that addition of a credential through this method doesn't
-     * result in the environment configuration being persisted. In order to
-     * create an persisted environment create the environment through the
-     * credential provider.
-     * 
-     * @param credentialInfo
-     *            credential to add.
-     */
-    void addCredential(CredentialInfo credentialInfo);
+	/**
+	 * Add credential.
+	 * 
+	 * Please notice that addition of a credential through this method doesn't
+	 * result in the environment configuration being persisted. In order to create
+	 * an persisted environment create the environment through the credential
+	 * provider.
+	 * 
+	 * @param credentialInfo
+	 *            credential to add.
+	 */
+	void addCredential(CredentialInfo credentialInfo);
 
-    /**
-     * Delete credential.
-     * 
-     * Please notice that deletion of a credential through this method doesn't
-     * result in the environment configuration being persisted. In order to
-     * create an persisted environment create the environment through the
-     * credential provider.
-     * 
-     * @param credentialInfo
-     *            credential to delete.
-     */
-    void deleteCredential(CredentialInfo credentialInfo);
+	/**
+	 * Delete credential.
+	 * 
+	 * Please notice that deletion of a credential through this method doesn't
+	 * result in the environment configuration being persisted. In order to create
+	 * an persisted environment create the environment through the credential
+	 * provider.
+	 * 
+	 * @param credentialInfo
+	 *            credential to delete.
+	 */
+	void deleteCredential(CredentialInfo credentialInfo);
 
 }

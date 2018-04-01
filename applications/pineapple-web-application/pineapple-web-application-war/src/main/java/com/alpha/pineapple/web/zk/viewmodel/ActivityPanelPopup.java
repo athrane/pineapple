@@ -43,98 +43,97 @@ import com.alpha.pineapple.web.model.SessionState;
  */
 public class ActivityPanelPopup {
 
-    /**
-     * Session state.
-     */
-    @WireVariable
-    SessionState sessionState;
+	/**
+	 * Session state.
+	 */
+	@WireVariable
+	SessionState sessionState;
 
-    /**
-     * Activity repository.
-     */
-    @WireVariable
-    ActivityRepository activityRepository;
+	/**
+	 * Activity repository.
+	 */
+	@WireVariable
+	ActivityRepository activityRepository;
 
-    /**
-     * Web application reactor.
-     */
-    @WireVariable
-    Reactor webAppReactor;
+	/**
+	 * Web application reactor.
+	 */
+	@WireVariable
+	Reactor webAppReactor;
 
-    /**
-     * Activities.
-     */
-    List<Activity> activityModel;
+	/**
+	 * Activities.
+	 */
+	List<Activity> activityModel;
 
-    /**
-     * Initialize view model.
-     */
-    @Init
-    public void init() {
-	createModel();
-    }
+	/**
+	 * Initialize view model.
+	 */
+	@Init
+	public void init() {
+		createModel();
+	}
 
-    /**
-     * initialize activity model.
-     */
-    void createModel() {
-	Activity[] activities = activityRepository.getActivities();
-	activityModel = Arrays.asList(activities);
-    }
+	/**
+	 * initialize activity model.
+	 */
+	void createModel() {
+		Activity[] activities = activityRepository.getActivities();
+		activityModel = Arrays.asList(activities);
+	}
 
-    /**
-     * Set selected activity in the ZK view.
-     * 
-     * @param info
-     *            selected module in the ZK view.
-     */
-    public void setSelectedActivity(Activity activity) {
-	sessionState.setActivity(activity);
-    }
+	/**
+	 * Set selected activity in the ZK view.
+	 * 
+	 * @param info
+	 *            selected module in the ZK view.
+	 */
+	public void setSelectedActivity(Activity activity) {
+		sessionState.setActivity(activity);
+	}
 
-    /**
-     * Get selected activity in ZK view.
-     * 
-     * @return selected activity.
-     */
-    public Activity getSelectedActivity() {
-	return sessionState.getActivity();
-    }
+	/**
+	 * Get selected activity in ZK view.
+	 * 
+	 * @return selected activity.
+	 */
+	public Activity getSelectedActivity() {
+		return sessionState.getActivity();
+	}
 
-    /**
-     * Return registered activities.
-     * 
-     * @return array of registered activities.
-     */
-    public List<Activity> getActivities() {
-	return activityModel;
-    }
+	/**
+	 * Return registered activities.
+	 * 
+	 * @return array of registered activities.
+	 */
+	public List<Activity> getActivities() {
+		return activityModel;
+	}
 
-    /**
-     * Event handler for selection of activity in list box.
-     * 
-     * Will post the selected activity on the activity topic for a consumer to
-     * re-perform the activity.
-     */
-    @Command
-    public void performActivity() {
-	Activity activity = sessionState.getActivity();
-	webAppReactor.notify(activity.getClass(), Event.wrap(activity));
-    }
+	/**
+	 * Event handler for selection of activity in list box.
+	 * 
+	 * Will post the selected activity on the activity topic for a consumer to
+	 * re-perform the activity.
+	 */
+	@Command
+	public void performActivity() {
+		Activity activity = sessionState.getActivity();
+		webAppReactor.notify(activity.getClass(), Event.wrap(activity));
+	}
 
-    /**
-     * Event handler for the global command "completedActivityCreation". The
-     * event is triggered from the {@linkplain ModulePanel},
-     * {@linkplain EnvironmentConfigurationPanel} and the
-     * {@linkplain ExecutionPanel} view models which posts the global command.
-     * 
-     * The event handler notify the MVVM binder that the activity model is
-     * updated.
-     */
-    @GlobalCommand
-    @NotifyChange("*")
-    public void completedActivityCreation() {
-	createModel();
-    }
+	/**
+	 * Event handler for the global command "completedActivityCreation". The event
+	 * is triggered from the {@linkplain ModulePanel},
+	 * {@linkplain EnvironmentConfigurationPanel} and the
+	 * {@linkplain ExecutionPanel} view models which posts the global command.
+	 * 
+	 * The event handler notify the MVVM binder that the activity model is updated.
+	 */
+	@GlobalCommand
+	@NotifyChange("*")
+	public void completedActivityCreation() {
+		createModel();
+	}
 
 }

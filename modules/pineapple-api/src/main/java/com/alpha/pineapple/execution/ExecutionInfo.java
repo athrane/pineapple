@@ -29,33 +29,33 @@ import com.alpha.pineapple.module.ModuleInfo;
  */
 public interface ExecutionInfo {
 
-    /**
-     * Returns module info for the executed module.
-     * 
-     * @return module info for the executed module.
-     */
-    ModuleInfo getModuleInfo();
+	/**
+	 * Returns module info for the executed module.
+	 * 
+	 * @return module info for the executed module.
+	 */
+	ModuleInfo getModuleInfo();
 
-    /**
-     * Returns the environment where the module is executed in.
-     * 
-     * @return the environment where the module is executed in.
-     */
-    String getEnvironment();
+	/**
+	 * Returns the environment where the module is executed in.
+	 * 
+	 * @return the environment where the module is executed in.
+	 */
+	String getEnvironment();
 
-    /**
-     * Returns the operation which where executed on the module.
-     * 
-     * @return the operation which where executed on the module.
-     */
-    String getOperation();
+	/**
+	 * Returns the operation which where executed on the module.
+	 * 
+	 * @return the operation which where executed on the module.
+	 */
+	String getOperation();
 
-    /**
-     * Returns execution result which describes the outcome of the execution of
-     * the module.
-     * 
-     * @return execution result which describes the outcome of the execution of
-     *         the module.
-     */
-    ExecutionResult getResult();
+	/**
+	 * Returns execution result which describes the outcome of the execution of the
+	 * module.
+	 * 
+	 * @return execution result which describes the outcome of the execution of the
+	 *         module.
+	 */
+	ExecutionResult getResult();
 }

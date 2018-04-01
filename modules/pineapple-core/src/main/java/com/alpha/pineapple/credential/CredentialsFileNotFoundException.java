@@ -30,31 +30,31 @@ import com.alpha.pineapple.CoreException;
  */
 public class CredentialsFileNotFoundException extends CoreException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * CredentialNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public CredentialsFileNotFoundException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * CredentialNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public CredentialsFileNotFoundException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * CredentialNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public CredentialsFileNotFoundException(String message) {
-	super(message);
-    }
+	/**
+	 * CredentialNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public CredentialsFileNotFoundException(String message) {
+		super(message);
+	}
 
 }

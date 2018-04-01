@@ -27,31 +27,31 @@ package com.alpha.pineapple.module;
  */
 public class ModuleSaveFailedException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * ModuleSaveFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public ModuleSaveFailedException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * ModuleSaveFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public ModuleSaveFailedException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * ModuleSaveFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public ModuleSaveFailedException(String message) {
-	super(message);
-    }
+	/**
+	 * ModuleSaveFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public ModuleSaveFailedException(String message) {
+		super(message);
+	}
 
 }

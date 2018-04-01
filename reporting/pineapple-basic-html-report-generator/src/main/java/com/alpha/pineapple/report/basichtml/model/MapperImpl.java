@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.report.basichtml.model;
 
 import java.math.BigInteger;
@@ -42,8 +41,8 @@ import com.alpha.pineapple.model.report.basichtml.Report;
 import com.alpha.pineapple.model.report.basichtml.Result;
 
 /**
- * Implementation of the <code>Mapper</code> interface
- * which maps execution results into schema generated objects.
+ * Implementation of the <code>Mapper</code> interface which maps execution
+ * results into schema generated objects.
  */
 public class MapperImpl implements Mapper {
 
@@ -53,121 +52,120 @@ public class MapperImpl implements Mapper {
 	static final String NULL_MESSAGE_VALUE = "n/a (value was null).";
 
 	/**
-	 * Message splitting chars. 
+	 * Message splitting chars.
 	 */
 	static final String MSG_SEPARATOR_CHARS = "\n";
 
 	/**
 	 * Date format pattern.
-	 */	
+	 */
 	final static String DATE_FORMAT_PATTERN = "HH:mm:ss";
-	
+
 	/**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * JAXB factory.
 	 */
-	@Resource	
+	@Resource
 	ObjectFactory objectFactory;
-    	
-    /**
-     * ReportId counter for results
-     */
-    int IdGenerator = 0;		
-	       
+
+	/**
+	 * ReportId counter for results
+	 */
+	int IdGenerator = 0;
+
 	public Report createReport() {
-		
+
 		// reset id generator
 		IdGenerator = 0;
-		
+
 		// create report
 		return objectFactory.createReport();
 	}
 
 	public Result mapOperationToReport(Report reportRoot, ExecutionResult result) {
-		
+
 		// format start time
-        FastDateFormat fastDateFormat = FastDateFormat.getInstance(DATE_FORMAT_PATTERN);        
-        String formatedTime = fastDateFormat.format(result.getStartTime());
-		
+		FastDateFormat fastDateFormat = FastDateFormat.getInstance(DATE_FORMAT_PATTERN);
+		String formatedTime = fastDateFormat.format(result.getStartTime());
+
 		// create report object for operation
 		Result operationResult = objectFactory.createResult();
 		operationResult.setDescription(result.getDescription());
-		operationResult.setStartTime(formatedTime);		
-		operationResult.setTime( (float) result.getTime());		
+		operationResult.setStartTime(formatedTime);
+		operationResult.setTime((float) result.getTime());
 		operationResult.setState(result.getState().toString());
-		
+
 		// add number children
-		int children = result.getChildren().length;		
-		operationResult.setChildren( BigInteger.valueOf(children) );		
-		
+		int children = result.getChildren().length;
+		operationResult.setChildren(BigInteger.valueOf(children));
+
 		// add number errors
-		int errors = result.getChildrenWithState( ExecutionState.ERROR ).length;		
-		operationResult.setErrors( BigInteger.valueOf(errors) );
-		
+		int errors = result.getChildrenWithState(ExecutionState.ERROR).length;
+		operationResult.setErrors(BigInteger.valueOf(errors));
+
 		// add number failures
-		int failures = result.getChildrenWithState( ExecutionState.FAILURE ).length;		
-		operationResult.setFailures( BigInteger.valueOf(failures) );
+		int failures = result.getChildrenWithState(ExecutionState.FAILURE).length;
+		operationResult.setFailures(BigInteger.valueOf(failures));
 
 		// number successful children
-		int successful = result.getChildrenWithState( ExecutionState.SUCCESS).length;		
-		operationResult.setSuccessful( BigInteger.valueOf(successful) );
-						
+		int successful = result.getChildrenWithState(ExecutionState.SUCCESS).length;
+		operationResult.setSuccessful(BigInteger.valueOf(successful));
+
 		// map messages
-		operationResult.setMessages(objectFactory.createMessages());		
-		Map<String, String> sourceMessages = result.getMessages();		
-		List<Message> destinationMessages = operationResult.getMessages().getMessage();		
+		operationResult.setMessages(objectFactory.createMessages());
+		Map<String, String> sourceMessages = result.getMessages();
+		List<Message> destinationMessages = operationResult.getMessages().getMessage();
 		mapMessages(sourceMessages, destinationMessages);
-		
+
 		// result type as operation
-		operationResult.setType("operation");				
-		
+		operationResult.setType("operation");
+
 		// add report id
-		operationResult.setReportId( BigInteger.valueOf( getNextResultId() ));
-		
-		//add result too root
+		operationResult.setReportId(BigInteger.valueOf(getNextResultId()));
+
+		// add result too root
 		reportRoot.setResult(operationResult);
-		
+
 		return operationResult;
 	}
 
-	
 	public Result mapModelToReport(Result operation, ExecutionResult result) {
-		
+
 		// format start time
 		String pattern = "HH:mm:ss";
-        FastDateFormat fastDateFormat = FastDateFormat.getInstance(pattern);        
-        String formatedTime = fastDateFormat.format(result.getStartTime());
-		
+		FastDateFormat fastDateFormat = FastDateFormat.getInstance(pattern);
+		String formatedTime = fastDateFormat.format(result.getStartTime());
+
 		// create report object for operation
 		Result reportResult = objectFactory.createResult();
 		reportResult.setDescription(result.getDescription());
 		reportResult.setStartTime(formatedTime);
-		reportResult.setTime( (float) result.getTime());		
+		reportResult.setTime((float) result.getTime());
 		reportResult.setState(result.getState().toString());
-		
+
 		// add number children
-		int children = result.getChildren().length;		
-		reportResult.setChildren( BigInteger.valueOf(children) );		
-		
+		int children = result.getChildren().length;
+		reportResult.setChildren(BigInteger.valueOf(children));
+
 		// add number errors
-		int errors = result.getChildrenWithState( ExecutionState.ERROR ).length;		
-		reportResult.setErrors( BigInteger.valueOf(errors) );
-		
+		int errors = result.getChildrenWithState(ExecutionState.ERROR).length;
+		reportResult.setErrors(BigInteger.valueOf(errors));
+
 		// add number failures
-		int failures = result.getChildrenWithState( ExecutionState.FAILURE ).length;		
-		reportResult.setFailures( BigInteger.valueOf(failures) );
+		int failures = result.getChildrenWithState(ExecutionState.FAILURE).length;
+		reportResult.setFailures(BigInteger.valueOf(failures));
 
 		// number successful children
-		int successful = result.getChildrenWithState( ExecutionState.SUCCESS).length;		
-		reportResult.setSuccessful( BigInteger.valueOf(successful) );
-		
+		int successful = result.getChildrenWithState(ExecutionState.SUCCESS).length;
+		reportResult.setSuccessful(BigInteger.valueOf(successful));
+
 		// map messages
-		reportResult.setMessages(objectFactory.createMessages());		
-		Map<String, String> sourceMessages = result.getMessages();		
+		reportResult.setMessages(objectFactory.createMessages());
+		Map<String, String> sourceMessages = result.getMessages();
 		List<Message> destinationMessages = reportResult.getMessages().getMessage();
 		mapMessages(sourceMessages, destinationMessages);
 
@@ -175,129 +173,129 @@ public class MapperImpl implements Mapper {
 		reportResult.setType("model");
 
 		// add report id
-		reportResult.setReportId( BigInteger.valueOf( getNextResultId() ));
-		
-		//add result to operation
+		reportResult.setReportId(BigInteger.valueOf(getNextResultId()));
+
+		// add result to operation
 		operation.getResult().add(reportResult);
 
-		// get child results 
+		// get child results
 		ExecutionResult[] childResults = result.getChildren();
-		
+
 		// iterate over the child results
-		for (ExecutionResult childResult : childResults ) {
-			mapChildResultToReport(reportResult, childResult );
-		}					
-		
+		for (ExecutionResult childResult : childResults) {
+			mapChildResultToReport(reportResult, childResult);
+		}
+
 		return reportResult;
 	}
-	
+
 	public Result mapChildResultToReport(Result parent, ExecutionResult result) {
-		
+
 		// format start time
 		String pattern = "HH:mm:ss";
-        FastDateFormat fastDateFormat = FastDateFormat.getInstance(pattern);        
-        String formatedTime = fastDateFormat.format(result.getStartTime());
-                
+		FastDateFormat fastDateFormat = FastDateFormat.getInstance(pattern);
+		String formatedTime = fastDateFormat.format(result.getStartTime());
+
 		// create report object for operation
 		Result reportResult = objectFactory.createResult();
 		reportResult.setDescription(result.getDescription());
-		reportResult.setTime( (float) result.getTime());	
+		reportResult.setTime((float) result.getTime());
 		reportResult.setStartTime(formatedTime);
 		reportResult.setState(result.getState().toString());
-		
+
 		// add number children
-		int children = result.getChildren().length;		
-		reportResult.setChildren( BigInteger.valueOf(children) );		
-		
+		int children = result.getChildren().length;
+		reportResult.setChildren(BigInteger.valueOf(children));
+
 		// add number errors
-		int errors = result.getChildrenWithState( ExecutionState.ERROR ).length;		
-		reportResult.setErrors( BigInteger.valueOf(errors) );
-		
+		int errors = result.getChildrenWithState(ExecutionState.ERROR).length;
+		reportResult.setErrors(BigInteger.valueOf(errors));
+
 		// add number failures
-		int failures = result.getChildrenWithState( ExecutionState.FAILURE ).length;		
-		reportResult.setFailures( BigInteger.valueOf(failures) );
+		int failures = result.getChildrenWithState(ExecutionState.FAILURE).length;
+		reportResult.setFailures(BigInteger.valueOf(failures));
 
 		// number successful children
-		int successful = result.getChildrenWithState( ExecutionState.SUCCESS).length;		
-		reportResult.setSuccessful( BigInteger.valueOf(successful) );
-		
+		int successful = result.getChildrenWithState(ExecutionState.SUCCESS).length;
+		reportResult.setSuccessful(BigInteger.valueOf(successful));
+
 		// map messages
-		reportResult.setMessages(objectFactory.createMessages());		
-		Map<String, String> sourceMessages = result.getMessages();		
+		reportResult.setMessages(objectFactory.createMessages());
+		Map<String, String> sourceMessages = result.getMessages();
 		List<Message> destinationMessages = reportResult.getMessages().getMessage();
 		mapMessages(sourceMessages, destinationMessages);
-		
+
 		// result type as operation
 		reportResult.setType("default");
 
 		// add report id
-		reportResult.setReportId( BigInteger.valueOf( getNextResultId() ));
-				
-		//add result to parent 
+		reportResult.setReportId(BigInteger.valueOf(getNextResultId()));
+
+		// add result to parent
 		parent.getResult().add(reportResult);
-		
-		// get child results 
+
+		// get child results
 		ExecutionResult[] childResults = result.getChildren();
-		
+
 		// iterate over the child results
-		for (ExecutionResult childResult : childResults ) {
-			mapChildResultToReport(reportResult, childResult );
-		}			
-		
+		for (ExecutionResult childResult : childResults) {
+			mapChildResultToReport(reportResult, childResult);
+		}
+
 		return reportResult;
 	}
 
-	
 	/**
 	 * Map messages.
 	 * 
-	 * @param sourceMessages Map of source messages.
-	 * @param destinationMessages List of mapped messages.
+	 * @param sourceMessages
+	 *            Map of source messages.
+	 * @param destinationMessages
+	 *            List of mapped messages.
 	 */
 	void mapMessages(Map<String, String> sourceMessages, List<Message> destinationMessages) {
-		for (String key : sourceMessages.keySet()) {			
+		for (String key : sourceMessages.keySet()) {
 			Message message = objectFactory.createMessage();
 			message.setName(key);
 			destinationMessages.add(message);
-			
+
 			// split message into multiple lines
 			String[] lines = StringUtils.split(sourceMessages.get(key), MSG_SEPARATOR_CHARS);
 
-			// add message lines			
-			if (lines != null ) { 
+			// add message lines
+			if (lines != null) {
 				for (String line : lines) {
 					MessageValue messageValue = objectFactory.createMessageValue();
-					messageValue.setValue(line);				
+					messageValue.setValue(line);
 					message.getValue().add(messageValue);
-				}					
-				
+				}
+
 				// skip to next iteration
 				continue;
 			}
-			
+
 			// handle null case, add null message
 			MessageValue messageValue = objectFactory.createMessageValue();
-			messageValue.setValue(NULL_MESSAGE_VALUE);				
-			message.getValue().add(messageValue);												
+			messageValue.setValue(NULL_MESSAGE_VALUE);
+			message.getValue().add(messageValue);
 		}
 	}
 
-	
 	/**
 	 * Get next ID for a result.
 	 * 
 	 * @return next ID for a result.
 	 */
-	int getNextResultId() {		
+	int getNextResultId() {
 		this.IdGenerator++;
 		return this.IdGenerator;
 	}
-    
+
 	/**
-	 * Resets the report ID generator 
+	 * Resets the report ID generator
 	 */
 	void resetResultId() {
-		this.IdGenerator = 0;		
-	}	
-	
+		this.IdGenerator = 0;
+	}
+
 }

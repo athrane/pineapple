@@ -20,72 +20,69 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.http;
 
 import java.util.ArrayList;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-
 /**
  * Implementation of the <code>HttpInvocationSequence</code> interface.
  */
-public class HttpInvocationSequenceImpl implements HttpInvocationSequence 
-{
-    /**
-     * Ordered sequence of HTTP invocation results.
-     */
-    ArrayList<HttpInvocationResult> sequence;
-    
-    /**
-     * Sequence name.
-     */
-    String name;
+public class HttpInvocationSequenceImpl implements HttpInvocationSequence {
+	/**
+	 * Ordered sequence of HTTP invocation results.
+	 */
+	ArrayList<HttpInvocationResult> sequence;
 
-    /** 
-     * HttpInvocationSequence no-arg constructor.
-     */
-    public HttpInvocationSequenceImpl(String name)
-    {
-        super();
-        this.sequence = new ArrayList<HttpInvocationResult>();
-        this.name = name;
-    }
-    
-    /**
-     * Append an invocation result to the end of the sequence
-     *  
-     * @param result the invocation result to add.
-     */
-    public void appendResult( HttpInvocationResult result ) {
-        this.sequence.add( result );
-    }
-    
-    /**
-     * Return the invocation sequence as an array.
-     * @return The invocation sequence as an array.
-     */
-    public HttpInvocationResult[] getSequence() {
-        return sequence.toArray( new HttpInvocationResult[sequence.size()] );
-    }
-    
-    /**
-     * Get the sequence name.
-     * 
-     * @return the sequence name.
-     */
-    public String getName() {
-        return this.name;
-    }
-         
+	/**
+	 * Sequence name.
+	 */
+	String name;
+
+	/**
+	 * HttpInvocationSequence no-arg constructor.
+	 */
+	public HttpInvocationSequenceImpl(String name) {
+		super();
+		this.sequence = new ArrayList<HttpInvocationResult>();
+		this.name = name;
+	}
+
+	/**
+	 * Append an invocation result to the end of the sequence
+	 * 
+	 * @param result
+	 *            the invocation result to add.
+	 */
+	public void appendResult(HttpInvocationResult result) {
+		this.sequence.add(result);
+	}
+
+	/**
+	 * Return the invocation sequence as an array.
+	 * 
+	 * @return The invocation sequence as an array.
+	 */
+	public HttpInvocationResult[] getSequence() {
+		return sequence.toArray(new HttpInvocationResult[sequence.size()]);
+	}
+
+	/**
+	 * Get the sequence name.
+	 * 
+	 * @return the sequence name.
+	 */
+	public String getName() {
+		return this.name;
+	}
+
 	public Iterable<Object> getIntraSequencePropertyIterator(ResponsePropertyInfo propertyInfo) {
-		return new IntraSequencePropertyIteratorImpl(propertyInfo, this );		
+		return new IntraSequencePropertyIteratorImpl(propertyInfo, this);
 	}
 
 	@Override
-    public String toString()
-    {
-        return ReflectionToStringBuilder.toString( this );
-    }    
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this);
+	}
 }

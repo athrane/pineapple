@@ -34,24 +34,24 @@ import com.alpha.pineapple.web.model.DebugInfoModel;
  */
 public class DebugPanel {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Debug info model.
-     */
-    @WireVariable
-    DebugInfoModel debugInfoModel;
+	/**
+	 * Debug info model.
+	 */
+	@WireVariable
+	DebugInfoModel debugInfoModel;
 
-    /**
-     * Get debug model as a map.
-     * 
-     * @return debug model.
-     */
-    public Map<String, String> getDebugModel() {
-	return debugInfoModel.getDebugInfoModel();
-    }
+	/**
+	 * Get debug model as a map.
+	 * 
+	 * @return debug model.
+	 */
+	public Map<String, String> getDebugModel() {
+		return debugInfoModel.getDebugInfoModel();
+	}
 
 }

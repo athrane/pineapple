@@ -85,357 +85,355 @@ import com.alpha.testutils.ObjectMotherContent;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.plugin.docker-config.xml" })
 public class DeployConfigurationIntegrationTest {
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
-
-    /**
-     * Object under test.
-     */
-    @Resource
-    DeployConfiguration deployOperation;
-
-    /**
-     * Docker helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
-
-    /**
-     * Docker info objects builder.
-     */
-    @Resource
-    InfoBuilder dockerInfoBuilder;
-
-    /**
-     * Object mother for the docker model.
-     */
-    ObjectMotherContent contentMother;
-
-    /**
-     * Docker session.
-     */
-    DockerSession session;
-
-    /**
-     * Execution result.
-     */
-    ExecutionResult result;
-
-    /**
-     * Mock runtime directory provider.
-     */
-    @Resource
-    RuntimeDirectoryProvider coreRuntimeDirectoryProvider;
-
-    /**
-     * Random value.
-     */
-    String randomRepo;
-
-    /**
-     * Random value.
-     */
-    String randomTag;
-
-    /**
-     * Random value.
-     */
-    String randomRepo2;
-
-    /**
-     * Random value.
-     */
-    String randomTag2;
-
-    /**
-     * Random model container ID.
-     */
-    String randomModelContaineID;
-
-    /**
-     * Random Docker container ID.
-     */
-    String randomDockerContainerID;
-
-    /**
-     * Random environment.
-     */
-    String randomEnvironment;
-
-    /**
-     * Random module.
-     */
-    String randomModule;
-
-    /**
-     * Random key.
-     */
-    String randomKey;
-
-    /**
-     * Random archive.
-     */
-    String randomArchive;
-
-    /**
-     * Random source directory.
-     */
-    String randomSourceDirectoryName;
-
-    @Before
-    public void setUp() throws Exception {
-	randomKey = RandomStringUtils.randomAlphanumeric(10);
-	randomModule = RandomStringUtils.randomAlphanumeric(10);
-	randomEnvironment = RandomStringUtils.randomAlphanumeric(10);
-	randomModelContaineID = RandomStringUtils.randomAlphanumeric(10);
-	randomDockerContainerID = RandomStringUtils.randomAlphanumeric(10);
-	randomRepo = RandomStringUtils.randomAlphanumeric(10);
-	randomTag = RandomStringUtils.randomAlphanumeric(10);
-	randomRepo2 = RandomStringUtils.randomAlphanumeric(10);
-	randomTag2 = RandomStringUtils.randomAlphanumeric(10);
-	randomArchive = RandomStringUtils.randomAlphabetic(10);
-	randomSourceDirectoryName = RandomStringUtils.randomAlphabetic(10);
-
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
-
-	// create mock session
-	session = createMock(DockerSession.class);
-
-	// create execution result
-	result = new ExecutionResultImpl("Root result");
-
-	// create content mother
-	contentMother = new ObjectMotherContent();
-
-	// reset plugin provider
-	reset(coreRuntimeDirectoryProvider);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
-    /**
-     * Test that deploy configuration operation can be looked up from the
-     * context.
-     */
-    @Test
-    public void testCanGetInstanceFromContext() {
-	assertNotNull(deployOperation);
-    }
-
-    /**
-     * Test that the operation can execute with a minimal model.
-     */
-    @Test
-    public void testCanExecuteWithMinimalModel() throws Exception {
-
-	// complete session initialization
-	replay(session);
-
-	// create content
-	Docker content = contentMother.createEmptyDockerModel();
-
-	// invoke operation
-	deployOperation.execute(content, session, result);
-
-	// test
-	assertTrue(result.isSuccess());
-	verify(session);
-    }
-
-    /**
-     * Test that the operation can execute with a model with image command with
-     * empty tag.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanExecuteWithModelWithImageCommandWithEmptyTag() throws Exception {
-	// complete session initialization
-	JsonMessage[] JsonMessageInfos = {};
-	expect(session.httpPostForObjectWithMultipleRootElements(eq(CREATE_IMAGE_URI), isA(Map.class),
-		isA(JsonMessage[].class.getClass()))).andReturn(JsonMessageInfos);
-	replay(session);
-
-	// create content
-	Docker content = contentMother.createDockerModelWithImageCommand(randomRepo, "");
-
-	// invoke operation
-	deployOperation.execute(content, session, result);
-
-	// test
-	assertTrue(result.isSuccess());
-	verify(session);
-    }
-
-    /**
-     * Test that the operation can execute with a model with image command with
-     * undefined tag.
-     * 
-     * Since model {@linkplain Image} has "latest" as default value, then that
-     * value is returned if model image is created with null value.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanExecuteWithModelWithImageCommandWithUndefinedTag() throws Exception {
-
-	// complete session initialization
-	JsonMessage[] JsonMessageInfos = {};
-	expect(session.httpPostForObjectWithMultipleRootElements(eq(CREATE_TAGGED_IMAGE_URI), isA(Map.class),
-		isA(JsonMessage[].class.getClass()))).andReturn(JsonMessageInfos);
-	replay(session);
-
-	// create content
-	Docker content = contentMother.createDockerModelWithImageCommand(randomRepo, null);
-
-	// invoke operation
-	deployOperation.execute(content, session, result);
-
-	// test
-	assertTrue(result.isSuccess());
-	verify(session);
-    }
-
-    /**
-     * Test that the operation can execute with a model with image command.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanExecuteWithModelWithImageCommand() throws Exception {
-
-	// complete session initialization
-	JsonMessage[] JsonMessageInfos = {};
-	expect(session.httpPostForObjectWithMultipleRootElements(eq(CREATE_TAGGED_IMAGE_URI), isA(Map.class),
-		isA(JsonMessage[].class.getClass()))).andReturn(JsonMessageInfos);
-	replay(session);
-
-	// create content
-	Docker content = contentMother.createDockerModelWithImageCommand(randomRepo, randomTag);
-
-	// invoke operation
-	deployOperation.execute(content, session, result);
-
-	// test
-	assertTrue(result.isSuccess());
-	verify(session);
-    }
-
-    /**
-     * Test that the operation can execute with a model with tagged image
-     * command.
-     */
-    @Test
-    public void testCanExecuteWithModelWithTaggedImageCommand() throws Exception {
-	Map<String, String> uriVariables = new HashMap<String, String>(3);
-	uriVariables.put("image", randomRepo + ":" + randomTag);
-	uriVariables.put("repository", randomRepo2);
-
-	// complete session initialization
-	session.httpPost(TAG_IMAGE_URI, uriVariables);
-	replay(session);
-
-	// create content
-	Docker content = contentMother.createDockerModelWithTaggedImageCommand(randomRepo, randomTag, randomRepo2,
-		randomTag2);
-
-	// invoke operation
-	deployOperation.execute(content, session, result);
-
-	// test
-	assertTrue(result.isSuccess());
-	verify(session);
-    }
-
-    /**
-     * Test that the operation can execute with a model with image from
-     * DockerFile command.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanExecuteWithModelWithImageFromDockerfileCommand() throws Exception {
-
-	// create source directory with single docker file for TAR archive
-	File sourceDirectory = new File(testDirectory, randomSourceDirectoryName);
-	ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(randomRepo, randomTag);
-	dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
-
-	// complete runtime provider setup
-	expect(coreRuntimeDirectoryProvider.resolveModelPath(sourceDirectory.getAbsolutePath(), result))
-		.andReturn(sourceDirectory);
-	expect(coreRuntimeDirectoryProvider.getTempDirectory()).andReturn(testDirectory);
-	replay(coreRuntimeDirectoryProvider);
-
-	// complete session initialization
-	JsonMessage[] JsonMessageInfos = {};
-	expect(session.httpPostForObjectWithMultipleRootElements(eq(BUILD_IMAGE_URI), isA(Map.class),
-		isA(HttpEntity.class), isA(JsonMessage[].class.getClass()), eq(CONTENT_TYPE_TAR)))
-			.andReturn(JsonMessageInfos);
-	replay(session);
-
-	// create content
-	Docker content = contentMother.createDockerModelWithImageFromDockerfileCommand(randomRepo, randomTag,
-		sourceDirectory.getAbsolutePath(), false);
-
-	// invoke operation
-	deployOperation.execute(content, session, result);
-
-	// test
-	assertTrue(result.isSuccess());
-	verify(session);
-	verify(coreRuntimeDirectoryProvider);
-    }
-
-    /**
-     * Test that the operation can execute with a model with container command.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanExecuteWithModelWithContainerCommand() throws Exception {
-	Map<String, String> uriVariables = new HashMap<String, String>(3);
-	uriVariables.put("image", randomRepo + ":" + randomTag);
-	uriVariables.put("repository", randomRepo2);
-
-	// complete mock session initialization
-	CreatedContainer createdContainer = createMock(CreatedContainer.class);
-	expect(createdContainer.getId()).andReturn(randomDockerContainerID).times(3);
-	List<String> emptyWarnings = new ArrayList<String>();
-	expect(createdContainer.getWarnings()).andReturn(emptyWarnings);
-	replay(createdContainer);
-	expect(session.httpPostForObject(contains(CREATE_CONTAINER_URI), isA(ContainerConfiguration.class),
-		isA(CreatedContainer.class.getClass()))).andReturn(createdContainer);
-	session.httpPost(contains(RENAME_CONTAINER_URI), isA(Map.class));
-	replay(session);
-
-	// create content
-	Docker content = contentMother.createDockerModelWithContainerCommand(randomModelContaineID, randomRepo,
-		randomTag);
-
-	// invoke operation
-	deployOperation.execute(content, session, result);
-
-	// test
-	assertTrue(result.isSuccess());
-	verify(session);
-	verify(createdContainer);
-    }
-
-    /**
-     * Test that the operation fails to execute with a model with container
-     * command if image info isn't defined.
-     */
-    @Test(expected = PluginExecutionFailedException.class)
-    public void testFailsExecutionWithModelWithContainerCommandIfImageInfoIsntDefined() throws Exception {
-	replay(session);
-
-	// create content
-	Docker content = contentMother
-		.createDockerModelWithContainerCommandWithUndefinedImageInfo(randomModelContaineID);
-
-	// invoke operation
-	deployOperation.execute(content, session, result);
-    }
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
+
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	DeployConfiguration deployOperation;
+
+	/**
+	 * Docker helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
+
+	/**
+	 * Docker info objects builder.
+	 */
+	@Resource
+	InfoBuilder dockerInfoBuilder;
+
+	/**
+	 * Object mother for the docker model.
+	 */
+	ObjectMotherContent contentMother;
+
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
+
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult result;
+
+	/**
+	 * Mock runtime directory provider.
+	 */
+	@Resource
+	RuntimeDirectoryProvider coreRuntimeDirectoryProvider;
+
+	/**
+	 * Random value.
+	 */
+	String randomRepo;
+
+	/**
+	 * Random value.
+	 */
+	String randomTag;
+
+	/**
+	 * Random value.
+	 */
+	String randomRepo2;
+
+	/**
+	 * Random value.
+	 */
+	String randomTag2;
+
+	/**
+	 * Random model container ID.
+	 */
+	String randomModelContaineID;
+
+	/**
+	 * Random Docker container ID.
+	 */
+	String randomDockerContainerID;
+
+	/**
+	 * Random environment.
+	 */
+	String randomEnvironment;
+
+	/**
+	 * Random module.
+	 */
+	String randomModule;
+
+	/**
+	 * Random key.
+	 */
+	String randomKey;
+
+	/**
+	 * Random archive.
+	 */
+	String randomArchive;
+
+	/**
+	 * Random source directory.
+	 */
+	String randomSourceDirectoryName;
+
+	@Before
+	public void setUp() throws Exception {
+		randomKey = RandomStringUtils.randomAlphanumeric(10);
+		randomModule = RandomStringUtils.randomAlphanumeric(10);
+		randomEnvironment = RandomStringUtils.randomAlphanumeric(10);
+		randomModelContaineID = RandomStringUtils.randomAlphanumeric(10);
+		randomDockerContainerID = RandomStringUtils.randomAlphanumeric(10);
+		randomRepo = RandomStringUtils.randomAlphanumeric(10);
+		randomTag = RandomStringUtils.randomAlphanumeric(10);
+		randomRepo2 = RandomStringUtils.randomAlphanumeric(10);
+		randomTag2 = RandomStringUtils.randomAlphanumeric(10);
+		randomArchive = RandomStringUtils.randomAlphabetic(10);
+		randomSourceDirectoryName = RandomStringUtils.randomAlphabetic(10);
+
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+
+		// create mock session
+		session = createMock(DockerSession.class);
+
+		// create execution result
+		result = new ExecutionResultImpl("Root result");
+
+		// create content mother
+		contentMother = new ObjectMotherContent();
+
+		// reset plugin provider
+		reset(coreRuntimeDirectoryProvider);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+	}
+
+	/**
+	 * Test that deploy configuration operation can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetInstanceFromContext() {
+		assertNotNull(deployOperation);
+	}
+
+	/**
+	 * Test that the operation can execute with a minimal model.
+	 */
+	@Test
+	public void testCanExecuteWithMinimalModel() throws Exception {
+
+		// complete session initialization
+		replay(session);
+
+		// create content
+		Docker content = contentMother.createEmptyDockerModel();
+
+		// invoke operation
+		deployOperation.execute(content, session, result);
+
+		// test
+		assertTrue(result.isSuccess());
+		verify(session);
+	}
+
+	/**
+	 * Test that the operation can execute with a model with image command with
+	 * empty tag.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanExecuteWithModelWithImageCommandWithEmptyTag() throws Exception {
+		// complete session initialization
+		JsonMessage[] JsonMessageInfos = {};
+		expect(session.httpPostForObjectWithMultipleRootElements(eq(CREATE_IMAGE_URI), isA(Map.class),
+				isA(JsonMessage[].class.getClass()))).andReturn(JsonMessageInfos);
+		replay(session);
+
+		// create content
+		Docker content = contentMother.createDockerModelWithImageCommand(randomRepo, "");
+
+		// invoke operation
+		deployOperation.execute(content, session, result);
+
+		// test
+		assertTrue(result.isSuccess());
+		verify(session);
+	}
+
+	/**
+	 * Test that the operation can execute with a model with image command with
+	 * undefined tag.
+	 * 
+	 * Since model {@linkplain Image} has "latest" as default value, then that value
+	 * is returned if model image is created with null value.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanExecuteWithModelWithImageCommandWithUndefinedTag() throws Exception {
+
+		// complete session initialization
+		JsonMessage[] JsonMessageInfos = {};
+		expect(session.httpPostForObjectWithMultipleRootElements(eq(CREATE_TAGGED_IMAGE_URI), isA(Map.class),
+				isA(JsonMessage[].class.getClass()))).andReturn(JsonMessageInfos);
+		replay(session);
+
+		// create content
+		Docker content = contentMother.createDockerModelWithImageCommand(randomRepo, null);
+
+		// invoke operation
+		deployOperation.execute(content, session, result);
+
+		// test
+		assertTrue(result.isSuccess());
+		verify(session);
+	}
+
+	/**
+	 * Test that the operation can execute with a model with image command.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanExecuteWithModelWithImageCommand() throws Exception {
+
+		// complete session initialization
+		JsonMessage[] JsonMessageInfos = {};
+		expect(session.httpPostForObjectWithMultipleRootElements(eq(CREATE_TAGGED_IMAGE_URI), isA(Map.class),
+				isA(JsonMessage[].class.getClass()))).andReturn(JsonMessageInfos);
+		replay(session);
+
+		// create content
+		Docker content = contentMother.createDockerModelWithImageCommand(randomRepo, randomTag);
+
+		// invoke operation
+		deployOperation.execute(content, session, result);
+
+		// test
+		assertTrue(result.isSuccess());
+		verify(session);
+	}
+
+	/**
+	 * Test that the operation can execute with a model with tagged image command.
+	 */
+	@Test
+	public void testCanExecuteWithModelWithTaggedImageCommand() throws Exception {
+		Map<String, String> uriVariables = new HashMap<String, String>(3);
+		uriVariables.put("image", randomRepo + ":" + randomTag);
+		uriVariables.put("repository", randomRepo2);
+
+		// complete session initialization
+		session.httpPost(TAG_IMAGE_URI, uriVariables);
+		replay(session);
+
+		// create content
+		Docker content = contentMother.createDockerModelWithTaggedImageCommand(randomRepo, randomTag, randomRepo2,
+				randomTag2);
+
+		// invoke operation
+		deployOperation.execute(content, session, result);
+
+		// test
+		assertTrue(result.isSuccess());
+		verify(session);
+	}
+
+	/**
+	 * Test that the operation can execute with a model with image from DockerFile
+	 * command.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanExecuteWithModelWithImageFromDockerfileCommand() throws Exception {
+
+		// create source directory with single docker file for TAR archive
+		File sourceDirectory = new File(testDirectory, randomSourceDirectoryName);
+		ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(randomRepo, randomTag);
+		dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
+
+		// complete runtime provider setup
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(sourceDirectory.getAbsolutePath(), result))
+				.andReturn(sourceDirectory);
+		expect(coreRuntimeDirectoryProvider.getTempDirectory()).andReturn(testDirectory);
+		replay(coreRuntimeDirectoryProvider);
+
+		// complete session initialization
+		JsonMessage[] JsonMessageInfos = {};
+		expect(session.httpPostForObjectWithMultipleRootElements(eq(BUILD_IMAGE_URI), isA(Map.class),
+				isA(HttpEntity.class), isA(JsonMessage[].class.getClass()), eq(CONTENT_TYPE_TAR)))
+						.andReturn(JsonMessageInfos);
+		replay(session);
+
+		// create content
+		Docker content = contentMother.createDockerModelWithImageFromDockerfileCommand(randomRepo, randomTag,
+				sourceDirectory.getAbsolutePath(), false);
+
+		// invoke operation
+		deployOperation.execute(content, session, result);
+
+		// test
+		assertTrue(result.isSuccess());
+		verify(session);
+		verify(coreRuntimeDirectoryProvider);
+	}
+
+	/**
+	 * Test that the operation can execute with a model with container command.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanExecuteWithModelWithContainerCommand() throws Exception {
+		Map<String, String> uriVariables = new HashMap<String, String>(3);
+		uriVariables.put("image", randomRepo + ":" + randomTag);
+		uriVariables.put("repository", randomRepo2);
+
+		// complete mock session initialization
+		CreatedContainer createdContainer = createMock(CreatedContainer.class);
+		expect(createdContainer.getId()).andReturn(randomDockerContainerID).times(3);
+		List<String> emptyWarnings = new ArrayList<String>();
+		expect(createdContainer.getWarnings()).andReturn(emptyWarnings);
+		replay(createdContainer);
+		expect(session.httpPostForObject(contains(CREATE_CONTAINER_URI), isA(ContainerConfiguration.class),
+				isA(CreatedContainer.class.getClass()))).andReturn(createdContainer);
+		session.httpPost(contains(RENAME_CONTAINER_URI), isA(Map.class));
+		replay(session);
+
+		// create content
+		Docker content = contentMother.createDockerModelWithContainerCommand(randomModelContaineID, randomRepo,
+				randomTag);
+
+		// invoke operation
+		deployOperation.execute(content, session, result);
+
+		// test
+		assertTrue(result.isSuccess());
+		verify(session);
+		verify(createdContainer);
+	}
+
+	/**
+	 * Test that the operation fails to execute with a model with container command
+	 * if image info isn't defined.
+	 */
+	@Test(expected = PluginExecutionFailedException.class)
+	public void testFailsExecutionWithModelWithContainerCommandIfImageInfoIsntDefined() throws Exception {
+		replay(session);
+
+		// create content
+		Docker content = contentMother
+				.createDockerModelWithContainerCommandWithUndefinedImageInfo(randomModelContaineID);
+
+		// invoke operation
+		deployOperation.execute(content, session, result);
+	}
 
 }

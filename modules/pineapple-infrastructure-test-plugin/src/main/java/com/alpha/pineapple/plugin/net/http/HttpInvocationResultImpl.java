@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.http;
 
 import java.util.HashMap;
@@ -36,70 +35,68 @@ import org.w3c.dom.Document;
 /**
  * Implementation of the <code>HttpInvocationResult</code> interface.
  */
-public class HttpInvocationResultImpl implements HttpInvocationResult
-{
+public class HttpInvocationResultImpl implements HttpInvocationResult {
 
-    /**
-     * HTTP status code.
-     */
-    public int statusCode;
+	/**
+	 * HTTP status code.
+	 */
+	public int statusCode;
 
-    /**
-     * Registered host name
-     */
-    public String host;
+	/**
+	 * Registered host name
+	 */
+	public String host;
 
-    /**
-     * Registered environment.
-     */
-    public String environment;
+	/**
+	 * Registered environment.
+	 */
+	public String environment;
 
-    /**
-     * Registered location.
-     */
-    public String location;
+	/**
+	 * Registered location.
+	 */
+	public String location;
 
-    /**
-     * Registered server.
-     */
-    public String server;
+	/**
+	 * Registered server.
+	 */
+	public String server;
 
-    /**
-     * Registered cookies.
-     */
-    public HashMap<String, String> cookies;
+	/**
+	 * Registered cookies.
+	 */
+	public HashMap<String, String> cookies;
 
-    /**
-     * HTTP response headers.
-     */
-    public Header[] responseHeaders;
+	/**
+	 * HTTP response headers.
+	 */
+	public Header[] responseHeaders;
 
-    /**
-     * Contains the response as XML.
-     */
-    public Document responseAsXml;
+	/**
+	 * Contains the response as XML.
+	 */
+	public Document responseAsXml;
 
-    /**
-     * Registered properties.
-     */
-    public HashMap<String, Object> properties;
-    
-    /**
-     * XPath object.
-     */
-    static XPath xpath = XPathFactory.newInstance().newXPath();    
-    
-    /**
-     * HttpInvocationResult constructor.
-     */
-    public HttpInvocationResultImpl()
-    {
-        cookies = new HashMap<String, String>();
-        properties = new HashMap<String, Object>();
-    }
-            
-    public HashMap<String, String> getCookies() {
-    	return cookies; 
+	/**
+	 * Registered properties.
+	 */
+	public HashMap<String, Object> properties;
+
+	/**
+	 * XPath object.
+	 */
+	static XPath xpath = XPathFactory.newInstance().newXPath();
+
+	/**
+	 * HttpInvocationResult constructor.
+	 */
+	public HttpInvocationResultImpl() {
+		cookies = new HashMap<String, String>();
+		properties = new HashMap<String, Object>();
+	}
+
+	public HashMap<String, String> getCookies() {
+		return cookies;
 	}
 
 	public String getEnvironment() {
@@ -125,9 +122,9 @@ public class HttpInvocationResultImpl implements HttpInvocationResult
 	public int getStatusCode() {
 		return statusCode;
 	}
-	
+
 	public void setCookies(HashMap<String, String> cookies) {
-		this.cookies = cookies;		
+		this.cookies = cookies;
 	}
 
 	public void setEnvironment(String environment) {
@@ -135,7 +132,7 @@ public class HttpInvocationResultImpl implements HttpInvocationResult
 	}
 
 	public void setHost(String host) {
-		this.host = host;		
+		this.host = host;
 	}
 
 	public void setLocation(String location) {
@@ -153,35 +150,32 @@ public class HttpInvocationResultImpl implements HttpInvocationResult
 	public void setStatusCode(int code) {
 		this.statusCode = code;
 	}
-			
+
 	@Override
-    public boolean equals( Object o )
-    {
-        return EqualsBuilder.reflectionEquals( this, o );
-    }
+	public boolean equals(Object o) {
+		return EqualsBuilder.reflectionEquals(this, o);
+	}
 
-		
-    public boolean containsProperty(String name) {
+	public boolean containsProperty(String name) {
 
-    	// return answer 
-    	return properties.containsKey(name);
+		// return answer
+		return properties.containsKey(name);
 	}
 
 	public Object getProperty(String name) {
-		
-    	// return answer 
-    	return properties.get(name);
+
+		// return answer
+		return properties.get(name);
 	}
-    	
+
 	public void setPropertyValue(String name, Object value) {
-		this.properties.put(name, value);		
+		this.properties.put(name, value);
 	}
 
 	@Override
-    public String toString()
-    {
-        String excludeFieldNames = "responseHeaders";
-        return ReflectionToStringBuilder.toStringExclude( this, excludeFieldNames );
-    }
-    
+	public String toString() {
+		String excludeFieldNames = "responseHeaders";
+		return ReflectionToStringBuilder.toStringExclude(this, excludeFieldNames);
+	}
+
 }

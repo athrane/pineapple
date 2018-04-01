@@ -20,14 +20,12 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.http;
 
 /**
  * Implements <code>HttpConfiguration>/code> interface.
  * 
- *  If the no value is set of a property then the object defines 
- *  default values.
+ * If the no value is set of a property then the object defines default values.
  */
 public class HttpConfigurationImpl implements HttpConfiguration {
 
@@ -36,7 +34,7 @@ public class HttpConfigurationImpl implements HttpConfiguration {
 	int proxyPort = 0;
 	int tcpSocketTimeout = 3000;
 
-	public boolean getHttpFollowRedirects() {		
+	public boolean getHttpFollowRedirects() {
 		return this.httpFollowRedirects;
 	}
 

@@ -46,247 +46,247 @@ import com.alpha.javautils.SystemUtils;
  */
 public class PineappleHomeInitializerTest {
 
-    /**
-     * subject under test.
-     * 
-     */
-    PineappleHomeInitializer initializer;
+	/**
+	 * subject under test.
+	 * 
+	 */
+	PineappleHomeInitializer initializer;
 
-    /**
-     * Mock Java System properties.
-     */
-    Properties systemProperties;
+	/**
+	 * Mock Java System properties.
+	 */
+	Properties systemProperties;
 
-    /**
-     * Mock Java system utilities.
-     */
-    SystemUtils systemUtils;
+	/**
+	 * Mock Java system utilities.
+	 */
+	SystemUtils systemUtils;
 
-    /**
-     * Mock servlet context event.
-     */
-    ServletContextEvent sce;
+	/**
+	 * Mock servlet context event.
+	 */
+	ServletContextEvent sce;
 
-    /**
-     * Random value.
-     */
-    String randomValue;
+	/**
+	 * Random value.
+	 */
+	String randomValue;
 
-    /**
-     * Random value.
-     */
-    String randomValue2;
+	/**
+	 * Random value.
+	 */
+	String randomValue2;
 
-    /**
-     * Random value.
-     */
-    String randomSystemProperty;
+	/**
+	 * Random value.
+	 */
+	String randomSystemProperty;
 
-    /**
-     * Random value.
-     */
-    String randomSystemProperty2;
+	/**
+	 * Random value.
+	 */
+	String randomSystemProperty2;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	randomValue = RandomStringUtils.randomAlphabetic(10);
-	randomValue2 = RandomStringUtils.randomAlphabetic(10);
-	randomSystemProperty = RandomStringUtils.randomAlphabetic(10);
-	randomSystemProperty2 = RandomStringUtils.randomAlphabetic(10);
+		randomValue = RandomStringUtils.randomAlphabetic(10);
+		randomValue2 = RandomStringUtils.randomAlphabetic(10);
+		randomSystemProperty = RandomStringUtils.randomAlphabetic(10);
+		randomSystemProperty2 = RandomStringUtils.randomAlphabetic(10);
 
-	// create mock event
-	sce = createMock(ServletContextEvent.class);
+		// create mock event
+		sce = createMock(ServletContextEvent.class);
 
-	// create mock properties
-	systemProperties = createMock(Properties.class);
+		// create mock properties
+		systemProperties = createMock(Properties.class);
 
-	// create mock system utils
-	systemUtils = createMock(SystemUtils.class);
+		// create mock system utils
+		systemUtils = createMock(SystemUtils.class);
 
-	// create initializer
-	initializer = new PineappleHomeInitializer(systemUtils, systemProperties);
-    }
+		// create initializer
+		initializer = new PineappleHomeInitializer(systemUtils, systemProperties);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test initialization when pineapple home is defined in advance.
-     */
-    @Test
-    public void testInitializationWhenPineappleIsDefined() {
+	/**
+	 * Test initialization when pineapple home is defined in advance.
+	 */
+	@Test
+	public void testInitializationWhenPineappleIsDefined() {
 
-	// complete mock setup
-	replay(sce);
+		// complete mock setup
+		replay(sce);
 
-	// complete mock setup
-	expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(true);
-	replay(systemUtils);
+		// complete mock setup
+		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(true);
+		replay(systemUtils);
 
-	// complete mock setup
-	replay(systemProperties);
+		// complete mock setup
+		replay(systemProperties);
 
-	// test
-	initializer.contextInitialized(sce);
+		// test
+		initializer.contextInitialized(sce);
 
-	// test
-	verify(sce);
-	verify(systemUtils);
-	verify(systemProperties);
-    }
+		// test
+		verify(sce);
+		verify(systemUtils);
+		verify(systemProperties);
+	}
 
-    /**
-     * Test initialization when pineapple home isn't defined and web.xml returns
-     * a null value.
-     */
-    @Test
-    public void testInitializationWhenWebXmlValueIsNull() {
+	/**
+	 * Test initialization when pineapple home isn't defined and web.xml returns a
+	 * null value.
+	 */
+	@Test
+	public void testInitializationWhenWebXmlValueIsNull() {
 
-	String expected = randomValue2 + "/.pineapple";
+		String expected = randomValue2 + "/.pineapple";
 
-	// complete mock setup
-	ServletContext context = createMock(ServletContext.class);
-	expect(context.getInitParameter(PineappleHomeInitializer.PARAM_NAME)).andReturn(null);
-	replay(context);
+		// complete mock setup
+		ServletContext context = createMock(ServletContext.class);
+		expect(context.getInitParameter(PineappleHomeInitializer.PARAM_NAME)).andReturn(null);
+		replay(context);
 
-	// complete mock setup
-	expect(sce.getServletContext()).andReturn(context);
-	replay(sce);
+		// complete mock setup
+		expect(sce.getServletContext()).andReturn(context);
+		replay(sce);
 
-	// complete mock setup
-	expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
-	expect(systemUtils.getSystemProperty("user.home", systemProperties)).andReturn(randomValue2);
-	replay(systemUtils);
+		// complete mock setup
+		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
+		expect(systemUtils.getSystemProperty("user.home", systemProperties)).andReturn(randomValue2);
+		replay(systemUtils);
 
-	// complete mock setup
-	expect(systemProperties.setProperty(eq(PineappleHomeInitializer.PARAM_NAME), eq(expected))).andReturn(expected);
-	replay(systemProperties);
+		// complete mock setup
+		expect(systemProperties.setProperty(eq(PineappleHomeInitializer.PARAM_NAME), eq(expected))).andReturn(expected);
+		replay(systemProperties);
 
-	// test
-	initializer.contextInitialized(sce);
+		// test
+		initializer.contextInitialized(sce);
 
-	// test
-	verify(sce);
-	verify(context);
-	verify(systemUtils);
-	verify(systemProperties);
-    }
+		// test
+		verify(sce);
+		verify(context);
+		verify(systemUtils);
+		verify(systemProperties);
+	}
 
-    /**
-     * Test initialization when pineapple home isn't defined and web.xml returns
-     * a value.
-     */
-    @Test
-    public void testInitializationWhenWebXmlValueIsDefined() {
+	/**
+	 * Test initialization when pineapple home isn't defined and web.xml returns a
+	 * value.
+	 */
+	@Test
+	public void testInitializationWhenWebXmlValueIsDefined() {
 
-	String expected = randomValue2 + "/.pineapple";
-	String webXmlValue = "${user.home}/.pineapple";
+		String expected = randomValue2 + "/.pineapple";
+		String webXmlValue = "${user.home}/.pineapple";
 
-	// complete mock setup
-	ServletContext context = createMock(ServletContext.class);
-	expect(context.getInitParameter(PineappleHomeInitializer.PARAM_NAME)).andReturn(webXmlValue);
-	replay(context);
+		// complete mock setup
+		ServletContext context = createMock(ServletContext.class);
+		expect(context.getInitParameter(PineappleHomeInitializer.PARAM_NAME)).andReturn(webXmlValue);
+		replay(context);
 
-	// complete mock setup
-	expect(sce.getServletContext()).andReturn(context);
-	replay(sce);
+		// complete mock setup
+		expect(sce.getServletContext()).andReturn(context);
+		replay(sce);
 
-	// complete mock setup
-	expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
-	expect(systemUtils.getSystemProperty("user.home", systemProperties)).andReturn(randomValue2);
-	replay(systemUtils);
+		// complete mock setup
+		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
+		expect(systemUtils.getSystemProperty("user.home", systemProperties)).andReturn(randomValue2);
+		replay(systemUtils);
 
-	// complete mock setup
-	expect(systemProperties.setProperty(eq(PineappleHomeInitializer.PARAM_NAME), eq(expected))).andReturn(expected);
-	replay(systemProperties);
+		// complete mock setup
+		expect(systemProperties.setProperty(eq(PineappleHomeInitializer.PARAM_NAME), eq(expected))).andReturn(expected);
+		replay(systemProperties);
 
-	// test
-	initializer.contextInitialized(sce);
+		// test
+		initializer.contextInitialized(sce);
 
-	// test
-	verify(sce);
-	verify(context);
-	verify(systemUtils);
-	verify(systemProperties);
-    }
+		// test
+		verify(sce);
+		verify(context);
+		verify(systemUtils);
+		verify(systemProperties);
+	}
 
-    /**
-     * Test initialization when pineapple home isn't defined and web.xml returns
-     * a value.
-     */
-    @Test
-    public void testInitializationWhenWebXmlValueIsDefined2() {
+	/**
+	 * Test initialization when pineapple home isn't defined and web.xml returns a
+	 * value.
+	 */
+	@Test
+	public void testInitializationWhenWebXmlValueIsDefined2() {
 
-	String expected = randomValue2 + "/.pineapple";
-	String webXmlValue = "${" + randomSystemProperty + "}/.pineapple";
+		String expected = randomValue2 + "/.pineapple";
+		String webXmlValue = "${" + randomSystemProperty + "}/.pineapple";
 
-	// complete mock setup
-	ServletContext context = createMock(ServletContext.class);
-	expect(context.getInitParameter(PineappleHomeInitializer.PARAM_NAME)).andReturn(webXmlValue);
-	replay(context);
+		// complete mock setup
+		ServletContext context = createMock(ServletContext.class);
+		expect(context.getInitParameter(PineappleHomeInitializer.PARAM_NAME)).andReturn(webXmlValue);
+		replay(context);
 
-	// complete mock setup
-	expect(sce.getServletContext()).andReturn(context);
-	replay(sce);
+		// complete mock setup
+		expect(sce.getServletContext()).andReturn(context);
+		replay(sce);
 
-	// complete mock setup
-	expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
-	expect(systemUtils.getSystemProperty(randomSystemProperty, systemProperties)).andReturn(randomValue2);
-	replay(systemUtils);
+		// complete mock setup
+		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
+		expect(systemUtils.getSystemProperty(randomSystemProperty, systemProperties)).andReturn(randomValue2);
+		replay(systemUtils);
 
-	// complete mock setup
-	expect(systemProperties.setProperty(eq(PineappleHomeInitializer.PARAM_NAME), eq(expected))).andReturn(expected);
-	replay(systemProperties);
+		// complete mock setup
+		expect(systemProperties.setProperty(eq(PineappleHomeInitializer.PARAM_NAME), eq(expected))).andReturn(expected);
+		replay(systemProperties);
 
-	// test
-	initializer.contextInitialized(sce);
+		// test
+		initializer.contextInitialized(sce);
 
-	// test
-	verify(sce);
-	verify(context);
-	verify(systemUtils);
-	verify(systemProperties);
-    }
+		// test
+		verify(sce);
+		verify(context);
+		verify(systemUtils);
+		verify(systemProperties);
+	}
 
-    /**
-     * Test initialization when pineapple home isn't defined and web.xml returns
-     * a value.
-     */
-    @Test
-    public void testInitializationWhenWebXmlValueReturnsMultipleVariables() {
+	/**
+	 * Test initialization when pineapple home isn't defined and web.xml returns a
+	 * value.
+	 */
+	@Test
+	public void testInitializationWhenWebXmlValueReturnsMultipleVariables() {
 
-	String expected = randomValue2 + "/" + randomValue + "/.pineapple";
-	String webXmlValue = "${" + randomSystemProperty + "}/${" + randomSystemProperty2 + "}/.pineapple";
+		String expected = randomValue2 + "/" + randomValue + "/.pineapple";
+		String webXmlValue = "${" + randomSystemProperty + "}/${" + randomSystemProperty2 + "}/.pineapple";
 
-	// complete mock setup
-	ServletContext context = createMock(ServletContext.class);
-	expect(context.getInitParameter(PineappleHomeInitializer.PARAM_NAME)).andReturn(webXmlValue);
-	replay(context);
+		// complete mock setup
+		ServletContext context = createMock(ServletContext.class);
+		expect(context.getInitParameter(PineappleHomeInitializer.PARAM_NAME)).andReturn(webXmlValue);
+		replay(context);
 
-	// complete mock setup
-	expect(sce.getServletContext()).andReturn(context);
-	replay(sce);
+		// complete mock setup
+		expect(sce.getServletContext()).andReturn(context);
+		replay(sce);
 
-	// complete mock setup
-	expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
-	expect(systemUtils.getSystemProperty(randomSystemProperty, systemProperties)).andReturn(randomValue2);
-	expect(systemUtils.getSystemProperty(randomSystemProperty2, systemProperties)).andReturn(randomValue);
-	replay(systemUtils);
+		// complete mock setup
+		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
+		expect(systemUtils.getSystemProperty(randomSystemProperty, systemProperties)).andReturn(randomValue2);
+		expect(systemUtils.getSystemProperty(randomSystemProperty2, systemProperties)).andReturn(randomValue);
+		replay(systemUtils);
 
-	// complete mock setup
-	expect(systemProperties.setProperty(eq(PineappleHomeInitializer.PARAM_NAME), eq(expected))).andReturn(expected);
-	replay(systemProperties);
+		// complete mock setup
+		expect(systemProperties.setProperty(eq(PineappleHomeInitializer.PARAM_NAME), eq(expected))).andReturn(expected);
+		replay(systemProperties);
 
-	// test
-	initializer.contextInitialized(sce);
+		// test
+		initializer.contextInitialized(sce);
 
-	// test
-	verify(sce);
-	verify(context);
-	verify(systemUtils);
-	verify(systemProperties);
-    }
+		// test
+		verify(sce);
+		verify(context);
+		verify(systemUtils);
+		verify(systemProperties);
+	}
 
 }

@@ -87,85 +87,84 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class DeleteImageCommand implements Command {
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Image info.
-     */
-    public static final String IMAGE_INFO_KEY = "image-info";
+	/**
+	 * Key used to identify property in context: Image info.
+	 */
+	public static final String IMAGE_INFO_KEY = "image-info";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Image info.
-     */
-    @Initialize(IMAGE_INFO_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ImageInfo imageInfo;
+	/**
+	 * Image info.
+	 */
+	@Initialize(IMAGE_INFO_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ImageInfo imageInfo;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// fail if image doesn't exists in repository
-	if (!dockerClient.imageExists(session, imageInfo)) {
-	    Object[] args = { imageInfo };
-	    executionResult.completeAsSuccessful(messageProvider, "dic.delete_image_notfound_success", args);
-	    return Command.CONTINUE_PROCESSING;
+		// fail if image doesn't exists in repository
+		if (!dockerClient.imageExists(session, imageInfo)) {
+			Object[] args = { imageInfo };
+			executionResult.completeAsSuccessful(messageProvider, "dic.delete_image_notfound_success", args);
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// set variables
+		Map<String, String> uriVariables = new HashMap<String, String>();
+		uriVariables.put("image", imageInfo.getFullyQualifiedName());
+		uriVariables.put("force", "true");
+
+		// post to delete container
+		session.httpDelete(DELETE_IMAGE_URI, uriVariables);
+
+		// complete result
+		Object[] args = { imageInfo.getFullyQualifiedName() };
+		executionResult.completeAsSuccessful(messageProvider, "dic.delete_image_completed", args);
+
+		return Command.CONTINUE_PROCESSING;
 	}
-
-	// set variables
-	Map<String, String> uriVariables = new HashMap<String, String>();
-	uriVariables.put("image", imageInfo.getFullyQualifiedName());
-	uriVariables.put("force", "true");
-
-	// post to delete container
-	session.httpDelete(DELETE_IMAGE_URI, uriVariables);
-
-	// complete result
-	Object[] args = { imageInfo.getFullyQualifiedName() };
-	executionResult.completeAsSuccessful(messageProvider, "dic.delete_image_completed", args);
-
-	return Command.CONTINUE_PROCESSING;
-    }
 
 }

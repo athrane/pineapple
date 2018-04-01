@@ -39,117 +39,117 @@ import com.alpha.pineapple.i18n.MessageProvider;
  **/
 public class SystemUtils {
 
-    /**
-     * OS name system property name
-     */
-    public static final String OS_NAME = "os.name";
+	/**
+	 * OS name system property name
+	 */
+	public static final String OS_NAME = "os.name";
 
-    /**
-     * User name system property name
-     */
-    public static final String USER_NAME = "user.name";
+	/**
+	 * User name system property name
+	 */
+	public static final String USER_NAME = "user.name";
 
-    /**
-     * User home system property name.
-     */
-    public static final String USER_HOME = "user.home";
+	/**
+	 * User home system property name.
+	 */
+	public static final String USER_HOME = "user.home";
 
-    /**
-     * temporary IO directory system property name.
-     */
-    public static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
+	/**
+	 * temporary IO directory system property name.
+	 */
+	public static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
-    /**
-     * Pineapple home directory system property name.
-     */
-    public static final String PINEAPPLE_HOMEDIR = "pineapple.home.dir";
+	/**
+	 * Pineapple home directory system property name.
+	 */
+	public static final String PINEAPPLE_HOMEDIR = "pineapple.home.dir";
 
-    /**
-     * Pineapple credential provider master password file system property name.
-     */
-    public static final String PINEAPPLE_CREDENTIALPROVIDER_PASSWORD_FILE = "pineapple.credentialprovider.password.file";
+	/**
+	 * Pineapple credential provider master password file system property name.
+	 */
+	public static final String PINEAPPLE_CREDENTIALPROVIDER_PASSWORD_FILE = "pineapple.credentialprovider.password.file";
 
-    /**
-     * The prefix String for all Windows OS.
-     */
-    static final String OS_NAME_WINDOWS_PREFIX = "Windows";
+	/**
+	 * The prefix String for all Windows OS.
+	 */
+	static final String OS_NAME_WINDOWS_PREFIX = "Windows";
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "apiMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "apiMessageProvider")
+	MessageProvider messageProvider;
 
-    /**
-     * Logger object
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Returns true if OS is Windows.
-     *
-     * @param systemProperties
-     *            Java system properties.
-     * 
-     * @return true if OS is Windows.
-     */
-    public boolean isWindowsOperatingSystem(Properties systemProperties) {
-	String osName = getSystemProperty(OS_NAME, systemProperties);
-	return (osName.startsWith(OS_NAME_WINDOWS_PREFIX));
-    }
-
-    /**
-     * Returns true if the system property "pineapple.home.dir" is defined.
-     * Otherwise null is returned.
-     * 
-     * @return true if the system property "pineapple.home.dir" is defined.
-     *         Otherwise null is returned.
-     */
-    public boolean isPineappleHomeDefined(Properties systemProperties) {
-	return (getSystemProperty(PINEAPPLE_HOMEDIR, systemProperties) != null);
-    }
-
-    /**
-     * Returns true if the system property
-     * "pineapple.credentialprovider.password.dir" is defined. Otherwise null is
-     * returned.
-     * 
-     * @return true if the system property
-     *         "pineapple.credentialprovider.password.dir" is defined. Otherwise
-     *         null is returned.
-     */
-    public boolean isPineappleCredentialProviderPasswordHomeDefined(Properties systemProperties) {
-	return (getSystemProperty(PINEAPPLE_CREDENTIALPROVIDER_PASSWORD_FILE, systemProperties) != null);
-    }
-
-    /**
-     * <p>
-     * Gets a System property. Returns null if the property is undefined or
-     * access is restricted.
-     *
-     * <p>
-     * If a <code>SecurityException</code> is caught, the return value is null
-     * and a error message is written to the log.
-     * </p>
-     * 
-     * @param property
-     *            the system property name
-     * 
-     * @return the system property value or <code>null</code> if a security
-     *         problem occurs
-     */
-    public String getSystemProperty(String property, Properties systemProperties) {
-	Validate.notNull(property, "property is undefined.");
-	Validate.notNull(systemProperties, "systemProperties is undefined.");
-
-	try {
-	    return systemProperties.getProperty(property);
-	} catch (SecurityException e) {
-	    Object[] args = { property, e.toString() };
-	    String message = messageProvider.getMessage("su.get_systemproperty_error", args);
-	    logger.error(message);
-	    return null;
+	/**
+	 * Returns true if OS is Windows.
+	 *
+	 * @param systemProperties
+	 *            Java system properties.
+	 * 
+	 * @return true if OS is Windows.
+	 */
+	public boolean isWindowsOperatingSystem(Properties systemProperties) {
+		String osName = getSystemProperty(OS_NAME, systemProperties);
+		return (osName.startsWith(OS_NAME_WINDOWS_PREFIX));
 	}
-    }
+
+	/**
+	 * Returns true if the system property "pineapple.home.dir" is defined.
+	 * Otherwise null is returned.
+	 * 
+	 * @return true if the system property "pineapple.home.dir" is defined.
+	 *         Otherwise null is returned.
+	 */
+	public boolean isPineappleHomeDefined(Properties systemProperties) {
+		return (getSystemProperty(PINEAPPLE_HOMEDIR, systemProperties) != null);
+	}
+
+	/**
+	 * Returns true if the system property
+	 * "pineapple.credentialprovider.password.dir" is defined. Otherwise null is
+	 * returned.
+	 * 
+	 * @return true if the system property
+	 *         "pineapple.credentialprovider.password.dir" is defined. Otherwise
+	 *         null is returned.
+	 */
+	public boolean isPineappleCredentialProviderPasswordHomeDefined(Properties systemProperties) {
+		return (getSystemProperty(PINEAPPLE_CREDENTIALPROVIDER_PASSWORD_FILE, systemProperties) != null);
+	}
+
+	/**
+	 * <p>
+	 * Gets a System property. Returns null if the property is undefined or access
+	 * is restricted.
+	 *
+	 * <p>
+	 * If a <code>SecurityException</code> is caught, the return value is null and a
+	 * error message is written to the log.
+	 * </p>
+	 * 
+	 * @param property
+	 *            the system property name
+	 * 
+	 * @return the system property value or <code>null</code> if a security problem
+	 *         occurs
+	 */
+	public String getSystemProperty(String property, Properties systemProperties) {
+		Validate.notNull(property, "property is undefined.");
+		Validate.notNull(systemProperties, "systemProperties is undefined.");
+
+		try {
+			return systemProperties.getProperty(property);
+		} catch (SecurityException e) {
+			Object[] args = { property, e.toString() };
+			String message = messageProvider.getMessage("su.get_systemproperty_error", args);
+			logger.error(message);
+			return null;
+		}
+	}
 
 }

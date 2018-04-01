@@ -64,263 +64,263 @@ import com.alpha.pineapple.session.Session;
 @PluginOperation(OperationNames.DEPLOY_CONFIGURATION)
 public class DeployConfiguration implements Operation {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Operation utilities.
-     */
-    @Resource
-    OperationUtils operationUtils;
+	/**
+	 * Operation utilities.
+	 */
+	@Resource
+	OperationUtils operationUtils;
 
-    /**
-     * Model mapper object.
-     */
-    @Resource
-    Mapper mapper;
+	/**
+	 * Model mapper object.
+	 */
+	@Resource
+	Mapper mapper;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    /**
-     * Runtime directory provider.
-     */
-    @Resource
-    RuntimeDirectoryProvider coreRuntimeDirectoryProvider;
+	/**
+	 * Runtime directory provider.
+	 */
+	@Resource
+	RuntimeDirectoryProvider coreRuntimeDirectoryProvider;
 
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-	// validate parameters
-	Validate.notNull(content, "content is undefined.");
-	Validate.notNull(session, "session is undefined.");
-	Validate.notNull(result, "result is undefined.");
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+		// validate parameters
+		Validate.notNull(content, "content is undefined.");
+		Validate.notNull(session, "session is undefined.");
+		Validate.notNull(result, "result is undefined.");
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { content.getClass().getName(), content };
-	    String message = messageProvider.getMessage("dc.start", args);
-	    logger.debug(message);
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { content.getClass().getName(), content };
+			String message = messageProvider.getMessage("dc.start", args);
+			logger.debug(message);
+		}
+
+		// validate parameters
+		operationUtils.validateContentType(content, LEGAL_CONTENT_TYPES);
+		operationUtils.validateSessionType(session, DockerSession.class);
+
+		try {
+			// type cast model
+			Docker pluginModel = (Docker) content;
+
+			// type cast session
+			DockerSession dockerSession = (DockerSession) session;
+
+			// process model
+			processModel(pluginModel, dockerSession, result);
+
+			// compute execution state from children
+			result.completeAsComputed(messageProvider, "dc.completed", null, "dc.failed", null);
+		} catch (Exception e) {
+			Object[] args = { e.toString() };
+			String message = messageProvider.getMessage("dc.error", args);
+			throw new PluginExecutionFailedException(message, e);
+		}
 	}
 
-	// validate parameters
-	operationUtils.validateContentType(content, LEGAL_CONTENT_TYPES);
-	operationUtils.validateSessionType(session, DockerSession.class);
+	/**
+	 * Process model commands.
+	 * 
+	 * @param dockerModel
+	 *            plugin model.
+	 * @param session
+	 *            Docker session.
+	 * @param result
+	 *            execution result.
+	 */
+	void processModel(Docker dockerModel, DockerSession session, ExecutionResult result) {
 
-	try {
-	    // type cast model
-	    Docker pluginModel = (Docker) content;
+		Map<String, ContainerConfiguration> containerConfigs = mapper.extractContainerDefinitions(dockerModel);
 
-	    // type cast session
-	    DockerSession dockerSession = (DockerSession) session;
+		List<DockerCommand> agentCommands = dockerModel.getCommands();
+		for (DockerCommand command : agentCommands) {
 
-	    // process model
-	    processModel(pluginModel, dockerSession, result);
+			// enforce continuation policy
+			if (!result.getContinuationPolicy().continueExecution()) {
+				String message = messageProvider.getMessage("dc.contination_policy_enforcement_info");
+				result.addMessage(ExecutionResult.MSG_MESSAGE, message);
+				return;
+			}
 
-	    // compute execution state from children
-	    result.completeAsComputed(messageProvider, "dc.completed", null, "dc.failed", null);
-	} catch (Exception e) {
-	    Object[] args = { e.toString() };
-	    String message = messageProvider.getMessage("dc.error", args);
-	    throw new PluginExecutionFailedException(message, e);
-	}
-    }
+			if (command instanceof Image) {
+				createImage(session, (Image) command, result);
+				continue;
+			}
 
-    /**
-     * Process model commands.
-     * 
-     * @param dockerModel
-     *            plugin model.
-     * @param session
-     *            Docker session.
-     * @param result
-     *            execution result.
-     */
-    void processModel(Docker dockerModel, DockerSession session, ExecutionResult result) {
+			if (command instanceof TaggedImage) {
+				createTaggedImage(session, (TaggedImage) command, result);
+				continue;
+			}
 
-	Map<String, ContainerConfiguration> containerConfigs = mapper.extractContainerDefinitions(dockerModel);
+			if (command instanceof ImageFromDockerfile) {
+				buildImageFromDockerfile(session, (ImageFromDockerfile) command, result);
+				continue;
+			}
 
-	List<DockerCommand> agentCommands = dockerModel.getCommands();
-	for (DockerCommand command : agentCommands) {
+			if (command instanceof Container) {
+				createContainer(session, (Container) command, containerConfigs, result);
+				controlContainer(session, (Container) command, result);
+				continue;
+			}
 
-	    // enforce continuation policy
-	    if (!result.getContinuationPolicy().continueExecution()) {
-		String message = messageProvider.getMessage("dc.contination_policy_enforcement_info");
-		result.addMessage(ExecutionResult.MSG_MESSAGE, message);
-		return;
-	    }
-
-	    if (command instanceof Image) {
-		createImage(session, (Image) command, result);
-		continue;
-	    }
-
-	    if (command instanceof TaggedImage) {
-		createTaggedImage(session, (TaggedImage) command, result);
-		continue;
-	    }
-
-	    if (command instanceof ImageFromDockerfile) {
-		buildImageFromDockerfile(session, (ImageFromDockerfile) command, result);
-		continue;
-	    }
-
-	    if (command instanceof Container) {
-		createContainer(session, (Container) command, containerConfigs, result);
-		controlContainer(session, (Container) command, result);
-		continue;
-	    }
-
-	}
-    }
-
-    /**
-     * Create Docker image.
-     * 
-     * @param session
-     *            Docker session.
-     * @param command
-     *            create image command.
-     * @param result
-     *            execution result
-     */
-    void createImage(DockerSession session, Image command, ExecutionResult result) {
-	ImageInfo info = mapper.mapImageForCreation(command);
-	dockerClient.createImage(session, info, result);
-    }
-
-    /**
-     * Create tagged Docker image.
-     * 
-     * @param session
-     *            Docker session.
-     * @param command
-     *            create image command.
-     * @param result
-     *            execution result
-     */
-    void createTaggedImage(DockerSession session, TaggedImage command, ExecutionResult result) {
-	ImageInfo sourceImageInfo = mapper.mapTaggedSourceImageForCreation(command);
-	ImageInfo targetImageInfo = mapper.mapTaggedTargetImageImageForCreation(command);
-	dockerClient.tagImage(session, sourceImageInfo, targetImageInfo, result);
-    }
-
-    /**
-     * Build Docker image from DockerFile.
-     * 
-     * @param session
-     *            Docker session.
-     * @param command
-     *            build image command.
-     * @param result
-     *            execution result
-     */
-    void buildImageFromDockerfile(DockerSession session, ImageFromDockerfile command, ExecutionResult result) {
-
-	// create composite result for building image
-	Object[] args = { command.getTargetImage().getRepository(), command.getTargetImage().getTag(),
-		command.getSourceDirectory() };
-	String message = messageProvider.getMessage("dc.build_image_info", args);
-	ExecutionResult compositeResult = result.addChild(message);
-
-	// resolve module path
-	File sourceDirectory = coreRuntimeDirectoryProvider.resolveModelPath(command.getSourceDirectory(), result);
-	command.setSourceDirectory(sourceDirectory.getAbsolutePath());
-
-	// create path to TAR archive
-	File tempDirectory = coreRuntimeDirectoryProvider.getTempDirectory();
-	File tarArhive = new File(tempDirectory, TAR_ARCHIVE);
-
-	// create archive
-	dockerClient.createTarArchive(sourceDirectory, tarArhive, compositeResult);
-
-	// fail if archive creation failed
-	ExecutionResult tarArchiveResult = compositeResult.getFirstChild();
-	if (!tarArchiveResult.isSuccess()) {
-	    // complete composite result
-	    compositeResult.completeAsFailure(messageProvider, "dc.build_image_create_tar_failed");
-	    return;
+		}
 	}
 
-	// build image
-	ImageInfo imageInfo = mapper.mapImageFromDockerfileForCreation(command);
-	dockerClient.buildImage(session, imageInfo, tarArhive, mapper.getPullImageBehavior(command), compositeResult);
-
-	// complete composite result
-	compositeResult.completeAsComputed(messageProvider, "dc.build_image_completed", null, "dc.build_image_failed",
-		null);
-    }
-
-    /**
-     * Create Docker container.
-     * 
-     * @param session
-     *            Docker session.
-     * @param command
-     *            create container command.
-     * @param containerConfigs
-     *            container configurations.
-     * @param result
-     *            execution result
-     */
-    void createContainer(DockerSession session, Container command, Map<String, ContainerConfiguration> containerConfigs,
-	    ExecutionResult result) {
-	ContainerInfo info = mapper.mapContainerForCreation(command, containerConfigs);
-	dockerClient.createContainer(session, info, result);
-    }
-
-    /**
-     * Control container.
-     * 
-     * @param session
-     *            Docker session.
-     * @param command
-     *            create container command.
-     * @param result
-     *            execution result
-     */
-    void controlContainer(DockerSession session, Container command, ExecutionResult result) {
-	if (!isStateDirectiveDefined(command))
-	    return;
-	ContainerInfo info = mapper.mapContainerForControl(command);
-	switch (command.getState()) {
-
-	case RUNNING:
-	    dockerClient.startContainer(session, info, result);
-	    return;
-
-	case STOPPED:
-	    dockerClient.stopContainer(session, info, result);
-	    return;
-
-	case PAUSED:
-	    dockerClient.pauseContainer(session, info, result);
-	    return;
-
-	default:
-	    return;
+	/**
+	 * Create Docker image.
+	 * 
+	 * @param session
+	 *            Docker session.
+	 * @param command
+	 *            create image command.
+	 * @param result
+	 *            execution result
+	 */
+	void createImage(DockerSession session, Image command, ExecutionResult result) {
+		ImageInfo info = mapper.mapImageForCreation(command);
+		dockerClient.createImage(session, info, result);
 	}
 
-    }
+	/**
+	 * Create tagged Docker image.
+	 * 
+	 * @param session
+	 *            Docker session.
+	 * @param command
+	 *            create image command.
+	 * @param result
+	 *            execution result
+	 */
+	void createTaggedImage(DockerSession session, TaggedImage command, ExecutionResult result) {
+		ImageInfo sourceImageInfo = mapper.mapTaggedSourceImageForCreation(command);
+		ImageInfo targetImageInfo = mapper.mapTaggedTargetImageImageForCreation(command);
+		dockerClient.tagImage(session, sourceImageInfo, targetImageInfo, result);
+	}
 
-    /**
-     * Returns true if container state directive is defined.
-     * 
-     * @param command
-     *            create container command.
-     * 
-     * @return true if container state directive is defined.
-     */
-    boolean isStateDirectiveDefined(Container command) {
-	return (command.getState() != null);
-    }
+	/**
+	 * Build Docker image from DockerFile.
+	 * 
+	 * @param session
+	 *            Docker session.
+	 * @param command
+	 *            build image command.
+	 * @param result
+	 *            execution result
+	 */
+	void buildImageFromDockerfile(DockerSession session, ImageFromDockerfile command, ExecutionResult result) {
+
+		// create composite result for building image
+		Object[] args = { command.getTargetImage().getRepository(), command.getTargetImage().getTag(),
+				command.getSourceDirectory() };
+		String message = messageProvider.getMessage("dc.build_image_info", args);
+		ExecutionResult compositeResult = result.addChild(message);
+
+		// resolve module path
+		File sourceDirectory = coreRuntimeDirectoryProvider.resolveModelPath(command.getSourceDirectory(), result);
+		command.setSourceDirectory(sourceDirectory.getAbsolutePath());
+
+		// create path to TAR archive
+		File tempDirectory = coreRuntimeDirectoryProvider.getTempDirectory();
+		File tarArhive = new File(tempDirectory, TAR_ARCHIVE);
+
+		// create archive
+		dockerClient.createTarArchive(sourceDirectory, tarArhive, compositeResult);
+
+		// fail if archive creation failed
+		ExecutionResult tarArchiveResult = compositeResult.getFirstChild();
+		if (!tarArchiveResult.isSuccess()) {
+			// complete composite result
+			compositeResult.completeAsFailure(messageProvider, "dc.build_image_create_tar_failed");
+			return;
+		}
+
+		// build image
+		ImageInfo imageInfo = mapper.mapImageFromDockerfileForCreation(command);
+		dockerClient.buildImage(session, imageInfo, tarArhive, mapper.getPullImageBehavior(command), compositeResult);
+
+		// complete composite result
+		compositeResult.completeAsComputed(messageProvider, "dc.build_image_completed", null, "dc.build_image_failed",
+				null);
+	}
+
+	/**
+	 * Create Docker container.
+	 * 
+	 * @param session
+	 *            Docker session.
+	 * @param command
+	 *            create container command.
+	 * @param containerConfigs
+	 *            container configurations.
+	 * @param result
+	 *            execution result
+	 */
+	void createContainer(DockerSession session, Container command, Map<String, ContainerConfiguration> containerConfigs,
+			ExecutionResult result) {
+		ContainerInfo info = mapper.mapContainerForCreation(command, containerConfigs);
+		dockerClient.createContainer(session, info, result);
+	}
+
+	/**
+	 * Control container.
+	 * 
+	 * @param session
+	 *            Docker session.
+	 * @param command
+	 *            create container command.
+	 * @param result
+	 *            execution result
+	 */
+	void controlContainer(DockerSession session, Container command, ExecutionResult result) {
+		if (!isStateDirectiveDefined(command))
+			return;
+		ContainerInfo info = mapper.mapContainerForControl(command);
+		switch (command.getState()) {
+
+		case RUNNING:
+			dockerClient.startContainer(session, info, result);
+			return;
+
+		case STOPPED:
+			dockerClient.stopContainer(session, info, result);
+			return;
+
+		case PAUSED:
+			dockerClient.pauseContainer(session, info, result);
+			return;
+
+		default:
+			return;
+		}
+
+	}
+
+	/**
+	 * Returns true if container state directive is defined.
+	 * 
+	 * @param command
+	 *            create container command.
+	 * 
+	 * @return true if container state directive is defined.
+	 */
+	boolean isStateDirectiveDefined(Container command) {
+		return (command.getState() != null);
+	}
 }

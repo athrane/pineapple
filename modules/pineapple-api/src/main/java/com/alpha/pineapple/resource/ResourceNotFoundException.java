@@ -27,31 +27,31 @@ package com.alpha.pineapple.resource;
  */
 public class ResourceNotFoundException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * ResourceNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public ResourceNotFoundException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * ResourceNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public ResourceNotFoundException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * ResourceNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public ResourceNotFoundException(String message) {
-	super(message);
-    }
+	/**
+	 * ResourceNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public ResourceNotFoundException(String message) {
+		super(message);
+	}
 
 }

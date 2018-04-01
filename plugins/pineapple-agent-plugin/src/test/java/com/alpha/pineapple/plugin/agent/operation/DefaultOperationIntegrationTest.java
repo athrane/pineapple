@@ -41,44 +41,41 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import com.alpha.pineapple.plugin.agent.operation.DefaultOperation;
 import com.alpha.springutils.DirectoryTestExecutionListener;
 
-
 /**
- * Integration test for the <code>DeployConfiguration</code> class.  
+ * Integration test for the <code>DeployConfiguration</code> class.
  */
-@RunWith( SpringJUnit4ClassRunner.class )
+@RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("integration-test")
-@TestExecutionListeners( {DirectoryTestExecutionListener.class, DependencyInjectionTestExecutionListener.class})
-@ContextConfiguration( locations = { "/com.alpha.pineapple.plugin.agent-config.xml" } )
+@TestExecutionListeners({ DirectoryTestExecutionListener.class, DependencyInjectionTestExecutionListener.class })
+@ContextConfiguration(locations = { "/com.alpha.pineapple.plugin.agent-config.xml" })
 public class DefaultOperationIntegrationTest {
 
 	/**
 	 * Current test directory.
 	 */
 	File testDirectory;
-		
-    /**
-     * Object under test.
-     */
-    @Resource
-    DefaultOperation defaultOperation;
-	
-    
+
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	DefaultOperation defaultOperation;
+
 	@Before
 	public void setUp() throws Exception {
-		
+
 	}
 
 	@After
 	public void tearDown() throws Exception {
 	}
 
-    /**
-     * Test that TestOperation can be looked up from the context.
-     */
-    @Test
-    public void testCanGetInstanceFromContext()
-    {
-        assertNotNull( defaultOperation );
-    }
-    
+	/**
+	 * Test that TestOperation can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetInstanceFromContext() {
+		assertNotNull(defaultOperation);
+	}
+
 }

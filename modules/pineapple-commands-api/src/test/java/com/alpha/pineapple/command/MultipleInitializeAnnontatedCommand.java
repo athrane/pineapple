@@ -20,9 +20,7 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.command;
-
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
@@ -31,50 +29,48 @@ import org.apache.log4j.Logger;
 import com.alpha.pineapple.command.initialization.Initialize;
 
 /**
- * Annotated command used for unit testing.
- * This command contains a two annotated fields.
+ * Annotated command used for unit testing. This command contains a two
+ * annotated fields.
  */
-public class MultipleInitializeAnnontatedCommand implements Command
-{
-    /**
-     * Context key
-     */
-    public static final String CONTEXT_KEY1 = "key1";
+public class MultipleInitializeAnnontatedCommand implements Command {
+	/**
+	 * Context key
+	 */
+	public static final String CONTEXT_KEY1 = "key1";
 
-    /**
-     * Context key
-     */
-    public static final String CONTEXT_KEY2 = "key2";
-    
-    /**
-     * Annotated field #1
-     */   
-    @Initialize( MultipleInitializeAnnontatedCommand.CONTEXT_KEY1 )
-    String annotatedField1;
+	/**
+	 * Context key
+	 */
+	public static final String CONTEXT_KEY2 = "key2";
 
-    /**
-     * Annotated field #2
-     */   
-    @Initialize( MultipleInitializeAnnontatedCommand.CONTEXT_KEY2 )
-    int annotatedField2;
-    
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-    
-    public boolean execute( Context context ) throws Exception
-    {
-        if( logger.isDebugEnabled()) {
-            
-            StringBuilder message = new StringBuilder();
-            message.append( "Executing command <" );
-            message.append( this.getClass().getName());
-            message.append( ">." );   
-            logger.debug( message.toString() );            
-        }
-        
-        return Command.CONTINUE_PROCESSING;
-    }
+	/**
+	 * Annotated field #1
+	 */
+	@Initialize(MultipleInitializeAnnontatedCommand.CONTEXT_KEY1)
+	String annotatedField1;
+
+	/**
+	 * Annotated field #2
+	 */
+	@Initialize(MultipleInitializeAnnontatedCommand.CONTEXT_KEY2)
+	int annotatedField2;
+
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
+	public boolean execute(Context context) throws Exception {
+		if (logger.isDebugEnabled()) {
+
+			StringBuilder message = new StringBuilder();
+			message.append("Executing command <");
+			message.append(this.getClass().getName());
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
+		return Command.CONTINUE_PROCESSING;
+	}
 
 }

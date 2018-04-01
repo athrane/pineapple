@@ -31,14 +31,14 @@ import org.apache.log4j.Logger;
  */
 public class TestCommand implements Command {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    public boolean execute(Context context) throws Exception {
-	logger.info("Executing TestCommand...");
-	return Command.CONTINUE_PROCESSING;
-    }
+	public boolean execute(Context context) throws Exception {
+		logger.info("Executing TestCommand...");
+		return Command.CONTINUE_PROCESSING;
+	}
 
 }

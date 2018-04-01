@@ -34,56 +34,55 @@ import com.alpha.pineapple.resource.ResourceRepositoryImpl;
  */
 public class ObjectMotherResourceRepository {
 
-    /**
-     * Object mother for environment configuration.
-     */
-    ObjectMotherEnvironmentConfiguration envConfigMother;
+	/**
+	 * Object mother for environment configuration.
+	 */
+	ObjectMotherEnvironmentConfiguration envConfigMother;
 
-    /**
-     * Object mother for resources.
-     */
-    ObjectMotherResource resourceMother;
+	/**
+	 * Object mother for resources.
+	 */
+	ObjectMotherResource resourceMother;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * MotherResourceRepository constructor.
-     */
-    public ObjectMotherResourceRepository() {
-	resourceMother = new ObjectMotherResource();
-	envConfigMother = new ObjectMotherEnvironmentConfiguration();
-	;
+	/**
+	 * MotherResourceRepository constructor.
+	 */
+	public ObjectMotherResourceRepository() {
+		resourceMother = new ObjectMotherResource();
+		envConfigMother = new ObjectMotherEnvironmentConfiguration();
+		;
 
-    }
+	}
 
-    /**
-     * Create empty initialized resource repository.
-     * 
-     * @return empty initialized resource repository.
-     */
-    public ResourceRepository createEmptyResourceRepository() {
-	Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
-	ResourceRepositoryImpl repository = new ResourceRepositoryImpl();
-	repository.initialize(envConfiguration);
-	return repository;
-    }
+	/**
+	 * Create empty initialized resource repository.
+	 * 
+	 * @return empty initialized resource repository.
+	 */
+	public ResourceRepository createEmptyResourceRepository() {
+		Configuration envConfiguration = envConfigMother.createEmptyEnvironmentConfiguration();
+		ResourceRepositoryImpl repository = new ResourceRepositoryImpl();
+		repository.initialize(envConfiguration);
+		return repository;
+	}
 
-    /**
-     * Create resource repository containing the environment "environment-1"
-     * with a single resource defined with the identifier
-     * "test-resource-resource-id" for the test plugin
-     * "com.alpha.pineapple.plugin.test".
-     * 
-     * @return cache with test-resource resource.
-     */
-    public ResourceRepository createResourceRepositoryWithTestResource() {
-	Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleTestResourceWithSingleProperty();
-	ResourceRepositoryImpl repository = new ResourceRepositoryImpl();
-	repository.initialize(envConfiguration);
-	return repository;
-    }
+	/**
+	 * Create resource repository containing the environment "environment-1" with a
+	 * single resource defined with the identifier "test-resource-resource-id" for
+	 * the test plugin "com.alpha.pineapple.plugin.test".
+	 * 
+	 * @return cache with test-resource resource.
+	 */
+	public ResourceRepository createResourceRepositoryWithTestResource() {
+		Configuration envConfiguration = envConfigMother.createEnvConfigWithSingleTestResourceWithSingleProperty();
+		ResourceRepositoryImpl repository = new ResourceRepositoryImpl();
+		repository.initialize(envConfiguration);
+		return repository;
+	}
 
 }

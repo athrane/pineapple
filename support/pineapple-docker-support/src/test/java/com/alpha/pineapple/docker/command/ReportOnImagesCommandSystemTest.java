@@ -51,79 +51,79 @@ import com.alpha.testutils.DockerTestHelper;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.docker-config.xml" })
 public class ReportOnImagesCommandSystemTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command reportOnImagesCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command reportOnImagesCommand;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Docker session.
-     */
-    DockerSession session;
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
 
-    /**
-     * Docker helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
+	/**
+	 * Docker helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
 
-	// create context
-	context = new ContextBase();
+		// create context
+		context = new ContextBase();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("root");
+		// create execution result
+		executionResult = new ExecutionResultImpl("root");
 
-	// create session
-	session = dockerHelper.createDefaultSession();
-    }
+		// create session
+		session = dockerHelper.createDefaultSession();
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that command instance can be created in application context.
-     */
-    @Test
-    public void testCanGetInstance() throws Exception {
-	assertNotNull(reportOnImagesCommand);
-    }
+	/**
+	 * Test that command instance can be created in application context.
+	 */
+	@Test
+	public void testCanGetInstance() throws Exception {
+		assertNotNull(reportOnImagesCommand);
+	}
 
-    /**
-     * Test that command can report on images.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCommandCanReportOnImages() throws Exception {
-	// setup context
-	context.put(ReportOnImagesCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(ReportOnImagesCommand.SESSION_KEY, session);
+	/**
+	 * Test that command can report on images.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCommandCanReportOnImages() throws Exception {
+		// setup context
+		context.put(ReportOnImagesCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(ReportOnImagesCommand.SESSION_KEY, session);
 
-	// execute command
-	reportOnImagesCommand.execute(context);
+		// execute command
+		reportOnImagesCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
 }

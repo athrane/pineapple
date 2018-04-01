@@ -27,79 +27,79 @@ package com.alpha.pineapple;
  */
 public interface OperationNames {
 
-    /**
-     * Wild card operation name.
-     */
-    public static final String WILDCARD_OPERATION = "*";
+	/**
+	 * Wild card operation name.
+	 */
+	public static final String WILDCARD_OPERATION = "*";
 
-    /**
-     * Deploy configuration - operation name.
-     */
-    public static final String DEPLOY_CONFIGURATION = "deploy-configuration";
+	/**
+	 * Deploy configuration - operation name.
+	 */
+	public static final String DEPLOY_CONFIGURATION = "deploy-configuration";
 
-    /**
-     * Test deployed configuration test - operation name.
-     */
-    public static final String TEST_DEPLOYED_CONFIGURATION = "test-deployed-configuration";
+	/**
+	 * Test deployed configuration test - operation name.
+	 */
+	public static final String TEST_DEPLOYED_CONFIGURATION = "test-deployed-configuration";
 
-    /**
-     * Deploy application - operation name.
-     */
-    public static final String DEPLOY_APPLICATION = "deploy-application";
+	/**
+	 * Deploy application - operation name.
+	 */
+	public static final String DEPLOY_APPLICATION = "deploy-application";
 
-    /**
-     * Deploy application test - operation name.
-     */
-    public static final String TEST_DEPLOYED_APPLICATION = "test-deployed-application";
+	/**
+	 * Deploy application test - operation name.
+	 */
+	public static final String TEST_DEPLOYED_APPLICATION = "test-deployed-application";
 
-    /**
-     * Start application - operation name.
-     */
-    public static final String START_APPLICATION = "start-application";
+	/**
+	 * Start application - operation name.
+	 */
+	public static final String START_APPLICATION = "start-application";
 
-    /**
-     * Start application test - operation name.
-     */
-    public static final String START_APPLICATION_TEST = "start-application-test";
+	/**
+	 * Start application test - operation name.
+	 */
+	public static final String START_APPLICATION_TEST = "start-application-test";
 
-    /**
-     * Stop application - operation name.
-     */
-    public static final String STOP_APPLICATION = "stop-application";
+	/**
+	 * Stop application - operation name.
+	 */
+	public static final String STOP_APPLICATION = "stop-application";
 
-    /**
-     * Stop application test - operation name.
-     */
-    public static final String STOP_APPLICATION_TEST = "stop-application-test";
+	/**
+	 * Stop application test - operation name.
+	 */
+	public static final String STOP_APPLICATION_TEST = "stop-application-test";
 
-    /**
-     * Undeploy application - operation name.
-     */
-    public static final String UNDEPLOY_APPLICATION = "undeploy-application";
+	/**
+	 * Undeploy application - operation name.
+	 */
+	public static final String UNDEPLOY_APPLICATION = "undeploy-application";
 
-    /**
-     * Test undeployed application - operation name.
-     */
-    public static final String TEST_UNDEPLOYED_APPLICATION = "test-undeployed-application";
+	/**
+	 * Test undeployed application - operation name.
+	 */
+	public static final String TEST_UNDEPLOYED_APPLICATION = "test-undeployed-application";
 
-    /**
-     * Undeploy configuration - operation name.
-     */
-    public static final String UNDEPLOY_CONFIGURATION = "undeploy-configuration";
+	/**
+	 * Undeploy configuration - operation name.
+	 */
+	public static final String UNDEPLOY_CONFIGURATION = "undeploy-configuration";
 
-    /**
-     * Test undeployed configuration - operation name.
-     */
-    public static final String TEST_UNDEPLOYED_CONFIGURATION = "test-undeployed-configuration";
+	/**
+	 * Test undeployed configuration - operation name.
+	 */
+	public static final String TEST_UNDEPLOYED_CONFIGURATION = "test-undeployed-configuration";
 
-    /**
-     * Test - operation name.
-     */
-    public static final String TEST = "test";
+	/**
+	 * Test - operation name.
+	 */
+	public static final String TEST = "test";
 
-    /**
-     * Create report - operation name.
-     */
-    public static final String CREATE_REPORT = "create-report";
+	/**
+	 * Create report - operation name.
+	 */
+	public static final String CREATE_REPORT = "create-report";
 
 }

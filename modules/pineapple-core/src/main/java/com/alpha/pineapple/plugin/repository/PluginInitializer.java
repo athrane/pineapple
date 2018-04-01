@@ -29,17 +29,16 @@ import com.alpha.pineapple.plugin.PluginInitializationFailedException;
  */
 public interface PluginInitializer {
 
-    /**
-     * Initialize plugin candidate into plugin with all meta data ready for
-     * usage.
-     * 
-     * @param pluginClass
-     *            Plugin class for plugin candidate.
-     * 
-     * @return plugin info which contains fully initialized plugin.
-     * 
-     * @throws PluginInitializationFailedException
-     *             If initialization of the plugin fails.
-     */
-    PluginInfo initializePlugin(Object pluginClass) throws PluginInitializationFailedException;
+	/**
+	 * Initialize plugin candidate into plugin with all meta data ready for usage.
+	 * 
+	 * @param pluginClass
+	 *            Plugin class for plugin candidate.
+	 * 
+	 * @return plugin info which contains fully initialized plugin.
+	 * 
+	 * @throws PluginInitializationFailedException
+	 *             If initialization of the plugin fails.
+	 */
+	PluginInfo initializePlugin(Object pluginClass) throws PluginInitializationFailedException;
 }

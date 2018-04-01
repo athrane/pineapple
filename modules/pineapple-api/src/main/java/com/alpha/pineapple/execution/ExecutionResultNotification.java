@@ -38,21 +38,21 @@ import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
  */
 public interface ExecutionResultNotification {
 
-    /**
-     * Return the execution result which changed state.
-     * 
-     * @return execution result which changed state.
-     */
-    ExecutionResult getResult();
+	/**
+	 * Return the execution result which changed state.
+	 * 
+	 * @return execution result which changed state.
+	 */
+	ExecutionResult getResult();
 
-    /**
-     * Return new recorded state of the execution result.
-     * 
-     * The recorded state and the state of the executionresult might not match,
-     * because the execution result can have its state changed AFTER the
-     * creation of the notification object due to its mutable nature.
-     * 
-     * @return new recorded state of the execution result.
-     */
-    ExecutionState getState();
+	/**
+	 * Return new recorded state of the execution result.
+	 * 
+	 * The recorded state and the state of the executionresult might not match,
+	 * because the execution result can have its state changed AFTER the creation of
+	 * the notification object due to its mutable nature.
+	 * 
+	 * @return new recorded state of the execution result.
+	 */
+	ExecutionState getState();
 }

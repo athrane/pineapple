@@ -63,666 +63,666 @@ import com.alpha.testutils.DockerTestHelper;
 @ActiveProfiles("integration-test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-	DirectoryTestExecutionListener.class })
+		DirectoryTestExecutionListener.class })
 @ContextConfiguration(locations = { "/com.alpha.pineapple.docker-config.xml" })
 public class DockerClientImplSystemTest {
 
-    /**
-     * Subject under test.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Subject under test.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    /**
-     * Docker test helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
+	/**
+	 * Docker test helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
 
-    /**
-     * Docker info object builder.
-     */
-    @Resource
-    InfoBuilder dockerInfoBuilder;
+	/**
+	 * Docker info object builder.
+	 */
+	@Resource
+	InfoBuilder dockerInfoBuilder;
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Source directory for TAR archive.
-     */
-    File sourceDirectory;
+	/**
+	 * Source directory for TAR archive.
+	 */
+	File sourceDirectory;
 
-    /**
-     * Docker session.
-     */
-    DockerSession session;
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Image info.
-     */
-    ImageInfo imageInfo;
+	/**
+	 * Image info.
+	 */
+	ImageInfo imageInfo;
 
-    /**
-     * Image info.
-     */
-    ImageInfo imageInfo2;
+	/**
+	 * Image info.
+	 */
+	ImageInfo imageInfo2;
 
-    /**
-     * Random image.
-     */
-    String randomImage;
+	/**
+	 * Random image.
+	 */
+	String randomImage;
 
-    /**
-     * Random container name.
-     */
-    String randomContainerName;
+	/**
+	 * Random container name.
+	 */
+	String randomContainerName;
 
-    /**
-     * Random image.
-     */
-    String randomImage2;
+	/**
+	 * Random image.
+	 */
+	String randomImage2;
 
-    /**
-     * Random archive.
-     */
-    String randomArchive;
+	/**
+	 * Random archive.
+	 */
+	String randomArchive;
 
-    /**
-     * Random source directory.
-     */
-    String randomSourceDirectoryName;
+	/**
+	 * Random source directory.
+	 */
+	String randomSourceDirectoryName;
 
-    /**
-     * Default image.
-     */
-    ImageInfo defaultImage;
+	/**
+	 * Default image.
+	 */
+	ImageInfo defaultImage;
 
-    /**
-     * Container instance info.
-     */
-    ContainerInstanceInfo containerInstanceInfo;
+	/**
+	 * Container instance info.
+	 */
+	ContainerInstanceInfo containerInstanceInfo;
 
-    @Before
-    public void setUp() throws Exception {
-	randomImage = RandomStringUtils.randomAlphabetic(10).toLowerCase();
-	randomImage2 = RandomStringUtils.randomAlphabetic(10).toLowerCase();
-	randomContainerName = RandomStringUtils.randomAlphabetic(10).toLowerCase();
-	randomArchive = RandomStringUtils.randomAlphabetic(10);
-	randomSourceDirectoryName = RandomStringUtils.randomAlphabetic(10);
+	@Before
+	public void setUp() throws Exception {
+		randomImage = RandomStringUtils.randomAlphabetic(10).toLowerCase();
+		randomImage2 = RandomStringUtils.randomAlphabetic(10).toLowerCase();
+		randomContainerName = RandomStringUtils.randomAlphabetic(10).toLowerCase();
+		randomArchive = RandomStringUtils.randomAlphabetic(10);
+		randomSourceDirectoryName = RandomStringUtils.randomAlphabetic(10);
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("root");
+		// create execution result
+		executionResult = new ExecutionResultImpl("root");
 
-	// create session
-	session = dockerHelper.createDefaultSession();
+		// create session
+		session = dockerHelper.createDefaultSession();
 
-	// create default image
-	defaultImage = dockerHelper.createDefaultImage(session);
+		// create default image
+		defaultImage = dockerHelper.createDefaultImage(session);
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// create source directory for TAR archive
-	sourceDirectory = new File(testDirectory, randomSourceDirectoryName);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-	if (containerInstanceInfo != null) {
-	    ContainerInfo info = containerInstanceInfo.getContainerInfo();
-	    if (dockerClient.containerExists(session, info)) {
-		if (dockerClient.isContainerRunning(session, containerInstanceInfo))
-		    dockerHelper.stopContainer(session, info);
-		dockerHelper.deleteContainer(session, containerInstanceInfo.getContainerInfo());
-	    }
+		// create source directory for TAR archive
+		sourceDirectory = new File(testDirectory, randomSourceDirectoryName);
 	}
 
-	if (imageInfo != null) {
-	    if (dockerClient.imageExists(session, imageInfo))
-		dockerHelper.deleteImage(session, imageInfo);
+	@After
+	public void tearDown() throws Exception {
+		if (containerInstanceInfo != null) {
+			ContainerInfo info = containerInstanceInfo.getContainerInfo();
+			if (dockerClient.containerExists(session, info)) {
+				if (dockerClient.isContainerRunning(session, containerInstanceInfo))
+					dockerHelper.stopContainer(session, info);
+				dockerHelper.deleteContainer(session, containerInstanceInfo.getContainerInfo());
+			}
+		}
+
+		if (imageInfo != null) {
+			if (dockerClient.imageExists(session, imageInfo))
+				dockerHelper.deleteImage(session, imageInfo);
+		}
+		if (imageInfo2 != null) {
+			if (dockerClient.imageExists(session, imageInfo2))
+				dockerHelper.deleteImage(session, imageInfo2);
+		}
 	}
-	if (imageInfo2 != null) {
-	    if (dockerClient.imageExists(session, imageInfo2))
-		dockerHelper.deleteImage(session, imageInfo2);
+
+	/**
+	 * Test that client instance can be created in application context.
+	 */
+	@Test
+	public void testCanGetInstance() throws Exception {
+		assertNotNull(dockerClient);
 	}
-    }
 
-    /**
-     * Test that client instance can be created in application context.
-     */
-    @Test
-    public void testCanGetInstance() throws Exception {
-	assertNotNull(dockerClient);
-    }
+	/**
+	 * Test that client returns true if image exists.
+	 */
+	@Test
+	public void testImageExistReturnsTrueIfImageExists() throws Exception {
+		imageInfo = dockerHelper.createDefaultTinyImageInfo();
+		dockerClient.createImage(session, imageInfo, executionResult);
 
-    /**
-     * Test that client returns true if image exists.
-     */
-    @Test
-    public void testImageExistReturnsTrueIfImageExists() throws Exception {
-	imageInfo = dockerHelper.createDefaultTinyImageInfo();
-	dockerClient.createImage(session, imageInfo, executionResult);
-
-	// test
-	assertTrue(dockerClient.imageExists(session, imageInfo));
-    }
-
-    /**
-     * Test that client return false if image doesn't exists.
-     */
-    @Test
-    public void testImageExsistReturnsFalseIfImageDoesntExists() throws Exception {
-	imageInfo = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
-
-	// test
-	assertFalse(dockerClient.imageExists(session, imageInfo));
-    }
-
-    /**
-     * Test that client can create image.
-     * 
-     * Validation is done on the first child result.
-     */
-    @Test
-    public void testCreateImage() throws Exception {
-	imageInfo = dockerHelper.createDefaultTinyImageInfo();
-	dockerClient.createImage(session, imageInfo, executionResult);
-
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(1, executionResult.getChildren().length);
-	dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
-	assertTrue(dockerClient.imageExists(session, imageInfo));
-    }
-
-    /**
-     * Test that client returns successful result even if already image exists.
-     */
-    @Test
-    public void testCreateImageReturnsSuccessfulIfImageAlreadyExists() throws Exception {
-	imageInfo = dockerHelper.createDefaultTinyImageInfo();
-
-	// build image once
-	dockerClient.createImage(session, imageInfo, executionResult);
-
-	// test
-	assertTrue(dockerClient.imageExists(session, imageInfo));
-
-	// build again
-	dockerClient.createImage(session, imageInfo, executionResult);
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(2, executionResult.getChildren().length);
-	dockerHelper.validateResultIsSuccessful(executionResult.getChildren()[1]);
-
-    }
-
-    /**
-     * Test that client throws exception if image is unknown.
-     */
-    @Test(expected = DockerClientException.class)
-    public void testCreateImagethrowsExceptionIfImageIsUnknown() throws Exception {
-	imageInfo = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
-
-	// build image
-	dockerClient.createImage(session, imageInfo, executionResult);
-    }
-
-    /**
-     * Test that client can delete image.
-     * 
-     * Validation is done on the first child result.
-     */
-    @Test
-    public void testDeleteImage() throws Exception {
-	imageInfo = dockerHelper.createDefaultTinyImageInfo();
-	dockerClient.createImage(session, imageInfo, executionResult);
-
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(1, executionResult.getChildren().length);
-	dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
-	assertTrue(dockerClient.imageExists(session, imageInfo));
-
-	// delete
-	dockerClient.deleteImage(session, imageInfo, executionResult);
-
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(2, executionResult.getChildren().length);
-	dockerHelper.validateResultIsSuccessful(executionResult.getChildren()[1]);
-	assertFalse(dockerClient.imageExists(session, imageInfo));
-    }
-
-    /**
-     * Test that client throws exception if can image selected for deletion
-     * doesn't exists.
-     * 
-     * Validation is done on the first child result.
-     */
-    @Test(expected = DockerClientException.class)
-    public void testDeleteImageThrowsExceptionIfImageDoesntExists() throws Exception {
-	imageInfo = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
-	dockerClient.deleteImage(session, imageInfo, executionResult);
-    }
-
-    /**
-     * Test that client can tag image.
-     */
-    @Test
-    public void testTagImage() throws Exception {
-	imageInfo = dockerHelper.createDefaultTinyImageInfo();
-	imageInfo2 = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
-	dockerClient.createImage(session, imageInfo, executionResult);
-
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(1, executionResult.getChildren().length);
-	dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
-	assertTrue(dockerClient.imageExists(session, imageInfo));
-
-	// tag
-	dockerClient.tagImage(session, imageInfo, imageInfo2, executionResult);
-
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(2, executionResult.getChildren().length);
-	dockerHelper.validateResultIsSuccessful(executionResult.getChildren()[1]);
-	assertTrue(dockerClient.imageExists(session, imageInfo2));
-    }
-
-    /**
-     * Test tagging image succeeds if image already exists.
-     */
-    @Test
-    public void testTagImageSucceedsIfTargetImageAlreadyExists() throws Exception {
-	imageInfo = dockerHelper.createDefaultTinyImageInfo();
-	imageInfo2 = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
-	dockerClient.createImage(session, imageInfo, executionResult);
-	dockerClient.tagImage(session, imageInfo, imageInfo2, executionResult);
-
-	// test
-	dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
-	assertTrue(dockerClient.imageExists(session, imageInfo));
-	dockerHelper.validateResultIsSuccessful(executionResult.getChildren()[1]);
-	assertTrue(dockerClient.imageExists(session, imageInfo2));
-
-	// tag existing image
-	dockerClient.tagImage(session, imageInfo, imageInfo2, executionResult);
-
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(3, executionResult.getChildren().length);
-	dockerHelper.validateResultIsSuccessful(executionResult.getChildren()[2]);
-    }
-
-    /**
-     * Test tagging image fails if source image doesn't exists.
-     */
-    @Test(expected = DockerClientException.class)
-    public void testTagImageFailsIfSourceImageDoesntExists() throws Exception {
-	imageInfo = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
-	imageInfo2 = dockerInfoBuilder.buildImageInfo(randomImage2, LATEST_IMAGE_TAG);
-	dockerClient.tagImage(session, imageInfo, imageInfo2, executionResult);
-    }
-
-    /**
-     * Test tagging image throw exception if tagging fails.
-     */
-    @Test(expected = DockerClientException.class)
-    public void testTagImageThrowsExceptionIfTaggingFails() throws Exception {
-	imageInfo = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
-	imageInfo2 = dockerInfoBuilder.buildImageInfo("11111111", LATEST_IMAGE_TAG);
-	dockerClient.tagImage(session, imageInfo, imageInfo2, executionResult);
-    }
-
-    /**
-     * Test that client can list images.
-     * 
-     * Validation is done on the first child result.
-     */
-    @Test
-    public void testListImages() throws Exception {
-	imageInfo = dockerHelper.createDefaultTinyImageInfo();
-	ListedImage[] images = dockerClient.listImages(session, executionResult);
-
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(1, executionResult.getChildren().length);
-	dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
-	assertNotNull(images);
-    }
-
-    /**
-     * Test that client contains expected image.
-     */
-    @Test
-    public void testListImagesContainesExpectedImage() throws Exception {
-	imageInfo = dockerHelper.createDefaultTinyImageInfo();
-	dockerClient.createImage(session, imageInfo, executionResult);
-	ListedImage[] images = dockerClient.listImages(session, executionResult);
-
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(2, executionResult.getChildren().length); // image creation
-							       // + list images
-	dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
-	assertNotNull(images);
-
-	// iterate over images
-	boolean foundImage = false;
-	for (ListedImage image : images) {
-	    List<String> imageTags = image.getRepoTags();
-
-	    // skip image if no tags are defined
-	    if (imageTags == null)
-		continue;
-	    if (imageTags.size() == 0)
-		continue;
-
-	    // iterate over tags
-	    for (String imageTag : imageTags) {
-		if (imageTag == null)
-		    continue;
-		if (imageTag.isEmpty())
-		    continue;
-		String imageFqName = imageInfo.getFullyQualifiedName();
-		if (imageFqName.equalsIgnoreCase(imageTag))
-		    foundImage = true;
-	    }
+		// test
+		assertTrue(dockerClient.imageExists(session, imageInfo));
 	}
-	assertTrue(foundImage);
-    }
 
-    /**
-     * Test that client can report on images.
-     * 
-     * Validation is done on the first child result.
-     */
-    @Test
-    public void testReportOnImages() throws Exception {
-	dockerClient.reportOnImages(session, executionResult);
+	/**
+	 * Test that client return false if image doesn't exists.
+	 */
+	@Test
+	public void testImageExsistReturnsFalseIfImageDoesntExists() throws Exception {
+		imageInfo = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
 
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(1, executionResult.getChildren().length);
-	dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
-    }
+		// test
+		assertFalse(dockerClient.imageExists(session, imageInfo));
+	}
 
-    /**
-     * Test that client can create TAR archive.
-     * 
-     * Validation is done on the first child result.
-     */
-    @Test
-    public void testCreateTarArchive() throws Exception {
+	/**
+	 * Test that client can create image.
+	 * 
+	 * Validation is done on the first child result.
+	 */
+	@Test
+	public void testCreateImage() throws Exception {
+		imageInfo = dockerHelper.createDefaultTinyImageInfo();
+		dockerClient.createImage(session, imageInfo, executionResult);
 
-	// create TAR archive - from source directory with single docker file
-	imageInfo = dockerHelper.createDefaultTinyImageInfo();
-	dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo);
-	File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
-	dockerClient.createTarArchive(sourceDirectory, tarArchive, executionResult);
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(1, executionResult.getChildren().length);
+		dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
+		assertTrue(dockerClient.imageExists(session, imageInfo));
+	}
 
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(1, executionResult.getChildren().length);
-	dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
-	assertTrue(PineappleMatchers.doesFileExist().matches(tarArchive));
-    }
+	/**
+	 * Test that client returns successful result even if already image exists.
+	 */
+	@Test
+	public void testCreateImageReturnsSuccessfulIfImageAlreadyExists() throws Exception {
+		imageInfo = dockerHelper.createDefaultTinyImageInfo();
 
-    /**
-     * Test that client can build image from Dockerfile.
-     */
-    @Test
-    public void testBuildImage() throws Exception {
+		// build image once
+		dockerClient.createImage(session, imageInfo, executionResult);
 
-	// create TAR archive - from source directory with single docker file
-	imageInfo = dockerHelper.createDefaultTinyImageInfo();
-	dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo);
-	File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
-	dockerClient.createTarArchive(sourceDirectory, tarArchive, executionResult);
+		// test
+		assertTrue(dockerClient.imageExists(session, imageInfo));
 
-	// build image
-	Boolean pullImageBehavior = false;
-	dockerClient.buildImage(session, imageInfo, tarArchive, pullImageBehavior, executionResult);
+		// build again
+		dockerClient.createImage(session, imageInfo, executionResult);
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(2, executionResult.getChildren().length);
+		dockerHelper.validateResultIsSuccessful(executionResult.getChildren()[1]);
 
-	// test
-	assertTrue(dockerClient.imageExists(session, imageInfo));
-	assertTrue(executionResult.isExecuting());
-	assertEquals(2, executionResult.getChildren().length);
-	dockerHelper.validateChildResultsAreSuccessful(executionResult);
-    }
+	}
 
-    /**
-     * Test that client returns successful result even if already image exists.
-     */
-    @Test
-    public void testBuildImageReturnsSuccessfulIfImageAlreadyExists() throws Exception {
-	imageInfo = dockerHelper.createDefaultTinyImageInfo();
+	/**
+	 * Test that client throws exception if image is unknown.
+	 */
+	@Test(expected = DockerClientException.class)
+	public void testCreateImagethrowsExceptionIfImageIsUnknown() throws Exception {
+		imageInfo = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
 
-	// build image once
-	dockerClient.createImage(session, imageInfo, executionResult);
+		// build image
+		dockerClient.createImage(session, imageInfo, executionResult);
+	}
 
-	// create TAR archive - from source directory with single docker file
-	dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo);
-	File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
-	dockerClient.createTarArchive(sourceDirectory, tarArchive, executionResult);
+	/**
+	 * Test that client can delete image.
+	 * 
+	 * Validation is done on the first child result.
+	 */
+	@Test
+	public void testDeleteImage() throws Exception {
+		imageInfo = dockerHelper.createDefaultTinyImageInfo();
+		dockerClient.createImage(session, imageInfo, executionResult);
 
-	// build image
-	Boolean pullImageBehavior = false;
-	dockerClient.buildImage(session, imageInfo, tarArchive, pullImageBehavior, executionResult);
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(1, executionResult.getChildren().length);
+		dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
+		assertTrue(dockerClient.imageExists(session, imageInfo));
 
-	// test
-	assertTrue(dockerClient.imageExists(session, imageInfo));
+		// delete
+		dockerClient.deleteImage(session, imageInfo, executionResult);
 
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(3, executionResult.getChildren().length);
-	dockerHelper.validateChildResultsAreSuccessful(executionResult);
-    }
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(2, executionResult.getChildren().length);
+		dockerHelper.validateResultIsSuccessful(executionResult.getChildren()[1]);
+		assertFalse(dockerClient.imageExists(session, imageInfo));
+	}
 
-    /**
-     * Test that client can create container.
-     */
-    @Test
-    public void testCreateContainer() throws Exception {
-	ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
-	containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
+	/**
+	 * Test that client throws exception if can image selected for deletion doesn't
+	 * exists.
+	 * 
+	 * Validation is done on the first child result.
+	 */
+	@Test(expected = DockerClientException.class)
+	public void testDeleteImageThrowsExceptionIfImageDoesntExists() throws Exception {
+		imageInfo = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
+		dockerClient.deleteImage(session, imageInfo, executionResult);
+	}
 
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(1, executionResult.getChildren().length);
-	dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
-	assertTrue(dockerClient.containerExists(session, info));
-    }
+	/**
+	 * Test that client can tag image.
+	 */
+	@Test
+	public void testTagImage() throws Exception {
+		imageInfo = dockerHelper.createDefaultTinyImageInfo();
+		imageInfo2 = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
+		dockerClient.createImage(session, imageInfo, executionResult);
 
-    /**
-     * Test that container creation succeeds if container already exists.
-     */
-    @Test
-    public void testCreateContainerSucceedsIfContainerAlreadyExists() throws Exception {
-	ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
-	containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(1, executionResult.getChildren().length);
+		dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
+		assertTrue(dockerClient.imageExists(session, imageInfo));
 
-	// test
-	assertTrue(dockerClient.containerExists(session, info));
+		// tag
+		dockerClient.tagImage(session, imageInfo, imageInfo2, executionResult);
 
-	// create twice
-	dockerClient.createContainer(session, info, executionResult);
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(2, executionResult.getChildren().length);
+		dockerHelper.validateResultIsSuccessful(executionResult.getChildren()[1]);
+		assertTrue(dockerClient.imageExists(session, imageInfo2));
+	}
 
-    }
+	/**
+	 * Test tagging image succeeds if image already exists.
+	 */
+	@Test
+	public void testTagImageSucceedsIfTargetImageAlreadyExists() throws Exception {
+		imageInfo = dockerHelper.createDefaultTinyImageInfo();
+		imageInfo2 = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
+		dockerClient.createImage(session, imageInfo, executionResult);
+		dockerClient.tagImage(session, imageInfo, imageInfo2, executionResult);
 
-    /**
-     * Test that client can delete container.
-     */
-    @Test
-    public void testDeleteContainer() throws Exception {
-	ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
-	containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
+		// test
+		dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
+		assertTrue(dockerClient.imageExists(session, imageInfo));
+		dockerHelper.validateResultIsSuccessful(executionResult.getChildren()[1]);
+		assertTrue(dockerClient.imageExists(session, imageInfo2));
 
-	// delete
-	dockerClient.deleteContainer(session, info, executionResult);
+		// tag existing image
+		dockerClient.tagImage(session, imageInfo, imageInfo2, executionResult);
 
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(2, executionResult.getChildren().length);
-	dockerHelper.validateChildResultsAreSuccessful(executionResult);
-	assertFalse(dockerClient.containerExists(session, info));
-    }
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(3, executionResult.getChildren().length);
+		dockerHelper.validateResultIsSuccessful(executionResult.getChildren()[2]);
+	}
 
-    /**
-     * Test that container deletion succeeds if container doesn't exist..
-     */
-    @Test
-    public void testDeleteContainerSucceedsIfContainerDoesntExist() throws Exception {
-	ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
+	/**
+	 * Test tagging image fails if source image doesn't exists.
+	 */
+	@Test(expected = DockerClientException.class)
+	public void testTagImageFailsIfSourceImageDoesntExists() throws Exception {
+		imageInfo = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
+		imageInfo2 = dockerInfoBuilder.buildImageInfo(randomImage2, LATEST_IMAGE_TAG);
+		dockerClient.tagImage(session, imageInfo, imageInfo2, executionResult);
+	}
 
-	// delete
-	dockerClient.deleteContainer(session, info, executionResult);
+	/**
+	 * Test tagging image throw exception if tagging fails.
+	 */
+	@Test(expected = DockerClientException.class)
+	public void testTagImageThrowsExceptionIfTaggingFails() throws Exception {
+		imageInfo = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
+		imageInfo2 = dockerInfoBuilder.buildImageInfo("11111111", LATEST_IMAGE_TAG);
+		dockerClient.tagImage(session, imageInfo, imageInfo2, executionResult);
+	}
 
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(1, executionResult.getChildren().length);
-	dockerHelper.validateChildResultsAreSuccessful(executionResult);
-	assertFalse(dockerClient.containerExists(session, info));
-    }
+	/**
+	 * Test that client can list images.
+	 * 
+	 * Validation is done on the first child result.
+	 */
+	@Test
+	public void testListImages() throws Exception {
+		imageInfo = dockerHelper.createDefaultTinyImageInfo();
+		ListedImage[] images = dockerClient.listImages(session, executionResult);
 
-    /**
-     * Test that container query returns true if container exists
-     */
-    @Test
-    public void testContainerExsistReturnsTrueIfContainerExists() throws Exception {
-	ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
-	containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
-	assertTrue(dockerClient.containerExists(session, info));
-    }
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(1, executionResult.getChildren().length);
+		dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
+		assertNotNull(images);
+	}
 
-    /**
-     * Test that container query returns false if container doesn't exists
-     */
-    @Test
-    public void testContainerExsistReturnsFalseIfContainerDoesntExists() throws Exception {
-	ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
-	assertFalse(dockerClient.containerExists(session, info));
-    }
+	/**
+	 * Test that client contains expected image.
+	 */
+	@Test
+	public void testListImagesContainesExpectedImage() throws Exception {
+		imageInfo = dockerHelper.createDefaultTinyImageInfo();
+		dockerClient.createImage(session, imageInfo, executionResult);
+		ListedImage[] images = dockerClient.listImages(session, executionResult);
 
-    /**
-     * Test that client can start container.
-     */
-    @Test
-    public void testStartContainer() throws Exception {
-	ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
-	containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(2, executionResult.getChildren().length); // image creation
+		// + list images
+		dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
+		assertNotNull(images);
 
-	// start
-	dockerClient.startContainer(session, info, executionResult);
+		// iterate over images
+		boolean foundImage = false;
+		for (ListedImage image : images) {
+			List<String> imageTags = image.getRepoTags();
 
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(2, executionResult.getChildren().length);
-	dockerHelper.validateChildResultsAreSuccessful(executionResult);
-	assertTrue(dockerClient.isContainerRunning(session, containerInstanceInfo));
-    }
+			// skip image if no tags are defined
+			if (imageTags == null)
+				continue;
+			if (imageTags.size() == 0)
+				continue;
 
-    /**
-     * Test that client can stop container.
-     */
-    @Test
-    public void testStopContainer() throws Exception {
-	ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
-	containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
-	dockerClient.startContainer(session, info, executionResult);
+			// iterate over tags
+			for (String imageTag : imageTags) {
+				if (imageTag == null)
+					continue;
+				if (imageTag.isEmpty())
+					continue;
+				String imageFqName = imageInfo.getFullyQualifiedName();
+				if (imageFqName.equalsIgnoreCase(imageTag))
+					foundImage = true;
+			}
+		}
+		assertTrue(foundImage);
+	}
 
-	// stop
-	dockerClient.stopContainer(session, info, executionResult);
+	/**
+	 * Test that client can report on images.
+	 * 
+	 * Validation is done on the first child result.
+	 */
+	@Test
+	public void testReportOnImages() throws Exception {
+		dockerClient.reportOnImages(session, executionResult);
 
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(3, executionResult.getChildren().length);
-	dockerHelper.validateChildResultsAreSuccessful(executionResult);
-	assertFalse(dockerClient.isContainerRunning(session, containerInstanceInfo));
-    }
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(1, executionResult.getChildren().length);
+		dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
+	}
 
-    /**
-     * Test that client can pause container.
-     */
-    @Test
-    public void testPauseContainer() throws Exception {
-	ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
-	containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
-	dockerClient.startContainer(session, info, executionResult);
+	/**
+	 * Test that client can create TAR archive.
+	 * 
+	 * Validation is done on the first child result.
+	 */
+	@Test
+	public void testCreateTarArchive() throws Exception {
 
-	// pause
-	dockerClient.pauseContainer(session, info, executionResult);
+		// create TAR archive - from source directory with single docker file
+		imageInfo = dockerHelper.createDefaultTinyImageInfo();
+		dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo);
+		File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
+		dockerClient.createTarArchive(sourceDirectory, tarArchive, executionResult);
 
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(3, executionResult.getChildren().length);
-	dockerHelper.validateChildResultsAreSuccessful(executionResult);
-	assertTrue(dockerClient.isContainerPaused(session, info));
-    }
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(1, executionResult.getChildren().length);
+		dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
+		assertTrue(PineappleMatchers.doesFileExist().matches(tarArchive));
+	}
 
-    /**
-     * Test that client can unpause container.
-     */
-    @Test
-    public void testUnpauseContainer() throws Exception {
-	ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
-	containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
-	dockerClient.startContainer(session, info, executionResult);
-	dockerClient.pauseContainer(session, info, executionResult);
+	/**
+	 * Test that client can build image from Dockerfile.
+	 */
+	@Test
+	public void testBuildImage() throws Exception {
 
-	// unpause
-	dockerClient.unpauseContainer(session, info, executionResult);
+		// create TAR archive - from source directory with single docker file
+		imageInfo = dockerHelper.createDefaultTinyImageInfo();
+		dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo);
+		File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
+		dockerClient.createTarArchive(sourceDirectory, tarArchive, executionResult);
 
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(4, executionResult.getChildren().length);
-	dockerHelper.validateChildResultsAreSuccessful(executionResult);
-	assertFalse(dockerClient.isContainerPaused(session, info));
-	assertTrue(dockerClient.isContainerRunning(session, containerInstanceInfo));
-    }
+		// build image
+		Boolean pullImageBehavior = false;
+		dockerClient.buildImage(session, imageInfo, tarArchive, pullImageBehavior, executionResult);
 
-    /**
-     * Test that client can report on containers.
-     * 
-     * Validation is done on the first child result.
-     */
-    @Test
-    public void testReportOnContainers() throws Exception {
-	dockerClient.reportOnContainers(session, executionResult);
+		// test
+		assertTrue(dockerClient.imageExists(session, imageInfo));
+		assertTrue(executionResult.isExecuting());
+		assertEquals(2, executionResult.getChildren().length);
+		dockerHelper.validateChildResultsAreSuccessful(executionResult);
+	}
 
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(1, executionResult.getChildren().length);
-	dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
-    }
+	/**
+	 * Test that client returns successful result even if already image exists.
+	 */
+	@Test
+	public void testBuildImageReturnsSuccessfulIfImageAlreadyExists() throws Exception {
+		imageInfo = dockerHelper.createDefaultTinyImageInfo();
 
-    /**
-     * Test that client can test running container.
-     */
-    @Test
-    public void testTestContainer() throws Exception {
-	ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
-	containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
-	dockerClient.startContainer(session, info, executionResult);	
-	assertTrue(dockerClient.isContainerRunning(session, containerInstanceInfo));
-	
-	// start
-	dockerClient.testContainer(session, info, ContainerState.RUNNING, executionResult);
+		// build image once
+		dockerClient.createImage(session, imageInfo, executionResult);
 
-	// test
-	assertTrue(executionResult.isExecuting());
-	assertEquals(3, executionResult.getChildren().length);
-	dockerHelper.validateChildResultsAreSuccessful(executionResult);
-    }
-    
+		// create TAR archive - from source directory with single docker file
+		dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo);
+		File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
+		dockerClient.createTarArchive(sourceDirectory, tarArchive, executionResult);
+
+		// build image
+		Boolean pullImageBehavior = false;
+		dockerClient.buildImage(session, imageInfo, tarArchive, pullImageBehavior, executionResult);
+
+		// test
+		assertTrue(dockerClient.imageExists(session, imageInfo));
+
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(3, executionResult.getChildren().length);
+		dockerHelper.validateChildResultsAreSuccessful(executionResult);
+	}
+
+	/**
+	 * Test that client can create container.
+	 */
+	@Test
+	public void testCreateContainer() throws Exception {
+		ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
+		containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
+
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(1, executionResult.getChildren().length);
+		dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
+		assertTrue(dockerClient.containerExists(session, info));
+	}
+
+	/**
+	 * Test that container creation succeeds if container already exists.
+	 */
+	@Test
+	public void testCreateContainerSucceedsIfContainerAlreadyExists() throws Exception {
+		ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
+		containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
+
+		// test
+		assertTrue(dockerClient.containerExists(session, info));
+
+		// create twice
+		dockerClient.createContainer(session, info, executionResult);
+
+	}
+
+	/**
+	 * Test that client can delete container.
+	 */
+	@Test
+	public void testDeleteContainer() throws Exception {
+		ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
+		containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
+
+		// delete
+		dockerClient.deleteContainer(session, info, executionResult);
+
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(2, executionResult.getChildren().length);
+		dockerHelper.validateChildResultsAreSuccessful(executionResult);
+		assertFalse(dockerClient.containerExists(session, info));
+	}
+
+	/**
+	 * Test that container deletion succeeds if container doesn't exist..
+	 */
+	@Test
+	public void testDeleteContainerSucceedsIfContainerDoesntExist() throws Exception {
+		ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
+
+		// delete
+		dockerClient.deleteContainer(session, info, executionResult);
+
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(1, executionResult.getChildren().length);
+		dockerHelper.validateChildResultsAreSuccessful(executionResult);
+		assertFalse(dockerClient.containerExists(session, info));
+	}
+
+	/**
+	 * Test that container query returns true if container exists
+	 */
+	@Test
+	public void testContainerExsistReturnsTrueIfContainerExists() throws Exception {
+		ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
+		containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
+		assertTrue(dockerClient.containerExists(session, info));
+	}
+
+	/**
+	 * Test that container query returns false if container doesn't exists
+	 */
+	@Test
+	public void testContainerExsistReturnsFalseIfContainerDoesntExists() throws Exception {
+		ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
+		assertFalse(dockerClient.containerExists(session, info));
+	}
+
+	/**
+	 * Test that client can start container.
+	 */
+	@Test
+	public void testStartContainer() throws Exception {
+		ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
+		containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
+
+		// start
+		dockerClient.startContainer(session, info, executionResult);
+
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(2, executionResult.getChildren().length);
+		dockerHelper.validateChildResultsAreSuccessful(executionResult);
+		assertTrue(dockerClient.isContainerRunning(session, containerInstanceInfo));
+	}
+
+	/**
+	 * Test that client can stop container.
+	 */
+	@Test
+	public void testStopContainer() throws Exception {
+		ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
+		containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
+		dockerClient.startContainer(session, info, executionResult);
+
+		// stop
+		dockerClient.stopContainer(session, info, executionResult);
+
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(3, executionResult.getChildren().length);
+		dockerHelper.validateChildResultsAreSuccessful(executionResult);
+		assertFalse(dockerClient.isContainerRunning(session, containerInstanceInfo));
+	}
+
+	/**
+	 * Test that client can pause container.
+	 */
+	@Test
+	public void testPauseContainer() throws Exception {
+		ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
+		containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
+		dockerClient.startContainer(session, info, executionResult);
+
+		// pause
+		dockerClient.pauseContainer(session, info, executionResult);
+
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(3, executionResult.getChildren().length);
+		dockerHelper.validateChildResultsAreSuccessful(executionResult);
+		assertTrue(dockerClient.isContainerPaused(session, info));
+	}
+
+	/**
+	 * Test that client can unpause container.
+	 */
+	@Test
+	public void testUnpauseContainer() throws Exception {
+		ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
+		containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
+		dockerClient.startContainer(session, info, executionResult);
+		dockerClient.pauseContainer(session, info, executionResult);
+
+		// unpause
+		dockerClient.unpauseContainer(session, info, executionResult);
+
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(4, executionResult.getChildren().length);
+		dockerHelper.validateChildResultsAreSuccessful(executionResult);
+		assertFalse(dockerClient.isContainerPaused(session, info));
+		assertTrue(dockerClient.isContainerRunning(session, containerInstanceInfo));
+	}
+
+	/**
+	 * Test that client can report on containers.
+	 * 
+	 * Validation is done on the first child result.
+	 */
+	@Test
+	public void testReportOnContainers() throws Exception {
+		dockerClient.reportOnContainers(session, executionResult);
+
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(1, executionResult.getChildren().length);
+		dockerHelper.validateResultIsSuccessful(executionResult.getFirstChild());
+	}
+
+	/**
+	 * Test that client can test running container.
+	 */
+	@Test
+	public void testTestContainer() throws Exception {
+		ContainerInfo info = dockerInfoBuilder.buildContainerInfo(randomContainerName, defaultImage);
+		containerInstanceInfo = dockerClient.createContainer(session, info, executionResult);
+		dockerClient.startContainer(session, info, executionResult);
+		assertTrue(dockerClient.isContainerRunning(session, containerInstanceInfo));
+
+		// start
+		dockerClient.testContainer(session, info, ContainerState.RUNNING, executionResult);
+
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertEquals(3, executionResult.getChildren().length);
+		dockerHelper.validateChildResultsAreSuccessful(executionResult);
+	}
+
 }

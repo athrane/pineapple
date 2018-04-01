@@ -33,127 +33,127 @@ import org.apache.commons.lang.SystemUtils;
  */
 public class ExecutableNameUtils {
 
-    /**
-     * Java bin directory.
-     */
-    static final String BIN_DIR = "bin";
+	/**
+	 * Java bin directory.
+	 */
+	static final String BIN_DIR = "bin";
 
-    /**
-     * Java executable.
-     */
-    static final String JAVA_EXECUTABLE = "java";
+	/**
+	 * Java executable.
+	 */
+	static final String JAVA_EXECUTABLE = "java";
 
-    /**
-     * Java executable with extension
-     */
-    static final String WIN_JAVA_EXECUTABLE = "java.exe";
+	/**
+	 * Java executable with extension
+	 */
+	static final String WIN_JAVA_EXECUTABLE = "java.exe";
 
-    /**
-     * Resolve OS specific name for Java executable without extension.
-     * 
-     * @param parent
-     *            Parent directory.
-     * 
-     * @return OS specific Java executable name without extension.
-     */
-    static public File resolveJavaExecutable(File parent) {
+	/**
+	 * Resolve OS specific name for Java executable without extension.
+	 * 
+	 * @param parent
+	 *            Parent directory.
+	 * 
+	 * @return OS specific Java executable name without extension.
+	 */
+	static public File resolveJavaExecutable(File parent) {
 
-	if (SystemUtils.IS_OS_WINDOWS) {
-	    File jvmExecutableDir = new File(parent, BIN_DIR);
-	    return new File(jvmExecutableDir, JAVA_EXECUTABLE);
+		if (SystemUtils.IS_OS_WINDOWS) {
+			File jvmExecutableDir = new File(parent, BIN_DIR);
+			return new File(jvmExecutableDir, JAVA_EXECUTABLE);
+		}
+
+		if (SystemUtils.IS_OS_LINUX) {
+			File jvmExecutableDir = new File(parent, BIN_DIR);
+			return new File(jvmExecutableDir, JAVA_EXECUTABLE);
+		}
+
+		throw new NotImplementedException("Java executable not supported for this OS");
 	}
 
-	if (SystemUtils.IS_OS_LINUX) {
-	    File jvmExecutableDir = new File(parent, BIN_DIR);
-	    return new File(jvmExecutableDir, JAVA_EXECUTABLE);
+	/**
+	 * Resolve OS specific name for Java executable with extension.
+	 * 
+	 * @param parent
+	 *            Parent directory.
+	 * 
+	 * @return OS specific Java executable name without extension.
+	 */
+	static public File resolveJavaExecutableWithExtension(File parent) {
+
+		if (SystemUtils.IS_OS_WINDOWS) {
+			File jvmExecutableDir = new File(parent, BIN_DIR);
+			return new File(jvmExecutableDir, WIN_JAVA_EXECUTABLE);
+		}
+
+		if (SystemUtils.IS_OS_LINUX) {
+			File jvmExecutableDir = new File(parent, BIN_DIR);
+			return new File(jvmExecutableDir, JAVA_EXECUTABLE);
+		}
+
+		throw new NotImplementedException("Java executable not supported for this OS");
 	}
 
-	throw new NotImplementedException("Java executable not supported for this OS");
-    }
-
-    /**
-     * Resolve OS specific name for Java executable with extension.
-     * 
-     * @param parent
-     *            Parent directory.
-     * 
-     * @return OS specific Java executable name without extension.
-     */
-    static public File resolveJavaExecutableWithExtension(File parent) {
-
-	if (SystemUtils.IS_OS_WINDOWS) {
-	    File jvmExecutableDir = new File(parent, BIN_DIR);
-	    return new File(jvmExecutableDir, WIN_JAVA_EXECUTABLE);
+	/**
+	 * if Executable contains spaces then add """
+	 * 
+	 * @param executable
+	 *            Executable path.
+	 * 
+	 * @return Escaped Executable path.
+	 */
+	static public File escapeExecutable(File executable) {
+		return new File(escapeExecutable(executable.toString()));
 	}
 
-	if (SystemUtils.IS_OS_LINUX) {
-	    File jvmExecutableDir = new File(parent, BIN_DIR);
-	    return new File(jvmExecutableDir, JAVA_EXECUTABLE);
+	/**
+	 * if Executable contains spaces then add """
+	 * 
+	 * @param executable
+	 *            Executable path.
+	 * 
+	 * @return Escaped Executable path.
+	 */
+	static public String escapeExecutable(String executable) {
+
+		// if executable contains spaces then add """
+		if (StringUtils.contains(executable, ' ')) {
+			return "\"" + executable + "\"";
+		}
+
+		return executable;
 	}
 
-	throw new NotImplementedException("Java executable not supported for this OS");
-    }
+	/**
+	 * if path contains spaces then add """
+	 * 
+	 * @param path
+	 *            Path.
+	 * 
+	 * @return Escaped path.
+	 */
+	static public String escapePath(String path) {
 
-    /**
-     * if Executable contains spaces then add """
-     * 
-     * @param executable
-     *            Executable path.
-     * 
-     * @return Escaped Executable path.
-     */
-    static public File escapeExecutable(File executable) {
-	return new File(escapeExecutable(executable.toString()));
-    }
-
-    /**
-     * if Executable contains spaces then add """
-     * 
-     * @param executable
-     *            Executable path.
-     * 
-     * @return Escaped Executable path.
-     */
-    static public String escapeExecutable(String executable) {
-
-	// if executable contains spaces then add """
-	if (StringUtils.contains(executable, ' ')) {
-	    return "\"" + executable + "\"";
+		// if path contains spaces then add """
+		return escapeExecutable(path);
 	}
 
-	return executable;
-    }
+	/**
+	 * if Executable contains spaces then add "'"
+	 * 
+	 * @param executable
+	 *            Executable path.
+	 * 
+	 * @return Escaped Executable path.
+	 */
+	static public String escapeExecutableWithSingleQuotes(String executable) {
 
-    /**
-     * if path contains spaces then add """
-     * 
-     * @param path
-     *            Path.
-     * 
-     * @return Escaped path.
-     */
-    static public String escapePath(String path) {
+		// if executable contains spaces then add """
+		if (StringUtils.contains(executable, ' ')) {
+			return "'" + executable + "'";
+		}
 
-	// if path contains spaces then add """
-	return escapeExecutable(path);
-    }
-
-    /**
-     * if Executable contains spaces then add "'"
-     * 
-     * @param executable
-     *            Executable path.
-     * 
-     * @return Escaped Executable path.
-     */
-    static public String escapeExecutableWithSingleQuotes(String executable) {
-
-	// if executable contains spaces then add """
-	if (StringUtils.contains(executable, ' ')) {
-	    return "'" + executable + "'";
+		return executable;
 	}
-
-	return executable;
-    }
 
 }

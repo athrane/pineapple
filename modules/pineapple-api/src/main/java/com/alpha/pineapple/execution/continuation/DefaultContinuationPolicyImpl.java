@@ -32,100 +32,100 @@ import com.alpha.pineapple.execution.ExecutionResult;
  */
 public class DefaultContinuationPolicyImpl implements ContinuationPolicy {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Continue-on-failure directive.
-     */
-    Boolean continueOnFailure = null;
+	/**
+	 * Continue-on-failure directive.
+	 */
+	Boolean continueOnFailure = null;
 
-    /**
-     * Cancellation state.
-     */
-    boolean isCancelled = false;
+	/**
+	 * Cancellation state.
+	 */
+	boolean isCancelled = false;
 
-    /**
-     * Failure result.
-     */
-    ExecutionResult failedResult;
+	/**
+	 * Failure result.
+	 */
+	ExecutionResult failedResult;
 
-    /**
-     * DefaultContinuationPolicyImpl constructor.
-     */
-    DefaultContinuationPolicyImpl() {
-    }
+	/**
+	 * DefaultContinuationPolicyImpl constructor.
+	 */
+	DefaultContinuationPolicyImpl() {
+	}
 
-    @Override
-    public boolean continueExecution() {
-	if (isCancelled)
-	    return false;
-	if (isContinueOnFailure())
-	    return true;
-	return (!isFailed());
-    }
+	@Override
+	public boolean continueExecution() {
+		if (isCancelled)
+			return false;
+		if (isContinueOnFailure())
+			return true;
+		return (!isFailed());
+	}
 
-    @Override
-    public boolean isContinueOnFailure() {
-	if (continueOnFailure == null)
-	    return true;
-	return continueOnFailure.booleanValue();
-    }
+	@Override
+	public boolean isContinueOnFailure() {
+		if (continueOnFailure == null)
+			return true;
+		return continueOnFailure.booleanValue();
+	}
 
-    @Override
-    public boolean isCancelled() {
-	return isCancelled;
-    }
+	@Override
+	public boolean isCancelled() {
+		return isCancelled;
+	}
 
-    /**
-     * Returns true if execution is failed.
-     * 
-     * @return if execution is failed.
-     */
-    boolean isFailed() {
-	return (failedResult != null);
-    }
+	/**
+	 * Returns true if execution is failed.
+	 * 
+	 * @return if execution is failed.
+	 */
+	boolean isFailed() {
+		return (failedResult != null);
+	}
 
-    @Override
-    public void disableContinueOnFailure() {
-	if (continueOnFailure != null)
-	    return;
-	continueOnFailure = new Boolean(false);
-    }
+	@Override
+	public void disableContinueOnFailure() {
+		if (continueOnFailure != null)
+			return;
+		continueOnFailure = new Boolean(false);
+	}
 
-    @Override
-    public void enableContinueOnFailure() {
-	if (continueOnFailure != null)
-	    return;
-	continueOnFailure = new Boolean(true);
-    }
+	@Override
+	public void enableContinueOnFailure() {
+		if (continueOnFailure != null)
+			return;
+		continueOnFailure = new Boolean(true);
+	}
 
-    @Override
-    public void setCancelled() {
-	isCancelled = true;
-    }
+	@Override
+	public void setCancelled() {
+		isCancelled = true;
+	}
 
-    @Override
-    public void setFailed(ExecutionResult result) {
-	Validate.notNull(result, "result is undefined");
-	if (failedResult != null)
-	    return;
-	failedResult = result;
-    }
+	@Override
+	public void setFailed(ExecutionResult result) {
+		Validate.notNull(result, "result is undefined");
+		if (failedResult != null)
+			return;
+		failedResult = result;
+	}
 
-    @Override
-    public ExecutionResult getFailedResult() {
-	return failedResult;
-    }
+	@Override
+	public ExecutionResult getFailedResult() {
+		return failedResult;
+	}
 
-    /**
-     * Factory method for creation of policy instances.
-     * 
-     * @return policy instances.
-     */
-    public static ContinuationPolicy getInstance() {
-	return new DefaultContinuationPolicyImpl();
-    }
+	/**
+	 * Factory method for creation of policy instances.
+	 * 
+	 * @return policy instances.
+	 */
+	public static ContinuationPolicy getInstance() {
+		return new DefaultContinuationPolicyImpl();
+	}
 }

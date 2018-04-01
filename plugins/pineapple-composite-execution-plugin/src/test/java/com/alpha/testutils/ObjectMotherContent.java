@@ -34,72 +34,72 @@ import com.alpha.pineapple.plugin.composite.execution.model.ObjectFactory;
  */
 public class ObjectMotherContent {
 
-    /**
-     * Docker object factory.
-     */
-    ObjectFactory dockerFactory;
+	/**
+	 * Docker object factory.
+	 */
+	ObjectFactory dockerFactory;
 
-    /**
-     * ObjectMotherContent constructor.
-     */
-    public ObjectMotherContent() {
-	dockerFactory = new ObjectFactory();
-    }
+	/**
+	 * ObjectMotherContent constructor.
+	 */
+	public ObjectMotherContent() {
+		dockerFactory = new ObjectFactory();
+	}
 
-    /**
-     * Create empty composite execution document.
-     * 
-     * @return empty composite execution document.
-     */
-    public CompositeExecution createEmptyCompositeExecutionModel() {
-	return dockerFactory.createCompositeExecution();
-    }
+	/**
+	 * Create empty composite execution document.
+	 * 
+	 * @return empty composite execution document.
+	 */
+	public CompositeExecution createEmptyCompositeExecutionModel() {
+		return dockerFactory.createCompositeExecution();
+	}
 
-    /**
-     * Create composite.
-     * 
-     * @param name
-     *            composite name.
-     * 
-     * @return image command.
-     */
-    public Composite createCompositeCommand(String name) {
-	Composite composite = dockerFactory.createComposite();
-	composite.setName(name);
-	return composite;
-    }
+	/**
+	 * Create composite.
+	 * 
+	 * @param name
+	 *            composite name.
+	 * 
+	 * @return image command.
+	 */
+	public Composite createCompositeCommand(String name) {
+		Composite composite = dockerFactory.createComposite();
+		composite.setName(name);
+		return composite;
+	}
 
-    /**
-     * Create composite execution document with composite command.
-     * 
-     * @param name
-     *            composite name.
-     * 
-     * @return composite execution document with composite command.
-     */
-    public CompositeExecution createCompositeExecutionWithSingleComposite(String name) {
-	CompositeExecution model = createEmptyCompositeExecutionModel();
-	List<Composite> modules = model.getModule();
-	modules.add(createCompositeCommand(name));
-	return model;
-    }
+	/**
+	 * Create composite execution document with composite command.
+	 * 
+	 * @param name
+	 *            composite name.
+	 * 
+	 * @return composite execution document with composite command.
+	 */
+	public CompositeExecution createCompositeExecutionWithSingleComposite(String name) {
+		CompositeExecution model = createEmptyCompositeExecutionModel();
+		List<Composite> modules = model.getModule();
+		modules.add(createCompositeCommand(name));
+		return model;
+	}
 
-    /**
-     * Create composite execution document with two composite commands.
-     * 
-     * @param name
-     *            composite name.
-     * @param name2
-     *            composite name #2.
-     * 
-     * @return composite execution document with two composite commands.
-     */
-    public CompositeExecution createCompositeExecutionWithTwoComposites(String name, String name2) {
-	CompositeExecution model = createEmptyCompositeExecutionModel();
-	List<Composite> modules = model.getModule();
-	modules.add(createCompositeCommand(name));
-	modules.add(createCompositeCommand(name2));
-	return model;
-    }
+	/**
+	 * Create composite execution document with two composite commands.
+	 * 
+	 * @param name
+	 *            composite name.
+	 * @param name2
+	 *            composite name #2.
+	 * 
+	 * @return composite execution document with two composite commands.
+	 */
+	public CompositeExecution createCompositeExecutionWithTwoComposites(String name, String name2) {
+		CompositeExecution model = createEmptyCompositeExecutionModel();
+		List<Composite> modules = model.getModule();
+		modules.add(createCompositeCommand(name));
+		modules.add(createCompositeCommand(name2));
+		return model;
+	}
 
 }

@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.command;
 
 import static org.junit.Assert.assertEquals;
@@ -54,143 +53,131 @@ import com.alpha.pineapple.plugin.net.model.Mapper;
 import com.alpha.testutils.ObjectMotherContent;
 import com.alpha.testutils.ObjectMotherHttpServer;
 
-
 /**
- * Integration test for the <code>TestHttpCommand</code> class
- * when it is setup to function as an load balancing test case.  
+ * Integration test for the <code>TestHttpCommand</code> class when it is setup
+ * to function as an load balancing test case.
  */
-@RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration( locations = { "/com.alpha.pineapple.plugin.net-config.xml" } )
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/com.alpha.pineapple.plugin.net-config.xml" })
 public class TestLoadBalancingCommandIntegrationTest {
-	
+
 	/**
-	 * TCP port for  HTTP server.
+	 * TCP port for HTTP server.
 	 */
-    static final int HTTP_PORT = 3000;
-    
-    /**
-     * Object under test.
-     */
-    @Resource( name ="testHttpCommand")
-    Command command;
+	static final int HTTP_PORT = 3000;
 
-    /**
-     * Model mapper object.
-     */
-    @Resource    
-    Mapper mapper;
-        
-    /**
-     * Chain context.
-     */
-    Context context;
-    
-    /**
-     * HTTP server object mother 
-     */
-    ObjectMotherHttpServer httpServerMother;
+	/**
+	 * Object under test.
+	 */
+	@Resource(name = "testHttpCommand")
+	Command command;
 
-    /**
-     * Object mother for the infrastructure model.
-     */
-    ObjectMotherContent contentMother;
-    
-    /**
-     * HTTP server. 
-     */
-    Server httpServer;
-        
+	/**
+	 * Model mapper object.
+	 */
+	@Resource
+	Mapper mapper;
+
+	/**
+	 * Chain context.
+	 */
+	Context context;
+
+	/**
+	 * HTTP server object mother
+	 */
+	ObjectMotherHttpServer httpServerMother;
+
+	/**
+	 * Object mother for the infrastructure model.
+	 */
+	ObjectMotherContent contentMother;
+
+	/**
+	 * HTTP server.
+	 */
+	Server httpServer;
+
 	/**
 	 * Execution result.
 	 */
-	ExecutionResult executionResult;    
+	ExecutionResult executionResult;
 
 	/**
 	 * Mock repository
 	 */
 	ResultRepository repository;
-		
+
 	/**
 	 * HTTP Configuration object.
 	 */
-	HttpConfiguration httpConfig;	
-	
-	
-	
+	HttpConfiguration httpConfig;
+
 	@Before
 	public void setUp() throws Exception {
-		
-        // create context
-        context = new ContextBase();
 
-        // create content mother
-        contentMother = new ObjectMotherContent();		        
-        
-        // create HTTP server object mother
-        httpServerMother = new ObjectMotherHttpServer();
+		// create context
+		context = new ContextBase();
 
-        // create HTTP server
-        httpServer = httpServerMother.createHttpServer(httpServerMother.getHostIPAddress(true), HTTP_PORT);
+		// create content mother
+		contentMother = new ObjectMotherContent();
 
-        // create mock result repository
-        repository = EasyMock.createMock( ResultRepository.class );
-        
-        // create execution result
-		executionResult = new ExecutionResultImpl(repository, "Root result" );
-		
+		// create HTTP server object mother
+		httpServerMother = new ObjectMotherHttpServer();
+
+		// create HTTP server
+		httpServer = httpServerMother.createHttpServer(httpServerMother.getHostIPAddress(true), HTTP_PORT);
+
+		// create mock result repository
+		repository = EasyMock.createMock(ResultRepository.class);
+
+		// create execution result
+		executionResult = new ExecutionResultImpl(repository, "Root result");
+
 		// create HTTP configuration
 		httpConfig = new HttpConfigurationImpl();
-				
+
 	}
-		
+
 	@After
 	public void tearDown() throws Exception {
 		contentMother = null;
-        command = null;
-        context = null;
-        httpServer.stop();
-        httpServer = null;
-        httpServerMother = null;
-        httpConfig = null;
+		command = null;
+		context = null;
+		httpServer.stop();
+		httpServer = null;
+		httpServerMother = null;
+		httpConfig = null;
 	}
-	
-    /**
-     * Test load balancing succeeds with single URL.
-     */
-    @SuppressWarnings( "unchecked" )
-    @Test
-    public void testSucceedsWithSingleUrl()
-    {
-        try
-        {        	        	
-        	// create execution result        	
-        	ExecutionResult childResult = executionResult.addChild("Test response properties");  
-        	
-        	LoadBalancingTest test  = contentMother.createLoadBalancingTest();        	        	
-        	
+
+	/**
+	 * Test load balancing succeeds with single URL.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSucceedsWithSingleUrl() {
+		try {
+			// create execution result
+			ExecutionResult childResult = executionResult.addChild("Test response properties");
+
+			LoadBalancingTest test = contentMother.createLoadBalancingTest();
+
 			// create model
-        	mapper.mapLoadBalancingTest(
-        			test, 
-        			context, 
-        			contentMother.createHttpConfigurationMapWithSingleDefaultHttpConfig());
-        	
-        	// set parameters
-    		context.put( TestHttpCommand.EXECUTIONRESULT_KEY, childResult );
-        	
-            // execute HTTP get command
-            command.execute( context );
+			mapper.mapLoadBalancingTest(test, context,
+					contentMother.createHttpConfigurationMapWithSingleDefaultHttpConfig());
 
-            // test
-            assertEquals( ExecutionState.SUCCESS, childResult.getState());
-                        
-        }
-        catch ( Exception e )
-        {
-            fail( StackTraceHelper.getStrackTrace( e ) );
-        }
-    }                  
-	
-    
+			// set parameters
+			context.put(TestHttpCommand.EXECUTIONRESULT_KEY, childResult);
 
+			// execute HTTP get command
+			command.execute(context);
+
+			// test
+			assertEquals(ExecutionState.SUCCESS, childResult.getState());
+
+		} catch (Exception e) {
+			fail(StackTraceHelper.getStrackTrace(e));
+		}
+	}
 
 }

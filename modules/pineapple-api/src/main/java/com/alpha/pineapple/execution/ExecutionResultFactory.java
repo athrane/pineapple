@@ -29,26 +29,26 @@ import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
  */
 public interface ExecutionResultFactory {
 
-    /**
-     * Returns root execution object for new execution.
-     * 
-     * @param description
-     *            Description of what is executing.
-     * 
-     * @return root execution object for new execution.
-     */
-    ExecutionResult startExecution(String description);
+	/**
+	 * Returns root execution object for new execution.
+	 * 
+	 * @param description
+	 *            Description of what is executing.
+	 * 
+	 * @return root execution object for new execution.
+	 */
+	ExecutionResult startExecution(String description);
 
-    /**
-     * Create execution result notification.
-     *
-     * @param result
-     *            execution result.
-     * @param state
-     *            recorded state.
-     * 
-     * @return execution result notification.
-     */
-    ExecutionResultNotification createNotification(ExecutionResult result, ExecutionState state);
+	/**
+	 * Create execution result notification.
+	 *
+	 * @param result
+	 *            execution result.
+	 * @param state
+	 *            recorded state.
+	 * 
+	 * @return execution result notification.
+	 */
+	ExecutionResultNotification createNotification(ExecutionResult result, ExecutionState state);
 
 }

@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import java.net.InetAddress;
@@ -32,78 +31,77 @@ import org.hamcrest.TypeSafeMatcher;
 import org.xbill.DNS.Address;
 
 /**
- * Matches if a TCP host name can be resolved to any IP address,
- * e.g. a forward DNS lookup.
+ * Matches if a TCP host name can be resolved to any IP address, e.g. a forward
+ * DNS lookup.
  */
 public class IsHostResolvableToIpAddress extends TypeSafeMatcher<String> {
-	
+
 	/**
 	 * Last recorded exception.
 	 */
 	Exception lastException;
-	
+
 	/**
 	 * Last recorded resolved IP address.
-	 */	
+	 */
 	String lastIpAddress;
 
 	/**
 	 * Last recorded resolved host name.
-	 */		
+	 */
 	String lastHost;
-			
+
 	public boolean matchesSafely(String host) {
-		    	    	    	    	
-        try
-        {
-            // store input            
-            lastHost = host;
-        	lastException = null;            
-        	lastIpAddress = null;
-        	
-        	// get actual IP address
-            InetAddress inetAddress = Address.getByName(host);
-            String ipAddress = inetAddress.getHostAddress();
-            
-            // store input
-            lastIpAddress = ipAddress;
-            
-            // assert
-            if (ipAddress == null ) return false;            
-            if (ipAddress.length() == 0 ) return false;
-                        
-            return true;
-        }
-        catch ( Exception e )
-        {
-        	// record exception
-        	lastException =  e;
-        	
-        	// fail test
-        	return false;
-        } 
-		
+
+		try {
+			// store input
+			lastHost = host;
+			lastException = null;
+			lastIpAddress = null;
+
+			// get actual IP address
+			InetAddress inetAddress = Address.getByName(host);
+			String ipAddress = inetAddress.getHostAddress();
+
+			// store input
+			lastIpAddress = ipAddress;
+
+			// assert
+			if (ipAddress == null)
+				return false;
+			if (ipAddress.length() == 0)
+				return false;
+
+			return true;
+		} catch (Exception e) {
+			// record exception
+			lastException = e;
+
+			// fail test
+			return false;
+		}
+
 	}
 
 	public void describeTo(Description description) {
 		description.appendText("host ");
-		description.appendValue( lastHost );
+		description.appendValue(lastHost);
 		description.appendText(" could resolve to IP address ");
-		description.appendValue( lastIpAddress );		
+		description.appendValue(lastIpAddress);
 	}
-	
+
 	@Override
 	protected void describeMismatchSafely(String item, Description mismatchDescription) {
-        // create description
-    	mismatchDescription.appendText("failed to resolve host name ");    	
-    	mismatchDescription.appendValue(item);
-    	mismatchDescription.appendText(" to IP address ");    	
-    	
-    	if (lastException != null) {
-    		mismatchDescription.appendText("due to exception ");    		
-    		mismatchDescription.appendValue(lastException.toString());
-    	}
-    	    	
+		// create description
+		mismatchDescription.appendText("failed to resolve host name ");
+		mismatchDescription.appendValue(item);
+		mismatchDescription.appendText(" to IP address ");
+
+		if (lastException != null) {
+			mismatchDescription.appendText("due to exception ");
+			mismatchDescription.appendValue(lastException.toString());
+		}
+
 	}
 
 	/**
@@ -114,10 +112,10 @@ public class IsHostResolvableToIpAddress extends TypeSafeMatcher<String> {
 	public String getLastIpAddress() {
 		return lastIpAddress;
 	}
-	
+
 	@Factory
-    public static Matcher<String> isHostResolvableToIpAddress() {
-        return new IsHostResolvableToIpAddress();
-    }
-    
+	public static Matcher<String> isHostResolvableToIpAddress() {
+		return new IsHostResolvableToIpAddress();
+	}
+
 }

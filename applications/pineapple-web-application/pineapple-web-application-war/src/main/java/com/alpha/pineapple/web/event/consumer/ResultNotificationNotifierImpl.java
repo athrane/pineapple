@@ -59,33 +59,33 @@ import reactor.function.Consumer;
  * {@linkplain ExecutionResultNotification}.
  */
 public class ResultNotificationNotifierImpl
-	implements EventListener<Event>, Consumer<reactor.event.Event<ExecutionResultNotification>> {
+		implements EventListener<Event>, Consumer<reactor.event.Event<ExecutionResultNotification>> {
 
-    /**
-     * Reactor-to-ZK event dispatcher.
-     */
-    @Resource
-    EventDispatcher eventDispatcher;
+	/**
+	 * Reactor-to-ZK event dispatcher.
+	 */
+	@Resource
+	EventDispatcher eventDispatcher;
 
-    /**
-     * Notification.
-     */
-    ExecutionResultNotification notification;
+	/**
+	 * Notification.
+	 */
+	ExecutionResultNotification notification;
 
-    @Override
-    public void onEvent(Event evt) throws Exception {
-	// post global command with session scope which triggers update of the
-	// execution panel
-	Map<String, Object> args = new HashMap<String, Object>();
-	args.put(NOTIFICATION_ARG, evt.getData());
-	BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, EXECUTION_NOTIFICATION_GLOBALCOMMAND, args);
-    }
+	@Override
+	public void onEvent(Event evt) throws Exception {
+		// post global command with session scope which triggers update of the
+		// execution panel
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put(NOTIFICATION_ARG, evt.getData());
+		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, EXECUTION_NOTIFICATION_GLOBALCOMMAND, args);
+	}
 
-    @Override
-    public void accept(reactor.event.Event<ExecutionResultNotification> t) {
-	notification = t.getData();
-	Event zkEvent = new ResultNotificationEvent(notification);
-	eventDispatcher.dispatchZkEvent(zkEvent, this);
-    }
+	@Override
+	public void accept(reactor.event.Event<ExecutionResultNotification> t) {
+		notification = t.getData();
+		Event zkEvent = new ResultNotificationEvent(notification);
+		eventDispatcher.dispatchZkEvent(zkEvent, this);
+	}
 
 }

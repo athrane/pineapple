@@ -28,31 +28,31 @@ package com.alpha.pineapple.resource;
  */
 public class EnvironmentAlreadyExistsException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * EnvironmentAlreadyExistException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public EnvironmentAlreadyExistsException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * EnvironmentAlreadyExistException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public EnvironmentAlreadyExistsException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * EnvironmentAlreadyExistException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public EnvironmentAlreadyExistsException(String message) {
-	super(message);
-    }
+	/**
+	 * EnvironmentAlreadyExistException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public EnvironmentAlreadyExistsException(String message) {
+		super(message);
+	}
 
 }

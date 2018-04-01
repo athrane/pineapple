@@ -27,31 +27,31 @@ package com.alpha.pineapple.module;
  */
 public class ModuleRepositoryInitalizationFailedException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * ModuleRepositoryInitalizationFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public ModuleRepositoryInitalizationFailedException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * ModuleRepositoryInitalizationFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public ModuleRepositoryInitalizationFailedException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * ModuleRepositoryInitalizationFailedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public ModuleRepositoryInitalizationFailedException(String message) {
-	super(message);
-    }
+	/**
+	 * ModuleRepositoryInitalizationFailedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public ModuleRepositoryInitalizationFailedException(String message) {
+		super(message);
+	}
 
 }

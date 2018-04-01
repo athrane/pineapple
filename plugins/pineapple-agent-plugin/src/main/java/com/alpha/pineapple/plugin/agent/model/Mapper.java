@@ -20,14 +20,12 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.agent.model;
 
 import org.apache.commons.chain.Context;
 
 import com.alpha.pineapple.model.execution.scheduled.ScheduledOperation;
 import com.alpha.pineapple.plugin.agent.session.AgentSession;
-
 
 /**
  * Maps values from the schema generated objects into the command context.
@@ -36,61 +34,78 @@ public interface Mapper {
 
 	/**
 	 * Map command to command context.
-	 *  
-	 * @param command model command.
-	 * @param context command context.
-	 * @param session operation session.
-	 */	
+	 * 
+	 * @param command
+	 *            model command.
+	 * @param context
+	 *            command context.
+	 * @param session
+	 *            operation session.
+	 */
 	public void mapModel(AgentCommand command, Context context, AgentSession session);
 
 	/**
 	 * Map command to command context.
 	 * 
-	 * @param command model command.
-	 * @param context command context.
-	 * @param session operation session.
-	 */	
-	void mapDistributeModule(DistributeModule command, Context context, AgentSession session);		
-	
-	/**
-	 * Map command to command context.
-	 * 
-	 * @param command model command.
-	 * @param context command context.
-	 * @param session operation session.
+	 * @param command
+	 *            model command.
+	 * @param context
+	 *            command context.
+	 * @param session
+	 *            operation session.
 	 */
-	void mapDeleteModule(DeleteModule command, Context context, AgentSession session);		
+	void mapDistributeModule(DistributeModule command, Context context, AgentSession session);
 
 	/**
 	 * Map command to command context.
 	 * 
-	 * @param context command context.
-	 * @param session operation session.
+	 * @param command
+	 *            model command.
+	 * @param context
+	 *            command context.
+	 * @param session
+	 *            operation session.
+	 */
+	void mapDeleteModule(DeleteModule command, Context context, AgentSession session);
+
+	/**
+	 * Map command to command context.
+	 * 
+	 * @param context
+	 *            command context.
+	 * @param session
+	 *            operation session.
 	 */
 	void mapRefreshEnvironmentConfiguration(Context context, AgentSession session);
 
 	/**
 	 * Map command to command context.
 	 * 
-	 * @param context command context.
-	 * @param session operation session.
-	 */	
-	public void mapScheduleOperation(ScheduleOperation command, Context context, AgentSession session);			
+	 * @param context
+	 *            command context.
+	 * @param session
+	 *            operation session.
+	 */
+	public void mapScheduleOperation(ScheduleOperation command, Context context, AgentSession session);
 
 	/**
 	 * Map command to command context.
 	 * 
-	 * @param context command context.
-	 * @param session operation session.
-	 */	
-	public void mapDeleteScheduledOperation(DeleteScheduledOperation command, Context context, AgentSession session);			
+	 * @param context
+	 *            command context.
+	 * @param session
+	 *            operation session.
+	 */
+	public void mapDeleteScheduledOperation(DeleteScheduledOperation command, Context context, AgentSession session);
 
 	/**
 	 * Map command to command context.
 	 * 
-	 * @param context command context.
-	 * @param session operation session.
-	 */	
-	public void mapDeleteAllScheduledOperations(Context context, AgentSession session);			
-	
+	 * @param context
+	 *            command context.
+	 * @param session
+	 *            operation session.
+	 */
+	public void mapDeleteAllScheduledOperations(Context context, AgentSession session);
+
 }

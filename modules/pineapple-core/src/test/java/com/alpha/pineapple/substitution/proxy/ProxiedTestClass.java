@@ -27,38 +27,38 @@ package com.alpha.pineapple.substitution.proxy;
  */
 public class ProxiedTestClass {
 
-    public ProxiedTestClass() {
-    };
+	public ProxiedTestClass() {
+	};
 
-    /**
-     * Return value.
-     * 
-     * @param value
-     * 
-     * @return value.
-     */
-    public <T> T getObject(T value) {
-	return value;
-    }
+	/**
+	 * Return value.
+	 * 
+	 * @param value
+	 * 
+	 * @return value.
+	 */
+	public <T> T getObject(T value) {
+		return value;
+	}
 
-    /**
-     * Return string value.
-     * 
-     * @param value
-     * 
-     * @return value.
-     */
-    public String getString(String value) {
-	return value;
-    }
+	/**
+	 * Return string value.
+	 * 
+	 * @param value
+	 * 
+	 * @return value.
+	 */
+	public String getString(String value) {
+		return value;
+	}
 
-    /**
-     * Return child object.
-     * 
-     * @return child object.
-     */
-    public ProxiedTestClass getChildObject() {
-	return new ProxiedTestClass();
-    }
+	/**
+	 * Return child object.
+	 * 
+	 * @return child object.
+	 */
+	public ProxiedTestClass getChildObject() {
+		return new ProxiedTestClass();
+	}
 
 }

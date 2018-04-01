@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test;
 
 import static org.junit.Assert.assertEquals;
@@ -48,20 +47,20 @@ import com.alpha.springutils.DirectoryTestExecutionListener;
 /**
  * Unit test of the {@link AssertionHelperImpl} class.
  */
-@RunWith( SpringJUnit4ClassRunner.class )
-@TestExecutionListeners( DirectoryTestExecutionListener.class )
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestExecutionListeners(DirectoryTestExecutionListener.class)
 public class AssertionHelperImplTest {
 
 	/**
 	 * Object under test.
 	 */
 	AssertionHelper helper;
-	
+
 	/**
-     * Current test directory.
-     */
+	 * Current test directory.
+	 */
 	File testDirectory;
-		
+
 	/**
 	 * Mock execution result.
 	 */
@@ -74,14 +73,14 @@ public class AssertionHelperImplTest {
 
 	/**
 	 * Mock asserter.
-	 */	
+	 */
 	Asserter asserter;
-	
+
 	/**
 	 * Test directory.
 	 */
 	File directory;
-	
+
 	/**
 	 * Random directory name.
 	 */
@@ -89,54 +88,52 @@ public class AssertionHelperImplTest {
 
 	/**
 	 * Random file name.
-	 */	
+	 */
 	String randomFileName;
-	
+
 	@Before
 	public void setUp() throws Exception {
-		
+
 		// create helper
 		helper = new AssertionHelperImpl();
-			
-        // get the test directory
-        testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	    // create mock result
-	    executionResult = EasyMock.createMock( ExecutionResult.class );				
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	    // create mock result
-	    executionResult = EasyMock.createMock( ExecutionResult.class );				
+		// create mock result
+		executionResult = EasyMock.createMock(ExecutionResult.class);
 
-        // create mock provider
-        messageProvider = EasyMock.createMock( MessageProvider.class );
+		// create mock result
+		executionResult = EasyMock.createMock(ExecutionResult.class);
 
-        // create mock asserter
-        asserter = EasyMock.createMock( Asserter.class );
-        
-        // inject asserter
-        ReflectionTestUtils.setField( helper, "asserter", asserter  );
-        
-        // complete mock source initialization        
-        IAnswer<String> answer = new MessageProviderAnswerImpl(); 
-        
-        EasyMock.expect( messageProvider.getMessage(
-        		(String) EasyMock.isA( String.class ),
-        		(Object[]) EasyMock.isA( Object[].class ) ));
-        EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-        
-        EasyMock.replay(messageProvider);                
-	    
-	    
+		// create mock provider
+		messageProvider = EasyMock.createMock(MessageProvider.class);
+
+		// create mock asserter
+		asserter = EasyMock.createMock(Asserter.class);
+
+		// inject asserter
+		ReflectionTestUtils.setField(helper, "asserter", asserter);
+
+		// complete mock source initialization
+		IAnswer<String> answer = new MessageProviderAnswerImpl();
+
+		EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class),
+				(Object[]) EasyMock.isA(Object[].class)));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+
+		EasyMock.replay(messageProvider);
+
 		// initialize random file name
 		randomFileName = RandomStringUtils.randomAlphabetic(10);
-		
+
 		// initialize directory
-		randomDirName = RandomStringUtils.randomAlphabetic(10);				
-		directory = new File( testDirectory, randomDirName);        
+		randomDirName = RandomStringUtils.randomAlphabetic(10);
+		directory = new File(testDirectory, randomDirName);
 	}
 
 	@After
-	public void tearDown() throws Exception {		
+	public void tearDown() throws Exception {
 		helper = null;
 		executionResult = null;
 		testDirectory = null;
@@ -145,97 +142,97 @@ public class AssertionHelperImplTest {
 	/**
 	 * Test that existing directory can be asserted.
 	 * 
-	 * @throws Exception if test fails.
+	 * @throws Exception
+	 *             if test fails.
 	 */
 	@Test
 	public void testExistingDirectoryCanBeAsserted() throws Exception {
-		
+
 		// complete mock initialization
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
-		EasyMock.replay(childResult );		
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
+		EasyMock.replay(childResult);
 		EasyMock.replay(executionResult);
-		
+
 		asserter.setExecutionResult(executionResult);
-		EasyMock.expect(asserter.assertObject((File) EasyMock.isA( File.class ),
-				(Matcher) EasyMock.isA( Matcher.class ),
-				(String) EasyMock.isA( String.class ))).andReturn(childResult);
+		EasyMock.expect(asserter.assertObject((File) EasyMock.isA(File.class), (Matcher) EasyMock.isA(Matcher.class),
+				(String) EasyMock.isA(String.class))).andReturn(childResult);
 		EasyMock.replay(asserter);
-		
+
 		// initialize directory
 		FileUtils.forceMkdir(directory);
-				
+
 		// test
 		ExecutionResult result = helper.assertDirectoryExist(directory, messageProvider, "key", executionResult);
 		assertEquals(result, childResult);
-		
+
 		// verify mocks
 		EasyMock.verify(executionResult);
-		EasyMock.verify(asserter);		
+		EasyMock.verify(asserter);
 		EasyMock.verify(childResult);
 	}
 
 	/**
 	 * Test that existing file can be asserted.
 	 * 
-	 * @throws Exception if test fails.
+	 * @throws Exception
+	 *             if test fails.
 	 */
 	@Test
 	public void testExistingfileCanBeAsserted() throws Exception {
-		
+
 		// complete mock initialization
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
-		EasyMock.replay(childResult );		
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
+		EasyMock.replay(childResult);
 		EasyMock.replay(executionResult);
-		
+
 		asserter.setExecutionResult(executionResult);
-		EasyMock.expect(asserter.assertObject((File) EasyMock.isA( File.class ),
-				(Matcher) EasyMock.isA( Matcher.class ),
-				(String) EasyMock.isA( String.class ))).andReturn(childResult);
+		EasyMock.expect(asserter.assertObject((File) EasyMock.isA(File.class), (Matcher) EasyMock.isA(Matcher.class),
+				(String) EasyMock.isA(String.class))).andReturn(childResult);
 		EasyMock.replay(asserter);
-		
+
 		// initialize file
 		File file = new File(this.testDirectory, randomFileName);
-				
+
 		// test
 		ExecutionResult result = helper.assertFileExist(file, messageProvider, "key", executionResult);
 		assertEquals(result, childResult);
-		
+
 		// verify mocks
 		EasyMock.verify(executionResult);
-		EasyMock.verify(asserter);		
+		EasyMock.verify(asserter);
 		EasyMock.verify(childResult);
 	}
 
 	/**
 	 * Test that non existing file can be asserted.
 	 * 
-	 * @throws Exception if test fails.
+	 * @throws Exception
+	 *             if test fails.
 	 */
 	@Test
 	public void testnonExistingfileCanBeAsserted() throws Exception {
-		
+
 		// complete mock initialization
-		ExecutionResult childResult = EasyMock.createMock( ExecutionResult.class );
-		EasyMock.replay(childResult );		
+		ExecutionResult childResult = EasyMock.createMock(ExecutionResult.class);
+		EasyMock.replay(childResult);
 		EasyMock.replay(executionResult);
-		
+
 		asserter.setExecutionResult(executionResult);
-		EasyMock.expect(asserter.assertObject((File) EasyMock.isA( File.class ),
-				(Matcher) EasyMock.isA( Matcher.class ),
-				(String) EasyMock.isA( String.class ))).andReturn(childResult);
+		EasyMock.expect(asserter.assertObject((File) EasyMock.isA(File.class), (Matcher) EasyMock.isA(Matcher.class),
+				(String) EasyMock.isA(String.class))).andReturn(childResult);
 		EasyMock.replay(asserter);
-		
+
 		// initialize file
 		File file = new File(this.testDirectory, randomFileName);
-				
+
 		// test
 		ExecutionResult result = helper.assertFileDoesntExist(file, messageProvider, "key", executionResult);
 		assertEquals(result, childResult);
-		
+
 		// verify mocks
 		EasyMock.verify(executionResult);
-		EasyMock.verify(asserter);		
+		EasyMock.verify(asserter);
 		EasyMock.verify(childResult);
 	}
-	
+
 }

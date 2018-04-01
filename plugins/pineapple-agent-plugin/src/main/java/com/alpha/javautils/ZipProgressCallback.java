@@ -25,16 +25,16 @@ package com.alpha.javautils;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 
 /**
- * Callback interface used by the {@linkplain ZipUtils} class
- * to signal progress during operations.
+ * Callback interface used by the {@linkplain ZipUtils} class to signal progress
+ * during operations.
  */
 public interface ZipProgressCallback {
-	
+
 	/**
-	 * Invoked when a new ZIP archive entry has been processed, e.g.
-	 * either added or unzipped.
-	 *  
-	 * @return Archive entry processed. 
+	 * Invoked when a new ZIP archive entry has been processed, e.g. either added or
+	 * unzipped.
+	 * 
+	 * @return Archive entry processed.
 	 */
 	public void entryProcessed(ZipArchiveEntry entry);
 }

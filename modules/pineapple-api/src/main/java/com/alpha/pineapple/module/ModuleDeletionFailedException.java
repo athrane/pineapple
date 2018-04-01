@@ -28,31 +28,31 @@ package com.alpha.pineapple.module;
  */
 public class ModuleDeletionFailedException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * ModuleDeletionFailedException constructor.
-     * 
-     * @param message
-     *            error message.
-     * @param cause
-     *            cause of the exception.
-     */
-    public ModuleDeletionFailedException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * ModuleDeletionFailedException constructor.
+	 * 
+	 * @param message
+	 *            error message.
+	 * @param cause
+	 *            cause of the exception.
+	 */
+	public ModuleDeletionFailedException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * ModuleDeletionFailedException constructor.
-     * 
-     * @param message
-     *            error message.
-     */
-    public ModuleDeletionFailedException(String message) {
-	super(message);
-    }
+	/**
+	 * ModuleDeletionFailedException constructor.
+	 * 
+	 * @param message
+	 *            error message.
+	 */
+	public ModuleDeletionFailedException(String message) {
+		super(message);
+	}
 
 }

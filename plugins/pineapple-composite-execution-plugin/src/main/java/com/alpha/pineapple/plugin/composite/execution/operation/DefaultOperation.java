@@ -53,266 +53,266 @@ import com.alpha.pineapple.session.Session;
 @PluginOperation(OperationNames.WILDCARD_OPERATION)
 public class DefaultOperation implements Operation {
 
-    /**
-     * Legal content types supported by plugin operations.
-     */
-    public static final Class<?>[] LEGAL_CONTENT_TYPES = { CompositeExecution.class };
+	/**
+	 * Legal content types supported by plugin operations.
+	 */
+	public static final Class<?>[] LEGAL_CONTENT_TYPES = { CompositeExecution.class };
 
-    /**
-     * Null environments.
-     */
-    static final String[] NULL_ENVIRONMENTS = {};
+	/**
+	 * Null environments.
+	 */
+	static final String[] NULL_ENVIRONMENTS = {};
 
-    /**
-     * Null directory.
-     */
-    static final File NULL_DIRECTORY = null;
+	/**
+	 * Null directory.
+	 */
+	static final File NULL_DIRECTORY = null;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Operation utilities.
-     */
-    @Resource
-    OperationUtils operationUtils;
+	/**
+	 * Operation utilities.
+	 */
+	@Resource
+	OperationUtils operationUtils;
 
-    /**
-     * Core administration provider.
-     */
-    @Resource
-    AdministrationProvider coreAdministrationProvider;
+	/**
+	 * Core administration provider.
+	 */
+	@Resource
+	AdministrationProvider coreAdministrationProvider;
 
-    /**
-     * Execution info provider.
-     */
-    @Resource
-    ExecutionInfoProvider coreExecutionInfoProvider;
+	/**
+	 * Execution info provider.
+	 */
+	@Resource
+	ExecutionInfoProvider coreExecutionInfoProvider;
 
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-	// validate parameters
-	Validate.notNull(content, "content is undefined.");
-	Validate.notNull(session, "session is undefined.");
-	Validate.notNull(result, "result is undefined.");
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+		// validate parameters
+		Validate.notNull(content, "content is undefined.");
+		Validate.notNull(session, "session is undefined.");
+		Validate.notNull(result, "result is undefined.");
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { content.getClass().getName(), content };
-	    String message = messageProvider.getMessage("do.start", args);
-	    logger.debug(message);
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { content.getClass().getName(), content };
+			String message = messageProvider.getMessage("do.start", args);
+			logger.debug(message);
+		}
+
+		// validate parameters
+		operationUtils.validateContentType(content, LEGAL_CONTENT_TYPES);
+
+		try {
+			// type cast model
+			CompositeExecution model = (CompositeExecution) content;
+
+			// process model
+			procesModel(model, result);
+
+			// compute result
+			result.completeAsComputed(messageProvider, "do.completed", null, "do.failed", null);
+
+		} catch (Exception e) {
+			Object[] args = { StackTraceHelper.getStrackTrace(e) };
+			String message = messageProvider.getMessage("do.error", args);
+			throw new PluginExecutionFailedException(message, e);
+		}
 	}
 
-	// validate parameters
-	operationUtils.validateContentType(content, LEGAL_CONTENT_TYPES);
+	/**
+	 * Process model.
+	 * 
+	 * @param model
+	 *            composite execution model.
+	 * @param result
+	 *            execution result.
+	 */
+	void procesModel(CompositeExecution model, ExecutionResult result) {
 
-	try {
-	    // type cast model
-	    CompositeExecution model = (CompositeExecution) content;
+		// get composites
+		List<Composite> composites = model.getModule();
+		if (composites == null)
+			return;
 
-	    // process model
-	    procesModel(model, result);
+		// iterate over composites
+		for (Composite composite : composites) {
+			String module = composite.getName();
 
-	    // compute result
-	    result.completeAsComputed(messageProvider, "do.completed", null, "do.failed", null);
+			// enforce continuation policy
+			if (!result.getContinuationPolicy().continueExecution()) {
+				Object[] args = { module };
+				String message = messageProvider.getMessage("do.contination_policy_enforcement_info", args);
+				result.addMessage(ExecutionResult.MSG_MESSAGE, message);
+				return;
+			}
 
-	} catch (Exception e) {
-	    Object[] args = { StackTraceHelper.getStrackTrace(e) };
-	    String message = messageProvider.getMessage("do.error", args);
-	    throw new PluginExecutionFailedException(message, e);
+			executeComposite(module, result);
+		}
 	}
-    }
 
-    /**
-     * Process model.
-     * 
-     * @param model
-     *            composite execution model.
-     * @param result
-     *            execution result.
-     */
-    void procesModel(CompositeExecution model, ExecutionResult result) {
+	/**
+	 * Execute operation for composite module.
+	 * 
+	 * @param module
+	 *            module.
+	 * @param operationResult
+	 *            parent result.
+	 * 
+	 * @return execution info for operation.
+	 */
+	void executeComposite(String module, ExecutionResult operationResult) {
 
-	// get composites
-	List<Composite> composites = model.getModule();
-	if (composites == null)
-	    return;
+		// declare info objects
+		ExecutionInfo executionInfo = null;
+		ModuleInfo moduleInfo = null;
 
-	// iterate over composites
-	for (Composite composite : composites) {
-	    String module = composite.getName();
+		// get meta data
+		String operation = getOeration(operationResult);
+		String environment = getEnvironment(operationResult);
 
-	    // enforce continuation policy
-	    if (!result.getContinuationPolicy().continueExecution()) {
-		Object[] args = { module };
-		String message = messageProvider.getMessage("do.contination_policy_enforcement_info", args);
-		result.addMessage(ExecutionResult.MSG_MESSAGE, message);
-		return;
-	    }
+		try {
 
-	    executeComposite(module, result);
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				Object[] args = { operation };
+				String message = messageProvider.getMessage("do.invoke_operation_info", args);
+				logger.debug(message);
+			}
+
+			// validate arguments
+			validateExcutionArguments(operation, environment, module);
+
+			// get module info
+			ModuleRepository moduleRepository = coreAdministrationProvider.getModuleRepository();
+			moduleInfo = moduleRepository.resolveModule(module, environment);
+
+			// create execution info
+			executionInfo = startCompositeExecution(moduleInfo, environment, operation, operationResult);
+
+			// execute operation
+			OperationTask operationTask = coreAdministrationProvider.getOperationTask();
+			operationTask.execute(executionInfo);
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				String message = messageProvider.getMessage("do.invoke_operation_exit");
+				logger.debug(message);
+			}
+
+		} catch (Exception e) {
+
+			// if module info is undefined then create null info
+			if (moduleInfo == null) {
+				String description = messageProvider.getMessage("do.composite_nofound_info");
+				moduleInfo = ModuleInfoImpl.getInstance(description, NULL_ENVIRONMENTS, false, NULL_DIRECTORY);
+			}
+
+			// add result for failed composite
+			ExecutionResult compositeResult = AddResultForCompositeExecution(moduleInfo, operationResult);
+
+			// terminate execution with error
+			Object[] args = { e.getMessage() };
+			compositeResult.completeAsError(messageProvider, "do.invoke_operation_error", args, e);
+		}
 	}
-    }
 
-    /**
-     * Execute operation for composite module.
-     * 
-     * @param module
-     *            module.
-     * @param operationResult
-     *            parent result.
-     * 
-     * @return execution info for operation.
-     */
-    void executeComposite(String module, ExecutionResult operationResult) {
-
-	// declare info objects
-	ExecutionInfo executionInfo = null;
-	ModuleInfo moduleInfo = null;
-
-	// get meta data
-	String operation = getOeration(operationResult);
-	String environment = getEnvironment(operationResult);
-
-	try {
-
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		Object[] args = { operation };
-		String message = messageProvider.getMessage("do.invoke_operation_info", args);
-		logger.debug(message);
-	    }
-
-	    // validate arguments
-	    validateExcutionArguments(operation, environment, module);
-
-	    // get module info
-	    ModuleRepository moduleRepository = coreAdministrationProvider.getModuleRepository();
-	    moduleInfo = moduleRepository.resolveModule(module, environment);
-
-	    // create execution info
-	    executionInfo = startCompositeExecution(moduleInfo, environment, operation, operationResult);
-
-	    // execute operation
-	    OperationTask operationTask = coreAdministrationProvider.getOperationTask();
-	    operationTask.execute(executionInfo);
-
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		String message = messageProvider.getMessage("do.invoke_operation_exit");
-		logger.debug(message);
-	    }
-
-	} catch (Exception e) {
-
-	    // if module info is undefined then create null info
-	    if (moduleInfo == null) {
-		String description = messageProvider.getMessage("do.composite_nofound_info");
-		moduleInfo = ModuleInfoImpl.getInstance(description, NULL_ENVIRONMENTS, false, NULL_DIRECTORY);
-	    }
-
-	    // add result for failed composite
-	    ExecutionResult compositeResult = AddResultForCompositeExecution(moduleInfo, operationResult);
-
-	    // terminate execution with error
-	    Object[] args = { e.getMessage() };
-	    compositeResult.completeAsError(messageProvider, "do.invoke_operation_error", args, e);
+	/**
+	 * Validate operation arguments. Throws an {@link IllegalArgumentException} if
+	 * an argument doesn't pass validation.
+	 * 
+	 * @param operation
+	 *            Operation argument.
+	 * @param environment
+	 *            Environment argument.
+	 * @param Module
+	 *            Module argument.
+	 */
+	void validateExcutionArguments(String operation, String environment, String module) {
+		Validate.notNull(operation, "operation is undefined.");
+		Validate.notEmpty(operation, "operation is empty string.");
+		Validate.notNull(environment, "environment is undefined.");
+		Validate.notEmpty(environment, "environment is empty string.");
+		Validate.notNull(module, "module is undefined.");
+		Validate.notEmpty(module, "module is empty string.");
 	}
-    }
 
-    /**
-     * Validate operation arguments. Throws an {@link IllegalArgumentException}
-     * if an argument doesn't pass validation.
-     * 
-     * @param operation
-     *            Operation argument.
-     * @param environment
-     *            Environment argument.
-     * @param Module
-     *            Module argument.
-     */
-    void validateExcutionArguments(String operation, String environment, String module) {
-	Validate.notNull(operation, "operation is undefined.");
-	Validate.notEmpty(operation, "operation is empty string.");
-	Validate.notNull(environment, "environment is undefined.");
-	Validate.notEmpty(environment, "environment is empty string.");
-	Validate.notNull(module, "module is undefined.");
-	Validate.notEmpty(module, "module is empty string.");
-    }
+	/**
+	 * Get environment for operation.
+	 * 
+	 * @param result
+	 *            operation execution result.
+	 * 
+	 * @return environment for operation
+	 */
+	String getEnvironment(ExecutionResult result) {
+		ExecutionInfo info = coreExecutionInfoProvider.get(result);
+		return info.getEnvironment();
+	}
 
-    /**
-     * Get environment for operation.
-     * 
-     * @param result
-     *            operation execution result.
-     * 
-     * @return environment for operation
-     */
-    String getEnvironment(ExecutionResult result) {
-	ExecutionInfo info = coreExecutionInfoProvider.get(result);
-	return info.getEnvironment();
-    }
+	/**
+	 * Get operation.
+	 * 
+	 * @param result
+	 *            operation execution result.
+	 * 
+	 * @return operation.
+	 */
+	String getOeration(ExecutionResult result) {
+		ExecutionInfo info = coreExecutionInfoProvider.get(result);
+		return info.getOperation();
+	}
 
-    /**
-     * Get operation.
-     * 
-     * @param result
-     *            operation execution result.
-     * 
-     * @return operation.
-     */
-    String getOeration(ExecutionResult result) {
-	ExecutionInfo info = coreExecutionInfoProvider.get(result);
-	return info.getOperation();
-    }
+	/**
+	 * Start composite execution.
+	 * 
+	 * @param moduleInfo
+	 *            module info for composite.
+	 * @param environment
+	 *            environment.
+	 * @param operation
+	 *            operation.
+	 * @param result
+	 *            operation result.
+	 * 
+	 * @return execution info for composite execution.
+	 */
+	ExecutionInfo startCompositeExecution(ModuleInfo moduleInfo, String environment, String operation,
+			ExecutionResult result) {
+		ExecutionResult childResult = AddResultForCompositeExecution(moduleInfo, result);
 
-    /**
-     * Start composite execution.
-     * 
-     * @param moduleInfo
-     *            module info for composite.
-     * @param environment
-     *            environment.
-     * @param operation
-     *            operation.
-     * @param result
-     *            operation result.
-     * 
-     * @return execution info for composite execution.
-     */
-    ExecutionInfo startCompositeExecution(ModuleInfo moduleInfo, String environment, String operation,
-	    ExecutionResult result) {
-	ExecutionResult childResult = AddResultForCompositeExecution(moduleInfo, result);
+		// create execution info
+		ExecutionInfo executionInfo = new ExecutionInfoImpl(moduleInfo, environment, operation, childResult);
+		return executionInfo;
+	}
 
-	// create execution info
-	ExecutionInfo executionInfo = new ExecutionInfoImpl(moduleInfo, environment, operation, childResult);
-	return executionInfo;
-    }
+	/**
+	 * Add execution result for composite execution.
+	 * 
+	 * @param moduleInfo
+	 *            module info for composite.
+	 * 
+	 * @return execution result.
+	 */
+	ExecutionResult AddResultForCompositeExecution(ModuleInfo moduleInfo, ExecutionResult result) {
 
-    /**
-     * Add execution result for composite execution.
-     * 
-     * @param moduleInfo
-     *            module info for composite.
-     * 
-     * @return execution result.
-     */
-    ExecutionResult AddResultForCompositeExecution(ModuleInfo moduleInfo, ExecutionResult result) {
+		// create execution result description
+		Object[] args = { moduleInfo.getId() };
+		String description = messageProvider.getMessage("do.start_composite_operation_info", args);
 
-	// create execution result description
-	Object[] args = { moduleInfo.getId() };
-	String description = messageProvider.getMessage("do.start_composite_operation_info", args);
-
-	// add execution result
-	ExecutionResult childResult = result.addChild(description);
-	return childResult;
-    }
+		// add execution result
+		ExecutionResult childResult = result.addChild(description);
+		return childResult;
+	}
 
 }

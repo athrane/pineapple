@@ -88,101 +88,100 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class PauseContainerCommand implements Command {
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Container info for the
-     * container to access.
-     */
-    public static final String CONTAINER_INFO_KEY = "container-info";
+	/**
+	 * Key used to identify property in context: Container info for the container to
+	 * access.
+	 */
+	public static final String CONTAINER_INFO_KEY = "container-info";
 
-    /**
-     * Container info.
-     */
-    @Initialize(CONTAINER_INFO_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ContainerInfo containerInfo;
+	/**
+	 * Container info.
+	 */
+	@Initialize(CONTAINER_INFO_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ContainerInfo containerInfo;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    public boolean execute(Context context) throws Exception {
+	public boolean execute(Context context) throws Exception {
 
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// fail if container doesn't exists in repository
-	if (!dockerClient.containerExists(session, containerInfo)) {
-	    Object[] args = { containerInfo };
-	    executionResult.completeAsFailure(messageProvider, "pcc.pause_container_notfound_failure", args);
-	    return Command.CONTINUE_PROCESSING;
+		// fail if container doesn't exists in repository
+		if (!dockerClient.containerExists(session, containerInfo)) {
+			Object[] args = { containerInfo };
+			executionResult.completeAsFailure(messageProvider, "pcc.pause_container_notfound_failure", args);
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// if container is paused then exit
+		if (dockerClient.isContainerPaused(session, containerInfo)) {
+			executionResult.completeAsSuccessful(messageProvider, "pcc.pause_container_already_paused");
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// if container is stopped then start it
+		if (!dockerClient.isContainerRunning(session, containerInfo)) {
+			String message = messageProvider.getMessage("pcc.pause_container_start");
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+			dockerClient.startContainer(session, containerInfo, executionResult);
+		}
+
+		// get container name
+		Map<String, String> uriVariables = new HashMap<String, String>();
+		uriVariables.put("id", containerInfo.getName());
+
+		// post to start container
+		String stringMessage = session.httpPostForObject(PAUSE_CONTAINER_URI, uriVariables, String.class);
+
+		// capture any returned string message
+		if (isStringMessageDefined(stringMessage)) {
+			Object[] args = { stringMessage };
+			String message = messageProvider.getMessage("pcc.message_info", args);
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+		}
+
+		// complete result
+		Object[] args = { containerInfo.getName() };
+		executionResult.completeAsSuccessful(messageProvider, "pcc.pause_container_completed", args);
+
+		return Command.CONTINUE_PROCESSING;
 	}
-
-	// if container is paused then exit
-	if (dockerClient.isContainerPaused(session, containerInfo)) {
-	    executionResult.completeAsSuccessful(messageProvider, "pcc.pause_container_already_paused");
-	    return Command.CONTINUE_PROCESSING;
-	}
-
-	// if container is stopped then start it
-	if (!dockerClient.isContainerRunning(session, containerInfo)) {
-	    String message = messageProvider.getMessage("pcc.pause_container_start");
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-	    dockerClient.startContainer(session, containerInfo, executionResult);
-	}
-
-	// get container name
-	Map<String, String> uriVariables = new HashMap<String, String>();
-	uriVariables.put("id", containerInfo.getName());
-
-	// post to start container
-	String stringMessage = session.httpPostForObject(PAUSE_CONTAINER_URI, uriVariables, String.class);
-
-	// capture any returned string message
-	if (isStringMessageDefined(stringMessage)) {
-	    Object[] args = { stringMessage };
-	    String message = messageProvider.getMessage("pcc.message_info", args);
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-	}
-
-	// complete result
-	Object[] args = { containerInfo.getName() };
-	executionResult.completeAsSuccessful(messageProvider, "pcc.pause_container_completed", args);
-
-	return Command.CONTINUE_PROCESSING;
-    }
 
 }

@@ -45,85 +45,85 @@ import com.alpha.pineapple.module.ModuleInfoImpl;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class ExecutionInfoImplTest {
 
-    /**
-     * Object under test.
-     */
-    ExecutionInfo executionInfo;
+	/**
+	 * Object under test.
+	 */
+	ExecutionInfo executionInfo;
 
-    /**
-     * Execution result mock.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result mock.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Random boolean.
-     */
-    boolean randomBoolean;
+	/**
+	 * Random boolean.
+	 */
+	boolean randomBoolean;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	randomBoolean = RandomUtils.nextBoolean();
+		randomBoolean = RandomUtils.nextBoolean();
 
-	// create execution result mock
-	executionResult = EasyMock.createMock(ExecutionResult.class);
-	EasyMock.replay(executionResult);
-    }
+		// create execution result mock
+		executionResult = EasyMock.createMock(ExecutionResult.class);
+		EasyMock.replay(executionResult);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	executionInfo = null;
-	executionResult = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		executionInfo = null;
+		executionResult = null;
+	}
 
-    /**
-     * Can create execution info instance.
-     */
-    @Test
-    public void testExecutionInfoImpl() {
+	/**
+	 * Can create execution info instance.
+	 */
+	@Test
+	public void testExecutionInfoImpl() {
 
-	File directory = new File("module-directory");
-	String[] environments = {};
-	String id = "module-id";
-	String environment = "environment";
-	String operation = "operation";
+		File directory = new File("module-directory");
+		String[] environments = {};
+		String id = "module-id";
+		String environment = "environment";
+		String operation = "operation";
 
-	// create module info
-	ModuleInfo moduleInfo = ModuleInfoImpl.getInstance(id, environments, randomBoolean, directory);
+		// create module info
+		ModuleInfo moduleInfo = ModuleInfoImpl.getInstance(id, environments, randomBoolean, directory);
 
-	// create execution info
-	executionInfo = new ExecutionInfoImpl(moduleInfo, environment, operation, executionResult);
+		// create execution info
+		executionInfo = new ExecutionInfoImpl(moduleInfo, environment, operation, executionResult);
 
-	// test
-	assertNotNull(executionInfo);
+		// test
+		assertNotNull(executionInfo);
 
-	// verify mocks
-	EasyMock.verify(executionResult);
-    }
+		// verify mocks
+		EasyMock.verify(executionResult);
+	}
 
-    @Test
-    public void testGetProperties() {
+	@Test
+	public void testGetProperties() {
 
-	File moduleDirectory = new File("module-directory");
-	String[] environments = {};
-	String id = "module-id";
-	String environment = "environment";
-	String operation = "operation";
+		File moduleDirectory = new File("module-directory");
+		String[] environments = {};
+		String id = "module-id";
+		String environment = "environment";
+		String operation = "operation";
 
-	// create module info
-	ModuleInfo moduleInfo = ModuleInfoImpl.getInstance(id, environments, randomBoolean, moduleDirectory);
+		// create module info
+		ModuleInfo moduleInfo = ModuleInfoImpl.getInstance(id, environments, randomBoolean, moduleDirectory);
 
-	// create execution info
-	executionInfo = new ExecutionInfoImpl(moduleInfo, environment, operation, executionResult);
+		// create execution info
+		executionInfo = new ExecutionInfoImpl(moduleInfo, environment, operation, executionResult);
 
-	// test
-	assertEquals(moduleInfo, executionInfo.getModuleInfo());
-	assertEquals(environment, executionInfo.getEnvironment());
-	assertEquals(operation, executionInfo.getOperation());
-	assertEquals(executionResult, executionInfo.getResult());
+		// test
+		assertEquals(moduleInfo, executionInfo.getModuleInfo());
+		assertEquals(environment, executionInfo.getEnvironment());
+		assertEquals(operation, executionInfo.getOperation());
+		assertEquals(executionResult, executionInfo.getResult());
 
-	// verify mocks
-	EasyMock.verify(executionResult);
-    }
+		// verify mocks
+		EasyMock.verify(executionResult);
+	}
 
 }

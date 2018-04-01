@@ -30,19 +30,19 @@ import com.alpha.pineapple.plugin.docker.operation.DeployConfiguration;
  */
 public interface DockerConstants {
 
-    /**
-     * Legal content types supported by plugin operations.
-     */
-    public static final Class<?>[] LEGAL_CONTENT_TYPES = { Docker.class };
+	/**
+	 * Legal content types supported by plugin operations.
+	 */
+	public static final Class<?>[] LEGAL_CONTENT_TYPES = { Docker.class };
 
-    /**
-     * File name for TAR archive.
-     */
-    public static final String TAR_ARCHIVE = DeployConfiguration.class.getCanonicalName() + ".tar";
+	/**
+	 * File name for TAR archive.
+	 */
+	public static final String TAR_ARCHIVE = DeployConfiguration.class.getCanonicalName() + ".tar";
 
-    /**
-     * Package name for generated JAXB classes from Docker plugn schema.
-     */
-    public static final String PLUGIN_MODEL_PACKAGE = "com.alpha.pineapple.plugin.docker.model";
-    
+	/**
+	 * Package name for generated JAXB classes from Docker plugn schema.
+	 */
+	public static final String PLUGIN_MODEL_PACKAGE = "com.alpha.pineapple.plugin.docker.model";
+
 }

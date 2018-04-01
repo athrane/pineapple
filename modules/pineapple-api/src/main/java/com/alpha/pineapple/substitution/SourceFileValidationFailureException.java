@@ -28,31 +28,31 @@ package com.alpha.pineapple.substitution;
  */
 public class SourceFileValidationFailureException extends VariableSubstitutionException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * SourceFileValidationFailureException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public SourceFileValidationFailureException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * SourceFileValidationFailureException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public SourceFileValidationFailureException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * SourceFileValidationFailureException constructor.
-     * 
-     * @param message
-     *            error message.
-     */
-    public SourceFileValidationFailureException(String message) {
-	super(message);
-    }
+	/**
+	 * SourceFileValidationFailureException constructor.
+	 * 
+	 * @param message
+	 *            error message.
+	 */
+	public SourceFileValidationFailureException(String message) {
+		super(message);
+	}
 
 }

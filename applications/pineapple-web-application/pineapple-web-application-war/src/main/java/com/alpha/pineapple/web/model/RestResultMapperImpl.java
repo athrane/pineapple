@@ -52,338 +52,338 @@ import com.alpha.pineapple.resource.ResourcePropertyInfo;
  */
 public class RestResultMapperImpl implements RestResultMapper {
 
-    /**
-     * Message provider for I18N support.
-     */
-    @javax.annotation.Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@javax.annotation.Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Environment Configuration model object factory.
-     */
-    @javax.annotation.Resource
-    ObjectFactory configurationModelObjectFactory;
+	/**
+	 * Environment Configuration model object factory.
+	 */
+	@javax.annotation.Resource
+	ObjectFactory configurationModelObjectFactory;
 
-    /**
-     * Scheduled operation model object factory.
-     */
-    @javax.annotation.Resource
-    com.alpha.pineapple.model.execution.scheduled.ObjectFactory scheduledOperationModelObjectFactory;
+	/**
+	 * Scheduled operation model object factory.
+	 */
+	@javax.annotation.Resource
+	com.alpha.pineapple.model.execution.scheduled.ObjectFactory scheduledOperationModelObjectFactory;
 
-    /**
-     * Scheduled operation model object factory.
-     */
-    @javax.annotation.Resource
-    com.alpha.pineapple.model.report.ObjectFactory reportModelObjectFactory;
+	/**
+	 * Scheduled operation model object factory.
+	 */
+	@javax.annotation.Resource
+	com.alpha.pineapple.model.report.ObjectFactory reportModelObjectFactory;
 
-    /**
-     * Module info model object factory.
-     */
-    @javax.annotation.Resource
-    com.alpha.pineapple.model.module.info.ObjectFactory moduleModelObjectFactory;
+	/**
+	 * Module info model object factory.
+	 */
+	@javax.annotation.Resource
+	com.alpha.pineapple.model.module.info.ObjectFactory moduleModelObjectFactory;
 
-    @Override
-    public Configuration mapEnvironment(EnvironmentInfo environmentInfo) {
+	@Override
+	public Configuration mapEnvironment(EnvironmentInfo environmentInfo) {
 
-	// create configuration
-	Configuration configuration = configurationModelObjectFactory.createConfiguration();
+		// create configuration
+		Configuration configuration = configurationModelObjectFactory.createConfiguration();
 
-	// create environments
-	configuration.setEnvironments(configurationModelObjectFactory.createEnvironments());
-	List<Environment> environments = configuration.getEnvironments().getEnvironment();
+		// create environments
+		configuration.setEnvironments(configurationModelObjectFactory.createEnvironments());
+		List<Environment> environments = configuration.getEnvironments().getEnvironment();
 
-	// create environment
-	Environment modelEnvironment = configurationModelObjectFactory.createEnvironment();
-	modelEnvironment.setId(environmentInfo.getId());
-	modelEnvironment.setDescription(environmentInfo.getDescription());
-	// ignore resources and credentials
+		// create environment
+		Environment modelEnvironment = configurationModelObjectFactory.createEnvironment();
+		modelEnvironment.setId(environmentInfo.getId());
+		modelEnvironment.setDescription(environmentInfo.getDescription());
+		// ignore resources and credentials
 
-	// add environment to to configuration
-	environments.add(modelEnvironment);
-	return configuration;
-    }
-
-    @Override
-    public Configuration mapCredential(String environment, Credential credential) {
-
-	// create configuration
-	Configuration configuration = configurationModelObjectFactory.createConfiguration();
-
-	// create environments
-	configuration.setEnvironments(configurationModelObjectFactory.createEnvironments());
-	List<Environment> environments = configuration.getEnvironments().getEnvironment();
-
-	// create environment
-	Environment modelEnvironment = configurationModelObjectFactory.createEnvironment();
-	modelEnvironment.setId(environment);
-	modelEnvironment.setCredentials(configurationModelObjectFactory.createCredentials());
-	// ignore description and resources
-
-	// add environment to to configuration
-	environments.add(modelEnvironment);
-
-	// add credential
-	Credential modelCredential = internalMapToCredential(credential);
-	modelEnvironment.getCredentials().getCredential().add(modelCredential);
-
-	return configuration;
-    }
-
-    @Override
-    public Configuration mapResource(String environment, ResourceInfo resourceInfo) {
-
-	// create configuration
-	Configuration configuration = configurationModelObjectFactory.createConfiguration();
-
-	// create environments
-	configuration.setEnvironments(configurationModelObjectFactory.createEnvironments());
-	List<Environment> environments = configuration.getEnvironments().getEnvironment();
-
-	// create environment
-	Environment modelEnvironment = configurationModelObjectFactory.createEnvironment();
-	modelEnvironment.setId(environment);
-	modelEnvironment.setResources(configurationModelObjectFactory.createResources());
-	// ignore description and credentials
-
-	// add environment to to configuration
-	environments.add(modelEnvironment);
-
-	// add resource
-	Resource modelResource = internalMapToResource(resourceInfo);
-	modelEnvironment.getResources().getResource().add(modelResource);
-
-	return configuration;
-    }
-
-    @Override
-    public Configuration mapResourceConfiguration(EnvironmentInfo[] environmentInfos) {
-
-	// create configuration
-	Configuration configuration = configurationModelObjectFactory.createConfiguration();
-
-	// create environments
-	configuration.setEnvironments(configurationModelObjectFactory.createEnvironments());
-	List<Environment> environments = configuration.getEnvironments().getEnvironment();
-
-	// if container is null then exit
-	if (environmentInfos.length == 0)
-	    return configuration;
-
-	// iterate over environments
-	for (EnvironmentInfo environmentInfo : environmentInfos) {
-
-	    // map environment
-	    Environment environment = internalMapToEnvironmentForResource(environmentInfo);
-	    environments.add(environment);
+		// add environment to to configuration
+		environments.add(modelEnvironment);
+		return configuration;
 	}
 
-	return configuration;
-    }
+	@Override
+	public Configuration mapCredential(String environment, Credential credential) {
 
-    @Override
-    public Configuration mapCredentialConfiguration(com.alpha.pineapple.credential.EnvironmentInfo[] environmentInfos) {
+		// create configuration
+		Configuration configuration = configurationModelObjectFactory.createConfiguration();
 
-	// create configuration
-	Configuration configuration = configurationModelObjectFactory.createConfiguration();
+		// create environments
+		configuration.setEnvironments(configurationModelObjectFactory.createEnvironments());
+		List<Environment> environments = configuration.getEnvironments().getEnvironment();
 
-	// create environments
-	configuration.setEnvironments(configurationModelObjectFactory.createEnvironments());
-	List<Environment> environments = configuration.getEnvironments().getEnvironment();
+		// create environment
+		Environment modelEnvironment = configurationModelObjectFactory.createEnvironment();
+		modelEnvironment.setId(environment);
+		modelEnvironment.setCredentials(configurationModelObjectFactory.createCredentials());
+		// ignore description and resources
 
-	// if container is null then exit
-	if (environmentInfos.length == 0)
-	    return configuration;
+		// add environment to to configuration
+		environments.add(modelEnvironment);
 
-	// iterate over environments
-	for (com.alpha.pineapple.credential.EnvironmentInfo environmentInfo : environmentInfos) {
+		// add credential
+		Credential modelCredential = internalMapToCredential(credential);
+		modelEnvironment.getCredentials().getCredential().add(modelCredential);
 
-	    // map environment
-	    Environment environment = internalMapToEnvironmentForCredential(environmentInfo);
-	    environments.add(environment);
+		return configuration;
 	}
 
-	return configuration;
-    }
+	@Override
+	public Configuration mapResource(String environment, ResourceInfo resourceInfo) {
 
-    /**
-     * Map environment info to environment.
-     * 
-     * @param environmentInfo
-     *            environment info which is mapped.
-     * 
-     * @return environment.
-     */
-    Environment internalMapToEnvironmentForResource(EnvironmentInfo environmentInfo) {
+		// create configuration
+		Configuration configuration = configurationModelObjectFactory.createConfiguration();
 
-	Environment environment = configurationModelObjectFactory.createEnvironment();
-	environment.setId(environmentInfo.getId());
-	environment.setDescription(environmentInfo.getDescription());
+		// create environments
+		configuration.setEnvironments(configurationModelObjectFactory.createEnvironments());
+		List<Environment> environments = configuration.getEnvironments().getEnvironment();
 
-	// get properties
-	environment.setResources(configurationModelObjectFactory.createResources());
-	List<Resource> resources = environment.getResources().getResource();
+		// create environment
+		Environment modelEnvironment = configurationModelObjectFactory.createEnvironment();
+		modelEnvironment.setId(environment);
+		modelEnvironment.setResources(configurationModelObjectFactory.createResources());
+		// ignore description and credentials
 
-	// iterate over environments and map
-	for (ResourceInfo resourceInfo : environmentInfo.getResources()) {
-	    resources.add(internalMapToResource(resourceInfo));
+		// add environment to to configuration
+		environments.add(modelEnvironment);
+
+		// add resource
+		Resource modelResource = internalMapToResource(resourceInfo);
+		modelEnvironment.getResources().getResource().add(modelResource);
+
+		return configuration;
 	}
 
-	return environment;
-    }
+	@Override
+	public Configuration mapResourceConfiguration(EnvironmentInfo[] environmentInfos) {
 
-    /**
-     * Map environment info to environment.
-     * 
-     * @param environmentInfo
-     *            environment info which is mapped.
-     * 
-     * @return environment.
-     */
-    Environment internalMapToEnvironmentForCredential(com.alpha.pineapple.credential.EnvironmentInfo environmentInfo) {
+		// create configuration
+		Configuration configuration = configurationModelObjectFactory.createConfiguration();
 
-	Environment environment = configurationModelObjectFactory.createEnvironment();
-	environment.setId(environmentInfo.getId());
-	environment.setDescription(environmentInfo.getDescription());
+		// create environments
+		configuration.setEnvironments(configurationModelObjectFactory.createEnvironments());
+		List<Environment> environments = configuration.getEnvironments().getEnvironment();
 
-	// get properties
-	environment.setCredentials(configurationModelObjectFactory.createCredentials());
-	List<Credential> credentials = environment.getCredentials().getCredential();
+		// if container is null then exit
+		if (environmentInfos.length == 0)
+			return configuration;
 
-	// iterate over environments and map
-	for (CredentialInfo credentialInfo : environmentInfo.getCredentials()) {
-	    credentials.add(internalMapToCredential(credentialInfo));
+		// iterate over environments
+		for (EnvironmentInfo environmentInfo : environmentInfos) {
+
+			// map environment
+			Environment environment = internalMapToEnvironmentForResource(environmentInfo);
+			environments.add(environment);
+		}
+
+		return configuration;
 	}
 
-	return environment;
-    }
+	@Override
+	public Configuration mapCredentialConfiguration(com.alpha.pineapple.credential.EnvironmentInfo[] environmentInfos) {
 
-    /**
-     * Map model credential to model credential.
-     * 
-     * @param model
-     *            credential which is mapped.
-     * 
-     * @return model credential.
-     */
-    Credential internalMapToCredential(Credential credential) {
-	Credential newCredential = configurationModelObjectFactory.createCredential();
-	newCredential.setId(credential.getId());
-	newCredential.setUser(credential.getUser());
-	newCredential.setPassword(credential.getPassword());
-	return newCredential;
-    }
+		// create configuration
+		Configuration configuration = configurationModelObjectFactory.createConfiguration();
 
-    /**
-     * Map model credential info to model credential.
-     * 
-     * @param credential
-     *            info which is mapped.
-     * 
-     * @return model credential.
-     */
-    Credential internalMapToCredential(CredentialInfo credentialInfo) {
-	Credential newCredential = configurationModelObjectFactory.createCredential();
-	newCredential.setId(credentialInfo.getId());
-	newCredential.setUser(credentialInfo.getUser());
-	newCredential.setPassword(credentialInfo.getPassword());
-	return newCredential;
-    }
+		// create environments
+		configuration.setEnvironments(configurationModelObjectFactory.createEnvironments());
+		List<Environment> environments = configuration.getEnvironments().getEnvironment();
 
-    /**
-     * Map resource info to resource .
-     * 
-     * @param resourceInfo
-     *            resource info which is mapped.
-     * 
-     * @return resource.
-     */
-    Resource internalMapToResource(ResourceInfo resourceInfo) {
-	Resource resource = configurationModelObjectFactory.createResource();
-	resource.setId(resourceInfo.getId());
-	resource.setPluginId(resourceInfo.getPluginId());
-	resource.setCredentialIdRef(resourceInfo.getCredentialIdRef());
+		// if container is null then exit
+		if (environmentInfos.length == 0)
+			return configuration;
 
-	// get properties
-	List<Property> resourceProps = resource.getProperty();
+		// iterate over environments
+		for (com.alpha.pineapple.credential.EnvironmentInfo environmentInfo : environmentInfos) {
 
-	// iterate over properties and map
-	for (ResourcePropertyInfo propertyInfo : resourceInfo.getProperties()) {
-	    resourceProps.add(internalMapToProperty(propertyInfo));
+			// map environment
+			Environment environment = internalMapToEnvironmentForCredential(environmentInfo);
+			environments.add(environment);
+		}
+
+		return configuration;
 	}
 
-	return resource;
-    }
+	/**
+	 * Map environment info to environment.
+	 * 
+	 * @param environmentInfo
+	 *            environment info which is mapped.
+	 * 
+	 * @return environment.
+	 */
+	Environment internalMapToEnvironmentForResource(EnvironmentInfo environmentInfo) {
 
-    /**
-     * Map resource property info to property.
-     * 
-     * @param propertyInfo
-     *            resource property.
-     * 
-     * @return property.
-     */
-    Property internalMapToProperty(ResourcePropertyInfo propertyInfo) {
-	Property resourceProp = new Property();
-	resourceProp.setKey(propertyInfo.getKey());
-	resourceProp.setValue(propertyInfo.getValue());
-	return resourceProp;
-    }
+		Environment environment = configurationModelObjectFactory.createEnvironment();
+		environment.setId(environmentInfo.getId());
+		environment.setDescription(environmentInfo.getDescription());
 
-    @Override
-    public ScheduledOperations mapScheduledOperations(Stream<ScheduledOperationInfo> operations) {
-	ScheduledOperations modelOperations = scheduledOperationModelObjectFactory.createScheduledOperations();
-	List<ScheduledOperation> modelOperationsList = modelOperations.getScheduledOperation();
-	operations.map(info -> info.getOperation()).forEach(modelOperationsList::add);
-	return modelOperations;
-    }
+		// get properties
+		environment.setResources(configurationModelObjectFactory.createResources());
+		List<Resource> resources = environment.getResources().getResource();
 
-    @Override
-    public Reports mapReports(Stream<Report> reports) {
-	Reports modelReports = reportModelObjectFactory.createReports();
-	List<Report> reportList = modelReports.getReport();
-	reports.forEach(reportList::add);
-	return modelReports;
-    }
+		// iterate over environments and map
+		for (ResourceInfo resourceInfo : environmentInfo.getResources()) {
+			resources.add(internalMapToResource(resourceInfo));
+		}
 
-    @Override
-    public Modules mapModules(ModuleInfo[] infos) {
-	Modules modelModules = moduleModelObjectFactory.createModules();
-	List<Module> modulesList = modelModules.getModule();
-	Stream<ModuleInfo> stream = Arrays.stream(infos);
-	stream.map(info -> internalMapToModule(info)).forEach(modulesList::add);
-	return modelModules;
-    }
+		return environment;
+	}
 
-    /**
-     * Map module info to model module.
-     * 
-     * @param info
-     *            module info.
-     * @return model module.
-     */
-    Module internalMapToModule(ModuleInfo info) {
-	Module module = moduleModelObjectFactory.createModule();
-	module.setDescription("n/a");
-	module.setId(info.getId());
-	module.setDirectory(info.getDirectory().getAbsolutePath());
-	module.setIsDescriptorDefined(info.isDescriptorDefined());
-	List<Model> modelList = module.getModel();
-	Stream<String> stream = Arrays.stream(info.getModelEnvironments());
-	stream.map(env -> internalMapToModel(env)).forEach(modelList::add);
-	return module;
-    }
+	/**
+	 * Map environment info to environment.
+	 * 
+	 * @param environmentInfo
+	 *            environment info which is mapped.
+	 * 
+	 * @return environment.
+	 */
+	Environment internalMapToEnvironmentForCredential(com.alpha.pineapple.credential.EnvironmentInfo environmentInfo) {
 
-    /**
-     * Map environment to model model.
-     * 
-     * @param environment
-     *            environment.
-     * @return model model
-     */
-    Model internalMapToModel(String environment) {
-	Model model = moduleModelObjectFactory.createModel();
-	model.setId(environment);
-	return model;
-    }
+		Environment environment = configurationModelObjectFactory.createEnvironment();
+		environment.setId(environmentInfo.getId());
+		environment.setDescription(environmentInfo.getDescription());
+
+		// get properties
+		environment.setCredentials(configurationModelObjectFactory.createCredentials());
+		List<Credential> credentials = environment.getCredentials().getCredential();
+
+		// iterate over environments and map
+		for (CredentialInfo credentialInfo : environmentInfo.getCredentials()) {
+			credentials.add(internalMapToCredential(credentialInfo));
+		}
+
+		return environment;
+	}
+
+	/**
+	 * Map model credential to model credential.
+	 * 
+	 * @param model
+	 *            credential which is mapped.
+	 * 
+	 * @return model credential.
+	 */
+	Credential internalMapToCredential(Credential credential) {
+		Credential newCredential = configurationModelObjectFactory.createCredential();
+		newCredential.setId(credential.getId());
+		newCredential.setUser(credential.getUser());
+		newCredential.setPassword(credential.getPassword());
+		return newCredential;
+	}
+
+	/**
+	 * Map model credential info to model credential.
+	 * 
+	 * @param credential
+	 *            info which is mapped.
+	 * 
+	 * @return model credential.
+	 */
+	Credential internalMapToCredential(CredentialInfo credentialInfo) {
+		Credential newCredential = configurationModelObjectFactory.createCredential();
+		newCredential.setId(credentialInfo.getId());
+		newCredential.setUser(credentialInfo.getUser());
+		newCredential.setPassword(credentialInfo.getPassword());
+		return newCredential;
+	}
+
+	/**
+	 * Map resource info to resource .
+	 * 
+	 * @param resourceInfo
+	 *            resource info which is mapped.
+	 * 
+	 * @return resource.
+	 */
+	Resource internalMapToResource(ResourceInfo resourceInfo) {
+		Resource resource = configurationModelObjectFactory.createResource();
+		resource.setId(resourceInfo.getId());
+		resource.setPluginId(resourceInfo.getPluginId());
+		resource.setCredentialIdRef(resourceInfo.getCredentialIdRef());
+
+		// get properties
+		List<Property> resourceProps = resource.getProperty();
+
+		// iterate over properties and map
+		for (ResourcePropertyInfo propertyInfo : resourceInfo.getProperties()) {
+			resourceProps.add(internalMapToProperty(propertyInfo));
+		}
+
+		return resource;
+	}
+
+	/**
+	 * Map resource property info to property.
+	 * 
+	 * @param propertyInfo
+	 *            resource property.
+	 * 
+	 * @return property.
+	 */
+	Property internalMapToProperty(ResourcePropertyInfo propertyInfo) {
+		Property resourceProp = new Property();
+		resourceProp.setKey(propertyInfo.getKey());
+		resourceProp.setValue(propertyInfo.getValue());
+		return resourceProp;
+	}
+
+	@Override
+	public ScheduledOperations mapScheduledOperations(Stream<ScheduledOperationInfo> operations) {
+		ScheduledOperations modelOperations = scheduledOperationModelObjectFactory.createScheduledOperations();
+		List<ScheduledOperation> modelOperationsList = modelOperations.getScheduledOperation();
+		operations.map(info -> info.getOperation()).forEach(modelOperationsList::add);
+		return modelOperations;
+	}
+
+	@Override
+	public Reports mapReports(Stream<Report> reports) {
+		Reports modelReports = reportModelObjectFactory.createReports();
+		List<Report> reportList = modelReports.getReport();
+		reports.forEach(reportList::add);
+		return modelReports;
+	}
+
+	@Override
+	public Modules mapModules(ModuleInfo[] infos) {
+		Modules modelModules = moduleModelObjectFactory.createModules();
+		List<Module> modulesList = modelModules.getModule();
+		Stream<ModuleInfo> stream = Arrays.stream(infos);
+		stream.map(info -> internalMapToModule(info)).forEach(modulesList::add);
+		return modelModules;
+	}
+
+	/**
+	 * Map module info to model module.
+	 * 
+	 * @param info
+	 *            module info.
+	 * @return model module.
+	 */
+	Module internalMapToModule(ModuleInfo info) {
+		Module module = moduleModelObjectFactory.createModule();
+		module.setDescription("n/a");
+		module.setId(info.getId());
+		module.setDirectory(info.getDirectory().getAbsolutePath());
+		module.setIsDescriptorDefined(info.isDescriptorDefined());
+		List<Model> modelList = module.getModel();
+		Stream<String> stream = Arrays.stream(info.getModelEnvironments());
+		stream.map(env -> internalMapToModel(env)).forEach(modelList::add);
+		return module;
+	}
+
+	/**
+	 * Map environment to model model.
+	 * 
+	 * @param environment
+	 *            environment.
+	 * @return model model
+	 */
+	Model internalMapToModel(String environment) {
+		Model model = moduleModelObjectFactory.createModel();
+		model.setId(environment);
+		return model;
+	}
 
 }

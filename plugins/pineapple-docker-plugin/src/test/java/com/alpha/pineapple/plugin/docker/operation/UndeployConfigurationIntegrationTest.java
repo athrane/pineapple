@@ -62,279 +62,276 @@ import com.alpha.testutils.ObjectMotherContent;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.plugin.docker-config.xml" })
 public class UndeployConfigurationIntegrationTest {
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    UndeployConfiguration undeployOperation;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	UndeployConfiguration undeployOperation;
 
-    /**
-     * Object mother for the docker model.
-     */
-    ObjectMotherContent contentMother;
+	/**
+	 * Object mother for the docker model.
+	 */
+	ObjectMotherContent contentMother;
 
-    /**
-     * Docker session.
-     */
-    DockerSession session;
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult result;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult result;
 
-    /**
-     * Random value.
-     */
-    String randomRepo;
+	/**
+	 * Random value.
+	 */
+	String randomRepo;
 
-    /**
-     * Random value.
-     */
-    String randomTag;
+	/**
+	 * Random value.
+	 */
+	String randomTag;
 
-    /**
-     * Random value.
-     */
-    String randomRepo2;
+	/**
+	 * Random value.
+	 */
+	String randomRepo2;
 
-    /**
-     * Random value.
-     */
-    String randomTag2;
+	/**
+	 * Random value.
+	 */
+	String randomTag2;
 
-    /**
-     * Random source directory.
-     */
-    String randomSourceDirectoryName;
+	/**
+	 * Random source directory.
+	 */
+	String randomSourceDirectoryName;
 
-    @Before
-    public void setUp() throws Exception {
-	randomRepo = RandomStringUtils.randomAlphanumeric(10);
-	randomTag = RandomStringUtils.randomAlphanumeric(10);
-	randomRepo2 = RandomStringUtils.randomAlphanumeric(10);
-	randomTag2 = RandomStringUtils.randomAlphanumeric(10);
-	randomSourceDirectoryName = RandomStringUtils.randomAlphabetic(10);
+	@Before
+	public void setUp() throws Exception {
+		randomRepo = RandomStringUtils.randomAlphanumeric(10);
+		randomTag = RandomStringUtils.randomAlphanumeric(10);
+		randomRepo2 = RandomStringUtils.randomAlphanumeric(10);
+		randomTag2 = RandomStringUtils.randomAlphanumeric(10);
+		randomSourceDirectoryName = RandomStringUtils.randomAlphabetic(10);
 
-	// create mock session
-	session = EasyMock.createMock(DockerSession.class);
+		// create mock session
+		session = EasyMock.createMock(DockerSession.class);
 
-	// create execution result
-	result = new ExecutionResultImpl("Root result");
+		// create execution result
+		result = new ExecutionResultImpl("Root result");
 
-	// create content mother
-	contentMother = new ObjectMotherContent();
+		// create content mother
+		contentMother = new ObjectMotherContent();
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
-    }
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that deploy configuration operation can be looked up from the
-     * context.
-     */
-    @Test
-    public void testCanGetInstanceFromContext() {
-	assertNotNull(undeployOperation);
-    }
+	/**
+	 * Test that deploy configuration operation can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetInstanceFromContext() {
+		assertNotNull(undeployOperation);
+	}
 
-    /**
-     * Test that the operation can execute with a minimal model.
-     */
-    @Test
-    public void testCanExecuteWithMinimalModel() throws Exception {
+	/**
+	 * Test that the operation can execute with a minimal model.
+	 */
+	@Test
+	public void testCanExecuteWithMinimalModel() throws Exception {
 
-	// complete session initialization
-	EasyMock.replay(session);
+		// complete session initialization
+		EasyMock.replay(session);
 
-	// create content
-	Object content = contentMother.createEmptyDockerModel();
+		// create content
+		Object content = contentMother.createEmptyDockerModel();
 
-	// invoke operation
-	undeployOperation.execute(content, session, result);
+		// invoke operation
+		undeployOperation.execute(content, session, result);
 
-	// test
-	assertTrue(result.isSuccess());
-	EasyMock.verify(session);
-    }
+		// test
+		assertTrue(result.isSuccess());
+		EasyMock.verify(session);
+	}
 
-    /**
-     * Test that the operation can execute with a model with image command with
-     * empty tag.
-     */
-    @Test
-    public void testCanExecuteWithModelWithImageCommandWithEmptyTag() throws Exception {
-	Map<String, String> uriVariables = new HashMap<String, String>(3);
-	uriVariables.put("image", randomRepo);
-	uriVariables.put("force", "true");
+	/**
+	 * Test that the operation can execute with a model with image command with
+	 * empty tag.
+	 */
+	@Test
+	public void testCanExecuteWithModelWithImageCommandWithEmptyTag() throws Exception {
+		Map<String, String> uriVariables = new HashMap<String, String>(3);
+		uriVariables.put("image", randomRepo);
+		uriVariables.put("force", "true");
 
-	// complete session initialization
-	session.httpDelete(DockerConstants.DELETE_IMAGE_URI, uriVariables);
-	EasyMock.replay(session);
+		// complete session initialization
+		session.httpDelete(DockerConstants.DELETE_IMAGE_URI, uriVariables);
+		EasyMock.replay(session);
 
-	// create content
-	Object content = contentMother.createDockerModelWithImageCommand(randomRepo, "");
+		// create content
+		Object content = contentMother.createDockerModelWithImageCommand(randomRepo, "");
 
-	// invoke operation
-	undeployOperation.execute(content, session, result);
+		// invoke operation
+		undeployOperation.execute(content, session, result);
 
-	// test
-	assertTrue(result.isSuccess());
-	EasyMock.verify(session);
-    }
+		// test
+		assertTrue(result.isSuccess());
+		EasyMock.verify(session);
+	}
 
-    /**
-     * Test that the operation can execute with a model with image command with
-     * undefined tag.
-     * 
-     * Since model {@linkplain Image} has "latest" as default value, then that
-     * value is returned if model image is created with null value.
-     */
-    @Test
-    public void testCanExecuteWithModelWithImageCommandWithUndefinedTag() throws Exception {
-	Map<String, String> uriVariables = new HashMap<String, String>(3);
-	uriVariables.put("image", randomRepo);
-	uriVariables.put("force", "true");
+	/**
+	 * Test that the operation can execute with a model with image command with
+	 * undefined tag.
+	 * 
+	 * Since model {@linkplain Image} has "latest" as default value, then that value
+	 * is returned if model image is created with null value.
+	 */
+	@Test
+	public void testCanExecuteWithModelWithImageCommandWithUndefinedTag() throws Exception {
+		Map<String, String> uriVariables = new HashMap<String, String>(3);
+		uriVariables.put("image", randomRepo);
+		uriVariables.put("force", "true");
 
-	// complete session initialization
-	session.httpDelete(DockerConstants.DELETE_IMAGE_URI, uriVariables);
-	EasyMock.replay(session);
+		// complete session initialization
+		session.httpDelete(DockerConstants.DELETE_IMAGE_URI, uriVariables);
+		EasyMock.replay(session);
 
-	// create content
-	Docker content = contentMother.createDockerModelWithImageCommand(randomRepo, null);
+		// create content
+		Docker content = contentMother.createDockerModelWithImageCommand(randomRepo, null);
 
-	// invoke operation
-	undeployOperation.execute(content, session, result);
+		// invoke operation
+		undeployOperation.execute(content, session, result);
 
-	// test
-	assertTrue(result.isSuccess());
-	EasyMock.verify(session);
-    }
+		// test
+		assertTrue(result.isSuccess());
+		EasyMock.verify(session);
+	}
 
-    /**
-     * Test that the operation can execute with a model with image command.
-     */
-    @Test
-    public void testCanExecuteWithModelWithImageCommand() throws Exception {
-	Map<String, String> uriVariables = new HashMap<String, String>(3);
-	uriVariables.put("image", randomRepo);
-	uriVariables.put("force", "true");
+	/**
+	 * Test that the operation can execute with a model with image command.
+	 */
+	@Test
+	public void testCanExecuteWithModelWithImageCommand() throws Exception {
+		Map<String, String> uriVariables = new HashMap<String, String>(3);
+		uriVariables.put("image", randomRepo);
+		uriVariables.put("force", "true");
 
-	// complete session initialization
-	session.httpDelete(DockerConstants.DELETE_IMAGE_URI, uriVariables);
-	EasyMock.replay(session);
+		// complete session initialization
+		session.httpDelete(DockerConstants.DELETE_IMAGE_URI, uriVariables);
+		EasyMock.replay(session);
 
-	// create content
-	Object content = contentMother.createDockerModelWithImageCommand(randomRepo, randomTag);
+		// create content
+		Object content = contentMother.createDockerModelWithImageCommand(randomRepo, randomTag);
 
-	// invoke operation
-	undeployOperation.execute(content, session, result);
+		// invoke operation
+		undeployOperation.execute(content, session, result);
 
-	// test
-	assertTrue(result.isSuccess());
-	EasyMock.verify(session);
-    }
+		// test
+		assertTrue(result.isSuccess());
+		EasyMock.verify(session);
+	}
 
-    /**
-     * Test that the operation can execute with a model with tagged image
-     * command.
-     */
-    @Test
-    public void testCanExecuteWithModelWithTaggedImageCommand() throws Exception {
-	Map<String, String> uriVariables = new HashMap<String, String>(3);
-	uriVariables.put("image", randomRepo2);
-	uriVariables.put("force", "true");
+	/**
+	 * Test that the operation can execute with a model with tagged image command.
+	 */
+	@Test
+	public void testCanExecuteWithModelWithTaggedImageCommand() throws Exception {
+		Map<String, String> uriVariables = new HashMap<String, String>(3);
+		uriVariables.put("image", randomRepo2);
+		uriVariables.put("force", "true");
 
-	// complete session initialization
-	session.httpDelete(DockerConstants.DELETE_IMAGE_URI, uriVariables);
-	EasyMock.replay(session);
+		// complete session initialization
+		session.httpDelete(DockerConstants.DELETE_IMAGE_URI, uriVariables);
+		EasyMock.replay(session);
 
-	// create content
-	Object content = contentMother.createDockerModelWithTaggedImageCommand(randomRepo, randomTag, randomRepo2,
-		randomTag2);
+		// create content
+		Object content = contentMother.createDockerModelWithTaggedImageCommand(randomRepo, randomTag, randomRepo2,
+				randomTag2);
 
-	// invoke operation
-	undeployOperation.execute(content, session, result);
+		// invoke operation
+		undeployOperation.execute(content, session, result);
 
-	// test
-	assertTrue(result.isSuccess());
-	EasyMock.verify(session);
-    }
+		// test
+		assertTrue(result.isSuccess());
+		EasyMock.verify(session);
+	}
 
-    /**
-     * Test that the operation can execute with a model with
-     * image-from-dockerfile command. With image pulling defined in the model.
-     * 
-     * The forced delete parameter will be set in the REST request and it not
-     * related to the pulling argument in the model.
-     */
-    @Test
-    public void testCanExecuteWithModelWithImageFromDockerfileCommand() throws Exception {
+	/**
+	 * Test that the operation can execute with a model with image-from-dockerfile
+	 * command. With image pulling defined in the model.
+	 * 
+	 * The forced delete parameter will be set in the REST request and it not
+	 * related to the pulling argument in the model.
+	 */
+	@Test
+	public void testCanExecuteWithModelWithImageFromDockerfileCommand() throws Exception {
 
-	// create source directory with single docker file for TAR archive
-	File sourceDirectory = new File(testDirectory, randomSourceDirectoryName);
+		// create source directory with single docker file for TAR archive
+		File sourceDirectory = new File(testDirectory, randomSourceDirectoryName);
 
-	Map<String, String> uriVariables = new HashMap<String, String>();
-	uriVariables.put("image", randomRepo);
-	uriVariables.put("force", "true"); // alway true
+		Map<String, String> uriVariables = new HashMap<String, String>();
+		uriVariables.put("image", randomRepo);
+		uriVariables.put("force", "true"); // alway true
 
-	// complete session initialization
-	session.httpDelete(DockerConstants.DELETE_IMAGE_URI, uriVariables);
-	EasyMock.replay(session);
+		// complete session initialization
+		session.httpDelete(DockerConstants.DELETE_IMAGE_URI, uriVariables);
+		EasyMock.replay(session);
 
-	// create content
-	Object content = contentMother.createDockerModelWithImageFromDockerfileCommand(randomRepo, randomTag,
-		sourceDirectory.getAbsolutePath(), true);
+		// create content
+		Object content = contentMother.createDockerModelWithImageFromDockerfileCommand(randomRepo, randomTag,
+				sourceDirectory.getAbsolutePath(), true);
 
-	// invoke operation
-	undeployOperation.execute(content, session, result);
+		// invoke operation
+		undeployOperation.execute(content, session, result);
 
-	// test
-	assertTrue(result.isSuccess());
-	EasyMock.verify(session);
-    }
+		// test
+		assertTrue(result.isSuccess());
+		EasyMock.verify(session);
+	}
 
-    /**
-     * Test that the operation can execute with a model with
-     * image-from-dockerfile command. With no image pulling defined in the
-     * model.
-     * 
-     * The forced delete parameter will be set in the REST request and it not
-     * related to the pulling argument in the model.
-     */
-    @Test
-    public void testCanExecuteWithModelWithImageFromDockerfileCommandNoForcedDelete() throws Exception {
+	/**
+	 * Test that the operation can execute with a model with image-from-dockerfile
+	 * command. With no image pulling defined in the model.
+	 * 
+	 * The forced delete parameter will be set in the REST request and it not
+	 * related to the pulling argument in the model.
+	 */
+	@Test
+	public void testCanExecuteWithModelWithImageFromDockerfileCommandNoForcedDelete() throws Exception {
 
-	// create source directory with single docker file for TAR archive
-	File sourceDirectory = new File(testDirectory, randomSourceDirectoryName);
+		// create source directory with single docker file for TAR archive
+		File sourceDirectory = new File(testDirectory, randomSourceDirectoryName);
 
-	Map<String, String> uriVariables = new HashMap<String, String>();
-	uriVariables.put("image", randomRepo);
-	uriVariables.put("force", "true"); // always true
+		Map<String, String> uriVariables = new HashMap<String, String>();
+		uriVariables.put("image", randomRepo);
+		uriVariables.put("force", "true"); // always true
 
-	// complete session initialization
-	session.httpDelete(DockerConstants.DELETE_IMAGE_URI, uriVariables);
-	EasyMock.replay(session);
+		// complete session initialization
+		session.httpDelete(DockerConstants.DELETE_IMAGE_URI, uriVariables);
+		EasyMock.replay(session);
 
-	// create content
-	Object content = contentMother.createDockerModelWithImageFromDockerfileCommand(randomRepo, randomTag,
-		sourceDirectory.getAbsolutePath(), false);
+		// create content
+		Object content = contentMother.createDockerModelWithImageFromDockerfileCommand(randomRepo, randomTag,
+				sourceDirectory.getAbsolutePath(), false);
 
-	// invoke operation
-	undeployOperation.execute(content, session, result);
+		// invoke operation
+		undeployOperation.execute(content, session, result);
 
-	// test
-	assertTrue(result.isSuccess());
-	EasyMock.verify(session);
-    }
+		// test
+		assertTrue(result.isSuccess());
+		EasyMock.verify(session);
+	}
 
 }

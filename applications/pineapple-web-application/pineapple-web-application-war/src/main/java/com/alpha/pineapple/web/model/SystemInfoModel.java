@@ -30,66 +30,66 @@ import com.alpha.pineapple.io.file.RuntimeDirectoryProvider;
 
 public class SystemInfoModel {
 
-    /**
-     * Runtime directory resolver.
-     */
-    @Resource
-    RuntimeDirectoryProvider runtimeDirectoryResolver;
+	/**
+	 * Runtime directory resolver.
+	 */
+	@Resource
+	RuntimeDirectoryProvider runtimeDirectoryResolver;
 
-    /**
-     * Get Pineapple home directory.
-     * 
-     * @return Pineapple home directory.
-     */
-    public String getHomeDirectory() {
-	if (runtimeDirectoryResolver == null)
-	    return "n/a";
-	File dir = runtimeDirectoryResolver.getHomeDirectory();
-	if (dir == null)
-	    return "n/a";
-	return dir.toString();
-    }
+	/**
+	 * Get Pineapple home directory.
+	 * 
+	 * @return Pineapple home directory.
+	 */
+	public String getHomeDirectory() {
+		if (runtimeDirectoryResolver == null)
+			return "n/a";
+		File dir = runtimeDirectoryResolver.getHomeDirectory();
+		if (dir == null)
+			return "n/a";
+		return dir.toString();
+	}
 
-    /**
-     * Get Pineapple modules directory.
-     * 
-     * @return Pineapple modules directory.
-     */
-    public String getModulesDirectory() {
-	if (runtimeDirectoryResolver == null)
-	    return "n/a";
-	File dir = runtimeDirectoryResolver.getModulesDirectory();
-	if (dir == null)
-	    return "n/a";
-	return dir.toString();
-    }
+	/**
+	 * Get Pineapple modules directory.
+	 * 
+	 * @return Pineapple modules directory.
+	 */
+	public String getModulesDirectory() {
+		if (runtimeDirectoryResolver == null)
+			return "n/a";
+		File dir = runtimeDirectoryResolver.getModulesDirectory();
+		if (dir == null)
+			return "n/a";
+		return dir.toString();
+	}
 
-    /**
-     * Get Pineapple reports directory.
-     * 
-     * @return Pineapple reports directory.
-     */
-    public String getReportsDirectory() {
-	if (runtimeDirectoryResolver == null)
-	    return "n/a";
-	File dir = runtimeDirectoryResolver.getReportsDirectory();
-	if (dir == null)
-	    return "n/a";
-	return dir.toString();
-    }
+	/**
+	 * Get Pineapple reports directory.
+	 * 
+	 * @return Pineapple reports directory.
+	 */
+	public String getReportsDirectory() {
+		if (runtimeDirectoryResolver == null)
+			return "n/a";
+		File dir = runtimeDirectoryResolver.getReportsDirectory();
+		if (dir == null)
+			return "n/a";
+		return dir.toString();
+	}
 
-    /**
-     * Get Pineapple temp. directory.
-     * 
-     * @return Pineapple temp. directory.
-     */
-    public String getTempDirectory() {
-	if (runtimeDirectoryResolver == null)
-	    return "n/a";
-	File dir = runtimeDirectoryResolver.getTempDirectory();
-	if (dir == null)
-	    return "n/a";
-	return dir.toString();
-    }
+	/**
+	 * Get Pineapple temp. directory.
+	 * 
+	 * @return Pineapple temp. directory.
+	 */
+	public String getTempDirectory() {
+		if (runtimeDirectoryResolver == null)
+			return "n/a";
+		File dir = runtimeDirectoryResolver.getTempDirectory();
+		if (dir == null)
+			return "n/a";
+		return dir.toString();
+	}
 
 }

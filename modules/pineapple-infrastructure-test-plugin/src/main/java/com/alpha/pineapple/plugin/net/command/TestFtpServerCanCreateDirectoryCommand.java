@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.command;
 
 import java.io.IOException;
@@ -42,504 +41,479 @@ import com.alpha.pineapple.command.initialization.ValidationPolicy;
 import com.alpha.pineapple.command.test.TestCommand;
 
 /**
- * <p>Implementation of the 
- * <code>com.alpha.pineapple.command.test.TestCommand</code> interface 
- * tests whether a FTP server can create and delete a requested directory.</p>
+ * <p>
+ * Implementation of the
+ * <code>com.alpha.pineapple.command.test.TestCommand</code> interface tests
+ * whether a FTP server can create and delete a requested directory.
+ * </p>
  * 
- * <p>Precondition for execution of the command is definition of these keys in 
+ * <p>
+ * Precondition for execution of the command is definition of these keys in the
+ * context:
+ * 
+ * <ul>
+ * <li><code>description</code> defines a human readable description of the
+ * test. The type is <code>java.lang.String</code>.</li>
+ * 
+ * <li><code>hostname</code> defines host name of the FTP server. The type is
+ * <code>java.lang.String</code>.</li>
+ * 
+ * <li><code>port</code> defines the port number of the FTP server. The type is
+ * <code>int</code>.</li>
+ * 
+ * <li><code>user</code> defines the user to access the FTP server. The type is
+ * <code>java.lang.String</code>.</li>
+ * 
+ * <li><code>password</code> defines the password to access the FTP server. The
+ * type is <code>java.lang.String</code>.</li>
+ * </ul>
+ * </p>
+ * 
+ * <p>
+ * Postcondition after execution of the command is definition of these keys in
  * the context:
  * 
  * <ul>
- * <li><code>description</code> defines a human readable description of the 
- * test. The type is <code>java.lang.String</code>.</li> 
+ * <li><code>message</code> which contains a human readable description of how
+ * the result of the test. The type is <code>java.lang.String</code>.</li>
  * 
- * <li><code>hostname</code> defines host name of the FTP server. The type 
- * is <code>java.lang.String</code>.</li>
- * 
- * <li><code>port</code> defines the port number of the FTP server. The type 
- * is <code>int</code>.</li>
- * 
- * <li><code>user</code> defines the user to access the FTP server. The type is 
- * <code>java.lang.String</code>.</li>
- * 
- * <li><code>password</code> defines the password to access the FTP server. 
- * The type is <code>java.lang.String</code>.</li>
-  * </ul>
- * </p>      
- *  
- * <p>Postcondition after execution of the command is definition of these keys 
- * in the context:
- * 
- * <ul>
- * <li><code>message</code> which contains a human readable 
- * description of how the result of the test. The type is 
- * <code>java.lang.String</code>.</li>
- * 
- * <li><code>result</code> which contains the result of the 
- * test as a boolean value. The type is <code>java.lang.Boolean</code>.</li>             
+ * <li><code>result</code> which contains the result of the test as a boolean
+ * value. The type is <code>java.lang.Boolean</code>.</li>
  * </ul>
- * </p>           
+ * </p>
  */
-public class TestFtpServerCanCreateDirectoryCommand implements TestCommand
-{
+public class TestFtpServerCanCreateDirectoryCommand implements TestCommand {
 
-    /**
-     * Key used to identify property in context: Name of the host.
-     */
-    public static final String HOSTNAME_KEY = "hostname";
+	/**
+	 * Key used to identify property in context: Name of the host.
+	 */
+	public static final String HOSTNAME_KEY = "hostname";
 
-    /**
-     * Key used to identify property in context: Defines the port number.
-     */
-    public static final String PORT_KEY = "port";
+	/**
+	 * Key used to identify property in context: Defines the port number.
+	 */
+	public static final String PORT_KEY = "port";
 
-    /**
-     * Key used to identify property in context: Defines the user.
-     */
-    public static final String USER_KEY = "user";
+	/**
+	 * Key used to identify property in context: Defines the user.
+	 */
+	public static final String USER_KEY = "user";
 
-    /**
-     * Key used to identify property in context: Defines the password.
-     */
-    public static final String PASSWORD_KEY = "password";
+	/**
+	 * Key used to identify property in context: Defines the password.
+	 */
+	public static final String PASSWORD_KEY = "password";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Test description.
-     */
-    @Initialize( DESCRIPTION_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )
-    String description;
-    
-    /**
-     * Port number.
-     */
-    @Initialize( PORT_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )    
-    int port;
+	/**
+	 * Test description.
+	 */
+	@Initialize(DESCRIPTION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String description;
 
-    /**
-     * Host name.
-     */
-    @Initialize( HOSTNAME_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )        
-    String hostname;
+	/**
+	 * Port number.
+	 */
+	@Initialize(PORT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	int port;
 
-    /**
-     * User.
-     */
-    @Initialize( USER_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )            
-    String user;
+	/**
+	 * Host name.
+	 */
+	@Initialize(HOSTNAME_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String hostname;
 
-    /**
-     * Password.
-     */
-    @Initialize( PASSWORD_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )            
-    String password;
+	/**
+	 * User.
+	 */
+	@Initialize(USER_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String user;
 
-    /**
-     * Directory to create and delete.
-     */
-    String directory;
+	/**
+	 * Password.
+	 */
+	@Initialize(PASSWORD_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String password;
 
-    /**
-     * Test result.
-     */
-    boolean testSucceded;
+	/**
+	 * Directory to create and delete.
+	 */
+	String directory;
 
-    public boolean execute( Context context ) throws Exception
-    {
+	/**
+	 * Test result.
+	 */
+	boolean testSucceded;
 
-        // log debug message
-        if ( logger.isDebugEnabled() )
-            logger.debug( "Starting ftp-server-can-create-directory test." );
+	public boolean execute(Context context) throws Exception {
 
-        // initialize command
-        CommandInitializer initializer =  new CommandInitializerImpl();
-        initializer.initialize( context, this );
+		// log debug message
+		if (logger.isDebugEnabled())
+			logger.debug("Starting ftp-server-can-create-directory test.");
 
-        // create directory name
-        StringBuilder dirName = new StringBuilder();
-        dirName.append( this.getClass().getName() );
-        this.directory = dirName.toString();
-        
-        // run test
-        runTest();
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-        // save test result
-        String testMessage = createTestMessage();
-        context.put( MESSAGE_KEY, testMessage );
-        context.put( RESULT_KEY, new Boolean( testSucceded ) );
+		// create directory name
+		StringBuilder dirName = new StringBuilder();
+		dirName.append(this.getClass().getName());
+		this.directory = dirName.toString();
 
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( testMessage );
-            logger.debug( "successfully completed ftp-server-can-create-directory test." );
-        }
+		// run test
+		runTest();
 
-        return Command.CONTINUE_PROCESSING;
-    }
+		// save test result
+		String testMessage = createTestMessage();
+		context.put(MESSAGE_KEY, testMessage);
+		context.put(RESULT_KEY, new Boolean(testSucceded));
 
-    /**
-     * Run the test.
-     */
-    void runTest() throws Exception
-    {
-        // create client
-        FTPClient client;
-        client = new FTPClient();
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			logger.debug(testMessage);
+			logger.debug("successfully completed ftp-server-can-create-directory test.");
+		}
 
-        // create host address
-        InetAddress inetAddress = InetAddress.getByName( this.hostname );
+		return Command.CONTINUE_PROCESSING;
+	}
 
-        // connect
-        client.connect( inetAddress, this.port );
-        String reply = client.getReplyString();
+	/**
+	 * Run the test.
+	 */
+	void runTest() throws Exception {
+		// create client
+		FTPClient client;
+		client = new FTPClient();
 
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-            StringBuilder message = new StringBuilder();
-            message.append( "FTP-connect returned reply code <" );
-            message.append( reply );
-            message.append( ">." );
-            logger.debug( message.toString() );
-        }
+		// create host address
+		InetAddress inetAddress = InetAddress.getByName(this.hostname);
 
-        // test reply code
-        if ( !FTPReply.isPositiveCompletion( client.getReplyCode() ) )
-        {
-            testSucceded = false;
-            return;
-        }
+		// connect
+		client.connect(inetAddress, this.port);
+		String reply = client.getReplyString();
 
-        // log on
-        client.login( this.user, this.password );
-        reply = client.getReplyString();
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("FTP-connect returned reply code <");
+			message.append(reply);
+			message.append(">.");
+			logger.debug(message.toString());
+		}
 
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-            StringBuilder message = new StringBuilder();
-            message.append( "FTP-logon returned reply code <" );
-            message.append( reply );
-            message.append( ">." );
-            logger.debug( message.toString() );
-        }
+		// test reply code
+		if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
+			testSucceded = false;
+			return;
+		}
 
-        // test reply code
-        if ( !FTPReply.isPositiveCompletion( client.getReplyCode() ) )
-        {
-            testSucceded = false;
-            return;
-        }
+		// log on
+		client.login(this.user, this.password);
+		reply = client.getReplyString();
 
-        // if directory exists delete it first
-        if ( isDirectoryDefined( client ) ) {                       
-            deleteDirectory( client );
-            
-            // test reply code
-            if ( !FTPReply.isPositiveCompletion( client.getReplyCode() ) )
-            {
-                // fail text if existing directory couldn't be deleted.
-                testSucceded = false;
-                return;
-            }            
-        }
-            
-        // try to create the directory
-        createDirectory( client );
-        
-        // if directory exists the mark test as succeeded.
-        if ( isDirectoryDefined( client ) ) {
-            testSucceded = true;
-            
-            // clean up, delete the directory
-            deleteDirectory( client );            
-            return;
-            
-        } else {
-            testSucceded = false;            
-        }                
-    }
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("FTP-logon returned reply code <");
+			message.append(reply);
+			message.append(">.");
+			logger.debug(message.toString());
+		}
 
-    /**
-     * Create test directory.
-     * 
-     * @param client The FTP client
-     * 
-     * @throws Exception if Directory creation fails.
-     * 
-     */
-    void createDirectory( FTPClient client ) throws Exception
-    {
-        // create the directory
-        client.makeDirectory( this.directory );
+		// test reply code
+		if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
+			testSucceded = false;
+			return;
+		}
 
-        // get reply
-        String reply = client.getReplyString();        
-        
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-            StringBuilder message = new StringBuilder();
-            message.append( "Directory creation returned reply code <" );
-            message.append( reply );
-            message.append( ">." );
-            logger.debug( message.toString() );
-        }        
-    }
+		// if directory exists delete it first
+		if (isDirectoryDefined(client)) {
+			deleteDirectory(client);
 
-    /**
-     * Delete test directory.
-     * 
-     * @param client The FTP client
-     * @throws Exception if Directory deletion fails.
-     */
-    void deleteDirectory( FTPClient client ) throws Exception
-    {
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-            StringBuilder message = new StringBuilder();
-            message.append( "Starting deletion of directory <" );
-            message.append( this.directory );
-            message.append( ">." );
-            logger.debug( message.toString() );
-        }        
-        
-        // get the files
-        FTPFile[] ftpFiles = getFileList( client );
+			// test reply code
+			if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
+				// fail text if existing directory couldn't be deleted.
+				testSucceded = false;
+				return;
+			}
+		}
 
-        // exit if get list failed.                
-        if( ftpFiles == null) {
-            // log debug message
-            if ( logger.isDebugEnabled() )
-            {
-                StringBuilder message = new StringBuilder();
-                message.append( "Aborted deletion of directory <<" );
-                message.append( this.directory );
-                message.append( "> because file list retrieved failed." );
-                logger.debug( message.toString() );
-            }
-            
-            // exit 
-            return;
-        }
-        
-        // get the directory
-        FTPFile ftpDir = getDirectory( ftpFiles );
-        
-        // delete the directory
-        client.removeDirectory( ftpDir.getName() );
-        
-        // get reply
-        String reply = client.getReplyString();        
-        
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-            StringBuilder message = new StringBuilder();
-            message.append( "Directory deletion  returned reply code <" );
-            message.append( reply );
-            message.append( ">." );
-            logger.debug( message.toString() );
-        }        
-    }
+		// try to create the directory
+		createDirectory(client);
 
-    /**
-     * Get file list 
-     * 
-     * @param The FTP client. 
-     * 
-     * @throws Exception If getting file list fails.
-     */
-    FTPFile[] getFileList( FTPClient client ) throws Exception
-    {
-        // list files
-        FTPFile[] ftpFiles = client.listFiles();
+		// if directory exists the mark test as succeeded.
+		if (isDirectoryDefined(client)) {
+			testSucceded = true;
 
-        // get reply
-        String reply = client.getReplyString();        
-        
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-            StringBuilder message = new StringBuilder();
-            message.append( "List files returned reply code <" );
-            message.append( reply );
-            message.append( ">." );
-            logger.debug( message.toString() );
-        }        
+			// clean up, delete the directory
+			deleteDirectory(client);
+			return;
 
-        // test reply code
-        if ( !FTPReply.isPositiveCompletion( client.getReplyCode() ) )
-        {
-            testSucceded = false;
-            return null;
-        }
-        
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-            StringBuilder message = new StringBuilder();
-            message.append( "List files returned file list <" );
-            message.append( ReflectionToStringBuilder.toString( ftpFiles ) );
-            message.append( ">." );
-            logger.debug( message.toString() );
-        }
-        
-        return ftpFiles;
-    }
+		} else {
+			testSucceded = false;
+		}
+	}
 
-    /**
-     * Look for directory in located file set.
-     * 
-     * @param ftpFiles
-     *            file set from FTP server.
-     *            
-     * @return true if directory is found.
-     * 
-     * @throws IOException If operation fails.
-     */
-    boolean isDirectoryDefined( FTPClient client ) throws IOException        
-    {
-        // list files
-        FTPFile[] ftpFiles = client.listFiles();
+	/**
+	 * Create test directory.
+	 * 
+	 * @param client
+	 *            The FTP client
+	 * 
+	 * @throws Exception
+	 *             if Directory creation fails.
+	 * 
+	 */
+	void createDirectory(FTPClient client) throws Exception {
+		// create the directory
+		client.makeDirectory(this.directory);
 
-        // exit if get list failed.        
-        if( ftpFiles == null) {
-            // log debug message
-            if ( logger.isDebugEnabled() )
-            {
-                StringBuilder message = new StringBuilder();
-                message.append( "Aborted directory existence test of <" );
-                message.append( this.directory );
-                message.append( "> because file list retrieved failed." );
-                logger.debug( message.toString() );
-            }
-            
-            // exit 
-            return false;
-        }
-        
-        for ( int i = 0; i < ftpFiles.length; i++ )
-        {
-            FTPFile ftpFile = ftpFiles[i];
-            if ( ftpFile.isDirectory() )
-            {
-                // log debug message
-                if ( logger.isDebugEnabled() )
-                {
-                    StringBuilder message = new StringBuilder();
-                    message.append( "Accessing FTP file <" );
-                    message.append( ReflectionToStringBuilder.toString( ftpFile ) );
-                    message.append( ">." );
-                    logger.debug( message.toString() );
-                }
+		// get reply
+		String reply = client.getReplyString();
 
-                // get directory name
-                String name = ftpFile.getName();
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Directory creation returned reply code <");
+			message.append(reply);
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+	}
 
-                // test
-                if ( this.directory.equals( name ) )
-                {
-                    return true;
-                }
-            }
-        }
+	/**
+	 * Delete test directory.
+	 * 
+	 * @param client
+	 *            The FTP client
+	 * @throws Exception
+	 *             if Directory deletion fails.
+	 */
+	void deleteDirectory(FTPClient client) throws Exception {
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Starting deletion of directory <");
+			message.append(this.directory);
+			message.append(">.");
+			logger.debug(message.toString());
+		}
 
-        return false;
-    }
+		// get the files
+		FTPFile[] ftpFiles = getFileList(client);
 
-    /**
-     * Get directory in located file set.
-     * 
-     * @param ftpFiles
-     *            file set from FTP server.
-     * @return directory. 
-     */
-    FTPFile getDirectory( FTPFile[] ftpFiles )
-    {
-        for ( int i = 0; i < ftpFiles.length; i++ )
-        {
-            FTPFile ftpFile = ftpFiles[i];
-            if ( ftpFile.isDirectory() )
-            {
-                // log debug message
-                if ( logger.isDebugEnabled() )
-                {
-                    StringBuilder message = new StringBuilder();
-                    message.append( "Accessing FTP file <" );
-                    message.append( ReflectionToStringBuilder.toString( ftpFile ) );
-                    message.append( ">." );
-                    logger.debug( message.toString() );
-                }
+		// exit if get list failed.
+		if (ftpFiles == null) {
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder message = new StringBuilder();
+				message.append("Aborted deletion of directory <<");
+				message.append(this.directory);
+				message.append("> because file list retrieved failed.");
+				logger.debug(message.toString());
+			}
 
-                // get directory name
-                String name = ftpFile.getName();
+			// exit
+			return;
+		}
 
-                // test
-                if ( this.directory.equals( name ) )
-                {
-                    return ftpFile;
-                }
-            }
-        }
+		// get the directory
+		FTPFile ftpDir = getDirectory(ftpFiles);
 
-        return null;
-    }
-    
-    
-    /**
-     * Create test message describing the outcome of the test.
-     * 
-     * @return test message.
-     */
-    public String createTestMessage()
-    {
-        if ( this.testSucceded )
-        {
+		// delete the directory
+		client.removeDirectory(ftpDir.getName());
 
-            // create info message
-            StringBuilder message = new StringBuilder();
-            message.append( "TEST SUCCEDED - ftp-server-can-create-directory <" );
-            message.append( description );
-            message.append( "> connected to <" );
-            message.append( hostname );
-            message.append( ":" );
-            message.append( this.port );
-            message.append( "> and create directory <" );
-            message.append( this.directory );
-            message.append( ">." );
+		// get reply
+		String reply = client.getReplyString();
 
-            return message.toString();
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Directory deletion  returned reply code <");
+			message.append(reply);
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+	}
 
-        }
-        else
-        {
+	/**
+	 * Get file list
+	 * 
+	 * @param The
+	 *            FTP client.
+	 * 
+	 * @throws Exception
+	 *             If getting file list fails.
+	 */
+	FTPFile[] getFileList(FTPClient client) throws Exception {
+		// list files
+		FTPFile[] ftpFiles = client.listFiles();
 
-            // create info message
-            StringBuilder message = new StringBuilder();
-            message.append( "TEST FAILED - ftp-server-can-create-directory <" );
-            message.append( description );
-            message.append( "> couldn't connect to <" );
-            message.append( hostname );
-            message.append( ":" );
-            message.append( this.port );
-            message.append( "> and create directory <" );
-            message.append( this.directory );
-            message.append( ">." );
+		// get reply
+		String reply = client.getReplyString();
 
-            return message.toString();
-        }
-    }
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("List files returned reply code <");
+			message.append(reply);
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
+		// test reply code
+		if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
+			testSucceded = false;
+			return null;
+		}
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("List files returned file list <");
+			message.append(ReflectionToStringBuilder.toString(ftpFiles));
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
+		return ftpFiles;
+	}
+
+	/**
+	 * Look for directory in located file set.
+	 * 
+	 * @param ftpFiles
+	 *            file set from FTP server.
+	 * 
+	 * @return true if directory is found.
+	 * 
+	 * @throws IOException
+	 *             If operation fails.
+	 */
+	boolean isDirectoryDefined(FTPClient client) throws IOException {
+		// list files
+		FTPFile[] ftpFiles = client.listFiles();
+
+		// exit if get list failed.
+		if (ftpFiles == null) {
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder message = new StringBuilder();
+				message.append("Aborted directory existence test of <");
+				message.append(this.directory);
+				message.append("> because file list retrieved failed.");
+				logger.debug(message.toString());
+			}
+
+			// exit
+			return false;
+		}
+
+		for (int i = 0; i < ftpFiles.length; i++) {
+			FTPFile ftpFile = ftpFiles[i];
+			if (ftpFile.isDirectory()) {
+				// log debug message
+				if (logger.isDebugEnabled()) {
+					StringBuilder message = new StringBuilder();
+					message.append("Accessing FTP file <");
+					message.append(ReflectionToStringBuilder.toString(ftpFile));
+					message.append(">.");
+					logger.debug(message.toString());
+				}
+
+				// get directory name
+				String name = ftpFile.getName();
+
+				// test
+				if (this.directory.equals(name)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get directory in located file set.
+	 * 
+	 * @param ftpFiles
+	 *            file set from FTP server.
+	 * @return directory.
+	 */
+	FTPFile getDirectory(FTPFile[] ftpFiles) {
+		for (int i = 0; i < ftpFiles.length; i++) {
+			FTPFile ftpFile = ftpFiles[i];
+			if (ftpFile.isDirectory()) {
+				// log debug message
+				if (logger.isDebugEnabled()) {
+					StringBuilder message = new StringBuilder();
+					message.append("Accessing FTP file <");
+					message.append(ReflectionToStringBuilder.toString(ftpFile));
+					message.append(">.");
+					logger.debug(message.toString());
+				}
+
+				// get directory name
+				String name = ftpFile.getName();
+
+				// test
+				if (this.directory.equals(name)) {
+					return ftpFile;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Create test message describing the outcome of the test.
+	 * 
+	 * @return test message.
+	 */
+	public String createTestMessage() {
+		if (this.testSucceded) {
+
+			// create info message
+			StringBuilder message = new StringBuilder();
+			message.append("TEST SUCCEDED - ftp-server-can-create-directory <");
+			message.append(description);
+			message.append("> connected to <");
+			message.append(hostname);
+			message.append(":");
+			message.append(this.port);
+			message.append("> and create directory <");
+			message.append(this.directory);
+			message.append(">.");
+
+			return message.toString();
+
+		} else {
+
+			// create info message
+			StringBuilder message = new StringBuilder();
+			message.append("TEST FAILED - ftp-server-can-create-directory <");
+			message.append(description);
+			message.append("> couldn't connect to <");
+			message.append(hostname);
+			message.append(":");
+			message.append(this.port);
+			message.append("> and create directory <");
+			message.append(this.directory);
+			message.append(">.");
+
+			return message.toString();
+		}
+	}
 
 }

@@ -20,10 +20,7 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.testutils;
-
-
 
 /**
  * Agent constants for test cases.
@@ -34,6 +31,5 @@ public interface AgentTestConstants {
 	 * Test Default connect timeout (in ms).
 	 */
 	public static final int TEST_TIMEOUT = 10000;
-	
-}
 
+}

@@ -31,19 +31,19 @@ import com.alpha.pineapple.plugin.PluginInitializationFailedException;
  */
 public interface PluginCandidateScanner {
 
-    /**
-     * Do component scan for plugin classes. Prior to component scan the class
-     * loader to used to resolve all plugin id's. Otherwise the component
-     * scanner can't find to plugin classes.
-     * 
-     * @param pluginIds
-     *            Array of plugin id.
-     * 
-     * @return ApplicationContext which contains found plugins.
-     * 
-     * @throws PluginInitializationFailedException
-     *             If plugin scan fails.
-     */
-    ApplicationContext scanForPlugins(String[] pluginIds) throws PluginInitializationFailedException;
+	/**
+	 * Do component scan for plugin classes. Prior to component scan the class
+	 * loader to used to resolve all plugin id's. Otherwise the component scanner
+	 * can't find to plugin classes.
+	 * 
+	 * @param pluginIds
+	 *            Array of plugin id.
+	 * 
+	 * @return ApplicationContext which contains found plugins.
+	 * 
+	 * @throws PluginInitializationFailedException
+	 *             If plugin scan fails.
+	 */
+	ApplicationContext scanForPlugins(String[] pluginIds) throws PluginInitializationFailedException;
 
 }

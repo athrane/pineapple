@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import org.hamcrest.Description;
@@ -37,34 +36,33 @@ import com.alpha.pineapple.plugin.net.http.HttpInvocationsSet;
 public class IsSetEmpty extends TypeSafeMatcher<HttpInvocationsSet> {
 
 	public boolean matchesSafely(HttpInvocationsSet set) {
-		
-        // get sequences
-        HttpInvocationSequence[] sequences = set.getSequences();
 
-        // test whether set is empty 
-        return (sequences.length == 0);		
+		// get sequences
+		HttpInvocationSequence[] sequences = set.getSequences();
+
+		// test whether set is empty
+		return (sequences.length == 0);
 	}
 
 	public void describeTo(Description description) {
 		description.appendText("a empty HTTP result set");
 	}
-	
-	
-    @Override
+
+	@Override
 	protected void describeMismatchSafely(HttpInvocationsSet set, Description mismatchDescription) {
-    	
-        // get sequences    	
-        HttpInvocationSequence[] sequencesAsArray = set.getSequences();
-        
-        // create description
-    	mismatchDescription.appendText("contained ");    	
-    	mismatchDescription.appendValue(sequencesAsArray.length);
-    	mismatchDescription.appendText(" sequences");
+
+		// get sequences
+		HttpInvocationSequence[] sequencesAsArray = set.getSequences();
+
+		// create description
+		mismatchDescription.appendText("contained ");
+		mismatchDescription.appendValue(sequencesAsArray.length);
+		mismatchDescription.appendText(" sequences");
 	}
 
 	@Factory
-    public static <T> Matcher<HttpInvocationsSet> isSetEmpty() {
-        return new IsSetEmpty();
-    }
-    
+	public static <T> Matcher<HttpInvocationsSet> isSetEmpty() {
+		return new IsSetEmpty();
+	}
+
 }

@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.command;
 
 import static org.junit.Assert.assertEquals;
@@ -54,265 +53,258 @@ import com.alpha.pineapple.plugin.net.model.Mapper;
 import com.alpha.testutils.ObjectMotherContent;
 import com.alpha.testutils.ObjectMotherHttpServer;
 
-
 /**
- * Integration test for the <code>TestHttpStatusCodeCommand</code> class.  
+ * Integration test for the <code>TestHttpStatusCodeCommand</code> class.
  */
-@RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration( locations = { "/com.alpha.pineapple.plugin.net-config.xml" } )
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/com.alpha.pineapple.plugin.net-config.xml" })
 public class TestHttpStatusCodeCommandIntegrationTest {
-	
-    /**
-     * Single host.
-     */
-    static final String HTTP_REMOTE_HOST = "http://127.0.0.1:3000/sniffer";    
 
-    /**
-     * Redirecting host.
-     */
-    static final String HTTP_REDIRECTING_HOST = "http://127.0.0.1:3000/redirect";    
-    
-    /**
-     * Host which return 404.
-     */
-    static final String HTTP_404_HOST = "http://127.0.0.1:3000/kost";    
-
-    /**
-     * Unknown host.
-     */
-    static final String HTTP_UNKNOWN_HOST = "http://127.1.1.1/sniffer";    
-    
 	/**
-	 * TCP port for  HTTP server.
+	 * Single host.
 	 */
-    static final int HTTP_PORT = 3000;
-    
-    /**
-     * Object under test.
-     */
-    @Resource( name ="testHttpCommand")
-    Command command;
-        
-    /**
-     * Model mapper object.
-     */
-    @Resource    
-    Mapper mapper;
-    
-    /**
-     * Chain context.
-     */
-    Context context;
-    
-    /**
-     * Object mother for the infrastructure model.
-     */
-    ObjectMotherContent contentMother;
-    
-    /**
-     * HTTP server object mother 
-     */
-    ObjectMotherHttpServer httpServerMother;
+	static final String HTTP_REMOTE_HOST = "http://127.0.0.1:3000/sniffer";
 
-    /**
-     * HTTP server. 
-     */
-    Server httpServer;
-        
+	/**
+	 * Redirecting host.
+	 */
+	static final String HTTP_REDIRECTING_HOST = "http://127.0.0.1:3000/redirect";
+
+	/**
+	 * Host which return 404.
+	 */
+	static final String HTTP_404_HOST = "http://127.0.0.1:3000/kost";
+
+	/**
+	 * Unknown host.
+	 */
+	static final String HTTP_UNKNOWN_HOST = "http://127.1.1.1/sniffer";
+
+	/**
+	 * TCP port for HTTP server.
+	 */
+	static final int HTTP_PORT = 3000;
+
+	/**
+	 * Object under test.
+	 */
+	@Resource(name = "testHttpCommand")
+	Command command;
+
+	/**
+	 * Model mapper object.
+	 */
+	@Resource
+	Mapper mapper;
+
+	/**
+	 * Chain context.
+	 */
+	Context context;
+
+	/**
+	 * Object mother for the infrastructure model.
+	 */
+	ObjectMotherContent contentMother;
+
+	/**
+	 * HTTP server object mother
+	 */
+	ObjectMotherHttpServer httpServerMother;
+
+	/**
+	 * HTTP server.
+	 */
+	Server httpServer;
+
 	/**
 	 * Execution result.
 	 */
-	ExecutionResult executionResult;    
+	ExecutionResult executionResult;
 
 	/**
 	 * Mock repository
 	 */
 	ResultRepository repository;
 
-    /**
-     * Response properties set.
-     */
+	/**
+	 * Response properties set.
+	 */
 	ResponsePropertyInfoSet responseProperties;
-		
+
 	/**
 	 * HTTP Configuration object.
 	 */
-	HttpConfiguration httpConfig;	
-		
+	HttpConfiguration httpConfig;
+
 	@Before
 	public void setUp() throws Exception {
-		
-        // create context
-        context = new ContextBase();
 
-        // create content mother
-        contentMother = new ObjectMotherContent();		        
-        
-        // create HTTP server object mother
-        httpServerMother = new ObjectMotherHttpServer();
+		// create context
+		context = new ContextBase();
 
-        // create mock result repository
-        repository = EasyMock.createMock( ResultRepository.class );
-        
-        // create execution result
-		executionResult = new ExecutionResultImpl(repository, "Root result" );
-		
+		// create content mother
+		contentMother = new ObjectMotherContent();
+
+		// create HTTP server object mother
+		httpServerMother = new ObjectMotherHttpServer();
+
+		// create mock result repository
+		repository = EasyMock.createMock(ResultRepository.class);
+
+		// create execution result
+		executionResult = new ExecutionResultImpl(repository, "Root result");
+
 		// create HTTP configuration
 		httpConfig = new HttpConfigurationImpl();
 	}
-		
+
 	@After
 	public void tearDown() throws Exception {
-        command = null;
-        context = null;
-        httpServer.stop();
-        httpServer = null;
-        httpServerMother = null;
-        responseProperties = null;
-        httpConfig = null;
+		command = null;
+		context = null;
+		httpServer.stop();
+		httpServer = null;
+		httpServerMother = null;
+		responseProperties = null;
+		httpConfig = null;
 	}
-	
-    /**
-     * Test HTTP status code fails with unknown URL.
-     * 
-     * @throws Exception If test fails.
-     */
-    @SuppressWarnings( "unchecked" )
-    @Test
-    public void testFailsWithUnknownUrl() throws Exception
-    {
-        // create HTTP server
-        httpServer = httpServerMother.createHttpServerWithRedirect302(httpServerMother.getHostIPAddress(true), HTTP_PORT);
-    	
-    	// create execution result        	
-    	ExecutionResult childResult = executionResult.addChild("Test HTTP headers.");        	
+
+	/**
+	 * Test HTTP status code fails with unknown URL.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFailsWithUnknownUrl() throws Exception {
+		// create HTTP server
+		httpServer = httpServerMother.createHttpServerWithRedirect302(httpServerMother.getHostIPAddress(true),
+				HTTP_PORT);
+
+		// create execution result
+		ExecutionResult childResult = executionResult.addChild("Test HTTP headers.");
 
 		// create test case
-    	HttpStatusCodeTest test = contentMother.createHttpStatusCodeTest(HTTP_UNKNOWN_HOST, 200);
-    	
+		HttpStatusCodeTest test = contentMother.createHttpStatusCodeTest(HTTP_UNKNOWN_HOST, 200);
+
 		// create model
-    	mapper.mapHttpStatusCodeTest(
-    			test, 
-    			context, 
-    			contentMother.createHttpConfigurationMapWithSingleDefaultHttpConfig());
-    	
-    	// set parameters
-		context.put( TestHttpCommand.EXECUTIONRESULT_KEY, childResult );
-    	
-        // execute HTTP test command
-        command.execute( context );
+		mapper.mapHttpStatusCodeTest(test, context,
+				contentMother.createHttpConfigurationMapWithSingleDefaultHttpConfig());
 
-        // test
-        assertEquals( ExecutionState.FAILURE, childResult.getState());
-    }                  
+		// set parameters
+		context.put(TestHttpCommand.EXECUTIONRESULT_KEY, childResult);
 
-    /**
-     * Test HTTP redirect test fails if host returns HTTP status code 404 and the test expected 200.
-     * @throws Exception If test fails.
-     */
-    @SuppressWarnings( "unchecked" )
-    @Test
-    public void testFailsWith404() throws Exception
-    {
-            // create HTTP server
-            httpServer = httpServerMother.createHttpServerWithRedirect302(httpServerMother.getHostIPAddress(true), HTTP_PORT);
-        	
-        	// create execution result        	
-        	ExecutionResult childResult = executionResult.addChild("Test HTTP headers.");        	
+		// execute HTTP test command
+		command.execute(context);
 
-			// create test case        	
-        	HttpStatusCodeTest test = contentMother.createHttpStatusCodeTest(HTTP_404_HOST, 200);
-        	
-    		// create model
-        	mapper.mapHttpStatusCodeTest(
-        			test, 
-        			context, 
-        			contentMother.createHttpConfigurationMapWithSingleDefaultHttpConfig());
-        	
-        	// set parameters
-    		context.put( TestHttpCommand.EXECUTIONRESULT_KEY, childResult );
-        	
-            // execute HTTP test command
-            command.execute( context );
+		// test
+		assertEquals(ExecutionState.FAILURE, childResult.getState());
+	}
 
-            // test
-            assertEquals( ExecutionState.FAILURE, childResult.getState());
-    }                      
-    
-    /**
-     * Test that command succeeds 
-     * 
-     * with an URL which returns 200.
-     * 
-     * @throws Exception If test fails.
-     */
-    @SuppressWarnings( "unchecked" )
-    @Test
-    public void testSucceedsWithExpectedStatusCode200() throws Exception
-    {
-            // create HTTP server
-            httpServer = httpServerMother.createHttpServer(httpServerMother.getHostIPAddress(true), HTTP_PORT);
-        	        	
-        	// create execution result        	
-        	ExecutionResult childResult = executionResult.addChild("Test HTTP headers.");        	
+	/**
+	 * Test HTTP redirect test fails if host returns HTTP status code 404 and the
+	 * test expected 200.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFailsWith404() throws Exception {
+		// create HTTP server
+		httpServer = httpServerMother.createHttpServerWithRedirect302(httpServerMother.getHostIPAddress(true),
+				HTTP_PORT);
 
-			// create test case
-        	HttpStatusCodeTest test = contentMother.createHttpStatusCodeTest(HTTP_REMOTE_HOST, 200);
-        	
-    		// create model
-        	mapper.mapHttpStatusCodeTest(
-        			test, 
-        			context, 
-        			contentMother.createHttpConfigurationMapWithSingleDefaultHttpConfig());
-        	
-        	// set parameters
-    		context.put( TestHttpCommand.EXECUTIONRESULT_KEY, childResult );
-        	
-            // execute HTTP test command
-            command.execute( context );
+		// create execution result
+		ExecutionResult childResult = executionResult.addChild("Test HTTP headers.");
 
-            // test
-            assertEquals( ExecutionState.SUCCESS, childResult.getState());
-    }                  
+		// create test case
+		HttpStatusCodeTest test = contentMother.createHttpStatusCodeTest(HTTP_404_HOST, 200);
 
-    /**
-     * Test that command succeeds 
-     * 
-     * with an URL which is redirected with 301 and a "Location" header.
-     */
-    @SuppressWarnings( "unchecked" )
-    @Test
-    public void testSucceedsRedirectedUrlWithStatus301()
-    {
-        try {
-            // create HTTP server
-            httpServer = httpServerMother.createHttpServerWithRedirect301(httpServerMother.getHostIPAddress(true), HTTP_PORT);
-        	        	
-        	// create execution result        	
-        	ExecutionResult childResult = executionResult.addChild("Test HTTP headers.");        	
+		// create model
+		mapper.mapHttpStatusCodeTest(test, context,
+				contentMother.createHttpConfigurationMapWithSingleDefaultHttpConfig());
+
+		// set parameters
+		context.put(TestHttpCommand.EXECUTIONRESULT_KEY, childResult);
+
+		// execute HTTP test command
+		command.execute(context);
+
+		// test
+		assertEquals(ExecutionState.FAILURE, childResult.getState());
+	}
+
+	/**
+	 * Test that command succeeds
+	 * 
+	 * with an URL which returns 200.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSucceedsWithExpectedStatusCode200() throws Exception {
+		// create HTTP server
+		httpServer = httpServerMother.createHttpServer(httpServerMother.getHostIPAddress(true), HTTP_PORT);
+
+		// create execution result
+		ExecutionResult childResult = executionResult.addChild("Test HTTP headers.");
+
+		// create test case
+		HttpStatusCodeTest test = contentMother.createHttpStatusCodeTest(HTTP_REMOTE_HOST, 200);
+
+		// create model
+		mapper.mapHttpStatusCodeTest(test, context,
+				contentMother.createHttpConfigurationMapWithSingleDefaultHttpConfig());
+
+		// set parameters
+		context.put(TestHttpCommand.EXECUTIONRESULT_KEY, childResult);
+
+		// execute HTTP test command
+		command.execute(context);
+
+		// test
+		assertEquals(ExecutionState.SUCCESS, childResult.getState());
+	}
+
+	/**
+	 * Test that command succeeds
+	 * 
+	 * with an URL which is redirected with 301 and a "Location" header.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSucceedsRedirectedUrlWithStatus301() {
+		try {
+			// create HTTP server
+			httpServer = httpServerMother.createHttpServerWithRedirect301(httpServerMother.getHostIPAddress(true),
+					HTTP_PORT);
+
+			// create execution result
+			ExecutionResult childResult = executionResult.addChild("Test HTTP headers.");
 
 			// create test case
-        	HttpStatusCodeTest test = contentMother.createHttpStatusCodeTest(HTTP_REDIRECTING_HOST , 200);
-        	
-    		// create model
-        	mapper.mapHttpStatusCodeTest(
-        			test, 
-        			context, 
-        			contentMother.createHttpConfigurationMapWithSingleDefaultHttpConfig());
-        	
-        	// set parameters
-    		context.put( TestHttpCommand.EXECUTIONRESULT_KEY, childResult );
-        	
-            // execute HTTP test command
-            command.execute( context );
+			HttpStatusCodeTest test = contentMother.createHttpStatusCodeTest(HTTP_REDIRECTING_HOST, 200);
 
-            // test
-            assertEquals( ExecutionState.SUCCESS, childResult.getState());
-        }
-        catch ( Exception e )
-        {
-            fail( StackTraceHelper.getStrackTrace( e ) );
-        }    	    	
-    }                  
-    
+			// create model
+			mapper.mapHttpStatusCodeTest(test, context,
+					contentMother.createHttpConfigurationMapWithSingleDefaultHttpConfig());
+
+			// set parameters
+			context.put(TestHttpCommand.EXECUTIONRESULT_KEY, childResult);
+
+			// execute HTTP test command
+			command.execute(context);
+
+			// test
+			assertEquals(ExecutionState.SUCCESS, childResult.getState());
+		} catch (Exception e) {
+			fail(StackTraceHelper.getStrackTrace(e));
+		}
+	}
+
 }

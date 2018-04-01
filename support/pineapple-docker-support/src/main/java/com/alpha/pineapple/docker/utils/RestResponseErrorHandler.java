@@ -41,32 +41,32 @@ import org.springframework.web.client.RestTemplate;
  */
 public class RestResponseErrorHandler implements ResponseErrorHandler {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Default error handler.
-     */
-    @Resource
-    ResponseErrorHandler defaultResponseErrorHandler;
+	/**
+	 * Default error handler.
+	 */
+	@Resource
+	ResponseErrorHandler defaultResponseErrorHandler;
 
-    @Override
-    public boolean hasError(ClientHttpResponse response) throws IOException {
-	return defaultResponseErrorHandler.hasError(response);
-    }
+	@Override
+	public boolean hasError(ClientHttpResponse response) throws IOException {
+		return defaultResponseErrorHandler.hasError(response);
+	}
 
-    @Override
-    public void handleError(ClientHttpResponse response) throws IOException {
-	HttpStatus statusCode = response.getStatusCode();
-	String body = IOUtils.toString(response.getBody());
-	HttpHeaders headers = response.getHeaders();
-	logger.error("Status code: " + statusCode);
-	logger.error("Body: " + body);
-	logger.error("Headers: " + headers);
-	RestResponseException exception = new RestResponseException(statusCode, body, headers);
-	throw exception;
-    }
+	@Override
+	public void handleError(ClientHttpResponse response) throws IOException {
+		HttpStatus statusCode = response.getStatusCode();
+		String body = IOUtils.toString(response.getBody());
+		HttpHeaders headers = response.getHeaders();
+		logger.error("Status code: " + statusCode);
+		logger.error("Body: " + body);
+		logger.error("Headers: " + headers);
+		RestResponseException exception = new RestResponseException(statusCode, body, headers);
+		throw exception;
+	}
 
 }

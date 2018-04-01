@@ -27,31 +27,31 @@ package com.alpha.pineapple.substitution;
  */
 public class VariableSubstitutionException extends Exception {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * VariableSubstitutionException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public VariableSubstitutionException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * VariableSubstitutionException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public VariableSubstitutionException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * VariableSubstitutionException constructor.
-     * 
-     * @param message
-     *            error message.
-     */
-    public VariableSubstitutionException(String message) {
-	super(message);
-    }
+	/**
+	 * VariableSubstitutionException constructor.
+	 * 
+	 * @param message
+	 *            error message.
+	 */
+	public VariableSubstitutionException(String message) {
+		super(message);
+	}
 
 }

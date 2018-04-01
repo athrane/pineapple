@@ -91,113 +91,112 @@ import com.alpha.pineapple.i18n.MessageProvider;
  * </p>
  */
 public class UnmarshallJAXBObjectsCommand implements Command {
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Defines the file to unmarshall
-     * objects from.
-     */
-    public static final String FILE_KEY = "file";
+	/**
+	 * Key used to identify property in context: Defines the file to unmarshall
+	 * objects from.
+	 */
+	public static final String FILE_KEY = "file";
 
-    /**
-     * Key used to identify property in context: Defines the Java package which
-     * contains the JAXB generated classes which should be use to unmarshall the
-     * XML file into.
-     */
-    public static final String PACKAGE_KEY = "package";
+	/**
+	 * Key used to identify property in context: Defines the Java package which
+	 * contains the JAXB generated classes which should be use to unmarshall the XML
+	 * file into.
+	 */
+	public static final String PACKAGE_KEY = "package";
 
-    /**
-     * Key used to identify property in context: The root object of the
-     * unmarshalled objects is stored in the context using this key.
-     */
-    public static final String UNMARSHALLING_RESULT_KEY = "unmarshalling-result";
+	/**
+	 * Key used to identify property in context: The root object of the unmarshalled
+	 * objects is stored in the context using this key.
+	 */
+	public static final String UNMARSHALLING_RESULT_KEY = "unmarshalling-result";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * File to unmarshall objects from.
-     */
-    @Initialize(FILE_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    File file;
+	/**
+	 * File to unmarshall objects from.
+	 */
+	@Initialize(FILE_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	File file;
 
-    /**
-     * Package which contains JAXB generated classes.
-     */
-    @Initialize(PACKAGE_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    Package targetPackage;
+	/**
+	 * Package which contains JAXB generated classes.
+	 */
+	@Initialize(PACKAGE_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	Package targetPackage;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    @SuppressWarnings("unchecked")
-    public boolean execute(Context context) throws Exception {
+	@SuppressWarnings("unchecked")
+	public boolean execute(Context context) throws Exception {
 
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	try {
+		try {
 
-	    // declare variables
-	    Object result = null;
-	    URL fileURL = null;
+			// declare variables
+			Object result = null;
+			URL fileURL = null;
 
-	    // create unmarshaller
-	    JAXBContext jaxbContext = JAXBContext.newInstance(targetPackage.getName());
-	    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			// create unmarshaller
+			JAXBContext jaxbContext = JAXBContext.newInstance(targetPackage.getName());
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-	    if (file.isAbsolute()) {
-		result = unmarshaller.unmarshal(file);
+			if (file.isAbsolute()) {
+				result = unmarshaller.unmarshal(file);
 
-	    } else {
-		// if file isn't absolute then locate the file
-		fileURL = ConfigurationUtils.locate(file.getName());
+			} else {
+				// if file isn't absolute then locate the file
+				fileURL = ConfigurationUtils.locate(file.getName());
 
-		// validate URL is defined
-		if (fileURL == null) {
-		    Object[] args2 = { file.getName() };
-		    executionResult.completeAsFailure(messageProvider, "ujoc.fileurl_location_failure", args2);
+				// validate URL is defined
+				if (fileURL == null) {
+					Object[] args2 = { file.getName() };
+					executionResult.completeAsFailure(messageProvider, "ujoc.fileurl_location_failure", args2);
+				}
+
+				Object[] args2 = { fileURL };
+				executionResult.addMessage(ExecutionResult.MSG_MESSAGE,
+						messageProvider.getMessage("ujoc.unmarshall_url_info", args2));
+
+				result = unmarshaller.unmarshal(fileURL);
+			}
+
+			// store result in context
+			context.put(UNMARSHALLING_RESULT_KEY, result);
+
+			// complete as success
+			Object[] args3 = { file.isAbsolute() ? file.getAbsolutePath() : fileURL };
+			executionResult.completeAsSuccessful(messageProvider, "ujoc.success", args3);
+
+		} catch (Exception e) {
+			Object[] args = { e };
+			executionResult.completeAsError(messageProvider, "ujoc.error", args, e);
 		}
 
-		Object[] args2 = { fileURL };
-		executionResult.addMessage(ExecutionResult.MSG_MESSAGE,
-			messageProvider.getMessage("ujoc.unmarshall_url_info", args2));
-
-		result = unmarshaller.unmarshal(fileURL);
-	    }
-
-	    // store result in context
-	    context.put(UNMARSHALLING_RESULT_KEY, result);
-
-	    // complete as success
-	    Object[] args3 = { file.isAbsolute() ? file.getAbsolutePath() : fileURL };
-	    executionResult.completeAsSuccessful(messageProvider, "ujoc.success", args3);
-
-	} catch (Exception e) {
-	    Object[] args = { e };
-	    executionResult.completeAsError(messageProvider, "ujoc.error", args, e);
+		// set successful result
+		return Command.CONTINUE_PROCESSING;
 	}
-
-	// set successful result
-	return Command.CONTINUE_PROCESSING;
-    }
 }

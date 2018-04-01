@@ -30,24 +30,24 @@ import java.util.Map;
  */
 public class DefaultVariablesImpl implements Variables {
 
-    /**
-     * Variables map.
-     */
-    Map<String, String> variables;
+	/**
+	 * Variables map.
+	 */
+	Map<String, String> variables;
 
-    /**
-     * DefaultVariablesImpl constructor.
-     * 
-     * @param variables
-     *            map of variables.
-     */
-    public DefaultVariablesImpl(Map<String, String> variables) {
-	this.variables = variables;
-    }
+	/**
+	 * DefaultVariablesImpl constructor.
+	 * 
+	 * @param variables
+	 *            map of variables.
+	 */
+	public DefaultVariablesImpl(Map<String, String> variables) {
+		this.variables = variables;
+	}
 
-    @Override
-    public Map<String, String> getMap() {
-	return Collections.unmodifiableMap(variables);
-    }
+	@Override
+	public Map<String, String> getMap() {
+		return Collections.unmodifiableMap(variables);
+	}
 
 }

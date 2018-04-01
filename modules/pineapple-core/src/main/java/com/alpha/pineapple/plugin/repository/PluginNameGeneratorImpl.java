@@ -32,34 +32,34 @@ import org.springframework.beans.factory.support.BeanNameGenerator;
  */
 public class PluginNameGeneratorImpl implements BeanNameGenerator {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
+	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
 
-	// get fully qualified class name
-	String name = definition.getBeanClassName();
+		// get fully qualified class name
+		String name = definition.getBeanClassName();
 
-	// get package name
-	String packageName = name.substring(0, name.lastIndexOf('.'));
+		// get package name
+		String packageName = name.substring(0, name.lastIndexOf('.'));
 
-	// create plugin name
-	StringBuilder pluginName = new StringBuilder();
-	pluginName.append("plugin:");
-	pluginName.append(packageName);
+		// create plugin name
+		StringBuilder pluginName = new StringBuilder();
+		pluginName.append("plugin:");
+		pluginName.append(packageName);
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    StringBuilder message = new StringBuilder();
-	    message.append("Generated plugin name <");
-	    message.append(pluginName.toString());
-	    message.append(">.");
-	    logger.debug(message.toString());
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Generated plugin name <");
+			message.append(pluginName.toString());
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
+		return pluginName.toString();
 	}
-
-	return pluginName.toString();
-    }
 
 }

@@ -36,10 +36,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ValidateValue {
-    /**
-     * Get annotation value which is a {@link ValidationPolicy},
-     * 
-     * @return a validation policy.
-     */
-    ValidationPolicy[]value();
+	/**
+	 * Get annotation value which is a {@link ValidationPolicy},
+	 * 
+	 * @return a validation policy.
+	 */
+	ValidationPolicy[] value();
 }

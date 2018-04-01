@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import static org.junit.Assert.assertFalse;
@@ -46,7 +45,7 @@ public class IsSetEmptyTest {
 	 */
 	@SuppressWarnings("unchecked")
 	Matcher matcher;
-	
+
 	/**
 	 * Mock description.
 	 */
@@ -55,23 +54,23 @@ public class IsSetEmptyTest {
 	/**
 	 * Mock HTTP result set.
 	 */
-	HttpInvocationsSet set; 
-	
+	HttpInvocationsSet set;
+
 	@Before
 	public void setUp() throws Exception {
-				
+
 		matcher = IsSetEmpty.isSetEmpty();
-		
+
 		// create mock description
-		description = EasyMock.createMock( Description.class);
-		
+		description = EasyMock.createMock(Description.class);
+
 		// create mock set
-		set = EasyMock.createMock( HttpInvocationsSet.class);
-		
+		set = EasyMock.createMock(HttpInvocationsSet.class);
+
 	}
 
 	@After
-	public void tearDown() throws Exception {		
+	public void tearDown() throws Exception {
 		matcher = null;
 		description = null;
 		set = null;
@@ -84,17 +83,16 @@ public class IsSetEmptyTest {
 	public void testEmptySetIsPositiveMatch() {
 
 		// initialize sequences
-		HttpInvocationSequence[] emptySequences = new HttpInvocationSequence[0] ;
-		
-		
+		HttpInvocationSequence[] emptySequences = new HttpInvocationSequence[0];
+
 		// complete mock set setup
-		EasyMock.expect( set.getSequences() );	
-		EasyMock.expectLastCall().andReturn( emptySequences );
-		EasyMock.replay( set );		
-		
+		EasyMock.expect(set.getSequences());
+		EasyMock.expectLastCall().andReturn(emptySequences);
+		EasyMock.replay(set);
+
 		// test
-		assertTrue(matcher.matches( set ));		
-		EasyMock.verify( set );
+		assertTrue(matcher.matches(set));
+		EasyMock.verify(set);
 
 	}
 
@@ -105,19 +103,18 @@ public class IsSetEmptyTest {
 	public void testSetWithOneSequenceIsNegativeMatch() {
 
 		// initialize sequences
-		HttpInvocationSequence[] sequences = new HttpInvocationSequence[1] ;
-		
-		
+		HttpInvocationSequence[] sequences = new HttpInvocationSequence[1];
+
 		// complete mock set setup
-		EasyMock.expect( set.getSequences() );	
-		EasyMock.expectLastCall().andReturn( sequences );
-		EasyMock.replay( set );		
-		
+		EasyMock.expect(set.getSequences());
+		EasyMock.expectLastCall().andReturn(sequences);
+		EasyMock.replay(set);
+
 		// test
-		assertFalse(matcher.matches( set ));		
-		EasyMock.verify( set );
+		assertFalse(matcher.matches(set));
+		EasyMock.verify(set);
 	}
-	
+
 	/**
 	 * Test that set with two entries is negative match.
 	 */
@@ -125,66 +122,65 @@ public class IsSetEmptyTest {
 	public void testSetWithTwoSequencesIsNegativeMatch() {
 
 		// initialize sequences
-		HttpInvocationSequence[] sequences = new HttpInvocationSequence[2] ;
-		
-		
+		HttpInvocationSequence[] sequences = new HttpInvocationSequence[2];
+
 		// complete mock set setup
-		EasyMock.expect( set.getSequences() );	
-		EasyMock.expectLastCall().andReturn( sequences );
-		EasyMock.replay( set );		
-		
+		EasyMock.expect(set.getSequences());
+		EasyMock.expectLastCall().andReturn(sequences);
+		EasyMock.replay(set);
+
 		// test
-		assertFalse(matcher.matches( set ));		
-		EasyMock.verify( set );
+		assertFalse(matcher.matches(set));
+		EasyMock.verify(set);
 
 	}
-		
+
 	/**
 	 * Test that matcher creates a description.
 	 */
 	@Test
 	public void testDescribeTo() {
-	
+
 		// complete mock description setup
-		EasyMock.expect( description.appendText( (String) EasyMock.isA( String.class) ) );
-		EasyMock.expectLastCall().andReturn( description );
-		EasyMock.replay( description );		
-		
+		EasyMock.expect(description.appendText((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.replay(description);
+
 		// invoke matcher
 		matcher.describeTo(description);
-		
+
 		// test
 		EasyMock.verify(description);
-		
+
 	}
 
 	/**
 	 * Test that matcher creates a mismatch description .
-	 */	
+	 */
 	@Test
 	public void testDescribeMismatch() {
 
 		// initialize sequences
-		HttpInvocationSequence[] sequences = new HttpInvocationSequence[2] ;
-				
+		HttpInvocationSequence[] sequences = new HttpInvocationSequence[2];
+
 		// complete mock set setup
-		EasyMock.expect( set.getSequences() );	
-		EasyMock.expectLastCall().andReturn( sequences );
-		EasyMock.replay( set );		
-		
+		EasyMock.expect(set.getSequences());
+		EasyMock.expectLastCall().andReturn(sequences);
+		EasyMock.replay(set);
+
 		// complete mock description setup
-		EasyMock.expect( description.appendText( (String) EasyMock.isA( String.class) ) );
-		EasyMock.expectLastCall().andReturn( description );
-		EasyMock.expect( description.appendValue( 2 ));		
-		EasyMock.expectLastCall().andReturn( description );
-		EasyMock.expect( description.appendText( (String) EasyMock.isA( String.class) ) );
-		EasyMock.expectLastCall().andReturn( description );
-		
-		EasyMock.replay( description );		
-		
+		EasyMock.expect(description.appendText((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.expect(description.appendValue(2));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.expect(description.appendText((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andReturn(description);
+
+		EasyMock.replay(description);
+
 		// invoke matcher
-		matcher.describeMismatch( set, description);
-		
+		matcher.describeMismatch(set, description);
+
 		// test
 		EasyMock.verify(description);
 		EasyMock.verify(set);

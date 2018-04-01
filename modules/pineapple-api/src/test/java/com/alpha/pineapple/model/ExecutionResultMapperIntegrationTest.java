@@ -42,26 +42,26 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.api-config.xml" })
 public class ExecutionResultMapperIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    ExecutionResultMapper executionResultMapper;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	ExecutionResultMapper executionResultMapper;
 
-    @Before
-    public void setUp() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that mapper can be looked up from the context.
-     */
-    @Test
-    public void testCanGetMapperFromContext() {
-	assertNotNull(executionResultMapper);
-    }
+	/**
+	 * Test that mapper can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetMapperFromContext() {
+		assertNotNull(executionResultMapper);
+	}
 
 }

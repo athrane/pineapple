@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import org.hamcrest.Description;
@@ -34,28 +33,27 @@ import org.hamcrest.TypeSafeMatcher;
 public class IsArrayEmpty extends TypeSafeMatcher<Object[]> {
 
 	public boolean matchesSafely(Object[] array) {
-		
-        // test whether array is empty 
-        return (array.length == 0);		
+
+		// test whether array is empty
+		return (array.length == 0);
 	}
 
 	public void describeTo(Description description) {
 		description.appendText("a empty array");
 	}
-	
-	
-    @Override
+
+	@Override
 	protected void describeMismatchSafely(Object[] array, Description mismatchDescription) {
-    	        
-        // create description
-    	mismatchDescription.appendText("contained ");    	
-    	mismatchDescription.appendValue(array.length);
-    	mismatchDescription.appendText(" entries");
+
+		// create description
+		mismatchDescription.appendText("contained ");
+		mismatchDescription.appendValue(array.length);
+		mismatchDescription.appendText(" entries");
 	}
 
 	@Factory
-    public static Matcher<Object[]> isArrayEmpty() {
-        return new IsArrayEmpty();
-    }
-    
+	public static Matcher<Object[]> isArrayEmpty() {
+		return new IsArrayEmpty();
+	}
+
 }

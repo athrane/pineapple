@@ -51,336 +51,336 @@ import com.alpha.pineapple.session.SessionDisconnectException;
 @PluginSession
 public class AgentSessionImpl implements AgentSession {
 
-    /**
-     * Null request.
-     */
-    final static Object NULL_REQUEST = null;
+	/**
+	 * Null request.
+	 */
+	final static Object NULL_REQUEST = null;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Agent resource.
-     */
-    com.alpha.pineapple.model.configuration.Resource resource;
+	/**
+	 * Agent resource.
+	 */
+	com.alpha.pineapple.model.configuration.Resource resource;
 
-    /**
-     * Resource credential.
-     */
-    Credential credential;
+	/**
+	 * Resource credential.
+	 */
+	Credential credential;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Resource property getter.
-     */
-    @Resource
-    ResourcePropertyGetter propertyGetter;
+	/**
+	 * Resource property getter.
+	 */
+	@Resource
+	ResourcePropertyGetter propertyGetter;
 
-    /**
-     * Rest template.
-     */
-    @Resource
-    RestTemplate restTemplate;
+	/**
+	 * Rest template.
+	 */
+	@Resource
+	RestTemplate restTemplate;
 
-    /**
-     * Agent host.
-     */
-    String host;
+	/**
+	 * Agent host.
+	 */
+	String host;
 
-    /**
-     * Agent port.
-     */
-    int port;
+	/**
+	 * Agent port.
+	 */
+	int port;
 
-    /**
-     * AgentSessionImpl no-arg constructor.
-     * 
-     * @throws Exception
-     *             If Session creation fails.
-     */
-    public AgentSessionImpl() throws Exception {
-	super();
-    }
-
-    public void connect(com.alpha.pineapple.model.configuration.Resource resource, Credential credential)
-	    throws SessionConnectException {
-	// validate parameters
-	Validate.notNull(resource, "resource is undefined.");
-	Validate.notNull(credential, "credential is undefined.");
-
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { resource, credential.getId() };
-	    String message = messageProvider.getMessage("as.connect_start", args);
-	    logger.debug(message);
+	/**
+	 * AgentSessionImpl no-arg constructor.
+	 * 
+	 * @throws Exception
+	 *             If Session creation fails.
+	 */
+	public AgentSessionImpl() throws Exception {
+		super();
 	}
 
-	// store in fields
-	this.credential = credential;
-	this.resource = resource;
+	public void connect(com.alpha.pineapple.model.configuration.Resource resource, Credential credential)
+			throws SessionConnectException {
+		// validate parameters
+		Validate.notNull(resource, "resource is undefined.");
+		Validate.notNull(credential, "credential is undefined.");
 
-	try {
-	    // create resource property getter
-	    ResourcePropertyGetter getter = new ResourcePropertyGetter(resource);
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { resource, credential.getId() };
+			String message = messageProvider.getMessage("as.connect_start", args);
+			logger.debug(message);
+		}
 
-	    // get resource attributes
-	    String host = getter.getProperty("host");
-	    int port = Integer.parseInt(getter.getProperty("port", AgentConstants.DEFAULT_PORT));
-	    int connectTimeOut = Integer.parseInt(getter.getProperty("timeout", AgentConstants.DEFAULT_TIMEOUT));
+		// store in fields
+		this.credential = credential;
+		this.resource = resource;
 
-	    // get credential attributes
-	    String user = credential.getUser();
-	    String password = credential.getPassword();
+		try {
+			// create resource property getter
+			ResourcePropertyGetter getter = new ResourcePropertyGetter(resource);
 
-	    connect(host, port, user, password, connectTimeOut);
-	} catch (Exception e) {
+			// get resource attributes
+			String host = getter.getProperty("host");
+			int port = Integer.parseInt(getter.getProperty("port", AgentConstants.DEFAULT_PORT));
+			int connectTimeOut = Integer.parseInt(getter.getProperty("timeout", AgentConstants.DEFAULT_TIMEOUT));
 
-	    Object[] args = { resource.getId(), e };
-	    String message = messageProvider.getMessage("as.connect_failure", args);
-	    throw new SessionConnectException(message, e);
+			// get credential attributes
+			String user = credential.getUser();
+			String password = credential.getPassword();
+
+			connect(host, port, user, password, connectTimeOut);
+		} catch (Exception e) {
+
+			Object[] args = { resource.getId(), e };
+			String message = messageProvider.getMessage("as.connect_failure", args);
+			throw new SessionConnectException(message, e);
+		}
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { resource.getId() };
+			String message = messageProvider.getMessage("as.connect_completed", args);
+			logger.debug(message);
+		}
+
 	}
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { resource.getId() };
-	    String message = messageProvider.getMessage("as.connect_completed", args);
-	    logger.debug(message);
+	@Override
+	public void connect(String host, int port, String user, String password, int timeOut)
+			throws SessionConnectException {
+		Validate.notNull(host, "host is undefined.");
+		Validate.notNull(port, "port is undefined.");
+		Validate.notNull(user, "user is undefined.");
+		Validate.notNull(password, "password is undefined.");
+		Validate.notNull(timeOut, "timeOut is undefined.");
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { user, host, port };
+			String message = messageProvider.getMessage("as.connect_start2", args);
+			logger.debug(message);
+		}
+
+		try {
+			// set fields
+			this.host = host;
+			this.port = port;
+
+			// assert host is alive
+
+		} catch (Exception e) {
+
+			Object[] args = { host, port, user, e };
+			String message = messageProvider.getMessage("as.connect_failure2", args);
+			throw new SessionConnectException(message, e);
+		}
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { host, port, user };
+			String message = messageProvider.getMessage("as.connect_completed2", args);
+			logger.debug(message);
+		}
 	}
 
-    }
+	public void disconnect() throws SessionDisconnectException {
 
-    @Override
-    public void connect(String host, int port, String user, String password, int timeOut)
-	    throws SessionConnectException {
-	Validate.notNull(host, "host is undefined.");
-	Validate.notNull(port, "port is undefined.");
-	Validate.notNull(user, "user is undefined.");
-	Validate.notNull(password, "password is undefined.");
-	Validate.notNull(timeOut, "timeOut is undefined.");
-
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { user, host, port };
-	    String message = messageProvider.getMessage("as.connect_start2", args);
-	    logger.debug(message);
+		// exit if not connected.
+		if (!isConnected()) {
+			logger.error(messageProvider.getMessage("as.disconnect_notconnected"));
+			return;
+		}
 	}
 
-	try {
-	    // set fields
-	    this.host = host;
-	    this.port = port;
+	@Override
+	public <T> T httpGetForObject(String urlPath, Class<T> responseType) {
+		String serviceUrl = createServiceUrl(urlPath);
 
-	    // assert host is alive
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { serviceUrl };
+			String message = messageProvider.getMessage("as.get_serviceurl_info", args);
+			logger.debug(message);
+		}
 
-	} catch (Exception e) {
-
-	    Object[] args = { host, port, user, e };
-	    String message = messageProvider.getMessage("as.connect_failure2", args);
-	    throw new SessionConnectException(message, e);
+		// invoke get
+		return restTemplate.getForObject(serviceUrl, responseType);
 	}
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { host, port, user };
-	    String message = messageProvider.getMessage("as.connect_completed2", args);
-	    logger.debug(message);
-	}
-    }
+	@Override
+	public void httpPost(String urlPath, MultiValueMap<String, Object> vars) {
+		String serviceUrl = createServiceUrl(urlPath);
 
-    public void disconnect() throws SessionDisconnectException {
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { serviceUrl };
+			String message = messageProvider.getMessage("as.post_serviceurl_info", args);
+			logger.debug(message);
+		}
 
-	// exit if not connected.
-	if (!isConnected()) {
-	    logger.error(messageProvider.getMessage("as.disconnect_notconnected"));
-	    return;
-	}
-    }
-
-    @Override
-    public <T> T httpGetForObject(String urlPath, Class<T> responseType) {
-	String serviceUrl = createServiceUrl(urlPath);
-
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { serviceUrl };
-	    String message = messageProvider.getMessage("as.get_serviceurl_info", args);
-	    logger.debug(message);
+		// invoke post
+		restTemplate.postForObject(serviceUrl, NULL_REQUEST, String.class, vars);
 	}
 
-	// invoke get
-	return restTemplate.getForObject(serviceUrl, responseType);
-    }
+	@Override
+	public URI httpPostForLocation(String serviceUrl, String contentType) throws Exception {
 
-    @Override
-    public void httpPost(String urlPath, MultiValueMap<String, Object> vars) {
-	String serviceUrl = createServiceUrl(urlPath);
+		// create arguments
+		Map<String, String> urlVariables = new HashMap<String, String>();
+		urlVariables.put(AgentConstants.CONTENT_TYPE_KEY, contentType);
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { serviceUrl };
-	    String message = messageProvider.getMessage("as.post_serviceurl_info", args);
-	    logger.debug(message);
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { serviceUrl };
+			String message = messageProvider.getMessage("as.post_serviceurl_info", args);
+			logger.debug(message);
+		}
+
+		// invoke post
+		URI location = restTemplate.postForLocation(serviceUrl, NULL_REQUEST, urlVariables);
+
+		// validate location
+		validateLocation(serviceUrl, location);
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			String locationAsString = null;
+			if (location != null)
+				locationAsString = location.toASCIIString();
+			Object[] args = { locationAsString };
+			String message = messageProvider.getMessage("as.location_info", args);
+			logger.debug(message);
+		}
+
+		return location;
 	}
 
-	// invoke post
-	restTemplate.postForObject(serviceUrl, NULL_REQUEST, String.class, vars);
-    }
+	@Override
+	public void httpPost(String urlPath, HttpEntity<Object> request) {
+		String serviceUrl = createServiceUrl(urlPath);
 
-    @Override
-    public URI httpPostForLocation(String serviceUrl, String contentType) throws Exception {
+		SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+		factory.setBufferRequestBody(false);
+		restTemplate.setRequestFactory(factory);
 
-	// create arguments
-	Map<String, String> urlVariables = new HashMap<String, String>();
-	urlVariables.put(AgentConstants.CONTENT_TYPE_KEY, contentType);
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { serviceUrl };
+			String message = messageProvider.getMessage("as.post_serviceurl_info", args);
+			logger.debug(message);
+		}
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { serviceUrl };
-	    String message = messageProvider.getMessage("as.post_serviceurl_info", args);
-	    logger.debug(message);
+		// invoke post
+		restTemplate.postForObject(serviceUrl, request, String.class);
 	}
 
-	// invoke post
-	URI location = restTemplate.postForLocation(serviceUrl, NULL_REQUEST, urlVariables);
+	@Override
+	public void httpPost(String urlPath) {
+		String serviceUrl = createServiceUrl(urlPath);
 
-	// validate location
-	validateLocation(serviceUrl, location);
+		if (logger.isDebugEnabled()) {
+			Object[] args = { serviceUrl };
+			String message = messageProvider.getMessage("as.post_serviceurl_info", args);
+			logger.debug(message);
+		}
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    String locationAsString = null;
-	    if (location != null)
-		locationAsString = location.toASCIIString();
-	    Object[] args = { locationAsString };
-	    String message = messageProvider.getMessage("as.location_info", args);
-	    logger.debug(message);
+		restTemplate.postForObject(serviceUrl, NULL_REQUEST, String.class);
 	}
 
-	return location;
-    }
+	@Override
+	public void httpDelete(String urlPath) {
+		String serviceUrl = createServiceUrl(urlPath);
 
-    @Override
-    public void httpPost(String urlPath, HttpEntity<Object> request) {
-	String serviceUrl = createServiceUrl(urlPath);
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { serviceUrl };
+			String message = messageProvider.getMessage("as.delete_serviceurl_info", args);
+			logger.debug(message);
+		}
 
-	SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-	factory.setBufferRequestBody(false);
-	restTemplate.setRequestFactory(factory);
+		// create arguments
+		Map<String, String> urlVariables = new HashMap<String, String>();
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { serviceUrl };
-	    String message = messageProvider.getMessage("as.post_serviceurl_info", args);
-	    logger.debug(message);
+		// invoke delete
+		restTemplate.delete(serviceUrl, urlVariables);
 	}
 
-	// invoke post
-	restTemplate.postForObject(serviceUrl, request, String.class);
-    }
+	@Override
+	public void httpDelete(String urlPath, Map<String, String> urlVariables) {
+		String serviceUrl = createServiceUrl(urlPath);
 
-    @Override
-    public void httpPost(String urlPath) {
-	String serviceUrl = createServiceUrl(urlPath);
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { serviceUrl };
+			String message = messageProvider.getMessage("as.delete_serviceurl_info", args);
+			logger.debug(message);
+		}
 
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { serviceUrl };
-	    String message = messageProvider.getMessage("as.post_serviceurl_info", args);
-	    logger.debug(message);
+		// invoke delete
+		restTemplate.delete(serviceUrl, urlVariables);
 	}
 
-	restTemplate.postForObject(serviceUrl, NULL_REQUEST, String.class);
-    }
-
-    @Override
-    public void httpDelete(String urlPath) {
-	String serviceUrl = createServiceUrl(urlPath);
-
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { serviceUrl };
-	    String message = messageProvider.getMessage("as.delete_serviceurl_info", args);
-	    logger.debug(message);
+	public com.alpha.pineapple.model.configuration.Resource getResource() {
+		return this.resource;
 	}
 
-	// create arguments
-	Map<String, String> urlVariables = new HashMap<String, String>();
-
-	// invoke delete
-	restTemplate.delete(serviceUrl, urlVariables);
-    }
-
-    @Override
-    public void httpDelete(String urlPath, Map<String, String> urlVariables) {
-	String serviceUrl = createServiceUrl(urlPath);
-
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { serviceUrl };
-	    String message = messageProvider.getMessage("as.delete_serviceurl_info", args);
-	    logger.debug(message);
+	public Credential getCredential() {
+		return this.credential;
 	}
 
-	// invoke delete
-	restTemplate.delete(serviceUrl, urlVariables);
-    }
+	public boolean isConnected() {
+		return (restTemplate != null);
+	}
 
-    public com.alpha.pineapple.model.configuration.Resource getResource() {
-	return this.resource;
-    }
+	@Override
+	public String createServiceUrl(String urlPath) {
+		String serviceUrl = new StringBuilder().append("http://").append(host).append(":")
+				.append(Integer.toString(port)).append(urlPath).toString();
+		return serviceUrl;
+	}
 
-    public Credential getCredential() {
-	return this.credential;
-    }
+	@Override
+	public String getHostName() {
+		return new StringBuilder().append("http://").append(host).append(":").append(Integer.toString(port)).toString();
+	}
 
-    public boolean isConnected() {
-	return (restTemplate != null);
-    }
+	@Override
+	public void addServiceUrlMessage(String serviceUrl, ExecutionResult result) {
+		Object[] args = { serviceUrl };
+		String key = messageProvider.getMessage("as.agent_communication_info_key");
+		String message = messageProvider.getMessage("as.execution_info", args);
+		result.addMessage(key, message);
+		return;
+	}
 
-    @Override
-    public String createServiceUrl(String urlPath) {
-	String serviceUrl = new StringBuilder().append("http://").append(host).append(":")
-		.append(Integer.toString(port)).append(urlPath).toString();
-	return serviceUrl;
-    }
-
-    @Override
-    public String getHostName() {
-	return new StringBuilder().append("http://").append(host).append(":").append(Integer.toString(port)).toString();
-    }
-
-    @Override
-    public void addServiceUrlMessage(String serviceUrl, ExecutionResult result) {
-	Object[] args = { serviceUrl };
-	String key = messageProvider.getMessage("as.agent_communication_info_key");
-	String message = messageProvider.getMessage("as.execution_info", args);
-	result.addMessage(key, message);
-	return;
-    }
-    
-    /**
-     * Validate location. Throws exception if returned location is null.
-     * 
-     * @param serviceUrl
-     *            service URL used for error message.
-     * @param location
-     *            location to validate.
-     * 
-     * @throws Execution
-     *             if validation fails.
-     */
-    void validateLocation(String serviceUrl, URI location) throws Exception {
-	if (location != null)
-	    return;
-	Object[] args = { serviceUrl };
-	String message = messageProvider.getMessage("as.location_validation_error", args);
-	throw new PluginExecutionFailedException(message);
-    }
+	/**
+	 * Validate location. Throws exception if returned location is null.
+	 * 
+	 * @param serviceUrl
+	 *            service URL used for error message.
+	 * @param location
+	 *            location to validate.
+	 * 
+	 * @throws Execution
+	 *             if validation fails.
+	 */
+	void validateLocation(String serviceUrl, URI location) throws Exception {
+		if (location != null)
+			return;
+		Object[] args = { serviceUrl };
+		String message = messageProvider.getMessage("as.location_validation_error", args);
+		throw new PluginExecutionFailedException(message);
+	}
 
 }

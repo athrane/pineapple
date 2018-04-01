@@ -51,287 +51,287 @@ import com.alpha.pineapple.model.configuration.Resources;
  */
 public class ResourceConfigurationMarshallerImpl implements ResourceConfigurationMarshaller {
 
-    /**
-     * JAXB object factory.
-     */
-    ObjectFactory factory = new ObjectFactory();
+	/**
+	 * JAXB object factory.
+	 */
+	ObjectFactory factory = new ObjectFactory();
 
-    /**
-     * Null environment info's.
-     */
-    static final Map<String, EnvironmentInfo> NULL_ENVIRONMENT_INFOS = new TreeMap<String, EnvironmentInfo>();
+	/**
+	 * Null environment info's.
+	 */
+	static final Map<String, EnvironmentInfo> NULL_ENVIRONMENT_INFOS = new TreeMap<String, EnvironmentInfo>();
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @javax.annotation.Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@javax.annotation.Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Runtime directory resolver.
-     */
-    @javax.annotation.Resource
-    RuntimeDirectoryProvider runtimeDirectoryProvider;
+	/**
+	 * Runtime directory resolver.
+	 */
+	@javax.annotation.Resource
+	RuntimeDirectoryProvider runtimeDirectoryProvider;
 
-    /**
-     * Command runner
-     */
-    @javax.annotation.Resource
-    CommandRunner commandRunner;
+	/**
+	 * Command runner
+	 */
+	@javax.annotation.Resource
+	CommandRunner commandRunner;
 
-    /**
-     * Marshall JAXB objects command.
-     */
-    @javax.annotation.Resource
-    Command marshallJAXBObjectsCommand;
+	/**
+	 * Marshall JAXB objects command.
+	 */
+	@javax.annotation.Resource
+	Command marshallJAXBObjectsCommand;
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public void save(ExecutionResult executionResult, Configuration configuration) {
+	@SuppressWarnings("unchecked")
+	@Override
+	public void save(ExecutionResult executionResult, Configuration configuration) {
 
-	// get conf directory
-	File confDirectory = runtimeDirectoryProvider.getConfigurationDirectory();
+		// get conf directory
+		File confDirectory = runtimeDirectoryProvider.getConfigurationDirectory();
 
-	// define resources
-	File resourcesFile = new File(confDirectory, RESOURCE_FILE);
+		// define resources
+		File resourcesFile = new File(confDirectory, RESOURCE_FILE);
 
-	// set execution result at command runner
-	commandRunner.setExecutionResult(executionResult);
+		// set execution result at command runner
+		commandRunner.setExecutionResult(executionResult);
 
-	// setup context
-	Context context = commandRunner.createContext();
-	context.put(MarshallJAXBObjectsCommand.FILE_KEY, resourcesFile);
-	context.put(MarshallJAXBObjectsCommand.ROOT_KEY, configuration);
+		// setup context
+		Context context = commandRunner.createContext();
+		context.put(MarshallJAXBObjectsCommand.FILE_KEY, resourcesFile);
+		context.put(MarshallJAXBObjectsCommand.ROOT_KEY, configuration);
 
-	// create description
-	Object[] args2 = { resourcesFile.getAbsolutePath() };
-	String message = messageProvider.getMessage("cmi.save_resource_info", args2);
+		// create description
+		Object[] args2 = { resourcesFile.getAbsolutePath() };
+		String message = messageProvider.getMessage("cmi.save_resource_info", args2);
 
-	// run command
-	commandRunner.run(marshallJAXBObjectsCommand, message, context);
+		// run command
+		commandRunner.run(marshallJAXBObjectsCommand, message, context);
 
-	// exit as failure if creation failed
-	if (!commandRunner.lastExecutionSucceeded()) {
+		// exit as failure if creation failed
+		if (!commandRunner.lastExecutionSucceeded()) {
 
-	    // complete as failure
-	    if (executionResult.isExecuting()) {
-		Object[] args = { resourcesFile };
-		executionResult.completeAsFailure(messageProvider, "cmi.save_resources_failed", args);
-	    }
-	    return;
-	}
-    }
-
-    @Override
-    public Configuration map(ConfigurationInfo info) {
-
-	// create configuration
-	Configuration configuration = factory.createConfiguration();
-
-	// create environments
-	configuration.setEnvironments(factory.createEnvironments());
-	List<Environment> environments = configuration.getEnvironments().getEnvironment();
-
-	// get environments from configuration
-	EnvironmentInfo[] environmentInfos = info.getEnvironments();
-
-	// if container is null then exit
-	if (environmentInfos.length == 0)
-	    return configuration;
-
-	// iterate over environments
-	for (EnvironmentInfo environmentInfo : environmentInfos) {
-
-	    // map environment
-	    Environment environment = mapToEnvironment(environmentInfo);
-	    environments.add(environment);
+			// complete as failure
+			if (executionResult.isExecuting()) {
+				Object[] args = { resourcesFile };
+				executionResult.completeAsFailure(messageProvider, "cmi.save_resources_failed", args);
+			}
+			return;
+		}
 	}
 
-	return configuration;
-    }
+	@Override
+	public Configuration map(ConfigurationInfo info) {
 
-    @Override
-    public ConfigurationInfo map(Configuration configuration) {
+		// create configuration
+		Configuration configuration = factory.createConfiguration();
 
-	// get environments from configuration
-	Environments environmentContainer = configuration.getEnvironments();
+		// create environments
+		configuration.setEnvironments(factory.createEnvironments());
+		List<Environment> environments = configuration.getEnvironments().getEnvironment();
 
-	// if container is null then exit
-	if (environmentContainer == null) {
-	    Map<String, EnvironmentInfo> environmentInfos = new TreeMap<String, EnvironmentInfo>();
-	    return new ConfigurationInfoImpl(environmentInfos);
+		// get environments from configuration
+		EnvironmentInfo[] environmentInfos = info.getEnvironments();
+
+		// if container is null then exit
+		if (environmentInfos.length == 0)
+			return configuration;
+
+		// iterate over environments
+		for (EnvironmentInfo environmentInfo : environmentInfos) {
+
+			// map environment
+			Environment environment = mapToEnvironment(environmentInfo);
+			environments.add(environment);
+		}
+
+		return configuration;
 	}
 
-	// get environments
-	List<Environment> environments = environmentContainer.getEnvironment();
+	@Override
+	public ConfigurationInfo map(Configuration configuration) {
 
-	// if environments is null then exit
-	if (environments == null) {
-	    Map<String, EnvironmentInfo> environmentInfos = new TreeMap<String, EnvironmentInfo>();
-	    return new ConfigurationInfoImpl(environmentInfos);
+		// get environments from configuration
+		Environments environmentContainer = configuration.getEnvironments();
+
+		// if container is null then exit
+		if (environmentContainer == null) {
+			Map<String, EnvironmentInfo> environmentInfos = new TreeMap<String, EnvironmentInfo>();
+			return new ConfigurationInfoImpl(environmentInfos);
+		}
+
+		// get environments
+		List<Environment> environments = environmentContainer.getEnvironment();
+
+		// if environments is null then exit
+		if (environments == null) {
+			Map<String, EnvironmentInfo> environmentInfos = new TreeMap<String, EnvironmentInfo>();
+			return new ConfigurationInfoImpl(environmentInfos);
+		}
+
+		// iterate over environments
+		Map<String, EnvironmentInfo> environmentInfos = new TreeMap<String, EnvironmentInfo>();
+		for (Environment environment : environments) {
+
+			// skip if environment exists
+			if (environmentInfos.containsKey(environment.getId()))
+				continue;
+
+			// map environment
+			EnvironmentInfo environmentInfo = mapToEnvironmentInfo(environment);
+			environmentInfos.put(environmentInfo.getId(), environmentInfo);
+		}
+
+		// create configuration info
+		return new ConfigurationInfoImpl(environmentInfos);
 	}
 
-	// iterate over environments
-	Map<String, EnvironmentInfo> environmentInfos = new TreeMap<String, EnvironmentInfo>();
-	for (Environment environment : environments) {
+	/**
+	 * Map environment to environment info.
+	 * 
+	 * @param environment
+	 *            environment object which is mapped.
+	 * 
+	 * @return environment info.
+	 */
+	EnvironmentInfo mapToEnvironmentInfo(Environment environment) {
 
-	    // skip if environment exists
-	    if (environmentInfos.containsKey(environment.getId()))
-		continue;
+		TreeMap<String, ResourceInfo> resourceInfos = new TreeMap<String, ResourceInfo>();
 
-	    // map environment
-	    EnvironmentInfo environmentInfo = mapToEnvironmentInfo(environment);
-	    environmentInfos.put(environmentInfo.getId(), environmentInfo);
+		// add description
+		String description = environment.getDescription();
+		if ((description == null) || (description.isEmpty()))
+			description = messageProvider.getMessage("cmi.null_environment_description");
+
+		// create environment info
+		EnvironmentInfoImpl environmentinfo = new EnvironmentInfoImpl(environment.getId(), description, resourceInfos);
+
+		// get resource
+		Resources resources = environment.getResources();
+		if (resources == null)
+			return environmentinfo;
+
+		// resources container
+		List<Resource> resourceContainer = resources.getResource();
+		if (resourceContainer == null)
+			return environmentinfo;
+
+		// iterate over resources and map
+		for (Resource resource : resourceContainer) {
+			ResourceInfo resourceInfo = mapToResourceInfo(resource);
+			resourceInfos.put(resourceInfo.getId(), resourceInfo);
+		}
+
+		// create environment info
+		return environmentinfo;
 	}
 
-	// create configuration info
-	return new ConfigurationInfoImpl(environmentInfos);
-    }
+	/**
+	 * Map resource to resource info.
+	 * 
+	 * @param resource
+	 *            resource object which is mapped.
+	 * 
+	 * @return resource info.
+	 */
+	ResourceInfo mapToResourceInfo(Resource resource) {
 
-    /**
-     * Map environment to environment info.
-     * 
-     * @param environment
-     *            environment object which is mapped.
-     * 
-     * @return environment info.
-     */
-    EnvironmentInfo mapToEnvironmentInfo(Environment environment) {
+		Map<String, ResourcePropertyInfo> propertyInfos = new TreeMap<String, ResourcePropertyInfo>();
 
-	TreeMap<String, ResourceInfo> resourceInfos = new TreeMap<String, ResourceInfo>();
+		// create resource info
+		ResourceInfoImpl resourceInfo = new ResourceInfoImpl(resource.getId(), resource.getPluginId(),
+				resource.getCredentialIdRef(), propertyInfos, this);
 
-	// add description
-	String description = environment.getDescription();
-	if ((description == null) || (description.isEmpty()))
-	    description = messageProvider.getMessage("cmi.null_environment_description");
+		// get properties
+		List<Property> properties = resource.getProperty();
+		if (properties == null)
+			return resourceInfo;
 
-	// create environment info
-	EnvironmentInfoImpl environmentinfo = new EnvironmentInfoImpl(environment.getId(), description, resourceInfos);
+		// iterate over properties and map
+		for (Property property : properties) {
+			ResourcePropertyInfo resourcePropertyInfo = mapToResourcePropertyInfo(property);
+			propertyInfos.put(resourcePropertyInfo.getKey(), resourcePropertyInfo);
+		}
 
-	// get resource
-	Resources resources = environment.getResources();
-	if (resources == null)
-	    return environmentinfo;
-
-	// resources container
-	List<Resource> resourceContainer = resources.getResource();
-	if (resourceContainer == null)
-	    return environmentinfo;
-
-	// iterate over resources and map
-	for (Resource resource : resourceContainer) {
-	    ResourceInfo resourceInfo = mapToResourceInfo(resource);
-	    resourceInfos.put(resourceInfo.getId(), resourceInfo);
+		return resourceInfo;
 	}
 
-	// create environment info
-	return environmentinfo;
-    }
-
-    /**
-     * Map resource to resource info.
-     * 
-     * @param resource
-     *            resource object which is mapped.
-     * 
-     * @return resource info.
-     */
-    ResourceInfo mapToResourceInfo(Resource resource) {
-
-	Map<String, ResourcePropertyInfo> propertyInfos = new TreeMap<String, ResourcePropertyInfo>();
-
-	// create resource info
-	ResourceInfoImpl resourceInfo = new ResourceInfoImpl(resource.getId(), resource.getPluginId(),
-		resource.getCredentialIdRef(), propertyInfos, this);
-
-	// get properties
-	List<Property> properties = resource.getProperty();
-	if (properties == null)
-	    return resourceInfo;
-
-	// iterate over properties and map
-	for (Property property : properties) {
-	    ResourcePropertyInfo resourcePropertyInfo = mapToResourcePropertyInfo(property);
-	    propertyInfos.put(resourcePropertyInfo.getKey(), resourcePropertyInfo);
+	/**
+	 * Map resource property to resource property info.
+	 * 
+	 * @param resource
+	 *            property object which is mapped.
+	 * 
+	 * @return resource property info.
+	 */
+	ResourcePropertyInfo mapToResourcePropertyInfo(Property property) {
+		return new ResourcePropertyImpl(property.getKey(), property.getValue());
 	}
 
-	return resourceInfo;
-    }
+	/**
+	 * Map environment info to environment.
+	 * 
+	 * @param environmentInfo
+	 *            environment info which is mapped.
+	 * 
+	 * @return environment.
+	 */
+	Environment mapToEnvironment(EnvironmentInfo environmentInfo) {
 
-    /**
-     * Map resource property to resource property info.
-     * 
-     * @param resource
-     *            property object which is mapped.
-     * 
-     * @return resource property info.
-     */
-    ResourcePropertyInfo mapToResourcePropertyInfo(Property property) {
-	return new ResourcePropertyImpl(property.getKey(), property.getValue());
-    }
+		Environment environment = factory.createEnvironment();
+		environment.setId(environmentInfo.getId());
+		environment.setDescription(environmentInfo.getDescription());
 
-    /**
-     * Map environment info to environment.
-     * 
-     * @param environmentInfo
-     *            environment info which is mapped.
-     * 
-     * @return environment.
-     */
-    Environment mapToEnvironment(EnvironmentInfo environmentInfo) {
+		// get properties
+		environment.setResources(factory.createResources());
+		List<Resource> resources = environment.getResources().getResource();
 
-	Environment environment = factory.createEnvironment();
-	environment.setId(environmentInfo.getId());
-	environment.setDescription(environmentInfo.getDescription());
+		// iterate over environments and map
+		for (ResourceInfo resourceInfo : environmentInfo.getResources()) {
+			resources.add(mapToResource(resourceInfo));
+		}
 
-	// get properties
-	environment.setResources(factory.createResources());
-	List<Resource> resources = environment.getResources().getResource();
-
-	// iterate over environments and map
-	for (ResourceInfo resourceInfo : environmentInfo.getResources()) {
-	    resources.add(mapToResource(resourceInfo));
+		return environment;
 	}
 
-	return environment;
-    }
+	@Override
+	public Resource mapToResource(ResourceInfo resourceInfo) {
+		Resource resource = factory.createResource();
+		resource.setId(resourceInfo.getId());
+		resource.setPluginId(resourceInfo.getPluginId());
+		resource.setCredentialIdRef(resourceInfo.getCredentialIdRef());
 
-    @Override
-    public Resource mapToResource(ResourceInfo resourceInfo) {
-	Resource resource = factory.createResource();
-	resource.setId(resourceInfo.getId());
-	resource.setPluginId(resourceInfo.getPluginId());
-	resource.setCredentialIdRef(resourceInfo.getCredentialIdRef());
+		// get properties
+		List<Property> resourceProps = resource.getProperty();
 
-	// get properties
-	List<Property> resourceProps = resource.getProperty();
+		// iterate over properties and map
+		for (ResourcePropertyInfo propertyInfo : resourceInfo.getProperties()) {
+			resourceProps.add(mapToProperty(propertyInfo));
+		}
 
-	// iterate over properties and map
-	for (ResourcePropertyInfo propertyInfo : resourceInfo.getProperties()) {
-	    resourceProps.add(mapToProperty(propertyInfo));
+		return resource;
 	}
 
-	return resource;
-    }
-
-    /**
-     * Map resource property info to property.
-     * 
-     * @param propertyInfo
-     *            resource property.
-     * 
-     * @return property.
-     */
-    Property mapToProperty(ResourcePropertyInfo propertyInfo) {
-	Property resourceProp = new Property();
-	resourceProp.setKey(propertyInfo.getKey());
-	resourceProp.setValue(propertyInfo.getValue());
-	return resourceProp;
-    }
+	/**
+	 * Map resource property info to property.
+	 * 
+	 * @param propertyInfo
+	 *            resource property.
+	 * 
+	 * @return property.
+	 */
+	Property mapToProperty(ResourcePropertyInfo propertyInfo) {
+		Property resourceProp = new Property();
+		resourceProp.setKey(propertyInfo.getKey());
+		resourceProp.setValue(propertyInfo.getValue());
+		return resourceProp;
+	}
 
 }

@@ -183,8 +183,8 @@ public class InspectContainerCommandSystemTest {
 	}
 
 	/**
-	 * Assert that command execution was successful and returned defined
-	 * inspection state.
+	 * Assert that command execution was successful and returned defined inspection
+	 * state.
 	 */
 	void assertCommandWasSuccessfulWithDefinedInspectionState() {
 		assertTrue(executionResult.isSuccess());
@@ -291,8 +291,7 @@ public class InspectContainerCommandSystemTest {
 	}
 
 	/**
-	 * Test that container built from default image (CentOS) returns expected
-	 * name.
+	 * Test that container built from default image (CentOS) returns expected name.
 	 * 
 	 * The name is prefixed with a "/".
 	 */

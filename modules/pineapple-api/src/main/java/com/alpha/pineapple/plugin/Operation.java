@@ -30,23 +30,23 @@ import com.alpha.pineapple.session.Session;
  */
 public interface Operation {
 
-    /**
-     * Execute operation implemented by a plugin.
-     * 
-     * @param content
-     *            Unmarshalled module model which is used as input by the
-     *            operation..
-     * @param session
-     *            connection session object which provides access to the
-     *            resource which managed by the plugin.
-     * @param result
-     *            Execution result object which is used to collection
-     *            information about the outcome of the execution of the
-     *            operation and any part of it.
-     * 
-     * @throws PluginExecutionFailedException
-     *             If execution of the operation fails.
-     */
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException;
+	/**
+	 * Execute operation implemented by a plugin.
+	 * 
+	 * @param content
+	 *            Unmarshalled module model which is used as input by the
+	 *            operation..
+	 * @param session
+	 *            connection session object which provides access to the resource
+	 *            which managed by the plugin.
+	 * @param result
+	 *            Execution result object which is used to collection information
+	 *            about the outcome of the execution of the operation and any part
+	 *            of it.
+	 * 
+	 * @throws PluginExecutionFailedException
+	 *             If execution of the operation fails.
+	 */
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException;
 
 }

@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.report.basichtml;
 
 import static org.junit.Assert.assertEquals;
@@ -40,10 +39,10 @@ public class ReportNamespaceMapperTest {
 	 * Objec under test.
 	 */
 	NamespacePrefixMapper mapper;
-	
+
 	@Before
 	public void setUp() throws Exception {
-		
+
 		mapper = new ReportNamespaceMapper();
 	}
 
@@ -67,16 +66,16 @@ public class ReportNamespaceMapperTest {
 	public void testPreDeclaredNamespaceUriContainsReportNamespace() {
 		assertEquals(ReportNamespaceMapper.BASIC_HTML_REPORT_NS, mapper.getPreDeclaredNamespaceUris()[0]);
 	}
-	
+
 	/**
 	 * Test that report name space is mapped to rbh prefix.
 	 */
 	@Test
 	public void testNamespaceIsMappedToCorrextPrefix() {
-		String namespace = ReportNamespaceMapper.BASIC_HTML_REPORT_NS;		
+		String namespace = ReportNamespaceMapper.BASIC_HTML_REPORT_NS;
 		String expected = ReportNamespaceMapper.RBH_PREFIX;
 		assertEquals(expected, mapper.getPreferredPrefix(namespace, null, true));
-		
+
 	}
 
 	/**
@@ -84,9 +83,9 @@ public class ReportNamespaceMapperTest {
 	 */
 	@Test
 	public void testUnknownNamespaceIsMappedToNull() {
-		String namespace = "http://unknown-namespace";		
+		String namespace = "http://unknown-namespace";
 		assertEquals(null, mapper.getPreferredPrefix(namespace, null, true));
-		
+
 	}
-	
+
 }

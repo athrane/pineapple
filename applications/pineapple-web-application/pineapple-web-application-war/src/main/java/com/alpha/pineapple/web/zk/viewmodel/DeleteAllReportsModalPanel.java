@@ -38,55 +38,53 @@ import com.alpha.pineapple.web.zk.utils.ErrorMessageBoxHelper;
  */
 public class DeleteAllReportsModalPanel {
 
-    /**
-     * Spring REST report controller.
-     */
-    @WireVariable
-    ReportController reportController;
+	/**
+	 * Spring REST report controller.
+	 */
+	@WireVariable
+	ReportController reportController;
 
-    /**
-     * Error message box helper.
-     */
-    @WireVariable
-    ErrorMessageBoxHelper errorMessageBoxHelper;
+	/**
+	 * Error message box helper.
+	 */
+	@WireVariable
+	ErrorMessageBoxHelper errorMessageBoxHelper;
 
-    /**
-     * Event handler for the command "delete".
-     * 
-     * The event is triggered from the "confirm" button menu. Deletes the
-     * reports.
-     * 
-     * Posts global command "deleteAllReportsConfirmed" to update view.
-     * 
-     * The global is posted to the APPLICATION queue to trigger updates in all
-     * GUI's
-     */
-    @Command
-    public void delete() {
-	try {
+	/**
+	 * Event handler for the command "delete".
+	 * 
+	 * The event is triggered from the "confirm" button menu. Deletes the reports.
+	 * 
+	 * Posts global command "deleteAllReportsConfirmed" to update view.
+	 * 
+	 * The global is posted to the APPLICATION queue to trigger updates in all GUI's
+	 */
+	@Command
+	public void delete() {
+		try {
 
-	    // delete all reports
-	    reportController.deleteAll();
+			// delete all reports
+			reportController.deleteAll();
 
-	    // post global command with APPLICATION scope which triggers update
-	    // of the scheduled operations panel in all GUI's
-	    BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, EventQueues.APPLICATION,
-		    DELETE_ALL_REPORTS_CONFIRMED_GLOBALCOMMAND, null);
+			// post global command with APPLICATION scope which triggers update
+			// of the scheduled operations panel in all GUI's
+			BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, EventQueues.APPLICATION,
+					DELETE_ALL_REPORTS_CONFIRMED_GLOBALCOMMAND, null);
 
-	} catch (Exception e) {
-	    errorMessageBoxHelper.showAndLogException(e);
+		} catch (Exception e) {
+			errorMessageBoxHelper.showAndLogException(e);
+		}
+
 	}
 
-    }
-
-    /**
-     * Event handler for the command "cancel".
-     * 
-     * The event is triggered from the "cancel" button menu which does nothing.
-     */
-    @Command
-    public void cancel() {
-	// NO-OP
-    }
+	/**
+	 * Event handler for the command "cancel".
+	 * 
+	 * The event is triggered from the "cancel" button menu which does nothing.
+	 */
+	@Command
+	public void cancel() {
+		// NO-OP
+	}
 
 }

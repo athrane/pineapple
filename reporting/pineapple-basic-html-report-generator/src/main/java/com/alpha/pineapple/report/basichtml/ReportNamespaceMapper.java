@@ -20,14 +20,13 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.report.basichtml;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
 /**
- * Implementation of the <code>NamespacePrefixMapper</code>
- * which map name spaces for the basic HTML report generator.
+ * Implementation of the <code>NamespacePrefixMapper</code> which map name
+ * spaces for the basic HTML report generator.
  */
 class ReportNamespaceMapper extends NamespacePrefixMapper {
 
@@ -35,9 +34,9 @@ class ReportNamespaceMapper extends NamespacePrefixMapper {
 	 * Report name space prefix.
 	 */
 	static final String RBH_PREFIX = "rbh";
-	
+
 	/**
-	 * Name space URL. 
+	 * Name space URL.
 	 */
 	static final String BASIC_HTML_REPORT_NS = "http://pineapple.dev.java.net/ns/report/basic_html_1_0";
 
@@ -48,7 +47,8 @@ class ReportNamespaceMapper extends NamespacePrefixMapper {
 
 	@Override
 	public String getPreferredPrefix(String namespaceUri, String arg1, boolean arg2) {
-		if (namespaceUri.equals(BASIC_HTML_REPORT_NS)) return RBH_PREFIX;
+		if (namespaceUri.equals(BASIC_HTML_REPORT_NS))
+			return RBH_PREFIX;
 		return null; // use default namespace
 	}
 }

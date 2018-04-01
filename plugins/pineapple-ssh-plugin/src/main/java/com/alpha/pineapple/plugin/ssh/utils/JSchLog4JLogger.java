@@ -25,16 +25,16 @@ package com.alpha.pineapple.plugin.ssh.utils;
 import com.jcraft.jsch.Logger;
 
 /**
- * Implementation of the JSCH {@linkplain Logger} which bridges 
- * log events to Log4j.
+ * Implementation of the JSCH {@linkplain Logger} which bridges log events to
+ * Log4j.
  */
 public class JSchLog4JLogger implements Logger {
 
 	/**
-     * Log4j logger object.
-     */
-	org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger( this.getClass().getName() );
-	
+	 * Log4j logger object.
+	 */
+	org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass().getName());
+
 	@Override
 	public boolean isEnabled(int arg0) {
 		return true;
@@ -43,21 +43,21 @@ public class JSchLog4JLogger implements Logger {
 	@Override
 	public void log(int level, String message) {
 		switch (level) {
-			case DEBUG:
-				logger.debug(message);
-		        break;
-		    case INFO:
-				logger.info(message);
-		        break;
-		    case WARN:
-				logger.warn(message);
-		        break;
-		    case ERROR:
-				logger.error(message);
-		        break;
-		    case FATAL:
-				logger.fatal(message);
-		        break;
+		case DEBUG:
+			logger.debug(message);
+			break;
+		case INFO:
+			logger.info(message);
+			break;
+		case WARN:
+			logger.warn(message);
+			break;
+		case ERROR:
+			logger.error(message);
+			break;
+		case FATAL:
+			logger.fatal(message);
+			break;
 		}
 	}
 

@@ -61,71 +61,71 @@ import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
  */
 public class ExecutionResultNotificationTest {
 
-    /**
-     * Object under test.
-     */
-    ExecutionResultNotification notification;
+	/**
+	 * Object under test.
+	 */
+	ExecutionResultNotification notification;
 
-    /**
-     * Mock execution result.
-     */
-    ExecutionResult result;
+	/**
+	 * Mock execution result.
+	 */
+	ExecutionResult result;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	// create mock result
-	result = EasyMock.createMock(ExecutionResult.class);
-    }
+		// create mock result
+		result = EasyMock.createMock(ExecutionResult.class);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that notification can be created.
-     */
-    @Test
-    public void testCreateNotification() {
-	EasyMock.replay(result);
-	notification = ExecutionResultNotificationImpl.getInstance(result, ExecutionState.EXECUTING);
+	/**
+	 * Test that notification can be created.
+	 */
+	@Test
+	public void testCreateNotification() {
+		EasyMock.replay(result);
+		notification = ExecutionResultNotificationImpl.getInstance(result, ExecutionState.EXECUTING);
 
-	// test
-	assertNotNull(notification);
-	EasyMock.verify(result);
-    }
+		// test
+		assertNotNull(notification);
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that created notification contains expected properties.
-     */
-    @Test
-    public void testContainsExpectedProperties() {
-	EasyMock.replay(result);
-	ExecutionState state = ExecutionState.EXECUTING;
-	notification = ExecutionResultNotificationImpl.getInstance(result, state);
+	/**
+	 * Test that created notification contains expected properties.
+	 */
+	@Test
+	public void testContainsExpectedProperties() {
+		EasyMock.replay(result);
+		ExecutionState state = ExecutionState.EXECUTING;
+		notification = ExecutionResultNotificationImpl.getInstance(result, state);
 
-	// test
-	assertEquals(result, notification.getResult());
-	assertEquals(state, notification.getState());
-	EasyMock.verify(result);
-    }
+		// test
+		assertEquals(result, notification.getResult());
+		assertEquals(state, notification.getState());
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that creation fails with undefined result.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreationFailsWithUndefinedResult() {
-	ExecutionState state = ExecutionState.EXECUTING;
-	notification = ExecutionResultNotificationImpl.getInstance(null, state);
-    }
+	/**
+	 * Test that creation fails with undefined result.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreationFailsWithUndefinedResult() {
+		ExecutionState state = ExecutionState.EXECUTING;
+		notification = ExecutionResultNotificationImpl.getInstance(null, state);
+	}
 
-    /**
-     * Test that creation fails with undefined state.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreationFailsWithUndefinedState() {
-	EasyMock.replay(result);
-	notification = ExecutionResultNotificationImpl.getInstance(result, null);
-    }
+	/**
+	 * Test that creation fails with undefined state.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreationFailsWithUndefinedState() {
+		EasyMock.replay(result);
+		notification = ExecutionResultNotificationImpl.getInstance(result, null);
+	}
 
 }

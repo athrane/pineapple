@@ -30,121 +30,121 @@ import java.lang.reflect.Modifier;
  */
 public class ReflectionHelper {
 
-    /**
-     * Create object instance for class which takes single String as constructor
-     * argument.
-     * 
-     * @param classs
-     *            Class to instantiate object from.
-     * @param argument
-     *            String argument which should be used as parameter when
-     *            invoking the constructor.
-     * 
-     * @return object instance of supplied class.
-     */
-    public Object createObject(Class classs, String argument) {
-	try {
-	    Class[] classArgs = { String.class };
-	    Constructor constructor;
-	    constructor = classs.getConstructor(classArgs);
-	    Object[] constructorArgs = new Object[] { argument };
-	    return constructor.newInstance(constructorArgs);
-	} catch (Exception e) {
-	    throw new InstantiationError("Object instantiation failed.");
+	/**
+	 * Create object instance for class which takes single String as constructor
+	 * argument.
+	 * 
+	 * @param classs
+	 *            Class to instantiate object from.
+	 * @param argument
+	 *            String argument which should be used as parameter when invoking
+	 *            the constructor.
+	 * 
+	 * @return object instance of supplied class.
+	 */
+	public Object createObject(Class classs, String argument) {
+		try {
+			Class[] classArgs = { String.class };
+			Constructor constructor;
+			constructor = classs.getConstructor(classArgs);
+			Object[] constructorArgs = new Object[] { argument };
+			return constructor.newInstance(constructorArgs);
+		} catch (Exception e) {
+			throw new InstantiationError("Object instantiation failed.");
+		}
 	}
-    }
 
-    /**
-     * Create object instance with no-arg constructor.
-     * 
-     * @param className
-     *            Class name to create instance of.
-     * 
-     * @return object instance of requested class.
-     */
-    public Object createObject(String className) {
-	try {
-	    Class classs = Class.forName(className);
-	    return classs.newInstance();
+	/**
+	 * Create object instance with no-arg constructor.
+	 * 
+	 * @param className
+	 *            Class name to create instance of.
+	 * 
+	 * @return object instance of requested class.
+	 */
+	public Object createObject(String className) {
+		try {
+			Class classs = Class.forName(className);
+			return classs.newInstance();
 
-	} catch (Exception e) {
-	    throw new InstantiationError("Object instantiation failed.");
+		} catch (Exception e) {
+			throw new InstantiationError("Object instantiation failed.");
+		}
 	}
-    }
 
-    /**
-     * Returns true if class has no visible constructors.
-     * 
-     * @return true if class has no visible constructors.
-     */
-    public <T> boolean hasNoPublicConstructors(T targetObject) {
-	Class<?> targetObjectType = targetObject.getClass();
-	Constructor<?>[] publicConstructurs = targetObjectType.getConstructors();
-	return (publicConstructurs.length == 0);
-    }
-
-    /**
-     * Returns true if class has no public no-arg constructors.
-     * 
-     * @return true if class has no public no-arg constructors.
-     */
-    public <T> boolean hasNoPublicNoArgConstructors(T targetObject) {
-	if (hasNoPublicConstructors(targetObject))
-	    return true;
-	Class<?> targetObjectType = targetObject.getClass();
-	Constructor<?>[] publicConstructurs = targetObjectType.getConstructors();
-	for (Constructor<?> constructor : publicConstructurs) {
-	    if (constructor.getParameterTypes().length > 0)
-		return true;
+	/**
+	 * Returns true if class has no visible constructors.
+	 * 
+	 * @return true if class has no visible constructors.
+	 */
+	public <T> boolean hasNoPublicConstructors(T targetObject) {
+		Class<?> targetObjectType = targetObject.getClass();
+		Constructor<?>[] publicConstructurs = targetObjectType.getConstructors();
+		return (publicConstructurs.length == 0);
 	}
-	return false;
-    }
 
-    /**
-     * Returns true if class is immutable.
-     * 
-     * @return true if class is immutable.
-     */
-    public <T> boolean isImmutable(T targetObject) {
-	return (Modifier.isFinal(targetObject.getClass().getModifiers()));
-    }
+	/**
+	 * Returns true if class has no public no-arg constructors.
+	 * 
+	 * @return true if class has no public no-arg constructors.
+	 */
+	public <T> boolean hasNoPublicNoArgConstructors(T targetObject) {
+		if (hasNoPublicConstructors(targetObject))
+			return true;
+		Class<?> targetObjectType = targetObject.getClass();
+		Constructor<?>[] publicConstructurs = targetObjectType.getConstructors();
+		for (Constructor<?> constructor : publicConstructurs) {
+			if (constructor.getParameterTypes().length > 0)
+				return true;
+		}
+		return false;
+	}
 
-    /**
-     * Return true if object type is primitive.
-     * 
-     * @param targetObject
-     *            target object to test.
-     * 
-     * @return true if target object is primitive.
-     */
-    public boolean isPrimitiveReturnType(Object targetObject) {
-	return targetObject.getClass().isPrimitive();
-    }
+	/**
+	 * Returns true if class is immutable.
+	 * 
+	 * @return true if class is immutable.
+	 */
+	public <T> boolean isImmutable(T targetObject) {
+		return (Modifier.isFinal(targetObject.getClass().getModifiers()));
+	}
 
-    /**
-     * Return true if object type is private.
-     * 
-     * @param targetObject
-     *            target object to test.
-     * 
-     * @return true if target object is private.
-     */
-    public boolean isPrivateClass(Object targetObject) {
-	int modifiers = targetObject.getClass().getModifiers();
-	return Modifier.isPrivate(modifiers);
-    }
+	/**
+	 * Return true if object type is primitive.
+	 * 
+	 * @param targetObject
+	 *            target object to test.
+	 * 
+	 * @return true if target object is primitive.
+	 */
+	public boolean isPrimitiveReturnType(Object targetObject) {
+		return targetObject.getClass().isPrimitive();
+	}
 
-    /**
-     * Return true if target object type is string.
-     * 
-     * @param targetObject
-     *            target object.
-     * 
-     * @return true if target object type is string.
-     */
-    public boolean isStringType(Object targetObject) {
-	Class<?> returnType = targetObject.getClass();
-	return String.class.isAssignableFrom(returnType);
-    }
+	/**
+	 * Return true if object type is private.
+	 * 
+	 * @param targetObject
+	 *            target object to test.
+	 * 
+	 * @return true if target object is private.
+	 */
+	public boolean isPrivateClass(Object targetObject) {
+		int modifiers = targetObject.getClass().getModifiers();
+		return Modifier.isPrivate(modifiers);
+	}
+
+	/**
+	 * Return true if target object type is string.
+	 * 
+	 * @param targetObject
+	 *            target object.
+	 * 
+	 * @return true if target object type is string.
+	 */
+	public boolean isStringType(Object targetObject) {
+		Class<?> returnType = targetObject.getClass();
+		return String.class.isAssignableFrom(returnType);
+	}
 
 }

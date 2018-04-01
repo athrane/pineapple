@@ -20,152 +20,152 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.testutils;
 
 /**
  * Definition of constants used in the test cases.
  */
-public class InfrastructurePluginTestConstants
-{
+public class InfrastructurePluginTestConstants {
 
-    /**
-     * WebLogic user.
-     */
-    public static final String userWeblogic = "weblogic";
+	/**
+	 * WebLogic user.
+	 */
+	public static final String userWeblogic = "weblogic";
 
-    /**
-     * WebLogic password.
-     */
-    public static final String passwordWeblogic = "weblogic";
+	/**
+	 * WebLogic password.
+	 */
+	public static final String passwordWeblogic = "weblogic";
 
-    /**
-     * Test-Resource user.
-     */
-    public static final String userTestResource = "test-user";
+	/**
+	 * Test-Resource user.
+	 */
+	public static final String userTestResource = "test-user";
 
-    /**
-     * Test-Resource password.
-     */
-    public static final String passwordTestResource = "test-password";    
-    
-    /**
-     * WebLogic adm url.
-     */
-    public static final String weblogicUrl = "t3://127.0.0.1:7001";
+	/**
+	 * Test-Resource password.
+	 */
+	public static final String passwordTestResource = "test-password";
 
-    /**
-     * MBean server url path, used to access WebLogic Edit MBean server.
-     */
-    public static final String weblogicEditUrlPath = "weblogic.management.mbeanservers.edit";
+	/**
+	 * WebLogic adm url.
+	 */
+	public static final String weblogicUrl = "t3://127.0.0.1:7001";
 
-    /**
-     * MBean server url path, used to access WebLogic Domain Runtime MBean server.
-     */
-    public static final String weblogicRuntimeUrlPath = "weblogic.management.mbeanservers.domainruntime";
+	/**
+	 * MBean server url path, used to access WebLogic Edit MBean server.
+	 */
+	public static final String weblogicEditUrlPath = "weblogic.management.mbeanservers.edit";
 
-    /**
-     * WebLogic adm port.
-     */
-    public static int weblogicPort = 7001;
+	/**
+	 * MBean server url path, used to access WebLogic Domain Runtime MBean server.
+	 */
+	public static final String weblogicRuntimeUrlPath = "weblogic.management.mbeanservers.domainruntime";
 
-    /**
-     * WebLogic adm hostname.
-     */
-    public static String weblogicHostname = "127.0.0.1";
+	/**
+	 * WebLogic adm port.
+	 */
+	public static int weblogicPort = 7001;
 
-    /**
-     * Credential identifier, used to access WebLogic JMX Edit MBean server in the unit tests.
-     */
-    public static final String credentialIdWLSJMXEdit = "wls-edit";
+	/**
+	 * WebLogic adm hostname.
+	 */
+	public static String weblogicHostname = "127.0.0.1";
 
-    /**
-     * Credential identifier, used to access WebLogic JMX Domain Runtime MBean server in the unit tests.
-     */
-    public static final String credentialIdWLSJMXRuntime = "wls-domainruntime";
+	/**
+	 * Credential identifier, used to access WebLogic JMX Edit MBean server in the
+	 * unit tests.
+	 */
+	public static final String credentialIdWLSJMXEdit = "wls-edit";
 
-    /**
-     * Credential identifier, used to access the Test-Resource in the unit tests.
-     */
-    public static final String credentialIdTestResource = "test-resource-credentialidentifier";
-    
-    /**
-     * Credential type, used to access JMX MBean servers in the unit tests.
-     */
-    public static final String credTypeJMX = "jmx";;
+	/**
+	 * Credential identifier, used to access WebLogic JMX Domain Runtime MBean
+	 * server in the unit tests.
+	 */
+	public static final String credentialIdWLSJMXRuntime = "wls-domainruntime";
 
-    /**
-     * The target environment used in unit tests.
-     */
-    public static String targetEnvironment = "localdomain";
+	/**
+	 * Credential identifier, used to access the Test-Resource in the unit tests.
+	 */
+	public static final String credentialIdTestResource = "test-resource-credentialidentifier";
 
-    /**
-     * Operation type used in unit tests.
-     */
-    public static String unittestOperationType = "unittest-operation";;
+	/**
+	 * Credential type, used to access JMX MBean servers in the unit tests.
+	 */
+	public static final String credTypeJMX = "jmx";;
 
-    /**
-     * Handler composite-management value.
-     */
-    public static String managementCompositeValueTrue = "true";
+	/**
+	 * The target environment used in unit tests.
+	 */
+	public static String targetEnvironment = "localdomain";
 
-    /**
-     * Deployment directory where the unit test expects Pineapple-Unit packages to be located.
-     */
-    public static String pineappleunitDir = "c:/deployments";
+	/**
+	 * Operation type used in unit tests.
+	 */
+	public static String unittestOperationType = "unittest-operation";;
 
-    /**
-     * Name of Pineapple-Unit module used in unit tests.
-     */
-    public static String pineappleUnitName = "pineappleunit-test-application-1.0.16";
+	/**
+	 * Handler composite-management value.
+	 */
+	public static String managementCompositeValueTrue = "true";
 
-    /**
-     * Runtime directory used by unit test to store data.
-     */
-    public static String runtimeDirectory = "c:/temp/pineapple-unittest/";
+	/**
+	 * Deployment directory where the unit test expects Pineapple-Unit packages to
+	 * be located.
+	 */
+	public static String pineappleunitDir = "c:/deployments";
 
-    /**
-     * Types of platform environment used during unit test.
-     */
-    public enum Environment
-    {
-        LOCAL, TEST, QA, PRODCTION
-    };
+	/**
+	 * Name of Pineapple-Unit module used in unit tests.
+	 */
+	public static String pineappleUnitName = "pineappleunit-test-application-1.0.16";
 
-    /**
-     * Null Resource implementation factory used during unit tests. Return nulls from all
-     * create methods.
-     */
-    public static final String resourceFactoryNull = "com.alpha.pineapple.session.NullResourceFactory";
+	/**
+	 * Runtime directory used by unit test to store data.
+	 */
+	public static String runtimeDirectory = "c:/temp/pineapple-unittest/";
 
-    /**
-     * Null Resource implementation factory used during unit tests. Return nulls from all
-     * create methods.
-     */
-    public static final String resourceFactoryTestResource = "com.alpha.pineapple.resource.test.TestFactoryImpl";
-    
-    /**
-     * Resource identifier for WebLogic JMX Edit MBean server used in unit tests.  
-     */
-    public static final String resourceIdentifierWLSEdit = "wls-edit";
+	/**
+	 * Types of platform environment used during unit test.
+	 */
+	public enum Environment {
+		LOCAL, TEST, QA, PRODCTION
+	};
 
-    /**
-     * Resource identifier for Test-Resource used in unit tests.  
-     */    
-    public static final String resourceIdentifierTestResource = "test-resource-resourceidentifier";
+	/**
+	 * Null Resource implementation factory used during unit tests. Return nulls
+	 * from all create methods.
+	 */
+	public static final String resourceFactoryNull = "com.alpha.pineapple.session.NullResourceFactory";
 
-    /**
-     * Resource identifier for Test-Resource used in unit tests.  
-     */    
-    public static final String resourceIdentifierNetworkResource = "network-test";
-    
-    /**
-     * Resource identifier for WebLogic JMX Runtime MBean server used in unit tests.  
-     */    
-    public static final String resourceIdentifierWLSRuntime = "wls-runtime";
-    
-    /**
-     * File name for credentials file used in unit tests.
-     */
-    public static final String credentialsFileName = "credentials.xml";
+	/**
+	 * Null Resource implementation factory used during unit tests. Return nulls
+	 * from all create methods.
+	 */
+	public static final String resourceFactoryTestResource = "com.alpha.pineapple.resource.test.TestFactoryImpl";
+
+	/**
+	 * Resource identifier for WebLogic JMX Edit MBean server used in unit tests.
+	 */
+	public static final String resourceIdentifierWLSEdit = "wls-edit";
+
+	/**
+	 * Resource identifier for Test-Resource used in unit tests.
+	 */
+	public static final String resourceIdentifierTestResource = "test-resource-resourceidentifier";
+
+	/**
+	 * Resource identifier for Test-Resource used in unit tests.
+	 */
+	public static final String resourceIdentifierNetworkResource = "network-test";
+
+	/**
+	 * Resource identifier for WebLogic JMX Runtime MBean server used in unit tests.
+	 */
+	public static final String resourceIdentifierWLSRuntime = "wls-runtime";
+
+	/**
+	 * File name for credentials file used in unit tests.
+	 */
+	public static final String credentialsFileName = "credentials.xml";
 }

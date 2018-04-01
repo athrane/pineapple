@@ -48,44 +48,44 @@ import com.alpha.pineapple.web.report.ReportRepository;
 @RequestMapping(REST_REPORT_URI)
 public class ReportController {
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider webMessageProvider;
 
-    /**
-     * Report repository.
-     */
-    @Resource
-    ReportRepository reportRepository;
+	/**
+	 * Report repository.
+	 */
+	@Resource
+	ReportRepository reportRepository;
 
-    /**
-     * REST result mapper.
-     */
-    @Resource
-    RestResultMapper restResultMapper;
+	/**
+	 * REST result mapper.
+	 */
+	@Resource
+	RestResultMapper restResultMapper;
 
-    /**
-     * Get reports.
-     * 
-     * @return collection of reports and HTTP 200 (OK).
-     */
-    @RequestMapping(value = REST_REPORT_GET_REPORTS_PATH, method = RequestMethod.GET)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public Reports getReports() {
-	return this.restResultMapper.mapReports(reportRepository.getReports());
-    }
+	/**
+	 * Get reports.
+	 * 
+	 * @return collection of reports and HTTP 200 (OK).
+	 */
+	@RequestMapping(value = REST_REPORT_GET_REPORTS_PATH, method = RequestMethod.GET)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public Reports getReports() {
+		return this.restResultMapper.mapReports(reportRepository.getReports());
+	}
 
-    /**
-     * Delete all scheduled operations.
-     */
-    @RequestMapping(value = REST_REPORT_DELETE_REPORTS_PATH, method = RequestMethod.DELETE)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteAll() {
-	reportRepository.deleteAll();
-    }
+	/**
+	 * Delete all scheduled operations.
+	 */
+	@RequestMapping(value = REST_REPORT_DELETE_REPORTS_PATH, method = RequestMethod.DELETE)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public void deleteAll() {
+		reportRepository.deleteAll();
+	}
 
 }

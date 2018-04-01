@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.command.initialization;
 
 import java.lang.annotation.Documented;
@@ -31,17 +30,16 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to define initialization of field in Chain command with value from
- * Chain context. 
+ * Chain context.
  */
-@Target({ElementType.FIELD})
+@Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ValidateValue
-{
-    /**
-     * Get annotation value which is a {@link ValidationPolicy},
-     *  
-     * @return a validation policy.
-     */
-    ValidationPolicy[] value();
+public @interface ValidateValue {
+	/**
+	 * Get annotation value which is a {@link ValidationPolicy},
+	 * 
+	 * @return a validation policy.
+	 */
+	ValidationPolicy[] value();
 }

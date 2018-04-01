@@ -30,18 +30,18 @@ import com.alpha.pineapple.session.Session;
  */
 public interface SessionRetryProxyFactory {
 
-    /**
-     * Decorate session with proxy to support retry logic. All operations on the
-     * session object will have retry logic applied to them.
-     * 
-     * @param session
-     *            target session which is proxied.
-     * 
-     * @return proxy decorating the target session object.
-     * 
-     * @throws IllegalStateException
-     *             if factory isn't initialized prior to usage.
-     */
-    public Session decorateWithProxy(Session session, ExecutionResult result);
+	/**
+	 * Decorate session with proxy to support retry logic. All operations on the
+	 * session object will have retry logic applied to them.
+	 * 
+	 * @param session
+	 *            target session which is proxied.
+	 * 
+	 * @return proxy decorating the target session object.
+	 * 
+	 * @throws IllegalStateException
+	 *             if factory isn't initialized prior to usage.
+	 */
+	public Session decorateWithProxy(Session session, ExecutionResult result);
 
 }

@@ -96,102 +96,101 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class CreateTaggedImageCommand implements Command {
 
-    /**
-     * Key used to identify property in context: Source image info.
-     */
-    public static final String SOURCE_IMAGE_INFO_KEY = "source-image-info";
+	/**
+	 * Key used to identify property in context: Source image info.
+	 */
+	public static final String SOURCE_IMAGE_INFO_KEY = "source-image-info";
 
-    /**
-     * Key used to identify property in context: Target image info.
-     */
-    public static final String TARGET_IMAGE_INFO_KEY = "target-image-info";
+	/**
+	 * Key used to identify property in context: Target image info.
+	 */
+	public static final String TARGET_IMAGE_INFO_KEY = "target-image-info";
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Target image info.
-     */
-    @Initialize(TARGET_IMAGE_INFO_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ImageInfo targetImageInfo;
+	/**
+	 * Target image info.
+	 */
+	@Initialize(TARGET_IMAGE_INFO_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ImageInfo targetImageInfo;
 
-    /**
-     * Source image info.
-     */
-    @Initialize(SOURCE_IMAGE_INFO_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ImageInfo sourceImageInfo;
+	/**
+	 * Source image info.
+	 */
+	@Initialize(SOURCE_IMAGE_INFO_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ImageInfo sourceImageInfo;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// fail if source doesn't image exists in repository
-	if (!dockerClient.imageExists(session, sourceImageInfo)) {
-	    Object[] args = { sourceImageInfo.getFullyQualifiedName() };
-	    executionResult.completeAsFailure(messageProvider, "ctic.tag_image_doesnt_exist_failure", args);
-	    return Command.CONTINUE_PROCESSING;
+		// fail if source doesn't image exists in repository
+		if (!dockerClient.imageExists(session, sourceImageInfo)) {
+			Object[] args = { sourceImageInfo.getFullyQualifiedName() };
+			executionResult.completeAsFailure(messageProvider, "ctic.tag_image_doesnt_exist_failure", args);
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// exit if image exists in repository
+		if (dockerClient.imageExists(session, targetImageInfo)) {
+			Object[] args = { targetImageInfo.getFullyQualifiedName() };
+			executionResult.completeAsSuccessful(messageProvider, "ctic.image_already_exists_success", args);
+			String message = messageProvider.getMessage("ctic.image_already_exists_note");
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// set variables
+		Map<String, String> urlVariables = new HashMap<String, String>(3);
+		urlVariables.put("image", sourceImageInfo.getFullyQualifiedName());
+		urlVariables.put("repository", targetImageInfo.getRepository());
+		urlVariables.put("tag", targetImageInfo.getTag());
+
+		// post to tag image
+		session.httpPost(TAG_IMAGE_URI, urlVariables);
+
+		// complete result
+		Object[] args = { targetImageInfo.getFullyQualifiedName(), sourceImageInfo.getFullyQualifiedName() };
+		executionResult.completeAsSuccessful(messageProvider, "ctic.tag_image_completed", args);
+
+		return Command.CONTINUE_PROCESSING;
 	}
-
-	// exit if image exists in repository
-	if (dockerClient.imageExists(session, targetImageInfo)) {
-	    Object[] args = { targetImageInfo.getFullyQualifiedName() };
-	    executionResult.completeAsSuccessful(messageProvider, "ctic.image_already_exists_success", args);
-	    String message = messageProvider.getMessage("ctic.image_already_exists_note");
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-	    return Command.CONTINUE_PROCESSING;
-	}
-
-	// set variables
-	Map<String, String> urlVariables = new HashMap<String, String>(3);
-	urlVariables.put("image", sourceImageInfo.getFullyQualifiedName());
-	urlVariables.put("repository", targetImageInfo.getRepository());
-	urlVariables.put("tag", targetImageInfo.getTag());
-
-	// post to tag image
-	session.httpPost(TAG_IMAGE_URI, urlVariables);
-
-	// complete result
-	Object[] args = { targetImageInfo.getFullyQualifiedName(), sourceImageInfo.getFullyQualifiedName() };
-	executionResult.completeAsSuccessful(messageProvider, "ctic.tag_image_completed", args);
-
-	return Command.CONTINUE_PROCESSING;
-    }
 
 }

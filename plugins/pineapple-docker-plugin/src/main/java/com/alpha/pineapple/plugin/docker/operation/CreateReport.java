@@ -48,103 +48,103 @@ import com.alpha.pineapple.session.Session;
  */
 @PluginOperation(OperationNames.CREATE_REPORT)
 public class CreateReport implements Operation {
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Operation utilities.
-     */
-    @Resource
-    OperationUtils operationUtils;
+	/**
+	 * Operation utilities.
+	 */
+	@Resource
+	OperationUtils operationUtils;
 
-    /**
-     * Model mapper object.
-     */
-    @Resource
-    Mapper mapper;
+	/**
+	 * Model mapper object.
+	 */
+	@Resource
+	Mapper mapper;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-	// validate parameters
-	Validate.notNull(content, "content is undefined.");
-	Validate.notNull(session, "session is undefined.");
-	Validate.notNull(result, "result is undefined.");
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+		// validate parameters
+		Validate.notNull(content, "content is undefined.");
+		Validate.notNull(session, "session is undefined.");
+		Validate.notNull(result, "result is undefined.");
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { content.getClass().getName(), content };
-	    String message = messageProvider.getMessage("cr.start", args);
-	    logger.debug(message);
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { content.getClass().getName(), content };
+			String message = messageProvider.getMessage("cr.start", args);
+			logger.debug(message);
+		}
+
+		// validate parameters
+		operationUtils.validateContentType(content, DockerConstants.LEGAL_CONTENT_TYPES);
+		operationUtils.validateSessionType(session, DockerSession.class);
+
+		try {
+			// type cast session
+			DockerSession dockerSession = (DockerSession) session;
+
+			// ignore model and create report
+			createReport(dockerSession, result);
+
+			// compute execution state from children
+			result.completeAsComputed(messageProvider, "cr.completed", null, "cr.failed", null);
+		} catch (Exception e) {
+			Object[] args = { e.toString() };
+			String message = messageProvider.getMessage("cr.error", args);
+			throw new PluginExecutionFailedException(message, e);
+		}
 	}
 
-	// validate parameters
-	operationUtils.validateContentType(content, DockerConstants.LEGAL_CONTENT_TYPES);
-	operationUtils.validateSessionType(session, DockerSession.class);
-
-	try {
-	    // type cast session
-	    DockerSession dockerSession = (DockerSession) session;
-
-	    // ignore model and create report
-	    createReport(dockerSession, result);
-
-	    // compute execution state from children
-	    result.completeAsComputed(messageProvider, "cr.completed", null, "cr.failed", null);
-	} catch (Exception e) {
-	    Object[] args = { e.toString() };
-	    String message = messageProvider.getMessage("cr.error", args);
-	    throw new PluginExecutionFailedException(message, e);
+	/**
+	 * Process model commands.
+	 * 
+	 * @param session
+	 *            Docker session.
+	 * @param result
+	 *            execution result.
+	 */
+	void createReport(DockerSession session, ExecutionResult result) {
+		reportOnImages(session, result);
+		reportOnContainers(session, result);
 	}
-    }
 
-    /**
-     * Process model commands.
-     * 
-     * @param session
-     *            Docker session.
-     * @param result
-     *            execution result.
-     */
-    void createReport(DockerSession session, ExecutionResult result) {
-	reportOnImages(session, result);
-	reportOnContainers(session, result);
-    }
+	/**
+	 * Create report from Docker images.
+	 * 
+	 * @param session
+	 *            Docker session.
+	 * @param result
+	 *            execution result
+	 */
+	void reportOnImages(DockerSession session, ExecutionResult result) {
+		dockerClient.reportOnImages(session, result);
+	}
 
-    /**
-     * Create report from Docker images.
-     * 
-     * @param session
-     *            Docker session.
-     * @param result
-     *            execution result
-     */
-    void reportOnImages(DockerSession session, ExecutionResult result) {
-	dockerClient.reportOnImages(session, result);
-    }
-
-    /**
-     * Create report from Docker containers.
-     * 
-     * @param session
-     *            Docker session.
-     * @param result
-     *            execution result
-     */
-    void reportOnContainers(DockerSession session, ExecutionResult result) {
-	dockerClient.reportOnContainers(session, result);
-    }
+	/**
+	 * Create report from Docker containers.
+	 * 
+	 * @param session
+	 *            Docker session.
+	 * @param result
+	 *            execution result
+	 */
+	void reportOnContainers(DockerSession session, ExecutionResult result) {
+		dockerClient.reportOnContainers(session, result);
+	}
 
 }

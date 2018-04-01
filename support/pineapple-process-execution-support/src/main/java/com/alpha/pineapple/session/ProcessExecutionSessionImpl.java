@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.session;
 
 import javax.annotation.Resource;
@@ -39,93 +38,88 @@ import com.alpha.pineapple.resource.ResourceException;
 import com.alpha.pineapple.resource.ResourcePropertyGetter;
 
 /**
- * Implementation of the {@link ProcessExecutionSession} interface. 
+ * Implementation of the {@link ProcessExecutionSession} interface.
  */
-public class ProcessExecutionSessionImpl implements ProcessExecutionSession
-{
+public class ProcessExecutionSessionImpl implements ProcessExecutionSession {
 
 	/**
-	 * Null time out value, triggers the command to use is default value. 
+	 * Null time out value, triggers the command to use is default value.
 	 */
-    static final int NULL_TIMEOUT = 0;
+	static final int NULL_TIMEOUT = 0;
 
 	/**
-     * First array index.
-     */
-    final int FIRST_INDEX = 0;
-        
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
- 
-    /**
-     * Resource.
-     */
-    com.alpha.pineapple.model.configuration.Resource resource;
+	 * First array index.
+	 */
+	final int FIRST_INDEX = 0;
 
-    /**
-     * Resource credential.
-     */
-    Credential credential;
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Command runner
-     */
-    @Resource
-    CommandRunner commandRunner;   
-    
-    /**
-     * Message provider for I18N support.
-     */
-	@Resource(name="processExecutionMessageProvider")
+	/**
+	 * Resource.
+	 */
+	com.alpha.pineapple.model.configuration.Resource resource;
+
+	/**
+	 * Resource credential.
+	 */
+	Credential credential;
+
+	/**
+	 * Command runner
+	 */
+	@Resource
+	CommandRunner commandRunner;
+
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "processExecutionMessageProvider")
 	MessageProvider messageProvider;
-    
-    /**
-     * Resource getter object.
-     */
-    @Resource    
-    ResourcePropertyGetter propertyGetter;
-	
-    /**
-     * Process execution command.
-     */
-    @Resource    
-    Command processExecutionCommand;
-            
 
-    public void connect( com.alpha.pineapple.model.configuration.Resource resource, Credential credential ) throws SessionConnectException
-    {
-        // validate parameters
-        Validate.notNull( resource, "resource is undefined." );
-        Validate.notNull( credential, "credential is undefined." );
-        
-	    // store in fields
-	    this.credential = credential;
-	    this.resource = resource;
-	    
-        // initialize property getter
-        this.propertyGetter.setResource(resource);
-	    
-	    // log debug message
-	    if ( logger.isDebugEnabled() )
-	    {
-	    	Object[] args = { resource, credential.getId() };    	        	
-	    	String message = messageProvider.getMessage("pesi.connect", args );
-	    	logger.debug( message );
-	    }	                                   
-    }
+	/**
+	 * Resource getter object.
+	 */
+	@Resource
+	ResourcePropertyGetter propertyGetter;
 
-    public void disconnect() throws SessionDisconnectException
-    {    	
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-        	String message = messageProvider.getMessage("pesi.disconnect" );
-        	logger.debug( message );
-        }
-    }
-        
+	/**
+	 * Process execution command.
+	 */
+	@Resource
+	Command processExecutionCommand;
+
+	public void connect(com.alpha.pineapple.model.configuration.Resource resource, Credential credential)
+			throws SessionConnectException {
+		// validate parameters
+		Validate.notNull(resource, "resource is undefined.");
+		Validate.notNull(credential, "credential is undefined.");
+
+		// store in fields
+		this.credential = credential;
+		this.resource = resource;
+
+		// initialize property getter
+		this.propertyGetter.setResource(resource);
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { resource, credential.getId() };
+			String message = messageProvider.getMessage("pesi.connect", args);
+			logger.debug(message);
+		}
+	}
+
+	public void disconnect() throws SessionDisconnectException {
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			String message = messageProvider.getMessage("pesi.disconnect");
+			logger.debug(message);
+		}
+	}
+
 	public com.alpha.pineapple.model.configuration.Resource getResource() {
 		return this.resource;
 	}
@@ -135,21 +129,22 @@ public class ProcessExecutionSessionImpl implements ProcessExecutionSession
 	}
 
 	@SuppressWarnings("unchecked")
-	public void execute(String executable, String[] arguments, long timeout, String description, ExecutionResult parent) {
+	public void execute(String executable, String[] arguments, long timeout, String description,
+			ExecutionResult parent) {
 
-        // create context
-        Context context = commandRunner.createContext();
-        
-        // map command parameters
+		// create context
+		Context context = commandRunner.createContext();
+
+		// map command parameters
 		context.put(ProcessExecutionCommand.EXECUTABLE_KEY, executable);
 		context.put(ProcessExecutionCommand.ARGUMENTS_KEY, arguments);
-		context.put(ProcessExecutionCommand.TIMEOUT_KEY, timeout);		
+		context.put(ProcessExecutionCommand.TIMEOUT_KEY, timeout);
 
-        // configure command runner with execution result
-        commandRunner.setExecutionResult( parent );
-                
-        // run test
-        commandRunner.run(processExecutionCommand, description, context );                     
+		// configure command runner with execution result
+		commandRunner.setExecutionResult(parent);
+
+		// run test
+		commandRunner.run(processExecutionCommand, description, context);
 	}
 
 	public void execute(String executable, String[] arguments, String description, ExecutionResult parent) {
@@ -165,5 +160,5 @@ public class ProcessExecutionSessionImpl implements ProcessExecutionSession
 	public String getResourceProperty(String name) throws ResourceException {
 		return propertyGetter.getProperty(name);
 	}
-	
+
 }

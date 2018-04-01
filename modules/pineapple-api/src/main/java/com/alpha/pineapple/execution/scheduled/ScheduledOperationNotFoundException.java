@@ -27,19 +27,19 @@ package com.alpha.pineapple.execution.scheduled;
  */
 public class ScheduledOperationNotFoundException extends RuntimeException {
 
-    /**
-     * ScheduledOperationNotFoundException constructor.
-     * 
-     * @param message
-     *            error message.
-     */
-    public ScheduledOperationNotFoundException(String message) {
-	super(message);
-    }
+	/**
+	 * ScheduledOperationNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            error message.
+	 */
+	public ScheduledOperationNotFoundException(String message) {
+		super(message);
+	}
 
-    /**
-     * Serial version ID.
-     */
-    static final long serialVersionUID = -6585532255652765155L;
+	/**
+	 * Serial version ID.
+	 */
+	static final long serialVersionUID = -6585532255652765155L;
 
 }

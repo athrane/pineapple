@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.command;
 
 import java.net.InetAddress;
@@ -40,257 +39,252 @@ import com.alpha.pineapple.command.initialization.ValidationPolicy;
 import com.alpha.pineapple.command.test.TestCommand;
 
 /**
- * <p>Implementation of the 
- * <code>com.alpha.pineapple.command.test.TestCommand</code> interface 
- * which tests whether a FTP server is active and can be logged on to.</p>
+ * <p>
+ * Implementation of the
+ * <code>com.alpha.pineapple.command.test.TestCommand</code> interface which
+ * tests whether a FTP server is active and can be logged on to.
+ * </p>
  * 
- * <p>Precondition for execution of the command is definition of these keys in 
+ * <p>
+ * Precondition for execution of the command is definition of these keys in the
+ * context:
+ * 
+ * <ul>
+ * <li><code>description</code> defines a human readable description of the
+ * test. The type is <code>java.lang.String</code>.</li>
+ * 
+ * <li><code>hostname</code> defines host name of the FTP server. The type is
+ * <code>java.lang.String</code>.</li>
+ * 
+ * <li><code>port</code> defines the port number of the FTP server. The type is
+ * <code>int</code>.</li>
+ * 
+ * <li><code>user</code> defines the user to access the FTP server. The type is
+ * <code>java.lang.String</code>.</li>
+ * 
+ * <li><code>password</code> defines the password to access the FTP server. The
+ * type is <code>java.lang.String</code>.</li>
+ * </ul>
+ * </p>
+ * 
+ * <p>
+ * Postcondition after execution of the command is definition of these keys in
  * the context:
  * 
  * <ul>
- * <li><code>description</code> defines a human readable description of the 
- * test. The type is <code>java.lang.String</code>.</li> 
+ * <li><code>message</code> which contains a human readable description of how
+ * the result of the test. The type is <code>java.lang.String</code>.</li>
  * 
- * <li><code>hostname</code> defines host name of the FTP server. The type 
- * is <code>java.lang.String</code>.</li>
- * 
- * <li><code>port</code> defines the port number of the FTP server. The type 
- * is <code>int</code>.</li>
- * 
- * <li><code>user</code> defines the user to access the FTP server. The type is 
- * <code>java.lang.String</code>.</li>
- * 
- * <li><code>password</code> defines the password to access the FTP server. 
- * The type is <code>java.lang.String</code>.
- * </li>
+ * <li><code>result</code> which contains the result of the test as a boolean
+ * value. The type is <code>java.lang.Boolean</code>.</li>
  * </ul>
- * </p>       
- *  
- * <p>Postcondition after execution of the command is definition of these keys 
- * in the context:
- * 
- * <ul>
- * <li><code>message</code> which contains a human readable 
- * description of how the result of the test. The type is 
- * <code>java.lang.String</code>.</li>
- * 
- * <li><code>result</code> which contains the result of the 
- * test as a boolean value. The type is <code>java.lang.Boolean</code>.</li>             
- * </ul>
- * </p>      
+ * </p>
  */
-public class TestFtpServerActiveCommand implements TestCommand
-{
+public class TestFtpServerActiveCommand implements TestCommand {
 
-    /**
-     * Key used to identify property in context: Name of the host.
-     */
-    public static final String HOSTNAME_KEY = "hostname";
+	/**
+	 * Key used to identify property in context: Name of the host.
+	 */
+	public static final String HOSTNAME_KEY = "hostname";
 
-    /**
-     * Key used to identify property in context: Defines the port number.
-     */
-    public static final String PORT_KEY = "port";  
+	/**
+	 * Key used to identify property in context: Defines the port number.
+	 */
+	public static final String PORT_KEY = "port";
 
-    /**
-     * Key used to identify property in context: Defines the user.
-     */
-    public static final String USER_KEY = "user";  
+	/**
+	 * Key used to identify property in context: Defines the user.
+	 */
+	public static final String USER_KEY = "user";
 
-    /**
-     * Key used to identify property in context: Defines the password.
-     */
-    public static final String PASSWORD_KEY = "password";  
-        
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
+	/**
+	 * Key used to identify property in context: Defines the password.
+	 */
+	public static final String PASSWORD_KEY = "password";
 
-    /**
-     * Test description.
-     */
-    @Initialize( DESCRIPTION_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )
-    String description;
-    
-    /**
-     * Port number.
-     */
-    @Initialize( PORT_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )    
-    int port;
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Host name.
-     */
-    @Initialize( HOSTNAME_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )        
-    String hostname;
+	/**
+	 * Test description.
+	 */
+	@Initialize(DESCRIPTION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String description;
 
-    /**
-     * User.
-     */
-    @Initialize( USER_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )            
-    String user;
+	/**
+	 * Port number.
+	 */
+	@Initialize(PORT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	int port;
 
-    /**
-     * Password.
-     */
-    @Initialize( PASSWORD_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )            
-    String password;
-    
-    /**
-     * Test result.
-     */
-    boolean testSucceded;
-    
-    public boolean execute( Context context ) throws Exception
-    {
+	/**
+	 * Host name.
+	 */
+	@Initialize(HOSTNAME_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String hostname;
 
-        // log debug message
-        if(logger.isDebugEnabled()) 
-            logger.debug( "Starting ftp-server-active test." );
-        
-        // initialize command
-        CommandInitializer initializer =  new CommandInitializerImpl();
-        initializer.initialize( context, this );
+	/**
+	 * User.
+	 */
+	@Initialize(USER_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String user;
 
-        // run test
-        runTest();
+	/**
+	 * Password.
+	 */
+	@Initialize(PASSWORD_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String password;
 
-        // save test result
-        String testMessage = createTestMessage();        
-        context.put( MESSAGE_KEY, testMessage );
-        context.put( RESULT_KEY, new Boolean( testSucceded ) );
-        
-        // log debug message
-        if(logger.isDebugEnabled()) {
-            logger.debug( testMessage );                    
-            logger.debug( "successfully completed ftp-server-active test." );                    
-        }
-        
-        return Command.CONTINUE_PROCESSING;
-    }
+	/**
+	 * Test result.
+	 */
+	boolean testSucceded;
 
+	public boolean execute(Context context) throws Exception {
 
-    /**
-     * Run the test.
-     */
-    void runTest()
-    {                         
-        try
-        {
-            // create client
-            FTPClient client;
-            client = new FTPClient();
-            
-            // create host address
-            InetAddress inetAddress = InetAddress.getByName( this.hostname );
-            
-            // connect
-            client.connect( inetAddress, this.port );            
-            String reply = client.getReplyString();
+		// log debug message
+		if (logger.isDebugEnabled())
+			logger.debug("Starting ftp-server-active test.");
 
-            // log debug message            
-            if(logger.isDebugEnabled()) {
-                StringBuilder message = new StringBuilder();
-                message.append( "FTP-connect returned reply code <" );
-                message.append( reply );
-                message.append( ">." );
-                logger.debug( message.toString() );
-            }
-            
-            // test reply code
-            if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
-                testSucceded = false;
-                return;
-            }
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-            // log on
-            client.login( this.user, this.password );
-            reply = client.getReplyString();            
-            
-            // log debug message            
-            if(logger.isDebugEnabled()) {
-                StringBuilder message = new StringBuilder();
-                message.append( "FTP-logon returned reply code <" );
-                message.append( reply );
-                message.append( ">." );            
-                logger.debug( message.toString() );                
-            }
+		// run test
+		runTest();
 
-            // test reply code
-            if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
-                testSucceded = false;
-                return;
-            }
-            
-            // list files
-            FTPFile[] ftpFiles = client.listFiles();
-            reply = client.getReplyString();            
-            
-            // log debug message            
-            if(logger.isDebugEnabled()) {
-                StringBuilder message = new StringBuilder();
-                message.append( "FTP-list files returned reply code <" );
-                message.append( reply );
-                message.append( "> with <" );
-                message.append( ftpFiles.length );
-                message.append( "> file(s) found. ");
-                logger.debug( message.toString() );                
-            }            
+		// save test result
+		String testMessage = createTestMessage();
+		context.put(MESSAGE_KEY, testMessage);
+		context.put(RESULT_KEY, new Boolean(testSucceded));
 
-            // test reply code
-            if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
-                testSucceded = false;
-                return;
-            }
-            
-            testSucceded = true;            
-        }
-        catch ( Exception e )
-        {
-            testSucceded = false;
-        }        
-    }
-    
-    /**
-     * Create test message describing the outcome of the test.
-     * 
-     * @return test message.
-     */
-    public String createTestMessage() {
-        if (this.testSucceded) {
-            
-            // create info message
-            StringBuilder message = new StringBuilder();
-            message.append( "TEST SUCCEDED - ftp-server-active for <" );
-            message.append( description );
-            message.append( "> connected to <" );            
-            message.append( hostname );
-            message.append( ":" );
-            message.append( this.port );            
-            message.append( ">." );            
-            
-            return message.toString();
-            
-        } else {
-            
-            // create info message
-            StringBuilder message = new StringBuilder();
-            message.append( "TEST FAILED - ftp-server-active for <" );
-            message.append( description );
-            message.append( "> couldn't connect to <" );            
-            message.append( hostname );
-            message.append( ":" );
-            message.append( this.port );            
-            message.append( ">." );            
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			logger.debug(testMessage);
+			logger.debug("successfully completed ftp-server-active test.");
+		}
 
-            return message.toString();            
-        }
-    }
-        
+		return Command.CONTINUE_PROCESSING;
+	}
+
+	/**
+	 * Run the test.
+	 */
+	void runTest() {
+		try {
+			// create client
+			FTPClient client;
+			client = new FTPClient();
+
+			// create host address
+			InetAddress inetAddress = InetAddress.getByName(this.hostname);
+
+			// connect
+			client.connect(inetAddress, this.port);
+			String reply = client.getReplyString();
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder message = new StringBuilder();
+				message.append("FTP-connect returned reply code <");
+				message.append(reply);
+				message.append(">.");
+				logger.debug(message.toString());
+			}
+
+			// test reply code
+			if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
+				testSucceded = false;
+				return;
+			}
+
+			// log on
+			client.login(this.user, this.password);
+			reply = client.getReplyString();
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder message = new StringBuilder();
+				message.append("FTP-logon returned reply code <");
+				message.append(reply);
+				message.append(">.");
+				logger.debug(message.toString());
+			}
+
+			// test reply code
+			if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
+				testSucceded = false;
+				return;
+			}
+
+			// list files
+			FTPFile[] ftpFiles = client.listFiles();
+			reply = client.getReplyString();
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder message = new StringBuilder();
+				message.append("FTP-list files returned reply code <");
+				message.append(reply);
+				message.append("> with <");
+				message.append(ftpFiles.length);
+				message.append("> file(s) found. ");
+				logger.debug(message.toString());
+			}
+
+			// test reply code
+			if (!FTPReply.isPositiveCompletion(client.getReplyCode())) {
+				testSucceded = false;
+				return;
+			}
+
+			testSucceded = true;
+		} catch (Exception e) {
+			testSucceded = false;
+		}
+	}
+
+	/**
+	 * Create test message describing the outcome of the test.
+	 * 
+	 * @return test message.
+	 */
+	public String createTestMessage() {
+		if (this.testSucceded) {
+
+			// create info message
+			StringBuilder message = new StringBuilder();
+			message.append("TEST SUCCEDED - ftp-server-active for <");
+			message.append(description);
+			message.append("> connected to <");
+			message.append(hostname);
+			message.append(":");
+			message.append(this.port);
+			message.append(">.");
+
+			return message.toString();
+
+		} else {
+
+			// create info message
+			StringBuilder message = new StringBuilder();
+			message.append("TEST FAILED - ftp-server-active for <");
+			message.append(description);
+			message.append("> couldn't connect to <");
+			message.append(hostname);
+			message.append(":");
+			message.append(this.port);
+			message.append(">.");
+
+			return message.toString();
+		}
+	}
+
 }

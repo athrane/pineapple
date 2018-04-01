@@ -27,31 +27,31 @@ package com.alpha.pineapple.plugin;
  */
 public class PluginException extends Exception {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * PluginException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public PluginException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * PluginException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public PluginException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * PluginException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public PluginException(String message) {
-	super(message);
-    }
+	/**
+	 * PluginException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public PluginException(String message) {
+		super(message);
+	}
 
 }

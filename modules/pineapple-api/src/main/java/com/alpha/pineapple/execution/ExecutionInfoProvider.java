@@ -28,13 +28,13 @@ package com.alpha.pineapple.execution;
  */
 public interface ExecutionInfoProvider {
 
-    /**
-     * Resolve execution info object for the current operation.
-     * 
-     * @param result
-     *            execution result object for the current operation.
-     * 
-     * @return execution info object for the current operation.
-     */
-    ExecutionInfo get(ExecutionResult result);
+	/**
+	 * Resolve execution info object for the current operation.
+	 * 
+	 * @param result
+	 *            execution result object for the current operation.
+	 * 
+	 * @return execution info object for the current operation.
+	 */
+	ExecutionInfo get(ExecutionResult result);
 }

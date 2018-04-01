@@ -42,182 +42,182 @@ import com.alpha.pineapple.plugin.activation.PluginActivator;
  */
 public class CommandFacadeImpl implements CommandFacade {
 
-    /**
-     * Unmarshall command.
-     */
-    @Resource
-    Command unmarshallJAXBObjectsCommand;
+	/**
+	 * Unmarshall command.
+	 */
+	@Resource
+	Command unmarshallJAXBObjectsCommand;
 
-    /**
-     * Marshall JAXB objects command.
-     */
-    @Resource
-    Command marshallJAXBObjectsCommand;
+	/**
+	 * Marshall JAXB objects command.
+	 */
+	@Resource
+	Command marshallJAXBObjectsCommand;
 
-    /**
-     * Copy example modules command.
-     */
-    @Resource
-    Command copyExampleModulesCommand;
+	/**
+	 * Copy example modules command.
+	 */
+	@Resource
+	Command copyExampleModulesCommand;
 
-    /**
-     * Initialize plugin activator command.
-     */
-    @Resource
-    Command initializePluginActivatorCommand;
+	/**
+	 * Initialize plugin activator command.
+	 */
+	@Resource
+	Command initializePluginActivatorCommand;
 
-    /**
-     * Invoke triggers command.
-     */
-    @Resource
-    Command invokeTriggersCommand;
-    
-    /**
-     * Command runner
-     */
-    @Resource
-    CommandRunner commandRunner;
+	/**
+	 * Invoke triggers command.
+	 */
+	@Resource
+	Command invokeTriggersCommand;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Command runner
+	 */
+	@Resource
+	CommandRunner commandRunner;
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T unmarshallJaxbObjects(File file, Class<T> targetClass, ExecutionResult result) {
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-	// create execution result
-	Object[] args = { file.getAbsolutePath() };
-	String message = messageProvider.getMessage("cf.unmarshal_jaxb_objects", args);
-	ExecutionResult commandResult = result.addChild(message);
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T unmarshallJaxbObjects(File file, Class<T> targetClass, ExecutionResult result) {
 
-	// create and setup context
-	Context context = commandRunner.createContext();
-	Package packageName = targetClass.getPackage();
-	context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, file);
-	context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, packageName);
+		// create execution result
+		Object[] args = { file.getAbsolutePath() };
+		String message = messageProvider.getMessage("cf.unmarshal_jaxb_objects", args);
+		ExecutionResult commandResult = result.addChild(message);
 
-	// run command
-	commandRunner.run(unmarshallJAXBObjectsCommand, commandResult, context);
+		// create and setup context
+		Context context = commandRunner.createContext();
+		Package packageName = targetClass.getPackage();
+		context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, file);
+		context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, packageName);
 
-	// handle unsuccessful execution
-	if (!commandResult.isSuccess())
-	    throw new CommandFacadeException(commandResult);
+		// run command
+		commandRunner.run(unmarshallJAXBObjectsCommand, commandResult, context);
 
-	// handle successful execution
-	// return objects if load was a success
-	return targetClass.cast(context.get(UnmarshallJAXBObjectsCommand.UNMARSHALLING_RESULT_KEY));
-    }
+		// handle unsuccessful execution
+		if (!commandResult.isSuccess())
+			throw new CommandFacadeException(commandResult);
 
-    @Override
-    public <T> T loadJaxbObjects(File file, Class<T> targetClass, ExecutionResult result) {
-	return unmarshallJaxbObjects(file, targetClass, result);
-    }
+		// handle successful execution
+		// return objects if load was a success
+		return targetClass.cast(context.get(UnmarshallJAXBObjectsCommand.UNMARSHALLING_RESULT_KEY));
+	}
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public void marshallJaxbObjects(File file, Object root, ExecutionResult result) {
+	@Override
+	public <T> T loadJaxbObjects(File file, Class<T> targetClass, ExecutionResult result) {
+		return unmarshallJaxbObjects(file, targetClass, result);
+	}
 
-	// create execution result
-	Object[] args = { file.getAbsolutePath() };
-	String message = messageProvider.getMessage("cf.marshal_jaxb_objects", args);
-	ExecutionResult commandResult = result.addChild(message);
+	@SuppressWarnings("unchecked")
+	@Override
+	public void marshallJaxbObjects(File file, Object root, ExecutionResult result) {
 
-	// create and setup context
-	Context context = commandRunner.createContext();
-	context.put(MarshallJAXBObjectsCommand.FILE_KEY, file);
-	context.put(MarshallJAXBObjectsCommand.ROOT_KEY, root);
+		// create execution result
+		Object[] args = { file.getAbsolutePath() };
+		String message = messageProvider.getMessage("cf.marshal_jaxb_objects", args);
+		ExecutionResult commandResult = result.addChild(message);
 
-	// run command
-	commandRunner.run(marshallJAXBObjectsCommand, commandResult, context);
+		// create and setup context
+		Context context = commandRunner.createContext();
+		context.put(MarshallJAXBObjectsCommand.FILE_KEY, file);
+		context.put(MarshallJAXBObjectsCommand.ROOT_KEY, root);
 
-	// handle unsuccessful execution
-	if (!commandResult.isSuccess())
-	    throw new CommandFacadeException(commandResult);
+		// run command
+		commandRunner.run(marshallJAXBObjectsCommand, commandResult, context);
 
-	// handle successful execution
-	// NO-OP
-    }
+		// handle unsuccessful execution
+		if (!commandResult.isSuccess())
+			throw new CommandFacadeException(commandResult);
 
-    @Override
-    public void saveJaxbObjects(File file, Object root, ExecutionResult result) {
-	marshallJaxbObjects(file, root, result);
-    }
+		// handle successful execution
+		// NO-OP
+	}
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public void copyExampleModules(File modulesDirectory, ExecutionResult result) {
+	@Override
+	public void saveJaxbObjects(File file, Object root, ExecutionResult result) {
+		marshallJaxbObjects(file, root, result);
+	}
 
-	// create execution result
-	Object[] args = { modulesDirectory };
-	String message = messageProvider.getMessage("cf.copy_examplemodules", args);
-	ExecutionResult commandResult = result.addChild(message);
+	@SuppressWarnings("unchecked")
+	@Override
+	public void copyExampleModules(File modulesDirectory, ExecutionResult result) {
 
-	// create and setup context
-	Context context = commandRunner.createContext();
-	context.put(CopyExampleModulesCommand.DESTINATION_DIR_KEY, modulesDirectory);
+		// create execution result
+		Object[] args = { modulesDirectory };
+		String message = messageProvider.getMessage("cf.copy_examplemodules", args);
+		ExecutionResult commandResult = result.addChild(message);
 
-	// run command
-	commandRunner.run(copyExampleModulesCommand, commandResult, context);
+		// create and setup context
+		Context context = commandRunner.createContext();
+		context.put(CopyExampleModulesCommand.DESTINATION_DIR_KEY, modulesDirectory);
 
-	// handle unsuccessful execution
-	if (!commandResult.isSuccess())
-	    throw new CommandFacadeException(commandResult);
+		// run command
+		commandRunner.run(copyExampleModulesCommand, commandResult, context);
 
-	// handle successful execution
-	// NO-OP
-    }
+		// handle unsuccessful execution
+		if (!commandResult.isSuccess())
+			throw new CommandFacadeException(commandResult);
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public PluginActivator initializePluginActivator(CredentialProvider provider, Configuration configuration,
-	    ExecutionResult result) {
+		// handle successful execution
+		// NO-OP
+	}
 
-	// create execution result
-	String message = messageProvider.getMessage("cf.initpluginactivator_info");
-	ExecutionResult commandResult = result.addChild(message);
+	@SuppressWarnings("unchecked")
+	@Override
+	public PluginActivator initializePluginActivator(CredentialProvider provider, Configuration configuration,
+			ExecutionResult result) {
 
-	// create and setup context
-	Context context = commandRunner.createContext();
-	context.put(InitializePluginActivatorCommand.CREDENTIAL_PROVIDER_KEY, provider);
-	context.put(InitializePluginActivatorCommand.RESOURCES_KEY, configuration);
+		// create execution result
+		String message = messageProvider.getMessage("cf.initpluginactivator_info");
+		ExecutionResult commandResult = result.addChild(message);
 
-	// run command
-	commandRunner.run(initializePluginActivatorCommand, commandResult, context);
+		// create and setup context
+		Context context = commandRunner.createContext();
+		context.put(InitializePluginActivatorCommand.CREDENTIAL_PROVIDER_KEY, provider);
+		context.put(InitializePluginActivatorCommand.RESOURCES_KEY, configuration);
 
-	// handle unsuccessful execution
-	if (!commandResult.isSuccess())
-	    throw new CommandFacadeException(commandResult);
+		// run command
+		commandRunner.run(initializePluginActivatorCommand, commandResult, context);
 
-	// handle successful execution
-	return (PluginActivator) context.get(InitializePluginActivatorCommand.PLUGIN_ACTIVATOR_KEY);
-    }
+		// handle unsuccessful execution
+		if (!commandResult.isSuccess())
+			throw new CommandFacadeException(commandResult);
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public void executeTriggers(AggregatedModel model, ExecutionInfo executionInfo, ExecutionResult modelResult,
-	    ExecutionResult result) {
+		// handle successful execution
+		return (PluginActivator) context.get(InitializePluginActivatorCommand.PLUGIN_ACTIVATOR_KEY);
+	}
 
-	// create execution result
-	Object[] args = { model.getDescription() };	
-	String message = messageProvider.getMessage("cf.execute_triggers", args);
-	ExecutionResult commandResult = result.addChild(message);
+	@SuppressWarnings("unchecked")
+	@Override
+	public void executeTriggers(AggregatedModel model, ExecutionInfo executionInfo, ExecutionResult modelResult,
+			ExecutionResult result) {
 
-	// create and setup context
-	Context context = commandRunner.createContext();
-	context.put(InvokeTriggersCommand.AGGREGATED_MODEL_KEY, model);
-	context.put(InvokeTriggersCommand.EXECUTION_INFO_KEY, executionInfo);
-	context.put(InvokeTriggersCommand.MODEL_RESULT_KEY, modelResult);
-	context.put(InvokeTriggersCommand.EXECUTIONRESULT_KEY, result);
+		// create execution result
+		Object[] args = { model.getDescription() };
+		String message = messageProvider.getMessage("cf.execute_triggers", args);
+		ExecutionResult commandResult = result.addChild(message);
 
-	// run command
-	commandRunner.run(invokeTriggersCommand, commandResult, context);
+		// create and setup context
+		Context context = commandRunner.createContext();
+		context.put(InvokeTriggersCommand.AGGREGATED_MODEL_KEY, model);
+		context.put(InvokeTriggersCommand.EXECUTION_INFO_KEY, executionInfo);
+		context.put(InvokeTriggersCommand.MODEL_RESULT_KEY, modelResult);
+		context.put(InvokeTriggersCommand.EXECUTIONRESULT_KEY, result);
 
-	// handle unsuccessful execution
-	if (!commandResult.isSuccess())
-	    throw new CommandFacadeException(commandResult);
-    }
+		// run command
+		commandRunner.run(invokeTriggersCommand, commandResult, context);
+
+		// handle unsuccessful execution
+		if (!commandResult.isSuccess())
+			throw new CommandFacadeException(commandResult);
+	}
 
 }

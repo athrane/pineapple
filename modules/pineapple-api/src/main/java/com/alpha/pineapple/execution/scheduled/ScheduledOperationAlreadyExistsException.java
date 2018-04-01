@@ -27,19 +27,19 @@ package com.alpha.pineapple.execution.scheduled;
  */
 public class ScheduledOperationAlreadyExistsException extends RuntimeException {
 
-    /**
-     * ScheduledOperationAlreadyExistException constructor.
-     * 
-     * @param message
-     *            error message.
-     */
-    public ScheduledOperationAlreadyExistsException(String message) {
-	super(message);
-    }
+	/**
+	 * ScheduledOperationAlreadyExistException constructor.
+	 * 
+	 * @param message
+	 *            error message.
+	 */
+	public ScheduledOperationAlreadyExistsException(String message) {
+		super(message);
+	}
 
-    /**
-     * Serial version ID.
-     */
-    static final long serialVersionUID = -6585532255652765155L;
+	/**
+	 * Serial version ID.
+	 */
+	static final long serialVersionUID = -6585532255652765155L;
 
 }

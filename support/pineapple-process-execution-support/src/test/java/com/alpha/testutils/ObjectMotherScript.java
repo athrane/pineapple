@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.testutils;
 
 import java.io.File;
@@ -30,15 +29,17 @@ import junit.framework.AssertionFailedError;
 import org.apache.commons.exec.OS;
 
 /**
- * An implementation of the ObjectMother pattern. The class provides helper 
- * functions for creating and resolving test scripts which can be used in unit tests.  
+ * An implementation of the ObjectMother pattern. The class provides helper
+ * functions for creating and resolving test scripts which can be used in unit
+ * tests.
  */
 public class ObjectMotherScript {
 
 	/**
 	 * Resolve scripts based on OS.
 	 * 
-	 * @param script script name.
+	 * @param script
+	 *            script name.
 	 * 
 	 * @return OS specific script name.
 	 */
@@ -54,5 +55,5 @@ public class ObjectMotherScript {
 			throw new AssertionFailedError("Script not supported for this OS");
 		}
 	}
-	
+
 }

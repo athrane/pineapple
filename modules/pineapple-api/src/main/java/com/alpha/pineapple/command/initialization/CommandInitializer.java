@@ -30,19 +30,19 @@ import org.apache.commons.chain.Context;
  * Chain command instance.
  */
 public interface CommandInitializer {
-    /**
-     * Initialize command by mapping the content of defined keys in the context
-     * to fields in the command object. The mapping is controlled by the usage
-     * of the annotation {@link @Initialize}.
-     * 
-     * @param context
-     *            The context object to map values from.
-     * @param command
-     *            The command object where the values are mapped into fields.
-     * 
-     * @throws CommandInitializationFailedException
-     *             If the context doesn't contains the key defined by an
-     *             instance of the annotation {@link @Initialize}.
-     */
-    public void initialize(Context context, Command command) throws CommandInitializationFailedException;
+	/**
+	 * Initialize command by mapping the content of defined keys in the context to
+	 * fields in the command object. The mapping is controlled by the usage of the
+	 * annotation {@link @Initialize}.
+	 * 
+	 * @param context
+	 *            The context object to map values from.
+	 * @param command
+	 *            The command object where the values are mapped into fields.
+	 * 
+	 * @throws CommandInitializationFailedException
+	 *             If the context doesn't contains the key defined by an instance of
+	 *             the annotation {@link @Initialize}.
+	 */
+	public void initialize(Context context, Command command) throws CommandInitializationFailedException;
 }

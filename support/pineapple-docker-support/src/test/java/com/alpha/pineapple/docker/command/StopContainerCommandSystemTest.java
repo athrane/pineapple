@@ -59,201 +59,201 @@ import com.alpha.testutils.DockerTestHelper;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.docker-config.xml" })
 public class StopContainerCommandSystemTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command stopContainerCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command stopContainerCommand;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Docker session.
-     */
-    DockerSession session;
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
 
-    /**
-     * Docker helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
+	/**
+	 * Docker helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    /**
-     * Docker info objects builder.
-     */
-    @Resource
-    InfoBuilder dockerInfoBuilder;
+	/**
+	 * Docker info objects builder.
+	 */
+	@Resource
+	InfoBuilder dockerInfoBuilder;
 
-    /**
-     * Container instance info.
-     */
-    ContainerInstanceInfo containerInstanceInfo;
+	/**
+	 * Container instance info.
+	 */
+	ContainerInstanceInfo containerInstanceInfo;
 
-    /**
-     * Container info.
-     */
-    ContainerInfo containerInfo;
+	/**
+	 * Container info.
+	 */
+	ContainerInfo containerInfo;
 
-    /**
-     * Tagged image info.
-     */
-    ImageInfo taggedImageInfo;
+	/**
+	 * Tagged image info.
+	 */
+	ImageInfo taggedImageInfo;
 
-    /**
-     * Default image info (CentOS).
-     */
-    ImageInfo defaultImageInfo;
+	/**
+	 * Default image info (CentOS).
+	 */
+	ImageInfo defaultImageInfo;
 
-    /**
-     * Random container ID.
-     */
-    String randomId;
+	/**
+	 * Random container ID.
+	 */
+	String randomId;
 
-    /**
-     * Random container name.
-     */
-    String randomName;
+	/**
+	 * Random container name.
+	 */
+	String randomName;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-	randomId = RandomStringUtils.randomAlphabetic(10);
-	randomName = RandomStringUtils.randomAlphabetic(10);
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		randomId = RandomStringUtils.randomAlphabetic(10);
+		randomName = RandomStringUtils.randomAlphabetic(10);
 
-	// create context
-	context = new ContextBase();
+		// create context
+		context = new ContextBase();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("root");
+		// create execution result
+		executionResult = new ExecutionResultImpl("root");
 
-	// create session
-	session = dockerHelper.createDefaultSession();
+		// create session
+		session = dockerHelper.createDefaultSession();
 
-	// create image and info's
-	defaultImageInfo = dockerHelper.createDefaultImage(session);
-	taggedImageInfo = dockerHelper.createDefaultTaggedImageInfo();
+		// create image and info's
+		defaultImageInfo = dockerHelper.createDefaultImage(session);
+		taggedImageInfo = dockerHelper.createDefaultTaggedImageInfo();
 
-	// tag image
-	dockerHelper.tagImage(session, defaultImageInfo, taggedImageInfo);
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-
-	// delete container - if it exists
-	if ((containerInfo != null) && (dockerHelper.containerExists(session, containerInfo))) {
-	    dockerHelper.deleteContainer(session, containerInfo);
+		// tag image
+		dockerHelper.tagImage(session, defaultImageInfo, taggedImageInfo);
 	}
 
-	// delete tagged image - if it exists
-	dockerHelper.deleteImage(session, taggedImageInfo);
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
 
-    /**
-     * Test that command instance can be created in application context.
-     */
-    @Test
-    public void testCanGetInstance() throws Exception {
-	assertNotNull(stopContainerCommand);
-    }
+		// delete container - if it exists
+		if ((containerInfo != null) && (dockerHelper.containerExists(session, containerInfo))) {
+			dockerHelper.deleteContainer(session, containerInfo);
+		}
 
-    /**
-     * Test that command can stop running container.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testStopRunningContainer() throws Exception {
+		// delete tagged image - if it exists
+		dockerHelper.deleteImage(session, taggedImageInfo);
+	}
 
-	// create and start container
-	containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
-	containerInfo = containerInstanceInfo.getContainerInfo();
-	dockerHelper.startContainer(session, containerInfo);
+	/**
+	 * Test that command instance can be created in application context.
+	 */
+	@Test
+	public void testCanGetInstance() throws Exception {
+		assertNotNull(stopContainerCommand);
+	}
 
-	// setup context
-	context.put(StopContainerCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(StopContainerCommand.SESSION_KEY, session);
-	context.put(StopContainerCommand.CONTAINER_INFO_KEY, containerInfo);
-	context.put(StopContainerCommand.TIMEOUT_ID_KEY, CONTAINER_STOP_TIMEOUT);
+	/**
+	 * Test that command can stop running container.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testStopRunningContainer() throws Exception {
 
-	// execute command
-	stopContainerCommand.execute(context);
+		// create and start container
+		containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
+		containerInfo = containerInstanceInfo.getContainerInfo();
+		dockerHelper.startContainer(session, containerInfo);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertFalse(dockerClient.isContainerRunning(session, containerInfo));
-    }
+		// setup context
+		context.put(StopContainerCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(StopContainerCommand.SESSION_KEY, session);
+		context.put(StopContainerCommand.CONTAINER_INFO_KEY, containerInfo);
+		context.put(StopContainerCommand.TIMEOUT_ID_KEY, CONTAINER_STOP_TIMEOUT);
 
-    /**
-     * Test that command can stop paused container.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testStopPausedContainer() throws Exception {
+		// execute command
+		stopContainerCommand.execute(context);
 
-	// create and start container
-	containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
-	containerInfo = containerInstanceInfo.getContainerInfo();
-	dockerHelper.startContainer(session, containerInfo);
-	dockerHelper.pauseContainer(session, containerInfo);
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertFalse(dockerClient.isContainerRunning(session, containerInfo));
+	}
 
-	// test
-	assertTrue(dockerClient.isContainerPaused(session, containerInfo));
+	/**
+	 * Test that command can stop paused container.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testStopPausedContainer() throws Exception {
 
-	// setup context
-	context.put(StopContainerCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(StopContainerCommand.SESSION_KEY, session);
-	context.put(StopContainerCommand.CONTAINER_INFO_KEY, containerInfo);
-	context.put(StopContainerCommand.TIMEOUT_ID_KEY, CONTAINER_STOP_TIMEOUT);
+		// create and start container
+		containerInstanceInfo = dockerHelper.createContainer(session, randomId, defaultImageInfo);
+		containerInfo = containerInstanceInfo.getContainerInfo();
+		dockerHelper.startContainer(session, containerInfo);
+		dockerHelper.pauseContainer(session, containerInfo);
 
-	// execute command
-	stopContainerCommand.execute(context);
+		// test
+		assertTrue(dockerClient.isContainerPaused(session, containerInfo));
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertFalse(dockerClient.isContainerRunning(session, containerInfo));
-    }
+		// setup context
+		context.put(StopContainerCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(StopContainerCommand.SESSION_KEY, session);
+		context.put(StopContainerCommand.CONTAINER_INFO_KEY, containerInfo);
+		context.put(StopContainerCommand.TIMEOUT_ID_KEY, CONTAINER_STOP_TIMEOUT);
 
-    /**
-     * Test that command fails to stop unknown container.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testFailsToStopUnknownContainer() throws Exception {
+		// execute command
+		stopContainerCommand.execute(context);
 
-	// create fake container info's
-	containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
-	containerInstanceInfo = dockerInfoBuilder.buildInstanceInfo(randomId, containerInfo);
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertFalse(dockerClient.isContainerRunning(session, containerInfo));
+	}
 
-	// setup context
-	context.put(StopContainerCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(StopContainerCommand.SESSION_KEY, session);
-	context.put(StopContainerCommand.CONTAINER_INFO_KEY, containerInfo);
-	context.put(StopContainerCommand.TIMEOUT_ID_KEY, CONTAINER_STOP_TIMEOUT);
+	/**
+	 * Test that command fails to stop unknown container.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFailsToStopUnknownContainer() throws Exception {
 
-	// execute command
-	stopContainerCommand.execute(context);
+		// create fake container info's
+		containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
+		containerInstanceInfo = dockerInfoBuilder.buildInstanceInfo(randomId, containerInfo);
 
-	// test
-	assertTrue(executionResult.isFailed());
-    }
+		// setup context
+		context.put(StopContainerCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(StopContainerCommand.SESSION_KEY, session);
+		context.put(StopContainerCommand.CONTAINER_INFO_KEY, containerInfo);
+		context.put(StopContainerCommand.TIMEOUT_ID_KEY, CONTAINER_STOP_TIMEOUT);
+
+		// execute command
+		stopContainerCommand.execute(context);
+
+		// test
+		assertTrue(executionResult.isFailed());
+	}
 
 }

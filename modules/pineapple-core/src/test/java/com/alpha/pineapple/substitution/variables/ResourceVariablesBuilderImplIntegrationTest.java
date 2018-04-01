@@ -54,292 +54,290 @@ import com.alpha.pineapple.substitution.VariableSubstitutionException;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class ResourceVariablesBuilderImplIntegrationTest {
 
-    /**
-     * Empty string.
-     */
-    static final String EMPTY_STRING = "";
+	/**
+	 * Empty string.
+	 */
+	static final String EMPTY_STRING = "";
 
-    /**
-     * Null string.
-     */
-    static final String NULL_STRING = null;
+	/**
+	 * Null string.
+	 */
+	static final String NULL_STRING = null;
 
-    /**
-     * Factory.
-     */
-    @Resource
-    ObjectFactory<ResourceVariablesBuilder> resourceVariablesBuilderFactory;
+	/**
+	 * Factory.
+	 */
+	@Resource
+	ObjectFactory<ResourceVariablesBuilder> resourceVariablesBuilderFactory;
 
-    /**
-     * Mock resource.
-     */
-    com.alpha.pineapple.model.configuration.Resource sessionResource;
+	/**
+	 * Mock resource.
+	 */
+	com.alpha.pineapple.model.configuration.Resource sessionResource;
 
-    /**
-     * Random variable name.
-     */
-    String randomVarName;
+	/**
+	 * Random variable name.
+	 */
+	String randomVarName;
 
-    /**
-     * Random variable name.
-     */
-    String randomVarName2;
+	/**
+	 * Random variable name.
+	 */
+	String randomVarName2;
 
-    /**
-     * Random resource name.
-     */
-    String randomResourceId;
+	/**
+	 * Random resource name.
+	 */
+	String randomResourceId;
 
-    /**
-     * Random variable value.
-     */
-    String randomVariableValue;
+	/**
+	 * Random variable value.
+	 */
+	String randomVariableValue;
 
-    /**
-     * Random variable value.
-     */
-    String randomVariableValue2;
+	/**
+	 * Random variable value.
+	 */
+	String randomVariableValue2;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-	randomVarName = RandomStringUtils.randomAlphabetic(10) + "-var";
-	randomVarName2 = RandomStringUtils.randomAlphabetic(10) + "-var";
-	randomResourceId = RandomStringUtils.randomAlphabetic(10) + "-res";
-	randomVariableValue = RandomStringUtils.randomAlphabetic(10);
-	randomVariableValue2 = RandomStringUtils.randomAlphabetic(10);
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		randomVarName = RandomStringUtils.randomAlphabetic(10) + "-var";
+		randomVarName2 = RandomStringUtils.randomAlphabetic(10) + "-var";
+		randomResourceId = RandomStringUtils.randomAlphabetic(10) + "-res";
+		randomVariableValue = RandomStringUtils.randomAlphabetic(10);
+		randomVariableValue2 = RandomStringUtils.randomAlphabetic(10);
 
-	// create resource
-	sessionResource = createMock(com.alpha.pineapple.model.configuration.Resource.class);
-    }
+		// create resource
+		sessionResource = createMock(com.alpha.pineapple.model.configuration.Resource.class);
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Create property list with one variable. The name of the variable is
-     * random variable name #1
-     * 
-     * @param propertyKey
-     *            property key.
-     * @param propertyValue
-     *            property value.
-     * 
-     * @return property list with one variable.
-     */
-    List<Property> createPropertyListWithSingleProperty(String propertyKey, String propertyValue) {
-	List<Property> propertyList = new ArrayList<Property>();
-	Property property = new Property();
-	property.setKey(propertyKey);
-	property.setValue(propertyValue);
-	propertyList.add(property);
-	return propertyList;
-    }
+	/**
+	 * Create property list with one variable. The name of the variable is random
+	 * variable name #1
+	 * 
+	 * @param propertyKey
+	 *            property key.
+	 * @param propertyValue
+	 *            property value.
+	 * 
+	 * @return property list with one variable.
+	 */
+	List<Property> createPropertyListWithSingleProperty(String propertyKey, String propertyValue) {
+		List<Property> propertyList = new ArrayList<Property>();
+		Property property = new Property();
+		property.setKey(propertyKey);
+		property.setValue(propertyValue);
+		propertyList.add(property);
+		return propertyList;
+	}
 
-    /**
-     * Complete setup of resource mocks.
-     * 
-     * @param propertyList
-     *            property list which defined the properties on the session
-     *            resource.
-     */
-    void completeMocksSetup(List<Property> propertyList) {
-	expect(sessionResource.getId()).andReturn(randomResourceId).anyTimes();
-	expect(sessionResource.getProperty()).andReturn(propertyList);
-	replay(sessionResource);
-    }
+	/**
+	 * Complete setup of resource mocks.
+	 * 
+	 * @param propertyList
+	 *            property list which defined the properties on the session
+	 *            resource.
+	 */
+	void completeMocksSetup(List<Property> propertyList) {
+		expect(sessionResource.getId()).andReturn(randomResourceId).anyTimes();
+		expect(sessionResource.getProperty()).andReturn(propertyList);
+		replay(sessionResource);
+	}
 
-    /**
-     * Test that factory can be looked up from the context.
-     */
-    @Test
-    public void testCanGetFactoryFromContext() {
-	assertNotNull(resourceVariablesBuilderFactory);
-    }
+	/**
+	 * Test that factory can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetFactoryFromContext() {
+		assertNotNull(resourceVariablesBuilderFactory);
+	}
 
-    /**
-     * Test builder can be created from factory.
-     */
-    @Test
-    public void testCanCreateBuilder() {
-	assertNotNull(resourceVariablesBuilderFactory.getObject());
-    }
+	/**
+	 * Test builder can be created from factory.
+	 */
+	@Test
+	public void testCanCreateBuilder() {
+		assertNotNull(resourceVariablesBuilderFactory.getObject());
+	}
 
-    /**
-     * Test that variables can be created from resource with no properties
-     * defined.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetVariablesFromResourceWithNoPropertiesDefined() throws Exception {
-	List<Property> propertyList = new ArrayList<Property>();
+	/**
+	 * Test that variables can be created from resource with no properties defined.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetVariablesFromResourceWithNoPropertiesDefined() throws Exception {
+		List<Property> propertyList = new ArrayList<Property>();
 
-	// complete mock setup
-	expect(sessionResource.getProperty()).andReturn(propertyList);
-	replay(sessionResource);
+		// complete mock setup
+		expect(sessionResource.getProperty()).andReturn(propertyList);
+		replay(sessionResource);
 
-	// builder
-	ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
-	builder.setResource(sessionResource);
-	Variables variables = builder.getVariables();
+		// builder
+		ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
+		builder.setResource(sessionResource);
+		Variables variables = builder.getVariables();
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(0, map.size());
-	verify(sessionResource);
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(0, map.size());
+		verify(sessionResource);
+	}
 
-    /**
-     * Test that variables can be created from resource with single properties
-     * defined.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetVariablesFromResourceWithSinglePropertyDefined() throws Exception {
-	List<Property> propertyList = createPropertyListWithSingleProperty(randomVarName, randomVariableValue);
+	/**
+	 * Test that variables can be created from resource with single properties
+	 * defined.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetVariablesFromResourceWithSinglePropertyDefined() throws Exception {
+		List<Property> propertyList = createPropertyListWithSingleProperty(randomVarName, randomVariableValue);
 
-	completeMocksSetup(propertyList);
+		completeMocksSetup(propertyList);
 
-	// builder
-	ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
-	builder.setResource(sessionResource);
-	Variables variables = builder.getVariables();
+		// builder
+		ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
+		builder.setResource(sessionResource);
+		Variables variables = builder.getVariables();
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(1, map.size());
-	verify(sessionResource);
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(1, map.size());
+		verify(sessionResource);
+	}
 
-    /**
-     * Test that variables can be created from resource with two properties
-     * defined.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetVariablesFromResourceWithTwoPropertiesDefined() throws Exception {
-	List<Property> propertyList = createPropertyListWithSingleProperty(randomVarName, randomVariableValue);
-	Property property = new Property();
-	property.setKey(randomVarName2);
-	property.setValue(randomVariableValue2);
-	propertyList.add(property);
+	/**
+	 * Test that variables can be created from resource with two properties defined.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetVariablesFromResourceWithTwoPropertiesDefined() throws Exception {
+		List<Property> propertyList = createPropertyListWithSingleProperty(randomVarName, randomVariableValue);
+		Property property = new Property();
+		property.setKey(randomVarName2);
+		property.setValue(randomVariableValue2);
+		propertyList.add(property);
 
-	completeMocksSetup(propertyList);
+		completeMocksSetup(propertyList);
 
-	// builder
-	ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
-	builder.setResource(sessionResource);
-	Variables variables = builder.getVariables();
+		// builder
+		ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
+		builder.setResource(sessionResource);
+		Variables variables = builder.getVariables();
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(2, map.size());
-	verify(sessionResource);
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(2, map.size());
+		verify(sessionResource);
+	}
 
-    /**
-     * Test that variables construction fails if resource isn't configured.
-     * 
-     * @throws if
-     *             test fails.
-     */
-    @Test(expected = VariableSubstitutionException.class)
-    public void testVariablesConstructionFailsIfResourceIsntSet() throws Exception {
-	ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
-	builder.getVariables();
-    }
+	/**
+	 * Test that variables construction fails if resource isn't configured.
+	 * 
+	 * @throws if
+	 *             test fails.
+	 */
+	@Test(expected = VariableSubstitutionException.class)
+	public void testVariablesConstructionFailsIfResourceIsntSet() throws Exception {
+		ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
+		builder.getVariables();
+	}
 
-    /**
-     * Test that resource property with null key isn't added variables.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetVariablesResourcePropertyWithNullKeyIsntAddedToVariables() throws Exception {
-	List<Property> propertyList = createPropertyListWithSingleProperty(NULL_STRING, randomVariableValue);
+	/**
+	 * Test that resource property with null key isn't added variables.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetVariablesResourcePropertyWithNullKeyIsntAddedToVariables() throws Exception {
+		List<Property> propertyList = createPropertyListWithSingleProperty(NULL_STRING, randomVariableValue);
 
-	completeMocksSetup(propertyList);
+		completeMocksSetup(propertyList);
 
-	// builder
-	ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
-	builder.setResource(sessionResource);
-	Variables variables = builder.getVariables();
+		// builder
+		ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
+		builder.setResource(sessionResource);
+		Variables variables = builder.getVariables();
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(0, map.size());
-	verify(sessionResource);
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(0, map.size());
+		verify(sessionResource);
+	}
 
-    /**
-     * Test that resource property with empty key isn't added variables.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetVariablesResourcePropertyWithEmptyKeyIsntAddedToVariables() throws Exception {
-	List<Property> propertyList = createPropertyListWithSingleProperty(EMPTY_STRING, randomVariableValue);
+	/**
+	 * Test that resource property with empty key isn't added variables.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetVariablesResourcePropertyWithEmptyKeyIsntAddedToVariables() throws Exception {
+		List<Property> propertyList = createPropertyListWithSingleProperty(EMPTY_STRING, randomVariableValue);
 
-	completeMocksSetup(propertyList);
+		completeMocksSetup(propertyList);
 
-	// builder
-	ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
-	builder.setResource(sessionResource);
-	Variables variables = builder.getVariables();
+		// builder
+		ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
+		builder.setResource(sessionResource);
+		Variables variables = builder.getVariables();
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(0, map.size());
-	verify(sessionResource);
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(0, map.size());
+		verify(sessionResource);
+	}
 
-    /**
-     * Test that resource property with null value isn't added variables.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetVariablesResourcePropertyWithNullValueIsntAddedToVariables() throws Exception {
-	List<Property> propertyList = createPropertyListWithSingleProperty(randomVarName, NULL_STRING);
+	/**
+	 * Test that resource property with null value isn't added variables.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetVariablesResourcePropertyWithNullValueIsntAddedToVariables() throws Exception {
+		List<Property> propertyList = createPropertyListWithSingleProperty(randomVarName, NULL_STRING);
 
-	completeMocksSetup(propertyList);
+		completeMocksSetup(propertyList);
 
-	// builder
-	ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
-	builder.setResource(sessionResource);
-	Variables variables = builder.getVariables();
+		// builder
+		ResourceVariablesBuilder builder = resourceVariablesBuilderFactory.getObject();
+		builder.setResource(sessionResource);
+		Variables variables = builder.getVariables();
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(0, map.size());
-	verify(sessionResource);
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(0, map.size());
+		verify(sessionResource);
+	}
 
 }

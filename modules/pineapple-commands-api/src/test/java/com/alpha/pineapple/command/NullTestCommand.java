@@ -20,9 +20,7 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.command;
-
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
@@ -33,30 +31,28 @@ import com.alpha.pineapple.command.test.TestCommand;
 /**
  * Null test command used for unit testing.
  */
-public class NullTestCommand implements TestCommand
-{
+public class NullTestCommand implements TestCommand {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    public boolean execute( Context context ) throws Exception
-    {
-        // log debug message
-        if( logger.isDebugEnabled()) {            
-            StringBuilder message = new StringBuilder();
-            message.append( "Executing command <" );
-            message.append( this.getClass().getName());
-            message.append( ">." );
-            logger.debug( message.toString() );
-        }
-        
-        // adding keys to context
-        context.put( MESSAGE_KEY, "null-test-command succeeded.");
-        context.put( RESULT_KEY, new Boolean( true ) );        
-        
-        return Command.CONTINUE_PROCESSING;
-    }
+	public boolean execute(Context context) throws Exception {
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Executing command <");
+			message.append(this.getClass().getName());
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
+		// adding keys to context
+		context.put(MESSAGE_KEY, "null-test-command succeeded.");
+		context.put(RESULT_KEY, new Boolean(true));
+
+		return Command.CONTINUE_PROCESSING;
+	}
 
 }

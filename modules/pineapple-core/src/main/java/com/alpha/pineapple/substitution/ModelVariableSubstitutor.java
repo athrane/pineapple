@@ -31,32 +31,31 @@ import com.alpha.pineapple.model.module.model.Models;
  */
 public interface ModelVariableSubstitutor {
 
-    /**
-     * Create object which returns variable substituted values for string
-     * attributes.
-     * 
-     * The properties of the resource are used for resolution of variables. The
-     * variables defined in the model are used for resolution of variables.
-     * 
-     * The variables defined in the model takes presence over those defined in
-     * the resource, i.e. if var a="r" is defined in the resource and a="m" is
-     * defined in the model then the variable "a" will be resolve to the value
-     * "m".
-     *
-     * @param module
-     *            module descriptor model.
-     * @param model
-     *            module model.
-     * @param resource
-     *            resource object.
-     * @param targetObject
-     *            target object whose string attributes (and those of any child
-     *            objects) are processed for variables.
-     * 
-     * @throws VariableSubstitutionException
-     *             if initialization of variables from the session fails.
-     */
-    <T> T createObjectWithSubstitution(Module module, Models model, Resource resource, T targetObject)
-	    throws VariableSubstitutionException;
+	/**
+	 * Create object which returns variable substituted values for string
+	 * attributes.
+	 * 
+	 * The properties of the resource are used for resolution of variables. The
+	 * variables defined in the model are used for resolution of variables.
+	 * 
+	 * The variables defined in the model takes presence over those defined in the
+	 * resource, i.e. if var a="r" is defined in the resource and a="m" is defined
+	 * in the model then the variable "a" will be resolve to the value "m".
+	 *
+	 * @param module
+	 *            module descriptor model.
+	 * @param model
+	 *            module model.
+	 * @param resource
+	 *            resource object.
+	 * @param targetObject
+	 *            target object whose string attributes (and those of any child
+	 *            objects) are processed for variables.
+	 * 
+	 * @throws VariableSubstitutionException
+	 *             if initialization of variables from the session fails.
+	 */
+	<T> T createObjectWithSubstitution(Module module, Models model, Resource resource, T targetObject)
+			throws VariableSubstitutionException;
 
 }

@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test;
 
 import javax.annotation.Resource;
@@ -42,237 +41,220 @@ import com.alpha.pineapple.i18n.MessageProvider;
 public class AsserterImpl implements Asserter {
 
 	/**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-        	
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name="hamcrestMessageProvider")
-    MessageProvider messageProvider;
-    
-    /**
-     * Root execution result. 
-     */
-    ExecutionResult rootResult;
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Result of last assertion.
-     */
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "hamcrestMessageProvider")
+	MessageProvider messageProvider;
+
+	/**
+	 * Root execution result.
+	 */
+	ExecutionResult rootResult;
+
+	/**
+	 * Result of last assertion.
+	 */
 	ExecutionResult lastAssertionResult;
 
 	public void setExecutionResult(ExecutionResult result) {
-		rootResult = result;		
+		rootResult = result;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public ExecutionResult assertObject(Object actual, Matcher matcher, String description)	
-    {
-        // log debug message
-        if ( logger.isDebugEnabled() )        	
-        {
-        	StringBuilder message = new StringBuilder();
-        	message .append("Starting to assert <");
-        	message .append( description);
-        	message .append("> with matcher <");
-        	message .append( matcher );
-        	message .append(">.");        	        	
-        	logger.debug( message.toString() );        	
-        }
-        
+	public ExecutionResult assertObject(Object actual, Matcher matcher, String description) {
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Starting to assert <");
+			message.append(description);
+			message.append("> with matcher <");
+			message.append(matcher);
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
 		// create execution result object
-		ExecutionResult childResult = rootResult.addChild( description );		
-		
-        try
-        {        	        	
-            if(matcher.matches(actual))
-            {            	
-            	// create description of successful test outcome
-                Description message = new StringDescription();                
-                message.appendText("Asserted that ");
-                matcher.describeTo(message);
-                message.appendText(".");            	
-                
-            	// set execution state
-            	childResult.setState(ExecutionState.SUCCESS);                
-            	childResult.addMessage("Message", message.toString() );
-            	
-	        	// register last assertion result
-	        	lastAssertionResult = childResult;
+		ExecutionResult childResult = rootResult.addChild(description);
 
-                // log debug message
-                if ( logger.isDebugEnabled() )        	
-                {
-                	StringBuilder debugMessage = new StringBuilder();
-                	debugMessage.append("Successfully completed assertion with positive result <");
-                	debugMessage.append( message.toString() );
-                	debugMessage.append(">.");        	        	
-                	logger.debug( debugMessage.toString() );        	
-                }
-            	
-                return childResult;
-             } 
-                       
-        	// create description of failed test outcome 
-            Description message = new StringDescription();                
-            message.appendText("Failed to assert ");
-            matcher.describeTo( message );
-            message.appendText(". Assertion failed because  ");      		
-            matcher.describeMismatch( actual, message );            
-            message.appendText(".");
-            
-        	// set execution state
-        	childResult.setState(ExecutionState.FAILURE);                
-        	childResult.addMessage("Message", message.toString() );        	        	
-        	
-        	// register last assertion result
-        	lastAssertionResult = childResult;
+		try {
+			if (matcher.matches(actual)) {
+				// create description of successful test outcome
+				Description message = new StringDescription();
+				message.appendText("Asserted that ");
+				matcher.describeTo(message);
+				message.appendText(".");
 
-            // log debug message
-            if ( logger.isDebugEnabled() )        	
-            {
-            	StringBuilder debugMessage = new StringBuilder();
-            	debugMessage.append("Successfully completed assertion with negative result <");
-            	debugMessage.append( message.toString() );
-            	debugMessage.append(">.");        	        	
-            	logger.debug( debugMessage.toString() );        	
-            }
-        	
-            return childResult;        	
-        }        
-        catch ( Exception e )
-        {
-        	
-        	// create description of outcome with error
-            Description message = new StringDescription();
-            message.appendText("Assertion of [");            
-            matcher.describeTo(message);
-            message.appendText("] terminated due to exception. ");
+				// set execution state
+				childResult.setState(ExecutionState.SUCCESS);
+				childResult.addMessage("Message", message.toString());
 
-        	// set execution state
-            childResult.setState(ExecutionState.ERROR);                        
-        	childResult.addMessage("Message", message.toString() );        	
-        	childResult.addMessage("StackTrace", StackTraceHelper.getStrackTrace( e ));
+				// register last assertion result
+				lastAssertionResult = childResult;
 
-        	// register last assertion result
-        	lastAssertionResult = childResult;
-        	        	
-            return childResult;
-        }        
-    }
+				// log debug message
+				if (logger.isDebugEnabled()) {
+					StringBuilder debugMessage = new StringBuilder();
+					debugMessage.append("Successfully completed assertion with positive result <");
+					debugMessage.append(message.toString());
+					debugMessage.append(">.");
+					logger.debug(debugMessage.toString());
+				}
 
+				return childResult;
+			}
 
-	
+			// create description of failed test outcome
+			Description message = new StringDescription();
+			message.appendText("Failed to assert ");
+			matcher.describeTo(message);
+			message.appendText(". Assertion failed because  ");
+			matcher.describeMismatch(actual, message);
+			message.appendText(".");
+
+			// set execution state
+			childResult.setState(ExecutionState.FAILURE);
+			childResult.addMessage("Message", message.toString());
+
+			// register last assertion result
+			lastAssertionResult = childResult;
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder debugMessage = new StringBuilder();
+				debugMessage.append("Successfully completed assertion with negative result <");
+				debugMessage.append(message.toString());
+				debugMessage.append(">.");
+				logger.debug(debugMessage.toString());
+			}
+
+			return childResult;
+		} catch (Exception e) {
+
+			// create description of outcome with error
+			Description message = new StringDescription();
+			message.appendText("Assertion of [");
+			matcher.describeTo(message);
+			message.appendText("] terminated due to exception. ");
+
+			// set execution state
+			childResult.setState(ExecutionState.ERROR);
+			childResult.addMessage("Message", message.toString());
+			childResult.addMessage("StackTrace", StackTraceHelper.getStrackTrace(e));
+
+			// register last assertion result
+			lastAssertionResult = childResult;
+
+			return childResult;
+		}
+	}
 
 	public ExecutionResult assertWithoutCollectingExecutionResult(Object actual, Matcher matcher, String description) {
 
 		// log debug message
-        if ( logger.isDebugEnabled() )        	
-        {
-        	StringBuilder message = new StringBuilder();
-        	message .append("Starting to execute isolated assert <");
-        	message .append( description);
-        	message .append("> with matcher <");
-        	message .append( matcher.getClass() );
-        	message .append(">.");        	        	
-        	logger.debug( message.toString() );        	
-        }
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Starting to execute isolated assert <");
+			message.append(description);
+			message.append("> with matcher <");
+			message.append(matcher.getClass());
+			message.append(">.");
+			logger.debug(message.toString());
+		}
 
 		// create execution result object
-		ExecutionResult childResult = new ExecutionResultImpl(null, description);		
-		
-	       try
-	        {        	        	
-	            if(matcher.matches(actual))
-	            {            	
-	            	// create description of successful test outcome
-	                Description message = new StringDescription();                
-	                message.appendText("Asserted that ");
-	                matcher.describeTo(message);
-	                message.appendText(".");            	
-	                
-	            	// set execution state
-	            	childResult.setState(ExecutionState.SUCCESS);                
-	            	childResult.addMessage("Message", message.toString() );
-	            	
-		        	// register last assertion result
-		        	lastAssertionResult = childResult;
+		ExecutionResult childResult = new ExecutionResultImpl(null, description);
 
-	                // log debug message
-	                if ( logger.isDebugEnabled() )        	
-	                {
-	                	StringBuilder debugMessage = new StringBuilder();
-	                	debugMessage.append("Successfully completed assertion with positive result <");
-	                	debugMessage.append( message.toString() );
-	                	debugMessage.append(">.");        	        	
-	                	logger.debug( debugMessage.toString() );        	
-	                }
-	            	
-	                return childResult;
-	             } 
-	                       
-	        	// create description of failed test outcome 
-	            Description message = new StringDescription();                
-	            message.appendText("Failed to assert that ");
-	            matcher.describeTo( message );            
-	            message.appendText(". The reason for the failure is that ");      		
-	            matcher.describeMismatch( actual, message );            
-	            message.appendText(".");
-	            
-	        	// set execution state
-	        	childResult.setState(ExecutionState.FAILURE);                
-	        	childResult.addMessage("Message", message.toString() );        	        	
-	        	
-	        	// register last assertion result
-	        	lastAssertionResult = childResult;
+		try {
+			if (matcher.matches(actual)) {
+				// create description of successful test outcome
+				Description message = new StringDescription();
+				message.appendText("Asserted that ");
+				matcher.describeTo(message);
+				message.appendText(".");
 
-	            // log debug message
-	            if ( logger.isDebugEnabled() )        	
-	            {
-	            	StringBuilder debugMessage = new StringBuilder();
-	            	debugMessage.append("Successfully completed assertion with negative result <");
-	            	debugMessage.append( message.toString() );
-	            	debugMessage.append(">.");        	        	
-	            	logger.debug( debugMessage.toString() );        	
-	            }
-	        	
-	            return childResult;        	
-	        }        
-	        catch ( Exception e )
-	        {
-	        	
-	        	// create description of outcome with error
-	            Description message = new StringDescription();
-	            message.appendText("Assertion of [");            
-	            matcher.describeTo(message);
-	            message.appendText("] terminated due to exception. ");
+				// set execution state
+				childResult.setState(ExecutionState.SUCCESS);
+				childResult.addMessage("Message", message.toString());
 
-	        	// set execution state
-	            childResult.setState(ExecutionState.ERROR);                        
-	        	childResult.addMessage("Message", message.toString() );        	
-	        	childResult.addMessage("StackTrace", StackTraceHelper.getStrackTrace( e ));
+				// register last assertion result
+				lastAssertionResult = childResult;
 
-	        	// register last assertion result
-	        	lastAssertionResult = childResult;
-	        	
-	            return childResult;
-	        }   		
+				// log debug message
+				if (logger.isDebugEnabled()) {
+					StringBuilder debugMessage = new StringBuilder();
+					debugMessage.append("Successfully completed assertion with positive result <");
+					debugMessage.append(message.toString());
+					debugMessage.append(">.");
+					logger.debug(debugMessage.toString());
+				}
+
+				return childResult;
+			}
+
+			// create description of failed test outcome
+			Description message = new StringDescription();
+			message.appendText("Failed to assert that ");
+			matcher.describeTo(message);
+			message.appendText(". The reason for the failure is that ");
+			matcher.describeMismatch(actual, message);
+			message.appendText(".");
+
+			// set execution state
+			childResult.setState(ExecutionState.FAILURE);
+			childResult.addMessage("Message", message.toString());
+
+			// register last assertion result
+			lastAssertionResult = childResult;
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder debugMessage = new StringBuilder();
+				debugMessage.append("Successfully completed assertion with negative result <");
+				debugMessage.append(message.toString());
+				debugMessage.append(">.");
+				logger.debug(debugMessage.toString());
+			}
+
+			return childResult;
+		} catch (Exception e) {
+
+			// create description of outcome with error
+			Description message = new StringDescription();
+			message.appendText("Assertion of [");
+			matcher.describeTo(message);
+			message.appendText("] terminated due to exception. ");
+
+			// set execution state
+			childResult.setState(ExecutionState.ERROR);
+			childResult.addMessage("Message", message.toString());
+			childResult.addMessage("StackTrace", StackTraceHelper.getStrackTrace(e));
+
+			// register last assertion result
+			lastAssertionResult = childResult;
+
+			return childResult;
+		}
 	}
 
 	public boolean lastAssertionSucceeded() {
-		if (lastAssertionResult == null) return false; 
+		if (lastAssertionResult == null)
+			return false;
 		return (lastAssertionResult.getState() == ExecutionState.SUCCESS);
 	}
-	
+
 	public ExecutionResult getLastAssertionResult() {
 		return lastAssertionResult;
 	}
 
 	public void completeTestAsSuccessful(MessageProvider messageProvider, String key, Object[] args) {
-		
-		// set test as successful 
-		rootResult.completeAsSuccessful(messageProvider, key, args);		
-	}	
+
+		// set test as successful
+		rootResult.completeAsSuccessful(messageProvider, key, args);
+	}
 
 }

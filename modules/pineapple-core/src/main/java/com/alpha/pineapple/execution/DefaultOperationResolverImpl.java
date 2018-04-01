@@ -34,127 +34,127 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class DefaultOperationResolverImpl implements OperationResolver {
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    @Override
-    public boolean restrictOperationFromExecution(String operation, String targetOperation,
-	    ExecutionResult rootResult) {
+	@Override
+	public boolean restrictOperationFromExecution(String operation, String targetOperation,
+			ExecutionResult rootResult) {
 
-	// handle undefined target operation
-	if ((targetOperation == null) || (targetOperation.isEmpty())) {
-	    String header = messageProvider.getMessage("dor.resolve_target_operation_info");
-	    String message = messageProvider.getMessage("dor.target_operation_notdefined");
-	    rootResult.addMessage(header, message);
-	    return false;
+		// handle undefined target operation
+		if ((targetOperation == null) || (targetOperation.isEmpty())) {
+			String header = messageProvider.getMessage("dor.resolve_target_operation_info");
+			String message = messageProvider.getMessage("dor.target_operation_notdefined");
+			rootResult.addMessage(header, message);
+			return false;
+		}
+
+		// trim
+		targetOperation = targetOperation.trim();
+
+		// resolve as list
+		if (isList(targetOperation)) {
+			return restrictAsList(operation, targetOperation, rootResult);
+		}
+
+		// resolve as string
+		return restrictFromString(operation, targetOperation, rootResult);
 	}
 
-	// trim
-	targetOperation = targetOperation.trim();
+	/**
+	 * Resolve operation from string.
+	 * 
+	 * @param operation
+	 *            current operation.
+	 * @param targetOperation
+	 *            target operation defined in module model.
+	 * @param rootResult
+	 *            Root execution result for operation.
+	 * 
+	 * @return true if operation shouldn't be executed.
+	 */
+	boolean restrictFromString(String operation, String targetOperation, ExecutionResult rootResult) {
+		String header = messageProvider.getMessage("dor.resolve_target_operation_info");
 
-	// resolve as list
-	if (isList(targetOperation)) {
-	    return restrictAsList(operation, targetOperation, rootResult);
+		// trim
+		targetOperation = targetOperation.trim();
+
+		// handle wildcard target operation
+		if (targetOperation.equals(CoreConstants.WILDCARD_OPERATION)) {
+			String message = messageProvider.getMessage("dor.target_wildcard_operation");
+			rootResult.addMessage(header, message);
+			return false;
+		}
+
+		// resolve restriction
+		if (targetOperation.equals(operation)) {
+			Object[] args = { targetOperation, operation };
+			String message = messageProvider.getMessage("dor.matched_target_operation", args);
+			rootResult.addMessage(header, message);
+			return false;
+		}
+
+		// handle restricted operation
+		Object[] args = { targetOperation, operation };
+		String message = messageProvider.getMessage("dor.match_target_operation_failure", args);
+		rootResult.addMessage(header, message);
+		return true;
 	}
 
-	// resolve as string
-	return restrictFromString(operation, targetOperation, rootResult);
-    }
-
-    /**
-     * Resolve operation from string.
-     * 
-     * @param operation
-     *            current operation.
-     * @param targetOperation
-     *            target operation defined in module model.
-     * @param rootResult
-     *            Root execution result for operation.
-     * 
-     * @return true if operation shouldn't be executed.
-     */
-    boolean restrictFromString(String operation, String targetOperation, ExecutionResult rootResult) {
-	String header = messageProvider.getMessage("dor.resolve_target_operation_info");
-
-	// trim
-	targetOperation = targetOperation.trim();
-
-	// handle wildcard target operation
-	if (targetOperation.equals(CoreConstants.WILDCARD_OPERATION)) {
-	    String message = messageProvider.getMessage("dor.target_wildcard_operation");
-	    rootResult.addMessage(header, message);
-	    return false;
+	/**
+	 * Return true if target operation defines a list.
+	 * 
+	 * @param targetOperation
+	 *            target operation to parse.
+	 * 
+	 * @return true if target operation defines a list.
+	 */
+	boolean isList(String targetOperation) {
+		if (!targetOperation.startsWith("{"))
+			return false;
+		if (!targetOperation.endsWith("}"))
+			return false;
+		return true;
 	}
 
-	// resolve restriction
-	if (targetOperation.equals(operation)) {
-	    Object[] args = { targetOperation, operation };
-	    String message = messageProvider.getMessage("dor.matched_target_operation", args);
-	    rootResult.addMessage(header, message);
-	    return false;
+	/**
+	 * Parse target operation as a list.
+	 * 
+	 * @param operation
+	 *            current operation as list.
+	 * @param targetOperation
+	 *            target operation defined in module model.
+	 * @param rootResult
+	 *            Root execution result for operation.
+	 * 
+	 * @return true if operation shouldn't be executed.
+	 */
+	boolean restrictAsList(String operation, String targetOperation, ExecutionResult rootResult) {
+		String nestedString = StringUtils.substringBetween(targetOperation, "{", "}");
+
+		// handle undefined target operation
+		if ((nestedString == null) || (nestedString.isEmpty())) {
+			// handle restricted operation
+			Object[] args = { targetOperation, operation };
+			String header = messageProvider.getMessage("dor.resolve_target_operation_info");
+			String message = messageProvider.getMessage("dor.match_target_operation_failure", args);
+			rootResult.addMessage(header, message);
+			return true;
+		}
+
+		// parse string
+		String[] list = StringUtils.split(nestedString, ",");
+
+		// resolve
+		for (String item : list) {
+			if (!restrictFromString(operation, item, rootResult))
+				return false;
+		}
+
+		return true;
 	}
-
-	// handle restricted operation
-	Object[] args = { targetOperation, operation };
-	String message = messageProvider.getMessage("dor.match_target_operation_failure", args);
-	rootResult.addMessage(header, message);
-	return true;
-    }
-
-    /**
-     * Return true if target operation defines a list.
-     * 
-     * @param targetOperation
-     *            target operation to parse.
-     * 
-     * @return true if target operation defines a list.
-     */
-    boolean isList(String targetOperation) {
-	if (!targetOperation.startsWith("{"))
-	    return false;
-	if (!targetOperation.endsWith("}"))
-	    return false;
-	return true;
-    }
-
-    /**
-     * Parse target operation as a list.
-     * 
-     * @param operation
-     *            current operation as list.
-     * @param targetOperation
-     *            target operation defined in module model.
-     * @param rootResult
-     *            Root execution result for operation.
-     * 
-     * @return true if operation shouldn't be executed.
-     */
-    boolean restrictAsList(String operation, String targetOperation, ExecutionResult rootResult) {
-	String nestedString = StringUtils.substringBetween(targetOperation, "{", "}");
-
-	// handle undefined target operation
-	if ((nestedString == null) || (nestedString.isEmpty())) {
-	    // handle restricted operation
-	    Object[] args = { targetOperation, operation };
-	    String header = messageProvider.getMessage("dor.resolve_target_operation_info");
-	    String message = messageProvider.getMessage("dor.match_target_operation_failure", args);
-	    rootResult.addMessage(header, message);
-	    return true;
-	}
-
-	// parse string
-	String[] list = StringUtils.split(nestedString, ",");
-
-	// resolve
-	for (String item : list) {
-	    if (!restrictFromString(operation, item, rootResult))
-		return false;
-	}
-
-	return true;
-    }
 
 }

@@ -34,9 +34,9 @@ import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Implementation of the {@linkplain ResponseErrorHandler} interface 
- * to provide a customized error handler for exceptions 
- * returned by {@linkplain RestTemplate}.  
+ * Implementation of the {@linkplain ResponseErrorHandler} interface to provide
+ * a customized error handler for exceptions returned by
+ * {@linkplain RestTemplate}.
  */
 public class RestResponseErrorHandler implements ResponseErrorHandler {
 
@@ -44,20 +44,20 @@ public class RestResponseErrorHandler implements ResponseErrorHandler {
 	 * Default error handler.
 	 */
 	@Resource
-	ResponseErrorHandler defaultResponseErrorHandler; 	
-	
-	@Override	
+	ResponseErrorHandler defaultResponseErrorHandler;
+
+	@Override
 	public boolean hasError(ClientHttpResponse response) throws IOException {
-	    return defaultResponseErrorHandler.hasError(response);
+		return defaultResponseErrorHandler.hasError(response);
 	}
 
-	@Override	
+	@Override
 	public void handleError(ClientHttpResponse response) throws IOException {
-		HttpStatus statusCode = response.getStatusCode();		
-	    String body = IOUtils.toString(response.getBody());
-	    HttpHeaders headers = response.getHeaders();	    
-	    RestResponseException exception = new RestResponseException(statusCode, body, headers);	    
-	    throw exception;
-	}	
-	
+		HttpStatus statusCode = response.getStatusCode();
+		String body = IOUtils.toString(response.getBody());
+		HttpHeaders headers = response.getHeaders();
+		RestResponseException exception = new RestResponseException(statusCode, body, headers);
+		throw exception;
+	}
+
 }

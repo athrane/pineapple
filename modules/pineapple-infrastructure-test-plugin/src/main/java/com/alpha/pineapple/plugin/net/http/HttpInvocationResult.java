@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.http;
 
 import java.util.HashMap;
@@ -30,104 +29,105 @@ import org.apache.commons.httpclient.Header;
 /**
  * Contains the result of a single HTTP Get method.
  */
-public interface HttpInvocationResult
-{	
+public interface HttpInvocationResult {
 	/**
 	 * Get HTTP status code.
-	 *  
+	 * 
 	 */
 	@Deprecated
-    public int getStatusCode();
+	public int getStatusCode();
 
 	/**
-	 * Set HTTP status code. 
+	 * Set HTTP status code.
 	 */
-	@Deprecated	
-    public void setStatusCode(int code);
-        
-    /**
-     * Get host.
-     *  
-     */
-	@Deprecated	
-    public String getHost();
-    
-    /**
-     * Set host. 
-     */
-	@Deprecated	
-    public void setHost(String host);
-    
-    /**
-     * Get environment.
-     */
-	@Deprecated	
-    public String getEnvironment();
+	@Deprecated
+	public void setStatusCode(int code);
 
-    /**
-     * Set environment.
-     */
-	@Deprecated	
-    public void setEnvironment(String environment);
-    
-    /**
-     * Get location.
-     */
-	@Deprecated	
-    public String getLocation();
+	/**
+	 * Get host.
+	 * 
+	 */
+	@Deprecated
+	public String getHost();
 
-    /**
-     * Set location.
-     */
-	@Deprecated	
-    public void setLocation(String location);
-    
-    /**
-     * Get server.
-     */
-	@Deprecated	
-    public String getServer();
+	/**
+	 * Set host.
+	 */
+	@Deprecated
+	public void setHost(String host);
 
-    /**
-     * Set server.
-     */
-	
-    public void setServer(String server);
-    
-    /**
-     * Get cookies.
-     */
-    public HashMap<String, String> getCookies();
+	/**
+	 * Get environment.
+	 */
+	@Deprecated
+	public String getEnvironment();
 
-    /**
-     * Set cookies.
-     */
-    public void setCookies(HashMap<String, String> cookies);
-        
-    /**
-     * Get HTTP response headers.
-     */
-    public Header[] getResponseHeaders();
+	/**
+	 * Set environment.
+	 */
+	@Deprecated
+	public void setEnvironment(String environment);
 
-    /**
-     * set HTTP response headers.
-     */
-    public void setResponseHeaders(Header[] headers);
-    
-    /**
-     * Return true if the result contains an property with the requested name.
-     * 
-     * @param name Name of requested property.
-     * 
-     * @return True if the result contains an property with the requested name.
-     */
+	/**
+	 * Get location.
+	 */
+	@Deprecated
+	public String getLocation();
+
+	/**
+	 * Set location.
+	 */
+	@Deprecated
+	public void setLocation(String location);
+
+	/**
+	 * Get server.
+	 */
+	@Deprecated
+	public String getServer();
+
+	/**
+	 * Set server.
+	 */
+
+	public void setServer(String server);
+
+	/**
+	 * Get cookies.
+	 */
+	public HashMap<String, String> getCookies();
+
+	/**
+	 * Set cookies.
+	 */
+	public void setCookies(HashMap<String, String> cookies);
+
+	/**
+	 * Get HTTP response headers.
+	 */
+	public Header[] getResponseHeaders();
+
+	/**
+	 * set HTTP response headers.
+	 */
+	public void setResponseHeaders(Header[] headers);
+
+	/**
+	 * Return true if the result contains an property with the requested name.
+	 * 
+	 * @param name
+	 *            Name of requested property.
+	 * 
+	 * @return True if the result contains an property with the requested name.
+	 */
 	public boolean containsProperty(String name);
 
 	/**
-	 * Return property value from property with requested name. 
-	 * If no property with the requested name exists, then null is returned.
+	 * Return property value from property with requested name. If no property with
+	 * the requested name exists, then null is returned.
 	 * 
-	 * @param name Name of requested property.
+	 * @param name
+	 *            Name of requested property.
 	 * 
 	 * @return Value of property with requested name.
 	 */
@@ -136,10 +136,12 @@ public interface HttpInvocationResult
 	/**
 	 * Set property value.
 	 * 
-	 * @param name Name of the property whose value is set.
+	 * @param name
+	 *            Name of the property whose value is set.
 	 * 
-	 * @param value The value of the property.
+	 * @param value
+	 *            The value of the property.
 	 */
-	public void setPropertyValue(String name, Object value);	   
-	
+	public void setPropertyValue(String name, Object value);
+
 }

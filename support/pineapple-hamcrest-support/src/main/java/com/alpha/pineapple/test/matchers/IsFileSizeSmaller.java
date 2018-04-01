@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import java.io.File;
@@ -39,16 +38,17 @@ public class IsFileSizeSmaller extends TypeSafeMatcher<File> {
 	 * Last asserted file.
 	 */
 	File lastFile;
-	
+
 	/**
 	 * Maximum legal size in bytes.
 	 */
 	long legalSizeBytes;
-		
+
 	/**
 	 * IsFileSizeSmaller constructor.
 	 * 
-	 * @param legalSzie in bytes.
+	 * @param legalSzie
+	 *            in bytes.
 	 */
 	public IsFileSizeSmaller(long legalsize) {
 		this.legalSizeBytes = legalsize;
@@ -58,23 +58,22 @@ public class IsFileSizeSmaller extends TypeSafeMatcher<File> {
 		return (file.length() < legalSizeBytes);
 	}
 
-	public void describeTo(Description description) {		 
+	public void describeTo(Description description) {
 		description.appendText("file size is smaller than ");
 		description.appendText(Long.toString(legalSizeBytes));
-		description.appendText(" bytes");		
+		description.appendText(" bytes");
 	}
-	
-	
-    @Override
+
+	@Override
 	protected void describeMismatchSafely(File file, Description mismatchDescription) {
-    	mismatchDescription.appendText("file size isn't smaller than");    	
-    	mismatchDescription.appendText(Long.toString(legalSizeBytes));
-    	mismatchDescription.appendText(" bytes");		    	
-    }
+		mismatchDescription.appendText("file size isn't smaller than");
+		mismatchDescription.appendText(Long.toString(legalSizeBytes));
+		mismatchDescription.appendText(" bytes");
+	}
 
 	@Factory
-    public static Matcher<File> isFileSizeSmaller(long legalSize) {
-        return new IsFileSizeSmaller(legalSize);
-    }
-    
+	public static Matcher<File> isFileSizeSmaller(long legalSize) {
+		return new IsFileSizeSmaller(legalSize);
+	}
+
 }

@@ -39,56 +39,54 @@ import org.zkoss.zk.ui.event.EventListener;
 @Deprecated
 public class AsyncTaskHelper {
 
-    /**
-     * NULL global command arguments.
-     */
-    static final Map<String, Object> NULL_GLOBALCOMMAND_ARGS = new HashMap<String, Object>();
+	/**
+	 * NULL global command arguments.
+	 */
+	static final Map<String, Object> NULL_GLOBALCOMMAND_ARGS = new HashMap<String, Object>();
 
-    /**
-     * Enable ZK server push.
-     * 
-     * @return server push enabled desktop.
-     */
-    public Desktop enableServerPush() {
-	Desktop desktop = Executions.getCurrent().getDesktop();
-	desktop.enableServerPush(true);
-	return desktop;
-    }
+	/**
+	 * Enable ZK server push.
+	 * 
+	 * @return server push enabled desktop.
+	 */
+	public Desktop enableServerPush() {
+		Desktop desktop = Executions.getCurrent().getDesktop();
+		desktop.enableServerPush(true);
+		return desktop;
+	}
 
-    /**
-     * Asynchronous scheduling of ZK event.
-     * 
-     * @param event
-     *            ZK event to schedule.
-     * @param desktop
-     *            ZK desktop.
-     * @param eventListener
-     *            ZK eventListener, i.e. the ZK View in the form of a ZK
-     *            composer.
-     */
-    public void scheduleEvent(Event event, Desktop desktop, EventListener<Event> eventListener) {
-	Validate.notNull(event);
-	Validate.notNull(desktop);
-	Validate.notNull(eventListener);
+	/**
+	 * Asynchronous scheduling of ZK event.
+	 * 
+	 * @param event
+	 *            ZK event to schedule.
+	 * @param desktop
+	 *            ZK desktop.
+	 * @param eventListener
+	 *            ZK eventListener, i.e. the ZK View in the form of a ZK composer.
+	 */
+	public void scheduleEvent(Event event, Desktop desktop, EventListener<Event> eventListener) {
+		Validate.notNull(event);
+		Validate.notNull(desktop);
+		Validate.notNull(eventListener);
 
-	// schedule event
-	Executions.schedule(desktop, eventListener, event);
-    }
+		// schedule event
+		Executions.schedule(desktop, eventListener, event);
+	}
 
-    /**
-     * Execution asynchronous task.
-     * 
-     * @param task
-     *            Asynchronous tasks which is executed.
-     * @param desktop
-     *            ZK desktop.
-     * @param eventListener
-     *            ZK eventListener, i.e. the ZK View in the form of a ZK
-     *            composer.
-     */
-    @Async("asyncTaskExecutor")
-    public void executeAsync(AsyncTask task, Desktop desktop, EventListener<Event> eventListener) {
-	task.runAsync(desktop, eventListener);
-    }
+	/**
+	 * Execution asynchronous task.
+	 * 
+	 * @param task
+	 *            Asynchronous tasks which is executed.
+	 * @param desktop
+	 *            ZK desktop.
+	 * @param eventListener
+	 *            ZK eventListener, i.e. the ZK View in the form of a ZK composer.
+	 */
+	@Async("asyncTaskExecutor")
+	public void executeAsync(AsyncTask task, Desktop desktop, EventListener<Event> eventListener) {
+		task.runAsync(desktop, eventListener);
+	}
 
 }

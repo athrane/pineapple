@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import static org.junit.Assert.assertFalse;
@@ -43,24 +42,24 @@ public class IsArrayEmptyTest {
 	 */
 	@SuppressWarnings("unchecked")
 	Matcher matcher;
-	
+
 	/**
 	 * Mock description.
 	 */
 	Description description;
-	
+
 	@Before
 	public void setUp() throws Exception {
-				
+
 		matcher = IsArrayEmpty.isArrayEmpty();
-		
+
 		// create mock description
-		description = EasyMock.createMock( Description.class);
-		
+		description = EasyMock.createMock(Description.class);
+
 	}
 
 	@After
-	public void tearDown() throws Exception {		
+	public void tearDown() throws Exception {
 		matcher = null;
 		description = null;
 	}
@@ -73,9 +72,9 @@ public class IsArrayEmptyTest {
 
 		// initialize array
 		Object[] objectArray = {};
-				
+
 		// test
-		assertTrue(matcher.matches( objectArray ));		
+		assertTrue(matcher.matches(objectArray));
 	}
 
 	/**
@@ -85,12 +84,12 @@ public class IsArrayEmptyTest {
 	public void testArrayWithOneEntryIsNegativeMatch() {
 
 		// initialize array
-		Object[] objectArray = { new Integer(10) };		
-				
+		Object[] objectArray = { new Integer(10) };
+
 		// test
-		assertFalse(matcher.matches( objectArray ));		
+		assertFalse(matcher.matches(objectArray));
 	}
-	
+
 	/**
 	 * Test that array with two entries is negative match.
 	 */
@@ -98,52 +97,52 @@ public class IsArrayEmptyTest {
 	public void testArrayWithTwoEntriesIsNegativeMatch() {
 
 		// initialize array
-		Object[] objectArray = { new Integer(10), new Integer(20)  };		
-				
+		Object[] objectArray = { new Integer(10), new Integer(20) };
+
 		// test
-		assertFalse(matcher.matches( objectArray ));		
+		assertFalse(matcher.matches(objectArray));
 	}
-		
+
 	/**
 	 * Test that matcher creates a description.
 	 */
 	@Test
 	public void testDescribeTo() {
-	
+
 		// complete mock description setup
-		EasyMock.expect( description.appendText( (String) EasyMock.isA( String.class) ) );
-		EasyMock.expectLastCall().andReturn( description );
-		EasyMock.replay( description );		
-		
+		EasyMock.expect(description.appendText((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.replay(description);
+
 		// invoke matcher
 		matcher.describeTo(description);
-		
+
 		// test
 		EasyMock.verify(description);
-		
+
 	}
 
 	/**
 	 * Test that matcher creates a mismatch description .
-	 */	
+	 */
 	@Test
 	public void testDescribeMismatch() {
 
 		// initialize array
-		Object[] objectArray = { new Integer(10), new Integer(20)  };		
-					
+		Object[] objectArray = { new Integer(10), new Integer(20) };
+
 		// complete mock description setup
-		EasyMock.expect( description.appendText( (String) EasyMock.isA( String.class) ) );
-		EasyMock.expectLastCall().andReturn( description );
-		EasyMock.expect( description.appendValue( 2 ));		
-		EasyMock.expectLastCall().andReturn( description );
-		EasyMock.expect( description.appendText( (String) EasyMock.isA( String.class) ) );
-		EasyMock.expectLastCall().andReturn( description );		
-		EasyMock.replay( description );		
-		
+		EasyMock.expect(description.appendText((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.expect(description.appendValue(2));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.expect(description.appendText((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.replay(description);
+
 		// invoke matcher
-		matcher.describeMismatch( objectArray, description);
-		
+		matcher.describeMismatch(objectArray, description);
+
 		// test
 		EasyMock.verify(description);
 	}

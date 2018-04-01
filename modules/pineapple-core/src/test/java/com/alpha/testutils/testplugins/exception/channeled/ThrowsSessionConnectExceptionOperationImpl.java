@@ -38,12 +38,12 @@ import com.alpha.pineapple.session.SessionConnectException;
 @PluginOperation(ThrowsSessionConnectExceptionOperationImpl.OPERATION_ID)
 public class ThrowsSessionConnectExceptionOperationImpl implements Operation {
 
-    public static final String OPERATION_ID = "throwSessionConnectException";
+	public static final String OPERATION_ID = "throwSessionConnectException";
 
-    @Override
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-	SessionConnectException e = new SessionConnectException(result.getDescription());
-	throw new RuntimeException(e);
-    }
+	@Override
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+		SessionConnectException e = new SessionConnectException(result.getDescription());
+		throw new RuntimeException(e);
+	}
 
 }

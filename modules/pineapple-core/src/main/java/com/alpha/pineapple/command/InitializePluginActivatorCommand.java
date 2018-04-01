@@ -87,115 +87,114 @@ import com.alpha.pineapple.resource.ResourceRepository;
  * </p>
  */
 public class InitializePluginActivatorCommand implements Command {
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: contains credential provider
-     * instance.
-     */
-    public static final String CREDENTIAL_PROVIDER_KEY = "credential-provider";
+	/**
+	 * Key used to identify property in context: contains credential provider
+	 * instance.
+	 */
+	public static final String CREDENTIAL_PROVIDER_KEY = "credential-provider";
 
-    /**
-     * Key used to identify property in context: contains resources
-     * configuration object.
-     */
-    public static final String RESOURCES_KEY = "resources";
+	/**
+	 * Key used to identify property in context: contains resources configuration
+	 * object.
+	 */
+	public static final String RESOURCES_KEY = "resources";
 
-    /**
-     * Key used to identify property in context: the plugin activator instance
-     * which commands uses to access external resources.
-     */
-    public static final String PLUGIN_ACTIVATOR_KEY = "plugin-activator";
+	/**
+	 * Key used to identify property in context: the plugin activator instance which
+	 * commands uses to access external resources.
+	 */
+	public static final String PLUGIN_ACTIVATOR_KEY = "plugin-activator";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Plugin repository
-     */
-    @Resource
-    PluginRuntimeRepository pluginRepository;
+	/**
+	 * Plugin repository
+	 */
+	@Resource
+	PluginRuntimeRepository pluginRepository;
 
-    /**
-     * Resource repository
-     */
-    @Resource
-    ResourceRepository resourceRepository;
+	/**
+	 * Resource repository
+	 */
+	@Resource
+	ResourceRepository resourceRepository;
 
-    /**
-     * plugin activator.
-     */
-    @Resource
-    PluginActivator pluginActivator;
+	/**
+	 * plugin activator.
+	 */
+	@Resource
+	PluginActivator pluginActivator;
 
-    /**
-     * Credential provider.
-     */
-    @Initialize(CREDENTIAL_PROVIDER_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    CredentialProvider provider;
+	/**
+	 * Credential provider.
+	 */
+	@Initialize(CREDENTIAL_PROVIDER_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	CredentialProvider provider;
 
-    /**
-     * Environment configuration which contains resources.
-     */
-    @Initialize(RESOURCES_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    Configuration envConfiguration;
+	/**
+	 * Environment configuration which contains resources.
+	 */
+	@Initialize(RESOURCES_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	Configuration envConfiguration;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    @SuppressWarnings("unchecked")
-    public boolean execute(Context context) throws Exception {
+	@SuppressWarnings("unchecked")
+	public boolean execute(Context context) throws Exception {
 
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	try {
-	    // initialize resource repository
-	    resourceRepository.initialize(envConfiguration);
+		try {
+			// initialize resource repository
+			resourceRepository.initialize(envConfiguration);
 
-	    // get plugin id's
-	    String[] pluginIds = resourceRepository.getPluginIds();
+			// get plugin id's
+			String[] pluginIds = resourceRepository.getPluginIds();
 
-	    // initialize plugin repository
-	    pluginRepository.initialize(executionResult, pluginIds);
+			// initialize plugin repository
+			pluginRepository.initialize(executionResult, pluginIds);
 
-	    // initialize plugin activator
-	    pluginActivator.initialize(provider, resourceRepository, pluginRepository);
+			// initialize plugin activator
+			pluginActivator.initialize(provider, resourceRepository, pluginRepository);
 
-	    // add plugin activator to context
-	    context.put(PLUGIN_ACTIVATOR_KEY, pluginActivator);
+			// add plugin activator to context
+			context.put(PLUGIN_ACTIVATOR_KEY, pluginActivator);
 
-	    // compute execution state from children
-	    executionResult.completeAsComputed(messageProvider, "ipac.succeed", null, "ipac.failed", null);
+			// compute execution state from children
+			executionResult.completeAsComputed(messageProvider, "ipac.succeed", null, "ipac.failed", null);
 
-	    return Command.CONTINUE_PROCESSING;
+			return Command.CONTINUE_PROCESSING;
 
-	} catch (Exception e) {
+		} catch (Exception e) {
 
-	    // complete operation with error
-	    executionResult.completeAsError(messageProvider, "ipac.error", e);
+			// complete operation with error
+			executionResult.completeAsError(messageProvider, "ipac.error", e);
 
-	    return Command.CONTINUE_PROCESSING;
+			return Command.CONTINUE_PROCESSING;
+		}
 	}
-    }
 
 }

@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 /*
  * ====================================================================
  *
@@ -65,11 +64,11 @@ import org.apache.commons.logging.LogFactory;
  * 
  * <p>
  * IMPLEMENTATION NOTE: This class is referenced from HttpClient documentation
- * but not supported by the project. For more info please consult: <A
- * HREF="http://hc.apache.org/httpclient-3.x/sslguide.html"> HTTP CLient SSL
- * Guide</A>. The source for this is obtained from the source code of the <A
- * HREF="http://maven-plugins.sourceforge.net/maven-sourceforge-plugin"> Maven
- * SourceForge plug-in</A>.
+ * but not supported by the project. For more info please consult:
+ * <A HREF="http://hc.apache.org/httpclient-3.x/sslguide.html"> HTTP CLient SSL
+ * Guide</A>. The source for this is obtained from the source code of the
+ * <A HREF="http://maven-plugins.sourceforge.net/maven-sourceforge-plugin">
+ * Maven SourceForge plug-in</A>.
  * </p>
  * 
  * <p>
@@ -90,17 +89,14 @@ public class EasyX509TrustManager implements X509TrustManager {
 	private X509TrustManager standardTrustManager = null;
 
 	/** Log object for this class. */
-	private static final Log LOG = LogFactory
-			.getLog(EasyX509TrustManager.class);
+	private static final Log LOG = LogFactory.getLog(EasyX509TrustManager.class);
 
 	/**
 	 * Constructor for EasyX509TrustManager.
 	 */
-	public EasyX509TrustManager(KeyStore keystore)
-			throws NoSuchAlgorithmException, KeyStoreException {
+	public EasyX509TrustManager(KeyStore keystore) throws NoSuchAlgorithmException, KeyStoreException {
 		super();
-		TrustManagerFactory factory = TrustManagerFactory
-				.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+		TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 		factory.init(keystore);
 		TrustManager[] trustmanagers = factory.getTrustManagers();
 		if (trustmanagers.length == 0) {
@@ -113,8 +109,7 @@ public class EasyX509TrustManager implements X509TrustManager {
 	 * @see javax.net.ssl.X509TrustManager#checkClientTrusted(X509Certificate[],String
 	 *      authType)
 	 */
-	public void checkClientTrusted(X509Certificate[] certificates,
-			String authType) throws CertificateException {
+	public void checkClientTrusted(X509Certificate[] certificates, String authType) throws CertificateException {
 		standardTrustManager.checkClientTrusted(certificates, authType);
 	}
 
@@ -122,8 +117,7 @@ public class EasyX509TrustManager implements X509TrustManager {
 	 * @see javax.net.ssl.X509TrustManager#checkServerTrusted(X509Certificate[],String
 	 *      authType)
 	 */
-	public void checkServerTrusted(X509Certificate[] certificates,
-			String authType) throws CertificateException {
+	public void checkServerTrusted(X509Certificate[] certificates, String authType) throws CertificateException {
 		if ((certificates != null) && LOG.isDebugEnabled()) {
 			LOG.debug("Server certificate chain:");
 			for (int i = 0; i < certificates.length; i++) {

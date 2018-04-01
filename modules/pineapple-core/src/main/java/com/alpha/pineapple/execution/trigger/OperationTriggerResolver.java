@@ -32,15 +32,15 @@ import com.alpha.pineapple.model.module.model.Trigger;
  */
 public interface OperationTriggerResolver {
 
-    /**
-     * Resolves stream of candidate list of trigger to execute.
-     * 
-     * @param triggers
-     *            stream of candidate triggers to resolve.
-     * @param operation
-     *            operation invoked on model containing the triggers..
-     * 
-     * @return stream of trigger to execute.
-     */
-    Stream<Trigger> resolve(Stream<Trigger> triggers, String operation);
+	/**
+	 * Resolves stream of candidate list of trigger to execute.
+	 * 
+	 * @param triggers
+	 *            stream of candidate triggers to resolve.
+	 * @param operation
+	 *            operation invoked on model containing the triggers..
+	 * 
+	 * @return stream of trigger to execute.
+	 */
+	Stream<Trigger> resolve(Stream<Trigger> triggers, String operation);
 }

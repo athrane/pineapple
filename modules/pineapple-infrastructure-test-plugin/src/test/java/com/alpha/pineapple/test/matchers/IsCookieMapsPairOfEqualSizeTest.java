@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import static org.junit.Assert.assertFalse;
@@ -46,30 +45,30 @@ public class IsCookieMapsPairOfEqualSizeTest {
 	 * Cookie domain.
 	 */
 	final static String DOMAIN = "domain";
-	
+
 	/**
 	 * Object under test.
 	 */
 	@SuppressWarnings("unchecked")
 	Matcher matcher;
-	
+
 	/**
 	 * Mock description.
 	 */
 	Description description;
-	
+
 	@Before
 	public void setUp() throws Exception {
-				
+
 		matcher = IsCookieMapsPairOfEqualSize.equalSize();
-		
+
 		// create mock description
-		description = EasyMock.createMock( Description.class);
-		
+		description = EasyMock.createMock(Description.class);
+
 	}
 
 	@After
-	public void tearDown() throws Exception {		
+	public void tearDown() throws Exception {
 		matcher = null;
 		description = null;
 	}
@@ -83,12 +82,12 @@ public class IsCookieMapsPairOfEqualSizeTest {
 		// initialize cookie maps
 		CookieMap map1 = new CookieMap();
 		CookieMap map2 = new CookieMap();
-		
-		// initialize cookie maps pair  
-		CookieMapPair pair = new CookieMapPair(map1, map2);		
-				
+
+		// initialize cookie maps pair
+		CookieMapPair pair = new CookieMapPair(map1, map2);
+
 		// test
-		assertTrue(matcher.matches( pair ));		
+		assertTrue(matcher.matches(pair));
 	}
 
 	/**
@@ -99,17 +98,16 @@ public class IsCookieMapsPairOfEqualSizeTest {
 
 		// initialize cookie maps
 		CookieMap map1 = new CookieMap();
-		map1.put("key1", new Cookie(DOMAIN,"key1","value1" ));
+		map1.put("key1", new Cookie(DOMAIN, "key1", "value1"));
 		CookieMap map2 = new CookieMap();
-		map2.put("key2", new Cookie(DOMAIN,"key2","value5" ));
-				
-		// initialize cookie maps pair  
-		CookieMapPair pair = new CookieMapPair(map1, map2);		
-				
-		// test
-		assertTrue(matcher.matches( pair ));		
-	}
+		map2.put("key2", new Cookie(DOMAIN, "key2", "value5"));
 
+		// initialize cookie maps pair
+		CookieMapPair pair = new CookieMapPair(map1, map2);
+
+		// test
+		assertTrue(matcher.matches(pair));
+	}
 
 	/**
 	 * Test that two maps with three entries succeeds.
@@ -119,19 +117,19 @@ public class IsCookieMapsPairOfEqualSizeTest {
 
 		// initialize cookie maps
 		CookieMap map1 = new CookieMap();
-		map1.put("key1", new Cookie(DOMAIN,"key1","value1" ));
-		map1.put("key2", new Cookie(DOMAIN,"key2","value2" ));
-		map1.put("key3", new Cookie(DOMAIN,"key3","value3" ));				
+		map1.put("key1", new Cookie(DOMAIN, "key1", "value1"));
+		map1.put("key2", new Cookie(DOMAIN, "key2", "value2"));
+		map1.put("key3", new Cookie(DOMAIN, "key3", "value3"));
 		CookieMap map2 = new CookieMap();
-		map2.put("key4", new Cookie(DOMAIN,"key4","value4" ));
-		map2.put("key5", new Cookie(DOMAIN,"key5","value5" ));
-		map2.put("key6", new Cookie(DOMAIN,"key6","value6" ));				
-				
-		// initialize cookie maps pair  
-		CookieMapPair pair = new CookieMapPair(map1, map2);		
-				
+		map2.put("key4", new Cookie(DOMAIN, "key4", "value4"));
+		map2.put("key5", new Cookie(DOMAIN, "key5", "value5"));
+		map2.put("key6", new Cookie(DOMAIN, "key6", "value6"));
+
+		// initialize cookie maps pair
+		CookieMapPair pair = new CookieMapPair(map1, map2);
+
 		// test
-		assertTrue(matcher.matches( pair ));        
+		assertTrue(matcher.matches(pair));
 	}
 
 	/**
@@ -143,14 +141,14 @@ public class IsCookieMapsPairOfEqualSizeTest {
 		// initialize cookie maps
 		CookieMap map1 = new CookieMap();
 		CookieMap map2 = new CookieMap();
-		map2.put("key4", new Cookie(DOMAIN,"key4","value4" ));
-		
-		// initialize cookie maps pair  
-		CookieMapPair pair = new CookieMapPair(map1, map2);		
-				
+		map2.put("key4", new Cookie(DOMAIN, "key4", "value4"));
+
+		// initialize cookie maps pair
+		CookieMapPair pair = new CookieMapPair(map1, map2);
+
 		// test
-		assertFalse(matcher.matches( pair ));        
-	}	
+		assertFalse(matcher.matches(pair));
+	}
 
 	/**
 	 * Test that two maps with one and two entries fails.
@@ -160,36 +158,35 @@ public class IsCookieMapsPairOfEqualSizeTest {
 
 		// initialize cookie maps
 		CookieMap map1 = new CookieMap();
-		map1.put("key1", new Cookie(DOMAIN,"key1","value1" ));
+		map1.put("key1", new Cookie(DOMAIN, "key1", "value1"));
 		CookieMap map2 = new CookieMap();
-		map2.put("key2", new Cookie(DOMAIN,"key2","value3" ));
-		map2.put("key3", new Cookie(DOMAIN,"key2","value3" ));
-		
-		// initialize cookie maps pair  
-		CookieMapPair pair = new CookieMapPair(map1, map2);		
-				
+		map2.put("key2", new Cookie(DOMAIN, "key2", "value3"));
+		map2.put("key3", new Cookie(DOMAIN, "key2", "value3"));
+
+		// initialize cookie maps pair
+		CookieMapPair pair = new CookieMapPair(map1, map2);
+
 		// test
-		assertFalse(matcher.matches( pair ));        
-	}	
-	
-	
+		assertFalse(matcher.matches(pair));
+	}
+
 	/**
 	 * Test that matcher creates a description.
 	 */
 	@Test
 	public void testDescribeTo() {
-	
+
 		// complete mock description setup
-		EasyMock.expect( description.appendText( (String) EasyMock.isA( String.class) ) );
-		EasyMock.expectLastCall().andReturn( description );
-		EasyMock.replay( description );		
-		
+		EasyMock.expect(description.appendText((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andReturn(description);
+		EasyMock.replay(description);
+
 		// invoke matcher
 		matcher.describeTo(description);
-		
+
 		// test
 		EasyMock.verify(description);
-		
+
 	}
 
 }

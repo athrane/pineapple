@@ -57,173 +57,173 @@ import com.alpha.pineapple.session.Session;
  */
 @PluginOperation(OperationNames.UNDEPLOY_CONFIGURATION)
 public class UndeployConfiguration implements Operation {
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Operation utilities.
-     */
-    @Resource
-    OperationUtils operationUtils;
+	/**
+	 * Operation utilities.
+	 */
+	@Resource
+	OperationUtils operationUtils;
 
-    /**
-     * Docker client
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    /**
-     * Model mapper object.
-     */
-    @Resource
-    Mapper mapper;
+	/**
+	 * Model mapper object.
+	 */
+	@Resource
+	Mapper mapper;
 
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-	// validate parameters
-	Validate.notNull(content, "content is undefined.");
-	Validate.notNull(session, "session is undefined.");
-	Validate.notNull(result, "result is undefined.");
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+		// validate parameters
+		Validate.notNull(content, "content is undefined.");
+		Validate.notNull(session, "session is undefined.");
+		Validate.notNull(result, "result is undefined.");
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { content.getClass().getName(), content };
-	    String message = messageProvider.getMessage("uc.start", args);
-	    logger.debug(message);
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { content.getClass().getName(), content };
+			String message = messageProvider.getMessage("uc.start", args);
+			logger.debug(message);
+		}
+
+		// validate parameters
+		operationUtils.validateContentType(content, DockerConstants.LEGAL_CONTENT_TYPES);
+		operationUtils.validateSessionType(session, DockerSession.class);
+
+		try {
+			// type cast model
+			Docker pluginModel = (Docker) content;
+
+			// type cast session
+			DockerSession dockerSession = (DockerSession) session;
+
+			// process model
+			processModel(pluginModel, dockerSession, result);
+
+			// compute execution state from children
+			result.completeAsComputed(messageProvider, "uc.completed", null, "uc.failed", null);
+		} catch (Exception e) {
+			Object[] args = { e.toString() };
+			String message = messageProvider.getMessage("uc.error", args);
+			throw new PluginExecutionFailedException(message, e);
+		}
 	}
 
-	// validate parameters
-	operationUtils.validateContentType(content, DockerConstants.LEGAL_CONTENT_TYPES);
-	operationUtils.validateSessionType(session, DockerSession.class);
+	/**
+	 * Process model commands.
+	 * 
+	 * @param dockerModel
+	 *            plugin model.
+	 * @param session
+	 *            Docker session.
+	 * @param result
+	 *            execution result.
+	 */
+	void processModel(Docker dockerModel, DockerSession session, ExecutionResult result) {
 
-	try {
-	    // type cast model
-	    Docker pluginModel = (Docker) content;
+		List<DockerCommand> agentCommands = dockerModel.getCommands();
+		for (DockerCommand command : agentCommands) {
 
-	    // type cast session
-	    DockerSession dockerSession = (DockerSession) session;
+			// enforce continuation policy
+			if (!result.getContinuationPolicy().continueExecution()) {
+				String message = messageProvider.getMessage("uc.contination_policy_enforcement_info");
+				result.addMessage(ExecutionResult.MSG_MESSAGE, message);
+				return;
+			}
 
-	    // process model
-	    processModel(pluginModel, dockerSession, result);
+			if (command instanceof Image) {
+				deleteImage(session, (Image) command, result);
+				continue;
+			}
 
-	    // compute execution state from children
-	    result.completeAsComputed(messageProvider, "uc.completed", null, "uc.failed", null);
-	} catch (Exception e) {
-	    Object[] args = { e.toString() };
-	    String message = messageProvider.getMessage("uc.error", args);
-	    throw new PluginExecutionFailedException(message, e);
+			if (command instanceof TaggedImage) {
+				deleteTaggedImage(session, (TaggedImage) command, result);
+				continue;
+			}
+
+			if (command instanceof ImageFromDockerfile) {
+				deleteImageFromDockerfile(session, (ImageFromDockerfile) command, result);
+				continue;
+			}
+
+			if (command instanceof Container) {
+				deleteContainer(session, (Container) command, result);
+				continue;
+			}
+		}
 	}
-    }
 
-    /**
-     * Process model commands.
-     * 
-     * @param dockerModel
-     *            plugin model.
-     * @param session
-     *            Docker session.
-     * @param result
-     *            execution result.
-     */
-    void processModel(Docker dockerModel, DockerSession session, ExecutionResult result) {
-
-	List<DockerCommand> agentCommands = dockerModel.getCommands();
-	for (DockerCommand command : agentCommands) {
-
-	    // enforce continuation policy
-	    if (!result.getContinuationPolicy().continueExecution()) {
-		String message = messageProvider.getMessage("uc.contination_policy_enforcement_info");
-		result.addMessage(ExecutionResult.MSG_MESSAGE, message);
-		return;
-	    }
-
-	    if (command instanceof Image) {
-		deleteImage(session, (Image) command, result);
-		continue;
-	    }
-
-	    if (command instanceof TaggedImage) {
-		deleteTaggedImage(session, (TaggedImage) command, result);
-		continue;
-	    }
-
-	    if (command instanceof ImageFromDockerfile) {
-		deleteImageFromDockerfile(session, (ImageFromDockerfile) command, result);
-		continue;
-	    }
-
-	    if (command instanceof Container) {
-		deleteContainer(session, (Container) command, result);
-		continue;
-	    }
+	/**
+	 * Delete Docker image.
+	 * 
+	 * @param session
+	 *            Docker session.
+	 * @param command
+	 *            image command.
+	 * @param result
+	 *            execution result
+	 */
+	void deleteImage(DockerSession session, Image command, ExecutionResult result) {
+		ImageInfo info = mapper.mapImageForDeletion(command);
+		dockerClient.deleteImage(session, info, result);
 	}
-    }
 
-    /**
-     * Delete Docker image.
-     * 
-     * @param session
-     *            Docker session.
-     * @param command
-     *            image command.
-     * @param result
-     *            execution result
-     */
-    void deleteImage(DockerSession session, Image command, ExecutionResult result) {
-	ImageInfo info = mapper.mapImageForDeletion(command);
-	dockerClient.deleteImage(session, info, result);
-    }
+	/**
+	 * Delete tagged Docker image.
+	 * 
+	 * @param session
+	 *            Docker session.
+	 * @param command
+	 *            image command.
+	 * @param result
+	 *            execution result
+	 */
+	void deleteTaggedImage(DockerSession session, TaggedImage command, ExecutionResult result) {
+		ImageInfo info = mapper.mapTaggedImageForDeletion(command);
+		dockerClient.deleteImage(session, info, result);
+	}
 
-    /**
-     * Delete tagged Docker image.
-     * 
-     * @param session
-     *            Docker session.
-     * @param command
-     *            image command.
-     * @param result
-     *            execution result
-     */
-    void deleteTaggedImage(DockerSession session, TaggedImage command, ExecutionResult result) {
-	ImageInfo info = mapper.mapTaggedImageForDeletion(command);
-	dockerClient.deleteImage(session, info, result);
-    }
+	/**
+	 * Delete Docker image from Dockerfile.
+	 * 
+	 * @param session
+	 *            Docker session.
+	 * @param command
+	 *            image from Dockerfile command.
+	 * @param result
+	 *            execution result
+	 */
+	void deleteImageFromDockerfile(DockerSession session, ImageFromDockerfile command, ExecutionResult result) {
+		ImageInfo info = mapper.mapImageFromDockerfileForDeletion(command);
+		dockerClient.deleteImage(session, info, result);
+	}
 
-    /**
-     * Delete Docker image from Dockerfile.
-     * 
-     * @param session
-     *            Docker session.
-     * @param command
-     *            image from Dockerfile command.
-     * @param result
-     *            execution result
-     */
-    void deleteImageFromDockerfile(DockerSession session, ImageFromDockerfile command, ExecutionResult result) {
-	ImageInfo info = mapper.mapImageFromDockerfileForDeletion(command);
-	dockerClient.deleteImage(session, info, result);
-    }
-
-    /**
-     * Delete Docker container.
-     * 
-     * @param session
-     *            Docker session.
-     * @param command
-     *            create container command.
-     * @param result
-     *            execution result
-     */
-    void deleteContainer(DockerSession session, Container command, ExecutionResult result) {
-	ContainerInfo info = mapper.mapContainerForDeletion(command);
-	dockerClient.deleteContainer(session, info, result);
-    }
+	/**
+	 * Delete Docker container.
+	 * 
+	 * @param session
+	 *            Docker session.
+	 * @param command
+	 *            create container command.
+	 * @param result
+	 *            execution result
+	 */
+	void deleteContainer(DockerSession session, Container command, ExecutionResult result) {
+		ContainerInfo info = mapper.mapContainerForDeletion(command);
+		dockerClient.deleteContainer(session, info, result);
+	}
 
 }

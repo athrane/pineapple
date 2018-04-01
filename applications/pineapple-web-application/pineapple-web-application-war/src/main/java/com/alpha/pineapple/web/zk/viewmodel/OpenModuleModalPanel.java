@@ -57,197 +57,197 @@ import com.alpha.pineapple.web.spring.rest.ModuleController;
  */
 public class OpenModuleModalPanel {
 
-    /**
-     * Readme.txt file name.
-     */
-    static final String READMETXT_FILENAME = "readme.txt";
+	/**
+	 * Readme.txt file name.
+	 */
+	static final String READMETXT_FILENAME = "readme.txt";
 
-    /**
-     * Fist environment index.
-     */
-    static final int FIRST_INDEX = 0;
+	/**
+	 * Fist environment index.
+	 */
+	static final int FIRST_INDEX = 0;
 
-    /**
-     * New line.
-     */
-    public static String NEW_LINE = System.getProperty("line.separator");
+	/**
+	 * New line.
+	 */
+	public static String NEW_LINE = System.getProperty("line.separator");
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Session state.
-     */
-    @WireVariable
-    SessionState sessionState;
+	/**
+	 * Session state.
+	 */
+	@WireVariable
+	SessionState sessionState;
 
-    /**
-     * Module repository.
-     */
-    @WireVariable
-    ModuleRepository moduleRepository;
+	/**
+	 * Module repository.
+	 */
+	@WireVariable
+	ModuleRepository moduleRepository;
 
-    /**
-     * Spring REST module controller.
-     */
-    @WireVariable
-    ModuleController moduleController;
+	/**
+	 * Spring REST module controller.
+	 */
+	@WireVariable
+	ModuleController moduleController;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @WireVariable
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@WireVariable
+	MessageProvider webMessageProvider;
 
-    /**
-     * Module description.
-     */
-    String moduleDescription;
+	/**
+	 * Module description.
+	 */
+	String moduleDescription;
 
-    /**
-     * Selected module in the ZK view.
-     */
-    ModuleInfo selectedModuleInfo;
+	/**
+	 * Selected module in the ZK view.
+	 */
+	ModuleInfo selectedModuleInfo;
 
-    /**
-     * Set selected module in the ZK view.
-     * 
-     * @param info
-     *            selected module in the ZK view.
-     */
-    public void setSelectedModule(ModuleInfo info) {
-	selectedModuleInfo = info;
-    }
-
-    /**
-     * Get selected module in ZK view.
-     * 
-     * @return selected module.
-     */
-    public ModuleInfo getSelectedModule() {
-	return selectedModuleInfo;
-    }
-
-    /**
-     * Get all module info's from module repository.
-     * 
-     * @return all module info's from module repository.
-     */
-    public List<ModuleInfo> getModules() {
-	List<ModuleInfo> list = Arrays.asList(moduleRepository.getInfos());
-	return new BindingListModelList<ModuleInfo>(list, true);
-    }
-
-    /**
-     * Get module description.
-     * 
-     * @return module description.
-     */
-    public String getDescription() {
-	if (moduleDescription == null)
-	    return webMessageProvider.getMessage("omm.description_not_found_info");
-	if (moduleDescription.isEmpty())
-	    return webMessageProvider.getMessage("omm.description_empty_info");
-	return moduleDescription;
-    }
-
-    /**
-     * Event handler for selection of module in list box.
-     * 
-     * Will load the readme.txt description file into text box.
-     */
-    @Command
-    public void loadDescription() {
-
-	// clear description
-	moduleDescription = null;
-
-	// get module info
-	ModuleInfo info = selectedModuleInfo;
-	if (info == null)
-	    return;
-
-	// get module directory
-	File moduleDirectory = info.getDirectory();
-	if (moduleDirectory == null)
-	    return;
-	if (!moduleDirectory.exists())
-	    return;
-	if (!moduleDirectory.isDirectory())
-	    return;
-
-	try {
-	    // get description file
-	    File descriptionFile = new File(moduleDirectory, READMETXT_FILENAME);
-	    if (!descriptionFile.exists())
-		return;
-	    if (!descriptionFile.isFile())
-		return;
-
-	    // load file adding CRLF's
-	    StringBuilder description = new StringBuilder();
-	    for (String line : FileUtils.readLines(descriptionFile)) {
-		description.append(line);
-		description.append(NEW_LINE);
-	    }
-
-	    // store
-	    moduleDescription = description.toString();
-
-	} catch (Exception e) {
-	    Object[] args = { StackTraceHelper.getStrackTrace(e) };
-	    String msg = webMessageProvider.getMessage("omm.load_description_failed", args);
-	    logger.error(msg);
-	    return;
+	/**
+	 * Set selected module in the ZK view.
+	 * 
+	 * @param info
+	 *            selected module in the ZK view.
+	 */
+	public void setSelectedModule(ModuleInfo info) {
+		selectedModuleInfo = info;
 	}
-    }
 
-    /**
-     * Event handler for click on the open module button.
-     * 
-     * Will add post global command to load module in the module panel and close
-     * modal window.
-     */
-    @Command
-    public void openModule() {
+	/**
+	 * Get selected module in ZK view.
+	 * 
+	 * @return selected module.
+	 */
+	public ModuleInfo getSelectedModule() {
+		return selectedModuleInfo;
+	}
 
-	// post global command to trigger module update in module panel and
-	// workspace panel view models
-	Map<String, Object> args = new HashMap<String, Object>();
-	args.put(LOAD_MODULE_MODULE_INFO_ARG, selectedModuleInfo);
-	BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, LOAD_MODULE_GLOBALCOMMAND, args);
-    }
+	/**
+	 * Get all module info's from module repository.
+	 * 
+	 * @return all module info's from module repository.
+	 */
+	public List<ModuleInfo> getModules() {
+		List<ModuleInfo> list = Arrays.asList(moduleRepository.getInfos());
+		return new BindingListModelList<ModuleInfo>(list, true);
+	}
 
-    /**
-     * Event handler for click on the cancel button.
-     * 
-     * Will close modal window.
-     */
-    @Command
-    public void cancel() {
-	// do nothing
-    }
+	/**
+	 * Get module description.
+	 * 
+	 * @return module description.
+	 */
+	public String getDescription() {
+		if (moduleDescription == null)
+			return webMessageProvider.getMessage("omm.description_not_found_info");
+		if (moduleDescription.isEmpty())
+			return webMessageProvider.getMessage("omm.description_empty_info");
+		return moduleDescription;
+	}
 
-    /**
-     * Event handler for click on the refresh modules button.
-     * 
-     * Will refresh modules repository and update list.
-     */
-    @Command
-    @NotifyChange({ "modules", "description", "selectedModule" })
-    public void refreshModules() {
+	/**
+	 * Event handler for selection of module in list box.
+	 * 
+	 * Will load the readme.txt description file into text box.
+	 */
+	@Command
+	public void loadDescription() {
 
-	selectedModuleInfo = null;
+		// clear description
+		moduleDescription = null;
 
-	// refresh
-	moduleController.refresh();
+		// get module info
+		ModuleInfo info = selectedModuleInfo;
+		if (info == null)
+			return;
 
-	// post notification
-	Clients.showNotification(webMessageProvider.getMessage("omm.refresh_modules_info"), POST_STYLE, null,
-		POST_LOCATION, POST_DURATION);
+		// get module directory
+		File moduleDirectory = info.getDirectory();
+		if (moduleDirectory == null)
+			return;
+		if (!moduleDirectory.exists())
+			return;
+		if (!moduleDirectory.isDirectory())
+			return;
 
-    }
+		try {
+			// get description file
+			File descriptionFile = new File(moduleDirectory, READMETXT_FILENAME);
+			if (!descriptionFile.exists())
+				return;
+			if (!descriptionFile.isFile())
+				return;
+
+			// load file adding CRLF's
+			StringBuilder description = new StringBuilder();
+			for (String line : FileUtils.readLines(descriptionFile)) {
+				description.append(line);
+				description.append(NEW_LINE);
+			}
+
+			// store
+			moduleDescription = description.toString();
+
+		} catch (Exception e) {
+			Object[] args = { StackTraceHelper.getStrackTrace(e) };
+			String msg = webMessageProvider.getMessage("omm.load_description_failed", args);
+			logger.error(msg);
+			return;
+		}
+	}
+
+	/**
+	 * Event handler for click on the open module button.
+	 * 
+	 * Will add post global command to load module in the module panel and close
+	 * modal window.
+	 */
+	@Command
+	public void openModule() {
+
+		// post global command to trigger module update in module panel and
+		// workspace panel view models
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put(LOAD_MODULE_MODULE_INFO_ARG, selectedModuleInfo);
+		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, LOAD_MODULE_GLOBALCOMMAND, args);
+	}
+
+	/**
+	 * Event handler for click on the cancel button.
+	 * 
+	 * Will close modal window.
+	 */
+	@Command
+	public void cancel() {
+		// do nothing
+	}
+
+	/**
+	 * Event handler for click on the refresh modules button.
+	 * 
+	 * Will refresh modules repository and update list.
+	 */
+	@Command
+	@NotifyChange({ "modules", "description", "selectedModule" })
+	public void refreshModules() {
+
+		selectedModuleInfo = null;
+
+		// refresh
+		moduleController.refresh();
+
+		// post notification
+		Clients.showNotification(webMessageProvider.getMessage("omm.refresh_modules_info"), POST_STYLE, null,
+				POST_LOCATION, POST_DURATION);
+
+	}
 
 }

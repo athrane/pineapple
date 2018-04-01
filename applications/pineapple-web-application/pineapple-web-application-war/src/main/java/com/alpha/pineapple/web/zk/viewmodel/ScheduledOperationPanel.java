@@ -57,205 +57,204 @@ import com.alpha.pineapple.web.zk.utils.ErrorMessageBoxHelper;
  */
 public class ScheduledOperationPanel {
 
-    /**
-     * Session state.
-     */
-    @WireVariable
-    SessionState sessionState;
+	/**
+	 * Session state.
+	 */
+	@WireVariable
+	SessionState sessionState;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @WireVariable
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@WireVariable
+	MessageProvider webMessageProvider;
 
-    /**
-     * Spring REST scheduled operation controller.
-     */
-    @WireVariable
-    ScheduledOperationController scheduledOperationController;
+	/**
+	 * Spring REST scheduled operation controller.
+	 */
+	@WireVariable
+	ScheduledOperationController scheduledOperationController;
 
-    /**
-     * Error message box helper.
-     */
-    @WireVariable
-    ErrorMessageBoxHelper errorMessageBoxHelper;
+	/**
+	 * Error message box helper.
+	 */
+	@WireVariable
+	ErrorMessageBoxHelper errorMessageBoxHelper;
 
-    /**
-     * Initialize view model.
-     */
-    @Init
-    public void init() {
-    }
-
-    /**
-     * Get selected scheduled operation in ZK view.
-     * 
-     * @return selected scheduled operation.
-     */
-    public ScheduledOperation getSelectedScheduledOperation() {
-	return sessionState.getScheduledOperation();
-    }
-
-    /**
-     * Set selected scheduled operation in the ZK view.
-     * 
-     * @param report
-     *            Selected operation in the ZK view.
-     */
-    public void setSelectedScheduledOperation(ScheduledOperation operation) {
-	sessionState.setScheduledOperation(operation);
-    }
-
-    /**
-     * Get all scheduled operations.
-     * 
-     * @return all scheduled operations.
-     */
-    public Collection<ScheduledOperation> getScheduledOperations() {
-	ScheduledOperations operations = scheduledOperationController.getScheduledOperations();
-	return operations.getScheduledOperation();
-    }
-
-    /**
-     * Event handler for the global command "createScheduledOperation". The
-     * event is triggered from the menu controller and the scheduled operation
-     * panel which posts the global command.
-     * 
-     * Step 1) of creating a scheduled operation. Will open a modal window for
-     * scheduled operation creation. The operation is created in the core
-     * component using REST API.
-     */
-    @GlobalCommand(CREATE_SCHEDULED_OPERATION_GLOBALCOMMAND)
-    public void createScheduledOperation() {
-	Window modalWindow = null;
-
-	try {
-	    // open modal window
-	    modalWindow = (Window) createComponents(CREATE_SCHEDULED_OPERATION_MODAL_ZUL, NULL_PARENT_WINDOW,
-		    NULL_GLOBALCOMMAND_ARGS);
-	    modalWindow.doModal();
-
-	} catch (Exception e) {
-
-	    // show and log error message
-	    errorMessageBoxHelper.showAndLogException(e);
-
-	    // detach window
-	    if (modalWindow != null)
-		modalWindow.detach();
+	/**
+	 * Initialize view model.
+	 */
+	@Init
+	public void init() {
 	}
-    }
 
-    /**
-     * Event handler for the global command "createScheduledOperationConfirmed".
-     * The event is triggered from the modal window after creation of the
-     * scheduled operation.
-     * 
-     * Step 2) of creating a scheduled operation. Will update the view model.
-     */
-    @GlobalCommand(CREATE_SCHEDULED_OPERATION_CONFIRMED_GLOBALCOMMAND)
-    @NotifyChange("scheduledOperations")
-    public void createOperationConfirmed() {
-	// NO-OP, other than updating the view.
-    }
-
-    /**
-     * Event handler for the global command "deleteScheduledOperation". The
-     * event is triggered from the menu controller and the scheduled operation
-     * panel which posts the global command.
-     * 
-     * Step 1) of deleting a scheduled operation. Will open a modal window for
-     * confirmation. The operation is deleted in the core component using REST
-     * API.
-     */
-    @GlobalCommand(DELETE_SCHEDULED_OPERATION_GLOBALCOMMAND)
-    public void deleteScheduledOperation() {
-	Window modalWindow = null;
-
-	try {
-
-	    // exit if model isn't selected
-	    if (sessionState.getScheduledOperation() == null) {
-		String message = webMessageProvider.getMessage("sop.delete_operation_not_selected_failed");
-		Messagebox.show(message);
-		return;
-	    }
-
-	    // open modal window
-	    modalWindow = (Window) createComponents(DELETE_SCHEDULED_OPERATION_MODAL_ZUL, NULL_PARENT_WINDOW,
-		    NULL_GLOBALCOMMAND_ARGS);
-	    modalWindow.doModal();
-
-	} catch (Exception e) {
-	    errorMessageBoxHelper.showAndLogException(e);
-
-	    // detach window
-	    if (modalWindow != null)
-		modalWindow.detach();
+	/**
+	 * Get selected scheduled operation in ZK view.
+	 * 
+	 * @return selected scheduled operation.
+	 */
+	public ScheduledOperation getSelectedScheduledOperation() {
+		return sessionState.getScheduledOperation();
 	}
-    }
 
-    /**
-     * Event handler for the global command "deleteScheduledOperationConfirmed".
-     * The event is triggered from the modal window after deletion of the
-     * scheduled operation.
-     * 
-     * Step 2) of deleting a scheduled operation. Will update the view model.
-     */
-    @GlobalCommand(DELETE_SCHEDULED_OPERATION_CONFIRMED_GLOBALCOMMAND)
-    @NotifyChange("scheduledOperations")
-    public void deleteOperationConfirmed() {
-	// NO-OP, other than updating the view.
-    }
-
-    /**
-     * Event handler for the global command "deleteAllScheduledOperations". The
-     * event is triggered from the menu controller and the scheduled operation
-     * panel which posts the global command.
-     * 
-     * Step 1) of deletion all scheduled operations. Will open a modal window
-     * for confirmation. All operations are deleted in the core component using
-     * REST API.
-     */
-    @GlobalCommand(DELETE_ALL_SCHEDULED_OPERATIONS_GLOBALCOMMAND)
-    public void deleteAllScheduledOperations() {
-	Window modalWindow = null;
-
-	try {
-
-	    // open modal window
-	    modalWindow = (Window) createComponents(DELETE_ALL_SCHEDULED_OPERATIONS_MODAL_ZUL, NULL_PARENT_WINDOW,
-		    NULL_GLOBALCOMMAND_ARGS);
-	    modalWindow.doModal();
-
-	} catch (Exception e) {
-	    errorMessageBoxHelper.showAndLogException(e);
-
-	    // detach window
-	    if (modalWindow != null)
-		modalWindow.detach();
+	/**
+	 * Set selected scheduled operation in the ZK view.
+	 * 
+	 * @param report
+	 *            Selected operation in the ZK view.
+	 */
+	public void setSelectedScheduledOperation(ScheduledOperation operation) {
+		sessionState.setScheduledOperation(operation);
 	}
-    }
 
-    /**
-     * Event handler for the global command
-     * "deleteAllScheduledOperationsConfirmed". The event is triggered from the
-     * modal window after deletion of all scheduled operations.
-     * 
-     * Step 2) of deleting all scheduled operations. Will update the view model.
-     */
-    @GlobalCommand(DELETE_ALL_SCHEDULED_OPERATIONS_CONFIRMED_GLOBALCOMMAND)
-    @NotifyChange("scheduledOperations")
-    public void deleteAllOperationsConfirmed() {
-	// NO-OP, other than updating the view.
-    }
+	/**
+	 * Get all scheduled operations.
+	 * 
+	 * @return all scheduled operations.
+	 */
+	public Collection<ScheduledOperation> getScheduledOperations() {
+		ScheduledOperations operations = scheduledOperationController.getScheduledOperations();
+		return operations.getScheduledOperation();
+	}
 
-    /**
-     * Command for rendering selected scheduled operation
-     */
-    @Command
-    public void showDetailsForSelectedScheduledOperation() {
-    }
+	/**
+	 * Event handler for the global command "createScheduledOperation". The event is
+	 * triggered from the menu controller and the scheduled operation panel which
+	 * posts the global command.
+	 * 
+	 * Step 1) of creating a scheduled operation. Will open a modal window for
+	 * scheduled operation creation. The operation is created in the core component
+	 * using REST API.
+	 */
+	@GlobalCommand(CREATE_SCHEDULED_OPERATION_GLOBALCOMMAND)
+	public void createScheduledOperation() {
+		Window modalWindow = null;
+
+		try {
+			// open modal window
+			modalWindow = (Window) createComponents(CREATE_SCHEDULED_OPERATION_MODAL_ZUL, NULL_PARENT_WINDOW,
+					NULL_GLOBALCOMMAND_ARGS);
+			modalWindow.doModal();
+
+		} catch (Exception e) {
+
+			// show and log error message
+			errorMessageBoxHelper.showAndLogException(e);
+
+			// detach window
+			if (modalWindow != null)
+				modalWindow.detach();
+		}
+	}
+
+	/**
+	 * Event handler for the global command "createScheduledOperationConfirmed". The
+	 * event is triggered from the modal window after creation of the scheduled
+	 * operation.
+	 * 
+	 * Step 2) of creating a scheduled operation. Will update the view model.
+	 */
+	@GlobalCommand(CREATE_SCHEDULED_OPERATION_CONFIRMED_GLOBALCOMMAND)
+	@NotifyChange("scheduledOperations")
+	public void createOperationConfirmed() {
+		// NO-OP, other than updating the view.
+	}
+
+	/**
+	 * Event handler for the global command "deleteScheduledOperation". The event is
+	 * triggered from the menu controller and the scheduled operation panel which
+	 * posts the global command.
+	 * 
+	 * Step 1) of deleting a scheduled operation. Will open a modal window for
+	 * confirmation. The operation is deleted in the core component using REST API.
+	 */
+	@GlobalCommand(DELETE_SCHEDULED_OPERATION_GLOBALCOMMAND)
+	public void deleteScheduledOperation() {
+		Window modalWindow = null;
+
+		try {
+
+			// exit if model isn't selected
+			if (sessionState.getScheduledOperation() == null) {
+				String message = webMessageProvider.getMessage("sop.delete_operation_not_selected_failed");
+				Messagebox.show(message);
+				return;
+			}
+
+			// open modal window
+			modalWindow = (Window) createComponents(DELETE_SCHEDULED_OPERATION_MODAL_ZUL, NULL_PARENT_WINDOW,
+					NULL_GLOBALCOMMAND_ARGS);
+			modalWindow.doModal();
+
+		} catch (Exception e) {
+			errorMessageBoxHelper.showAndLogException(e);
+
+			// detach window
+			if (modalWindow != null)
+				modalWindow.detach();
+		}
+	}
+
+	/**
+	 * Event handler for the global command "deleteScheduledOperationConfirmed". The
+	 * event is triggered from the modal window after deletion of the scheduled
+	 * operation.
+	 * 
+	 * Step 2) of deleting a scheduled operation. Will update the view model.
+	 */
+	@GlobalCommand(DELETE_SCHEDULED_OPERATION_CONFIRMED_GLOBALCOMMAND)
+	@NotifyChange("scheduledOperations")
+	public void deleteOperationConfirmed() {
+		// NO-OP, other than updating the view.
+	}
+
+	/**
+	 * Event handler for the global command "deleteAllScheduledOperations". The
+	 * event is triggered from the menu controller and the scheduled operation panel
+	 * which posts the global command.
+	 * 
+	 * Step 1) of deletion all scheduled operations. Will open a modal window for
+	 * confirmation. All operations are deleted in the core component using REST
+	 * API.
+	 */
+	@GlobalCommand(DELETE_ALL_SCHEDULED_OPERATIONS_GLOBALCOMMAND)
+	public void deleteAllScheduledOperations() {
+		Window modalWindow = null;
+
+		try {
+
+			// open modal window
+			modalWindow = (Window) createComponents(DELETE_ALL_SCHEDULED_OPERATIONS_MODAL_ZUL, NULL_PARENT_WINDOW,
+					NULL_GLOBALCOMMAND_ARGS);
+			modalWindow.doModal();
+
+		} catch (Exception e) {
+			errorMessageBoxHelper.showAndLogException(e);
+
+			// detach window
+			if (modalWindow != null)
+				modalWindow.detach();
+		}
+	}
+
+	/**
+	 * Event handler for the global command "deleteAllScheduledOperationsConfirmed".
+	 * The event is triggered from the modal window after deletion of all scheduled
+	 * operations.
+	 * 
+	 * Step 2) of deleting all scheduled operations. Will update the view model.
+	 */
+	@GlobalCommand(DELETE_ALL_SCHEDULED_OPERATIONS_CONFIRMED_GLOBALCOMMAND)
+	@NotifyChange("scheduledOperations")
+	public void deleteAllOperationsConfirmed() {
+		// NO-OP, other than updating the view.
+	}
+
+	/**
+	 * Command for rendering selected scheduled operation
+	 */
+	@Command
+	public void showDetailsForSelectedScheduledOperation() {
+	}
 
 }

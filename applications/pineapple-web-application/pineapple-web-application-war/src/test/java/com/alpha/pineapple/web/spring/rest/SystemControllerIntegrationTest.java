@@ -76,188 +76,186 @@ import com.alpha.testutils.ObjectMotherModule;
 @WebAppConfiguration
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/webapp-config.xml")
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-	DirectoryTestExecutionListener.class })
+		DirectoryTestExecutionListener.class })
 public class SystemControllerIntegrationTest {
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Web application context
-     */
-    @Resource
-    WebApplicationContext wac;
+	/**
+	 * Web application context
+	 */
+	@Resource
+	WebApplicationContext wac;
 
-    /**
-     * Web application core component factory.
-     */
-    @Resource
-    WebAppCoreFactory webAppCoreFactory;
+	/**
+	 * Web application core component factory.
+	 */
+	@Resource
+	WebAppCoreFactory webAppCoreFactory;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Object mother for environment configuration.
-     */
-    ObjectMotherEnvironmentConfiguration envConfigMother;
+	/**
+	 * Object mother for environment configuration.
+	 */
+	ObjectMotherEnvironmentConfiguration envConfigMother;
 
-    /**
-     * Core component.
-     * 
-     * Initialize by web application core component factory.
-     */
-    PineappleCore coreComponent;
+	/**
+	 * Core component.
+	 * 
+	 * Initialize by web application core component factory.
+	 */
+	PineappleCore coreComponent;
 
-    /**
-     * Mock MVC.
-     */
-    MockMvc mockMvc;
+	/**
+	 * Mock MVC.
+	 */
+	MockMvc mockMvc;
 
-    /**
-     * Modules directory.
-     */
-    File modulesDir;
+	/**
+	 * Modules directory.
+	 */
+	File modulesDir;
 
-    /**
-     * Conf directory.
-     */
-    File confDir;
+	/**
+	 * Conf directory.
+	 */
+	File confDir;
 
-    /**
-     * Object mother for module.
-     */
-    ObjectMotherModule moduleMother;
+	/**
+	 * Object mother for module.
+	 */
+	ObjectMotherModule moduleMother;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	// create module object mother
-	moduleMother = new ObjectMotherModule();
+		// create module object mother
+		moduleMother = new ObjectMotherModule();
 
-	// create environment configuration object mother
-	envConfigMother = new ObjectMotherEnvironmentConfiguration();
+		// create environment configuration object mother
+		envConfigMother = new ObjectMotherEnvironmentConfiguration();
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// define directory names
-	modulesDir = new File(testDirectory, "modules");
-	confDir = new File(testDirectory, "conf");
+		// define directory names
+		modulesDir = new File(testDirectory, "modules");
+		confDir = new File(testDirectory, "conf");
 
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// initialize Spring MVC mock
-	mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).alwaysDo(print()).build();
-    }
+		// initialize Spring MVC mock
+		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).alwaysDo(print()).build();
+	}
 
-    @After
-    public void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 
-	// clear the pineapple.home.dir system setting
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
-    }
+		// clear the pineapple.home.dir system setting
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+	}
 
-    /**
-     * Test that GET "Get Version" service invocation returns HTTP 200.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetGetVersion_ReturnsHttpOk() throws Exception {
-	mockMvc.perform(get(REST_SYSTEM_VERSION_URI).accept(MediaType.APPLICATION_XML)).andExpect(status().isOk());
-    }
+	/**
+	 * Test that GET "Get Version" service invocation returns HTTP 200.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetGetVersion_ReturnsHttpOk() throws Exception {
+		mockMvc.perform(get(REST_SYSTEM_VERSION_URI).accept(MediaType.APPLICATION_XML)).andExpect(status().isOk());
+	}
 
-    /**
-     * Test that GET "Get Version" service invocation returns content.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetGetVersion_ReturnsContent() throws Exception {
-	mockMvc.perform(get(REST_SYSTEM_VERSION_URI).accept(MediaType.APPLICATION_XML))
-		.andExpect(content().string(CoreMatchers.containsString("Pineapple Core Component, version")));
-    }
+	/**
+	 * Test that GET "Get Version" service invocation returns content.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetGetVersion_ReturnsContent() throws Exception {
+		mockMvc.perform(get(REST_SYSTEM_VERSION_URI).accept(MediaType.APPLICATION_XML))
+				.andExpect(content().string(CoreMatchers.containsString("Pineapple Core Component, version")));
+	}
 
-    /**
-     * Test that POST "Get Version" service invocation fails with HTTP 405.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testPostGetVersion_Fails() throws Exception {
-	mockMvc.perform(post(REST_SYSTEM_VERSION_URI).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isMethodNotAllowed());
-    }
+	/**
+	 * Test that POST "Get Version" service invocation fails with HTTP 405.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testPostGetVersion_Fails() throws Exception {
+		mockMvc.perform(post(REST_SYSTEM_VERSION_URI).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isMethodNotAllowed());
+	}
 
-    /**
-     * Test that DELETE "Get Version" service invocation fails with HTTP 405.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testDeleteGetVersion_Fails() throws Exception {
-	mockMvc.perform(delete(REST_SYSTEM_VERSION_URI).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isMethodNotAllowed());
-    }
+	/**
+	 * Test that DELETE "Get Version" service invocation fails with HTTP 405.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testDeleteGetVersion_Fails() throws Exception {
+		mockMvc.perform(delete(REST_SYSTEM_VERSION_URI).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isMethodNotAllowed());
+	}
 
-    /**
-     * Test that GET "Get Simple Status" service invocation returns HTTP 200.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetGetSimpleStatus_ReturnsHttpOk() throws Exception {
-	mockMvc.perform(get(REST_SYSTEM_SIMPLE_STATUS_URI).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isOk());
-    }
+	/**
+	 * Test that GET "Get Simple Status" service invocation returns HTTP 200.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetGetSimpleStatus_ReturnsHttpOk() throws Exception {
+		mockMvc.perform(get(REST_SYSTEM_SIMPLE_STATUS_URI).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isOk());
+	}
 
-    /**
-     * Test that GET "Get Simple Status" service invocation returns content.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetGetSimpleStatus_ReturnsContent() throws Exception {
-	mockMvc.perform(get(REST_SYSTEM_SIMPLE_STATUS_URI).accept(MediaType.APPLICATION_XML)).andExpect(
-		content().string(CoreMatchers.containsString("Pineapple Core Component was initialized successfully")));
-    }
+	/**
+	 * Test that GET "Get Simple Status" service invocation returns content.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetGetSimpleStatus_ReturnsContent() throws Exception {
+		mockMvc.perform(get(REST_SYSTEM_SIMPLE_STATUS_URI).accept(MediaType.APPLICATION_XML)).andExpect(
+				content().string(CoreMatchers.containsString("Pineapple Core Component was initialized successfully")));
+	}
 
-    /**
-     * Test that POST "Get Simple Status" service invocation fails with HTTP
-     * 405.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testPostGetSimpleStatus_Fails() throws Exception {
-	mockMvc.perform(post(REST_SYSTEM_SIMPLE_STATUS_URI).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isMethodNotAllowed());
-    }
+	/**
+	 * Test that POST "Get Simple Status" service invocation fails with HTTP 405.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testPostGetSimpleStatus_Fails() throws Exception {
+		mockMvc.perform(post(REST_SYSTEM_SIMPLE_STATUS_URI).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isMethodNotAllowed());
+	}
 
-    /**
-     * Test that DELETE "Get Simple Status" service invocation fails with HTTP
-     * 405.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testDeleteGetSimpleStatus_Fails() throws Exception {
-	mockMvc.perform(delete(REST_SYSTEM_SIMPLE_STATUS_URI).accept(MediaType.APPLICATION_XML))
-		.andExpect(status().isMethodNotAllowed());
-    }
+	/**
+	 * Test that DELETE "Get Simple Status" service invocation fails with HTTP 405.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testDeleteGetSimpleStatus_Fails() throws Exception {
+		mockMvc.perform(delete(REST_SYSTEM_SIMPLE_STATUS_URI).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isMethodNotAllowed());
+	}
 
 }

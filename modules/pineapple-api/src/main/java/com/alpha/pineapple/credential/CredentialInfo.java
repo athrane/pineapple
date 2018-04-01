@@ -28,25 +28,25 @@ package com.alpha.pineapple.credential;
  */
 public interface CredentialInfo {
 
-    /**
-     * Get credential ID.
-     * 
-     * @return credential ID.
-     */
-    String getId();
+	/**
+	 * Get credential ID.
+	 * 
+	 * @return credential ID.
+	 */
+	String getId();
 
-    /**
-     * Get user.
-     * 
-     * @return user.
-     */
-    String getUser();
+	/**
+	 * Get user.
+	 * 
+	 * @return user.
+	 */
+	String getUser();
 
-    /**
-     * Get password.
-     * 
-     * @return password.
-     */
-    String getPassword();
+	/**
+	 * Get password.
+	 * 
+	 * @return password.
+	 */
+	String getPassword();
 
 }

@@ -61,325 +61,323 @@ import com.alpha.pineapple.execution.ExecutionResult;
  */
 public class DefaultContinuationPolicyTest {
 
-    /**
-     * Object under test.
-     */
-    ContinuationPolicy policy;
+	/**
+	 * Object under test.
+	 */
+	ContinuationPolicy policy;
 
-    /**
-     * Mock execution result.
-     */
-    ExecutionResult result;
+	/**
+	 * Mock execution result.
+	 */
+	ExecutionResult result;
 
-    /**
-     * Mock execution result.
-     */
-    ExecutionResult result2;
+	/**
+	 * Mock execution result.
+	 */
+	ExecutionResult result2;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	// create mock result
-	result = EasyMock.createMock(ExecutionResult.class);
-    }
+		// create mock result
+		result = EasyMock.createMock(ExecutionResult.class);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that policy can be created.
-     */
-    @Test
-    public void testCreatePolicy() {
-	EasyMock.replay(result);
-	policy = DefaultContinuationPolicyImpl.getInstance();
+	/**
+	 * Test that policy can be created.
+	 */
+	@Test
+	public void testCreatePolicy() {
+		EasyMock.replay(result);
+		policy = DefaultContinuationPolicyImpl.getInstance();
 
-	// test
-	assertNotNull(policy);
-	EasyMock.verify(result);
-    }
+		// test
+		assertNotNull(policy);
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that created policy contains expected properties.
-     */
-    @Test
-    public void testContainsExpectedInitialProperties() {
-	EasyMock.replay(result);
-	policy = DefaultContinuationPolicyImpl.getInstance();
+	/**
+	 * Test that created policy contains expected properties.
+	 */
+	@Test
+	public void testContainsExpectedInitialProperties() {
+		EasyMock.replay(result);
+		policy = DefaultContinuationPolicyImpl.getInstance();
 
-	// test
-	assertTrue(policy.continueExecution());
-	assertTrue(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertNull(policy.getFailedResult());
-	EasyMock.verify(result);
-    }
+		// test
+		assertTrue(policy.continueExecution());
+		assertTrue(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertNull(policy.getFailedResult());
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that continue-on-failure directive can be enabled.
-     * 
-     * And that it doesn't influences the continuation state, since no failure
-     * is registered.
-     */
-    @Test
-    public void testCanEnableContinueOnFailure() {
-	EasyMock.replay(result);
-	policy = DefaultContinuationPolicyImpl.getInstance();
-	policy.enableContinueOnFailure();
+	/**
+	 * Test that continue-on-failure directive can be enabled.
+	 * 
+	 * And that it doesn't influences the continuation state, since no failure is
+	 * registered.
+	 */
+	@Test
+	public void testCanEnableContinueOnFailure() {
+		EasyMock.replay(result);
+		policy = DefaultContinuationPolicyImpl.getInstance();
+		policy.enableContinueOnFailure();
 
-	// test
-	assertTrue(policy.continueExecution());
-	assertTrue(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertNull(policy.getFailedResult());
-	EasyMock.verify(result);
-    }
+		// test
+		assertTrue(policy.continueExecution());
+		assertTrue(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertNull(policy.getFailedResult());
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that continue-on-failure directive can be enabled multiple times.
-     * 
-     * And that it doesn't influences the continuation state but only once.
-     */
-    @Test
-    public void testCanEnableContinueOnFailureMultipleTimes() {
-	EasyMock.replay(result);
-	policy = DefaultContinuationPolicyImpl.getInstance();
-	policy.enableContinueOnFailure();
+	/**
+	 * Test that continue-on-failure directive can be enabled multiple times.
+	 * 
+	 * And that it doesn't influences the continuation state but only once.
+	 */
+	@Test
+	public void testCanEnableContinueOnFailureMultipleTimes() {
+		EasyMock.replay(result);
+		policy = DefaultContinuationPolicyImpl.getInstance();
+		policy.enableContinueOnFailure();
 
-	// test
-	assertTrue(policy.continueExecution());
-	assertTrue(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertNull(policy.getFailedResult());
+		// test
+		assertTrue(policy.continueExecution());
+		assertTrue(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertNull(policy.getFailedResult());
 
-	policy.enableContinueOnFailure();
+		policy.enableContinueOnFailure();
 
-	// test
-	assertTrue(policy.continueExecution());
-	assertTrue(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertNull(policy.getFailedResult());
+		// test
+		assertTrue(policy.continueExecution());
+		assertTrue(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertNull(policy.getFailedResult());
 
-	EasyMock.verify(result);
-    }
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that continue-on-failure directive can be disabled.
-     * 
-     * And that it doesn't influences the continuation state, since no failure
-     * is registered.
-     */
-    @Test
-    public void testCanDisableContinueOnFailure() {
-	EasyMock.replay(result);
-	policy = DefaultContinuationPolicyImpl.getInstance();
-	policy.disableContinueOnFailure();
+	/**
+	 * Test that continue-on-failure directive can be disabled.
+	 * 
+	 * And that it doesn't influences the continuation state, since no failure is
+	 * registered.
+	 */
+	@Test
+	public void testCanDisableContinueOnFailure() {
+		EasyMock.replay(result);
+		policy = DefaultContinuationPolicyImpl.getInstance();
+		policy.disableContinueOnFailure();
 
-	// test
-	assertTrue(policy.continueExecution());
-	assertFalse(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertNull(policy.getFailedResult());
-	EasyMock.verify(result);
-    }
+		// test
+		assertTrue(policy.continueExecution());
+		assertFalse(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertNull(policy.getFailedResult());
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that continue-on-failure directive can be disabled multiple times.
-     * 
-     * And that it doesn't influences the continuation state but only once.
-     */
-    @Test
-    public void testCanDisableContinueOnFailureMultipleTimes() {
-	EasyMock.replay(result);
-	policy = DefaultContinuationPolicyImpl.getInstance();
-	policy.disableContinueOnFailure();
+	/**
+	 * Test that continue-on-failure directive can be disabled multiple times.
+	 * 
+	 * And that it doesn't influences the continuation state but only once.
+	 */
+	@Test
+	public void testCanDisableContinueOnFailureMultipleTimes() {
+		EasyMock.replay(result);
+		policy = DefaultContinuationPolicyImpl.getInstance();
+		policy.disableContinueOnFailure();
 
-	// test
-	assertTrue(policy.continueExecution());
-	assertFalse(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertNull(policy.getFailedResult());
+		// test
+		assertTrue(policy.continueExecution());
+		assertFalse(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertNull(policy.getFailedResult());
 
-	policy.disableContinueOnFailure();
+		policy.disableContinueOnFailure();
 
-	// test
-	assertTrue(policy.continueExecution());
-	assertFalse(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertNull(policy.getFailedResult());
+		// test
+		assertTrue(policy.continueExecution());
+		assertFalse(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertNull(policy.getFailedResult());
 
-	EasyMock.verify(result);
-    }
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that continue-on-failure directive can't be changed once it is
-     * enabled.
-     */
-    @Test
-    public void testCantChangeContinueOnFailureOnceEnabled() {
-	EasyMock.replay(result);
-	policy = DefaultContinuationPolicyImpl.getInstance();
-	policy.enableContinueOnFailure();
+	/**
+	 * Test that continue-on-failure directive can't be changed once it is enabled.
+	 */
+	@Test
+	public void testCantChangeContinueOnFailureOnceEnabled() {
+		EasyMock.replay(result);
+		policy = DefaultContinuationPolicyImpl.getInstance();
+		policy.enableContinueOnFailure();
 
-	// test
-	assertTrue(policy.continueExecution());
-	assertTrue(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertNull(policy.getFailedResult());
+		// test
+		assertTrue(policy.continueExecution());
+		assertTrue(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertNull(policy.getFailedResult());
 
-	policy.disableContinueOnFailure();
+		policy.disableContinueOnFailure();
 
-	// test
-	assertTrue(policy.continueExecution());
-	assertTrue(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertNull(policy.getFailedResult());
+		// test
+		assertTrue(policy.continueExecution());
+		assertTrue(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertNull(policy.getFailedResult());
 
-	EasyMock.verify(result);
-    }
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that continue-on-failure directive can't be changed once it is
-     * disabled.
-     */
-    @Test
-    public void testCantChangeContinueOnFailureOnceDisabled() {
-	EasyMock.replay(result);
-	policy = DefaultContinuationPolicyImpl.getInstance();
-	policy.disableContinueOnFailure();
+	/**
+	 * Test that continue-on-failure directive can't be changed once it is disabled.
+	 */
+	@Test
+	public void testCantChangeContinueOnFailureOnceDisabled() {
+		EasyMock.replay(result);
+		policy = DefaultContinuationPolicyImpl.getInstance();
+		policy.disableContinueOnFailure();
 
-	// test
-	assertTrue(policy.continueExecution());
-	assertFalse(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertNull(policy.getFailedResult());
+		// test
+		assertTrue(policy.continueExecution());
+		assertFalse(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertNull(policy.getFailedResult());
 
-	policy.enableContinueOnFailure();
+		policy.enableContinueOnFailure();
 
-	// test
-	assertTrue(policy.continueExecution());
-	assertFalse(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertNull(policy.getFailedResult());
+		// test
+		assertTrue(policy.continueExecution());
+		assertFalse(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertNull(policy.getFailedResult());
 
-	EasyMock.verify(result);
-    }
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that continue-on-failure state affects the continuation state when a
-     * failure is registered.
-     */
-    @Test
-    public void testRegisterFailedResult() {
-	EasyMock.replay(result);
-	policy = DefaultContinuationPolicyImpl.getInstance();
-	policy.disableContinueOnFailure();
-	policy.setFailed(result);
+	/**
+	 * Test that continue-on-failure state affects the continuation state when a
+	 * failure is registered.
+	 */
+	@Test
+	public void testRegisterFailedResult() {
+		EasyMock.replay(result);
+		policy = DefaultContinuationPolicyImpl.getInstance();
+		policy.disableContinueOnFailure();
+		policy.setFailed(result);
 
-	// test
-	assertFalse(policy.continueExecution());
-	assertFalse(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertEquals(result, policy.getFailedResult());
-	EasyMock.verify(result);
-    }
+		// test
+		assertFalse(policy.continueExecution());
+		assertFalse(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertEquals(result, policy.getFailedResult());
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that registering a failed result without setting the
-     * continue-on-failure state is ignored.
-     */
-    @Test
-    public void testRegisteringFailedResultWithoutDisablingContinueOnFailureIsIgnored() {
-	EasyMock.replay(result);
-	policy = DefaultContinuationPolicyImpl.getInstance();
-	policy.setFailed(result);
+	/**
+	 * Test that registering a failed result without setting the continue-on-failure
+	 * state is ignored.
+	 */
+	@Test
+	public void testRegisteringFailedResultWithoutDisablingContinueOnFailureIsIgnored() {
+		EasyMock.replay(result);
+		policy = DefaultContinuationPolicyImpl.getInstance();
+		policy.setFailed(result);
 
-	// test
-	assertTrue(policy.continueExecution());
-	assertTrue(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertEquals(result, policy.getFailedResult());
-	EasyMock.verify(result);
-    }
+		// test
+		assertTrue(policy.continueExecution());
+		assertTrue(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertEquals(result, policy.getFailedResult());
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that registering a failed result only stores the first registered
-     * result.
-     * 
-     * Results attempted to be stored afterwards are ignored.
-     */
-    @Test
-    public void testRegisteringFailedResultOnlyStoresFirstResult() {
-	result2 = EasyMock.createMock(ExecutionResult.class);
-	EasyMock.replay(result);
-	EasyMock.replay(result2);
-	policy = DefaultContinuationPolicyImpl.getInstance();
-	policy.setFailed(result);
-	policy.setFailed(result2);
+	/**
+	 * Test that registering a failed result only stores the first registered
+	 * result.
+	 * 
+	 * Results attempted to be stored afterwards are ignored.
+	 */
+	@Test
+	public void testRegisteringFailedResultOnlyStoresFirstResult() {
+		result2 = EasyMock.createMock(ExecutionResult.class);
+		EasyMock.replay(result);
+		EasyMock.replay(result2);
+		policy = DefaultContinuationPolicyImpl.getInstance();
+		policy.setFailed(result);
+		policy.setFailed(result2);
 
-	// test
-	assertTrue(policy.continueExecution());
-	assertTrue(policy.isContinueOnFailure());
-	assertFalse(policy.isCancelled());
-	assertEquals(result, policy.getFailedResult());
-	EasyMock.verify(result);
-	EasyMock.verify(result2);
-    }
+		// test
+		assertTrue(policy.continueExecution());
+		assertTrue(policy.isContinueOnFailure());
+		assertFalse(policy.isCancelled());
+		assertEquals(result, policy.getFailedResult());
+		EasyMock.verify(result);
+		EasyMock.verify(result2);
+	}
 
-    /**
-     * Test that cancellation directive can be set.
-     * 
-     * And that it influences the continuation state.
-     */
-    @Test
-    public void testCanCancelExecution() {
-	EasyMock.replay(result);
-	policy = DefaultContinuationPolicyImpl.getInstance();
-	policy.setCancelled();
+	/**
+	 * Test that cancellation directive can be set.
+	 * 
+	 * And that it influences the continuation state.
+	 */
+	@Test
+	public void testCanCancelExecution() {
+		EasyMock.replay(result);
+		policy = DefaultContinuationPolicyImpl.getInstance();
+		policy.setCancelled();
 
-	// test
-	assertFalse(policy.continueExecution());
-	assertTrue(policy.isContinueOnFailure());
-	assertTrue(policy.isCancelled());
-	assertNull(policy.getFailedResult());
-	EasyMock.verify(result);
-    }
+		// test
+		assertFalse(policy.continueExecution());
+		assertTrue(policy.isContinueOnFailure());
+		assertTrue(policy.isCancelled());
+		assertNull(policy.getFailedResult());
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that cancellation directive can be set twice.
-     */
-    @Test
-    public void testCanCancelExecutionTwice() {
-	EasyMock.replay(result);
-	policy = DefaultContinuationPolicyImpl.getInstance();
-	policy.setCancelled();
+	/**
+	 * Test that cancellation directive can be set twice.
+	 */
+	@Test
+	public void testCanCancelExecutionTwice() {
+		EasyMock.replay(result);
+		policy = DefaultContinuationPolicyImpl.getInstance();
+		policy.setCancelled();
 
-	// test
-	assertFalse(policy.continueExecution());
-	assertTrue(policy.isContinueOnFailure());
-	assertTrue(policy.isCancelled());
-	assertNull(policy.getFailedResult());
+		// test
+		assertFalse(policy.continueExecution());
+		assertTrue(policy.isContinueOnFailure());
+		assertTrue(policy.isCancelled());
+		assertNull(policy.getFailedResult());
 
-	policy.setCancelled();
+		policy.setCancelled();
 
-	// test
-	assertFalse(policy.continueExecution());
-	assertTrue(policy.isContinueOnFailure());
-	assertTrue(policy.isCancelled());
-	assertNull(policy.getFailedResult());
+		// test
+		assertFalse(policy.continueExecution());
+		assertTrue(policy.isContinueOnFailure());
+		assertTrue(policy.isCancelled());
+		assertNull(policy.getFailedResult());
 
-	EasyMock.verify(result);
-    }
+		EasyMock.verify(result);
+	}
 
-    /**
-     * Test that setting failed null result fails.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreationFailsWithUndefinedState() {
-	EasyMock.replay(result);
-	policy = DefaultContinuationPolicyImpl.getInstance();
-	policy.setFailed(null);
-    }
+	/**
+	 * Test that setting failed null result fails.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreationFailsWithUndefinedState() {
+		EasyMock.replay(result);
+		policy = DefaultContinuationPolicyImpl.getInstance();
+		policy.setFailed(null);
+	}
 
 }

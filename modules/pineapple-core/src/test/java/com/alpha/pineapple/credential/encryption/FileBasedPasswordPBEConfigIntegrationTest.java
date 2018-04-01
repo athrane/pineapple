@@ -60,174 +60,174 @@ import com.alpha.springutils.DirectoryTestExecutionListener;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class FileBasedPasswordPBEConfigIntegrationTest {
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Subject under test.
-     */
-    @Resource
-    PBEConfig fileBasedPasswordPBEConfigImpl;
+	/**
+	 * Subject under test.
+	 */
+	@Resource
+	PBEConfig fileBasedPasswordPBEConfigImpl;
 
-    /**
-     * Runtime directory provider.
-     */
-    @Resource
-    RuntimeDirectoryProvider runtimeDirectoryProvider;
+	/**
+	 * Runtime directory provider.
+	 */
+	@Resource
+	RuntimeDirectoryProvider runtimeDirectoryProvider;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-    }
+	}
 
-    @After
-    public void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 
-	// clear the pineapple.home.dir system property
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+		// clear the pineapple.home.dir system property
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
 
-	// fail if the the pineapple.home.dir system property is set
-	assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
-    }
+		// fail if the the pineapple.home.dir system property is set
+		assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
+	}
 
-    /**
-     * Test instance can be looked up from context.
-     */
-    @Test
-    public void testCanGetInstanceFromContext() {
-	assertNotNull(fileBasedPasswordPBEConfigImpl);
-    }
+	/**
+	 * Test instance can be looked up from context.
+	 */
+	@Test
+	public void testCanGetInstanceFromContext() {
+		assertNotNull(fileBasedPasswordPBEConfigImpl);
+	}
 
-    /**
-     * Test that returned password isn't null.
-     */
-    @Test
-    public void testGetPasswordReturnsDefinedPassword() {
-	String password = fileBasedPasswordPBEConfigImpl.getPassword();
+	/**
+	 * Test that returned password isn't null.
+	 */
+	@Test
+	public void testGetPasswordReturnsDefinedPassword() {
+		String password = fileBasedPasswordPBEConfigImpl.getPassword();
 
-	// test
-	assertNotNull(password);
-    }
+		// test
+		assertNotNull(password);
+	}
 
-    /**
-     * Test that the same password is returned twice.
-     */
-    @Test
-    public void testIdenticalPasswordIsReturned() {
-	String password = fileBasedPasswordPBEConfigImpl.getPassword();
-	String password2 = fileBasedPasswordPBEConfigImpl.getPassword();
+	/**
+	 * Test that the same password is returned twice.
+	 */
+	@Test
+	public void testIdenticalPasswordIsReturned() {
+		String password = fileBasedPasswordPBEConfigImpl.getPassword();
+		String password2 = fileBasedPasswordPBEConfigImpl.getPassword();
 
-	// test
-	assertNotNull(password);
-	assertNotNull(password2);
-	assertEquals(password, password2);
-    }
+		// test
+		assertNotNull(password);
+		assertNotNull(password2);
+		assertEquals(password, password2);
+	}
 
-    /**
-     * Test that if the password file doesn't exist then it is created.
-     */
-    @Test
-    public void testPasswordFileIsCreated() {
+	/**
+	 * Test that if the password file doesn't exist then it is created.
+	 */
+	@Test
+	public void testPasswordFileIsCreated() {
 
-	// delete password file
-	File passwordFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(),
-		CRDENTIALPROVIDER_PASSWORD_FILE);
-	if (passwordFile.exists())
-	    FileUtils.deleteQuietly(passwordFile);
+		// delete password file
+		File passwordFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(),
+				CRDENTIALPROVIDER_PASSWORD_FILE);
+		if (passwordFile.exists())
+			FileUtils.deleteQuietly(passwordFile);
 
-	// test
-	assertTrue(!passwordFile.exists());
+		// test
+		assertTrue(!passwordFile.exists());
 
-	// get password to create new master password
-	String password = fileBasedPasswordPBEConfigImpl.getPassword();
+		// get password to create new master password
+		String password = fileBasedPasswordPBEConfigImpl.getPassword();
 
-	// test new file is created
-	assertNotNull(password);
-	assertTrue(passwordFile.exists());
-    }
+		// test new file is created
+		assertNotNull(password);
+		assertTrue(passwordFile.exists());
+	}
 
-    /**
-     * Test that created password file isn't empty
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testCreatedPasswordFileIsntEmpty() throws Exception {
+	/**
+	 * Test that created password file isn't empty
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testCreatedPasswordFileIsntEmpty() throws Exception {
 
-	// delete password file
-	File passwordFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(),
-		CRDENTIALPROVIDER_PASSWORD_FILE);
-	if (passwordFile.exists())
-	    FileUtils.deleteQuietly(passwordFile);
+		// delete password file
+		File passwordFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(),
+				CRDENTIALPROVIDER_PASSWORD_FILE);
+		if (passwordFile.exists())
+			FileUtils.deleteQuietly(passwordFile);
 
-	// test
-	assertTrue(!passwordFile.exists());
+		// test
+		assertTrue(!passwordFile.exists());
 
-	// get password to create new master password
-	fileBasedPasswordPBEConfigImpl.getPassword();
-	String readPassword = FileUtils.readFileToString(passwordFile);
+		// get password to create new master password
+		fileBasedPasswordPBEConfigImpl.getPassword();
+		String readPassword = FileUtils.readFileToString(passwordFile);
 
-	// test
-	assertNotNull(readPassword);
-	assertFalse(readPassword.isEmpty());
-    }
+		// test
+		assertNotNull(readPassword);
+		assertFalse(readPassword.isEmpty());
+	}
 
-    /**
-     * Test that created password in file is identical to returned password.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testCreatedPasswordInFileIsIdenticalToReturnedPAssword() throws Exception {
+	/**
+	 * Test that created password in file is identical to returned password.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testCreatedPasswordInFileIsIdenticalToReturnedPAssword() throws Exception {
 
-	// delete password file
-	File passwordFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(),
-		CRDENTIALPROVIDER_PASSWORD_FILE);
-	if (passwordFile.exists())
-	    FileUtils.deleteQuietly(passwordFile);
+		// delete password file
+		File passwordFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(),
+				CRDENTIALPROVIDER_PASSWORD_FILE);
+		if (passwordFile.exists())
+			FileUtils.deleteQuietly(passwordFile);
 
-	// test
-	assertTrue(!passwordFile.exists());
+		// test
+		assertTrue(!passwordFile.exists());
 
-	// get password to create new master password
-	String password = fileBasedPasswordPBEConfigImpl.getPassword();
-	String readPassword = FileUtils.readFileToString(passwordFile);
+		// get password to create new master password
+		String password = fileBasedPasswordPBEConfigImpl.getPassword();
+		String readPassword = FileUtils.readFileToString(passwordFile);
 
-	// test
-	assertEquals(password, readPassword);
-    }
+		// test
+		assertEquals(password, readPassword);
+	}
 
-    /**
-     * Test that empty password in file is returned.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testEmptyPasswordInFileIsReturned() throws Exception {
+	/**
+	 * Test that empty password in file is returned.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testEmptyPasswordInFileIsReturned() throws Exception {
 
-	// delete password file and create empty file
-	File passwordFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(),
-		CRDENTIALPROVIDER_PASSWORD_FILE);
-	if (passwordFile.exists())
-	    FileUtils.deleteQuietly(passwordFile);
-	FileUtils.writeStringToFile(passwordFile, "", FILE_ENCODING_UTF8);
+		// delete password file and create empty file
+		File passwordFile = new File(runtimeDirectoryProvider.getConfigurationDirectory(),
+				CRDENTIALPROVIDER_PASSWORD_FILE);
+		if (passwordFile.exists())
+			FileUtils.deleteQuietly(passwordFile);
+		FileUtils.writeStringToFile(passwordFile, "", FILE_ENCODING_UTF8);
 
-	// get password to create new master password
-	String password = fileBasedPasswordPBEConfigImpl.getPassword();
+		// get password to create new master password
+		String password = fileBasedPasswordPBEConfigImpl.getPassword();
 
-	// test
-	assertTrue(password.isEmpty());
-    }
+		// test
+		assertTrue(password.isEmpty());
+	}
 
 }

@@ -52,144 +52,144 @@ import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 @TestExecutionListeners(DirectoryTestExecutionListener.class)
 public class CreateDefaulConfigurationCommandTest {
 
-    /**
-     * Name of test module of class path.
-     */
-    static final String ARCHIVE_ON_CLASSPATH = "test-archive-on-plasspath.jar";
+	/**
+	 * Name of test module of class path.
+	 */
+	static final String ARCHIVE_ON_CLASSPATH = "test-archive-on-plasspath.jar";
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Object under test.
-     */
-    Command command;
+	/**
+	 * Object under test.
+	 */
+	Command command;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Mock execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Mock execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Mock message provider.
-     */
-    MessageProvider messageProvider;
+	/**
+	 * Mock message provider.
+	 */
+	MessageProvider messageProvider;
 
-    /**
-     * Configuration object mother
-     */
-    ObjectMotherEnvironmentConfiguration configMother;
+	/**
+	 * Configuration object mother
+	 */
+	ObjectMotherEnvironmentConfiguration configMother;
 
-    /**
-     * Random name.
-     */
-    String randomName;
+	/**
+	 * Random name.
+	 */
+	String randomName;
 
-    @Before
-    public void setUp() throws Exception {
-	randomName = RandomStringUtils.randomAlphabetic(10);
+	@Before
+	public void setUp() throws Exception {
+		randomName = RandomStringUtils.randomAlphabetic(10);
 
-	// create context
-	context = new ContextBase();
+		// create context
+		context = new ContextBase();
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// configuration object mother
-	configMother = new ObjectMotherEnvironmentConfiguration();
+		// configuration object mother
+		configMother = new ObjectMotherEnvironmentConfiguration();
 
-	// create command
-	command = new CreateDefaultEnvironmentConfigurationCommand();
+		// create command
+		command = new CreateDefaultEnvironmentConfigurationCommand();
 
-	// create execution result
-	executionResult = EasyMock.createMock(ExecutionResult.class);
+		// create execution result
+		executionResult = EasyMock.createMock(ExecutionResult.class);
 
-	// create mock provider
-	messageProvider = EasyMock.createMock(MessageProvider.class);
+		// create mock provider
+		messageProvider = EasyMock.createMock(MessageProvider.class);
 
-	// inject message source
-	ReflectionTestUtils.setField(command, "messageProvider", messageProvider, MessageProvider.class);
+		// inject message source
+		ReflectionTestUtils.setField(command, "messageProvider", messageProvider, MessageProvider.class);
 
-	// complete mock source initialization
-	IAnswer<String> answer = new MessageProviderAnswerImpl();
+		// complete mock source initialization
+		IAnswer<String> answer = new MessageProviderAnswerImpl();
 
-	EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
-	EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-	EasyMock.expect(
-		messageProvider.getMessage((String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject()));
-	EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-	EasyMock.replay(messageProvider);
-    }
+		EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+		EasyMock.expect(
+				messageProvider.getMessage((String) EasyMock.isA(String.class), (Object[]) EasyMock.anyObject()));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+		EasyMock.replay(messageProvider);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	testDirectory = null;
-	configMother = null;
-	executionResult = null;
-	messageProvider = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		testDirectory = null;
+		configMother = null;
+		executionResult = null;
+		messageProvider = null;
+	}
 
-    /**
-     * Test that command fails if context is undefined.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testRejectsUndefinedContext() throws Exception {
-	// create context
-	context = null;
+	/**
+	 * Test that command fails if context is undefined.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testRejectsUndefinedContext() throws Exception {
+		// create context
+		context = null;
 
-	// complete mock execution result setup
-	EasyMock.replay(executionResult);
+		// complete mock execution result setup
+		EasyMock.replay(executionResult);
 
-	// execute command
-	command.execute(context);
+		// execute command
+		command.execute(context);
 
-	// Verify mocks
-	EasyMock.verify(executionResult);
-    }
+		// Verify mocks
+		EasyMock.verify(executionResult);
+	}
 
-    /**
-     * Test that command fails if example modules file property is undefined.
-     */
-    @SuppressWarnings("unchecked")
-    @Test(expected = CommandInitializationFailedException.class)
-    public void testCommandFailsIfResourcesFileKeyIsUndefinedInContext() throws Exception {
-	// complete mock execution result setup
-	EasyMock.replay(executionResult);
+	/**
+	 * Test that command fails if example modules file property is undefined.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfResourcesFileKeyIsUndefinedInContext() throws Exception {
+		// complete mock execution result setup
+		EasyMock.replay(executionResult);
 
-	// setup context
-	context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, null);
+		// setup context
+		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, null);
 
-	// execute command
-	command.execute(context);
+		// execute command
+		command.execute(context);
 
-	// Verify mocks
-	EasyMock.verify(executionResult);
-    }
+		// Verify mocks
+		EasyMock.verify(executionResult);
+	}
 
-    /**
-     * Test that command fails if example modules file property is string.
-     */
-    @SuppressWarnings("unchecked")
-    @Test(expected = CommandInitializationFailedException.class)
-    public void testCommandFailsIfExampleModulesFileKeyIsStringInContext() throws Exception {
-	// complete mock execution result setup
-	EasyMock.replay(executionResult);
+	/**
+	 * Test that command fails if example modules file property is string.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfExampleModulesFileKeyIsStringInContext() throws Exception {
+		// complete mock execution result setup
+		EasyMock.replay(executionResult);
 
-	// setup context
-	context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, randomName);
+		// setup context
+		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, randomName);
 
-	// execute command
-	command.execute(context);
+		// execute command
+		command.execute(context);
 
-	// Verify mocks
-	EasyMock.verify(executionResult);
-    }
+		// Verify mocks
+		EasyMock.verify(executionResult);
+	}
 
 }

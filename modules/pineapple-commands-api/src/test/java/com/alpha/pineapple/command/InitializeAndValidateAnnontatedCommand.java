@@ -20,9 +20,7 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
- package com.alpha.pineapple.command;
-
+package com.alpha.pineapple.command;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
@@ -33,41 +31,39 @@ import com.alpha.pineapple.command.initialization.ValidateValue;
 import com.alpha.pineapple.command.initialization.ValidationPolicy;
 
 /**
- * Annotated command used for unit testing.
- * This command contains a single field which is annotated with the 
- * {@link Initialize} and {@link ValidateValue} annotations.  
+ * Annotated command used for unit testing. This command contains a single field
+ * which is annotated with the {@link Initialize} and {@link ValidateValue}
+ * annotations.
  */
-public class InitializeAndValidateAnnontatedCommand implements Command
-{
-    /**
-     * Context key
-     */
-    public static final String CONTEXT_KEY = "key";
+public class InitializeAndValidateAnnontatedCommand implements Command {
+	/**
+	 * Context key
+	 */
+	public static final String CONTEXT_KEY = "key";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-    
-    /**
-     * Annotated field
-     */   
-    @Initialize( InitializeAndValidateAnnontatedCommand.CONTEXT_KEY )
-    @ValidateValue({ ValidationPolicy.NOT_NULL})
-    String annotatedField;
-                
-    public boolean execute( Context context ) throws Exception
-    {
-        if( logger.isDebugEnabled()) {
-            
-            StringBuilder message = new StringBuilder();
-            message.append( "Executing command <" );
-            message.append( this.getClass().getName());
-            message.append( ">." );     
-            logger.debug( message.toString() );            
-        }
-        
-        return Command.CONTINUE_PROCESSING;
-    }
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
+	/**
+	 * Annotated field
+	 */
+	@Initialize(InitializeAndValidateAnnontatedCommand.CONTEXT_KEY)
+	@ValidateValue({ ValidationPolicy.NOT_NULL })
+	String annotatedField;
+
+	public boolean execute(Context context) throws Exception {
+		if (logger.isDebugEnabled()) {
+
+			StringBuilder message = new StringBuilder();
+			message.append("Executing command <");
+			message.append(this.getClass().getName());
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
+		return Command.CONTINUE_PROCESSING;
+	}
 
 }

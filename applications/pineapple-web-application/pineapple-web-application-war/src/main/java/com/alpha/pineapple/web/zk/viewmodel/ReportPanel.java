@@ -68,259 +68,258 @@ import com.alpha.pineapple.web.zk.utils.ErrorMessageBoxHelper;
  */
 public class ReportPanel {
 
-    /**
-     * Report file name.
-     */
-    static final String REPORT_HTML_FILENAME = "basic-report.html";
+	/**
+	 * Report file name.
+	 */
+	static final String REPORT_HTML_FILENAME = "basic-report.html";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Session state.
-     */
-    @WireVariable
-    SessionState sessionState;
+	/**
+	 * Session state.
+	 */
+	@WireVariable
+	SessionState sessionState;
 
-    /**
-     * Spring REST report controller.
-     */
-    @WireVariable
-    ReportController reportController;
+	/**
+	 * Spring REST report controller.
+	 */
+	@WireVariable
+	ReportController reportController;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @WireVariable
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@WireVariable
+	MessageProvider webMessageProvider;
 
-    /**
-     * Error message box helper.
-     */
-    @WireVariable
-    ErrorMessageBoxHelper errorMessageBoxHelper;
+	/**
+	 * Error message box helper.
+	 */
+	@WireVariable
+	ErrorMessageBoxHelper errorMessageBoxHelper;
 
-    /**
-     * executionState style converter.
-     */
-    @WireVariable
-    Converter<String, Object, Component> executionStateStyleConverter;
+	/**
+	 * executionState style converter.
+	 */
+	@WireVariable
+	Converter<String, Object, Component> executionStateStyleConverter;
 
-    /**
-     * executionState text converter.
-     */
-    @WireVariable
-    Converter<String, Object, Component> executionStateTextConverter;
+	/**
+	 * executionState text converter.
+	 */
+	@WireVariable
+	Converter<String, Object, Component> executionStateTextConverter;
 
-    /**
-     * Loaded media.
-     */
-    AMedia media;
+	/**
+	 * Loaded media.
+	 */
+	AMedia media;
 
-    /**
-     * Initialize view model.
-     */
-    @Init
-    public void init() {
-    }
-
-    /**
-     * Get ExecutionState style converter.
-     * 
-     * @return converter.
-     */
-    public Converter<String, Object, Component> getExecutionStateStyleConverter() {
-	return executionStateStyleConverter;
-    }
-
-    /**
-     * Get ExecutionState text converter.
-     * 
-     * @return converter.
-     */
-    public Converter<String, Object, Component> getExecutionStateTextConverter() {
-	return executionStateTextConverter;
-    }
-
-    /**
-     * Set selected report in the ZK view.
-     * 
-     * @param report
-     *            Selected report in the ZK view.
-     */
-    public void setSelectedReport(Report report) {
-	sessionState.setReport(report);
-    }
-
-    /**
-     * Get selected report in ZK view.
-     * 
-     * @return selected report.
-     */
-    public Report getSelectedReport() {
-	return sessionState.getReport();
-    }
-
-    /**
-     * Get all reports.
-     * 
-     * @return all reports.
-     */
-    public Collection<Report> getReports() {
-	Reports reports = reportController.getReports();
-	return reports.getReport();
-    }
-
-    /**
-     * Get loaded media.
-     * 
-     * @return loaded media.
-     */
-    public AMedia getMedia() {
-	return media;
-    }
-
-    /**
-     * Event handler for selection of report in list box.
-     * 
-     * Will load the report as an IFrame.
-     */
-    @Command
-    public void loadSelectedReport() {
-
-	// get selected report
-	Report report = sessionState.getReport();
-
-	// exit if no report is selected
-	if (report == null)
-	    return;
-
-	try {
-	    // get report file
-	    File reportHtmlFile = new File(report.getDirectory(), REPORT_HTML_FILENAME);
-	    media = new AMedia(reportHtmlFile, ZK_MEDIA_CONTENT_TYPE, ZK_MEDIA_CHARSET);
-
-	} catch (Exception e) {
-	    Object[] args = { StackTraceHelper.getStrackTrace(e) };
-	    String msg = webMessageProvider.getMessage("rp.load_report_failed", args);
-	    logger.error(msg);
-	    return;
-	}
-    }
-
-    /**
-     * Event handler for the global command "completedReportCreation". The event
-     * is triggered from the {@linkplain CreatedReportNotifierImpl} Reactor
-     * consumer which posts the global command.
-     * 
-     * The event handler will create a new reports model and notify the MVVM
-     * binder that the reports model is updated.
-     */
-    @GlobalCommand
-    @NotifyChange("reports")
-    public void completedReportCreation() {
-    }
-
-    /**
-     * Event handler for the global command "saveReport". The event is triggered
-     * from the menu bar as a global command.
-     * 
-     * The event handler will save the selected report at the client side, e.g.
-     * the browser.
-     */
-    @GlobalCommand(SAVE_REPORT_GLOBALCOMMAND)
-    public void saveReport() {
-
-	// get selected report
-	Report report = sessionState.getReport();
-
-	// exit if no report is selected
-	if (report == null) {
-	    Messagebox.show(webMessageProvider.getMessage("rp.no_report_selected_info"),
-		    webMessageProvider.getMessage("pineapple.msgbox_title"), Messagebox.OK, Messagebox.INFORMATION);
-
-	    return;
+	/**
+	 * Initialize view model.
+	 */
+	@Init
+	public void init() {
 	}
 
-	// declare file
-	File reportFile = null;
-
-	try {
-	    // get report file
-	    reportFile = new File(report.getDirectory(), HTML_REPORT_FILE);
-
-	    // create ZK media representation of HTML report
-	    AMedia media = new AMedia(reportFile, ZK_MEDIA_CONTENT_TYPE, ZK_MEDIA_CHARSET);
-
-	    // create download file name
-	    String downloadFileName = new StringBuilder().append("pineapple-").append(report.getId()).append(".html")
-		    .toString();
-
-	    // save
-	    Filedownload.save(media.getReaderData(), ZK_MEDIA_CONTENT_TYPE, downloadFileName);
-
-	    // post notification that report was saved successfully
-	    Clients.showNotification(webMessageProvider.getMessage("rp.download_report_info"), POST_STYLE, null,
-		    POST_LOCATION, POST_DURATION);
-
-	} catch (
-
-	FileNotFoundException e)
-
-	{
-
-	    // log error message
-	    Object[] args = { reportFile };
-	    String message = webMessageProvider.getMessage("rp.download_report_failed", args);
-	    logger.error(message);
-
-	    // show error in message box
-	    Messagebox.show(message, webMessageProvider.getMessage("pineapple.msgbox_title"), Messagebox.OK,
-		    Messagebox.ERROR);
+	/**
+	 * Get ExecutionState style converter.
+	 * 
+	 * @return converter.
+	 */
+	public Converter<String, Object, Component> getExecutionStateStyleConverter() {
+		return executionStateStyleConverter;
 	}
-    }
 
-    /**
-     * Event handler for the global command "deleteAllReports". The event is
-     * triggered from the menu controller and the reports panel which posts the
-     * global command.
-     * 
-     * Step 1) of deletion all reports. Will open a modal window for
-     * confirmation. All operations are deleted in the core component using REST
-     * API.
-     */
-    @GlobalCommand(DELETE_ALL_REPORTS_GLOBALCOMMAND)
-    public void deleteAllReports() {
-	Window modalWindow = null;
-
-	try {
-
-	    // open modal window
-	    modalWindow = (Window) createComponents(DELETE_ALL_REPORTS_MODAL_ZUL, NULL_PARENT_WINDOW,
-		    NULL_GLOBALCOMMAND_ARGS);
-	    modalWindow.doModal();
-
-	} catch (Exception e) {
-	    errorMessageBoxHelper.showAndLogException(e);
-
-	    // detach window
-	    if (modalWindow != null)
-		modalWindow.detach();
+	/**
+	 * Get ExecutionState text converter.
+	 * 
+	 * @return converter.
+	 */
+	public Converter<String, Object, Component> getExecutionStateTextConverter() {
+		return executionStateTextConverter;
 	}
-    }
 
-    /**
-     * Event handler for the global command "deleteAllReportsConfirmed". The
-     * event is triggered from the modal window after deletion of all scheduled
-     * operations.
-     * 
-     * Step 2) of deleting all reports. Will update the view model.
-     */
-    @GlobalCommand(DELETE_ALL_REPORTS_CONFIRMED_GLOBALCOMMAND)
-    @NotifyChange("reports")
-    public void deleteAllReportsConfirmed() {
-	// NO-OP, other than updating the view.
-    }
+	/**
+	 * Set selected report in the ZK view.
+	 * 
+	 * @param report
+	 *            Selected report in the ZK view.
+	 */
+	public void setSelectedReport(Report report) {
+		sessionState.setReport(report);
+	}
+
+	/**
+	 * Get selected report in ZK view.
+	 * 
+	 * @return selected report.
+	 */
+	public Report getSelectedReport() {
+		return sessionState.getReport();
+	}
+
+	/**
+	 * Get all reports.
+	 * 
+	 * @return all reports.
+	 */
+	public Collection<Report> getReports() {
+		Reports reports = reportController.getReports();
+		return reports.getReport();
+	}
+
+	/**
+	 * Get loaded media.
+	 * 
+	 * @return loaded media.
+	 */
+	public AMedia getMedia() {
+		return media;
+	}
+
+	/**
+	 * Event handler for selection of report in list box.
+	 * 
+	 * Will load the report as an IFrame.
+	 */
+	@Command
+	public void loadSelectedReport() {
+
+		// get selected report
+		Report report = sessionState.getReport();
+
+		// exit if no report is selected
+		if (report == null)
+			return;
+
+		try {
+			// get report file
+			File reportHtmlFile = new File(report.getDirectory(), REPORT_HTML_FILENAME);
+			media = new AMedia(reportHtmlFile, ZK_MEDIA_CONTENT_TYPE, ZK_MEDIA_CHARSET);
+
+		} catch (Exception e) {
+			Object[] args = { StackTraceHelper.getStrackTrace(e) };
+			String msg = webMessageProvider.getMessage("rp.load_report_failed", args);
+			logger.error(msg);
+			return;
+		}
+	}
+
+	/**
+	 * Event handler for the global command "completedReportCreation". The event is
+	 * triggered from the {@linkplain CreatedReportNotifierImpl} Reactor consumer
+	 * which posts the global command.
+	 * 
+	 * The event handler will create a new reports model and notify the MVVM binder
+	 * that the reports model is updated.
+	 */
+	@GlobalCommand
+	@NotifyChange("reports")
+	public void completedReportCreation() {
+	}
+
+	/**
+	 * Event handler for the global command "saveReport". The event is triggered
+	 * from the menu bar as a global command.
+	 * 
+	 * The event handler will save the selected report at the client side, e.g. the
+	 * browser.
+	 */
+	@GlobalCommand(SAVE_REPORT_GLOBALCOMMAND)
+	public void saveReport() {
+
+		// get selected report
+		Report report = sessionState.getReport();
+
+		// exit if no report is selected
+		if (report == null) {
+			Messagebox.show(webMessageProvider.getMessage("rp.no_report_selected_info"),
+					webMessageProvider.getMessage("pineapple.msgbox_title"), Messagebox.OK, Messagebox.INFORMATION);
+
+			return;
+		}
+
+		// declare file
+		File reportFile = null;
+
+		try {
+			// get report file
+			reportFile = new File(report.getDirectory(), HTML_REPORT_FILE);
+
+			// create ZK media representation of HTML report
+			AMedia media = new AMedia(reportFile, ZK_MEDIA_CONTENT_TYPE, ZK_MEDIA_CHARSET);
+
+			// create download file name
+			String downloadFileName = new StringBuilder().append("pineapple-").append(report.getId()).append(".html")
+					.toString();
+
+			// save
+			Filedownload.save(media.getReaderData(), ZK_MEDIA_CONTENT_TYPE, downloadFileName);
+
+			// post notification that report was saved successfully
+			Clients.showNotification(webMessageProvider.getMessage("rp.download_report_info"), POST_STYLE, null,
+					POST_LOCATION, POST_DURATION);
+
+		} catch (
+
+		FileNotFoundException e)
+
+		{
+
+			// log error message
+			Object[] args = { reportFile };
+			String message = webMessageProvider.getMessage("rp.download_report_failed", args);
+			logger.error(message);
+
+			// show error in message box
+			Messagebox.show(message, webMessageProvider.getMessage("pineapple.msgbox_title"), Messagebox.OK,
+					Messagebox.ERROR);
+		}
+	}
+
+	/**
+	 * Event handler for the global command "deleteAllReports". The event is
+	 * triggered from the menu controller and the reports panel which posts the
+	 * global command.
+	 * 
+	 * Step 1) of deletion all reports. Will open a modal window for confirmation.
+	 * All operations are deleted in the core component using REST API.
+	 */
+	@GlobalCommand(DELETE_ALL_REPORTS_GLOBALCOMMAND)
+	public void deleteAllReports() {
+		Window modalWindow = null;
+
+		try {
+
+			// open modal window
+			modalWindow = (Window) createComponents(DELETE_ALL_REPORTS_MODAL_ZUL, NULL_PARENT_WINDOW,
+					NULL_GLOBALCOMMAND_ARGS);
+			modalWindow.doModal();
+
+		} catch (Exception e) {
+			errorMessageBoxHelper.showAndLogException(e);
+
+			// detach window
+			if (modalWindow != null)
+				modalWindow.detach();
+		}
+	}
+
+	/**
+	 * Event handler for the global command "deleteAllReportsConfirmed". The event
+	 * is triggered from the modal window after deletion of all scheduled
+	 * operations.
+	 * 
+	 * Step 2) of deleting all reports. Will update the view model.
+	 */
+	@GlobalCommand(DELETE_ALL_REPORTS_CONFIRMED_GLOBALCOMMAND)
+	@NotifyChange("reports")
+	public void deleteAllReportsConfirmed() {
+		// NO-OP, other than updating the view.
+	}
 }

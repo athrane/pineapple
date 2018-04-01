@@ -35,72 +35,72 @@ import com.alpha.pineapple.session.Session;
  */
 public class OperationUtilsImpl implements OperationUtils {
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "apiMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "apiMessageProvider")
+	MessageProvider messageProvider;
 
-    public void validateContentType(Object content, Class<?>[] legalTypes) throws PluginExecutionFailedException {
+	public void validateContentType(Object content, Class<?>[] legalTypes) throws PluginExecutionFailedException {
 
-	// declare class name
-	String currentClassNameString = null;
+		// declare class name
+		String currentClassNameString = null;
 
-	try {
+		try {
 
-	    // iterate over the legal content types
-	    for (Class<?> legalType : legalTypes) {
+			// iterate over the legal content types
+			for (Class<?> legalType : legalTypes) {
 
-		// get class name
-		String classNameString = legalType.getName();
+				// get class name
+				String classNameString = legalType.getName();
 
-		// store name for error handling
-		currentClassNameString = classNameString;
+				// store name for error handling
+				currentClassNameString = classNameString;
 
-		// exit if there is a match
-		if (Class.forName(classNameString).isInstance(content))
-		    return;
-	    }
+				// exit if there is a match
+				if (Class.forName(classNameString).isInstance(content))
+					return;
+			}
 
-	} catch (Exception e) {
-	    Object[] args = { currentClassNameString };
-	    String message = messageProvider.getMessage("ou.content_typecast_error", args);
-	    throw new PluginExecutionFailedException(message, e);
+		} catch (Exception e) {
+			Object[] args = { currentClassNameString };
+			String message = messageProvider.getMessage("ou.content_typecast_error", args);
+			throw new PluginExecutionFailedException(message, e);
+		}
+
+		// signal failure to validate any of the types
+		Object[] args = { ArrayUtils.toString(legalTypes) };
+		String message = messageProvider.getMessage("ou.content_typecast_failed", args);
+		throw new PluginExecutionFailedException(message);
 	}
 
-	// signal failure to validate any of the types
-	Object[] args = { ArrayUtils.toString(legalTypes) };
-	String message = messageProvider.getMessage("ou.content_typecast_failed", args);
-	throw new PluginExecutionFailedException(message);
-    }
+	public void validateSessionType(Session session, Class<?> legalType) throws PluginExecutionFailedException {
 
-    public void validateSessionType(Session session, Class<?> legalType) throws PluginExecutionFailedException {
+		// declare class name
+		String currentClassNameString = null;
 
-	// declare class name
-	String currentClassNameString = null;
+		try {
 
-	try {
+			// get class name
+			String classNameString = legalType.getName();
 
-	    // get class name
-	    String classNameString = legalType.getName();
+			// store name for error handling
+			currentClassNameString = classNameString;
 
-	    // store name for error handling
-	    currentClassNameString = classNameString;
+			// exit if there is a match
+			if (Class.forName(classNameString).isInstance(session))
+				return;
 
-	    // exit if there is a match
-	    if (Class.forName(classNameString).isInstance(session))
-		return;
+		} catch (Exception e) {
+			Object[] args = { currentClassNameString };
+			String message = messageProvider.getMessage("ou.session_typecast_error", args);
+			throw new PluginExecutionFailedException(message, e);
+		}
 
-	} catch (Exception e) {
-	    Object[] args = { currentClassNameString };
-	    String message = messageProvider.getMessage("ou.session_typecast_error", args);
-	    throw new PluginExecutionFailedException(message, e);
+		// signal failure to validate any of the types
+		Object[] args = { ArrayUtils.toString(legalType) };
+		String message = messageProvider.getMessage("ou.session_typecast_failed", args);
+		throw new PluginExecutionFailedException(message);
 	}
-
-	// signal failure to validate any of the types
-	Object[] args = { ArrayUtils.toString(legalType) };
-	String message = messageProvider.getMessage("ou.session_typecast_failed", args);
-	throw new PluginExecutionFailedException(message);
-    }
 
 }

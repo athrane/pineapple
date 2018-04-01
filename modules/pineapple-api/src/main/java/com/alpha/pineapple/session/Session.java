@@ -31,39 +31,38 @@ import com.alpha.pineapple.model.configuration.Resource;
  */
 public interface Session {
 
-    /**
-     * Establish connection to external resource.
-     * 
-     * @param resource
-     *            The resource to which the session should establish a
-     *            connection.
-     * @param credential
-     *            Credential used to authenticate session with resource.
-     * 
-     * @throws SessionConnectException
-     *             If connecting to resource fails.
-     */
-    public void connect(Resource resource, Credential credential) throws SessionConnectException;
+	/**
+	 * Establish connection to external resource.
+	 * 
+	 * @param resource
+	 *            The resource to which the session should establish a connection.
+	 * @param credential
+	 *            Credential used to authenticate session with resource.
+	 * 
+	 * @throws SessionConnectException
+	 *             If connecting to resource fails.
+	 */
+	public void connect(Resource resource, Credential credential) throws SessionConnectException;
 
-    /**
-     * Terminate connection to external resource.
-     * 
-     * @throws SessionDisconnectException
-     *             If termination of connection to external resource fails.
-     */
-    public void disconnect() throws SessionDisconnectException;
+	/**
+	 * Terminate connection to external resource.
+	 * 
+	 * @throws SessionDisconnectException
+	 *             If termination of connection to external resource fails.
+	 */
+	public void disconnect() throws SessionDisconnectException;
 
-    /**
-     * Get resource.
-     * 
-     * @return resource object.
-     */
-    Resource getResource();
+	/**
+	 * Get resource.
+	 * 
+	 * @return resource object.
+	 */
+	Resource getResource();
 
-    /**
-     * Get credential.
-     * 
-     * @return credential object.
-     */
-    Credential getCredential();
+	/**
+	 * Get credential.
+	 * 
+	 * @return credential object.
+	 */
+	Credential getCredential();
 }

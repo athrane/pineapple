@@ -33,52 +33,52 @@ import com.alpha.pineapple.session.Session;
  * execution of plugins.
  */
 public interface PluginRuntimeRepository extends PluginRepository {
-    /**
-     * Get plugin unmarshaller from repository.
-     * 
-     * @param plugin
-     *            Plugin id.
-     * 
-     * @return plugin unmarshaller from repository.
-     * 
-     * @throws PluginExecutionFailedException
-     *             If getting unmarshaller fails.
-     */
-    public Unmarshaller getPluginUnmarshaller(String plugin) throws PluginExecutionFailedException;
+	/**
+	 * Get plugin unmarshaller from repository.
+	 * 
+	 * @param plugin
+	 *            Plugin id.
+	 * 
+	 * @return plugin unmarshaller from repository.
+	 * 
+	 * @throws PluginExecutionFailedException
+	 *             If getting unmarshaller fails.
+	 */
+	public Unmarshaller getPluginUnmarshaller(String plugin) throws PluginExecutionFailedException;
 
-    /**
-     * Get operation for plugin.
-     * 
-     * @param plugin
-     *            plugin id.
-     * @param operation
-     *            operation id.
-     * 
-     * @return operation for plugin.
-     */
-    public Operation getOperation(String plugin, String operation);
+	/**
+	 * Get operation for plugin.
+	 * 
+	 * @param plugin
+	 *            plugin id.
+	 * @param operation
+	 *            operation id.
+	 * 
+	 * @return operation for plugin.
+	 */
+	public Operation getOperation(String plugin, String operation);
 
-    /**
-     * Get unconnected session for plugin.
-     * 
-     * @param pluginId
-     *            plugin id.
-     * 
-     * @return unconnected session for plugin.
-     */
-    public Session getSession(String pluginId);
+	/**
+	 * Get unconnected session for plugin.
+	 * 
+	 * @param pluginId
+	 *            plugin id.
+	 * 
+	 * @return unconnected session for plugin.
+	 */
+	public Session getSession(String pluginId);
 
-    /**
-     * Get plugin info for plugin.
-     * 
-     * @param pluginId
-     *            plugin id.
-     * 
-     * @return plugin info for plugin.
-     * 
-     * @throws PluginNotFoundException
-     *             if no plugin is defined with plugin ID.
-     */
-    public PluginInfo getPluginInfo(String pluginId) throws PluginNotFoundException;
+	/**
+	 * Get plugin info for plugin.
+	 * 
+	 * @param pluginId
+	 *            plugin id.
+	 * 
+	 * @return plugin info for plugin.
+	 * 
+	 * @throws PluginNotFoundException
+	 *             if no plugin is defined with plugin ID.
+	 */
+	public PluginInfo getPluginInfo(String pluginId) throws PluginNotFoundException;
 
 }

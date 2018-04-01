@@ -38,11 +38,11 @@ import com.alpha.pineapple.session.Session;
 @Plugin()
 @PluginOperation(OperationNames.WILDCARD_OPERATION)
 public class CreateResourceTestPluginImpl implements Operation {
-    public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.createresource";
+	public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.createresource";
 
-    @Override
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-	result.setState(ExecutionState.SUCCESS);
-    }
+	@Override
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+		result.setState(ExecutionState.SUCCESS);
+	}
 
 }

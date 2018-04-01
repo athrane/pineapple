@@ -29,46 +29,46 @@ import java.io.File;
  */
 public class CoreTestConstants {
 
-    /**
-     * Credential identifier, used in unit tests.
-     */
-    public static final String credentialIdOne = "credential-1";
+	/**
+	 * Credential identifier, used in unit tests.
+	 */
+	public static final String credentialIdOne = "credential-1";
 
-    /**
-     * Credential identifier, used in unit tests.
-     */
-    public static final String credentialIdTwo = "credential-2";
+	/**
+	 * Credential identifier, used in unit tests.
+	 */
+	public static final String credentialIdTwo = "credential-2";
 
-    /**
-     * The target environment used in unit tests.
-     */
-    public static String targetEnvironment = "localdomain";
+	/**
+	 * The target environment used in unit tests.
+	 */
+	public static String targetEnvironment = "localdomain";
 
-    /**
-     * The environment used in unit tests.
-     */
-    public static String environmentIdOne = "environment-1";
+	/**
+	 * The environment used in unit tests.
+	 */
+	public static String environmentIdOne = "environment-1";
 
-    /**
-     * Deployment directory where the unit test expects the Pineapple modules to
-     * be located.
-     */
-    public static String runtimeRootDir2 = "c:/deployments";
+	/**
+	 * Deployment directory where the unit test expects the Pineapple modules to be
+	 * located.
+	 */
+	public static String runtimeRootDir2 = "c:/deployments";
 
-    /**
-     * Deployment directory where the unit test expects the Pineapple modules to
-     * be located.
-     */
-    public static File runtimeRootDir = new File(runtimeRootDir2);
+	/**
+	 * Deployment directory where the unit test expects the Pineapple modules to be
+	 * located.
+	 */
+	public static File runtimeRootDir = new File(runtimeRootDir2);
 
-    /**
-     * Name of Pineapple module used in unit tests.
-     */
-    public static String moduleName = "test-application-1.0.16";
+	/**
+	 * Name of Pineapple module used in unit tests.
+	 */
+	public static String moduleName = "test-application-1.0.16";
 
-    /**
-     * Resource identifier for Test-Resource used in unit tests.
-     */
-    public static final String resourceIdentifierTestResource = "test-resource-resourceidentifier";
+	/**
+	 * Resource identifier for Test-Resource used in unit tests.
+	 */
+	public static final String resourceIdentifierTestResource = "test-resource-resourceidentifier";
 
 }

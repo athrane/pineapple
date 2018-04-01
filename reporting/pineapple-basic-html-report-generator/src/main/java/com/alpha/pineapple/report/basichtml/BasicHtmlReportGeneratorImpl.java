@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.report.basichtml;
 
 import java.io.File;
@@ -65,13 +64,13 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	/**
 	 * Spring bean id for report generator.
 	 */
-    static final String GENERATOR_BEAN_ID = "reportGenerator";
+	static final String GENERATOR_BEAN_ID = "reportGenerator";
 
 	/**
-     * Spring configuration file for the report generator.
-     */    
-    static final String REPORT_CONFIG = "com.alpha.pineapple.report.basichtml-config.xml";        
-	
+	 * Spring configuration file for the report generator.
+	 */
+	static final String REPORT_CONFIG = "com.alpha.pineapple.report.basichtml-config.xml";
+
 	/**
 	 * Time stamp format.
 	 */
@@ -125,13 +124,13 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	/**
 	 * JAXB factory.
 	 */
-	@Resource	
+	@Resource
 	ObjectFactory objectFactory;
 
 	/**
 	 * JAXB RI namespace prefix mapper.
 	 */
-	@Resource	
+	@Resource
 	NamespacePrefixMapper prefixMapper = new ReportNamespaceMapper();
 
 	/**
@@ -143,49 +142,48 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	/**
 	 * Message provider for I18N support.
 	 */
-    @Resource(name="reportMessageProvider")
+	@Resource(name = "reportMessageProvider")
 	MessageProvider messageProvider;
 
 	/**
 	 * BasicHtmlReportGenerator no-arg constructor.
 	 */
 	BasicHtmlReportGeneratorImpl() {
-		
+
 		// create date format
 		timestampFormat = new SimpleDateFormat(TIMESTAMP_FORMAT);
 	}
 
 	/**
-	 * Set report root directory. 
+	 * Set report root directory.
 	 * 
-	 * @param reportDirectory The report root directory.
+	 * @param reportDirectory
+	 *            The report root directory.
 	 */
 	public void setReportDirectory(File reportDirectory) {
 		this.reportDirectory = reportDirectory;
-		
-		// if report directory doesn't exist then create it				
+
+		// if report directory doesn't exist then create it
 		if (!reportDirectory.exists()) {
 
-	        // log debug message
-	        if ( logger.isDebugEnabled() )
-	        {
-	        	Object[] args = { reportDirectory.getAbsolutePath() };    	        	
-	        	String message = messageProvider.getMessage("bhrg.create_root_directory", args );
-	        	logger.debug( message );
-	        }
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				Object[] args = { reportDirectory.getAbsolutePath() };
+				String message = messageProvider.getMessage("bhrg.create_root_directory", args);
+				logger.debug(message);
+			}
 
-	        reportDirectory.mkdirs();
+			reportDirectory.mkdirs();
 		}
-		
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-        	Object[] args = { reportDirectory.getAbsolutePath() };    	        	
-        	String message = messageProvider.getMessage("bhrg.configured_root_directory", args );
-        	logger.debug( message );
-        }		
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { reportDirectory.getAbsolutePath() };
+			String message = messageProvider.getMessage("bhrg.configured_root_directory", args);
+			logger.debug(message);
+		}
 	}
-	
+
 	public void notify(ExecutionResultNotification notification) {
 
 		// determine if execution is completed
@@ -197,7 +195,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 
 		// create HTML report from XML file
 		transformToHtml(xmlReport);
-		
+
 		// add report message to result
 		File newReportDirectory = xmlReport.getParentFile();
 		notification.getResult().addMessage(ExecutionResult.MSG_REPORT, newReportDirectory.getName());
@@ -206,7 +204,8 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	/**
 	 * Transform XML report to HTML report.
 	 * 
-	 * @param xmlReport File name of the XML report. 
+	 * @param xmlReport
+	 *            File name of the XML report.
 	 */
 	void transformToHtml(File xmlReport) {
 
@@ -216,20 +215,19 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 		// create HTML file name.
 		File htmlReport = new File(newReportDirectory, REPORT_HTML);
 
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-        	Object[] args = { xmlReport.getAbsolutePath(), REPORT_XSL, htmlReport };    	        	
-        	String message = messageProvider.getMessage("bhrg.start_html_transform", args );
-        	logger.debug( message );
-        }
-		
-        // define stream 
-        FileOutputStream fileOutputStream = null;
-        
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { xmlReport.getAbsolutePath(), REPORT_XSL, htmlReport };
+			String message = messageProvider.getMessage("bhrg.start_html_transform", args);
+			logger.debug(message);
+		}
+
+		// define stream
+		FileOutputStream fileOutputStream = null;
+
 		try {
 			// create XSLT transformer factory
-			TransformerFactory factory = TransformerFactory.newInstance();			
+			TransformerFactory factory = TransformerFactory.newInstance();
 
 			// get style sheet for class loader
 			InputStream xslStream;
@@ -239,7 +237,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 			StreamSource xsl = new StreamSource(xslStream);
 			StreamSource xml = new StreamSource(xmlReport);
 			fileOutputStream = new FileOutputStream(htmlReport);
-			StreamResult html = new StreamResult(fileOutputStream);			
+			StreamResult html = new StreamResult(fileOutputStream);
 
 			// create XSLT transformer
 			Transformer transformer = factory.newTransformer(xsl);
@@ -247,27 +245,26 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 
 			try {
 				// transform
-				transformer.transform(xml, html);				
-			} finally {				
-				// if not null then close 
+				transformer.transform(xml, html);
+			} finally {
+				// if not null then close
 				if (fileOutputStream != null) {
-					fileOutputStream.close();				
+					fileOutputStream.close();
 				}
-			}			
-			
-	        // log debug message
-	        if ( logger.isDebugEnabled() )
-	        {
-	        	Object[] args = { htmlReport };    	        	
-	        	String message = messageProvider.getMessage("bhrg.completed_html_transform", args );
-	        	logger.debug( message );
-	        }
-			
-		} catch (Exception e) {			
-        	Object[] args = { StackTraceHelper.getStrackTrace(e) };    	        	
-        	String message = messageProvider.getMessage("bhrg.failed_html_transform", args );
+			}
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				Object[] args = { htmlReport };
+				String message = messageProvider.getMessage("bhrg.completed_html_transform", args);
+				logger.debug(message);
+			}
+
+		} catch (Exception e) {
+			Object[] args = { StackTraceHelper.getStrackTrace(e) };
+			String message = messageProvider.getMessage("bhrg.failed_html_transform", args);
 			logger.error(message);
-		} 
+		}
 	}
 
 	/**
@@ -317,7 +314,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 		if (reportDirectory == null) {
 			setReportDirectory(getDefaultReportDirectory());
 		}
-		
+
 		// create report directory name
 		StringBuilder reportDirectoryName = new StringBuilder();
 		reportDirectoryName.append("report-");
@@ -329,14 +326,13 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 		// if directory doesn't exist then create it
 		if (!newReportDirectory.exists()) {
 
-	        // log debug message
-	        if ( logger.isDebugEnabled() )
-	        {
-	        	Object[] args = { newReportDirectory.getAbsolutePath() };    	        	
-	        	String message = messageProvider.getMessage("bhrg.create_instance_directory", args );
-	        	logger.debug( message );
-	        }
-			
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				Object[] args = { newReportDirectory.getAbsolutePath() };
+				String message = messageProvider.getMessage("bhrg.create_instance_directory", args);
+				logger.debug(message);
+			}
+
 			newReportDirectory.mkdirs();
 		}
 
@@ -344,16 +340,18 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	}
 
 	/**
-	 * Return true if execution is completed, i.e. the root result signals that
-	 * it isn't running anymore.
+	 * Return true if execution is completed, i.e. the root result signals that it
+	 * isn't running anymore.
 	 * 
-	 * @param result The execution result notification to test.
+	 * @param result
+	 *            The execution result notification to test.
 	 * 
-	 * @return true if execution is completed, i.e. the root result signals that
-	 *         it isn't running anymore.
+	 * @return true if execution is completed, i.e. the root result signals that it
+	 *         isn't running anymore.
 	 */
 	boolean isExecutionCompleted(ExecutionResultNotification notification) {
-		if (!notification.getResult().isRoot()) return false;
+		if (!notification.getResult().isRoot())
+			return false;
 		return (!notification.getState().equals(ExecutionResult.ExecutionState.EXECUTING));
 	}
 
@@ -361,8 +359,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	 * Marshall object graph to file using JAXB.
 	 * 
 	 * @param rootObject
-	 *            rootObject Root object of object graph which should be
-	 *            marshalled.
+	 *            rootObject Root object of object graph which should be marshalled.
 	 * @param file
 	 *            File that the environment configuration should be saved to.
 	 */
@@ -374,13 +371,12 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 			// get package name
 			String packageName = rootObject.getClass().getPackage().getName();
 
-	        // log debug message
-	        if ( logger.isDebugEnabled() )
-	        {
-	        	Object[] args = { rootObject, file.getAbsolutePath(), packageName };    	        	
-	        	String message = messageProvider.getMessage("bhrg.start_marshal", args );
-	        	logger.debug( message );
-	        }		
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				Object[] args = { rootObject, file.getAbsolutePath(), packageName };
+				String message = messageProvider.getMessage("bhrg.start_marshal", args);
+				logger.debug(message);
+			}
 
 			JAXBContext jaxbContext = JAXBContext.newInstance(packageName);
 			Marshaller marshaller = jaxbContext.createMarshaller();
@@ -388,14 +384,13 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 			// set prefix mapper if it is defined
 			if (prefixMapper != null) {
 
-		        // log debug message
-		        if ( logger.isDebugEnabled() )
-		        {
-		        	Object[] args = { prefixMapper };    	        	
-		        	String message = messageProvider.getMessage("bhrg.set_prefixmapper", args );
-		        	logger.debug( message );
-		        }		
-				
+				// log debug message
+				if (logger.isDebugEnabled()) {
+					Object[] args = { prefixMapper };
+					String message = messageProvider.getMessage("bhrg.set_prefixmapper", args);
+					logger.debug(message);
+				}
+
 				marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", prefixMapper);
 			}
 
@@ -407,10 +402,10 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 			os.close();
 		} catch (Exception e) {
 
-        	Object[] args = { StackTraceHelper.getStrackTrace(e) };    	        	
-        	String message = messageProvider.getMessage("bhrg.failed_marshal", args );
-        	logger.error( message );
-						
+			Object[] args = { StackTraceHelper.getStrackTrace(e) };
+			String message = messageProvider.getMessage("bhrg.failed_marshal", args);
+			logger.error(message);
+
 		} finally {
 
 			// close OS
@@ -418,17 +413,16 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 				try {
 					os.close();
 				} catch (IOException e) {
-					
+
 					// log error message
-		        	Object[] args = { StackTraceHelper.getStrackTrace(e) };    	        	
-		        	String message = messageProvider.getMessage("bhrg.failed_close", args );
-		        	logger.error( message );
+					Object[] args = { StackTraceHelper.getStrackTrace(e) };
+					String message = messageProvider.getMessage("bhrg.failed_close", args);
+					logger.error(message);
 				}
 			}
 		}
 	}
 
-		
 	public File getCurrentReportDirectory() {
 		return reportDirectory;
 	}
@@ -441,7 +435,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	 *         ${pineapple.home.dir}/.pineapple/reports/
 	 */
 	static File getDefaultReportDirectory() {
-		
+
 		// get pineapple home
 		String pineappleHome = System.getProperty(PINEAPPLE_HOME);
 
@@ -456,15 +450,15 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	 */
 	static BasicHtmlReportGeneratorImpl getInstanceFromSpring() {
 		// load spring configuration file
-        String[] appConfigFile = new String[] {REPORT_CONFIG };
-        ApplicationContext appContext = new ClassPathXmlApplicationContext(appConfigFile);
-                           
-        // get report generator
-        BasicHtmlReportGeneratorImpl generator;
-		generator = (BasicHtmlReportGeneratorImpl) appContext.getBean(GENERATOR_BEAN_ID );
+		String[] appConfigFile = new String[] { REPORT_CONFIG };
+		ApplicationContext appContext = new ClassPathXmlApplicationContext(appConfigFile);
+
+		// get report generator
+		BasicHtmlReportGeneratorImpl generator;
+		generator = (BasicHtmlReportGeneratorImpl) appContext.getBean(GENERATOR_BEAN_ID);
 		return generator;
 	}
-	
+
 	/**
 	 * Return instance of the basic HTML report generator. The generator will
 	 * produce reports at the default location: ${user.home}/.pineapple/reports/
@@ -474,11 +468,11 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	public static ResultListener getInstance() {
 
 		// create instance form spring context
-        BasicHtmlReportGeneratorImpl generator = getInstanceFromSpring();
+		BasicHtmlReportGeneratorImpl generator = getInstanceFromSpring();
 
 		// use default directory
-		generator.setReportDirectory(getDefaultReportDirectory());				
-		
+		generator.setReportDirectory(getDefaultReportDirectory());
+
 		return generator;
 	}
 
@@ -494,15 +488,15 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	 */
 	public static ResultListener getInstance(File reportDirectory) {
 
-		// validate argument 
+		// validate argument
 		Validate.notNull(reportDirectory, "reportDirectory is undefined");
-		
+
 		// create instance form spring context
-        BasicHtmlReportGeneratorImpl generator = getInstanceFromSpring();
+		BasicHtmlReportGeneratorImpl generator = getInstanceFromSpring();
 
 		// use default directory
 		generator.setReportDirectory(reportDirectory);
-		
+
 		return generator;
 	}
 

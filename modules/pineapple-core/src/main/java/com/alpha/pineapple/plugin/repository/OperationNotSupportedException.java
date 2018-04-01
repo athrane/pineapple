@@ -28,31 +28,31 @@ package com.alpha.pineapple.plugin.repository;
  */
 public class OperationNotSupportedException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * OperationNotSupportedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public OperationNotSupportedException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * OperationNotSupportedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public OperationNotSupportedException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * OperationNotSupportedException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public OperationNotSupportedException(String message) {
-	super(message);
-    }
+	/**
+	 * OperationNotSupportedException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public OperationNotSupportedException(String message) {
+		super(message);
+	}
 
 }

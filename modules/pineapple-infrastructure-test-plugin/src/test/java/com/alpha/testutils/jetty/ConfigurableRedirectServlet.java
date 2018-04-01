@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.testutils.jetty;
 
 import java.io.IOException;
@@ -31,20 +30,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Simple redirect servlet for testing. 
+ * Simple redirect servlet for testing.
  */
 public class ConfigurableRedirectServlet extends HttpServlet {
 
 	/**
-	 * Serial Version UID. 
+	 * Serial Version UID.
 	 */
 	static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * Location Header.
 	 */
-	public static final String LOCATION_HEADER = "Location"; 
-	
+	public static final String LOCATION_HEADER = "Location";
+
 	/**
 	 * Location where request should be redirected to.
 	 */
@@ -60,23 +59,23 @@ public class ConfigurableRedirectServlet extends HttpServlet {
 	 */
 	int redirectStatusCode;
 
-	public ConfigurableRedirectServlet(String uri, String location, int redirectStatusCode ) {
+	public ConfigurableRedirectServlet(String uri, String location, int redirectStatusCode) {
 		this.myUri = uri;
 		this.location = location;
 		this.redirectStatusCode = redirectStatusCode;
 	}
-	
+
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		StringBuffer rawUrl = request.getRequestURL();
 		int myUriIndex = rawUrl.lastIndexOf(myUri);
-		
+
 		StringBuilder newURL = new StringBuilder();
 		newURL.append(rawUrl.substring(0, myUriIndex));
-		newURL.append(location);						       
-        response.setHeader(LOCATION_HEADER,newURL.toString());
-        response.setStatus(redirectStatusCode);
-    }
-	
+		newURL.append(location);
+		response.setHeader(LOCATION_HEADER, newURL.toString());
+		response.setStatus(redirectStatusCode);
+	}
+
 }

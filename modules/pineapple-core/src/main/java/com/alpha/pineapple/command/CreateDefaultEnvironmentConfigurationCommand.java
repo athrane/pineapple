@@ -103,481 +103,480 @@ import com.alpha.pineapple.test.AssertionHelper;
  * </p>
  */
 public class CreateDefaultEnvironmentConfigurationCommand implements Command {
-    /**
-     * Index to second child result.
-     */
-    static final int SECOND_CHILD_RESULT = 1;
+	/**
+	 * Index to second child result.
+	 */
+	static final int SECOND_CHILD_RESULT = 1;
 
-    /**
-     * Index to third child result.
-     */
-    static final int THIRD_CHILD_RESULT = 2;
+	/**
+	 * Index to third child result.
+	 */
+	static final int THIRD_CHILD_RESULT = 2;
 
-    /**
-     * Environment description.
-     */
-    static final String EXALOGIC_DESC = "Environment configured according to the Exalogic Deployment Guide (E18479-07).";
+	/**
+	 * Environment description.
+	 */
+	static final String EXALOGIC_DESC = "Environment configured according to the Exalogic Deployment Guide (E18479-07).";
 
-    /**
-     * Environment description.
-     */
-    static final String DEFAULT_LINUX_DESC = "Environment to support execution of modules on a local Linux host with default values.";
+	/**
+	 * Environment description.
+	 */
+	static final String DEFAULT_LINUX_DESC = "Environment to support execution of modules on a local Linux host with default values.";
 
-    /**
-     * Environment description.
-     */
-    static final String ENTERPRISE_LINUX_DESC = "Environment to support execution of modules on a local Linux host with enterprise deployment settings.";
+	/**
+	 * Environment description.
+	 */
+	static final String ENTERPRISE_LINUX_DESC = "Environment to support execution of modules on a local Linux host with enterprise deployment settings.";
 
-    /**
-     * Environment description.
-     */
-    static final String DEFAULT_WIN_DESC = "Environment to support execution of modules on a local Windows based host with default values.";
+	/**
+	 * Environment description.
+	 */
+	static final String DEFAULT_WIN_DESC = "Environment to support execution of modules on a local Windows based host with default values.";
 
-    /**
-     * Environment description.
-     */
-    static final String ENTERPRISE_WIN_DESC = "Environment to support execution of modules on a local Windows host with enterprise deployment settings.";
+	/**
+	 * Environment description.
+	 */
+	static final String ENTERPRISE_WIN_DESC = "Environment to support execution of modules on a local Windows host with enterprise deployment settings.";
 
-    /**
-     * Environment description.
-     */
-    static final String LOCAL_DESC = "Environment to support execution of modules on a local host.";
+	/**
+	 * Environment description.
+	 */
+	static final String LOCAL_DESC = "Environment to support execution of modules on a local host.";
 
-    /**
-     * Environment description.
-     */
-    static final String WILDCARD_DESC = "Wildcard environment for definition of resources available in ALL evironments.";
+	/**
+	 * Environment description.
+	 */
+	static final String WILDCARD_DESC = "Wildcard environment for definition of resources available in ALL evironments.";
 
-    /**
-     * Environment description.
-     */
-    static final String PINEAPPLE_CI_LINUX_DESC = "Environment to for the Pineapple Continous Integration setup.";
+	/**
+	 * Environment description.
+	 */
+	static final String PINEAPPLE_CI_LINUX_DESC = "Environment to for the Pineapple Continous Integration setup.";
 
-    /**
-     * Environment description.
-     */
-    static final String VAGRANT_LINUX_DESC = "Environment to support execution of modules in a Vagrant multi-machine Linux environment.";
+	/**
+	 * Environment description.
+	 */
+	static final String VAGRANT_LINUX_DESC = "Environment to support execution of modules in a Vagrant multi-machine Linux environment.";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Defines the example modules
-     * file name.
-     */
-    public static final String EXAMPLE_MODULES_KEY = "example-modules";
+	/**
+	 * Key used to identify property in context: Defines the example modules file
+	 * name.
+	 */
+	public static final String EXAMPLE_MODULES_KEY = "example-modules";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * JAXB object factory.
-     */
-    ObjectFactory factory = new ObjectFactory();
+	/**
+	 * JAXB object factory.
+	 */
+	ObjectFactory factory = new ObjectFactory();
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Runtime directory resolver.
-     */
-    @Resource
-    RuntimeDirectoryProvider runtimeDirectoryProvider;
+	/**
+	 * Runtime directory resolver.
+	 */
+	@Resource
+	RuntimeDirectoryProvider runtimeDirectoryProvider;
 
-    /**
-     * Command facade.
-     */
-    @Resource
-    CommandFacade commandFacade;
+	/**
+	 * Command facade.
+	 */
+	@Resource
+	CommandFacade commandFacade;
 
-    /**
-     * Hamcrest asserter.
-     */
-    @Resource
-    Asserter asserter;
+	/**
+	 * Hamcrest asserter.
+	 */
+	@Resource
+	Asserter asserter;
 
-    /**
-     * Assertion helper.
-     */
-    @Resource
-    AssertionHelper assertionHelper;
+	/**
+	 * Assertion helper.
+	 */
+	@Resource
+	AssertionHelper assertionHelper;
 
-    /**
-     * Name of example modules archive.
-     */
-    @Initialize(EXAMPLE_MODULES_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    File exampleModulesFileName;
+	/**
+	 * Name of example modules archive.
+	 */
+	@Initialize(EXAMPLE_MODULES_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	File exampleModulesFileName;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// defines directories
-	File confDirectory = runtimeDirectoryProvider.getConfigurationDirectory();
-	File resourcesFile = new File(confDirectory, CoreConstants.RESOURCE_FILE);
-	File credentialsFile = new File(confDirectory, CoreConstants.CREDENTIALS_FILE);
+		// defines directories
+		File confDirectory = runtimeDirectoryProvider.getConfigurationDirectory();
+		File resourcesFile = new File(confDirectory, CoreConstants.RESOURCE_FILE);
+		File credentialsFile = new File(confDirectory, CoreConstants.CREDENTIALS_FILE);
 
-	// exit if configuration exist
-	if (validateConfigurationExist(resourcesFile, credentialsFile)) {
-	    return Command.CONTINUE_PROCESSING;
+		// exit if configuration exist
+		if (validateConfigurationExist(resourcesFile, credentialsFile)) {
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// create default resources configuration
+		Configuration resourcesConfiguration = createDefaultResourceConfiguration();
+
+		try {
+			// save resource configuration
+			commandFacade.saveJaxbObjects(resourcesFile, resourcesConfiguration, executionResult);
+
+		} catch (CommandFacadeException e) {
+			Object[] args = { resourcesFile };
+			executionResult.completeAsFailure(messageProvider, "cdecc.create_defaultresources_failed", args);
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// create default credentials configuration
+		Configuration credentialsConfiguration = createDefaultCredentialsConfiguration();
+
+		try {
+			// save credentials configuration
+			commandFacade.saveJaxbObjects(credentialsFile, credentialsConfiguration, executionResult);
+
+		} catch (CommandFacadeException e) {
+			Object[] args = { resourcesFile };
+			executionResult.completeAsFailure(messageProvider, "cdecc.create_defaultcredentials_failed", args);
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		try {
+			// copy modules
+			File modulesDirectory = runtimeDirectoryProvider.getModulesDirectory();
+			commandFacade.copyExampleModules(modulesDirectory, executionResult);
+
+		} catch (CommandFacadeException e) {
+			Object[] args = { credentialsFile };
+			executionResult.completeAsFailure(messageProvider, "cdecc.create_examplemodules_failed", args);
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// compute state
+		executionResult.completeAsComputed(messageProvider, "cdecc.succeed", null, "cdecc.failed", null);
+		return Command.CONTINUE_PROCESSING;
 	}
 
-	// create default resources configuration
-	Configuration resourcesConfiguration = createDefaultResourceConfiguration();
+	/**
+	 * Validate of configuration exist. Configuration is deemed to exist if either
+	 * the resource file or the credentials file exist.
+	 * 
+	 * @param resourcesFile
+	 *            resource file.
+	 * @param credentialsFile
+	 *            credentials file.
+	 * 
+	 * @return true if resource file or credentials file exist.
+	 */
+	boolean validateConfigurationExist(File resourcesFile, File credentialsFile) {
 
-	try {
-	    // save resource configuration
-	    commandFacade.saveJaxbObjects(resourcesFile, resourcesConfiguration, executionResult);
+		// add path info to execution result
+		String messageHeader = messageProvider.getMessage("cdecc.resources_config_info");
+		executionResult.addMessage(messageHeader, resourcesFile.getAbsolutePath());
+		// add path info to execution result
+		messageHeader = messageProvider.getMessage("cdecc.credentials_config_info");
+		executionResult.addMessage(messageHeader, credentialsFile.getAbsolutePath());
 
-	} catch (CommandFacadeException e) {
-	    Object[] args = { resourcesFile };
-	    executionResult.completeAsFailure(messageProvider, "cdecc.create_defaultresources_failed", args);
-	    return Command.CONTINUE_PROCESSING;
+		// assert resources configuration doesn't exist
+		if (doesFileExist().matches(resourcesFile)) {
+			// complete as success
+			Object[] args = { resourcesFile };
+			executionResult.completeAsSuccessful(messageProvider, "cdecc.assert_resources_config_exist_success", args);
+			return true;
+
+		}
+
+		// add message that resource doesn't exist
+		String message = messageProvider.getMessage("cdecc.assert_resources_config_exist_failure");
+		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+
+		// assert credentials configuration doesn't exists
+		if (doesFileExist().matches(credentialsFile)) {
+			// complete as success
+			Object[] args = { credentialsFile };
+			executionResult.completeAsSuccessful(messageProvider, "cdecc.assert_credentials_config_exist_success",
+					args);
+			return true;
+		}
+
+		// add message that resource doesn't exist
+		message = messageProvider.getMessage("cdecc.assert_resources_config_exist_failure");
+		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+
+		return false;
 	}
 
-	// create default credentials configuration
-	Configuration credentialsConfiguration = createDefaultCredentialsConfiguration();
+	/**
+	 * Create default resource configuration.
+	 * 
+	 * @return created default resource configuration.
+	 */
+	Configuration createDefaultResourceConfiguration() {
 
-	try {
-	    // save credentials configuration
-	    commandFacade.saveJaxbObjects(credentialsFile, credentialsConfiguration, executionResult);
+		// create configuration
+		Configuration configuration = factory.createConfiguration();
 
-	} catch (CommandFacadeException e) {
-	    Object[] args = { resourcesFile };
-	    executionResult.completeAsFailure(messageProvider, "cdecc.create_defaultcredentials_failed", args);
-	    return Command.CONTINUE_PROCESSING;
+		// create environments
+		configuration.setEnvironments(factory.createEnvironments());
+		List<Environment> environments = configuration.getEnvironments().getEnvironment();
+
+		// create local environment
+		Environment environment = createEnvironment(environments, CoreConstants.WILDCARD_ENVIRONMENT_ID, WILDCARD_DESC);
+		addInfrastructureTestResource(environment);
+		addCompositeExecutionResource(environment);
+
+		// create local environment
+		environment = createEnvironment(environments, "local", LOCAL_DESC);
+
+		// create linux-vagrant environment
+		environment = createEnvironment(environments, "linux-vagrant", VAGRANT_LINUX_DESC);
+		addSshResource(environment, "ssh-node1", "192.168.34.10", "22");
+		addSshResource(environment, "ssh-node2", "192.168.34.11", "22");
+		addSshResource(environment, "ssh-node3", "192.168.34.12", "22");
+		addDockerResource(environment, "docker-node", "192.168.34.10", "8082");
+
+		// create linux-pineapple-ci environment
+		environment = createEnvironment(environments, "linux-pineapple-ci", PINEAPPLE_CI_LINUX_DESC);
+		addSshResource(environment, "ssh-ci-node1", "192.168.99.10", "22");
+		addSshResource(environment, "ssh-ci-node2", "192.168.99.11", "22");
+		addDockerResource(environment, "docker-ci-node1", "192.168.99.10", "8082");
+		addDockerResource(environment, "docker-ci-node2", "192.168.99.11", "8082");
+		return configuration;
 	}
 
-	try {
-	    // copy modules
-	    File modulesDirectory = runtimeDirectoryProvider.getModulesDirectory();
-	    commandFacade.copyExampleModules(modulesDirectory, executionResult);
-
-	} catch (CommandFacadeException e) {
-	    Object[] args = { credentialsFile };
-	    executionResult.completeAsFailure(messageProvider, "cdecc.create_examplemodules_failed", args);
-	    return Command.CONTINUE_PROCESSING;
+	/**
+	 * Create environment
+	 * 
+	 * @param environments
+	 *            Environments container.
+	 * @param id
+	 *            Environment id.
+	 * @param desc
+	 *            Environment description.
+	 * @return Created environment.
+	 */
+	Environment createEnvironment(List<Environment> environments, String id, String desc) {
+		Environment environment = factory.createEnvironment();
+		environment.setId(id);
+		environment.setDescription(desc);
+		environment.setResources(factory.createResources());
+		environments.add(environment);
+		return environment;
 	}
 
-	// compute state
-	executionResult.completeAsComputed(messageProvider, "cdecc.succeed", null, "cdecc.failed", null);
-	return Command.CONTINUE_PROCESSING;
-    }
-
-    /**
-     * Validate of configuration exist. Configuration is deemed to exist if
-     * either the resource file or the credentials file exist.
-     * 
-     * @param resourcesFile
-     *            resource file.
-     * @param credentialsFile
-     *            credentials file.
-     * 
-     * @return true if resource file or credentials file exist.
-     */
-    boolean validateConfigurationExist(File resourcesFile, File credentialsFile) {
-
-	// add path info to execution result
-	String messageHeader = messageProvider.getMessage("cdecc.resources_config_info");
-	executionResult.addMessage(messageHeader, resourcesFile.getAbsolutePath());
-	// add path info to execution result
-	messageHeader = messageProvider.getMessage("cdecc.credentials_config_info");
-	executionResult.addMessage(messageHeader, credentialsFile.getAbsolutePath());
-
-	// assert resources configuration doesn't exist
-	if (doesFileExist().matches(resourcesFile)) {
-	    // complete as success
-	    Object[] args = { resourcesFile };
-	    executionResult.completeAsSuccessful(messageProvider, "cdecc.assert_resources_config_exist_success", args);
-	    return true;
-
+	/**
+	 * Create resource for composite execution plugin.
+	 * 
+	 * @param environment
+	 *            Environment where resource is added to.
+	 */
+	void addCompositeExecutionResource(Environment environment) {
+		com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
+		resource.setId("composite-execution");
+		resource.setPluginId("com.alpha.pineapple.plugin.composite.execution");
+		environment.getResources().getResource().add(resource);
 	}
 
-	// add message that resource doesn't exist
-	String message = messageProvider.getMessage("cdecc.assert_resources_config_exist_failure");
-	executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-
-	// assert credentials configuration doesn't exists
-	if (doesFileExist().matches(credentialsFile)) {
-	    // complete as success
-	    Object[] args = { credentialsFile };
-	    executionResult.completeAsSuccessful(messageProvider, "cdecc.assert_credentials_config_exist_success",
-		    args);
-	    return true;
+	/**
+	 * Create resource for infrastructure test plugin.
+	 * 
+	 * @param environment
+	 *            Environment where resource is added to.
+	 */
+	void addInfrastructureTestResource(Environment environment) {
+		com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
+		resource.setId("infrastructure-test");
+		resource.setPluginId("com.alpha.pineapple.plugin.net");
+		environment.getResources().getResource().add(resource);
 	}
 
-	// add message that resource doesn't exist
-	message = messageProvider.getMessage("cdecc.assert_resources_config_exist_failure");
-	executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-
-	return false;
-    }
-
-    /**
-     * Create default resource configuration.
-     * 
-     * @return created default resource configuration.
-     */
-    Configuration createDefaultResourceConfiguration() {
-
-	// create configuration
-	Configuration configuration = factory.createConfiguration();
-
-	// create environments
-	configuration.setEnvironments(factory.createEnvironments());
-	List<Environment> environments = configuration.getEnvironments().getEnvironment();
-
-	// create local environment
-	Environment environment = createEnvironment(environments, CoreConstants.WILDCARD_ENVIRONMENT_ID, WILDCARD_DESC);
-	addInfrastructureTestResource(environment);
-	addCompositeExecutionResource(environment);
-
-	// create local environment
-	environment = createEnvironment(environments, "local", LOCAL_DESC);
-
-	// create linux-vagrant environment
-	environment = createEnvironment(environments, "linux-vagrant", VAGRANT_LINUX_DESC);
-	addSshResource(environment, "ssh-node1", "192.168.34.10", "22");
-	addSshResource(environment, "ssh-node2", "192.168.34.11", "22");
-	addSshResource(environment, "ssh-node3", "192.168.34.12", "22");
-	addDockerResource(environment, "docker-node", "192.168.34.10", "8082");
-
-	// create linux-pineapple-ci environment
-	environment = createEnvironment(environments, "linux-pineapple-ci", PINEAPPLE_CI_LINUX_DESC);
-	addSshResource(environment, "ssh-ci-node1", "192.168.99.10", "22");
-	addSshResource(environment, "ssh-ci-node2", "192.168.99.11", "22");
-	addDockerResource(environment, "docker-ci-node1", "192.168.99.10", "8082");
-	addDockerResource(environment, "docker-ci-node2", "192.168.99.11", "8082");
-	return configuration;
-    }
-
-    /**
-     * Create environment
-     * 
-     * @param environments
-     *            Environments container.
-     * @param id
-     *            Environment id.
-     * @param desc
-     *            Environment description.
-     * @return Created environment.
-     */
-    Environment createEnvironment(List<Environment> environments, String id, String desc) {
-	Environment environment = factory.createEnvironment();
-	environment.setId(id);
-	environment.setDescription(desc);
-	environment.setResources(factory.createResources());
-	environments.add(environment);
-	return environment;
-    }
-
-    /**
-     * Create resource for composite execution plugin.
-     * 
-     * @param environment
-     *            Environment where resource is added to.
-     */
-    void addCompositeExecutionResource(Environment environment) {
-	com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
-	resource.setId("composite-execution");
-	resource.setPluginId("com.alpha.pineapple.plugin.composite.execution");
-	environment.getResources().getResource().add(resource);
-    }
-
-    /**
-     * Create resource for infrastructure test plugin.
-     * 
-     * @param environment
-     *            Environment where resource is added to.
-     */
-    void addInfrastructureTestResource(Environment environment) {
-	com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
-	resource.setId("infrastructure-test");
-	resource.setPluginId("com.alpha.pineapple.plugin.net");
-	environment.getResources().getResource().add(resource);
-    }
-
-    /**
-     * Create resource for SSH plugin.
-     * 
-     * @param environment
-     *            Environment where resource is added to.
-     * @param id
-     *            Resource ID.
-     * @param host
-     *            SSH host.
-     * @param port
-     *            SSH port.
-     */
-    void addSshResource(Environment environment, String id, String host, String port) {
-	com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
-	resource.setId(id);
-	resource.setPluginId("com.alpha.pineapple.plugin.ssh");
-	resource.setCredentialIdRef(id);
-	environment.getResources().getResource().add(resource);
-	HashMap<String, String> properties = new HashMap<String, String>();
-	properties.put("host", host);
-	properties.put("port", port);
-	properties.put("timeout", "1000");
-	addProperties(properties, resource);
-    }
-
-    /**
-     * Create resource for Agent plugin.
-     * 
-     * @param environment
-     *            Environment where resource is added to.
-     * @param id
-     *            Resource ID.
-     * @param host
-     *            agent host.
-     * @param port
-     *            agent port.
-     */
-    void addAgentResource(Environment environment, String id, String host, String port) {
-	com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
-	resource.setId(id);
-	resource.setPluginId("com.alpha.pineapple.plugin.agent");
-	environment.getResources().getResource().add(resource);
-	HashMap<String, String> properties = new HashMap<String, String>();
-	properties.put("host", host);
-	properties.put("port", port);
-	properties.put("timeout", "30000");
-	addProperties(properties, resource);
-    }
-
-    /**
-     * Create resource for Docker plugin.
-     * 
-     * @param environment
-     *            Environment where resource is added to.
-     * @param id
-     *            Resource ID.
-     * @param host
-     *            Docker daemon host.
-     * @param port
-     *            Docker daemon port.
-     */
-    void addDockerResource(Environment environment, String id, String host, String port) {
-	com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
-	resource.setId(id);
-	resource.setPluginId("com.alpha.pineapple.plugin.docker");
-	environment.getResources().getResource().add(resource);
-	HashMap<String, String> properties = new HashMap<String, String>();
-	properties.put("host", host);
-	properties.put("port", port);
-	properties.put("timeout", "5000");
-	addProperties(properties, resource);
-    }
-
-    /**
-     * Create default credentials configuration.
-     * 
-     * @return created default credentials configuration.
-     */
-    Configuration createDefaultCredentialsConfiguration() {
-
-	// create configuration
-	Configuration configuration = factory.createConfiguration();
-
-	// create environments
-	configuration.setEnvironments(factory.createEnvironments());
-	List<Environment> environments = configuration.getEnvironments().getEnvironment();
-
-	// create local environment
-	Environment environment = createCredentialEnvironment(environments, "local", LOCAL_DESC);
-
-	// create linux-vagrant environment
-	environment = createCredentialEnvironment(environments, "linux-vagrant", VAGRANT_LINUX_DESC);
-	addSshCredential(environment, "ssh-node1");
-	addSshCredential(environment, "ssh-node2");
-	addSshCredential(environment, "ssh-node3");
-
-	// create linux-pineapple-ci environment
-	environment = createCredentialEnvironment(environments, "linux-pineapple-ci", PINEAPPLE_CI_LINUX_DESC);
-	addSshCredential(environment, "ssh-ci-node1");
-	addSshCredential(environment, "ssh-ci-node2");
-	return configuration;
-    }
-
-    /**
-     * Create environment for credentials.
-     * 
-     * @param environments
-     *            Environments container.
-     * @param id
-     *            Environment id.
-     * @param desc
-     *            Environment description.
-     * @return Created environment.
-     */
-    Environment createCredentialEnvironment(List<Environment> environments, String id, String desc) {
-	Environment environment = factory.createEnvironment();
-	environment.setId(id);
-	environment.setDescription(desc);
-	environment.setCredentials(factory.createCredentials());
-	environments.add(environment);
-	return environment;
-    }
-
-    /**
-     * Add credential for SSH plugin.
-     * 
-     * @param environment
-     *            Environment where credential is added to.
-     * @param id
-     *            Resource ID.
-     */
-    void addSshCredential(Environment environment, String id) {
-	Credential credential = factory.createCredential();
-	credential.setId(id);
-	credential.setUser("vagrant");
-	credential.setPassword("vagrant");
-	environment.getCredentials().getCredential().add(credential);
-    }
-
-    /**
-     * Add properties to resource.
-     * 
-     * @param properties
-     *            Hash map containing properties which is added to resource .
-     * @param resource
-     *            Target resource.
-     */
-    void addProperties(HashMap<String, String> properties, com.alpha.pineapple.model.configuration.Resource resource) {
-	// get properties
-	List<Property> resourceProps = resource.getProperty();
-
-	// map properties to resource properties
-	Set<String> keys = properties.keySet();
-	for (String key : keys) {
-	    String value = properties.get(key);
-
-	    // create new property
-	    Property resourceProp = new Property();
-	    resourceProp.setKey(key);
-	    resourceProp.setValue(value);
-
-	    // store property
-	    resourceProps.add(resourceProp);
+	/**
+	 * Create resource for SSH plugin.
+	 * 
+	 * @param environment
+	 *            Environment where resource is added to.
+	 * @param id
+	 *            Resource ID.
+	 * @param host
+	 *            SSH host.
+	 * @param port
+	 *            SSH port.
+	 */
+	void addSshResource(Environment environment, String id, String host, String port) {
+		com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
+		resource.setId(id);
+		resource.setPluginId("com.alpha.pineapple.plugin.ssh");
+		resource.setCredentialIdRef(id);
+		environment.getResources().getResource().add(resource);
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put("host", host);
+		properties.put("port", port);
+		properties.put("timeout", "1000");
+		addProperties(properties, resource);
 	}
-    }
+
+	/**
+	 * Create resource for Agent plugin.
+	 * 
+	 * @param environment
+	 *            Environment where resource is added to.
+	 * @param id
+	 *            Resource ID.
+	 * @param host
+	 *            agent host.
+	 * @param port
+	 *            agent port.
+	 */
+	void addAgentResource(Environment environment, String id, String host, String port) {
+		com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
+		resource.setId(id);
+		resource.setPluginId("com.alpha.pineapple.plugin.agent");
+		environment.getResources().getResource().add(resource);
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put("host", host);
+		properties.put("port", port);
+		properties.put("timeout", "30000");
+		addProperties(properties, resource);
+	}
+
+	/**
+	 * Create resource for Docker plugin.
+	 * 
+	 * @param environment
+	 *            Environment where resource is added to.
+	 * @param id
+	 *            Resource ID.
+	 * @param host
+	 *            Docker daemon host.
+	 * @param port
+	 *            Docker daemon port.
+	 */
+	void addDockerResource(Environment environment, String id, String host, String port) {
+		com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
+		resource.setId(id);
+		resource.setPluginId("com.alpha.pineapple.plugin.docker");
+		environment.getResources().getResource().add(resource);
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put("host", host);
+		properties.put("port", port);
+		properties.put("timeout", "5000");
+		addProperties(properties, resource);
+	}
+
+	/**
+	 * Create default credentials configuration.
+	 * 
+	 * @return created default credentials configuration.
+	 */
+	Configuration createDefaultCredentialsConfiguration() {
+
+		// create configuration
+		Configuration configuration = factory.createConfiguration();
+
+		// create environments
+		configuration.setEnvironments(factory.createEnvironments());
+		List<Environment> environments = configuration.getEnvironments().getEnvironment();
+
+		// create local environment
+		Environment environment = createCredentialEnvironment(environments, "local", LOCAL_DESC);
+
+		// create linux-vagrant environment
+		environment = createCredentialEnvironment(environments, "linux-vagrant", VAGRANT_LINUX_DESC);
+		addSshCredential(environment, "ssh-node1");
+		addSshCredential(environment, "ssh-node2");
+		addSshCredential(environment, "ssh-node3");
+
+		// create linux-pineapple-ci environment
+		environment = createCredentialEnvironment(environments, "linux-pineapple-ci", PINEAPPLE_CI_LINUX_DESC);
+		addSshCredential(environment, "ssh-ci-node1");
+		addSshCredential(environment, "ssh-ci-node2");
+		return configuration;
+	}
+
+	/**
+	 * Create environment for credentials.
+	 * 
+	 * @param environments
+	 *            Environments container.
+	 * @param id
+	 *            Environment id.
+	 * @param desc
+	 *            Environment description.
+	 * @return Created environment.
+	 */
+	Environment createCredentialEnvironment(List<Environment> environments, String id, String desc) {
+		Environment environment = factory.createEnvironment();
+		environment.setId(id);
+		environment.setDescription(desc);
+		environment.setCredentials(factory.createCredentials());
+		environments.add(environment);
+		return environment;
+	}
+
+	/**
+	 * Add credential for SSH plugin.
+	 * 
+	 * @param environment
+	 *            Environment where credential is added to.
+	 * @param id
+	 *            Resource ID.
+	 */
+	void addSshCredential(Environment environment, String id) {
+		Credential credential = factory.createCredential();
+		credential.setId(id);
+		credential.setUser("vagrant");
+		credential.setPassword("vagrant");
+		environment.getCredentials().getCredential().add(credential);
+	}
+
+	/**
+	 * Add properties to resource.
+	 * 
+	 * @param properties
+	 *            Hash map containing properties which is added to resource .
+	 * @param resource
+	 *            Target resource.
+	 */
+	void addProperties(HashMap<String, String> properties, com.alpha.pineapple.model.configuration.Resource resource) {
+		// get properties
+		List<Property> resourceProps = resource.getProperty();
+
+		// map properties to resource properties
+		Set<String> keys = properties.keySet();
+		for (String key : keys) {
+			String value = properties.get(key);
+
+			// create new property
+			Property resourceProp = new Property();
+			resourceProp.setKey(key);
+			resourceProp.setValue(value);
+
+			// store property
+			resourceProps.add(resourceProp);
+		}
+	}
 
 }

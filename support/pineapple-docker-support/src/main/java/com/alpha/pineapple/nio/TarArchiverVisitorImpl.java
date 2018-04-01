@@ -43,127 +43,127 @@ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
  */
 public class TarArchiverVisitorImpl extends SimpleFileVisitor<Path> {
 
-    /**
-     * Constant used to query whether OS supports a POSIX compliant view of the
-     * file system.
-     */
-    static final String POSIX_FILE_VIEW = "posix";
+	/**
+	 * Constant used to query whether OS supports a POSIX compliant view of the file
+	 * system.
+	 */
+	static final String POSIX_FILE_VIEW = "posix";
 
-    /**
-     * Root directory where traversal starts.
-     */
-    Path rootDirectory;
+	/**
+	 * Root directory where traversal starts.
+	 */
+	Path rootDirectory;
 
-    /**
-     * TAR archive where files are added to.
-     */
-    TarArchiveOutputStream tarOutStream;
+	/**
+	 * TAR archive where files are added to.
+	 */
+	TarArchiveOutputStream tarOutStream;
 
-    /**
-     * TarArchiverVisitorImpl constructor.
-     * 
-     * @param rootDirectory
-     *            root directory which is compressed.
-     * @param tarOutStream
-     *            TAR archive as stream.
-     */
-    public TarArchiverVisitorImpl(File rootDirectory, TarArchiveOutputStream tarOutStream) {
-	this.rootDirectory = rootDirectory.toPath();
-	this.tarOutStream = tarOutStream;
-    }
+	/**
+	 * TarArchiverVisitorImpl constructor.
+	 * 
+	 * @param rootDirectory
+	 *            root directory which is compressed.
+	 * @param tarOutStream
+	 *            TAR archive as stream.
+	 */
+	public TarArchiverVisitorImpl(File rootDirectory, TarArchiveOutputStream tarOutStream) {
+		this.rootDirectory = rootDirectory.toPath();
+		this.tarOutStream = tarOutStream;
+	}
 
-    @Override
-    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+	@Override
+	public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 
-	// create TAR entry
-	TarArchiveEntry entry = new TarArchiveEntry(file.toFile());
-	Path relativePath = rootDirectory.relativize(file);
-	entry.setName(relativePath.toString());
-	entry.setMode(getFileMode(file));
-	entry.setSize(attrs.size());
-	tarOutStream.putArchiveEntry(entry);
-	Files.copy(file, tarOutStream);
+		// create TAR entry
+		TarArchiveEntry entry = new TarArchiveEntry(file.toFile());
+		Path relativePath = rootDirectory.relativize(file);
+		entry.setName(relativePath.toString());
+		entry.setMode(getFileMode(file));
+		entry.setSize(attrs.size());
+		tarOutStream.putArchiveEntry(entry);
+		Files.copy(file, tarOutStream);
 
-	// close entry
-	tarOutStream.closeArchiveEntry();
-	return FileVisitResult.CONTINUE;
-    }
+		// close entry
+		tarOutStream.closeArchiveEntry();
+		return FileVisitResult.CONTINUE;
+	}
 
-    /**
-     * Return file permissions.
-     * 
-     * If file system is POSIX compliant then the permission
-     * 
-     * @param file
-     * @return
-     * @throws IOException
-     */
-    int getFileMode(Path file) throws IOException {
-	if (isPosixComplantFileSystem())
-	    return getPosixFileMode(file);
-	return TarArchiveEntry.DEFAULT_FILE_MODE;
-    }
+	/**
+	 * Return file permissions.
+	 * 
+	 * If file system is POSIX compliant then the permission
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	int getFileMode(Path file) throws IOException {
+		if (isPosixComplantFileSystem())
+			return getPosixFileMode(file);
+		return TarArchiveEntry.DEFAULT_FILE_MODE;
+	}
 
-    /**
-     * Returns true if file system support POSIX compliant view.
-     * 
-     * @return true if file system support POSIX compliant view.
-     */
-    boolean isPosixComplantFileSystem() {
-	FileSystem fileSystem = FileSystems.getDefault();
-	return fileSystem.supportedFileAttributeViews().contains(POSIX_FILE_VIEW);
-    }
+	/**
+	 * Returns true if file system support POSIX compliant view.
+	 * 
+	 * @return true if file system support POSIX compliant view.
+	 */
+	boolean isPosixComplantFileSystem() {
+		FileSystem fileSystem = FileSystems.getDefault();
+		return fileSystem.supportedFileAttributeViews().contains(POSIX_FILE_VIEW);
+	}
 
-    /**
-     * Calculate POSIX permissions for file.
-     * 
-     * @param file
-     *            to calculate permissions for.
-     * 
-     * @return permission for file.
-     * 
-     * @throws IOException
-     *             calculation of file permission fails.
-     */
-    int getPosixFileMode(Path file) throws IOException {
-	final PosixFileAttributes attr = Files.readAttributes(file, PosixFileAttributes.class);
-	final Set<PosixFilePermission> perm = attr.permissions();
+	/**
+	 * Calculate POSIX permissions for file.
+	 * 
+	 * @param file
+	 *            to calculate permissions for.
+	 * 
+	 * @return permission for file.
+	 * 
+	 * @throws IOException
+	 *             calculation of file permission fails.
+	 */
+	int getPosixFileMode(Path file) throws IOException {
+		final PosixFileAttributes attr = Files.readAttributes(file, PosixFileAttributes.class);
+		final Set<PosixFilePermission> perm = attr.permissions();
 
-	// retain file permissions. Values are octal.
-	int mode = 0100000;
-	mode += 0100 * getModeFromPermissions(perm.contains(PosixFilePermission.OWNER_READ),
-		perm.contains(PosixFilePermission.OWNER_WRITE), perm.contains(PosixFilePermission.OWNER_EXECUTE));
+		// retain file permissions. Values are octal.
+		int mode = 0100000;
+		mode += 0100 * getModeFromPermissions(perm.contains(PosixFilePermission.OWNER_READ),
+				perm.contains(PosixFilePermission.OWNER_WRITE), perm.contains(PosixFilePermission.OWNER_EXECUTE));
 
-	mode += 010 * getModeFromPermissions(perm.contains(PosixFilePermission.GROUP_READ),
-		perm.contains(PosixFilePermission.GROUP_WRITE), perm.contains(PosixFilePermission.GROUP_EXECUTE));
+		mode += 010 * getModeFromPermissions(perm.contains(PosixFilePermission.GROUP_READ),
+				perm.contains(PosixFilePermission.GROUP_WRITE), perm.contains(PosixFilePermission.GROUP_EXECUTE));
 
-	mode += getModeFromPermissions(perm.contains(PosixFilePermission.OTHERS_READ),
-		perm.contains(PosixFilePermission.OTHERS_WRITE), perm.contains(PosixFilePermission.OTHERS_EXECUTE));
+		mode += getModeFromPermissions(perm.contains(PosixFilePermission.OTHERS_READ),
+				perm.contains(PosixFilePermission.OTHERS_WRITE), perm.contains(PosixFilePermission.OTHERS_EXECUTE));
 
-	return mode;
-    }
+		return mode;
+	}
 
-    /**
-     * Calculate permission mode from file permissions.
-     * 
-     * @param read
-     *            read flag.
-     * @param write
-     *            write flag.
-     * @param execute
-     *            execute flag.
-     * 
-     * @return permission mode.
-     */
-    int getModeFromPermissions(boolean read, boolean write, boolean execute) {
-	int result = 0;
-	if (read)
-	    result += 4;
-	if (write)
-	    result += 2;
-	if (execute)
-	    result += 1;
-	return result;
-    }
+	/**
+	 * Calculate permission mode from file permissions.
+	 * 
+	 * @param read
+	 *            read flag.
+	 * @param write
+	 *            write flag.
+	 * @param execute
+	 *            execute flag.
+	 * 
+	 * @return permission mode.
+	 */
+	int getModeFromPermissions(boolean read, boolean write, boolean execute) {
+		int result = 0;
+		if (read)
+			result += 4;
+		if (write)
+			result += 2;
+		if (execute)
+			result += 1;
+		return result;
+	}
 
 }

@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.report.basichtml;
 
 import java.io.File;
@@ -31,18 +30,19 @@ import java.io.File;
 public interface ReportGeneratorInfo {
 
 	/**
-	 * Returns the directory where the last report was created in. 
+	 * Returns the directory where the last report was created in.
 	 * 
-	 * @return the directory where the last report was created in. The method
-	 * can return if the report generation failed.
+	 * @return the directory where the last report was created in. The method can
+	 *         return if the report generation failed.
 	 */
 	public File getCurrentReportDirectory();
-	
+
 	/**
-	 * Set report root directory. 
+	 * Set report root directory.
 	 * 
-	 * @param reportDirectory The report root directory.
-	 */	
+	 * @param reportDirectory
+	 *            The report root directory.
+	 */
 	public void setReportDirectory(File reportDirectory);
-	
+
 }

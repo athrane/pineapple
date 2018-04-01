@@ -47,18 +47,18 @@ public class PortMapMapAdapter extends XmlAdapter<PortMap, PortMapMap> {
 	public PortMap marshal(PortMapMap map) throws Exception {
 		PortMap ports = objectFactory.createPortMap();
 		Set<Entry<String, PortBinding[]>> entries = map.entrySet();
-		for(Entry<String, PortBinding[]> entry :entries) {
+		for (Entry<String, PortBinding[]> entry : entries) {
 			PortMapElement element = objectFactory.createPortMapElement();
 			element.setPort(entry.getKey());
 			List<PortBinding> bindingList = element.getBinding();
-			
+
 			// add values in array
-			for ( PortBinding binding : entry.getValue()) {
+			for (PortBinding binding : entry.getValue()) {
 				bindingList.add(binding);
 			}
-			
+
 		}
-		
+
 		return ports;
 	}
 

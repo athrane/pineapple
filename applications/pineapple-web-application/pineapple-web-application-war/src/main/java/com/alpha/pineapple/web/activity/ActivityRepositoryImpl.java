@@ -48,124 +48,124 @@ import com.alpha.pineapple.web.model.WebApplication;
  */
 public class ActivityRepositoryImpl implements ActivityRepository {
 
-    /**
-     * First list index.
-     */
-    static final int FIRST_INDEX = 0;
+	/**
+	 * First list index.
+	 */
+	static final int FIRST_INDEX = 0;
 
-    /**
-     * Logger object
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider webMessageProvider;
 
-    /**
-     * Web application object factory.
-     */
-    @Resource
-    ObjectFactory webAppObjectFactory;
+	/**
+	 * Web application object factory.
+	 */
+	@Resource
+	ObjectFactory webAppObjectFactory;
 
-    /**
-     * Web application state.
-     */
-    WebApplication appState;
+	/**
+	 * Web application state.
+	 */
+	WebApplication appState;
 
-    @Override
-    public void initialize() {
-	appState = webAppObjectFactory.createWebApplication();
-	appState.setActivities(webAppObjectFactory.createActivitiesSequence());
-    }
+	@Override
+	public void initialize() {
+		appState = webAppObjectFactory.createWebApplication();
+		appState.setActivities(webAppObjectFactory.createActivitiesSequence());
+	}
 
-    @Override
-    public void addOpenModuleActivity(Account account, String module) {
-	Validate.notNull(account, "account is undefined");
-	Validate.notNull(module, "module is undefined");
-	Validate.notEmpty(module, "module is empty");
+	@Override
+	public void addOpenModuleActivity(Account account, String module) {
+		Validate.notNull(account, "account is undefined");
+		Validate.notNull(module, "module is undefined");
+		Validate.notEmpty(module, "module is empty");
 
-	// initialize info
-	ActivityInfo info = webAppObjectFactory.createActivityInfo();
-	setStartTime(info);
-	info.setUser(account.getUsername());
-	Object[] args = { account.getUsername(), module };
-	String message = webMessageProvider.getMessage("ari.activity_open_module_info", args);
-	info.setDescription(message);
+		// initialize info
+		ActivityInfo info = webAppObjectFactory.createActivityInfo();
+		setStartTime(info);
+		info.setUser(account.getUsername());
+		Object[] args = { account.getUsername(), module };
+		String message = webMessageProvider.getMessage("ari.activity_open_module_info", args);
+		info.setDescription(message);
 
-	// initialize activity
-	OpenModuleActivity activity = webAppObjectFactory.createOpenModuleActivity();
-	activity.setInfo(info);
-	activity.setModule(module);
-	List<Activity> activitiesList = appState.getActivities().getActivities();
-	activitiesList.add(FIRST_INDEX, activity);
-    }
+		// initialize activity
+		OpenModuleActivity activity = webAppObjectFactory.createOpenModuleActivity();
+		activity.setInfo(info);
+		activity.setModule(module);
+		List<Activity> activitiesList = appState.getActivities().getActivities();
+		activitiesList.add(FIRST_INDEX, activity);
+	}
 
-    @Override
-    public void addRefreshConfigurationActivity(Account account) {
-	Validate.notNull(account, "account is undefined");
+	@Override
+	public void addRefreshConfigurationActivity(Account account) {
+		Validate.notNull(account, "account is undefined");
 
-	// initialize info
-	ActivityInfo info = webAppObjectFactory.createActivityInfo();
-	setStartTime(info);
-	info.setUser(account.getUsername());
-	Object[] args = { account.getUsername() };
-	String message = webMessageProvider.getMessage("ari.activity_refresh_configuration_info", args);
-	info.setDescription(message);
+		// initialize info
+		ActivityInfo info = webAppObjectFactory.createActivityInfo();
+		setStartTime(info);
+		info.setUser(account.getUsername());
+		Object[] args = { account.getUsername() };
+		String message = webMessageProvider.getMessage("ari.activity_refresh_configuration_info", args);
+		info.setDescription(message);
 
-	// initialize activity
-	RefreshConfigurationActivity activity = webAppObjectFactory.createRefreshConfigurationActivity();
-	activity.setInfo(info);
-	List<Activity> activitiesList = appState.getActivities().getActivities();
-	activitiesList.add(FIRST_INDEX, activity);
-    }
+		// initialize activity
+		RefreshConfigurationActivity activity = webAppObjectFactory.createRefreshConfigurationActivity();
+		activity.setInfo(info);
+		List<Activity> activitiesList = appState.getActivities().getActivities();
+		activitiesList.add(FIRST_INDEX, activity);
+	}
 
-    @Override
-    public void addExecuteOperationActivity(Account account, String module, String operation, String environment) {
-	Validate.notNull(account, "account is undefined");
-	Validate.notNull(module, "module is undefined");
-	Validate.notEmpty(module, "module is empty");
-	Validate.notNull(operation, "operation is undefined");
-	Validate.notEmpty(operation, "operation is empty");
-	Validate.notNull(environment, "environment is undefined");
-	Validate.notEmpty(environment, "environment is empty");
+	@Override
+	public void addExecuteOperationActivity(Account account, String module, String operation, String environment) {
+		Validate.notNull(account, "account is undefined");
+		Validate.notNull(module, "module is undefined");
+		Validate.notEmpty(module, "module is empty");
+		Validate.notNull(operation, "operation is undefined");
+		Validate.notEmpty(operation, "operation is empty");
+		Validate.notNull(environment, "environment is undefined");
+		Validate.notEmpty(environment, "environment is empty");
 
-	// initialize info
-	ActivityInfo info = webAppObjectFactory.createActivityInfo();
-	setStartTime(info);
-	info.setUser(account.getUsername());
-	Object[] args = { account.getUsername(), operation, module, environment };
-	String message = webMessageProvider.getMessage("ari.activity_execute_operation_info", args);
-	info.setDescription(message);
+		// initialize info
+		ActivityInfo info = webAppObjectFactory.createActivityInfo();
+		setStartTime(info);
+		info.setUser(account.getUsername());
+		Object[] args = { account.getUsername(), operation, module, environment };
+		String message = webMessageProvider.getMessage("ari.activity_execute_operation_info", args);
+		info.setDescription(message);
 
-	// initialize activity
-	ExecuteOperationActivity activity = webAppObjectFactory.createExecuteOperationActivity();
-	activity.setInfo(info);
-	activity.setModule(module);
-	activity.setOperation(operation);
-	activity.setEnvironment(environment);
-	List<Activity> activitiesList = appState.getActivities().getActivities();
-	activitiesList.add(FIRST_INDEX, activity);
-    }
+		// initialize activity
+		ExecuteOperationActivity activity = webAppObjectFactory.createExecuteOperationActivity();
+		activity.setInfo(info);
+		activity.setModule(module);
+		activity.setOperation(operation);
+		activity.setEnvironment(environment);
+		List<Activity> activitiesList = appState.getActivities().getActivities();
+		activitiesList.add(FIRST_INDEX, activity);
+	}
 
-    @Override
-    public Activity[] getActivities() {
-	List<Activity> activitiesList = appState.getActivities().getActivities();
-	Activity[] array = activitiesList.toArray(new Activity[activitiesList.size()]);
-	return array;
-    }
+	@Override
+	public Activity[] getActivities() {
+		List<Activity> activitiesList = appState.getActivities().getActivities();
+		Activity[] array = activitiesList.toArray(new Activity[activitiesList.size()]);
+		return array;
+	}
 
-    /**
-     * Add the start time and date to the activity info object.
-     * 
-     * @param info
-     *            activity info object
-     */
-    void setStartTime(ActivityInfo info) {
-	Date now = new Date();
-	info.setStartTime(SIMPLE_DATE_FORMAT.format(now));
-    }
+	/**
+	 * Add the start time and date to the activity info object.
+	 * 
+	 * @param info
+	 *            activity info object
+	 */
+	void setStartTime(ActivityInfo info) {
+		Date now = new Date();
+		info.setStartTime(SIMPLE_DATE_FORMAT.format(now));
+	}
 
 }

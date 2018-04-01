@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import java.io.File;
@@ -41,41 +40,42 @@ public class DoesDirectoryExist extends TypeSafeMatcher<File> {
 	File lastDirectory;
 
 	public boolean matchesSafely(File directory) {
-	
+
 		// store directory
 		lastDirectory = directory;
-		
-        // test whether directory exists 
-        if (!directory.exists()) return false;		
-        if (!directory.isDirectory()) return false;
-        return true;
+
+		// test whether directory exists
+		if (!directory.exists())
+			return false;
+		if (!directory.isDirectory())
+			return false;
+		return true;
 	}
 
 	public void describeTo(Description description) {
-		 
+
 		description.appendText("directory ");
-		
-		if(lastDirectory != null ) {
+
+		if (lastDirectory != null) {
 			description.appendValue(lastDirectory);
 			description.appendText(" ");
 		}
-		
+
 		description.appendText("exists");
 	}
-	
-	
-    @Override
+
+	@Override
 	protected void describeMismatchSafely(File file, Description mismatchDescription) {
-    	        
-        // create description
-    	mismatchDescription.appendText("directory ");    	
-    	mismatchDescription.appendValue(file);
-    	mismatchDescription.appendText(" doesn't exist");
+
+		// create description
+		mismatchDescription.appendText("directory ");
+		mismatchDescription.appendValue(file);
+		mismatchDescription.appendText(" doesn't exist");
 	}
 
 	@Factory
-    public static Matcher<File> doesDirectoryExist() {
-        return new DoesDirectoryExist();
-    }
-    
+	public static Matcher<File> doesDirectoryExist() {
+		return new DoesDirectoryExist();
+	}
+
 }

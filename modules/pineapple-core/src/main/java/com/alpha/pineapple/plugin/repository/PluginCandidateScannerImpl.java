@@ -48,97 +48,97 @@ import com.alpha.pineapple.plugin.PluginInitializationFailedException;
  */
 public class PluginCandidateScannerImpl implements PluginCandidateScanner {
 
-    /**
-     * Disable default filters during Spring component scan.
-     */
-    static final boolean DISABLE_DEFAULT_FILTERS = false;
+	/**
+	 * Disable default filters during Spring component scan.
+	 */
+	static final boolean DISABLE_DEFAULT_FILTERS = false;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Plugin name generator
-     */
-    @Resource
-    BeanNameGenerator pluginNameGenerator;
+	/**
+	 * Plugin name generator
+	 */
+	@Resource
+	BeanNameGenerator pluginNameGenerator;
 
-    public ApplicationContext scanForPlugins(String[] pluginIds) throws PluginInitializationFailedException {
+	public ApplicationContext scanForPlugins(String[] pluginIds) throws PluginInitializationFailedException {
 
-	// validate parameters
-	Validate.notNull(pluginIds, "pluginIds is undefined.");
+		// validate parameters
+		Validate.notNull(pluginIds, "pluginIds is undefined.");
 
-	try {
-	    // get class loader
-	    ClassLoader classLoader = this.getClass().getClassLoader();
+		try {
+			// get class loader
+			ClassLoader classLoader = this.getClass().getClassLoader();
 
-	    // iterate over the plugin id's
-	    for (String pluginId : pluginIds) {
-		// log debug message
-		if (logger.isDebugEnabled()) {
-		    Object[] args = { pluginId };
-		    String message = messageProvider.getMessage("pcs.plugin_scan_start", args);
-		    logger.debug(message);
+			// iterate over the plugin id's
+			for (String pluginId : pluginIds) {
+				// log debug message
+				if (logger.isDebugEnabled()) {
+					Object[] args = { pluginId };
+					String message = messageProvider.getMessage("pcs.plugin_scan_start", args);
+					logger.debug(message);
+				}
+
+				// replace dots .. with forward slashes
+				String preparedPluginId = StringUtils.replaceChars(pluginId, '.', '/');
+
+				// resolve plugin id with class loader
+				Enumeration<URL> classLoaderResult = classLoader.getResources(preparedPluginId);
+
+				// log debug message
+				if (logger.isDebugEnabled()) {
+					Object[] args = { ReflectionToStringBuilder.toString(classLoaderResult) };
+					String message = messageProvider.getMessage("pcs.plugin_scan_classloader", args);
+					logger.debug(message);
+				}
+			}
+
+			// create context to store scan result in
+			GenericApplicationContext context = new GenericApplicationContext();
+			context.setClassLoader(classLoader);
+
+			// skip scanning if no plugins are defined
+			if (pluginIds.length == 0)
+				return context;
+
+			// create component scanner
+			ClassPathBeanDefinitionScanner scanner;
+			scanner = new ClassPathBeanDefinitionScanner((BeanDefinitionRegistry) context, DISABLE_DEFAULT_FILTERS);
+
+			// setup plugin class scanning
+			scanner.addIncludeFilter(new AnnotationTypeFilter(Plugin.class));
+			scanner.setBeanNameGenerator(pluginNameGenerator);
+
+			// scan for plugins
+			scanner.scan(pluginIds);
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				String message = messageProvider.getMessage("pcs.plugin_scan_completed");
+				logger.debug(message);
+			}
+
+			// refresh to support usage in Spring 4.x (see PINEAPPLE-727 for
+			// more info)
+			context.refresh();
+
+			return context;
+
+		} catch (IOException e) {
+			// throw exception if interfaces couldn't be resolved
+			Object[] args = { e.toString() };
+			String message = messageProvider.getMessage("pcs.plugin_scan_error", args);
+			throw new PluginInitializationFailedException(message, e);
 		}
-
-		// replace dots .. with forward slashes
-		String preparedPluginId = StringUtils.replaceChars(pluginId, '.', '/');
-
-		// resolve plugin id with class loader
-		Enumeration<URL> classLoaderResult = classLoader.getResources(preparedPluginId);
-
-		// log debug message
-		if (logger.isDebugEnabled()) {
-		    Object[] args = { ReflectionToStringBuilder.toString(classLoaderResult) };
-		    String message = messageProvider.getMessage("pcs.plugin_scan_classloader", args);
-		    logger.debug(message);
-		}
-	    }
-
-	    // create context to store scan result in
-	    GenericApplicationContext context = new GenericApplicationContext();
-	    context.setClassLoader(classLoader);
-
-	    // skip scanning if no plugins are defined
-	    if (pluginIds.length == 0)
-		return context;
-
-	    // create component scanner
-	    ClassPathBeanDefinitionScanner scanner;
-	    scanner = new ClassPathBeanDefinitionScanner((BeanDefinitionRegistry) context, DISABLE_DEFAULT_FILTERS);
-
-	    // setup plugin class scanning
-	    scanner.addIncludeFilter(new AnnotationTypeFilter(Plugin.class));
-	    scanner.setBeanNameGenerator(pluginNameGenerator);
-
-	    // scan for plugins
-	    scanner.scan(pluginIds);
-
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		String message = messageProvider.getMessage("pcs.plugin_scan_completed");
-		logger.debug(message);
-	    }
-
-	    // refresh to support usage in Spring 4.x (see PINEAPPLE-727 for
-	    // more info)
-	    context.refresh();
-
-	    return context;
-
-	} catch (IOException e) {
-	    // throw exception if interfaces couldn't be resolved
-	    Object[] args = { e.toString() };
-	    String message = messageProvider.getMessage("pcs.plugin_scan_error", args);
-	    throw new PluginInitializationFailedException(message, e);
 	}
-    }
 
 }

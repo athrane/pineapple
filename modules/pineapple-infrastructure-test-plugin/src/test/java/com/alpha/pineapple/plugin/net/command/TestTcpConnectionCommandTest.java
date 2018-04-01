@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.command;
 
 import static org.junit.Assert.fail;
@@ -43,65 +42,61 @@ import com.alpha.pineapple.i18n.MessageProvider;
 /**
  * Unit test of the class {@link TestTcpConnectionCommand}.
  */
-public class TestTcpConnectionCommandTest
-{
+public class TestTcpConnectionCommandTest {
 
-    /**
-     * Command under test.
-     */
-    Command command;
+	/**
+	 * Command under test.
+	 */
+	Command command;
 
-    /**
-     * Chain context.
-     */
-    Context context;
-    
+	/**
+	 * Chain context.
+	 */
+	Context context;
+
 	/**
 	 * Mock execution result.
 	 */
-	ExecutionResult executionResult; 
-    
-    /**
-     * Mock message provider.
-     */
-    MessageProvider messageProvider;
-	
-    @Before
-    public void setUp() throws Exception
-    {
-        // create command
-        command = new TestTcpConnectionCommand();
+	ExecutionResult executionResult;
 
-        // create context
-        context = new ContextBase();
-        
-        // create mock result
-        executionResult = EasyMock.createMock( ExecutionResult.class );
+	/**
+	 * Mock message provider.
+	 */
+	MessageProvider messageProvider;
 
-        // create mock provider
-        messageProvider = EasyMock.createMock( MessageProvider.class );
-                
-        // inject message source
-        ReflectionTestUtils.setField( command, "messageProvider", messageProvider, MessageProvider.class );
-        
-        // complete mock source initialization        
-        IAnswer<String> answer = new MessageProviderAnswerImpl(); 
-        
-        EasyMock.expect( messageProvider.getMessage(
-        		(String) EasyMock.isA( String.class )));
-        EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-        
-        EasyMock.replay(messageProvider);                
-    }
+	@Before
+	public void setUp() throws Exception {
+		// create command
+		command = new TestTcpConnectionCommand();
 
-    @After
-    public void tearDown() throws Exception
-    {
-        command = null;
-        context = null;
-        executionResult = null;
-        messageProvider = null;
-    }
+		// create context
+		context = new ContextBase();
+
+		// create mock result
+		executionResult = EasyMock.createMock(ExecutionResult.class);
+
+		// create mock provider
+		messageProvider = EasyMock.createMock(MessageProvider.class);
+
+		// inject message source
+		ReflectionTestUtils.setField(command, "messageProvider", messageProvider, MessageProvider.class);
+
+		// complete mock source initialization
+		IAnswer<String> answer = new MessageProviderAnswerImpl();
+
+		EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+
+		EasyMock.replay(messageProvider);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		command = null;
+		context = null;
+		executionResult = null;
+		messageProvider = null;
+	}
 
 	/**
 	 * Test that undefined execution result is rejected.
@@ -109,54 +104,53 @@ public class TestTcpConnectionCommandTest
 	@SuppressWarnings("unchecked")
 	@Test(expected = CommandInitializationFailedException.class)
 	public void testRejectsUndefinedExecutionResult() throws Exception {
-				
+
 		// setup parameters
-		context.put(TestTcpConnectionCommand.EXECUTIONRESULT_KEY, null );
-		context.put(TestTcpConnectionCommand.HOST_KEY, "tiamat");		
-		context.put(TestTcpConnectionCommand.PORTS_KEY, new int[]{1});		
-		
+		context.put(TestTcpConnectionCommand.EXECUTIONRESULT_KEY, null);
+		context.put(TestTcpConnectionCommand.HOST_KEY, "tiamat");
+		context.put(TestTcpConnectionCommand.PORTS_KEY, new int[] { 1 });
+
 		// execute command
 		command.execute(context);
 
 		// test
 		fail("Test should never reach here.");
-	}	    
-	
-    /**
-     * Test that command fails if host is undefined in context.
-     * 
-     * @throws Exception
-     */
-    @SuppressWarnings("unchecked")
-	@Test( expected = CommandInitializationFailedException.class )
-    public void testCommandFailsIfHostIsUndefinedInContext() throws Exception
-    {        
-        // setup parameters
-		context.put(TestTcpConnectionCommand.EXECUTIONRESULT_KEY, executionResult );            
-		context.put(TestTcpConnectionCommand.PORTS_KEY, new int[]{1});        
+	}
 
-        // execute command
-        command.execute( context );
-        
-        fail( "Test should never reach here." );
-    }
+	/**
+	 * Test that command fails if host is undefined in context.
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfHostIsUndefinedInContext() throws Exception {
+		// setup parameters
+		context.put(TestTcpConnectionCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(TestTcpConnectionCommand.PORTS_KEY, new int[] { 1 });
 
-    /**
-     * Test that command fails if port is undefined in context.
-     * @throws Exception 
-     */
-    @SuppressWarnings("unchecked")
-	@Test( expected = CommandInitializationFailedException.class )
-    public void testCommandFailsIfPortIsUndefinedInContext() throws Exception
-    {        
-        // setup parameters
-		context.put(TestTcpConnectionCommand.EXECUTIONRESULT_KEY, executionResult );            
+		// execute command
+		command.execute(context);
+
+		fail("Test should never reach here.");
+	}
+
+	/**
+	 * Test that command fails if port is undefined in context.
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(expected = CommandInitializationFailedException.class)
+	public void testCommandFailsIfPortIsUndefinedInContext() throws Exception {
+		// setup parameters
+		context.put(TestTcpConnectionCommand.EXECUTIONRESULT_KEY, executionResult);
 		context.put(TestTcpConnectionCommand.HOST_KEY, "tiamat");
 
-        // execute command
-        command.execute( context );
-        
-        fail( "Test should never reach here." );
-    }
+		// execute command
+		command.execute(context);
+
+		fail("Test should never reach here.");
+	}
 
 }

@@ -44,50 +44,50 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class ModelVariablesBuilderFactoryIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    ObjectFactory<ModelVariablesBuilder> modelVariablesBuilderFactory;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	ObjectFactory<ModelVariablesBuilder> modelVariablesBuilderFactory;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that factory can be looked up from the context.
-     */
-    @Test
-    public void testCanGetFactoryFromContext() {
-	assertNotNull(modelVariablesBuilderFactory);
-    }
+	/**
+	 * Test that factory can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetFactoryFromContext() {
+		assertNotNull(modelVariablesBuilderFactory);
+	}
 
-    /**
-     * Test builder can be created from factory.
-     */
-    @Test
-    public void testCanCreateBuilder() {
-	assertNotNull(modelVariablesBuilderFactory.getObject());
-    }
+	/**
+	 * Test builder can be created from factory.
+	 */
+	@Test
+	public void testCanCreateBuilder() {
+		assertNotNull(modelVariablesBuilderFactory.getObject());
+	}
 
-    /**
-     * Test that each created builder is a Spring prototype.
-     */
-    @Test
-    public void testCreatedBuilderIsSpringProtototype() {
-	ModelVariablesBuilder builder = modelVariablesBuilderFactory.getObject();
-	ModelVariablesBuilder builder2 = modelVariablesBuilderFactory.getObject();
-	assertFalse(builder.hashCode() == builder2.hashCode());
-    }
+	/**
+	 * Test that each created builder is a Spring prototype.
+	 */
+	@Test
+	public void testCreatedBuilderIsSpringProtototype() {
+		ModelVariablesBuilder builder = modelVariablesBuilderFactory.getObject();
+		ModelVariablesBuilder builder2 = modelVariablesBuilderFactory.getObject();
+		assertFalse(builder.hashCode() == builder2.hashCode());
+	}
 
 }

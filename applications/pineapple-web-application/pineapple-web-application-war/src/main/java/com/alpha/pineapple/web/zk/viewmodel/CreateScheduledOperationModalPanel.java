@@ -61,381 +61,380 @@ import com.alpha.pineapple.web.zk.utils.ErrorMessageBoxHelper;
  */
 public class CreateScheduledOperationModalPanel {
 
-    /**
-     * Message provider for I18N support.
-     */
-    @WireVariable
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@WireVariable
+	MessageProvider webMessageProvider;
 
-    /**
-     * Spring REST scheduled operation controller.
-     */
-    @WireVariable
-    ScheduledOperationController scheduledOperationController;
+	/**
+	 * Spring REST scheduled operation controller.
+	 */
+	@WireVariable
+	ScheduledOperationController scheduledOperationController;
 
-    /**
-     * Spring REST module controller.
-     */
-    @WireVariable
-    ModuleController moduleController;
+	/**
+	 * Spring REST module controller.
+	 */
+	@WireVariable
+	ModuleController moduleController;
 
-    /**
-     * Error message box helper.
-     */
-    @WireVariable
-    ErrorMessageBoxHelper errorMessageBoxHelper;
+	/**
+	 * Error message box helper.
+	 */
+	@WireVariable
+	ErrorMessageBoxHelper errorMessageBoxHelper;
 
-    /**
-     * Name.
-     */
-    String name;
+	/**
+	 * Name.
+	 */
+	String name;
 
-    /**
-     * Selected module.
-     */
-    Module module;
+	/**
+	 * Selected module.
+	 */
+	Module module;
 
-    /**
-     * Selected operation.
-     */
-    String operation;
+	/**
+	 * Selected operation.
+	 */
+	String operation;
 
-    /**
-     * Selected model.
-     */
-    Model model;
+	/**
+	 * Selected model.
+	 */
+	Model model;
 
-    /**
-     * Description.
-     */
-    String description;
+	/**
+	 * Description.
+	 */
+	String description;
 
-    /**
-     * Scheduling expression.
-     */
-    String cron;
+	/**
+	 * Scheduling expression.
+	 */
+	String cron;
 
-    /**
-     * Property status.
-     */
-    boolean creationStatus;
+	/**
+	 * Property status.
+	 */
+	boolean creationStatus;
 
-    /**
-     * Creation status as string.
-     */
-    String creationStatusAsString;
+	/**
+	 * Creation status as string.
+	 */
+	String creationStatusAsString;
 
-    /**
-     * List of default operations
-     */
-    ArrayList<String> defaultOperations;
+	/**
+	 * List of default operations
+	 */
+	ArrayList<String> defaultOperations;
 
-    /**
-     * Set of name for the current scheduled operations.
-     */
-    Set<String> names;
+	/**
+	 * Set of name for the current scheduled operations.
+	 */
+	Set<String> names;
 
-    /**
-     * Initialize view model and create default values.
-     */
-    @Init
-    public void init() {
+	/**
+	 * Initialize view model and create default values.
+	 */
+	@Init
+	public void init() {
 
-	// get list of names of current scheduled operations
-	ScheduledOperations operations = scheduledOperationController.getScheduledOperations();
-	names = operations.getScheduledOperation().stream().map(ScheduledOperation::getName)
-		.collect(Collectors.toSet());
+		// get list of names of current scheduled operations
+		ScheduledOperations operations = scheduledOperationController.getScheduledOperations();
+		names = operations.getScheduledOperation().stream().map(ScheduledOperation::getName)
+				.collect(Collectors.toSet());
 
-	// set default values
-	defaultOperations = new ArrayList<String>();
-	defaultOperations.add(OperationNames.DEPLOY_CONFIGURATION);
-	defaultOperations.add(OperationNames.UNDEPLOY_CONFIGURATION);
-	defaultOperations.add(OperationNames.TEST);
-	defaultOperations.add(OperationNames.CREATE_REPORT);
-	name = RandomStringUtils.randomAlphabetic(4).toLowerCase();
-	description = webMessageProvider.getMessage("csomp.default_description");
-	cron = webMessageProvider.getMessage("csomp.default_cron");
-	updateStatus();
-    }
-
-    /**
-     * Event handler for the 'updateStatus' command.
-     * 
-     * Calculates creation status.
-     */
-    public void updateStatus() {
-
-	// handle empty name
-	if ((name == null) || (name.isEmpty())) {
-	    creationStatusAsString = webMessageProvider.getMessage("csomp.name_undefined_info");
-	    creationStatus = true;
-	    return;
+		// set default values
+		defaultOperations = new ArrayList<String>();
+		defaultOperations.add(OperationNames.DEPLOY_CONFIGURATION);
+		defaultOperations.add(OperationNames.UNDEPLOY_CONFIGURATION);
+		defaultOperations.add(OperationNames.TEST);
+		defaultOperations.add(OperationNames.CREATE_REPORT);
+		name = RandomStringUtils.randomAlphabetic(4).toLowerCase();
+		description = webMessageProvider.getMessage("csomp.default_description");
+		cron = webMessageProvider.getMessage("csomp.default_cron");
+		updateStatus();
 	}
 
-	// validate name is unique
-	if (names.contains(name)) {
-	    creationStatusAsString = webMessageProvider.getMessage("csomp.name_notunique_info");
-	    creationStatus = true;
-	    return;
+	/**
+	 * Event handler for the 'updateStatus' command.
+	 * 
+	 * Calculates creation status.
+	 */
+	public void updateStatus() {
+
+		// handle empty name
+		if ((name == null) || (name.isEmpty())) {
+			creationStatusAsString = webMessageProvider.getMessage("csomp.name_undefined_info");
+			creationStatus = true;
+			return;
+		}
+
+		// validate name is unique
+		if (names.contains(name)) {
+			creationStatusAsString = webMessageProvider.getMessage("csomp.name_notunique_info");
+			creationStatus = true;
+			return;
+		}
+
+		// handle empty module
+		if (module == null) {
+			creationStatusAsString = webMessageProvider.getMessage("csomp.module_undefined_info");
+			creationStatus = true;
+			return;
+		}
+
+		// handle undefined model
+		if (model == null) {
+			creationStatusAsString = webMessageProvider.getMessage("csomp.model_undefined_info");
+			creationStatus = true;
+			return;
+		}
+
+		// handle undefined model operation
+		if ((operation == null) || (operation.isEmpty())) {
+			creationStatusAsString = webMessageProvider.getMessage("csomp.operation_undefined_info");
+			creationStatus = true;
+			return;
+		}
+
+		// handle undefined cron
+		if ((cron == null) || (cron.isEmpty())) {
+			creationStatusAsString = webMessageProvider.getMessage("csomp.cron_undefined_info");
+			creationStatus = true;
+			return;
+		}
+
+		// handle undefined description
+		if ((description == null) || (description.isEmpty())) {
+			creationStatusAsString = webMessageProvider.getMessage("csomp.description_undefined_info");
+			creationStatus = true;
+			return;
+		}
+
+		creationStatusAsString = webMessageProvider.getMessage("csomp.scheduledoperation_valid_info");
+		creationStatus = false;
 	}
 
-	// handle empty module
-	if (module == null) {
-	    creationStatusAsString = webMessageProvider.getMessage("csomp.module_undefined_info");
-	    creationStatus = true;
-	    return;
+	/**
+	 * Event handler for onChanging and onFocus events from the name text box. Will
+	 * update the creation status.
+	 * 
+	 * @param event
+	 *            event from text box.
+	 */
+	@Command
+	@NotifyChange({ "creationStatus", "creationStatusAsString" })
+	public void updateName(@BindingParam("name") String name) {
+		this.name = name;
+		updateStatus();
 	}
 
-	// handle undefined model
-	if (model == null) {
-	    creationStatusAsString = webMessageProvider.getMessage("csomp.model_undefined_info");
-	    creationStatus = true;
-	    return;
+	/**
+	 * Event handler for onChanging and onFocus events from the description text
+	 * box. Will update the creation status.
+	 * 
+	 * @param event
+	 *            event from text box.
+	 */
+	@Command
+	@NotifyChange({ "creationStatus", "creationStatusAsString" })
+	public void updateDescription(@BindingParam("description") String description) {
+		this.description = description;
+		updateStatus();
 	}
 
-	// handle undefined model operation
-	if ((operation == null) || (operation.isEmpty())) {
-	    creationStatusAsString = webMessageProvider.getMessage("csomp.operation_undefined_info");
-	    creationStatus = true;
-	    return;
+	/**
+	 * Event handler for onChanging and events from the cron text box. Will update
+	 * the creation status.
+	 * 
+	 * @param cron
+	 *            cron scheduling expression.
+	 */
+	@Command
+	@NotifyChange({ "creationStatus", "creationStatusAsString" })
+	public void updateCron(@BindingParam("cron") String cron) {
+		this.cron = cron;
+		updateStatus();
 	}
 
-	// handle undefined cron
-	if ((cron == null) || (cron.isEmpty())) {
-	    creationStatusAsString = webMessageProvider.getMessage("csomp.cron_undefined_info");
-	    creationStatus = true;
-	    return;
+	/**
+	 * Get modules.
+	 * 
+	 * @return list of modules.
+	 */
+	public List<Module> getModules() {
+		return moduleController.getModules().getModule();
 	}
 
-	// handle undefined description
-	if ((description == null) || (description.isEmpty())) {
-	    creationStatusAsString = webMessageProvider.getMessage("csomp.description_undefined_info");
-	    creationStatus = true;
-	    return;
+	/**
+	 * Set module.
+	 * 
+	 * @param module
+	 *            module.
+	 */
+	@NotifyChange({ "creationStatus", "creationStatusAsString", "models" })
+	public void setModule(Module module) {
+		this.module = module;
+		updateStatus();
 	}
 
-	creationStatusAsString = webMessageProvider.getMessage("csomp.scheduledoperation_valid_info");
-	creationStatus = false;
-    }
-
-    /**
-     * Event handler for onChanging and onFocus events from the name text box.
-     * Will update the creation status.
-     * 
-     * @param event
-     *            event from text box.
-     */
-    @Command
-    @NotifyChange({ "creationStatus", "creationStatusAsString" })
-    public void updateName(@BindingParam("name") String name) {
-	this.name = name;
-	updateStatus();
-    }
-
-    /**
-     * Event handler for onChanging and onFocus events from the description text
-     * box. Will update the creation status.
-     * 
-     * @param event
-     *            event from text box.
-     */
-    @Command
-    @NotifyChange({ "creationStatus", "creationStatusAsString" })
-    public void updateDescription(@BindingParam("description") String description) {
-	this.description = description;
-	updateStatus();
-    }
-
-    /**
-     * Event handler for onChanging and events from the cron text box. Will
-     * update the creation status.
-     * 
-     * @param cron
-     *            cron scheduling expression.
-     */
-    @Command
-    @NotifyChange({ "creationStatus", "creationStatusAsString" })
-    public void updateCron(@BindingParam("cron") String cron) {
-	this.cron = cron;
-	updateStatus();
-    }
-
-    /**
-     * Get modules.
-     * 
-     * @return list of modules.
-     */
-    public List<Module> getModules() {
-	return moduleController.getModules().getModule();
-    }
-
-    /**
-     * Set module.
-     * 
-     * @param module
-     *            module.
-     */
-    @NotifyChange({ "creationStatus", "creationStatusAsString", "models" })
-    public void setModule(Module module) {
-	this.module = module;
-	updateStatus();
-    }
-
-    /**
-     * Get models.
-     * 
-     * @return list of models for selected module.
-     */
-    public List<Model> getModels() {
-	if (module == null)
-	    return Collections.<Model> emptyList();
-	return module.getModel();
-    }
-
-    /**
-     * Set model.
-     * 
-     * @param model
-     *            model.
-     */
-    @NotifyChange({ "creationStatus", "creationStatusAsString" })
-    public void setModel(Model model) {
-	this.model = model;
-	updateStatus();
-    }
-
-    /**
-     * Get operations.
-     * 
-     * @return list of operations.
-     */
-    public List<String> getOperations() {
-	return defaultOperations;
-    }
-
-    /**
-     * Set operation name.
-     * 
-     * @param name
-     *            operation name.
-     */
-    @NotifyChange({ "creationStatus", "creationStatusAsString", "models" })
-    public void setOperation(String operation) {
-	this.operation = operation;
-	updateStatus();
-    }
-
-    /**
-     * Get name.
-     * 
-     * @return name.
-     */
-    public String getName() {
-	return name;
-    }
-
-    /**
-     * Set name.
-     * 
-     * @param name
-     *            name.
-     */
-    public void setName(String name) {
-	this.name = name;
-    }
-
-    /**
-     * Get description.
-     * 
-     * @return description.
-     */
-    public String getDescription() {
-	return description;
-    }
-
-    /**
-     * Set description.
-     * 
-     * @param description
-     *            description.
-     */
-    public void setDescription(String description) {
-	this.description = description;
-    }
-
-    /**
-     * Get scheduling expression.
-     * 
-     * @return scheduling expression.
-     */
-    public String getCron() {
-	return cron;
-    }
-
-    /**
-     * Set scheduling expression.
-     * 
-     * @param cron
-     *            scheduling expression.
-     */
-    public void setCron(String cron) {
-	this.cron = cron;
-    }
-
-    /**
-     * Get creation status as text.
-     * 
-     * @return creation status as text.
-     */
-    public String getCreationStatusAsString() {
-	return creationStatusAsString;
-    }
-
-    /**
-     * Get creation status as boolean.
-     * 
-     * @return false if the scheduled operation can be created.
-     */
-    public boolean getCreationStatus() {
-	return creationStatus;
-    }
-
-    /**
-     * Event handler for the command "confirmOperation".
-     * 
-     * The event is triggered from the "confirm" button menu. Creates the
-     * scheduled operation.
-     * 
-     * Posts global command "createScheduledOperationConfirmed" to update view.
-     * The global is posted to the APPLICATION queue to trigger updates in all
-     * GUI's
-     */
-    @Command
-    public void confirmOperation() {
-	try {
-
-	    // create new operation
-	    scheduledOperationController.create(name, module.getId(), model.getId(), operation, cron, description);
-
-	    // post global command with APPLICATION scope which triggers update
-	    // of the scheduled operations panel in all GUI's
-	    BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, EventQueues.APPLICATION,
-		    CREATE_SCHEDULED_OPERATION_CONFIRMED_GLOBALCOMMAND, null);
-
-	} catch (Exception e) {
-	    errorMessageBoxHelper.showAndLogException(e);
+	/**
+	 * Get models.
+	 * 
+	 * @return list of models for selected module.
+	 */
+	public List<Model> getModels() {
+		if (module == null)
+			return Collections.<Model>emptyList();
+		return module.getModel();
 	}
 
-    }
+	/**
+	 * Set model.
+	 * 
+	 * @param model
+	 *            model.
+	 */
+	@NotifyChange({ "creationStatus", "creationStatusAsString" })
+	public void setModel(Model model) {
+		this.model = model;
+		updateStatus();
+	}
 
-    /**
-     * Event handler for the command "cancelOperation".
-     * 
-     * The event is triggered from the "cancel" button menu which does nothing.
-     */
-    @Command
-    public void cancelOperation() {
-	// NO-OP
-    }
+	/**
+	 * Get operations.
+	 * 
+	 * @return list of operations.
+	 */
+	public List<String> getOperations() {
+		return defaultOperations;
+	}
+
+	/**
+	 * Set operation name.
+	 * 
+	 * @param name
+	 *            operation name.
+	 */
+	@NotifyChange({ "creationStatus", "creationStatusAsString", "models" })
+	public void setOperation(String operation) {
+		this.operation = operation;
+		updateStatus();
+	}
+
+	/**
+	 * Get name.
+	 * 
+	 * @return name.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Set name.
+	 * 
+	 * @param name
+	 *            name.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * Get description.
+	 * 
+	 * @return description.
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * Set description.
+	 * 
+	 * @param description
+	 *            description.
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * Get scheduling expression.
+	 * 
+	 * @return scheduling expression.
+	 */
+	public String getCron() {
+		return cron;
+	}
+
+	/**
+	 * Set scheduling expression.
+	 * 
+	 * @param cron
+	 *            scheduling expression.
+	 */
+	public void setCron(String cron) {
+		this.cron = cron;
+	}
+
+	/**
+	 * Get creation status as text.
+	 * 
+	 * @return creation status as text.
+	 */
+	public String getCreationStatusAsString() {
+		return creationStatusAsString;
+	}
+
+	/**
+	 * Get creation status as boolean.
+	 * 
+	 * @return false if the scheduled operation can be created.
+	 */
+	public boolean getCreationStatus() {
+		return creationStatus;
+	}
+
+	/**
+	 * Event handler for the command "confirmOperation".
+	 * 
+	 * The event is triggered from the "confirm" button menu. Creates the scheduled
+	 * operation.
+	 * 
+	 * Posts global command "createScheduledOperationConfirmed" to update view. The
+	 * global is posted to the APPLICATION queue to trigger updates in all GUI's
+	 */
+	@Command
+	public void confirmOperation() {
+		try {
+
+			// create new operation
+			scheduledOperationController.create(name, module.getId(), model.getId(), operation, cron, description);
+
+			// post global command with APPLICATION scope which triggers update
+			// of the scheduled operations panel in all GUI's
+			BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, EventQueues.APPLICATION,
+					CREATE_SCHEDULED_OPERATION_CONFIRMED_GLOBALCOMMAND, null);
+
+		} catch (Exception e) {
+			errorMessageBoxHelper.showAndLogException(e);
+		}
+
+	}
+
+	/**
+	 * Event handler for the command "cancelOperation".
+	 * 
+	 * The event is triggered from the "cancel" button menu which does nothing.
+	 */
+	@Command
+	public void cancelOperation() {
+		// NO-OP
+	}
 
 }

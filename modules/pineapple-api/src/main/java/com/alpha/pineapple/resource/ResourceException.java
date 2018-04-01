@@ -27,31 +27,31 @@ package com.alpha.pineapple.resource;
  */
 public class ResourceException extends Exception {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * ResourceException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public ResourceException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * ResourceException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public ResourceException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * ResourceException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public ResourceException(String message) {
-	super(message);
-    }
+	/**
+	 * ResourceException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public ResourceException(String message) {
+		super(message);
+	}
 
 }

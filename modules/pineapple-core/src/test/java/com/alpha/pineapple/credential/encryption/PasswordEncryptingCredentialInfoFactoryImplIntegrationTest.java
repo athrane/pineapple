@@ -48,84 +48,84 @@ import com.alpha.pineapple.credential.CredentialInfoFactory;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class PasswordEncryptingCredentialInfoFactoryImplIntegrationTest {
 
-    /**
-     * Subject under test.
-     */
-    @Resource
-    CredentialInfoFactory credentialInfoFactory;
+	/**
+	 * Subject under test.
+	 */
+	@Resource
+	CredentialInfoFactory credentialInfoFactory;
 
-    /**
-     * Text encryptor.
-     */
-    @Resource
-    PBEStringEncryptor textEncryptor;
+	/**
+	 * Text encryptor.
+	 */
+	@Resource
+	PBEStringEncryptor textEncryptor;
 
-    /**
-     * Random user.
-     */
-    String randomUser;
+	/**
+	 * Random user.
+	 */
+	String randomUser;
 
-    /**
-     * Random password.
-     */
-    String randomPassword;
+	/**
+	 * Random password.
+	 */
+	String randomPassword;
 
-    /**
-     * Random ID.
-     */
-    String randomId;
+	/**
+	 * Random ID.
+	 */
+	String randomId;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	// initialize random fields
-	randomId = RandomStringUtils.randomAlphabetic(10);
-	randomUser = RandomStringUtils.randomAlphabetic(10);
-	randomPassword = RandomStringUtils.randomAlphabetic(10);
-    }
+		// initialize random fields
+		randomId = RandomStringUtils.randomAlphabetic(10);
+		randomUser = RandomStringUtils.randomAlphabetic(10);
+		randomPassword = RandomStringUtils.randomAlphabetic(10);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that instance can created from context.
-     */
-    @Test
-    public void testGetInstance() {
-	assertNotNull(credentialInfoFactory);
-    }
+	/**
+	 * Test that instance can created from context.
+	 */
+	@Test
+	public void testGetInstance() {
+		assertNotNull(credentialInfoFactory);
+	}
 
-    /**
-     * Test that credential info can created.
-     */
-    @Test
-    public void testCanCreateCredentialInfo() {
-	CredentialInfo info = credentialInfoFactory.createCredentialInfo(randomId, randomUser, randomPassword);
-	assertNotNull(info);
-	assertEquals(randomId, info.getId());
-	assertEquals(randomUser, info.getUser());
-    }
+	/**
+	 * Test that credential info can created.
+	 */
+	@Test
+	public void testCanCreateCredentialInfo() {
+		CredentialInfo info = credentialInfoFactory.createCredentialInfo(randomId, randomUser, randomPassword);
+		assertNotNull(info);
+		assertEquals(randomId, info.getId());
+		assertEquals(randomUser, info.getUser());
+	}
 
-    /**
-     * Test that credential info contains encrypted password with prefix.
-     */
-    @Test
-    public void testCredentialInfoReturnsEncryptedPasswordWithPrefix() {
-	String encryptedPassword = new StringBuilder().append(ENCRYPTED_PREFIX)
-		.append(textEncryptor.encrypt(randomPassword)).toString();
-	CredentialInfo info = credentialInfoFactory.createCredentialInfo(randomId, randomUser, randomPassword);
-	assertEquals(encryptedPassword, info.getPassword());
-    }
+	/**
+	 * Test that credential info contains encrypted password with prefix.
+	 */
+	@Test
+	public void testCredentialInfoReturnsEncryptedPasswordWithPrefix() {
+		String encryptedPassword = new StringBuilder().append(ENCRYPTED_PREFIX)
+				.append(textEncryptor.encrypt(randomPassword)).toString();
+		CredentialInfo info = credentialInfoFactory.createCredentialInfo(randomId, randomUser, randomPassword);
+		assertEquals(encryptedPassword, info.getPassword());
+	}
 
-    /**
-     * Test that returned credential contains expected values.
-     */
-    @Test
-    public void testCredentialReturnsExpectedValues() {
-	CredentialInfo info = credentialInfoFactory.createCredentialInfo(randomId, randomUser, randomPassword);
-	assertEquals(randomId, info.getId());
-	assertEquals(randomUser, info.getUser());
-    }
+	/**
+	 * Test that returned credential contains expected values.
+	 */
+	@Test
+	public void testCredentialReturnsExpectedValues() {
+		CredentialInfo info = credentialInfoFactory.createCredentialInfo(randomId, randomUser, randomPassword);
+		assertEquals(randomId, info.getId());
+		assertEquals(randomUser, info.getUser());
+	}
 
 }

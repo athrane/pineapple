@@ -27,31 +27,31 @@ package com.alpha.pineapple;
  */
 public class CoreException extends Exception {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * CoreException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public CoreException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * CoreException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public CoreException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * CoreException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public CoreException(String message) {
-	super(message);
-    }
+	/**
+	 * CoreException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public CoreException(String message) {
+		super(message);
+	}
 
 }

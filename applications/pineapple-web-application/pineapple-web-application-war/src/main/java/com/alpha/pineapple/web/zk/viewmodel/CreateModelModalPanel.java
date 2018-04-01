@@ -53,167 +53,167 @@ import com.alpha.pineapple.module.ModuleInfo;
  */
 public class CreateModelModalPanel {
 
-    /**
-     * Message provider for I18N support.
-     */
-    @WireVariable
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@WireVariable
+	MessageProvider webMessageProvider;
 
-    /**
-     * Model environment.
-     */
-    String modelName;
+	/**
+	 * Model environment.
+	 */
+	String modelName;
 
-    /**
-     * Property status.
-     */
-    boolean modelStatus;
+	/**
+	 * Property status.
+	 */
+	boolean modelStatus;
 
-    /**
-     * Password status as string.
-     */
-    String modelStatusAsString;
+	/**
+	 * Password status as string.
+	 */
+	String modelStatusAsString;
 
-    /**
-     * Existing models.
-     */
-    Set<String> models;
+	/**
+	 * Existing models.
+	 */
+	Set<String> models;
 
-    /**
-     * Initialize view model.
-     * 
-     * @param moduleInfo
-     *            selected module info.
-     */
-    @Init
-    public void init(@ExecutionArgParam("selectedModule") ModuleInfo moduleInfo) {
-	modelName = "";
+	/**
+	 * Initialize view model.
+	 * 
+	 * @param moduleInfo
+	 *            selected module info.
+	 */
+	@Init
+	public void init(@ExecutionArgParam("selectedModule") ModuleInfo moduleInfo) {
+		modelName = "";
 
-	// create set of existing environments
-	models = new HashSet<String>();
-	initializeExistingModels(moduleInfo);
+		// create set of existing environments
+		models = new HashSet<String>();
+		initializeExistingModels(moduleInfo);
 
-	updateStatus();
-    }
-
-    /**
-     * Initialize set of existing models.
-     * 
-     * @param info
-     *            module info.
-     */
-    void initializeExistingModels(ModuleInfo info) {
-	if (info == null)
-	    return;
-	String[] environments = info.getModelEnvironments();
-	if (environments == null)
-	    return;
-	for (String environment : environments) {
-	    models.add(environment);
-	}
-    }
-
-    /**
-     * Event handler for the 'updateStatus' command.
-     * 
-     * Calculates model status.
-     */
-    public void updateStatus() {
-
-	// handle empty key
-	if (modelName.isEmpty()) {
-	    modelStatusAsString = webMessageProvider.getMessage("cmmp.name_empty_info");
-	    modelStatus = true;
-	    return;
+		updateStatus();
 	}
 
-	// handle identical keys
-	if (models.contains(modelName)) {
-	    modelStatusAsString = webMessageProvider.getMessage("cmmp.name_already_exist_info");
-	    modelStatus = true;
-	    return;
+	/**
+	 * Initialize set of existing models.
+	 * 
+	 * @param info
+	 *            module info.
+	 */
+	void initializeExistingModels(ModuleInfo info) {
+		if (info == null)
+			return;
+		String[] environments = info.getModelEnvironments();
+		if (environments == null)
+			return;
+		for (String environment : environments) {
+			models.add(environment);
+		}
 	}
 
-	modelStatusAsString = webMessageProvider.getMessage("cmmp.valid_name_info");
-	modelStatus = false;
-    }
+	/**
+	 * Event handler for the 'updateStatus' command.
+	 * 
+	 * Calculates model status.
+	 */
+	public void updateStatus() {
 
-    /**
-     * Event handler for onChanging and onFocus events from the modelName text
-     * box. Will update the model status.
-     * 
-     * @param name
-     *            model name text box.
-     */
-    @Command
-    @NotifyChange({ "modelStatus", "modelStatusAsString" })
-    public void updateModelName(@BindingParam("name") String name) {
-	this.modelName = name;
-	updateStatus();
-    }
+		// handle empty key
+		if (modelName.isEmpty()) {
+			modelStatusAsString = webMessageProvider.getMessage("cmmp.name_empty_info");
+			modelStatus = true;
+			return;
+		}
 
-    /**
-     * Get model name.
-     * 
-     * @return model name.
-     */
-    public String getModelName() {
-	return modelName;
-    }
+		// handle identical keys
+		if (models.contains(modelName)) {
+			modelStatusAsString = webMessageProvider.getMessage("cmmp.name_already_exist_info");
+			modelStatus = true;
+			return;
+		}
 
-    /**
-     * Set model Name.
-     * 
-     * @param name
-     *            model name.
-     */
-    public void setModelName(String name) {
-	this.modelName = name;
-    }
+		modelStatusAsString = webMessageProvider.getMessage("cmmp.valid_name_info");
+		modelStatus = false;
+	}
 
-    /**
-     * Get model status as text.
-     * 
-     * @return model status as text.
-     */
-    public String getModelStatusAsString() {
-	return modelStatusAsString;
-    }
+	/**
+	 * Event handler for onChanging and onFocus events from the modelName text box.
+	 * Will update the model status.
+	 * 
+	 * @param name
+	 *            model name text box.
+	 */
+	@Command
+	@NotifyChange({ "modelStatus", "modelStatusAsString" })
+	public void updateModelName(@BindingParam("name") String name) {
+		this.modelName = name;
+		updateStatus();
+	}
 
-    /**
-     * Get model status as boolean.
-     * 
-     * @return false if the model can be created.
-     */
-    public boolean getModelStatus() {
-	return modelStatus;
-    }
+	/**
+	 * Get model name.
+	 * 
+	 * @return model name.
+	 */
+	public String getModelName() {
+		return modelName;
+	}
 
-    /**
-     * Event handler for the command "confirmModel".
-     * 
-     * The event is triggered from the "confirm" button menu which posts the
-     * command.
-     */
-    @Command
-    public void confirmModel() {
+	/**
+	 * Set model Name.
+	 * 
+	 * @param name
+	 *            model name.
+	 */
+	public void setModelName(String name) {
+		this.modelName = name;
+	}
 
-	// create command arguments with event
-	Map<String, Object> args = new HashMap<String, Object>();
-	args.put(MODEL_NAME_KEY_ARG, modelName);
+	/**
+	 * Get model status as text.
+	 * 
+	 * @return model status as text.
+	 */
+	public String getModelStatusAsString() {
+		return modelStatusAsString;
+	}
 
-	// post global command to trigger create model global command
-	BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, CREATE_MODEL_CONFIRMED_GLOBALCOMMAND, args);
-    }
+	/**
+	 * Get model status as boolean.
+	 * 
+	 * @return false if the model can be created.
+	 */
+	public boolean getModelStatus() {
+		return modelStatus;
+	}
 
-    /**
-     * Event handler for the command "cancelModel".
-     * 
-     * The event is triggered from the "cancel" button menu which does nothing.
-     */
-    @Command
-    public void cancelModel() {
-	// no operation
-    }
+	/**
+	 * Event handler for the command "confirmModel".
+	 * 
+	 * The event is triggered from the "confirm" button menu which posts the
+	 * command.
+	 */
+	@Command
+	public void confirmModel() {
+
+		// create command arguments with event
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put(MODEL_NAME_KEY_ARG, modelName);
+
+		// post global command to trigger create model global command
+		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, CREATE_MODEL_CONFIRMED_GLOBALCOMMAND, args);
+	}
+
+	/**
+	 * Event handler for the command "cancelModel".
+	 * 
+	 * The event is triggered from the "cancel" button menu which does nothing.
+	 */
+	@Command
+	public void cancelModel() {
+		// no operation
+	}
 
 }

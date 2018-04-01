@@ -58,50 +58,50 @@ import reactor.function.Consumer;
  * controller that is should execute the operation.
  */
 public class ExecuteOperationActivityInvokerImpl
-	implements EventListener<Event>, Consumer<reactor.event.Event<ExecuteOperationActivity>> {
+		implements EventListener<Event>, Consumer<reactor.event.Event<ExecuteOperationActivity>> {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Module repository.
-     */
-    @Resource
-    ModuleRepository moduleRepository;
+	/**
+	 * Module repository.
+	 */
+	@Resource
+	ModuleRepository moduleRepository;
 
-    /**
-     * Reactor-to-ZK event dispatcher.
-     */
-    @Resource
-    EventDispatcher eventDispatcher;
+	/**
+	 * Reactor-to-ZK event dispatcher.
+	 */
+	@Resource
+	EventDispatcher eventDispatcher;
 
-    /**
-     * Execute operation activity.
-     */
-    ExecuteOperationActivity activity;
+	/**
+	 * Execute operation activity.
+	 */
+	ExecuteOperationActivity activity;
 
-    @Override
-    public void onEvent(Event evt) throws Exception {
+	@Override
+	public void onEvent(Event evt) throws Exception {
 
-	// post global command to which triggers execution in execution panel
-	// view model
-	Map<String, Object> args = new HashMap<String, Object>();
-	ModuleInfo moduleInfo = moduleRepository.get(activity.getModule());
-	args.put(START_OPERATION_MODULE_INFO_ARG, moduleInfo);
-	args.put(START_OPERATION_OPERATION_ARG, activity.getOperation());
-	args.put(START_OPERATION_ENVIRONMENT_ARG, activity.getEnvironment());
+		// post global command to which triggers execution in execution panel
+		// view model
+		Map<String, Object> args = new HashMap<String, Object>();
+		ModuleInfo moduleInfo = moduleRepository.get(activity.getModule());
+		args.put(START_OPERATION_MODULE_INFO_ARG, moduleInfo);
+		args.put(START_OPERATION_OPERATION_ARG, activity.getOperation());
+		args.put(START_OPERATION_ENVIRONMENT_ARG, activity.getEnvironment());
 
-	BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, START_OPERATION_GLOBALCOMMAND, args);
+		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, START_OPERATION_GLOBALCOMMAND, args);
 
-	activity = null;
-    }
+		activity = null;
+	}
 
-    @Override
-    public void accept(reactor.event.Event<ExecuteOperationActivity> t) {
-	activity = t.getData();
-	eventDispatcher.dispatchZkEvent(this);
-    }
+	@Override
+	public void accept(reactor.event.Event<ExecuteOperationActivity> t) {
+		activity = t.getData();
+		eventDispatcher.dispatchZkEvent(this);
+	}
 
 }

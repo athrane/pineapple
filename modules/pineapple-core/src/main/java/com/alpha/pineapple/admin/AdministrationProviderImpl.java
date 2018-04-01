@@ -41,107 +41,107 @@ import com.alpha.pineapple.resource.ResourceRepository;
  */
 public class AdministrationProviderImpl implements Administration, AdministrationProvider {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Resource repository.
-     */
-    @Resource
-    ResourceRepository resourceRepository;
+	/**
+	 * Resource repository.
+	 */
+	@Resource
+	ResourceRepository resourceRepository;
 
-    /**
-     * Result repository.
-     */
-    @Resource
-    ResultRepository resultRepository;
+	/**
+	 * Result repository.
+	 */
+	@Resource
+	ResultRepository resultRepository;
 
-    /**
-     * Module repository.
-     */
-    @Resource
-    ModuleRepository moduleRepository;
+	/**
+	 * Module repository.
+	 */
+	@Resource
+	ModuleRepository moduleRepository;
 
-    /**
-     * Plugin repository.
-     */
-    @Resource
-    PluginRepository pluginRepository;
+	/**
+	 * Plugin repository.
+	 */
+	@Resource
+	PluginRepository pluginRepository;
 
-    /**
-     * Scheduled operation repository.
-     */
-    @Resource
-    ScheduledOperationRespository scheduledOperationRepository;
-    
-    /**
-     * Synchronous operation task.
-     */
-    @Resource
-    OperationTask operationTask;
+	/**
+	 * Scheduled operation repository.
+	 */
+	@Resource
+	ScheduledOperationRespository scheduledOperationRepository;
 
-    /**
-     * Credential provider.
-     * 
-     * This provider is not injected but initialized as part of the core
-     * component initialization process which will set the provider.
-     */
-    CredentialProvider credentialProvider;
+	/**
+	 * Synchronous operation task.
+	 */
+	@Resource
+	OperationTask operationTask;
 
-    @Override
-    public ResourceRepository getResourceRepository() {
-	return resourceRepository;
-    }
+	/**
+	 * Credential provider.
+	 * 
+	 * This provider is not injected but initialized as part of the core component
+	 * initialization process which will set the provider.
+	 */
+	CredentialProvider credentialProvider;
 
-    @Override
-    public ResultRepository getResultRepository() {
-	return resultRepository;
-    }
-
-    @Override
-    public CredentialProvider getCredentialProvider() {
-	return credentialProvider;
-    }
-
-    @Override
-    public void setCredentialProvider(CredentialProvider provider) {
-
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { provider };
-	    String message = messageProvider.getMessage("api.set_credentialprovider_info", args);
-	    logger.debug(message);
+	@Override
+	public ResourceRepository getResourceRepository() {
+		return resourceRepository;
 	}
 
-	credentialProvider = provider;
-    }
+	@Override
+	public ResultRepository getResultRepository() {
+		return resultRepository;
+	}
 
-    @Override
-    public ModuleRepository getModuleRepository() {
-	return moduleRepository;
-    }
+	@Override
+	public CredentialProvider getCredentialProvider() {
+		return credentialProvider;
+	}
 
-    @Override
-    public PluginRepository getPluginRepository() {
-	return pluginRepository;
-    }
+	@Override
+	public void setCredentialProvider(CredentialProvider provider) {
 
-    @Override
-    public OperationTask getOperationTask() {
-	return operationTask;
-    }
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { provider };
+			String message = messageProvider.getMessage("api.set_credentialprovider_info", args);
+			logger.debug(message);
+		}
 
-    @Override
-    public ScheduledOperationRespository getScheduledOperationRespository() {
-	return scheduledOperationRepository;
-    }
+		credentialProvider = provider;
+	}
+
+	@Override
+	public ModuleRepository getModuleRepository() {
+		return moduleRepository;
+	}
+
+	@Override
+	public PluginRepository getPluginRepository() {
+		return pluginRepository;
+	}
+
+	@Override
+	public OperationTask getOperationTask() {
+		return operationTask;
+	}
+
+	@Override
+	public ScheduledOperationRespository getScheduledOperationRespository() {
+		return scheduledOperationRepository;
+	}
 
 }

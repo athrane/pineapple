@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import java.util.HashSet;
@@ -38,55 +37,55 @@ import com.alpha.pineapple.plugin.net.http.CookieMapPair;
  * Matches if a pair of cookies maps contains equal set of keys.
  */
 public class IsCookieMapsPairContainingEqualKeys extends TypeSafeMatcher<CookieMapPair> {
-		
-	public void describeTo(Description description) {
-		description.appendText("pair of cookie maps with equal key sets");		
-	}
-		
-    @Override
-	protected void describeMismatchSafely(CookieMapPair pair, Description mismatchDescription) {
-    	
-		// create copy of key set for map1     		
-    	Set<String> keySet1 = new HashSet<String>();
-    	keySet1.addAll(pair.getFirstMap().keySet());
 
-		// create copy of key set for map2     		
-    	Set<String> keySet2 = new HashSet<String>();
-    	keySet2.addAll(pair.getSecondMap().keySet());
-    	
-    	// compute asymmetric difference for key set 1 and key set 2      	
-    	keySet1.removeAll(keySet2);
-    	String[] keySet1Array = keySet1.toArray(new String[keySet1.size()]);
-    	String keys1AsString = ReflectionToStringBuilder.toString( keySet1Array);
-    	
-    	// compute asymmetric difference for key set 2 and key set 1      	
-    	keySet2.removeAll(keySet1);
-    	String[] keySet2Array = keySet2.toArray(new String[keySet2.size()]);
-    	String keys2AsString = ReflectionToStringBuilder.toString( keySet2Array);
-    			
-        // create description
-    	mismatchDescription.appendText("contained cookie maps with different key sets, ");    	
+	public void describeTo(Description description) {
+		description.appendText("pair of cookie maps with equal key sets");
+	}
+
+	@Override
+	protected void describeMismatchSafely(CookieMapPair pair, Description mismatchDescription) {
+
+		// create copy of key set for map1
+		Set<String> keySet1 = new HashSet<String>();
+		keySet1.addAll(pair.getFirstMap().keySet());
+
+		// create copy of key set for map2
+		Set<String> keySet2 = new HashSet<String>();
+		keySet2.addAll(pair.getSecondMap().keySet());
+
+		// compute asymmetric difference for key set 1 and key set 2
+		keySet1.removeAll(keySet2);
+		String[] keySet1Array = keySet1.toArray(new String[keySet1.size()]);
+		String keys1AsString = ReflectionToStringBuilder.toString(keySet1Array);
+
+		// compute asymmetric difference for key set 2 and key set 1
+		keySet2.removeAll(keySet1);
+		String[] keySet2Array = keySet2.toArray(new String[keySet2.size()]);
+		String keys2AsString = ReflectionToStringBuilder.toString(keySet2Array);
+
+		// create description
+		mismatchDescription.appendText("contained cookie maps with different key sets, ");
 		mismatchDescription.appendText("map #1 contains the keys");
-    	mismatchDescription.appendText( keys1AsString );
+		mismatchDescription.appendText(keys1AsString);
 		mismatchDescription.appendText("which isn't found in map #2, and map #2 contains the keys");
-    	mismatchDescription.appendText( keys2AsString );		
-    	mismatchDescription.appendText("which isn't found in map #1");
+		mismatchDescription.appendText(keys2AsString);
+		mismatchDescription.appendText("which isn't found in map #1");
 	}
 
 	@Override
 	protected boolean matchesSafely(CookieMapPair pair) {
 
-    	// get the key sets
-    	Set<String> map1Keys = pair.getFirstMap().keySet();
-    	Set<String> map2Keys = pair.getSecondMap().keySet();
-    	
-    	// compare the sets
-    	return (map1Keys.containsAll( map2Keys));		
+		// get the key sets
+		Set<String> map1Keys = pair.getFirstMap().keySet();
+		Set<String> map2Keys = pair.getSecondMap().keySet();
+
+		// compare the sets
+		return (map1Keys.containsAll(map2Keys));
 	}
 
 	@Factory
-    public static Matcher<CookieMapPair> containsEqualKeys() {
-        return new IsCookieMapsPairContainingEqualKeys();
-    }
-    
+	public static Matcher<CookieMapPair> containsEqualKeys() {
+		return new IsCookieMapsPairContainingEqualKeys();
+	}
+
 }

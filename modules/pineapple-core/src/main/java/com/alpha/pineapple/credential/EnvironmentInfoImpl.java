@@ -30,76 +30,76 @@ import java.util.TreeMap;
  */
 public class EnvironmentInfoImpl implements EnvironmentInfo {
 
-    /**
-     * Environment ID.
-     */
-    String id;
+	/**
+	 * Environment ID.
+	 */
+	String id;
 
-    /**
-     * Description.
-     */
-    String description;
+	/**
+	 * Description.
+	 */
+	String description;
 
-    /**
-     * Resource info's.
-     */
-    TreeMap<String, CredentialInfo> credentialInfos;
+	/**
+	 * Resource info's.
+	 */
+	TreeMap<String, CredentialInfo> credentialInfos;
 
-    /**
-     * EnvironmentInfoImpl constructor.
-     * 
-     * @param description
-     *            environment description.
-     * @param credentialInfos
-     *            credential info's.
-     */
-    public EnvironmentInfoImpl(String id, String description, TreeMap<String, CredentialInfo> credentialInfos) {
-	super();
-	this.id = id;
-	this.description = description;
-	this.credentialInfos = credentialInfos;
-    }
+	/**
+	 * EnvironmentInfoImpl constructor.
+	 * 
+	 * @param description
+	 *            environment description.
+	 * @param credentialInfos
+	 *            credential info's.
+	 */
+	public EnvironmentInfoImpl(String id, String description, TreeMap<String, CredentialInfo> credentialInfos) {
+		super();
+		this.id = id;
+		this.description = description;
+		this.credentialInfos = credentialInfos;
+	}
 
-    @Override
-    public String getId() {
-	return id;
-    }
+	@Override
+	public String getId() {
+		return id;
+	}
 
-    @Override
-    public String getDescription() {
-	return description;
-    }
+	@Override
+	public String getDescription() {
+		return description;
+	}
 
-    @Override
-    public boolean containsCredential(String id) {
-	return credentialInfos.containsKey(id);
-    }
+	@Override
+	public boolean containsCredential(String id) {
+		return credentialInfos.containsKey(id);
+	}
 
-    @Override
-    public CredentialInfo getCredential(String id) {
-	if (!containsCredential(id))
-	    return null;
-	return credentialInfos.get(id);
-    }
+	@Override
+	public CredentialInfo getCredential(String id) {
+		if (!containsCredential(id))
+			return null;
+		return credentialInfos.get(id);
+	}
 
-    @Override
-    public CredentialInfo[] getCredentials() {
-	Collection<CredentialInfo> values = credentialInfos.values();
-	return (CredentialInfo[]) values.toArray(new CredentialInfo[values.size()]);
-    }
+	@Override
+	public CredentialInfo[] getCredentials() {
+		Collection<CredentialInfo> values = credentialInfos.values();
+		return (CredentialInfo[]) values.toArray(new CredentialInfo[values.size()]);
+	}
 
-    @Override
-    public void addCredential(CredentialInfo credentialInfo) {
-	if (containsCredential(credentialInfo.getId()))
-	    return;
-	credentialInfos.put(credentialInfo.getId(), credentialInfo);
-    }
+	@Override
+	public void addCredential(CredentialInfo credentialInfo) {
+		if (containsCredential(credentialInfo.getId()))
+			return;
+		credentialInfos.put(credentialInfo.getId(), credentialInfo);
+	}
 
-    @Override
-    public void deleteCredential(CredentialInfo credentialInfo) {
-	if (!containsCredential(credentialInfo.getId()))
-	    return;
-	credentialInfos.remove(credentialInfo.getId());
-    }
+	@Override
+	public void deleteCredential(CredentialInfo credentialInfo) {
+		if (!containsCredential(credentialInfo.getId()))
+			return;
+		credentialInfos.remove(credentialInfo.getId());
+	}
 
 }

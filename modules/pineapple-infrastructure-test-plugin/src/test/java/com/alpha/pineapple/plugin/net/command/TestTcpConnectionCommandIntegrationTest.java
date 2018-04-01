@@ -20,9 +20,7 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.command;
-
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -49,137 +47,127 @@ import com.alpha.testutils.ObjectMotherHttpServer;
 /**
  * Integration test of the class {@link TestTcpConnectionCommand}.
  */
-@RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration( locations = { "/com.alpha.pineapple.plugin.net-config.xml" } )
-public class TestTcpConnectionCommandIntegrationTest
-{
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/com.alpha.pineapple.plugin.net-config.xml" })
+public class TestTcpConnectionCommandIntegrationTest {
 	/**
-	 * TCP port for  HTTP server.
+	 * TCP port for HTTP server.
 	 */
-    static final int HTTP_PORT = 3000;
+	static final int HTTP_PORT = 3000;
 
 	/**
-	 * TCP ports for  HTTP server.
+	 * TCP ports for HTTP server.
 	 */
-    static final int[] HTTP_PORTS = new int[] { HTTP_PORT };
-    
-    
-    /**
-     * Command under test.
-     */
-    @Resource( name="testTcpConnectionCommand")	
-    Command command;
+	static final int[] HTTP_PORTS = new int[] { HTTP_PORT };
 
-    /**
-     * Chain context.
-     */
-    Context context;
+	/**
+	 * Command under test.
+	 */
+	@Resource(name = "testTcpConnectionCommand")
+	Command command;
 
-    /**
-     * HTTP server object mother 
-     */
-    ObjectMotherHttpServer httpServerMother;
+	/**
+	 * Chain context.
+	 */
+	Context context;
 
-    /**
-     * HTTP server. 
-     */
-    Server httpServer;
-        
+	/**
+	 * HTTP server object mother
+	 */
+	ObjectMotherHttpServer httpServerMother;
+
+	/**
+	 * HTTP server.
+	 */
+	Server httpServer;
+
 	/**
 	 * Execution result.
 	 */
-	ExecutionResult executionResult;    
-    
-    @Before
-    public void setUp() throws Exception
-    {
-        // create context
-        context = new ContextBase();
-        
-        // create HTTP server object mother
-        httpServerMother = new ObjectMotherHttpServer();
+	ExecutionResult executionResult;
 
-        // create HTTP server
-        httpServer = httpServerMother.createHttpServer(httpServerMother.getHostIPAddress(true), HTTP_PORT);
-        
-        // create execution result
-		executionResult = new ExecutionResultImpl("Root result" );
-    }
+	@Before
+	public void setUp() throws Exception {
+		// create context
+		context = new ContextBase();
 
-    @After
-    public void tearDown() throws Exception
-    {
-        command = null;
-        context = null;
-        httpServer.stop();
-        httpServer = null;
-        httpServerMother = null;        
-    }
+		// create HTTP server object mother
+		httpServerMother = new ObjectMotherHttpServer();
 
-    /**
-     * Test that command can bind to port 3000 on in the IP address for the local host.
-     */
-    @SuppressWarnings( "unchecked" )
-    @Test
-    public void testSucceedsListeningToLocalHostOn3000()
-    {    	
-        try
-        {
-        	// get host IP address
-        	String hostIpAddress = httpServerMother.getHostIPAddress(true);    	
+		// create HTTP server
+		httpServer = httpServerMother.createHttpServer(httpServerMother.getHostIPAddress(true), HTTP_PORT);
 
-        	// create execution result        	
-        	ExecutionResult childResult = executionResult.addChild("Test host listen port.");        	
-        	
-            // setup parameters
-    		context.put( TestTcpConnectionCommand.EXECUTIONRESULT_KEY, childResult );        	
-            context.put( TestTcpConnectionCommand.HOST_KEY, hostIpAddress );
-            context.put( TestTcpConnectionCommand.PORTS_KEY, HTTP_PORTS );
+		// create execution result
+		executionResult = new ExecutionResultImpl("Root result");
+	}
 
-            // execute command
-            command.execute( context );
+	@After
+	public void tearDown() throws Exception {
+		command = null;
+		context = null;
+		httpServer.stop();
+		httpServer = null;
+		httpServerMother = null;
+	}
 
-            // test
-            assertEquals( ExecutionState.SUCCESS, childResult.getState());
+	/**
+	 * Test that command can bind to port 3000 on in the IP address for the local
+	 * host.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSucceedsListeningToLocalHostOn3000() {
+		try {
+			// get host IP address
+			String hostIpAddress = httpServerMother.getHostIPAddress(true);
 
-        }
-        catch ( Exception e )
-        {
-            fail( StackTraceHelper.getStrackTrace( e ) );
-        }
-    }
+			// create execution result
+			ExecutionResult childResult = executionResult.addChild("Test host listen port.");
 
-    /**
-     * Test that command can bind to port 3000 on in the IP address for the local host.
-     */
-    @SuppressWarnings( "unchecked" )
-    @Test
-    public void testFailsListeningToUnknownLocalHostOn4000()
-    {    	
-        try
-        {
-        	// get host IP address
-        	String hostIpAddress = httpServerMother.getHostIPAddress(true);    	
+			// setup parameters
+			context.put(TestTcpConnectionCommand.EXECUTIONRESULT_KEY, childResult);
+			context.put(TestTcpConnectionCommand.HOST_KEY, hostIpAddress);
+			context.put(TestTcpConnectionCommand.PORTS_KEY, HTTP_PORTS);
 
-        	// create execution result        	
-        	ExecutionResult childResult = executionResult.addChild("Test host listen port.");        	
-        	
-            // setup parameters
-    		context.put( TestTcpConnectionCommand.EXECUTIONRESULT_KEY, childResult );        	
-            context.put( TestTcpConnectionCommand.HOST_KEY, hostIpAddress );
-            context.put( TestTcpConnectionCommand.PORTS_KEY, new int[] { 4000 });
+			// execute command
+			command.execute(context);
 
-            // execute command
-            command.execute( context );
-            
-            // test
-            assertEquals( ExecutionState.FAILURE, childResult.getState());
+			// test
+			assertEquals(ExecutionState.SUCCESS, childResult.getState());
 
-        }
-        catch ( Exception e )
-        {
-            fail( StackTraceHelper.getStrackTrace( e ) );
-        }
-    }
-    
+		} catch (Exception e) {
+			fail(StackTraceHelper.getStrackTrace(e));
+		}
+	}
+
+	/**
+	 * Test that command can bind to port 3000 on in the IP address for the local
+	 * host.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFailsListeningToUnknownLocalHostOn4000() {
+		try {
+			// get host IP address
+			String hostIpAddress = httpServerMother.getHostIPAddress(true);
+
+			// create execution result
+			ExecutionResult childResult = executionResult.addChild("Test host listen port.");
+
+			// setup parameters
+			context.put(TestTcpConnectionCommand.EXECUTIONRESULT_KEY, childResult);
+			context.put(TestTcpConnectionCommand.HOST_KEY, hostIpAddress);
+			context.put(TestTcpConnectionCommand.PORTS_KEY, new int[] { 4000 });
+
+			// execute command
+			command.execute(context);
+
+			// test
+			assertEquals(ExecutionState.FAILURE, childResult.getState());
+
+		} catch (Exception e) {
+			fail(StackTraceHelper.getStrackTrace(e));
+		}
+	}
+
 }

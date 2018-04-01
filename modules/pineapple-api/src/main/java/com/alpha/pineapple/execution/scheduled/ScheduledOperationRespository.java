@@ -32,85 +32,84 @@ import com.alpha.pineapple.module.ModuleNotFoundException;
  */
 public interface ScheduledOperationRespository {
 
-    /**
-     * Initialize repository.
-     * 
-     * @param result
-     *            A child execution result will be added to this result. The
-     *            child result will reflects the out come of the initialization.
-     *            If the initialization fails the state of the result object
-     *            will be failure or error and will contain a stack trace
-     *            message.
-     */
-    void initialize(ExecutionResult result);
+	/**
+	 * Initialize repository.
+	 * 
+	 * @param result
+	 *            A child execution result will be added to this result. The child
+	 *            result will reflects the out come of the initialization. If the
+	 *            initialization fails the state of the result object will be
+	 *            failure or error and will contain a stack trace message.
+	 */
+	void initialize(ExecutionResult result);
 
-    /**
-     * Get all scheduled operations.
-     * 
-     * @return stream of scheduled operation info's.
-     */
-    Stream<ScheduledOperationInfo> getOperations();
+	/**
+	 * Get all scheduled operations.
+	 * 
+	 * @return stream of scheduled operation info's.
+	 */
+	Stream<ScheduledOperationInfo> getOperations();
 
-    /**
-     * Add scheduled operation.
-     *
-     * @param name
-     *            name of the scheduled operation. Must be unique.
-     * @param module
-     *            name of the module to be scheduled for execution.
-     * @param operation
-     *            operation which should be executed.
-     * @param environment
-     *            environment for which a model within the module should be
-     *            executed.
-     * @param description
-     *            description of the scheduled operation.
-     * @param cron
-     *            CRON scheduling expression.
-     *
-     * @return scheduled operation info.
-     * 
-     * @throws ModuleNotFoundException
-     *             if module isn't found.
-     * @throws EnvironmentNotFoundException
-     *             if environment isn't found with module.
-     * @throws IllegalJobNameException
-     *             if job name isn't unique.
-     */
-    ScheduledOperationInfo create(String name, String module, String operation, String environment, String description,
-	    String cron);
+	/**
+	 * Add scheduled operation.
+	 *
+	 * @param name
+	 *            name of the scheduled operation. Must be unique.
+	 * @param module
+	 *            name of the module to be scheduled for execution.
+	 * @param operation
+	 *            operation which should be executed.
+	 * @param environment
+	 *            environment for which a model within the module should be
+	 *            executed.
+	 * @param description
+	 *            description of the scheduled operation.
+	 * @param cron
+	 *            CRON scheduling expression.
+	 *
+	 * @return scheduled operation info.
+	 * 
+	 * @throws ModuleNotFoundException
+	 *             if module isn't found.
+	 * @throws EnvironmentNotFoundException
+	 *             if environment isn't found with module.
+	 * @throws IllegalJobNameException
+	 *             if job name isn't unique.
+	 */
+	ScheduledOperationInfo create(String name, String module, String operation, String environment, String description,
+			String cron);
 
-    /**
-     * Add scheduled operation.
-     *
-     * @param operation
-     *            scheduled operation which should be executed.
-     *
-     * @return scheduled operation info.
-     * 
-     * @throws ModuleNotFoundException
-     *             if module isn't found.
-     * @throws EnvironmentNotFoundException
-     *             if environment isn't found with module.
-     * @throws IllegalJobNameException
-     *             if job name isn't unique.
-     */
-    ScheduledOperationInfo create(ScheduledOperation operation);
+	/**
+	 * Add scheduled operation.
+	 *
+	 * @param operation
+	 *            scheduled operation which should be executed.
+	 *
+	 * @return scheduled operation info.
+	 * 
+	 * @throws ModuleNotFoundException
+	 *             if module isn't found.
+	 * @throws EnvironmentNotFoundException
+	 *             if environment isn't found with module.
+	 * @throws IllegalJobNameException
+	 *             if job name isn't unique.
+	 */
+	ScheduledOperationInfo create(ScheduledOperation operation);
 
-    /**
-     * Remove scheduled job.
-     * 
-     * @param name
-     *            name of job to remove.
-     * 
-     * @throws ScheduledOperationNotFoundException
-     *             if job doesn't exist.
-     */
-    public void delete(String name);
+	/**
+	 * Remove scheduled job.
+	 * 
+	 * @param name
+	 *            name of job to remove.
+	 * 
+	 * @throws ScheduledOperationNotFoundException
+	 *             if job doesn't exist.
+	 */
+	public void delete(String name);
 
-    /**
-     * Remove all scheduled jobs.
-     */
-    public void deleteAll();
+	/**
+	 * Remove all scheduled jobs.
+	 */
+	public void deleteAll();
 
 }

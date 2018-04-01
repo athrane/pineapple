@@ -58,257 +58,257 @@ import com.alpha.testutils.DockerTestHelper;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.docker-config.xml" })
 public class DeleteContainerCommandSystemTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command deleteContainerCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command deleteContainerCommand;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Random value.
-     */
-    String randomValue;
+	/**
+	 * Random value.
+	 */
+	String randomValue;
 
-    /**
-     * Random container name.
-     */
-    String randomName;
+	/**
+	 * Random container name.
+	 */
+	String randomName;
 
-    /**
-     * Random container ID.
-     */
-    String randomId;
+	/**
+	 * Random container ID.
+	 */
+	String randomId;
 
-    /**
-     * Docker session.
-     */
-    DockerSession session;
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
 
-    /**
-     * Docker helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
+	/**
+	 * Docker helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
 
-    /**
-     * Docker info objects builder.
-     */
-    @Resource
-    InfoBuilder dockerInfoBuilder;
+	/**
+	 * Docker info objects builder.
+	 */
+	@Resource
+	InfoBuilder dockerInfoBuilder;
 
-    /**
-     * Container instance info.
-     */
-    ContainerInstanceInfo containerInstanceInfo;
+	/**
+	 * Container instance info.
+	 */
+	ContainerInstanceInfo containerInstanceInfo;
 
-    /**
-     * Container info.
-     */
-    ContainerInfo containerInfo;
+	/**
+	 * Container info.
+	 */
+	ContainerInfo containerInfo;
 
-    /**
-     * Tagged image info.
-     */
-    ImageInfo taggedImageInfo;
+	/**
+	 * Tagged image info.
+	 */
+	ImageInfo taggedImageInfo;
 
-    /**
-     * Default image info (CentOS).
-     */
-    ImageInfo defaultImageInfo;
+	/**
+	 * Default image info (CentOS).
+	 */
+	ImageInfo defaultImageInfo;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-	randomValue = RandomStringUtils.randomAlphabetic(10);
-	randomName = RandomStringUtils.randomAlphabetic(10);
-	randomId = RandomStringUtils.randomAlphabetic(10);
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		randomValue = RandomStringUtils.randomAlphabetic(10);
+		randomName = RandomStringUtils.randomAlphabetic(10);
+		randomId = RandomStringUtils.randomAlphabetic(10);
 
-	// create context
-	context = new ContextBase();
+		// create context
+		context = new ContextBase();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("root");
+		// create execution result
+		executionResult = new ExecutionResultImpl("root");
 
-	// create session
-	session = dockerHelper.createDefaultSession();
+		// create session
+		session = dockerHelper.createDefaultSession();
 
-	// create image and info's
-	defaultImageInfo = dockerHelper.createDefaultImage(session);
-	taggedImageInfo = dockerHelper.createDefaultTaggedImageInfo();
+		// create image and info's
+		defaultImageInfo = dockerHelper.createDefaultImage(session);
+		taggedImageInfo = dockerHelper.createDefaultTaggedImageInfo();
 
-	// tag image
-	dockerHelper.tagImage(session, defaultImageInfo, taggedImageInfo);
-    }
+		// tag image
+		dockerHelper.tagImage(session, defaultImageInfo, taggedImageInfo);
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
 
-	// delete tagged image - if it exists
-	dockerHelper.deleteImage(session, taggedImageInfo);
-    }
+		// delete tagged image - if it exists
+		dockerHelper.deleteImage(session, taggedImageInfo);
+	}
 
-    /**
-     * Test that command instance can be created in application context.
-     */
-    @Test
-    public void testCanGetInstance() throws Exception {
-	assertNotNull(deleteContainerCommand);
-    }
+	/**
+	 * Test that command instance can be created in application context.
+	 */
+	@Test
+	public void testCanGetInstance() throws Exception {
+		assertNotNull(deleteContainerCommand);
+	}
 
-    /**
-     * Test that command can delete container.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDeleteContainer() throws Exception {
+	/**
+	 * Test that command can delete container.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDeleteContainer() throws Exception {
 
-	// create container
-	containerInstanceInfo = dockerHelper.createContainer(session, randomName, defaultImageInfo);
+		// create container
+		containerInstanceInfo = dockerHelper.createContainer(session, randomName, defaultImageInfo);
 
-	// setup context
-	context.put(EXECUTIONRESULT_KEY, executionResult);
-	context.put(SESSION_KEY, session);
-	context.put(CONTAINER_INFO_KEY, containerInstanceInfo.getContainerInfo());
+		// setup context
+		context.put(EXECUTIONRESULT_KEY, executionResult);
+		context.put(SESSION_KEY, session);
+		context.put(CONTAINER_INFO_KEY, containerInstanceInfo.getContainerInfo());
 
-	// execute command
-	deleteContainerCommand.execute(context);
+		// execute command
+		deleteContainerCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
-    /**
-     * Test that command can delete container created of tagged image.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDeleteContainerCreateFromTaggedImage() throws Exception {
+	/**
+	 * Test that command can delete container created of tagged image.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDeleteContainerCreateFromTaggedImage() throws Exception {
 
-	// create container
-	containerInstanceInfo = dockerHelper.createContainer(session, randomName, taggedImageInfo);
+		// create container
+		containerInstanceInfo = dockerHelper.createContainer(session, randomName, taggedImageInfo);
 
-	// setup context
-	context.put(EXECUTIONRESULT_KEY, executionResult);
-	context.put(SESSION_KEY, session);
-	context.put(CONTAINER_INFO_KEY, containerInstanceInfo.getContainerInfo());
+		// setup context
+		context.put(EXECUTIONRESULT_KEY, executionResult);
+		context.put(SESSION_KEY, session);
+		context.put(CONTAINER_INFO_KEY, containerInstanceInfo.getContainerInfo());
 
-	// execute command
-	deleteContainerCommand.execute(context);
+		// execute command
+		deleteContainerCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
-    /**
-     * Test that command succeeds in deleting unknown container.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testSucceedsInDeletingUnknownContainer() throws Exception {
+	/**
+	 * Test that command succeeds in deleting unknown container.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSucceedsInDeletingUnknownContainer() throws Exception {
 
-	// create fake container info's
-	containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
-	containerInstanceInfo = dockerInfoBuilder.buildInstanceInfo(randomId, containerInfo);
+		// create fake container info's
+		containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
+		containerInstanceInfo = dockerInfoBuilder.buildInstanceInfo(randomId, containerInfo);
 
-	// setup context
-	context.put(EXECUTIONRESULT_KEY, executionResult);
-	context.put(SESSION_KEY, session);
-	context.put(CONTAINER_INFO_KEY, containerInstanceInfo.getContainerInfo());
+		// setup context
+		context.put(EXECUTIONRESULT_KEY, executionResult);
+		context.put(SESSION_KEY, session);
+		context.put(CONTAINER_INFO_KEY, containerInstanceInfo.getContainerInfo());
 
-	// execute command
-	deleteContainerCommand.execute(context);
+		// execute command
+		deleteContainerCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
-    /**
-     * Test that command can delete running container.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDeleteRunningContainer() throws Exception {
+	/**
+	 * Test that command can delete running container.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDeleteRunningContainer() throws Exception {
 
-	// create container
-	containerInstanceInfo = dockerHelper.createContainer(session, randomName, defaultImageInfo);
-	containerInfo = containerInstanceInfo.getContainerInfo();
-	dockerHelper.startContainer(session, containerInfo);
+		// create container
+		containerInstanceInfo = dockerHelper.createContainer(session, randomName, defaultImageInfo);
+		containerInfo = containerInstanceInfo.getContainerInfo();
+		dockerHelper.startContainer(session, containerInfo);
 
-	// setup context
-	context.put(EXECUTIONRESULT_KEY, executionResult);
-	context.put(SESSION_KEY, session);
-	context.put(CONTAINER_INFO_KEY, containerInstanceInfo.getContainerInfo());
+		// setup context
+		context.put(EXECUTIONRESULT_KEY, executionResult);
+		context.put(SESSION_KEY, session);
+		context.put(CONTAINER_INFO_KEY, containerInstanceInfo.getContainerInfo());
 
-	// execute command
-	deleteContainerCommand.execute(context);
+		// execute command
+		deleteContainerCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
-    /**
-     * Test that command can delete stopped container.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDeleteStoppedContainer() throws Exception {
+	/**
+	 * Test that command can delete stopped container.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDeleteStoppedContainer() throws Exception {
 
-	// create container
-	containerInstanceInfo = dockerHelper.createContainer(session, randomName, defaultImageInfo);
-	containerInfo = containerInstanceInfo.getContainerInfo();
-	dockerHelper.startContainer(session, containerInfo);
-	dockerHelper.stopContainer(session, containerInfo);
+		// create container
+		containerInstanceInfo = dockerHelper.createContainer(session, randomName, defaultImageInfo);
+		containerInfo = containerInstanceInfo.getContainerInfo();
+		dockerHelper.startContainer(session, containerInfo);
+		dockerHelper.stopContainer(session, containerInfo);
 
-	// setup context
-	context.put(EXECUTIONRESULT_KEY, executionResult);
-	context.put(SESSION_KEY, session);
-	context.put(CONTAINER_INFO_KEY, containerInstanceInfo.getContainerInfo());
+		// setup context
+		context.put(EXECUTIONRESULT_KEY, executionResult);
+		context.put(SESSION_KEY, session);
+		context.put(CONTAINER_INFO_KEY, containerInstanceInfo.getContainerInfo());
 
-	// execute command
-	deleteContainerCommand.execute(context);
+		// execute command
+		deleteContainerCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
-    /**
-     * Test that command can delete paused container.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDeletePausedContainer() throws Exception {
+	/**
+	 * Test that command can delete paused container.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDeletePausedContainer() throws Exception {
 
-	// create container
-	containerInstanceInfo = dockerHelper.createContainer(session, randomName, defaultImageInfo);
-	containerInfo = containerInstanceInfo.getContainerInfo();
-	dockerHelper.startContainer(session, containerInfo);
-	dockerHelper.pauseContainer(session, containerInfo);
+		// create container
+		containerInstanceInfo = dockerHelper.createContainer(session, randomName, defaultImageInfo);
+		containerInfo = containerInstanceInfo.getContainerInfo();
+		dockerHelper.startContainer(session, containerInfo);
+		dockerHelper.pauseContainer(session, containerInfo);
 
-	// setup context
-	context.put(EXECUTIONRESULT_KEY, executionResult);
-	context.put(SESSION_KEY, session);
-	context.put(CONTAINER_INFO_KEY, containerInstanceInfo.getContainerInfo());
+		// setup context
+		context.put(EXECUTIONRESULT_KEY, executionResult);
+		context.put(SESSION_KEY, session);
+		context.put(CONTAINER_INFO_KEY, containerInstanceInfo.getContainerInfo());
 
-	// execute command
-	deleteContainerCommand.execute(context);
+		// execute command
+		deleteContainerCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
 }

@@ -32,9 +32,9 @@ import com.alpha.pineapple.substitution.VariableSubstitutionException;
  */
 public class NullVariablesBuilderImpl implements VariablesBuilder {
 
-    @Override
-    public Variables getVariables() throws VariableSubstitutionException {
-	return new DefaultVariablesImpl(new HashMap<String, String>());
-    }
+	@Override
+	public Variables getVariables() throws VariableSubstitutionException {
+		return new DefaultVariablesImpl(new HashMap<String, String>());
+	}
 
 }

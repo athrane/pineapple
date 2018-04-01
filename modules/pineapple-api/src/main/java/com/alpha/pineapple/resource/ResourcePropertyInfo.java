@@ -27,18 +27,18 @@ package com.alpha.pineapple.resource;
  */
 public interface ResourcePropertyInfo {
 
-    /**
-     * Return key.
-     * 
-     * @return key.
-     */
-    public String getKey();
+	/**
+	 * Return key.
+	 * 
+	 * @return key.
+	 */
+	public String getKey();
 
-    /**
-     * Return value.
-     * 
-     * @return value.
-     */
-    public String getValue();
+	/**
+	 * Return value.
+	 * 
+	 * @return value.
+	 */
+	public String getValue();
 
 }

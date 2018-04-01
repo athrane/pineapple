@@ -34,36 +34,36 @@ import com.alpha.pineapple.execution.ExecutionResult;
 @Deprecated
 public interface ProcessRunner {
 
-    /**
-     * Root directory where the process is run.
-     * 
-     * @param processDirectory
-     *            Root directory where the process is run.
-     */
-    void setDirectory(File processDirectory);
+	/**
+	 * Root directory where the process is run.
+	 * 
+	 * @param processDirectory
+	 *            Root directory where the process is run.
+	 */
+	void setDirectory(File processDirectory);
 
-    /**
-     * Set the root execution result object for the process runner.
-     * 
-     * @param result
-     *            The root execution result object.
-     */
-    public void setExecutionResult(ExecutionResult result);
+	/**
+	 * Set the root execution result object for the process runner.
+	 * 
+	 * @param result
+	 *            The root execution result object.
+	 */
+	public void setExecutionResult(ExecutionResult result);
 
-    /**
-     * Execute an external process in the operating system.
-     * 
-     * @param description
-     *            Human readable description of the process which should be
-     *            executed.
-     * @param argumentList
-     *            list of arguments to the process.
-     * @param environment
-     *            Map of environment settings for the process runner.
-     * 
-     * @return Execution result which contains information describing the the
-     *         result of the execution of the external process, including the
-     *         provided description.
-     */
-    ExecutionResult execute(String description, List<String> argumentList, Map<String, String> environment);
+	/**
+	 * Execute an external process in the operating system.
+	 * 
+	 * @param description
+	 *            Human readable description of the process which should be
+	 *            executed.
+	 * @param argumentList
+	 *            list of arguments to the process.
+	 * @param environment
+	 *            Map of environment settings for the process runner.
+	 * 
+	 * @return Execution result which contains information describing the the result
+	 *         of the execution of the external process, including the provided
+	 *         description.
+	 */
+	ExecutionResult execute(String description, List<String> argumentList, Map<String, String> environment);
 }

@@ -30,38 +30,38 @@ import org.apache.commons.chain.Context;
  */
 public interface ExecutionContextRepository {
 
-    /**
-     * Register context.
-     * 
-     * @param info
-     *            execution info for context.
-     * @param context
-     *            context to store.
-     */
-    public void register(ExecutionInfo info, Context context);
+	/**
+	 * Register context.
+	 * 
+	 * @param info
+	 *            execution info for context.
+	 * @param context
+	 *            context to store.
+	 */
+	public void register(ExecutionInfo info, Context context);
 
-    /**
-     * Unregister context.
-     * 
-     * @param context
-     *            context to unregister.
-     */
-    public void unregister(Context context);
+	/**
+	 * Unregister context.
+	 * 
+	 * @param context
+	 *            context to unregister.
+	 */
+	public void unregister(Context context);
 
-    /**
-     * get context.
-     * 
-     * @param info
-     *            execution info to lookup context.
-     */
-    public Context get(ExecutionInfo info);
+	/**
+	 * get context.
+	 * 
+	 * @param info
+	 *            execution info to lookup context.
+	 */
+	public Context get(ExecutionInfo info);
 
-    /**
-     * get context.
-     * 
-     * @param result
-     *            execution result to lookup context.
-     */
-    public Context get(ExecutionResult result);
+	/**
+	 * get context.
+	 * 
+	 * @param result
+	 *            execution result to lookup context.
+	 */
+	public Context get(ExecutionResult result);
 
 }

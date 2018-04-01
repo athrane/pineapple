@@ -30,27 +30,27 @@ import com.alpha.pineapple.model.execution.scheduled.ScheduledOperation;
  */
 public interface ScheduledOperationInfo {
 
-    /**
-     * Get future for scheduled operation.
-     * 
-     * @return future for scheduled operation.
-     */
-    ScheduledFuture<?> getFuture();
+	/**
+	 * Get future for scheduled operation.
+	 * 
+	 * @return future for scheduled operation.
+	 */
+	ScheduledFuture<?> getFuture();
 
-    /**
-     * Returns true if operation is scheduled, i.e. the future is defined.
-     */
-    public boolean isScheduled();
-    
-    /**
-     * Terminate scheduling of operation.
-     */
-    public void cancel();
+	/**
+	 * Returns true if operation is scheduled, i.e. the future is defined.
+	 */
+	public boolean isScheduled();
 
-    /**
-     * Get scheduled operation model object.
-     * 
-     * @return scheduled operation model object.
-     */
-    ScheduledOperation getOperation();
+	/**
+	 * Terminate scheduling of operation.
+	 */
+	public void cancel();
+
+	/**
+	 * Get scheduled operation model object.
+	 * 
+	 * @return scheduled operation model object.
+	 */
+	ScheduledOperation getOperation();
 }

@@ -29,62 +29,61 @@ import java.util.Random;
  */
 public class NetworkUtils {
 
-    /**
-     * Maximum legal IP port.
-     */
-    static final int MAX_LEGAL_IP_PORT = 65535;
+	/**
+	 * Maximum legal IP port.
+	 */
+	static final int MAX_LEGAL_IP_PORT = 65535;
 
-    /**
-     * Minimum legal IP port.
-     */
-    static final int MIN_LEGAL_IP_PORT = 1;
+	/**
+	 * Minimum legal IP port.
+	 */
+	static final int MIN_LEGAL_IP_PORT = 1;
 
-    /**
-     * Error message for port number validation.
-     */
-    static final String ILLEGAL_PORT_TEXT = "portNumber is illegal port number. Legal values are between 1 to 65535";
+	/**
+	 * Error message for port number validation.
+	 */
+	static final String ILLEGAL_PORT_TEXT = "portNumber is illegal port number. Legal values are between 1 to 65535";
 
-    /**
-     * Validate that IP port number is a valid, i.e. an integer between 1 to
-     * 65535.
-     * 
-     * @param portNumber
-     *            IP port number.
-     * 
-     * @throws IllegalArgumentException
-     *             if port number is invalid.
-     */
-    public static void validatePort(int portNumber) throws IllegalArgumentException {
-	if (!isValidPort(portNumber))
-	    throw new IllegalArgumentException(ILLEGAL_PORT_TEXT);
-    }
+	/**
+	 * Validate that IP port number is a valid, i.e. an integer between 1 to 65535.
+	 * 
+	 * @param portNumber
+	 *            IP port number.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if port number is invalid.
+	 */
+	public static void validatePort(int portNumber) throws IllegalArgumentException {
+		if (!isValidPort(portNumber))
+			throw new IllegalArgumentException(ILLEGAL_PORT_TEXT);
+	}
 
-    /**
-     * Returns true if IP port number is a valid, i.e. an integer between 1 to
-     * 65535.
-     * 
-     * @param portNumber
-     *            IP port number.
-     * 
-     * @return returns true if port number is an valid IP port.
-     */
-    public static boolean isValidPort(int portNumber) {
-	if (portNumber < MIN_LEGAL_IP_PORT)
-	    return false;
-	if (portNumber > MAX_LEGAL_IP_PORT)
-	    return false;
-	return true;
-    }
+	/**
+	 * Returns true if IP port number is a valid, i.e. an integer between 1 to
+	 * 65535.
+	 * 
+	 * @param portNumber
+	 *            IP port number.
+	 * 
+	 * @return returns true if port number is an valid IP port.
+	 */
+	public static boolean isValidPort(int portNumber) {
+		if (portNumber < MIN_LEGAL_IP_PORT)
+			return false;
+		if (portNumber > MAX_LEGAL_IP_PORT)
+			return false;
+		return true;
+	}
 
-    /**
-     * Return a random legal port, i.e. an integer between 1 to 65535.
-     * 
-     * @param random
-     *            random object.
-     * @return Return a random legal port.
-     */
-    public static int getRandomPort(Random random) {
-	return random.nextInt(MAX_LEGAL_IP_PORT) + 1;
-    }
+	/**
+	 * Return a random legal port, i.e. an integer between 1 to 65535.
+	 * 
+	 * @param random
+	 *            random object.
+	 * @return Return a random legal port.
+	 */
+	public static int getRandomPort(Random random) {
+		return random.nextInt(MAX_LEGAL_IP_PORT) + 1;
+	}
 
 }

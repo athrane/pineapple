@@ -49,105 +49,104 @@ import com.alpha.pineapple.i18n.MessageProvider;
 @RequestMapping(REST_SYSTEM_URI)
 public class SystemController {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider webMessageProvider;
 
-    /**
-     * Pineapple core component.
-     */
-    @Resource
-    PineappleCore coreComponent;
+	/**
+	 * Pineapple core component.
+	 */
+	@Resource
+	PineappleCore coreComponent;
 
-    /**
-     * Get simple initialization status.
-     * 
-     * @return Get the initialization status of Pineapple. The status is
-     *         returned in a single human readable string which states whether
-     *         Pineapple the core component) was initialized successfully or
-     *         with errors. If the core component isn't initialized then an
-     *         exception is thrown.
-     * 
-     * @throws IllegalStateException
-     *             if the core component isn't initialized.
-     * @throws IllegalArgumentException
-     *             if the core component isn't initialized successfully.
-     * 
-     *             The exception is handled by the spring exception handler.
-     */
-    @RequestMapping(value = REST_SYSTEM_SIMPLE_STATUS_PATH, method = RequestMethod.GET)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public String getSimpleInitializationStatus() {
-	String status = coreComponent.getInitializationInfoAsString();
+	/**
+	 * Get simple initialization status.
+	 * 
+	 * @return Get the initialization status of Pineapple. The status is returned in
+	 *         a single human readable string which states whether Pineapple the
+	 *         core component) was initialized successfully or with errors. If the
+	 *         core component isn't initialized then an exception is thrown.
+	 * 
+	 * @throws IllegalStateException
+	 *             if the core component isn't initialized.
+	 * @throws IllegalArgumentException
+	 *             if the core component isn't initialized successfully.
+	 * 
+	 *             The exception is handled by the spring exception handler.
+	 */
+	@RequestMapping(value = REST_SYSTEM_SIMPLE_STATUS_PATH, method = RequestMethod.GET)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public String getSimpleInitializationStatus() {
+		String status = coreComponent.getInitializationInfoAsString();
 
-	// if status isn't defined then throw exception
-	if (status == null) {
-	    String message = webMessageProvider.getMessage("sc_core_not_initialized_failure");
-	    throw new IllegalStateException(message);
+		// if status isn't defined then throw exception
+		if (status == null) {
+			String message = webMessageProvider.getMessage("sc_core_not_initialized_failure");
+			throw new IllegalStateException(message);
+		}
+
+		// if status isn't successful then throw exception
+		if (!status.contains("successful")) {
+			throw new IllegalArgumentException(status);
+		}
+
+		return status;
 	}
 
-	// if status isn't successful then throw exception
-	if (!status.contains("successful")) {
-	    throw new IllegalArgumentException(status);
+	/**
+	 * Get Version.
+	 * 
+	 * @return Get Pineapple version. Get version information about Pineapple. The
+	 *         information is returned in a single human readable string.
+	 */
+	@RequestMapping(value = REST_SYSTEM_VERSION_PATH, method = RequestMethod.GET)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public String getVersion() {
+		logger.debug(coreComponent.toString());
+		return coreComponent.toString();
 	}
 
-	return status;
-    }
+	/**
+	 * Exception handler for uninitialized core component.
+	 * 
+	 * @param e
+	 *            illegal state exception.
+	 * @param response
+	 *            HTTP response.
+	 * 
+	 * @return resource not found HTTP status code and error message.
+	 */
+	@ExceptionHandler(IllegalStateException.class)
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	@ResponseBody
+	public String handleException(IllegalStateException e, HttpServletResponse response) {
+		return e.getMessage();
+	}
 
-    /**
-     * Get Version.
-     * 
-     * @return Get Pineapple version. Get version information about Pineapple.
-     *         The information is returned in a single human readable string.
-     */
-    @RequestMapping(value = REST_SYSTEM_VERSION_PATH, method = RequestMethod.GET)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public String getVersion() {
-	logger.debug(coreComponent.toString());
-	return coreComponent.toString();
-    }
-
-    /**
-     * Exception handler for uninitialized core component.
-     * 
-     * @param e
-     *            illegal state exception.
-     * @param response
-     *            HTTP response.
-     * 
-     * @return resource not found HTTP status code and error message.
-     */
-    @ExceptionHandler(IllegalStateException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public String handleException(IllegalStateException e, HttpServletResponse response) {
-	return e.getMessage();
-    }
-
-    /**
-     * Exception handler for unsuccessful initialized core component.
-     * 
-     * @param e
-     *            illegal argument exception.
-     * @param response
-     *            HTTP response.
-     * 
-     * @return internal server error HTTP status code and error message.
-     */
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public String handleException(IllegalArgumentException e, HttpServletResponse response) {
-	return e.getMessage();
-    }
+	/**
+	 * Exception handler for unsuccessful initialized core component.
+	 * 
+	 * @param e
+	 *            illegal argument exception.
+	 * @param response
+	 *            HTTP response.
+	 * 
+	 * @return internal server error HTTP status code and error message.
+	 */
+	@ExceptionHandler(IllegalArgumentException.class)
+	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public String handleException(IllegalArgumentException e, HttpServletResponse response) {
+		return e.getMessage();
+	}
 
 }

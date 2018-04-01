@@ -42,190 +42,192 @@ import com.alpha.pineapple.docker.model.rest.ObjectFactory;
  */
 public class ModelUtilsTest {
 
-    /**
-     * Docker REST model object factory.
-     */
-    ObjectFactory objectFactory;
+	/**
+	 * Docker REST model object factory.
+	 */
+	ObjectFactory objectFactory;
 
-    /**
-     * Test that for null input, null is returned.
-     */
-    @Test
-    public void testRemoveLfFromStreamWithNullReturnsNull() {
-	String result = ModelUtils.remoteLfFromStreamUpdate(null);
-	assertNull(result);
-    }
+	/**
+	 * Test that for null input, null is returned.
+	 */
+	@Test
+	public void testRemoveLfFromStreamWithNullReturnsNull() {
+		String result = ModelUtils.remoteLfFromStreamUpdate(null);
+		assertNull(result);
+	}
 
-    /**
-     * Test that for text without LF nothing is modified.
-     */
-    @Test
-    public void testRemoveLfFromStreamWithNoLfNothingIsModified() {
-	String input = RandomStringUtils.randomAlphabetic(10);
-	String result = ModelUtils.remoteLfFromStreamUpdate(input);
-	assertEquals(input, result);
-    }
+	/**
+	 * Test that for text without LF nothing is modified.
+	 */
+	@Test
+	public void testRemoveLfFromStreamWithNoLfNothingIsModified() {
+		String input = RandomStringUtils.randomAlphabetic(10);
+		String result = ModelUtils.remoteLfFromStreamUpdate(input);
+		assertEquals(input, result);
+	}
 
-    /**
-     * Test that for text with LF then LF is removed..
-     */
-    @Test
-    public void testRemoveLfFromStreamWithLfThenLfIsRemoved() {
-	String input = RandomStringUtils.randomAlphabetic(10);
-	String inputWithLf = input + "\n";
-	String result = ModelUtils.remoteLfFromStreamUpdate(inputWithLf);
-	assertEquals(input, result);
-    }
+	/**
+	 * Test that for text with LF then LF is removed..
+	 */
+	@Test
+	public void testRemoveLfFromStreamWithLfThenLfIsRemoved() {
+		String input = RandomStringUtils.randomAlphabetic(10);
+		String inputWithLf = input + "\n";
+		String result = ModelUtils.remoteLfFromStreamUpdate(inputWithLf);
+		assertEquals(input, result);
+	}
 
-    /**
-     * Test that true is returned for null image.
-     */
-    @Test
-    public void testReturnsTrueForNullImage() {
-	assertTrue(ModelUtils.isNoImageRepoTagsDefined(null));
-    }
+	/**
+	 * Test that true is returned for null image.
+	 */
+	@Test
+	public void testReturnsTrueForNullImage() {
+		assertTrue(ModelUtils.isNoImageRepoTagsDefined(null));
+	}
 
-    /**
-     * Test that true is returned for empty list of repo tags.
-     */
-    @Test
-    public void testReturnsTrueEmptyListOfRepoTags() {
-	objectFactory = new ObjectFactory();
-	ListedImage image = objectFactory.createListedImage();
-	assertTrue(ModelUtils.isNoImageRepoTagsDefined(image));
-    }
+	/**
+	 * Test that true is returned for empty list of repo tags.
+	 */
+	@Test
+	public void testReturnsTrueEmptyListOfRepoTags() {
+		objectFactory = new ObjectFactory();
+		ListedImage image = objectFactory.createListedImage();
+		assertTrue(ModelUtils.isNoImageRepoTagsDefined(image));
+	}
 
-    /**
-     * Test that false is returned for list of repo tags with one element.
-     */
-    @Test
-    public void testReturnsFalseForListOfRepoTagsWithOneElement() {
-	objectFactory = new ObjectFactory();
-	ListedImage image = objectFactory.createListedImage();
-	List<String> tagsList = image.getRepoTags();
-	tagsList.add(RandomStringUtils.randomAlphabetic(10));
-	assertFalse(ModelUtils.isNoImageRepoTagsDefined(image));
-    }
+	/**
+	 * Test that false is returned for list of repo tags with one element.
+	 */
+	@Test
+	public void testReturnsFalseForListOfRepoTagsWithOneElement() {
+		objectFactory = new ObjectFactory();
+		ListedImage image = objectFactory.createListedImage();
+		List<String> tagsList = image.getRepoTags();
+		tagsList.add(RandomStringUtils.randomAlphabetic(10));
+		assertFalse(ModelUtils.isNoImageRepoTagsDefined(image));
+	}
 
-    /**
-     * Test that true is returned for list of repo tags with one element with
-     * the none:none name.
-     */
-    @Test
-    public void testReturnsTrueForListOfRepoTagsWithOneElementWithNoneName() {
-	objectFactory = new ObjectFactory();
-	ListedImage image = objectFactory.createListedImage();
-	List<String> tagsList = image.getRepoTags();
-	tagsList.add(DockerConstants.UNDEFINED_REPO_TAG);
-	assertTrue(ModelUtils.isNoImageRepoTagsDefined(image));
-    }
+	/**
+	 * Test that true is returned for list of repo tags with one element with the
+	 * none:none name.
+	 */
+	@Test
+	public void testReturnsTrueForListOfRepoTagsWithOneElementWithNoneName() {
+		objectFactory = new ObjectFactory();
+		ListedImage image = objectFactory.createListedImage();
+		List<String> tagsList = image.getRepoTags();
+		tagsList.add(DockerConstants.UNDEFINED_REPO_TAG);
+		assertTrue(ModelUtils.isNoImageRepoTagsDefined(image));
+	}
 
-    /**
-     * Test that false is returned for list of repo tags with two elements.
-     */
-    @Test
-    public void testReturnsFalseForListOfRepoTagsWithTwoElements() {
-	objectFactory = new ObjectFactory();
-	ListedImage image = objectFactory.createListedImage();
-	List<String> tagsList = image.getRepoTags();
-	tagsList.add(RandomStringUtils.randomAlphabetic(10));
-	tagsList.add(RandomStringUtils.randomAlphabetic(10));
-	assertFalse(ModelUtils.isNoImageRepoTagsDefined(image));
-    }
+	/**
+	 * Test that false is returned for list of repo tags with two elements.
+	 */
+	@Test
+	public void testReturnsFalseForListOfRepoTagsWithTwoElements() {
+		objectFactory = new ObjectFactory();
+		ListedImage image = objectFactory.createListedImage();
+		List<String> tagsList = image.getRepoTags();
+		tagsList.add(RandomStringUtils.randomAlphabetic(10));
+		tagsList.add(RandomStringUtils.randomAlphabetic(10));
+		assertFalse(ModelUtils.isNoImageRepoTagsDefined(image));
+	}
 
-    /**
-     * Test that true is returned for list of repo tags with two elements with
-     * the none:none name.
-     */
-    @Test
-    public void testReturnsTrueForListOfRepoTagsWithTwoElementsWithNoneName() {
-	objectFactory = new ObjectFactory();
-	ListedImage image = objectFactory.createListedImage();
-	List<String> tagsList = image.getRepoTags();
-	tagsList.add(DockerConstants.UNDEFINED_REPO_TAG);
-	tagsList.add(DockerConstants.UNDEFINED_REPO_TAG);
-	assertTrue(ModelUtils.isNoImageRepoTagsDefined(image));
-    }
+	/**
+	 * Test that true is returned for list of repo tags with two elements with the
+	 * none:none name.
+	 */
+	@Test
+	public void testReturnsTrueForListOfRepoTagsWithTwoElementsWithNoneName() {
+		objectFactory = new ObjectFactory();
+		ListedImage image = objectFactory.createListedImage();
+		List<String> tagsList = image.getRepoTags();
+		tagsList.add(DockerConstants.UNDEFINED_REPO_TAG);
+		tagsList.add(DockerConstants.UNDEFINED_REPO_TAG);
+		assertTrue(ModelUtils.isNoImageRepoTagsDefined(image));
+	}
 
-    /**
-     * Test that true if string contain separator.
-     */
-    @Test
-    public void testContainsSeparatorReturnsTrueIfStringContainsSeparator() {
-	assertTrue(ModelUtils.containsSeparator("alpha:alpha"));
-    }
+	/**
+	 * Test that true if string contain separator.
+	 */
+	@Test
+	public void testContainsSeparatorReturnsTrueIfStringContainsSeparator() {
+		assertTrue(ModelUtils.containsSeparator("alpha:alpha"));
+	}
 
-    /**
-     * Test that true if string contain separator.
-     */
-    @Test
-    public void testContainsSeparatorReturnsTrueIfStringContainsSeparator2() {
-	assertTrue(ModelUtils.containsSeparator(":alpha"));
-    }
+	/**
+	 * Test that true if string contain separator.
+	 */
+	@Test
+	public void testContainsSeparatorReturnsTrueIfStringContainsSeparator2() {
+		assertTrue(ModelUtils.containsSeparator(":alpha"));
+	}
 
-    /**
-     * Test that true if string contain separator.
-     */
-    @Test
-    public void testContainsSeparatorReturnsTrueIfStringContainsSeparator3() {
-	assertTrue(ModelUtils.containsSeparator("alpha:"));
-    }
-    
-    /**
-     * Test that true if string contain multiple separators.
-     */
-    @Test
-    public void testContainsSeparatorReturnsTrueIfStringContainsMultipleSeparators() {
-	assertTrue(ModelUtils.containsSeparator("::::"));
-    }
-    
-    /**
-     * Test that false if string doens't contain separator.
-     */
-    @Test
-    public void testContainsSeparatorReturnsFalseIfStringDoesntContainsSeparator() {
-	assertFalse(ModelUtils.containsSeparator("alpha"));
-    }
+	/**
+	 * Test that true if string contain separator.
+	 */
+	@Test
+	public void testContainsSeparatorReturnsTrueIfStringContainsSeparator3() {
+		assertTrue(ModelUtils.containsSeparator("alpha:"));
+	}
 
-    /**
-     * Test that false if string doens't contain separator.
-     */
-    @Test(expected=IllegalArgumentException.class)
-    public void testContainsSeparatorThrowsExceptionIfStringIsUndefined() {
-	ModelUtils.containsSeparator(null);
-    }
+	/**
+	 * Test that true if string contain multiple separators.
+	 */
+	@Test
+	public void testContainsSeparatorReturnsTrueIfStringContainsMultipleSeparators() {
+		assertTrue(ModelUtils.containsSeparator("::::"));
+	}
 
-    /**
-     * Test that true is returned if container image name contains separator.
-     */
-    @Test
-    public void testReturnsTrueIfContainerImageNameContainsTag() {
-	objectFactory = new ObjectFactory();
-	ListedContainer container = objectFactory.createListedContainer();
-	container.setImage("alpha:tag");
-	assertTrue(ModelUtils.isImageRepoTagDefined(container));
-    }
+	/**
+	 * Test that false if string doens't contain separator.
+	 */
+	@Test
+	public void testContainsSeparatorReturnsFalseIfStringDoesntContainsSeparator() {
+		assertFalse(ModelUtils.containsSeparator("alpha"));
+	}
 
-    /**
-     * Test that false is returned if container image name doens't contains separator.
-     */
-    @Test
-    public void testReturnsFalseIfContainerImageNameDoesntContainsTag() {
-	objectFactory = new ObjectFactory();
-	ListedContainer container = objectFactory.createListedContainer();
-	container.setImage("alpha");
-	assertFalse(ModelUtils.isImageRepoTagDefined(container));
-    }
+	/**
+	 * Test that false if string doens't contain separator.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testContainsSeparatorThrowsExceptionIfStringIsUndefined() {
+		ModelUtils.containsSeparator(null);
+	}
 
-    /**
-     * Test that false is returned if container image name doens't contains separator.
-     */
-    @Test(expected=IllegalArgumentException.class)
-    public void testThrowsExceptionIfContainerImageNameIsUndefined() {
-	objectFactory = new ObjectFactory();
-	ListedContainer container = objectFactory.createListedContainer();
-	container.setImage(null);
-	ModelUtils.isImageRepoTagDefined(container);
-    }
-    
+	/**
+	 * Test that true is returned if container image name contains separator.
+	 */
+	@Test
+	public void testReturnsTrueIfContainerImageNameContainsTag() {
+		objectFactory = new ObjectFactory();
+		ListedContainer container = objectFactory.createListedContainer();
+		container.setImage("alpha:tag");
+		assertTrue(ModelUtils.isImageRepoTagDefined(container));
+	}
+
+	/**
+	 * Test that false is returned if container image name doens't contains
+	 * separator.
+	 */
+	@Test
+	public void testReturnsFalseIfContainerImageNameDoesntContainsTag() {
+		objectFactory = new ObjectFactory();
+		ListedContainer container = objectFactory.createListedContainer();
+		container.setImage("alpha");
+		assertFalse(ModelUtils.isImageRepoTagDefined(container));
+	}
+
+	/**
+	 * Test that false is returned if container image name doens't contains
+	 * separator.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testThrowsExceptionIfContainerImageNameIsUndefined() {
+		objectFactory = new ObjectFactory();
+		ListedContainer container = objectFactory.createListedContainer();
+		container.setImage(null);
+		ModelUtils.isImageRepoTagDefined(container);
+	}
+
 }

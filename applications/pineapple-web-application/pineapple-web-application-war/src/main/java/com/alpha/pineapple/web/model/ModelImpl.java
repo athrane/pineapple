@@ -27,26 +27,26 @@ package com.alpha.pineapple.web.model;
  */
 public class ModelImpl implements Model {
 
-    /**
-     * Environment name.
-     */
-    public String environment;
+	/**
+	 * Environment name.
+	 */
+	public String environment;
 
-    /**
-     * ModelImpl constructor.
-     */
-    public ModelImpl() {
-    }
+	/**
+	 * ModelImpl constructor.
+	 */
+	public ModelImpl() {
+	}
 
-    public ModelImpl(String environment) {
-	this.environment = environment;
-    }
+	public ModelImpl(String environment) {
+		this.environment = environment;
+	}
 
-    public void setEnvironment(String environment) {
-	this.environment = environment;
-    }
+	public void setEnvironment(String environment) {
+		this.environment = environment;
+	}
 
-    public String getEnvironment() {
-	return environment;
-    }
+	public String getEnvironment() {
+		return environment;
+	}
 }

@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.ssh.session;
 
 import com.alpha.pineapple.session.Session;
@@ -32,49 +31,63 @@ import com.jcraft.jsch.ChannelSftp;
 /**
  * Session which provides access to a SSH session.
  */
-public interface SshSession extends Session
-{
+public interface SshSession extends Session {
 
 	/**
 	 * Connect to host using SSH and password authentication.
 	 * 
-	 * @param host host to connect to.
-	 * @param port TCP port to connect to.
-	 * @param user user name.
-	 * @param password password.
-	 * @param timeOut connection time out in ms.
+	 * @param host
+	 *            host to connect to.
+	 * @param port
+	 *            TCP port to connect to.
+	 * @param user
+	 *            user name.
+	 * @param password
+	 *            password.
+	 * @param timeOut
+	 *            connection time out in ms.
 	 * 
-	 * @throws SessionConnectException if connecting fails.
+	 * @throws SessionConnectException
+	 *             if connecting fails.
 	 */
-	void connect(String host, int port, String user, String password, int timeOut ) throws SessionConnectException;
+	void connect(String host, int port, String user, String password, int timeOut) throws SessionConnectException;
 
 	/**
 	 * Connect to host using SSH and public key authentication.
 	 * 
-	 * @param host host to connect to.
-	 * @param port TCP port to connect to.
-	 * @param user user name.
-	 * @param passPhrase private key pass phrase. Can be null.
-	 * @param privateKeyFile private key file. Absolute path to private key file.
-	 * @param timeOut connection time out in ms.
+	 * @param host
+	 *            host to connect to.
+	 * @param port
+	 *            TCP port to connect to.
+	 * @param user
+	 *            user name.
+	 * @param passPhrase
+	 *            private key pass phrase. Can be null.
+	 * @param privateKeyFile
+	 *            private key file. Absolute path to private key file.
+	 * @param timeOut
+	 *            connection time out in ms.
 	 * 
-	 * @throws SessionConnectException if connecting fails.
+	 * @throws SessionConnectException
+	 *             if connecting fails.
 	 */
-	void connect(String host, int port, String user, String passPhrase, String privateKeyFile, int timeOut) throws SessionConnectException;
-	
-    /**
-     * Returns true session is connected to an host using SSH.
-     * 
-     * @return true session is connected to an host using SSH.
-     */
-    public boolean isConnected();
+	void connect(String host, int port, String user, String passPhrase, String privateKeyFile, int timeOut)
+			throws SessionConnectException;
+
+	/**
+	 * Returns true session is connected to an host using SSH.
+	 * 
+	 * @return true session is connected to an host using SSH.
+	 */
+	public boolean isConnected();
 
 	/**
 	 * Get SFTP channel.
 	 * 
 	 * @return SFTP channel.
 	 * 
-	 * @throws SessionException if SFTP channel creation fails. 
+	 * @throws SessionException
+	 *             if SFTP channel creation fails.
 	 */
 	ChannelSftp getSftpChannel() throws SessionException;
 
@@ -83,8 +96,9 @@ public interface SshSession extends Session
 	 * 
 	 * @return EXEC channel.
 	 * 
-	 * @throws SessionException if EXEC channel creation fails. 
+	 * @throws SessionException
+	 *             if EXEC channel creation fails.
 	 */
 	ChannelExec getExecuteChannel() throws SessionException;
-	
+
 }

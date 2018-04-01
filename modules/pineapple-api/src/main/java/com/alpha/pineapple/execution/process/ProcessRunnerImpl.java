@@ -44,166 +44,166 @@ import com.alpha.pineapple.i18n.MessageProvider;
 @Deprecated
 public class ProcessRunnerImpl implements ProcessRunner {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Root execution result.
-     * 
-     */
-    ExecutionResult rootResult;
+	/**
+	 * Root execution result.
+	 * 
+	 */
+	ExecutionResult rootResult;
 
-    /**
-     * Root directory where the process will execute in.
-     */
-    File rootDirectory;
+	/**
+	 * Root directory where the process will execute in.
+	 */
+	File rootDirectory;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    public ExecutionResult execute(String description, List<String> argumentList, Map<String, String> environment) {
+	public ExecutionResult execute(String description, List<String> argumentList, Map<String, String> environment) {
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { argumentList.toArray() };
-	    logger.debug(messageProvider.getMessage("pri.start", args));
-	}
-
-	// create execution result object
-	ExecutionResult executionResult = getExecutionResult().addChild(description);
-
-	// declare streams
-	InputStream inStream = null;
-	OutputStream outStream;
-
-	try {
-
-	    // configure process to use java temp dir
-	    File tempDirectory = SystemUtils.getJavaIoTmpDir();
-
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		Object[] args = { tempDirectory };
-		logger.debug(messageProvider.getMessage("pri.temp_dir_info", args));
-	    }
-
-	    // setup process
-	    ProcessBuilder builder = new ProcessBuilder(argumentList);
-	    builder.directory(tempDirectory);
-	    builder.redirectErrorStream(true);
-
-	    // setup the environment
-	    Map<String, String> builderEnvironment = builder.environment();
-	    for (String key : environment.keySet()) {
-
-		// clean the value
-		builderEnvironment.put(key, "");
-
-		// set the value
-		builderEnvironment.put(key, environment.get(key));
-	    }
-
-	    // start
-	    Process process = builder.start();
-
-	    // get output stream
-	    outStream = process.getOutputStream();
-	    inStream = process.getInputStream();
-
-	    // wait for process to complete
-	    int exitValue = process.waitFor();
-
-	    // catpure stream content
-	    String input = captureInput(inStream);
-
-	    // close streams
-	    outStream.flush();
-	    outStream.close();
-	    inStream.close();
-
-	    // throw exception if process fails
-	    if (exitValue != 0) {
-
-		// set execution state
-		Object[] args = { exitValue };
-		executionResult.addMessage("Message", messageProvider.getMessage("pri.failed", args));
-		executionResult.addMessage("Stdout", input);
-		executionResult.setState(ExecutionState.FAILURE);
-
-		return executionResult;
-	    }
-
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		logger.debug(messageProvider.getMessage("pri.completed"));
-	    }
-	} catch (Exception e) {
-
-	    // set execution state
-	    executionResult.addMessage("StackTrace", StackTraceHelper.getStrackTrace(e));
-
-	    try {
-		// capture stream content
-
-		if (inStream != null) {
-		    String input = captureInput(inStream);
-		    executionResult.addMessage("Stdout", input);
-		} else {
-		    executionResult.addMessage("Stdout", "n/a");
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { argumentList.toArray() };
+			logger.debug(messageProvider.getMessage("pri.start", args));
 		}
 
-	    } catch (Exception e1) {
-		executionResult.addMessage("Stdout", "n/a");
-	    }
+		// create execution result object
+		ExecutionResult executionResult = getExecutionResult().addChild(description);
 
-	    executionResult.setState(ExecutionState.ERROR);
+		// declare streams
+		InputStream inStream = null;
+		OutputStream outStream;
+
+		try {
+
+			// configure process to use java temp dir
+			File tempDirectory = SystemUtils.getJavaIoTmpDir();
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				Object[] args = { tempDirectory };
+				logger.debug(messageProvider.getMessage("pri.temp_dir_info", args));
+			}
+
+			// setup process
+			ProcessBuilder builder = new ProcessBuilder(argumentList);
+			builder.directory(tempDirectory);
+			builder.redirectErrorStream(true);
+
+			// setup the environment
+			Map<String, String> builderEnvironment = builder.environment();
+			for (String key : environment.keySet()) {
+
+				// clean the value
+				builderEnvironment.put(key, "");
+
+				// set the value
+				builderEnvironment.put(key, environment.get(key));
+			}
+
+			// start
+			Process process = builder.start();
+
+			// get output stream
+			outStream = process.getOutputStream();
+			inStream = process.getInputStream();
+
+			// wait for process to complete
+			int exitValue = process.waitFor();
+
+			// catpure stream content
+			String input = captureInput(inStream);
+
+			// close streams
+			outStream.flush();
+			outStream.close();
+			inStream.close();
+
+			// throw exception if process fails
+			if (exitValue != 0) {
+
+				// set execution state
+				Object[] args = { exitValue };
+				executionResult.addMessage("Message", messageProvider.getMessage("pri.failed", args));
+				executionResult.addMessage("Stdout", input);
+				executionResult.setState(ExecutionState.FAILURE);
+
+				return executionResult;
+			}
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				logger.debug(messageProvider.getMessage("pri.completed"));
+			}
+		} catch (Exception e) {
+
+			// set execution state
+			executionResult.addMessage("StackTrace", StackTraceHelper.getStrackTrace(e));
+
+			try {
+				// capture stream content
+
+				if (inStream != null) {
+					String input = captureInput(inStream);
+					executionResult.addMessage("Stdout", input);
+				} else {
+					executionResult.addMessage("Stdout", "n/a");
+				}
+
+			} catch (Exception e1) {
+				executionResult.addMessage("Stdout", "n/a");
+			}
+
+			executionResult.setState(ExecutionState.ERROR);
+		}
+
+		// return result
+		return executionResult;
 	}
 
-	// return result
-	return executionResult;
-    }
-
-    public void setDirectory(File processDirectory) {
-	this.rootDirectory = processDirectory;
-    }
-
-    public void setExecutionResult(ExecutionResult result) {
-	this.rootResult = result;
-    }
-
-    /**
-     * Return the registered root execution result, otherwise a new root result
-     * is created.
-     * 
-     * @return the registered root execution result, otherwise a new root result
-     *         is created.
-     */
-    ExecutionResult getExecutionResult() {
-
-	if (rootResult == null) {
-	    return new ExecutionResultImpl(null, "Root result, generated by process runner.");
-	} else {
-	    return rootResult;
+	public void setDirectory(File processDirectory) {
+		this.rootDirectory = processDirectory;
 	}
-    }
 
-    String captureInput(InputStream inStream) throws Exception {
-
-	// create reader
-	BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
-
-	// capture input
-	StringBuilder message = new StringBuilder();
-	String line = "";
-	while ((line = br.readLine()) != null) {
-	    message.append(line);
+	public void setExecutionResult(ExecutionResult result) {
+		this.rootResult = result;
 	}
-	return message.toString();
-    }
+
+	/**
+	 * Return the registered root execution result, otherwise a new root result is
+	 * created.
+	 * 
+	 * @return the registered root execution result, otherwise a new root result is
+	 *         created.
+	 */
+	ExecutionResult getExecutionResult() {
+
+		if (rootResult == null) {
+			return new ExecutionResultImpl(null, "Root result, generated by process runner.");
+		} else {
+			return rootResult;
+		}
+	}
+
+	String captureInput(InputStream inStream) throws Exception {
+
+		// create reader
+		BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
+
+		// capture input
+		StringBuilder message = new StringBuilder();
+		String line = "";
+		while ((line = br.readLine()) != null) {
+			message.append(line);
+		}
+		return message.toString();
+	}
 
 }

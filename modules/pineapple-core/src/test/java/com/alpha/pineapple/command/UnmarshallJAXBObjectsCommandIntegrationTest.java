@@ -62,180 +62,180 @@ import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class UnmarshallJAXBObjectsCommandIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command unmarshallJAXBObjectsCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command unmarshallJAXBObjectsCommand;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Configuration object mother
-     */
-    ObjectMotherEnvironmentConfiguration configMother;
+	/**
+	 * Configuration object mother
+	 */
+	ObjectMotherEnvironmentConfiguration configMother;
 
-    @Before
-    public void setUp() throws Exception {
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+	@Before
+	public void setUp() throws Exception {
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("Root result");
+		// create execution result
+		executionResult = new ExecutionResultImpl("Root result");
 
-	// configuration object mother
-	configMother = new ObjectMotherEnvironmentConfiguration();
-    }
+		// configuration object mother
+		configMother = new ObjectMotherEnvironmentConfiguration();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	testDirectory = null;
-	configMother = null;
-	unmarshallJAXBObjectsCommand = null;
-	executionResult = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		testDirectory = null;
+		configMother = null;
+		unmarshallJAXBObjectsCommand = null;
+		executionResult = null;
+	}
 
-    /**
-     * Test that file with absolute path can be loaded.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanLoadFileWithAbsolutePath() throws Exception {
+	/**
+	 * Test that file with absolute path can be loaded.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanLoadFileWithAbsolutePath() throws Exception {
 
-	// create context
-	Context context = new ContextBase();
+		// create context
+		Context context = new ContextBase();
 
-	// create file name
-	StringBuilder fileName = new StringBuilder();
-	fileName.append(testDirectory.getAbsolutePath());
-	fileName.append(File.separatorChar);
-	fileName.append("testdata.xml");
+		// create file name
+		StringBuilder fileName = new StringBuilder();
+		fileName.append(testDirectory.getAbsolutePath());
+		fileName.append(File.separatorChar);
+		fileName.append("testdata.xml");
 
-	// create file
-	File file = new File(fileName.toString());
+		// create file
+		File file = new File(fileName.toString());
 
-	// create document
-	ObjectFactory factory = new ObjectFactory();
-	Root root = factory.createRoot();
-	root.setContainer(factory.createContainerType());
-	ItemType item1 = factory.createItemType();
-	item1.setName("item1");
-	ItemType item2 = factory.createItemType();
-	item2.setName("item2");
-	root.getContainer().getItems().add(item1);
-	root.getContainer().getItems().add(item2);
+		// create document
+		ObjectFactory factory = new ObjectFactory();
+		Root root = factory.createRoot();
+		root.setContainer(factory.createContainerType());
+		ItemType item1 = factory.createItemType();
+		item1.setName("item1");
+		ItemType item2 = factory.createItemType();
+		item2.setName("item2");
+		root.getContainer().getItems().add(item1);
+		root.getContainer().getItems().add(item2);
 
-	// marshall objects
-	configMother.jaxbMarshall(root, file);
+		// marshall objects
+		configMother.jaxbMarshall(root, file);
 
-	// setup context
-	context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, file);
-	context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, Root.class.getPackage());
-	context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
+		// setup context
+		context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, file);
+		context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, Root.class.getPackage());
+		context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// execute command
-	unmarshallJAXBObjectsCommand.execute(context);
+		// execute command
+		unmarshallJAXBObjectsCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	Root expected;
-	expected = (Root) context.get(UnmarshallJAXBObjectsCommand.UNMARSHALLING_RESULT_KEY);
-	assertNotNull(expected);
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+		Root expected;
+		expected = (Root) context.get(UnmarshallJAXBObjectsCommand.UNMARSHALLING_RESULT_KEY);
+		assertNotNull(expected);
+	}
 
-    /**
-     * Test that command fails if file name property contains non-existing file
-     * in directory.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCommandFailsIfFileDoesntExist() throws Exception {
+	/**
+	 * Test that command fails if file name property contains non-existing file in
+	 * directory.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCommandFailsIfFileDoesntExist() throws Exception {
 
-	// create context
-	Context context = new ContextBase();
+		// create context
+		Context context = new ContextBase();
 
-	// create configuration file name
-	String fileName = new StringBuilder().append(testDirectory.getAbsolutePath()).append(File.separatorChar)
-		.append("non-existing-config.xml").toString();
+		// create configuration file name
+		String fileName = new StringBuilder().append(testDirectory.getAbsolutePath()).append(File.separatorChar)
+				.append("non-existing-config.xml").toString();
 
-	// create file
-	File file = new File(fileName.toString());
+		// create file
+		File file = new File(fileName.toString());
 
-	// add configuration file name into context
-	context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, file);
-	context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, Root.class.getPackage());
-	context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
+		// add configuration file name into context
+		context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, file);
+		context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, Root.class.getPackage());
+		context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// execute command
-	unmarshallJAXBObjectsCommand.execute(context);
+		// execute command
+		unmarshallJAXBObjectsCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isError());
-    }
+		// test
+		assertTrue(executionResult.isError());
+	}
 
-    /**
-     * Test that command fails if file name property contains non-existing file
-     * on class path.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCommandFailsIfFileDoesntExist2() throws Exception {
+	/**
+	 * Test that command fails if file name property contains non-existing file on
+	 * class path.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCommandFailsIfFileDoesntExist2() throws Exception {
 
-	// create context
-	Context context = new ContextBase();
+		// create context
+		Context context = new ContextBase();
 
-	// create file
-	File file = new File("non-existing-config.xml");
+		// create file
+		File file = new File("non-existing-config.xml");
 
-	// add configuration file name into context
-	context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, file);
-	context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, Root.class.getPackage());
-	context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
+		// add configuration file name into context
+		context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, file);
+		context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, Root.class.getPackage());
+		context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// execute command
-	unmarshallJAXBObjectsCommand.execute(context);
+		// execute command
+		unmarshallJAXBObjectsCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isError());
-    }
+		// test
+		assertTrue(executionResult.isError());
+	}
 
-    /**
-     * Test that command can locate an unmarshall a file from the class path.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanLoadFromClassPath() throws Exception {
-	// create context
-	Context context = new ContextBase();
+	/**
+	 * Test that command can locate an unmarshall a file from the class path.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanLoadFromClassPath() throws Exception {
+		// create context
+		Context context = new ContextBase();
 
-	// create file
-	File file = new File("resources.xml");
+		// create file
+		File file = new File("resources.xml");
 
-	// add configuration file name into context
-	context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, file);
-	context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, Configuration.class.getPackage());
-	context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
+		// add configuration file name into context
+		context.put(UnmarshallJAXBObjectsCommand.FILE_KEY, file);
+		context.put(UnmarshallJAXBObjectsCommand.PACKAGE_KEY, Configuration.class.getPackage());
+		context.put(UnmarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// execute command
-	unmarshallJAXBObjectsCommand.execute(context);
+		// execute command
+		unmarshallJAXBObjectsCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	Configuration expected;
-	expected = (Configuration) context.get(UnmarshallJAXBObjectsCommand.UNMARSHALLING_RESULT_KEY);
-	assertTrue(expected instanceof Configuration);
+		// test
+		assertTrue(executionResult.isSuccess());
+		Configuration expected;
+		expected = (Configuration) context.get(UnmarshallJAXBObjectsCommand.UNMARSHALLING_RESULT_KEY);
+		assertTrue(expected instanceof Configuration);
 
-    }
+	}
 
 }

@@ -58,264 +58,262 @@ import com.alpha.springutils.DirectoryTestExecutionListener;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class Admin_CoreIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    CoreFactory coreFactory;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	CoreFactory coreFactory;
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Modules directory.
-     */
-    File modulesDir;
+	/**
+	 * Modules directory.
+	 */
+	File modulesDir;
 
-    /**
-     * Conf directory.
-     */
-    File confDir;
+	/**
+	 * Conf directory.
+	 */
+	File confDir;
 
-    /**
-     * Random file name.
-     */
-    String randomResourceXmlName;
+	/**
+	 * Random file name.
+	 */
+	String randomResourceXmlName;
 
-    /**
-     * Random directory name.
-     */
-    String randomDirName;
+	/**
+	 * Random directory name.
+	 */
+	String randomDirName;
 
-    /**
-     * Random environment..
-     */
-    String randomEnvironment;
+	/**
+	 * Random environment..
+	 */
+	String randomEnvironment;
 
-    /**
-     * Random module.
-     */
-    String randomModuleName;
+	/**
+	 * Random module.
+	 */
+	String randomModuleName;
 
-    /**
-     * Random resource name.
-     */
-    String randomResourceName;
+	/**
+	 * Random resource name.
+	 */
+	String randomResourceName;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	randomResourceXmlName = RandomStringUtils.randomAlphabetic(10) + ".xml";
-	randomDirName = RandomStringUtils.randomAlphabetic(10);
-	randomEnvironment = RandomStringUtils.randomAlphabetic(10);
-	randomModuleName = RandomStringUtils.randomAlphabetic(10) + "-module";
-	randomResourceName = RandomStringUtils.randomAlphabetic(10) + "-resource";
+		randomResourceXmlName = RandomStringUtils.randomAlphabetic(10) + ".xml";
+		randomDirName = RandomStringUtils.randomAlphabetic(10);
+		randomEnvironment = RandomStringUtils.randomAlphabetic(10);
+		randomModuleName = RandomStringUtils.randomAlphabetic(10) + "-module";
+		randomResourceName = RandomStringUtils.randomAlphabetic(10) + "-resource";
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// define directory names
-	modulesDir = new File(testDirectory, "modules");
-	confDir = new File(testDirectory, "conf");
+		// define directory names
+		modulesDir = new File(testDirectory, "modules");
+		confDir = new File(testDirectory, "conf");
 
-	// clear the pineapple.home.dir system property
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+		// clear the pineapple.home.dir system property
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
 
-	// fail if the the pineapple.home.dir system property is set
-	assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
-    }
+		// fail if the the pineapple.home.dir system property is set
+		assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
+	}
 
-    @After
-    public void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 
-	// clear the pineapple.home.dir system setting
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
-    }
+		// clear the pineapple.home.dir system setting
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+	}
 
-    /**
-     * Get execution result from core which contains the state of the
-     * initialization
-     * 
-     * @param core
-     *            The core component.
-     * 
-     * @return execution result from core which contains the state of the
-     *         initialization
-     */
-    ExecutionResult getInitializationResultFromCore(PineappleCore core) {
-	CoreImpl coreImpl = (CoreImpl) core;
-	ExecutionResult result = coreImpl.getInitializationInfo();
-	return result;
-    }
+	/**
+	 * Get execution result from core which contains the state of the initialization
+	 * 
+	 * @param core
+	 *            The core component.
+	 * 
+	 * @return execution result from core which contains the state of the
+	 *         initialization
+	 */
+	ExecutionResult getInitializationResultFromCore(PineappleCore core) {
+		CoreImpl coreImpl = (CoreImpl) core;
+		ExecutionResult result = coreImpl.getInitializationInfo();
+		return result;
+	}
 
-    /**
-     * Test that initialization result isn't defined before initialization.
-     * 
-     * @throws CoreException
-     *             If test fails.
-     */
-    @Test
-    public void testGetAdministrationApiIsntDefinedBeforeInitialization() throws CoreException {
+	/**
+	 * Test that initialization result isn't defined before initialization.
+	 * 
+	 * @throws CoreException
+	 *             If test fails.
+	 */
+	@Test
+	public void testGetAdministrationApiIsntDefinedBeforeInitialization() throws CoreException {
 
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// create core component
-	PineappleCore core = new CoreImpl();
+		// create core component
+		PineappleCore core = new CoreImpl();
 
-	// get administration API
-	Administration admin = core.getAdministration();
+		// get administration API
+		Administration admin = core.getAdministration();
 
-	// test
-	assertNull(admin);
-    }
+		// test
+		assertNull(admin);
+	}
 
-    /**
-     * Test that initialization result is defined after initialization.
-     * 
-     * @throws CoreException
-     *             If test fails.
-     */
-    @Test
-    public void testGetAdministrationApiIsDefinedAfterInitialization() throws CoreException {
+	/**
+	 * Test that initialization result is defined after initialization.
+	 * 
+	 * @throws CoreException
+	 *             If test fails.
+	 */
+	@Test
+	public void testGetAdministrationApiIsDefinedAfterInitialization() throws CoreException {
 
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// create core component
-	PineappleCore core = coreFactory.createCore();
+		// create core component
+		PineappleCore core = coreFactory.createCore();
 
-	// test
-	ExecutionResult result = getInitializationResultFromCore(core);
-	assertNotNull(result);
-	assertFalse(result.isExecuting());
-	assertTrue(result.isSuccess());
-	assertTrue(result.isRoot());
+		// test
+		ExecutionResult result = getInitializationResultFromCore(core);
+		assertNotNull(result);
+		assertFalse(result.isExecuting());
+		assertTrue(result.isSuccess());
+		assertTrue(result.isRoot());
 
-	// get administration API
-	Administration admin = core.getAdministration();
+		// get administration API
+		Administration admin = core.getAdministration();
 
-	// test
-	assertNotNull(admin);
-    }
+		// test
+		assertNotNull(admin);
+	}
 
-    /**
-     * Test that resource repository is defined in administration API.
-     * 
-     * @throws CoreException
-     *             If test fails.
-     */
-    @Test
-    public void testResourceRepositoryIsDefined() throws CoreException {
+	/**
+	 * Test that resource repository is defined in administration API.
+	 * 
+	 * @throws CoreException
+	 *             If test fails.
+	 */
+	@Test
+	public void testResourceRepositoryIsDefined() throws CoreException {
 
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// create core component
-	PineappleCore core = coreFactory.createCore();
+		// create core component
+		PineappleCore core = coreFactory.createCore();
 
-	// test
-	ExecutionResult result = getInitializationResultFromCore(core);
-	assertNotNull(result);
-	assertFalse(result.isExecuting());
-	assertTrue(result.isSuccess());
-	assertTrue(result.isRoot());
+		// test
+		ExecutionResult result = getInitializationResultFromCore(core);
+		assertNotNull(result);
+		assertFalse(result.isExecuting());
+		assertTrue(result.isSuccess());
+		assertTrue(result.isRoot());
 
-	// get administration API
-	Administration admin = core.getAdministration();
+		// get administration API
+		Administration admin = core.getAdministration();
 
-	// test
-	assertNotNull(admin.getResourceRepository());
-    }
+		// test
+		assertNotNull(admin.getResourceRepository());
+	}
 
-    /**
-     * Test that result repository is defined in administration API.
-     * 
-     * @throws CoreException
-     *             If test fails.
-     */
-    @Test
-    public void testResultRepositoryIsDefined() throws CoreException {
+	/**
+	 * Test that result repository is defined in administration API.
+	 * 
+	 * @throws CoreException
+	 *             If test fails.
+	 */
+	@Test
+	public void testResultRepositoryIsDefined() throws CoreException {
 
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// create core component
-	PineappleCore core = coreFactory.createCore();
+		// create core component
+		PineappleCore core = coreFactory.createCore();
 
-	// test
-	ExecutionResult result = getInitializationResultFromCore(core);
-	assertNotNull(result);
-	assertFalse(result.isExecuting());
-	assertTrue(result.isSuccess());
-	assertTrue(result.isRoot());
+		// test
+		ExecutionResult result = getInitializationResultFromCore(core);
+		assertNotNull(result);
+		assertFalse(result.isExecuting());
+		assertTrue(result.isSuccess());
+		assertTrue(result.isRoot());
 
-	// get administration API
-	Administration admin = core.getAdministration();
+		// get administration API
+		Administration admin = core.getAdministration();
 
-	// test
-	assertNotNull(admin.getResultRepository());
-    }
+		// test
+		assertNotNull(admin.getResultRepository());
+	}
 
-    /**
-     * Test that credential provider is defined in administration API.
-     * 
-     * @throws CoreException
-     *             If test fails.
-     */
-    @Test
-    public void testCredentialProviderIsDefined() throws CoreException {
+	/**
+	 * Test that credential provider is defined in administration API.
+	 * 
+	 * @throws CoreException
+	 *             If test fails.
+	 */
+	@Test
+	public void testCredentialProviderIsDefined() throws CoreException {
 
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// create core component
-	PineappleCore core = coreFactory.createCore();
+		// create core component
+		PineappleCore core = coreFactory.createCore();
 
-	// test
-	ExecutionResult result = getInitializationResultFromCore(core);
-	assertNotNull(result);
-	assertFalse(result.isExecuting());
-	assertTrue(result.isSuccess());
-	assertTrue(result.isRoot());
+		// test
+		ExecutionResult result = getInitializationResultFromCore(core);
+		assertNotNull(result);
+		assertFalse(result.isExecuting());
+		assertTrue(result.isSuccess());
+		assertTrue(result.isRoot());
 
-	// get administration API
-	Administration admin = core.getAdministration();
+		// get administration API
+		Administration admin = core.getAdministration();
 
-	// test
-	assertNotNull(admin.getCredentialProvider());
-    }
+		// test
+		assertNotNull(admin.getCredentialProvider());
+	}
 
-    /**
-     * Test that scheduled operation repository is defined in administration API.
-     * 
-     * @throws CoreException
-     *             If test fails.
-     */
-    @Test
-    public void testScheduledOperationRepositoryIsDefined() throws CoreException {
+	/**
+	 * Test that scheduled operation repository is defined in administration API.
+	 * 
+	 * @throws CoreException
+	 *             If test fails.
+	 */
+	@Test
+	public void testScheduledOperationRepositoryIsDefined() throws CoreException {
 
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// create core component
-	PineappleCore core = coreFactory.createCore();
+		// create core component
+		PineappleCore core = coreFactory.createCore();
 
-	// test
-	ExecutionResult result = getInitializationResultFromCore(core);
-	assertNotNull(result);
-	assertFalse(result.isExecuting());
-	assertTrue(result.isSuccess());
-	assertTrue(result.isRoot());
+		// test
+		ExecutionResult result = getInitializationResultFromCore(core);
+		assertNotNull(result);
+		assertFalse(result.isExecuting());
+		assertTrue(result.isSuccess());
+		assertTrue(result.isRoot());
 
-	// get administration API
-	Administration admin = core.getAdministration();
+		// get administration API
+		Administration admin = core.getAdministration();
 
-	// test
-	assertNotNull(admin.getModuleRepository());
-    }
+		// test
+		assertNotNull(admin.getModuleRepository());
+	}
 
-    
 }

@@ -30,13 +30,13 @@ import com.alpha.pineapple.substitution.VariableSubstitutionException;
  */
 public interface VariablesBuilder {
 
-    /**
-     * Get substitution variables for resolution.
-     * 
-     * @return substitution variables for resolution.
-     * 
-     * @throws if
-     *             variables creation fails.
-     */
-    public Variables getVariables() throws VariableSubstitutionException;
+	/**
+	 * Get substitution variables for resolution.
+	 * 
+	 * @return substitution variables for resolution.
+	 * 
+	 * @throws if
+	 *             variables creation fails.
+	 */
+	public Variables getVariables() throws VariableSubstitutionException;
 }

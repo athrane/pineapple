@@ -31,15 +31,15 @@ import org.apache.log4j.Logger;
  */
 public class HelloWorldCommand implements Command {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    public boolean execute(Context context) throws Exception {
-	logger.info("Hello world!");
+	public boolean execute(Context context) throws Exception {
+		logger.info("Hello world!");
 
-	return Command.CONTINUE_PROCESSING;
-    }
+		return Command.CONTINUE_PROCESSING;
+	}
 
 }

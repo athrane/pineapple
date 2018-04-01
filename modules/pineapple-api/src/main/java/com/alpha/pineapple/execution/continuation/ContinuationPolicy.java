@@ -42,67 +42,66 @@ import com.alpha.pineapple.execution.ExecutionResult;
  */
 public interface ContinuationPolicy {
 
-    /**
-     * Returns true if execution should continue.
-     * 
-     * @return true if execution should continue.
-     */
-    boolean continueExecution();
+	/**
+	 * Returns true if execution should continue.
+	 * 
+	 * @return true if execution should continue.
+	 */
+	boolean continueExecution();
 
-    /**
-     * Returns the current state of the Continue-on-failure directive.
-     * 
-     * @return the current state of the Continue-on-failure directive.
-     */
-    boolean isContinueOnFailure();
+	/**
+	 * Returns the current state of the Continue-on-failure directive.
+	 * 
+	 * @return the current state of the Continue-on-failure directive.
+	 */
+	boolean isContinueOnFailure();
 
-    /**
-     * Returns the current state of the cancellation state.
-     * 
-     * @return the current state of the cancellation state.
-     */
-    boolean isCancelled();
+	/**
+	 * Returns the current state of the cancellation state.
+	 * 
+	 * @return the current state of the cancellation state.
+	 */
+	boolean isCancelled();
 
-    /**
-     * Disable the Continue-on-failure directive.
-     * 
-     * Used to signal that execution should stop if a failure or error is
-     * encountered. Once set the directive can't be changed. A failure is
-     * registered using the setFailed() method.
-     */
-    void disableContinueOnFailure();
+	/**
+	 * Disable the Continue-on-failure directive.
+	 * 
+	 * Used to signal that execution should stop if a failure or error is
+	 * encountered. Once set the directive can't be changed. A failure is registered
+	 * using the setFailed() method.
+	 */
+	void disableContinueOnFailure();
 
-    /**
-     * Enable the Continue-on-failure directive.
-     * 
-     * Used to signal that execution should continue if a failure or error is
-     * encountered. Once set the directive can't be changed.
-     */
-    void enableContinueOnFailure();
+	/**
+	 * Enable the Continue-on-failure directive.
+	 * 
+	 * Used to signal that execution should continue if a failure or error is
+	 * encountered. Once set the directive can't be changed.
+	 */
+	void enableContinueOnFailure();
 
-    /**
-     * Set failure.
-     * 
-     * Used to signal that failure or error has occurred in execution result
-     * tree.
-     * 
-     * @param result
-     *            result that contains failure or error.
-     */
-    void setFailed(ExecutionResult result);
+	/**
+	 * Set failure.
+	 * 
+	 * Used to signal that failure or error has occurred in execution result tree.
+	 * 
+	 * @param result
+	 *            result that contains failure or error.
+	 */
+	void setFailed(ExecutionResult result);
 
-    /**
-     * Returns the failed result if registered. Otherwise null is returned.
-     * 
-     * @return failed result if registered. Otherwise null is returned.
-     */
-    ExecutionResult getFailedResult();
+	/**
+	 * Returns the failed result if registered. Otherwise null is returned.
+	 * 
+	 * @return failed result if registered. Otherwise null is returned.
+	 */
+	ExecutionResult getFailedResult();
 
-    /**
-     * Set cancellation directive.
-     * 
-     * Used to signal that execution should be stopped due to a user initiated
-     * cancellation.
-     */
-    void setCancelled();
+	/**
+	 * Set cancellation directive.
+	 * 
+	 * Used to signal that execution should be stopped due to a user initiated
+	 * cancellation.
+	 */
+	void setCancelled();
 }

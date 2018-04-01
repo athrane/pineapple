@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.http;
 
 import java.util.Arrays;
@@ -29,60 +28,60 @@ import java.util.Iterator;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 
-/** 
+/**
  * TODO Write class/interface description here!
  */
 public class IntraSequencePropertyIteratorImpl implements Iterable<Object> {
 
 	class IntraIteratorImpl implements Iterator<Object> {
 
-	    /**
-	     * Logger object.
-	     */
-	    Logger logger = Logger.getLogger( this.getClass().getName() );
-		
+		/**
+		 * Logger object.
+		 */
+		Logger logger = Logger.getLogger(this.getClass().getName());
+
 		Iterator<HttpInvocationResult> resultIterator;
 		ResponsePropertyInfo propertyInfo;
 
 		IntraIteratorImpl(ResponsePropertyInfo propertyInfo, Iterator<HttpInvocationResult> resultIterator) {
 			this.propertyInfo = propertyInfo;
-			this.resultIterator = resultIterator;			
+			this.resultIterator = resultIterator;
 		}
-		
+
 		public boolean hasNext() {
 			return resultIterator.hasNext();
 		}
 
 		public Object next() {
-			
+
 			// get result
 			HttpInvocationResult result = resultIterator.next();
-			
+
 			// get property value
 			Object value = result.getProperty(propertyInfo.getName());
-			
-	        // log debug message
-	        if ( logger.isDebugEnabled() ) {
-	            StringBuilder message = new StringBuilder();
-	            message.append( "Iterator returned property value <" );
-	            message.append( ReflectionToStringBuilder.toString( value) );
-	            message.append( ">." );            
-	            logger.debug( message.toString() );        	        	
-	        }
 
-	        return value;
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder message = new StringBuilder();
+				message.append("Iterator returned property value <");
+				message.append(ReflectionToStringBuilder.toString(value));
+				message.append(">.");
+				logger.debug(message.toString());
+			}
+
+			return value;
 		}
 
 		public void remove() {
 		}
-		
+
 	}
-	
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-	
+
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	/**
 	 * HTTP invocation sequence.
 	 */
@@ -92,9 +91,9 @@ public class IntraSequencePropertyIteratorImpl implements Iterable<Object> {
 	 * Property info which controls the iteration.
 	 */
 	ResponsePropertyInfo propertyInfo;
-		
+
 	public IntraSequencePropertyIteratorImpl(ResponsePropertyInfo propertyInfo, HttpInvocationSequence sequence) {
-		this.propertyInfo = propertyInfo; 
+		this.propertyInfo = propertyInfo;
 		this.sequence = sequence;
 	}
 
@@ -105,19 +104,19 @@ public class IntraSequencePropertyIteratorImpl implements Iterable<Object> {
 
 		// create result iterator
 		Iterator<HttpInvocationResult> resultIterator = Arrays.asList(results).iterator();
-		
-        // log debug message
-        if ( logger.isDebugEnabled() ) {
-            StringBuilder message = new StringBuilder();
-            message.append( "Created intra sequence property iterator for property <" );
-            message.append( propertyInfo.getName() );
-            message.append( "> which will iterate over sequence of <" );
-            message.append( results.length );        
-            message.append( "> results." );            
-            logger.debug( message.toString() );        	        	
-        }
-		
-		return new IntraIteratorImpl( propertyInfo, resultIterator );		
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Created intra sequence property iterator for property <");
+			message.append(propertyInfo.getName());
+			message.append("> which will iterate over sequence of <");
+			message.append(results.length);
+			message.append("> results.");
+			logger.debug(message.toString());
+		}
+
+		return new IntraIteratorImpl(propertyInfo, resultIterator);
 	}
-	
+
 }

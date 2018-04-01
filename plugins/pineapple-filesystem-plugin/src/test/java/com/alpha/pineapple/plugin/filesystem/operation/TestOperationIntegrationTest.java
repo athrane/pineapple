@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.filesystem.operation;
 
 import static org.junit.Assert.assertNotNull;
@@ -42,46 +41,44 @@ import com.alpha.pineapple.session.Session;
 import com.alpha.testutils.ObjectMotherContent;
 
 /**
- * Integration test for the <code>TestOperation</code> class.  
+ * Integration test for the <code>TestOperation</code> class.
  */
-@RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration( locations = { "/com.alpha.pineapple.plugin.filesystem-config.xml" } )
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/com.alpha.pineapple.plugin.filesystem-config.xml" })
 public class TestOperationIntegrationTest {
 
-	
-    /**
-     * Object under test.
-     */
-    @Resource
-    TestOperation testOperation;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	TestOperation testOperation;
 
-    /**
-     * Object mother for the infrastructure model.
-     */
-    ObjectMotherContent contentMother;
-    
+	/**
+	 * Object mother for the infrastructure model.
+	 */
+	ObjectMotherContent contentMother;
+
 	/**
 	 * Mock session as the plugin doesn't uses any session.
 	 */
 	Session session;
-		
+
 	/**
 	 * Execution result.
 	 */
 	ExecutionResult result;
-	
-    
+
 	@Before
 	public void setUp() throws Exception {
-				
-        // create mock session
-        session = EasyMock.createMock( FileSystemSession.class );
-		
-        // create execution result
-        result = new ExecutionResultImpl( "Root result" );
-        
-        // create content mother
-        contentMother = new ObjectMotherContent();		        
+
+		// create mock session
+		session = EasyMock.createMock(FileSystemSession.class);
+
+		// create execution result
+		result = new ExecutionResultImpl("Root result");
+
+		// create content mother
+		contentMother = new ObjectMotherContent();
 	}
 
 	@After
@@ -91,27 +88,26 @@ public class TestOperationIntegrationTest {
 		contentMother = null;
 	}
 
-    /**
-     * Test that operation can be looked up from the context.
-     */
-    @Test
-    public void testCanGetOperationFromContext()
-    {
-        assertNotNull( testOperation );
-    }
-	
+	/**
+	 * Test that operation can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetOperationFromContext() {
+		assertNotNull(testOperation);
+	}
+
 	/**
 	 * Test that the operation can execute with a minimal model.
 	 */
 	@Test
 	public void testCanExecuteWithMinimalModel() throws Exception {
 
-        // create content
-        Object content = contentMother.createEmptyFilesystem();
+		// create content
+		Object content = contentMother.createEmptyFilesystem();
 
-        // invoke operation
-        testOperation.execute( content, session, result );
-        
+		// invoke operation
+		testOperation.execute(content, session, result);
+
 	}
-    
+
 }

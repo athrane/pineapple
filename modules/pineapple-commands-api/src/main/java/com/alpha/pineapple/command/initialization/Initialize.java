@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.command.initialization;
 
 import java.lang.annotation.Documented;
@@ -30,13 +29,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to define validation of value during initialization 
- * from Chain context using the {@link Initialize} annotation. 
+ * Annotation to define validation of value during initialization from Chain
+ * context using the {@link Initialize} annotation.
  */
-@Target({ElementType.FIELD})
+@Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Initialize
-{
-    String value();
+public @interface Initialize {
+	String value();
 }

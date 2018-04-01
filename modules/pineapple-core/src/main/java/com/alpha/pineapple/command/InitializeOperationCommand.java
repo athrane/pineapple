@@ -90,164 +90,163 @@ import com.alpha.pineapple.i18n.MessageProvider;
  * </p>
  */
 public class InitializeOperationCommand implements Command {
-    /**
-     * Key used to identify property in context: Defines absolute path to the
-     * module file for the initialized module.
-     */
-    public static final String MODULE_FILE_KEY = "module-file";
+	/**
+	 * Key used to identify property in context: Defines absolute path to the module
+	 * file for the initialized module.
+	 */
+	public static final String MODULE_FILE_KEY = "module-file";
 
-    /**
-     * Key used to identify property in context: Defines absolute path to the
-     * module model file for the initialized module.
-     */
-    public static final String MODULE_MODEL_FILE_KEY = "module-model-file";
+	/**
+	 * Key used to identify property in context: Defines absolute path to the module
+	 * model file for the initialized module.
+	 */
+	public static final String MODULE_MODEL_FILE_KEY = "module-model-file";
 
-    /**
-     * Key used to identify property in context: The execution info which
-     * contains information about the operation which should be executed.
-     */
-    public static final String EXECUTION_INFO_KEY = CoreConstants.EXECUTION_INFO_KEY;
+	/**
+	 * Key used to identify property in context: The execution info which contains
+	 * information about the operation which should be executed.
+	 */
+	public static final String EXECUTION_INFO_KEY = CoreConstants.EXECUTION_INFO_KEY;
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Execution info.
-     */
-    @Initialize(EXECUTION_INFO_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionInfo executionInfo;
+	/**
+	 * Execution info.
+	 */
+	@Initialize(EXECUTION_INFO_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionInfo executionInfo;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    public boolean execute(Context context) throws Exception {
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    logger.debug(messageProvider.getMessage("ioc.start"));
+	public boolean execute(Context context) throws Exception {
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			logger.debug(messageProvider.getMessage("ioc.start"));
+		}
+
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
+
+		// do initialization
+		doInitialization(context);
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			logger.debug(messageProvider.getMessage("ioc.completed"));
+		}
+
+		return Command.CONTINUE_PROCESSING;
 	}
 
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	/**
+	 * Initialize the operation.
+	 * 
+	 * @param context
+	 *            Command context.
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	void doInitialization(Context context) throws CommandException {
 
-	// do initialization
-	doInitialization(context);
+		// create module directory object
+		File moduleDirectory = executionInfo.getModuleInfo().getDirectory();
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    logger.debug(messageProvider.getMessage("ioc.completed"));
+		// create module file object
+		File moduleFile = createModuleFile(moduleDirectory);
+
+		// add module file to context
+		context.put(MODULE_FILE_KEY, moduleFile);
+
+		// create directory name for model files
+		File modelsDirectory = createModelDirectory(moduleDirectory);
+
+		// create model file object
+		File modelFile = createModelFile(modelsDirectory);
+
+		// validate file exists, else fail command
+		if (!modelFile.exists()) {
+			// create error message and exit
+			Object[] args = { modelFile.getAbsolutePath() };
+			executionResult.completeAsFailure(messageProvider, "ioc.model_file_notfound", args);
+			return;
+		}
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { moduleFile.getAbsolutePath() };
+			String message = messageProvider.getMessage("ioc.model_file_found", args);
+			logger.debug(message);
+		}
+
+		// complete operation as successful
+		executionResult.completeAsSuccessful(messageProvider, "ioc.succeed");
+
+		// add file names to context
+		context.put(MODULE_MODEL_FILE_KEY, modelFile);
 	}
 
-	return Command.CONTINUE_PROCESSING;
-    }
-
-    /**
-     * Initialize the operation.
-     * 
-     * @param context
-     *            Command context.
-     * 
-     */
-    @SuppressWarnings("unchecked")
-    void doInitialization(Context context) throws CommandException {
-
-	// create module directory object
-	File moduleDirectory = executionInfo.getModuleInfo().getDirectory();
-
-	// create module file object
-	File moduleFile = createModuleFile(moduleDirectory);
-
-	// add module file to context
-	context.put(MODULE_FILE_KEY, moduleFile);
-
-	// create directory name for model files
-	File modelsDirectory = createModelDirectory(moduleDirectory);
-
-	// create model file object
-	File modelFile = createModelFile(modelsDirectory);
-
-	// validate file exists, else fail command
-	if (!modelFile.exists()) {
-	    // create error message and exit
-	    Object[] args = { modelFile.getAbsolutePath() };
-	    executionResult.completeAsFailure(messageProvider, "ioc.model_file_notfound", args);
-	    return;
+	/**
+	 * Create fully qualified path to module file.
+	 *
+	 * @param moduleDirectory
+	 *            The module directory.
+	 * 
+	 * @return fully qualified path to module file.
+	 */
+	File createModuleFile(File moduleDirectory) {
+		return new File(moduleDirectory, MODULE_FILENAME);
 	}
 
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { moduleFile.getAbsolutePath() };
-	    String message = messageProvider.getMessage("ioc.model_file_found", args);
-	    logger.debug(message);
+	/**
+	 * Create fully qualified path to model file for target environment.
+	 * 
+	 * @param moduleDirectory
+	 *            The module directory.
+	 * 
+	 * @return fully qualified path to model file for target environment.
+	 */
+	File createModelFile(File moduleDirectory) {
+		// create file name
+		StringBuilder fileName = new StringBuilder();
+		fileName.append(executionInfo.getEnvironment());
+		fileName.append(".xml");
+
+		// add path to file name
+		return new File(moduleDirectory, fileName.toString());
 	}
 
-	// complete operation as successful
-	executionResult.completeAsSuccessful(messageProvider, "ioc.succeed");
-
-	// add file names to context
-	context.put(MODULE_MODEL_FILE_KEY, modelFile);
-    }
-
-    /**
-     * Create fully qualified path to module file.
-     *
-     * @param moduleDirectory
-     *            The module directory.
-     * 
-     * @return fully qualified path to module file.
-     */
-    File createModuleFile(File moduleDirectory) {
-	return new File(moduleDirectory, MODULE_FILENAME);
-    }
-
-    /**
-     * Create fully qualified path to model file for target environment.
-     * 
-     * @param moduleDirectory
-     *            The module directory.
-     * 
-     * @return fully qualified path to model file for target environment.
-     */
-    File createModelFile(File moduleDirectory) {
-	// create file name
-	StringBuilder fileName = new StringBuilder();
-	fileName.append(executionInfo.getEnvironment());
-	fileName.append(".xml");
-
-	// add path to file name
-	return new File(moduleDirectory, fileName.toString());
-    }
-
-    /**
-     * Create directory where model files in module are located.
-     * 
-     * @param moduleDirectory
-     *            The module directory.
-     * 
-     * @return directory where model files in module are located.
-     */
-    File createModelDirectory(File moduleDirectory) {
-	// add path to file name
-	return new File(moduleDirectory, "models");
-    }
+	/**
+	 * Create directory where model files in module are located.
+	 * 
+	 * @param moduleDirectory
+	 *            The module directory.
+	 * 
+	 * @return directory where model files in module are located.
+	 */
+	File createModelDirectory(File moduleDirectory) {
+		// add path to file name
+		return new File(moduleDirectory, "models");
+	}
 
 }

@@ -55,44 +55,44 @@ import com.alpha.pineapple.web.model.OpenModuleActivity;
  * panel view model that is should load a new module.
  */
 public class OpenModuleActivityInvokerImpl
-	implements EventListener<Event>, Consumer<reactor.event.Event<OpenModuleActivity>> {
+		implements EventListener<Event>, Consumer<reactor.event.Event<OpenModuleActivity>> {
 
-    /**
-     * Module repository.
-     */
-    @Resource
-    ModuleRepository moduleRepository;
+	/**
+	 * Module repository.
+	 */
+	@Resource
+	ModuleRepository moduleRepository;
 
-    /**
-     * Reactor-to-ZK event dispatcher.
-     */
-    @Resource
-    EventDispatcher eventDispatcher;
+	/**
+	 * Reactor-to-ZK event dispatcher.
+	 */
+	@Resource
+	EventDispatcher eventDispatcher;
 
-    /**
-     * Open module activity.
-     */
-    OpenModuleActivity activity;
+	/**
+	 * Open module activity.
+	 */
+	OpenModuleActivity activity;
 
-    @Override
-    public void onEvent(Event evt) throws Exception {
+	@Override
+	public void onEvent(Event evt) throws Exception {
 
-	// create command arguments
-	Map<String, Object> args = new HashMap<String, Object>();
-	ModuleInfo info = moduleRepository.get(activity.getModule());
-	args.put(LOAD_MODULE_MODULE_INFO_ARG, info);
+		// create command arguments
+		Map<String, Object> args = new HashMap<String, Object>();
+		ModuleInfo info = moduleRepository.get(activity.getModule());
+		args.put(LOAD_MODULE_MODULE_INFO_ARG, info);
 
-	// post global command to trigger module update in module panel and
-	// workspace panel view models
-	BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, LOAD_MODULE_GLOBALCOMMAND, args);
+		// post global command to trigger module update in module panel and
+		// workspace panel view models
+		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, LOAD_MODULE_GLOBALCOMMAND, args);
 
-	activity = null;
-    }
+		activity = null;
+	}
 
-    @Override
-    public void accept(reactor.event.Event<OpenModuleActivity> t) {
-	activity = t.getData();
-	eventDispatcher.dispatchZkEvent(this);
-    }
+	@Override
+	public void accept(reactor.event.Event<OpenModuleActivity> t) {
+		activity = t.getData();
+		eventDispatcher.dispatchZkEvent(this);
+	}
 
 }

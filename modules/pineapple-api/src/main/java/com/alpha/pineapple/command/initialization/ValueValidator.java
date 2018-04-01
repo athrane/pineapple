@@ -36,143 +36,143 @@ import org.apache.log4j.Logger;
  *
  */
 class ValueValidator {
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Validate context value based on validation policies defined by
-     * {@link ValidateValue} annotation on field. If no validation annotation is
-     * found then validation is skipped.
-     * 
-     * @param value
-     *            Context value which is validated.
-     * @param field
-     *            The field who might define a validation annotation.
-     * 
-     * @throws CommandInitializationFailedException
-     *             If value validation fails.
-     */
-    public void validateValue(Object value, Field field) throws CommandInitializationFailedException {
-	// validate parameters
-	Validate.notNull(field, "field is undefined");
+	/**
+	 * Validate context value based on validation policies defined by
+	 * {@link ValidateValue} annotation on field. If no validation annotation is
+	 * found then validation is skipped.
+	 * 
+	 * @param value
+	 *            Context value which is validated.
+	 * @param field
+	 *            The field who might define a validation annotation.
+	 * 
+	 * @throws CommandInitializationFailedException
+	 *             If value validation fails.
+	 */
+	public void validateValue(Object value, Field field) throws CommandInitializationFailedException {
+		// validate parameters
+		Validate.notNull(field, "field is undefined");
 
-	// exit if no validation annotation is defined on field
-	if (!field.isAnnotationPresent(ValidateValue.class)) {
+		// exit if no validation annotation is defined on field
+		if (!field.isAnnotationPresent(ValidateValue.class)) {
 
-	    // exit
-	    return;
+			// exit
+			return;
+		}
+
+		// get validation annotation
+		ValidateValue annotation = field.getAnnotation(ValidateValue.class);
+
+		// get validation policies
+		ValidationPolicy[] policies = annotation.value();
+
+		// iterate over defines policies on field.
+		for (ValidationPolicy policy : policies) {
+
+			switch (policy) {
+
+			case NOT_NULL:
+				validateNotNull(value, field);
+				break;
+
+			case NOT_EMPTY:
+				validateNotEmpty(value, field);
+				break;
+
+			default:
+			}
+
+		}
 	}
 
-	// get validation annotation
-	ValidateValue annotation = field.getAnnotation(ValidateValue.class);
+	/**
+	 * Validate the {@link ValidationPolicy.NOT_NULL} policy.
+	 *
+	 * @param Value
+	 *            The value which is validated.
+	 * @param field
+	 *            the field which defined the context key.
+	 * @throws CommandInitializationFailedException
+	 *             If validation fails.
+	 */
+	void validateNotNull(Object value, Field field) throws CommandInitializationFailedException {
+		try {
+			// validate
+			Validate.notNull(value);
+		} catch (IllegalArgumentException e) {
 
-	// get validation policies
-	ValidationPolicy[] policies = annotation.value();
+			// create error message
+			StringBuilder message = new StringBuilder();
+			message.append("Validation policy <");
+			message.append(ValidationPolicy.NOT_NULL);
+			message.append("> failed on field <");
+			message.append(field);
+			message.append("> with context value <");
+			message.append(value);
+			message.append(">.");
 
-	// iterate over defines policies on field.
-	for (ValidationPolicy policy : policies) {
+			// throw exception
+			throw new CommandInitializationFailedException(message.toString());
 
-	    switch (policy) {
-
-	    case NOT_NULL:
-		validateNotNull(value, field);
-		break;
-
-	    case NOT_EMPTY:
-		validateNotEmpty(value, field);
-		break;
-
-	    default:
-	    }
-
+		}
 	}
-    }
 
-    /**
-     * Validate the {@link ValidationPolicy.NOT_NULL} policy.
-     *
-     * @param Value
-     *            The value which is validated.
-     * @param field
-     *            the field which defined the context key.
-     * @throws CommandInitializationFailedException
-     *             If validation fails.
-     */
-    void validateNotNull(Object value, Field field) throws CommandInitializationFailedException {
-	try {
-	    // validate
-	    Validate.notNull(value);
-	} catch (IllegalArgumentException e) {
+	/**
+	 * Validate the {@link ValidationPolicy.NOT_EMPTY} policy.
+	 *
+	 * @param Value
+	 *            The value which is validated.
+	 * @param field
+	 *            the field which defined the context key.
+	 * @throws CommandInitializationFailedException
+	 *             If validation fails.
+	 */
+	void validateNotEmpty(Object value, Field field) throws CommandInitializationFailedException {
+		try {
+			// do initial not-null validation
+			Validate.notNull(value);
 
-	    // create error message
-	    StringBuilder message = new StringBuilder();
-	    message.append("Validation policy <");
-	    message.append(ValidationPolicy.NOT_NULL);
-	    message.append("> failed on field <");
-	    message.append(field);
-	    message.append("> with context value <");
-	    message.append(value);
-	    message.append(">.");
+			// validate
+			if (value instanceof String) {
+				Validate.notEmpty((String) value);
+			}
+			if (value instanceof Map) {
+				Validate.notEmpty((Map) value);
+			}
+			if (value instanceof Collection) {
+				Validate.notEmpty((Collection) value);
+			}
+			if (value instanceof Object[]) {
+				Validate.notEmpty((Object[]) value);
+			}
+			if (value instanceof File) {
+				File file = (File) value;
+				int length = file.getName().length();
+				Validate.isTrue(length != 0);
+				length = file.getPath().length();
+				Validate.isTrue(length != 0);
+			}
+		} catch (IllegalArgumentException e) {
 
-	    // throw exception
-	    throw new CommandInitializationFailedException(message.toString());
+			// create error message
+			StringBuilder message = new StringBuilder();
+			message.append("Validation policy <");
+			message.append(ValidationPolicy.NOT_NULL);
+			message.append("> failed on field <");
+			message.append(field);
+			message.append("> with context value <");
+			message.append(value);
+			message.append(">.");
 
+			// throw exception
+			throw new CommandInitializationFailedException(message.toString());
+
+		}
 	}
-    }
-
-    /**
-     * Validate the {@link ValidationPolicy.NOT_EMPTY} policy.
-     *
-     * @param Value
-     *            The value which is validated.
-     * @param field
-     *            the field which defined the context key.
-     * @throws CommandInitializationFailedException
-     *             If validation fails.
-     */
-    void validateNotEmpty(Object value, Field field) throws CommandInitializationFailedException {
-	try {
-	    // do initial not-null validation
-	    Validate.notNull(value);
-
-	    // validate
-	    if (value instanceof String) {
-		Validate.notEmpty((String) value);
-	    }
-	    if (value instanceof Map) {
-		Validate.notEmpty((Map) value);
-	    }
-	    if (value instanceof Collection) {
-		Validate.notEmpty((Collection) value);
-	    }
-	    if (value instanceof Object[]) {
-		Validate.notEmpty((Object[]) value);
-	    }
-	    if (value instanceof File) {
-		File file = (File) value;
-		int length = file.getName().length();
-		Validate.isTrue(length != 0);
-		length = file.getPath().length();
-		Validate.isTrue(length != 0);
-	    }
-	} catch (IllegalArgumentException e) {
-
-	    // create error message
-	    StringBuilder message = new StringBuilder();
-	    message.append("Validation policy <");
-	    message.append(ValidationPolicy.NOT_NULL);
-	    message.append("> failed on field <");
-	    message.append(field);
-	    message.append("> with context value <");
-	    message.append(value);
-	    message.append(">.");
-
-	    // throw exception
-	    throw new CommandInitializationFailedException(message.toString());
-
-	}
-    }
 
 }

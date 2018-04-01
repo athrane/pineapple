@@ -87,185 +87,184 @@ import com.alpha.pineapple.i18n.MessageProvider;
  * </p>
  */
 public class CopyExampleModulesCommand implements Command, ApplicationContextAware {
-    /**
-     * Search string for locating the root directory in the
-     * pineapple-example-modules project which contains the example modules..
-     */
-    static final String RESOURCES_SEARCH_STRING = "classpath:pineapple-example-modules/**/*";
+	/**
+	 * Search string for locating the root directory in the
+	 * pineapple-example-modules project which contains the example modules..
+	 */
+	static final String RESOURCES_SEARCH_STRING = "classpath:pineapple-example-modules/**/*";
 
-    /**
-     * Name of the root directory in the pineapple-example-modules project which
-     * contains the example modules.
-     */
-    static final String EXAMPLE_MODULES = "pineapple-example-modules";
+	/**
+	 * Name of the root directory in the pineapple-example-modules project which
+	 * contains the example modules.
+	 */
+	static final String EXAMPLE_MODULES = "pineapple-example-modules";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Defines the destination
-     * directory where example modules should be copied to.
-     * 
-     */
-    public static final String DESTINATION_DIR_KEY = "destination-dir";
+	/**
+	 * Key used to identify property in context: Defines the destination directory
+	 * where example modules should be copied to.
+	 * 
+	 */
+	public static final String DESTINATION_DIR_KEY = "destination-dir";
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Defines the destination directory where the example modules should be
-     * copied to.
-     */
-    @Initialize(DESTINATION_DIR_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    File destinationDirectory;
+	/**
+	 * Defines the destination directory where the example modules should be copied
+	 * to.
+	 */
+	@Initialize(DESTINATION_DIR_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	File destinationDirectory;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Application context.
-     */
-    ApplicationContext applicationContext;
+	/**
+	 * Application context.
+	 */
+	ApplicationContext applicationContext;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-	this.applicationContext = applicationContext;
-    }
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// declare resources
-	org.springframework.core.io.Resource[] resources = null;
+		// declare resources
+		org.springframework.core.io.Resource[] resources = null;
 
-	try {
-	    // get resources from example modules
-	    resources = applicationContext.getResources(RESOURCES_SEARCH_STRING);
+		try {
+			// get resources from example modules
+			resources = applicationContext.getResources(RESOURCES_SEARCH_STRING);
 
-	    // iterator over the resources
-	    for (org.springframework.core.io.Resource resource : resources) {
-		// copy resource if its a file
-		if (isResourceFile(resource)) {
-		    copyResourceAsFile(resource);
+			// iterator over the resources
+			for (org.springframework.core.io.Resource resource : resources) {
+				// copy resource if its a file
+				if (isResourceFile(resource)) {
+					copyResourceAsFile(resource);
+				}
+			}
+
+		} catch (FileNotFoundException e) {
+			executionResult.completeAsError(messageProvider, "cemc.locate_resources_error", e);
+			return Command.CONTINUE_PROCESSING;
+
+		} catch (IOException e) {
+			executionResult.completeAsError(messageProvider, "cemc.copy_error", e);
+			return Command.CONTINUE_PROCESSING;
 		}
-	    }
 
-	} catch (FileNotFoundException e) {
-	    executionResult.completeAsError(messageProvider, "cemc.locate_resources_error", e);
-	    return Command.CONTINUE_PROCESSING;
+		// complete as success
+		Object[] args = { destinationDirectory };
+		executionResult.completeAsSuccessful(messageProvider, "cemc.success", args);
 
-	} catch (IOException e) {
-	    executionResult.completeAsError(messageProvider, "cemc.copy_error", e);
-	    return Command.CONTINUE_PROCESSING;
+		// set successful result
+		return Command.CONTINUE_PROCESSING;
 	}
 
-	// complete as success
-	Object[] args = { destinationDirectory };
-	executionResult.completeAsSuccessful(messageProvider, "cemc.success", args);
+	/**
+	 * Copy resource as a file.
+	 * 
+	 * @param resource
+	 *            Spring resource.
+	 * 
+	 * @throws IOException
+	 */
+	void copyResourceAsFile(org.springframework.core.io.Resource resource) throws IOException {
 
-	// set successful result
-	return Command.CONTINUE_PROCESSING;
-    }
+		// get sub path
+		String resourcePath = StringUtils.substringBetween(resource.getDescription(), EXAMPLE_MODULES,
+				resource.getFilename());
 
-    /**
-     * Copy resource as a file.
-     * 
-     * @param resource
-     *            Spring resource.
-     * 
-     * @throws IOException
-     */
-    void copyResourceAsFile(org.springframework.core.io.Resource resource) throws IOException {
+		// create destination path for resource
+		String destinationFileName = new StringBuilder().append(destinationDirectory).append(resourcePath)
+				.append(File.separator).append(resource.getFilename()).toString();
 
-	// get sub path
-	String resourcePath = StringUtils.substringBetween(resource.getDescription(), EXAMPLE_MODULES,
-		resource.getFilename());
+		// create destination file
+		File destinationFile = new File(destinationFileName);
 
-	// create destination path for resource
-	String destinationFileName = new StringBuilder().append(destinationDirectory).append(resourcePath)
-		.append(File.separator).append(resource.getFilename()).toString();
+		createDirectory(destinationFile);
+		copyFile(resource, destinationFile);
 
-	// create destination file
-	File destinationFile = new File(destinationFileName);
-
-	createDirectory(destinationFile);
-	copyFile(resource, destinationFile);
-
-	// add message
-	Object[] args = { destinationFile };
-	String message = messageProvider.getMessage("cemc.copied_resource_info", args);
-	executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-    }
-
-    /**
-     * Create directory if required.
-     * 
-     * @param file
-     *            Destination path for file.
-     * 
-     * @throws IOException
-     *             If creation fails.
-     */
-    void createDirectory(File file) throws IOException {
-	if (!file.getParentFile().exists()) {
-	    FileUtils.forceMkdir(file.getParentFile());
+		// add message
+		Object[] args = { destinationFile };
+		String message = messageProvider.getMessage("cemc.copied_resource_info", args);
+		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
 	}
-    }
 
-    /**
-     * Copy file.
-     * 
-     * @param file
-     *            Destination path for file.
-     * 
-     * @throws IOException
-     *             If creation fails.
-     */
-    void copyFile(org.springframework.core.io.Resource resource, File file) throws IOException {
-	InputStream inputStream = null;
-
-	try {
-	    inputStream = resource.getInputStream();
-	    FileUtils.copyInputStreamToFile(inputStream, file);
-
-	} finally {
-	    IOUtils.closeQuietly(inputStream);
-	    ;
+	/**
+	 * Create directory if required.
+	 * 
+	 * @param file
+	 *            Destination path for file.
+	 * 
+	 * @throws IOException
+	 *             If creation fails.
+	 */
+	void createDirectory(File file) throws IOException {
+		if (!file.getParentFile().exists()) {
+			FileUtils.forceMkdir(file.getParentFile());
+		}
 	}
-    }
 
-    /**
-     * Returns true if resource is a file.
-     * 
-     * @param resource
-     *            Spring resource.
-     * 
-     * @return true if resource is a file.
-     * 
-     * @throws IOException
-     *             if query fails.
-     */
-    boolean isResourceFile(org.springframework.core.io.Resource resource) throws IOException {
-	URI uri = resource.getURI();
-	String uriAsString = uri.toString();
-	return (!uriAsString.endsWith("/"));
-    }
+	/**
+	 * Copy file.
+	 * 
+	 * @param file
+	 *            Destination path for file.
+	 * 
+	 * @throws IOException
+	 *             If creation fails.
+	 */
+	void copyFile(org.springframework.core.io.Resource resource, File file) throws IOException {
+		InputStream inputStream = null;
+
+		try {
+			inputStream = resource.getInputStream();
+			FileUtils.copyInputStreamToFile(inputStream, file);
+
+		} finally {
+			IOUtils.closeQuietly(inputStream);
+			;
+		}
+	}
+
+	/**
+	 * Returns true if resource is a file.
+	 * 
+	 * @param resource
+	 *            Spring resource.
+	 * 
+	 * @return true if resource is a file.
+	 * 
+	 * @throws IOException
+	 *             if query fails.
+	 */
+	boolean isResourceFile(org.springframework.core.io.Resource resource) throws IOException {
+		URI uri = resource.getURI();
+		String uriAsString = uri.toString();
+		return (!uriAsString.endsWith("/"));
+	}
 }

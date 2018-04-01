@@ -103,132 +103,130 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class CreateContainerCommand implements Command {
 
-    /**
-     * Key used to identify property in context: the container info.
-     */
-    public static final String CONTAINER_INFO_KEY = "container-info";
+	/**
+	 * Key used to identify property in context: the container info.
+	 */
+	public static final String CONTAINER_INFO_KEY = "container-info";
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Created container instance
-     * info.
-     */
-    public static final String CONTAINER_INSTANCE_INFO_KEY = "container-instance-info";
+	/**
+	 * Key used to identify property in context: Created container instance info.
+	 */
+	public static final String CONTAINER_INSTANCE_INFO_KEY = "container-instance-info";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Container info.
-     */
-    @Initialize(CONTAINER_INFO_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    ContainerInfo containerInfo;
+	/**
+	 * Container info.
+	 */
+	@Initialize(CONTAINER_INFO_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	ContainerInfo containerInfo;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    /**
-     * Docker info objects builder.
-     */
-    @Resource
-    InfoBuilder dockerInfoBuilder;
+	/**
+	 * Docker info objects builder.
+	 */
+	@Resource
+	InfoBuilder dockerInfoBuilder;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    @SuppressWarnings("unchecked")
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	@SuppressWarnings("unchecked")
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// validate image info
-	if (containerInfo.getImageInfo() == null) {
-	    executionResult.completeAsFailure(messageProvider, "ccc.imageinfo_notdefined_failure");
-	    return Command.CONTINUE_PROCESSING;
+		// validate image info
+		if (containerInfo.getImageInfo() == null) {
+			executionResult.completeAsFailure(messageProvider, "ccc.imageinfo_notdefined_failure");
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// exit if container with name already exist
+		if (dockerClient.containerExists(session, containerInfo)) {
+			Object[] args = { containerInfo.getName() };
+			executionResult.completeAsSuccessful(messageProvider, "ccc.container_already_exists_success", args);
+			String message = messageProvider.getMessage("ccc.container_already_exists_note");
+			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+			return Command.CONTINUE_PROCESSING;
+		}
+
+		// configure container configuration object
+		ContainerConfiguration containerConfig = containerInfo.getContainerConfiguration();
+		containerConfig.setImage(containerInfo.getImageInfo().getFullyQualifiedName());
+
+		// post to create container
+		CreatedContainer createdContainer = session.httpPostForObject(CREATE_CONTAINER_URI, containerConfig,
+				CreatedContainer.class);
+
+		// add messages
+		Object[] args = { createdContainer.getId(), containerInfo.getImageInfo().getFullyQualifiedName() };
+		String message = messageProvider.getMessage("ccc.create_container_info", args);
+		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+
+		// log warnings
+		for (String warning : createdContainer.getWarnings()) {
+			executionResult.addMessage("Warnings", warning);
+		}
+
+		// rename container to container name
+		Map<String, String> uriVariables = new HashMap<String, String>();
+		uriVariables.put("id", createdContainer.getId());
+		uriVariables.put("newname", containerInfo.getName());
+		session.httpPost(RENAME_CONTAINER_URI, uriVariables);
+
+		// add messages
+		Object[] args2 = { containerInfo.getName() };
+		message = messageProvider.getMessage("ccc.rename_container_info", args2);
+		executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+
+		// create container instance info and store it in the context
+		String id = createdContainer.getId();
+		ContainerInstanceInfo instanceInfo = dockerInfoBuilder.buildInstanceInfo(id, containerInfo);
+		context.put(CONTAINER_INSTANCE_INFO_KEY, instanceInfo);
+
+		// complete result
+		Object[] args3 = { containerInfo.getName() };
+		executionResult.completeAsSuccessful(messageProvider, "ccc.create_container_completed", args3);
+
+		return Command.CONTINUE_PROCESSING;
 	}
-
-	// exit if container with name already exist
-	if (dockerClient.containerExists(session, containerInfo)) {
-	    Object[] args = { containerInfo.getName() };
-	    executionResult.completeAsSuccessful(messageProvider, "ccc.container_already_exists_success", args);
-	    String message = messageProvider.getMessage("ccc.container_already_exists_note");
-	    executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-	    return Command.CONTINUE_PROCESSING;
-	}
-
-	// configure container configuration object
-	ContainerConfiguration containerConfig = containerInfo.getContainerConfiguration();
-	containerConfig.setImage(containerInfo.getImageInfo().getFullyQualifiedName());
-
-	// post to create container
-	CreatedContainer createdContainer = session.httpPostForObject(CREATE_CONTAINER_URI, containerConfig,
-		CreatedContainer.class);
-
-	// add messages
-	Object[] args = { createdContainer.getId(), containerInfo.getImageInfo().getFullyQualifiedName() };
-	String message = messageProvider.getMessage("ccc.create_container_info", args);
-	executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-
-	// log warnings
-	for (String warning : createdContainer.getWarnings()) {
-	    executionResult.addMessage("Warnings", warning);
-	}
-
-	// rename container to container name
-	Map<String, String> uriVariables = new HashMap<String, String>();
-	uriVariables.put("id", createdContainer.getId());
-	uriVariables.put("newname", containerInfo.getName());
-	session.httpPost(RENAME_CONTAINER_URI, uriVariables);
-
-	// add messages
-	Object[] args2 = { containerInfo.getName() };
-	message = messageProvider.getMessage("ccc.rename_container_info", args2);
-	executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-
-	// create container instance info and store it in the context
-	String id = createdContainer.getId();
-	ContainerInstanceInfo instanceInfo = dockerInfoBuilder.buildInstanceInfo(id, containerInfo);
-	context.put(CONTAINER_INSTANCE_INFO_KEY, instanceInfo);
-
-	// complete result
-	Object[] args3 = { containerInfo.getName() };
-	executionResult.completeAsSuccessful(messageProvider, "ccc.create_container_completed", args3);
-
-	return Command.CONTINUE_PROCESSING;
-    }
 
 }

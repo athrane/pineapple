@@ -30,49 +30,49 @@ import com.alpha.pineapple.model.execution.scheduled.ScheduledOperation;
  */
 public class ScheduledOperationInfoImpl implements ScheduledOperationInfo {
 
-    /**
-     * Scheduled operation.
-     */
-    ScheduledOperation operation;
+	/**
+	 * Scheduled operation.
+	 */
+	ScheduledOperation operation;
 
-    /**
-     * Scheduled future.
-     */
-    ScheduledFuture<?> future;
+	/**
+	 * Scheduled future.
+	 */
+	ScheduledFuture<?> future;
 
-    /**
-     * ScheduledOperationInfoImpl constructor.
-     * 
-     * @param operation
-     *            scheduled operation.
-     * @param future
-     *            scheduled future.
-     */    
-    public ScheduledOperationInfoImpl(ScheduledOperation operation, ScheduledFuture<?> future) {
-	this.operation = operation;
-	this.future = future;
-    }
+	/**
+	 * ScheduledOperationInfoImpl constructor.
+	 * 
+	 * @param operation
+	 *            scheduled operation.
+	 * @param future
+	 *            scheduled future.
+	 */
+	public ScheduledOperationInfoImpl(ScheduledOperation operation, ScheduledFuture<?> future) {
+		this.operation = operation;
+		this.future = future;
+	}
 
-    @Override
-    public ScheduledOperation getOperation() {
-	return operation;
-    }
+	@Override
+	public ScheduledOperation getOperation() {
+		return operation;
+	}
 
-    @Override
-    public ScheduledFuture<?> getFuture() {
-	return future;
-    }
-    
-    @Override
-    public boolean isScheduled() {
-	return (future!=null);
-    }
+	@Override
+	public ScheduledFuture<?> getFuture() {
+		return future;
+	}
 
-    @Override
-    public void cancel() {
-	if (future == null)
-	    return;
-	future.cancel(true);
-    }
+	@Override
+	public boolean isScheduled() {
+		return (future != null);
+	}
+
+	@Override
+	public void cancel() {
+		if (future == null)
+			return;
+		future.cancel(true);
+	}
 
 }

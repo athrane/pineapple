@@ -20,37 +20,37 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.http;
 
-
 /**
- * Helper class which collects two cookie maps into a pair
- * which is used for matching by a matcher.  
+ * Helper class which collects two cookie maps into a pair which is used for
+ * matching by a matcher.
  */
 public class CookieMapPair {
 
 	/**
 	 * Cookie map #1.
-	 */		
-	CookieMap  map1;
+	 */
+	CookieMap map1;
 
 	/**
 	 * Cookie map #2.
-	 */		
+	 */
 	CookieMap map2;
-	
+
 	/**
 	 * CookieMapPair constructor.
 	 * 
-	 * @param map1 First map in pair.
-	 * @param map2 Second map in pair.
+	 * @param map1
+	 *            First map in pair.
+	 * @param map2
+	 *            Second map in pair.
 	 */
 	public CookieMapPair(CookieMap map1, CookieMap map2) {
 		this.map1 = map1;
 		this.map2 = map2;
 	}
-	
+
 	/**
 	 * Return first map in pair.
 	 * 
@@ -64,8 +64,8 @@ public class CookieMapPair {
 	 * Return second map in pair.
 	 * 
 	 * @return second map in pair.
-	 */		
+	 */
 	public CookieMap getSecondMap() {
 		return this.map2;
-	}	
+	}
 }

@@ -34,37 +34,37 @@ import com.alpha.pineapple.model.execution.Results;
  */
 public interface ExecutionResultMapper {
 
-    /**
-     * Map sequence of execution result notifications to model objects.
-     * 
-     * @param notifications
-     *            array of execution result notifications.
-     * 
-     * @return execution result model containing mapped execution result.
-     */
-    Results mapNotificationsToModel(ExecutionResultNotification[] notifications);
+	/**
+	 * Map sequence of execution result notifications to model objects.
+	 * 
+	 * @param notifications
+	 *            array of execution result notifications.
+	 * 
+	 * @return execution result model containing mapped execution result.
+	 */
+	Results mapNotificationsToModel(ExecutionResultNotification[] notifications);
 
-    /**
-     * Map sequence of model result updates to execution results.
-     * 
-     * @param modelResults
-     *            execution result model.
-     * @param resultsMap
-     *            execution result map where is used to keep a index of mapped
-     *            model results into execution results.
-     */
-    void mapModelToResults(Results modelResults, Map<Integer, ExecutionResult> resultsMap);
+	/**
+	 * Map sequence of model result updates to execution results.
+	 * 
+	 * @param modelResults
+	 *            execution result model.
+	 * @param resultsMap
+	 *            execution result map where is used to keep a index of mapped model
+	 *            results into execution results.
+	 */
+	void mapModelToResults(Results modelResults, Map<Integer, ExecutionResult> resultsMap);
 
-    /**
-     * Create execution result map and register the local root result.
-     * 
-     * The map is used during mapping of model results into execution results.
-     * 
-     * @param rootResult
-     *            local root result.
-     * @param resultsMap
-     *            execution result map where is used to keep a index of mapped
-     *            model results into execution results.
-     */
-    Map<Integer, ExecutionResult> createExecutionResultMap(ExecutionResult rootResult);
+	/**
+	 * Create execution result map and register the local root result.
+	 * 
+	 * The map is used during mapping of model results into execution results.
+	 * 
+	 * @param rootResult
+	 *            local root result.
+	 * @param resultsMap
+	 *            execution result map where is used to keep a index of mapped model
+	 *            results into execution results.
+	 */
+	Map<Integer, ExecutionResult> createExecutionResultMap(ExecutionResult rootResult);
 }

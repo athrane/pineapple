@@ -32,54 +32,53 @@ import com.alpha.pineapple.model.configuration.Resource;
  */
 public interface ResourceConfigurationMarshaller {
 
-    /**
-     * Save resources configuration.
-     * 
-     * The configuration directory is resolved from the runtime directory
-     * provider. The configuration is saved in the default resources
-     * configuration file resources.xml.
-     * 
-     * @param executionResult
-     *            A child execution result will be added to this result. The
-     *            child result will reflects the out come of the save operation.
-     *            If the save operation fails the state of the result object
-     *            will be failure or error and will contain a stack trace
-     *            message.
-     * @param configuration
-     *            resource configuration which is saved.
-     */
+	/**
+	 * Save resources configuration.
+	 * 
+	 * The configuration directory is resolved from the runtime directory provider.
+	 * The configuration is saved in the default resources configuration file
+	 * resources.xml.
+	 * 
+	 * @param executionResult
+	 *            A child execution result will be added to this result. The child
+	 *            result will reflects the out come of the save operation. If the
+	 *            save operation fails the state of the result object will be
+	 *            failure or error and will contain a stack trace message.
+	 * @param configuration
+	 *            resource configuration which is saved.
+	 */
 
-    void save(ExecutionResult executionResult, Configuration configuration);
+	void save(ExecutionResult executionResult, Configuration configuration);
 
-    /**
-     * Map resources configuration for saving.
-     * 
-     * @param info
-     *            configuration info which is mapped.
-     * 
-     * @return resources configuration which can be marshalled.
-     */
-    Configuration map(ConfigurationInfo info);
+	/**
+	 * Map resources configuration for saving.
+	 * 
+	 * @param info
+	 *            configuration info which is mapped.
+	 * 
+	 * @return resources configuration which can be marshalled.
+	 */
+	Configuration map(ConfigurationInfo info);
 
-    /**
-     * Map resources configuration to info objects.
-     * 
-     * @param configuration
-     *            configuration which is mapped.
-     * 
-     * @return resources configuration represented by info objects.
-     */
-    ConfigurationInfo map(Configuration configuration);
+	/**
+	 * Map resources configuration to info objects.
+	 * 
+	 * @param configuration
+	 *            configuration which is mapped.
+	 * 
+	 * @return resources configuration represented by info objects.
+	 */
+	ConfigurationInfo map(Configuration configuration);
 
-    /**
-     * Map to resource info to resource.
-     * 
-     * @param resourceInfo
-     *            resource info object.
-     * 
-     * @return mapped resource.
-     */
-    @Deprecated
-    Resource mapToResource(ResourceInfo resourceInfo);
+	/**
+	 * Map to resource info to resource.
+	 * 
+	 * @param resourceInfo
+	 *            resource info object.
+	 * 
+	 * @return mapped resource.
+	 */
+	@Deprecated
+	Resource mapToResource(ResourceInfo resourceInfo);
 
 }

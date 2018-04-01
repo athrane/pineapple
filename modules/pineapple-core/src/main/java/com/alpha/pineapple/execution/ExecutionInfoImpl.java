@@ -29,33 +29,33 @@ import com.alpha.pineapple.module.ModuleInfo;
  */
 public class ExecutionInfoImpl implements ExecutionInfo {
 
-    ModuleInfo moduleInfo;
-    String environment;
-    String operation;
-    ExecutionResult result;
+	ModuleInfo moduleInfo;
+	String environment;
+	String operation;
+	ExecutionResult result;
 
-    public ExecutionInfoImpl(ModuleInfo moduleInfo, String environment, String operation, ExecutionResult result) {
-	super();
-	this.moduleInfo = moduleInfo;
-	this.environment = environment;
-	this.operation = operation;
-	this.result = result;
-    }
+	public ExecutionInfoImpl(ModuleInfo moduleInfo, String environment, String operation, ExecutionResult result) {
+		super();
+		this.moduleInfo = moduleInfo;
+		this.environment = environment;
+		this.operation = operation;
+		this.result = result;
+	}
 
-    public ModuleInfo getModuleInfo() {
-	return moduleInfo;
-    }
+	public ModuleInfo getModuleInfo() {
+		return moduleInfo;
+	}
 
-    public String getEnvironment() {
-	return environment;
-    }
+	public String getEnvironment() {
+		return environment;
+	}
 
-    public String getOperation() {
-	return operation;
-    }
+	public String getOperation() {
+		return operation;
+	}
 
-    public ExecutionResult getResult() {
-	return result;
-    }
+	public ExecutionResult getResult() {
+		return result;
+	}
 
 }

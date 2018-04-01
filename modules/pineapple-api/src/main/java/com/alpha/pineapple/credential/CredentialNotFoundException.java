@@ -27,31 +27,31 @@ package com.alpha.pineapple.credential;
  */
 public class CredentialNotFoundException extends Exception {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * CredentialNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public CredentialNotFoundException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * CredentialNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public CredentialNotFoundException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * CredentialNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public CredentialNotFoundException(String message) {
-	super(message);
-    }
+	/**
+	 * CredentialNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public CredentialNotFoundException(String message) {
+		super(message);
+	}
 
 }

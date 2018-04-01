@@ -35,33 +35,33 @@ import com.alpha.pineapple.docker.model.rest.ObjectFactory;
  * the {@linkplain ContainerConfigurationVolumesMapAdapter} JAXB generated type.
  */
 public class ContainerConfigurationVolumesMapAdapter
-	extends XmlAdapter<ContainerConfigurationVolumes, ContainerConfigurationVolumesMap> {
+		extends XmlAdapter<ContainerConfigurationVolumes, ContainerConfigurationVolumesMap> {
 
-    /**
-     * Object factory.
-     */
-    ObjectFactory objectFactory = new ObjectFactory();
+	/**
+	 * Object factory.
+	 */
+	ObjectFactory objectFactory = new ObjectFactory();
 
-    @Override
-    public ContainerConfigurationVolumes marshal(ContainerConfigurationVolumesMap map) throws Exception {
-	ContainerConfigurationVolumes volumes = objectFactory.createContainerConfigurationVolumes();
-	Set<Entry<String, Object>> entries = map.entrySet();
-	for (Entry<String, Object> entry : entries) {
-	    ContainerConfigurationVolume volume = objectFactory.createContainerConfigurationVolume();
-	    volume.setMountpoint(entry.getKey());
-	    volume.setNullValue(objectFactory.createContainerConfigurationVolumeNullValue());
-	    volumes.getVolume().add(volume);
+	@Override
+	public ContainerConfigurationVolumes marshal(ContainerConfigurationVolumesMap map) throws Exception {
+		ContainerConfigurationVolumes volumes = objectFactory.createContainerConfigurationVolumes();
+		Set<Entry<String, Object>> entries = map.entrySet();
+		for (Entry<String, Object> entry : entries) {
+			ContainerConfigurationVolume volume = objectFactory.createContainerConfigurationVolume();
+			volume.setMountpoint(entry.getKey());
+			volume.setNullValue(objectFactory.createContainerConfigurationVolumeNullValue());
+			volumes.getVolume().add(volume);
+		}
+		return volumes;
 	}
-	return volumes;
-    }
 
-    @Override
-    public ContainerConfigurationVolumesMap unmarshal(ContainerConfigurationVolumes value) throws Exception {
-	ContainerConfigurationVolumesMap map = new ContainerConfigurationVolumesMap();
-	for (ContainerConfigurationVolume volume : value.getVolume()) {
-	    map.put(volume.getMountpoint(), volume.getNullValue());
+	@Override
+	public ContainerConfigurationVolumesMap unmarshal(ContainerConfigurationVolumes value) throws Exception {
+		ContainerConfigurationVolumesMap map = new ContainerConfigurationVolumesMap();
+		for (ContainerConfigurationVolume volume : value.getVolume()) {
+			map.put(volume.getMountpoint(), volume.getNullValue());
+		}
+		return map;
 	}
-	return map;
-    }
 
 }

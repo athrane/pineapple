@@ -47,75 +47,75 @@ import com.alpha.testutils.ObjectMotherResourceRepository;
 @ActiveProfiles("integration-test")
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class PluginActivatorImplIntegrationTest {
-    /**
-     * Object under test.
-     */
-    @Resource
-    PluginActivator pluginActivator;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	PluginActivator pluginActivator;
 
-    /**
-     * Plugin repository.
-     */
-    @Resource
-    PluginRuntimeRepository pluginRepository;
+	/**
+	 * Plugin repository.
+	 */
+	@Resource
+	PluginRuntimeRepository pluginRepository;
 
-    /**
-     * Resource repository.
-     */
-    @Resource
-    ResourceRepository resourceRepository;
+	/**
+	 * Resource repository.
+	 */
+	@Resource
+	ResourceRepository resourceRepository;
 
-    /**
-     * Object mother for credential provider
-     */
-    @Resource
-    ObjectMotherCredentialProvider providerMother;
+	/**
+	 * Object mother for credential provider
+	 */
+	@Resource
+	ObjectMotherCredentialProvider providerMother;
 
-    /**
-     * Credential provider
-     */
-    CredentialProvider provider;
+	/**
+	 * Credential provider
+	 */
+	CredentialProvider provider;
 
-    /**
-     * Object mother for resources cache.
-     */
-    ObjectMotherResourceRepository resourceCacheMother;
+	/**
+	 * Object mother for resources cache.
+	 */
+	ObjectMotherResourceRepository resourceCacheMother;
 
-    @Before
-    public void setUp() throws Exception {
-	// create resources cache object mother
-	resourceCacheMother = new ObjectMotherResourceRepository();
+	@Before
+	public void setUp() throws Exception {
+		// create resources cache object mother
+		resourceCacheMother = new ObjectMotherResourceRepository();
 
-	// create credential provider
-	provider = providerMother.createEmptyCredentialProvider();
-    }
+		// create credential provider
+		provider = providerMother.createEmptyCredentialProvider();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	// delete objects
-	pluginActivator = null;
-	pluginRepository = null;
-	resourceRepository = null;
-	provider = null;
-	resourceCacheMother = null;
-	providerMother = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		// delete objects
+		pluginActivator = null;
+		pluginRepository = null;
+		resourceRepository = null;
+		provider = null;
+		resourceCacheMother = null;
+		providerMother = null;
+	}
 
-    /**
-     * Test that plugin activator can be looked up from the context.
-     */
-    @Test
-    public void testCanGetActivatorFromContext() {
-	assertNotNull(pluginActivator);
-    }
+	/**
+	 * Test that plugin activator can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetActivatorFromContext() {
+		assertNotNull(pluginActivator);
+	}
 
-    /**
-     * Test that activator can be initialized.
-     */
-    @Test
-    public void testInitialize() {
-	// invoke to provoke exception
-	pluginActivator.initialize(provider, resourceRepository, pluginRepository);
-    }
+	/**
+	 * Test that activator can be initialized.
+	 */
+	@Test
+	public void testInitialize() {
+		// invoke to provoke exception
+		pluginActivator.initialize(provider, resourceRepository, pluginRepository);
+	}
 
 }

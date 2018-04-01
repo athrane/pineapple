@@ -30,11 +30,11 @@ import com.alpha.pineapple.model.module.Module;
  */
 public interface ModuleDescriptorVariablesBuilder extends VariablesBuilder {
 
-    /**
-     * Set module descriptor to build variables from.
-     * 
-     * @param model
-     *            module descriptor.
-     */
-    public void setModel(Module module);
+	/**
+	 * Set module descriptor to build variables from.
+	 * 
+	 * @param model
+	 *            module descriptor.
+	 */
+	public void setModel(Module module);
 }

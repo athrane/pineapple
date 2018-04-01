@@ -58,246 +58,246 @@ import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class MarshallJAXBObjectsCommandIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command marshallJAXBObjectsCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command marshallJAXBObjectsCommand;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Configuration object mother
-     */
-    ObjectMotherEnvironmentConfiguration configMother;
+	/**
+	 * Configuration object mother
+	 */
+	ObjectMotherEnvironmentConfiguration configMother;
 
-    /**
-     * Random file name.
-     */
-    String randomXmlFileName;
+	/**
+	 * Random file name.
+	 */
+	String randomXmlFileName;
 
-    /**
-     * Random name.
-     */
-    String randomName;
+	/**
+	 * Random name.
+	 */
+	String randomName;
 
-    @Before
-    public void setUp() throws Exception {
-	randomXmlFileName = RandomStringUtils.randomAlphabetic(10) + ".xml";
-	randomName = RandomStringUtils.randomAlphabetic(10);
+	@Before
+	public void setUp() throws Exception {
+		randomXmlFileName = RandomStringUtils.randomAlphabetic(10) + ".xml";
+		randomName = RandomStringUtils.randomAlphabetic(10);
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("Root result");
+		// create execution result
+		executionResult = new ExecutionResultImpl("Root result");
 
-	// configuration object mother
-	configMother = new ObjectMotherEnvironmentConfiguration();
-    }
+		// configuration object mother
+		configMother = new ObjectMotherEnvironmentConfiguration();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	testDirectory = null;
-	configMother = null;
-	marshallJAXBObjectsCommand = null;
-	executionResult = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		testDirectory = null;
+		configMother = null;
+		marshallJAXBObjectsCommand = null;
+		executionResult = null;
+	}
 
-    /**
-     * Test that file is defined after execution.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testFileIsDefinedAfterExecution() throws Exception {
+	/**
+	 * Test that file is defined after execution.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFileIsDefinedAfterExecution() throws Exception {
 
-	// create context
-	Context context = new ContextBase();
+		// create context
+		Context context = new ContextBase();
 
-	// create file
-	File file = new File(testDirectory, randomXmlFileName);
+		// create file
+		File file = new File(testDirectory, randomXmlFileName);
 
-	// create document
-	ObjectFactory factory = new ObjectFactory();
-	Root root = factory.createRoot();
-	root.setContainer(factory.createContainerType());
-	ItemType item1 = factory.createItemType();
-	item1.setName("item1");
-	ItemType item2 = factory.createItemType();
-	item2.setName("item2");
-	root.getContainer().getItems().add(item1);
-	root.getContainer().getItems().add(item2);
+		// create document
+		ObjectFactory factory = new ObjectFactory();
+		Root root = factory.createRoot();
+		root.setContainer(factory.createContainerType());
+		ItemType item1 = factory.createItemType();
+		item1.setName("item1");
+		ItemType item2 = factory.createItemType();
+		item2.setName("item2");
+		root.getContainer().getItems().add(item1);
+		root.getContainer().getItems().add(item2);
 
-	// setup context
-	context.put(MarshallJAXBObjectsCommand.ROOT_KEY, root);
-	context.put(MarshallJAXBObjectsCommand.FILE_KEY, file);
-	context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
+		// setup context
+		context.put(MarshallJAXBObjectsCommand.ROOT_KEY, root);
+		context.put(MarshallJAXBObjectsCommand.FILE_KEY, file);
+		context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// test
-	assertFalse(file.exists());
+		// test
+		assertFalse(file.exists());
 
-	// execute command
-	marshallJAXBObjectsCommand.execute(context);
+		// execute command
+		marshallJAXBObjectsCommand.execute(context);
 
-	// test
-	assertTrue(file.exists());
-	assertTrue(file.isFile());
-	assertTrue(executionResult.isSuccess());
-	assertFalse(executionResult.isExecuting());
-    }
+		// test
+		assertTrue(file.exists());
+		assertTrue(file.isFile());
+		assertTrue(executionResult.isSuccess());
+		assertFalse(executionResult.isExecuting());
+	}
 
-    /**
-     * Test that file is defined after execution.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testWillCreateSubDirectoriesPriorToMarshalling() throws Exception {
+	/**
+	 * Test that file is defined after execution.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testWillCreateSubDirectoriesPriorToMarshalling() throws Exception {
 
-	// create context
-	Context context = new ContextBase();
+		// create context
+		Context context = new ContextBase();
 
-	// create directory
-	String randomDirName = RandomStringUtils.randomAlphabetic(10);
-	File finalTestDir = new File(testDirectory, randomDirName);
+		// create directory
+		String randomDirName = RandomStringUtils.randomAlphabetic(10);
+		File finalTestDir = new File(testDirectory, randomDirName);
 
-	// create file
-	File file = new File(finalTestDir, randomXmlFileName);
+		// create file
+		File file = new File(finalTestDir, randomXmlFileName);
 
-	// create document
-	ObjectFactory factory = new ObjectFactory();
-	Root root = factory.createRoot();
-	root.setContainer(factory.createContainerType());
-	ItemType item1 = factory.createItemType();
-	item1.setName("item1");
-	ItemType item2 = factory.createItemType();
-	item2.setName("item2");
-	root.getContainer().getItems().add(item1);
-	root.getContainer().getItems().add(item2);
+		// create document
+		ObjectFactory factory = new ObjectFactory();
+		Root root = factory.createRoot();
+		root.setContainer(factory.createContainerType());
+		ItemType item1 = factory.createItemType();
+		item1.setName("item1");
+		ItemType item2 = factory.createItemType();
+		item2.setName("item2");
+		root.getContainer().getItems().add(item1);
+		root.getContainer().getItems().add(item2);
 
-	// setup context
-	context.put(MarshallJAXBObjectsCommand.ROOT_KEY, root);
-	context.put(MarshallJAXBObjectsCommand.FILE_KEY, file);
-	context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
+		// setup context
+		context.put(MarshallJAXBObjectsCommand.ROOT_KEY, root);
+		context.put(MarshallJAXBObjectsCommand.FILE_KEY, file);
+		context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// test
-	assertFalse(file.exists());
+		// test
+		assertFalse(file.exists());
 
-	// execute command
-	marshallJAXBObjectsCommand.execute(context);
+		// execute command
+		marshallJAXBObjectsCommand.execute(context);
 
-	// test
-	assertTrue(file.exists());
-	assertTrue(file.isFile());
-	assertTrue(executionResult.isSuccess());
-	assertFalse(executionResult.isExecuting());
-    }
+		// test
+		assertTrue(file.exists());
+		assertTrue(file.isFile());
+		assertTrue(executionResult.isSuccess());
+		assertFalse(executionResult.isExecuting());
+	}
 
-    /**
-     * Test that file is defined after execution.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testWillCreateSubDirectoriesPriorToMarshalling2() throws Exception {
+	/**
+	 * Test that file is defined after execution.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testWillCreateSubDirectoriesPriorToMarshalling2() throws Exception {
 
-	// create context
-	Context context = new ContextBase();
+		// create context
+		Context context = new ContextBase();
 
-	// create directory
-	String randomDirName = RandomStringUtils.randomAlphabetic(10);
-	String randomDirName2 = RandomStringUtils.randomAlphabetic(10);
-	File finalTestDir = new File(testDirectory, randomDirName);
-	File finalTestDir2 = new File(finalTestDir, randomDirName2);
+		// create directory
+		String randomDirName = RandomStringUtils.randomAlphabetic(10);
+		String randomDirName2 = RandomStringUtils.randomAlphabetic(10);
+		File finalTestDir = new File(testDirectory, randomDirName);
+		File finalTestDir2 = new File(finalTestDir, randomDirName2);
 
-	// create file
-	File file = new File(finalTestDir2, randomXmlFileName);
+		// create file
+		File file = new File(finalTestDir2, randomXmlFileName);
 
-	// create document
-	ObjectFactory factory = new ObjectFactory();
-	Root root = factory.createRoot();
-	root.setContainer(factory.createContainerType());
-	ItemType item1 = factory.createItemType();
-	item1.setName("item1");
-	ItemType item2 = factory.createItemType();
-	item2.setName("item2");
-	root.getContainer().getItems().add(item1);
-	root.getContainer().getItems().add(item2);
+		// create document
+		ObjectFactory factory = new ObjectFactory();
+		Root root = factory.createRoot();
+		root.setContainer(factory.createContainerType());
+		ItemType item1 = factory.createItemType();
+		item1.setName("item1");
+		ItemType item2 = factory.createItemType();
+		item2.setName("item2");
+		root.getContainer().getItems().add(item1);
+		root.getContainer().getItems().add(item2);
 
-	// setup context
-	context.put(MarshallJAXBObjectsCommand.ROOT_KEY, root);
-	context.put(MarshallJAXBObjectsCommand.FILE_KEY, file);
-	context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
+		// setup context
+		context.put(MarshallJAXBObjectsCommand.ROOT_KEY, root);
+		context.put(MarshallJAXBObjectsCommand.FILE_KEY, file);
+		context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// test
-	assertFalse(file.exists());
+		// test
+		assertFalse(file.exists());
 
-	// execute command
-	marshallJAXBObjectsCommand.execute(context);
+		// execute command
+		marshallJAXBObjectsCommand.execute(context);
 
-	// test
-	assertTrue(file.exists());
-	assertTrue(file.isFile());
-	assertTrue(executionResult.isSuccess());
-	assertFalse(executionResult.isExecuting());
-    }
+		// test
+		assertTrue(file.exists());
+		assertTrue(file.isFile());
+		assertTrue(executionResult.isSuccess());
+		assertFalse(executionResult.isExecuting());
+	}
 
-    /**
-     * Test that marshalling fails if directory is illegal.
-     * 
-     * @throws Exception
-     *             If test fails.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testFailsIfdirectoryIsIllegal() throws Exception {
+	/**
+	 * Test that marshalling fails if directory is illegal.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFailsIfdirectoryIsIllegal() throws Exception {
 
-	// create context
-	Context context = new ContextBase();
+		// create context
+		Context context = new ContextBase();
 
-	// create file
-	File file = new File(new File(randomName), randomXmlFileName);
+		// create file
+		File file = new File(new File(randomName), randomXmlFileName);
 
-	// create document
-	ObjectFactory factory = new ObjectFactory();
-	Root root = factory.createRoot();
-	root.setContainer(factory.createContainerType());
-	ItemType item1 = factory.createItemType();
-	item1.setName("item1");
-	ItemType item2 = factory.createItemType();
-	item2.setName("item2");
-	root.getContainer().getItems().add(item1);
-	root.getContainer().getItems().add(item2);
+		// create document
+		ObjectFactory factory = new ObjectFactory();
+		Root root = factory.createRoot();
+		root.setContainer(factory.createContainerType());
+		ItemType item1 = factory.createItemType();
+		item1.setName("item1");
+		ItemType item2 = factory.createItemType();
+		item2.setName("item2");
+		root.getContainer().getItems().add(item1);
+		root.getContainer().getItems().add(item2);
 
-	// setup context
-	context.put(MarshallJAXBObjectsCommand.ROOT_KEY, root);
-	context.put(MarshallJAXBObjectsCommand.FILE_KEY, file);
-	context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
+		// setup context
+		context.put(MarshallJAXBObjectsCommand.ROOT_KEY, root);
+		context.put(MarshallJAXBObjectsCommand.FILE_KEY, file);
+		context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
-	// test
-	assertFalse(file.exists());
+		// test
+		assertFalse(file.exists());
 
-	// execute command
-	marshallJAXBObjectsCommand.execute(context);
+		// execute command
+		marshallJAXBObjectsCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isFailed());
-	assertFalse(executionResult.isExecuting());
-    }
+		// test
+		assertTrue(executionResult.isFailed());
+		assertFalse(executionResult.isExecuting());
+	}
 
 }

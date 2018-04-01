@@ -32,59 +32,58 @@ import com.alpha.pineapple.model.report.Report;
  */
 public interface ReportRepository {
 
-    /**
-     * Initialize repository.
-     * 
-     * @param result
-     *            A child execution result will be added to this result. The
-     *            child result will reflects the out come of the initialization.
-     *            If the initialization fails the state of the result object
-     *            will be failure or error and will contain a stack trace
-     *            message.
-     */
-    void initialize(ExecutionResult result);
+	/**
+	 * Initialize repository.
+	 * 
+	 * @param result
+	 *            A child execution result will be added to this result. The child
+	 *            result will reflects the out come of the initialization. If the
+	 *            initialization fails the state of the result object will be
+	 *            failure or error and will contain a stack trace message.
+	 */
+	void initialize(ExecutionResult result);
 
-    /**
-     * Forced refresh of the repository.
-     */
-    public void refresh();
+	/**
+	 * Forced refresh of the repository.
+	 */
+	public void refresh();
 
-    /**
-     * Get all reports.
-     * 
-     * @return stream of reports.
-     */
-    Stream<Report> getReports();
+	/**
+	 * Get all reports.
+	 * 
+	 * @return stream of reports.
+	 */
+	Stream<Report> getReports();
 
-    /**
-     * Add new report from reports repository directory.
-     * 
-     * If report already exists then existing report is returned.
-     * 
-     * If report directory isn't valid then null is returned and no report is
-     * added to the repository.
-     * 
-     * @param id
-     *            report ID.
-     * @param result
-     *            execution result for reported execution.
-     * 
-     * @return created report. If report already exists then existing report is
-     *         returned. If report directory isn't valid then null is returned
-     *         and no report is added to the repository.
-     */
-    public Report add(String id, ExecutionResult result);
+	/**
+	 * Add new report from reports repository directory.
+	 * 
+	 * If report already exists then existing report is returned.
+	 * 
+	 * If report directory isn't valid then null is returned and no report is added
+	 * to the repository.
+	 * 
+	 * @param id
+	 *            report ID.
+	 * @param result
+	 *            execution result for reported execution.
+	 * 
+	 * @return created report. If report already exists then existing report is
+	 *         returned. If report directory isn't valid then null is returned and
+	 *         no report is added to the repository.
+	 */
+	public Report add(String id, ExecutionResult result);
 
-    /**
-     * Delete report
-     * 
-     * @param id
-     *            report id.
-     */
-    void delete(String id);
+	/**
+	 * Delete report
+	 * 
+	 * @param id
+	 *            report id.
+	 */
+	void delete(String id);
 
-    /**
-     * Delete all reports.
-     */
-    void deleteAll();
+	/**
+	 * Delete all reports.
+	 */
+	void deleteAll();
 }

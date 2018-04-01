@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.ssh.utils;
 
 import java.io.File;
@@ -28,33 +27,37 @@ import java.io.File;
 import com.alpha.pineapple.execution.ExecutionResult;
 
 /**
- * Common functionality for SSH. 
+ * Common functionality for SSH.
  */
 public interface SshHelper {
-		
-    /**
-	 * Asserts whether the local file path points to a valid file. 
+
+	/**
+	 * Asserts whether the local file path points to a valid file.
 	 * 
-	 * The result of the of the assertion is added as an execution result to
-	 * current execution result object graph. 
+	 * The result of the of the assertion is added as an execution result to current
+	 * execution result object graph.
 	 * 
-	 * @param localFile Path to local file.
-	 * @param result ExecutionResult result where the assertion result is added
-	 * as a child result.
+	 * @param localFile
+	 *            Path to local file.
+	 * @param result
+	 *            ExecutionResult result where the assertion result is added as a
+	 *            child result.
 	 * 
 	 * @return True if the installer exists as an file.
 	 */
-	public boolean isLocalFileValid(File localFile, ExecutionResult result );
-	
+	public boolean isLocalFileValid(File localFile, ExecutionResult result);
+
 	/**
-	 * Resolve module path. 
+	 * Resolve module path.
 	 * 
-	 * @param result Execution result used to look up execution info.
+	 * @param result
+	 *            Execution result used to look up execution info.
 	 * 
-	 * @param localFile Unresolved local file path.
-	 *  
+	 * @param localFile
+	 *            Unresolved local file path.
+	 * 
 	 * @return Resolved local file path where 'modulepath' prefix is resolved to
-	 * physical module directory.
+	 *         physical module directory.
 	 */
-	public String resolveModulePath(ExecutionResult result, String localFile );	
+	public String resolveModulePath(ExecutionResult result, String localFile);
 }

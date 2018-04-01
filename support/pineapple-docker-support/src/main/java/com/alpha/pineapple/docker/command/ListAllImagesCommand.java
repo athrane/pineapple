@@ -83,67 +83,66 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class ListAllImagesCommand implements Command {
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Info about the existing images.
-     */
-    public static final String IMAGES_KEY = "images";
+	/**
+	 * Key used to identify property in context: Info about the existing images.
+	 */
+	public static final String IMAGES_KEY = "images";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    @SuppressWarnings("unchecked")
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	@SuppressWarnings("unchecked")
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	Map<String, String> urlVariables = new HashMap<String, String>(3);
-	urlVariables.put("all", "true");
+		Map<String, String> urlVariables = new HashMap<String, String>(3);
+		urlVariables.put("all", "true");
 
-	// HTTP get to retrieve image list
-	ListedImage[] images = session.httpGetForObject(LIST_IMAGES_URI, urlVariables, ListedImage[].class);
+		// HTTP get to retrieve image list
+		ListedImage[] images = session.httpGetForObject(LIST_IMAGES_URI, urlVariables, ListedImage[].class);
 
-	// store container info's in context
-	context.put(IMAGES_KEY, images);
+		// store container info's in context
+		context.put(IMAGES_KEY, images);
 
-	// complete result
-	Object[] args = { images.length };
-	executionResult.completeAsSuccessful(messageProvider, "laic.list_image_completed", args);
+		// complete result
+		Object[] args = { images.length };
+		executionResult.completeAsSuccessful(messageProvider, "laic.list_image_completed", args);
 
-	return Command.CONTINUE_PROCESSING;
-    }
+		return Command.CONTINUE_PROCESSING;
+	}
 
 }

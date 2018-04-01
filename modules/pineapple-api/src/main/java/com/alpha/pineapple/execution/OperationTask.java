@@ -27,44 +27,45 @@ package com.alpha.pineapple.execution;
  */
 public interface OperationTask {
 
-    /**
-     * Execute task.
-     * 
-     * @param info
-     *            Execution info.
-     */
-    public void execute(ExecutionInfo info);
+	/**
+	 * Execute task.
+	 * 
+	 * @param info
+	 *            Execution info.
+	 */
+	public void execute(ExecutionInfo info);
 
-    /**
-     * Execute task.
-     * 
-     * @param operation
-     *            operation to execute.
-     * @param environment
-     *            target environment to execute operation in.
-     * @param module
-     *            target module to execute operation in.
-     * @return execution info.
-     */
-    public ExecutionInfo execute(String operation, String environment, String module);
+	/**
+	 * Execute task.
+	 * 
+	 * @param operation
+	 *            operation to execute.
+	 * @param environment
+	 *            target environment to execute operation in.
+	 * @param module
+	 *            target module to execute operation in.
+	 * @return execution info.
+	 */
+	public ExecutionInfo execute(String operation, String environment, String module);
 
-    /**
-     * Attach execution of composite task to existing execution.
-     * 
-     * @param operation
-     *            operation to execute.
-     * @param environment
-     *            target environment to execute operation in.
-     * @param module
-     *            target module to execute operation in.
-     * @param description
-     *            description of the composite execution.
-     * @param result
-     *            root result of existing execution that the composite execution
-     *            is attached to.
-     *            
-     * @return execution info.
-     */
-    public ExecutionInfo executeComposite(String operation, String environment, String module, String description, ExecutionResult result);
-    
+	/**
+	 * Attach execution of composite task to existing execution.
+	 * 
+	 * @param operation
+	 *            operation to execute.
+	 * @param environment
+	 *            target environment to execute operation in.
+	 * @param module
+	 *            target module to execute operation in.
+	 * @param description
+	 *            description of the composite execution.
+	 * @param result
+	 *            root result of existing execution that the composite execution is
+	 *            attached to.
+	 * 
+	 * @return execution info.
+	 */
+	public ExecutionInfo executeComposite(String operation, String environment, String module, String description,
+			ExecutionResult result);
+
 }

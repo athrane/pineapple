@@ -83,69 +83,67 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class ListAllContainersCommand implements Command {
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Info about the existing
-     * containers.
-     */
-    public static final String CONTAINERS_KEY = "containers";
+	/**
+	 * Key used to identify property in context: Info about the existing containers.
+	 */
+	public static final String CONTAINERS_KEY = "containers";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    DockerSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	DockerSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "dockerMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "dockerMessageProvider")
+	MessageProvider messageProvider;
 
-    @SuppressWarnings("unchecked")
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	@SuppressWarnings("unchecked")
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	Map<String, String> urlVariables = new HashMap<String, String>(3);
-	urlVariables.put("all", "true");
+		Map<String, String> urlVariables = new HashMap<String, String>(3);
+		urlVariables.put("all", "true");
 
-	// HTTP get to retrieve container list
-	ListedContainer[] containerInfos = session.httpGetForObject(LIST_CONTAINERS_URI, urlVariables,
-		ListedContainer[].class);
+		// HTTP get to retrieve container list
+		ListedContainer[] containerInfos = session.httpGetForObject(LIST_CONTAINERS_URI, urlVariables,
+				ListedContainer[].class);
 
-	// store container info's in context
-	context.put(CONTAINERS_KEY, containerInfos);
+		// store container info's in context
+		context.put(CONTAINERS_KEY, containerInfos);
 
-	// complete result
-	Object[] args = { containerInfos.length };
-	executionResult.completeAsSuccessful(messageProvider, "lacc.list_containers_completed", args);
+		// complete result
+		Object[] args = { containerInfos.length };
+		executionResult.completeAsSuccessful(messageProvider, "lacc.list_containers_completed", args);
 
-	return Command.CONTINUE_PROCESSING;
-    }
+		return Command.CONTINUE_PROCESSING;
+	}
 
 }

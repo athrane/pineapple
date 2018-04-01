@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.session;
 
 import static org.junit.Assert.assertEquals;
@@ -53,50 +52,50 @@ import com.alpha.testutils.ObjectMotherScript;
 /**
  * Unit test of the {@link ProcessExecutionSessionImpl} class.
  */
-@RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration( locations = { "/com.alpha.pineapple.process.execution-config.xml" } )
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/com.alpha.pineapple.process.execution-config.xml" })
 public class ProcessExecutionSessionIntegrationTest {
-	
+
 	/**
 	 * Expected number of results.
 	 */
-    static final int EXPECTED_RESULTS = 6;
+	static final int EXPECTED_RESULTS = 6;
 
 	/**
-     * Object under test.
-     */
-    @Resource
-    ProcessExecutionSession processExecutionSession;
-	
+	 * Object under test.
+	 */
+	@Resource
+	ProcessExecutionSession processExecutionSession;
+
 	/**
 	 * Test script directory
 	 */
 	File testScriptsDir = new File(SystemUtils.getUserDir(), "/src/test/resources/");
-    
+
 	/**
-	 * Script mother. 
+	 * Script mother.
 	 */
 	ObjectMotherScript mother = new ObjectMotherScript();
-	
-    /**
-     * Object mother Resource.
-     */
-    ObjectMotherResource resourceMother;
-	
+
+	/**
+	 * Object mother Resource.
+	 */
+	ObjectMotherResource resourceMother;
+
 	/**
 	 * Execution result.
 	 */
 	ExecutionResult executionResult;
 
-	/** 
+	/**
 	 * Credential.
 	 */
-	Credential credential;    
-	
+	Credential credential;
+
 	/**
 	 * Random Name.
 	 */
-	String randomId; 
+	String randomId;
 
 	/**
 	 * Random Name.
@@ -107,24 +106,24 @@ public class ProcessExecutionSessionIntegrationTest {
 	 * Random Name.
 	 */
 	String randomPassword;
-	
+
 	@Before
 	public void setUp() throws Exception {
-	
+
 		randomId = RandomStringUtils.randomAlphabetic(10);
 		randomUser = RandomStringUtils.randomAlphabetic(10);
 		randomPassword = RandomStringUtils.randomAlphabetic(10);
-		
-        // create object mother
-        resourceMother = new ObjectMotherResource();
-		
-        // create execution result
-		executionResult = new ExecutionResultImpl( "Root result" );				
+
+		// create object mother
+		resourceMother = new ObjectMotherResource();
+
+		// create execution result
+		executionResult = new ExecutionResultImpl("Root result");
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		
+
 		executionResult = null;
 	}
 
@@ -132,309 +131,309 @@ public class ProcessExecutionSessionIntegrationTest {
 	 * Create credential.
 	 */
 	void createCredential() {
-        credential = new Credential();
-        credential.setId( randomId );
-        credential.setUser( randomUser );
-        credential.setPassword( randomPassword );        
+		credential = new Credential();
+		credential.setId(randomId);
+		credential.setUser(randomUser);
+		credential.setPassword(randomPassword);
 	}
-	
-    /**
-     * Test that session can be looked up from the context.
-     */
-    @Test
-    public void testCanGetSessionFromContext()
-    {
-        assertNotNull( processExecutionSession );
-    }
 
-    /**
-     * Test that session can be connected. 
-     * 
-     * @throws Exception If test fails.
-     */
-    @Test
-    public void testCanConnectSession() throws Exception
-    {
-    	// create resource
-        com.alpha.pineapple.model.configuration.Resource resource;
-        resource = resourceMother.createResourceWithNoProperties();
-        
-        // create credential        
-		createCredential();
-		
-		processExecutionSession.connect(resource, credential);				
-    }
+	/**
+	 * Test that session can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetSessionFromContext() {
+		assertNotNull(processExecutionSession);
+	}
 
-    /**
-     * Test that resource is defined after connect.
-     *  
-     * @throws Exception If test fails.
-     */
-    @Test
-    public void testResourceIsDefinedInConnectedSession() throws Exception
-    {
-    	// create resource
-        com.alpha.pineapple.model.configuration.Resource resource;
-        resource = resourceMother.createResourceWithNoProperties();
-        
-        // create credential        
+	/**
+	 * Test that session can be connected.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testCanConnectSession() throws Exception {
+		// create resource
+		com.alpha.pineapple.model.configuration.Resource resource;
+		resource = resourceMother.createResourceWithNoProperties();
+
+		// create credential
 		createCredential();
-	
+
+		processExecutionSession.connect(resource, credential);
+	}
+
+	/**
+	 * Test that resource is defined after connect.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testResourceIsDefinedInConnectedSession() throws Exception {
+		// create resource
+		com.alpha.pineapple.model.configuration.Resource resource;
+		resource = resourceMother.createResourceWithNoProperties();
+
+		// create credential
+		createCredential();
+
 		// connect
 		processExecutionSession.connect(resource, credential);
-		
+
 		// test
 		assertEquals(resource, processExecutionSession.getResource());
-		
-    }
 
-    /**
-     * Test that credential is defined after connect.
-     *  
-     * @throws Exception If test fails.
-     */
-    @Test
-    public void testCredentialIsDefinedInConnectedSession() throws Exception
-    {
-    	// create resource
-        com.alpha.pineapple.model.configuration.Resource resource;
-        resource = resourceMother.createResourceWithNoProperties();
-        
-        // create credential        
+	}
+
+	/**
+	 * Test that credential is defined after connect.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testCredentialIsDefinedInConnectedSession() throws Exception {
+		// create resource
+		com.alpha.pineapple.model.configuration.Resource resource;
+		resource = resourceMother.createResourceWithNoProperties();
+
+		// create credential
 		createCredential();
-	
+
 		// connect
 		processExecutionSession.connect(resource, credential);
-		
+
 		// test
 		assertEquals(credential, processExecutionSession.getCredential());
-		
-    }
-    
-    /**
-     * Test that property is defined after connect.
-     *  
-     * @throws Exception If test fails.
-     */
-    @Test
-    public void testPropertyIsDefinedInConnectedSession() throws Exception
-    {
-    	String randomKey = RandomStringUtils.randomAlphabetic(10);
-    	String randomValue = RandomStringUtils.randomAlphabetic(10);
-    	
-    	// create resource
-        com.alpha.pineapple.model.configuration.Resource resource;
-        HashMap<String, String> properties = new HashMap<String, String>();
-        properties.put( randomKey, randomValue);
-        
+
+	}
+
+	/**
+	 * Test that property is defined after connect.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testPropertyIsDefinedInConnectedSession() throws Exception {
+		String randomKey = RandomStringUtils.randomAlphabetic(10);
+		String randomValue = RandomStringUtils.randomAlphabetic(10);
+
+		// create resource
+		com.alpha.pineapple.model.configuration.Resource resource;
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put(randomKey, randomValue);
+
 		resource = resourceMother.createResourceWithProperties(properties);
-        
-        // create credential        
+
+		// create credential
 		createCredential();
-	
+
 		// connect
 		processExecutionSession.connect(resource, credential);
-		
-		// test
-		assertTrue(processExecutionSession.isResourcePropertyDefined(randomKey));				
-    }
 
-    /**
-     * Test that property value can be read in after connect.
-     *  
-     * @throws Exception If test fails.
-     */
-    @Test
-    public void testCanGetPropertyValueInConnectedSession() throws Exception
-    {
-    	String randomKey = RandomStringUtils.randomAlphabetic(10);
-    	String randomValue = RandomStringUtils.randomAlphabetic(10);
-    	
-    	// create resource
-        com.alpha.pineapple.model.configuration.Resource resource;
-        HashMap<String, String> properties = new HashMap<String, String>();
-        properties.put( randomKey, randomValue);
-        
+		// test
+		assertTrue(processExecutionSession.isResourcePropertyDefined(randomKey));
+	}
+
+	/**
+	 * Test that property value can be read in after connect.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test
+	public void testCanGetPropertyValueInConnectedSession() throws Exception {
+		String randomKey = RandomStringUtils.randomAlphabetic(10);
+		String randomValue = RandomStringUtils.randomAlphabetic(10);
+
+		// create resource
+		com.alpha.pineapple.model.configuration.Resource resource;
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put(randomKey, randomValue);
+
 		resource = resourceMother.createResourceWithProperties(properties);
-        
-        // create credential        
+
+		// create credential
 		createCredential();
-	
+
 		// connect
 		processExecutionSession.connect(resource, credential);
-		
-		// test
-		assertEquals(randomValue, processExecutionSession.getResourceProperty(randomKey));		
-    }
 
-    /**
-     * Test that reading undefined property value results in exception.
-     *  
-     * @throws Exception If test fails.
-     */
-    @Test(expected=ResourceException.class)
-    public void testThrowsExceptionForUndefinedPropertyInConnectedSession() throws Exception
-    {
-    	String randomKey = RandomStringUtils.randomAlphabetic(10);
-    	String randomKey2 = RandomStringUtils.randomAlphabetic(10);
-    	String randomValue = RandomStringUtils.randomAlphabetic(10);
-    	
-    	// create resource
-        com.alpha.pineapple.model.configuration.Resource resource;
-        HashMap<String, String> properties = new HashMap<String, String>();
-        properties.put( randomKey, randomValue);
-        
+		// test
+		assertEquals(randomValue, processExecutionSession.getResourceProperty(randomKey));
+	}
+
+	/**
+	 * Test that reading undefined property value results in exception.
+	 * 
+	 * @throws Exception
+	 *             If test fails.
+	 */
+	@Test(expected = ResourceException.class)
+	public void testThrowsExceptionForUndefinedPropertyInConnectedSession() throws Exception {
+		String randomKey = RandomStringUtils.randomAlphabetic(10);
+		String randomKey2 = RandomStringUtils.randomAlphabetic(10);
+		String randomValue = RandomStringUtils.randomAlphabetic(10);
+
+		// create resource
+		com.alpha.pineapple.model.configuration.Resource resource;
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put(randomKey, randomValue);
+
 		resource = resourceMother.createResourceWithProperties(properties);
-        
-        // create credential        
+
+		// create credential
 		createCredential();
-	
+
 		// connect
 		processExecutionSession.connect(resource, credential);
-		
-		// test
-		processExecutionSession.getResourceProperty(randomKey2);		
-    }
 
-    
+		// test
+		processExecutionSession.getResourceProperty(randomKey2);
+	}
+
 	/**
 	 * Test that process can be executed.
 	 * 
-	 * @throws Exception If test fails
+	 * @throws Exception
+	 *             If test fails
 	 */
 	@Test
 	public void testCanExecuteProcess() throws Exception {
-		
-		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/test");								
+
+		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/test");
 		String[] arguments = {};
-		String description = "..some description...";		
-		
+		String description = "..some description...";
+
 		// invoke session
-    	processExecutionSession.execute(testscript.toString(), arguments, description, executionResult);
-				
-        // test
-        assertEquals( ExecutionState.EXECUTING, executionResult.getState());
-        assertEquals( 1 , executionResult.getChildren().length);
-        
-        ExecutionResult childResult = executionResult.getChildren()[0];
-        assertEquals( ExecutionState.SUCCESS, childResult.getState());
-        assertEquals( EXPECTED_RESULTS, childResult.getMessages().size());
-		
-        Map<String, String> messages = childResult.getMessages();		
-        assertEquals("TEST..", messages.get("Standard Out")); 
-               
+		processExecutionSession.execute(testscript.toString(), arguments, description, executionResult);
+
+		// test
+		assertEquals(ExecutionState.EXECUTING, executionResult.getState());
+		assertEquals(1, executionResult.getChildren().length);
+
+		ExecutionResult childResult = executionResult.getChildren()[0];
+		assertEquals(ExecutionState.SUCCESS, childResult.getState());
+		assertEquals(EXPECTED_RESULTS, childResult.getMessages().size());
+
+		Map<String, String> messages = childResult.getMessages();
+		assertEquals("TEST..", messages.get("Standard Out"));
+
 	}
 
-	
 	/**
-	 * Test that process can be execution fails if
-	 * executable is unknown
+	 * Test that process can be execution fails if executable is unknown
 	 * 
-	 * @throws Exception If test fails
+	 * @throws Exception
+	 *             If test fails
 	 */
 	@Test
 	public void testCanExecutionFailsIfExecutableIsUnknown() throws Exception {
-		
-		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/unknown-test");												
+
+		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/unknown-test");
 		String[] arguments = {};
-		String description = "..some description...";		
-		
+		String description = "..some description...";
+
 		// invoke session
-    	processExecutionSession.execute(testscript.toString(), arguments, description, executionResult);
-				
-        // test
-        assertEquals( ExecutionState.EXECUTING, executionResult.getState());
-        assertEquals( 1 , executionResult.getChildren().length);
-        
-        ExecutionResult childResult = executionResult.getChildren()[0];    	
-        assertEquals( ExecutionState.ERROR, childResult.getState());
-        assertEquals( EXPECTED_RESULTS, childResult.getMessages().size());
-		
-        Map<String, String> messages = childResult.getMessages();		
-        assertEquals("", messages.get("Standard Out")); 
+		processExecutionSession.execute(testscript.toString(), arguments, description, executionResult);
+
+		// test
+		assertEquals(ExecutionState.EXECUTING, executionResult.getState());
+		assertEquals(1, executionResult.getChildren().length);
+
+		ExecutionResult childResult = executionResult.getChildren()[0];
+		assertEquals(ExecutionState.ERROR, childResult.getState());
+		assertEquals(EXPECTED_RESULTS, childResult.getMessages().size());
+
+		Map<String, String> messages = childResult.getMessages();
+		assertEquals("", messages.get("Standard Out"));
 	}
-	
+
 	/**
 	 * Test that process can be executed with single argument
 	 * 
-	 * @throws Exception If test fails
+	 * @throws Exception
+	 *             If test fails
 	 */
 	@Test
 	public void testCanExecuteProcessWithSingleArgument() throws Exception {
-		
-		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/test");				
-		String[] arguments = {"ARG1" };		
-		String description = "..some description...";		
-		
+
+		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/test");
+		String[] arguments = { "ARG1" };
+		String description = "..some description...";
+
 		// invoke session
-    	processExecutionSession.execute(testscript.toString(), arguments, description, executionResult);
-		
-        // test
-        assertEquals( ExecutionState.EXECUTING, executionResult.getState());
-        assertEquals( 1 , executionResult.getChildren().length);
-        
-        ExecutionResult childResult = executionResult.getChildren()[0];    	
-        assertEquals( ExecutionState.SUCCESS, childResult.getState());
-        assertEquals( EXPECTED_RESULTS, childResult.getMessages().size());
-		
-        Map<String, String> messages = childResult.getMessages();		
-        assertEquals("TEST..ARG1", messages.get("Standard Out")); 
+		processExecutionSession.execute(testscript.toString(), arguments, description, executionResult);
+
+		// test
+		assertEquals(ExecutionState.EXECUTING, executionResult.getState());
+		assertEquals(1, executionResult.getChildren().length);
+
+		ExecutionResult childResult = executionResult.getChildren()[0];
+		assertEquals(ExecutionState.SUCCESS, childResult.getState());
+		assertEquals(EXPECTED_RESULTS, childResult.getMessages().size());
+
+		Map<String, String> messages = childResult.getMessages();
+		assertEquals("TEST..ARG1", messages.get("Standard Out"));
 	}
-	
+
 	/**
 	 * Test that process is killed after 5000ms if no time out value is defined.
 	 * 
-	 * @throws Exception If test fails
+	 * @throws Exception
+	 *             If test fails
 	 */
 	@Test
 	public void testProcessIsKilledAfter5000msByDefault() throws Exception {
-		
-		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/forever");				
-		String[] arguments = {};		
-		String description = "..some description...";		
-		
+
+		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/forever");
+		String[] arguments = {};
+		String description = "..some description...";
+
 		// invoke session
-    	processExecutionSession.execute(testscript.toString(), arguments, description, executionResult);
-		
-        // test
-        assertEquals( ExecutionState.EXECUTING, executionResult.getState());
-        assertEquals( 1 , executionResult.getChildren().length);
-        
-        ExecutionResult childResult = executionResult.getChildren()[0];    	
-        assertEquals( ExecutionState.ERROR, childResult.getState());
-        assertEquals( EXPECTED_RESULTS, childResult.getMessages().size());
-		
-        Map<String, String> messages = childResult.getMessages();		
-        assertEquals("x.\r\nx.\r\nx.\r\nx.\r\nx.", messages.get("Standard Out")); 
+		processExecutionSession.execute(testscript.toString(), arguments, description, executionResult);
+
+		// test
+		assertEquals(ExecutionState.EXECUTING, executionResult.getState());
+		assertEquals(1, executionResult.getChildren().length);
+
+		ExecutionResult childResult = executionResult.getChildren()[0];
+		assertEquals(ExecutionState.ERROR, childResult.getState());
+		assertEquals(EXPECTED_RESULTS, childResult.getMessages().size());
+
+		Map<String, String> messages = childResult.getMessages();
+		assertEquals("x.\r\nx.\r\nx.\r\nx.\r\nx.", messages.get("Standard Out"));
 	}
-	
+
 	/**
-	 * Test that process is killed after 1000ms if 
-	 * time out value is defined.
+	 * Test that process is killed after 1000ms if time out value is defined.
 	 * 
-	 * @throws Exception If test fails
+	 * @throws Exception
+	 *             If test fails
 	 */
 	@Test
 	public void testProcessIsKilledAfter1000ms() throws Exception {
-		
-		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/forever");				
+
+		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/forever");
 		String[] arguments = {};
 		long timeout = 1000;
-		String description = "..some description...";		
-		
+		String description = "..some description...";
+
 		// invoke session
-    	processExecutionSession.execute(testscript.toString(), arguments, timeout, description, executionResult);
-		
-        // test
-        assertEquals( ExecutionState.EXECUTING, executionResult.getState());
-        assertEquals( 1 , executionResult.getChildren().length);
-        
-        ExecutionResult childResult = executionResult.getChildren()[0];    	
-        assertEquals( ExecutionState.ERROR, childResult.getState());
-        assertEquals( EXPECTED_RESULTS, childResult.getMessages().size());
-		
-        Map<String, String> messages = childResult.getMessages();		
-        assertEquals("x.", messages.get("Standard Out")); 
+		processExecutionSession.execute(testscript.toString(), arguments, timeout, description, executionResult);
+
+		// test
+		assertEquals(ExecutionState.EXECUTING, executionResult.getState());
+		assertEquals(1, executionResult.getChildren().length);
+
+		ExecutionResult childResult = executionResult.getChildren()[0];
+		assertEquals(ExecutionState.ERROR, childResult.getState());
+		assertEquals(EXPECTED_RESULTS, childResult.getMessages().size());
+
+		Map<String, String> messages = childResult.getMessages();
+		assertEquals("x.", messages.get("Standard Out"));
 	}
-	
+
 }

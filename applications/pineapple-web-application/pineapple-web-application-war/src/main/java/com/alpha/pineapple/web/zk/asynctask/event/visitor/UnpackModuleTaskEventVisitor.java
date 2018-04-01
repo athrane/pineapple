@@ -32,20 +32,20 @@ import com.alpha.pineapple.web.zk.asynctask.event.UnpackedEntryEvent;
  */
 public interface UnpackModuleTaskEventVisitor {
 
-    /**
-     * Visit event.
-     * 
-     * @param evt
-     *            event.
-     */
-    public void visit(FileUnpackUpdateEvent evt);
+	/**
+	 * Visit event.
+	 * 
+	 * @param evt
+	 *            event.
+	 */
+	public void visit(FileUnpackUpdateEvent evt);
 
-    /**
-     * Visit event.
-     * 
-     * @param evt
-     *            event.
-     */
-    public void visit(UnpackedEntryEvent evt);
+	/**
+	 * Visit event.
+	 * 
+	 * @param evt
+	 *            event.
+	 */
+	public void visit(UnpackedEntryEvent evt);
 
 }

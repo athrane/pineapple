@@ -20,9 +20,7 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.command;
-
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
@@ -31,40 +29,37 @@ import org.apache.log4j.Logger;
 import com.alpha.pineapple.command.initialization.Initialize;
 
 /**
- * Annotated command used for unit testing.
- * This command contains a single field of the type String[] 
- * with the annotation @link {@link Initialize}.
+ * Annotated command used for unit testing. This command contains a single field
+ * of the type String[] with the annotation @link {@link Initialize}.
  */
-public class InitializeAnnotatedWithStringArraysCommand implements Command
-{
-    /**
-     * Context key
-     */
-    public static final String CONTEXT_KEY = "key";
+public class InitializeAnnotatedWithStringArraysCommand implements Command {
+	/**
+	 * Context key
+	 */
+	public static final String CONTEXT_KEY = "key";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-    
-    /**
-     * Annotated field
-     */   
-    @Initialize( InitializeAnnotatedWithStringArraysCommand.CONTEXT_KEY )
-    public String[] annotatedStringArrayField;
-                
-    public boolean execute( Context context ) throws Exception
-    {
-        if( logger.isDebugEnabled()) {
-            
-            StringBuilder message = new StringBuilder();
-            message.append( "Executing command <" );
-            message.append( this.getClass().getName());
-            message.append( ">." );   
-            logger.debug( message.toString() );
-        }
-        
-        return Command.CONTINUE_PROCESSING;
-    }
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
+	/**
+	 * Annotated field
+	 */
+	@Initialize(InitializeAnnotatedWithStringArraysCommand.CONTEXT_KEY)
+	public String[] annotatedStringArrayField;
+
+	public boolean execute(Context context) throws Exception {
+		if (logger.isDebugEnabled()) {
+
+			StringBuilder message = new StringBuilder();
+			message.append("Executing command <");
+			message.append(this.getClass().getName());
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
+		return Command.CONTINUE_PROCESSING;
+	}
 
 }

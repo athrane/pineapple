@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.http;
 
 import static org.junit.Assert.assertEquals;
@@ -41,12 +40,12 @@ public class ResponsePropertyInfoSetImplTest {
 	 * First array index.
 	 */
 	static final int FIRST_INDEX = 0;
-	
+
 	/**
 	 * Object under test.
 	 */
 	ResponsePropertyInfoSet set;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		set = new ResponsePropertyInfoSetImpl();
@@ -75,10 +74,10 @@ public class ResponsePropertyInfoSetImplTest {
 
 	/**
 	 * That a set with a single registered properties returns an array of size one.
-	 */	
+	 */
 	@Test
 	public void testSetWithOnePropertyReturnArrayOfSizeOne() {
-		
+
 		set.addProperty("name", "xpath", CoreMatchers.anything(), CoreMatchers.anything());
 
 		// test
@@ -87,101 +86,101 @@ public class ResponsePropertyInfoSetImplTest {
 
 	/**
 	 * That a set with a two registered properties returns an array of size two.
-	 */	
+	 */
 	@Test
 	public void testSetWithTwoPropertiesReturnArrayOfSizeTwo() {
-		
+
 		set.addProperty("name", "xpath", CoreMatchers.anything(), CoreMatchers.anything());
 		set.addProperty("name2", "xpath", CoreMatchers.anything(), CoreMatchers.anything());
-		
+
 		// test
 		assertEquals(2, set.getProperties().length);
 	}
 
 	/**
 	 * That registered properties returns correct attributes.
-	 */	
+	 */
 	@Test
 	public void testPropertyIsRegisteredWithCorrectAttributes() {
-		
+
 		Matcher<Object> intra = CoreMatchers.nullValue();
 		Matcher<Object> inter = CoreMatchers.anything();
 		String name = "some-name";
 		String xpath = "some-xpath";
 		set.addProperty(name, xpath, intra, inter);
 
-		ResponsePropertyInfo[] properties = set.getProperties();		
+		ResponsePropertyInfo[] properties = set.getProperties();
 		ResponsePropertyInfo property = properties[FIRST_INDEX];
-		
+
 		// test
 		assertEquals(inter, property.getInterSequenceMatcher());
-		assertEquals(intra, property.getIntraSequenceMatcher());		
-		assertEquals(name, property.getName());		
-		assertEquals(xpath, property.getXPath());		
+		assertEquals(intra, property.getIntraSequenceMatcher());
+		assertEquals(name, property.getName());
+		assertEquals(xpath, property.getXPath());
 	}
 
 	/**
 	 * That a set rejects an undefined name.
-	 */	
-	@Test(expected= IllegalArgumentException.class)
+	 */
+	@Test(expected = IllegalArgumentException.class)
 	public void testRejectsUndefinedName() {
-		set.addProperty(null, "xpath", CoreMatchers.anything(), CoreMatchers.anything());		
+		set.addProperty(null, "xpath", CoreMatchers.anything(), CoreMatchers.anything());
 	}
 
 	/**
 	 * That a set rejects an undefined XPath.
-	 */	
-	@Test(expected= IllegalArgumentException.class)
+	 */
+	@Test(expected = IllegalArgumentException.class)
 	public void testRejectsUndefinedXPath() {
-		set.addProperty("name", null , CoreMatchers.anything(), CoreMatchers.anything());		
+		set.addProperty("name", null, CoreMatchers.anything(), CoreMatchers.anything());
 	}
 
 	/**
 	 * That a set accepts an undefined intra matcher.
-	 */	
+	 */
 	public void testAcceptUndefinedIntraMatcher() {
-		
+
 		Matcher<Object> intra = null;
-		Matcher<Object> inter = CoreMatchers.anything();		
-		set.addProperty("name", "xpath", intra, inter );
-		
-		ResponsePropertyInfo[] properties = set.getProperties();		
+		Matcher<Object> inter = CoreMatchers.anything();
+		set.addProperty("name", "xpath", intra, inter);
+
+		ResponsePropertyInfo[] properties = set.getProperties();
 		ResponsePropertyInfo property = properties[FIRST_INDEX];
-		
+
 		// test
 		assertEquals(inter, property.getInterSequenceMatcher());
-		assertEquals(intra, property.getIntraSequenceMatcher());		
-		
+		assertEquals(intra, property.getIntraSequenceMatcher());
+
 	}
 
 	/**
 	 * That a set accepts an undefined inter matcher.
-	 */	
+	 */
 	public void testAcceptsUndefinedInterMatcher() {
-		
+
 		Matcher<Object> intra = CoreMatchers.anything();
-		Matcher<Object> inter = null;		
-		set.addProperty("name", "xpath", intra, inter );
-		
-		ResponsePropertyInfo[] properties = set.getProperties();		
+		Matcher<Object> inter = null;
+		set.addProperty("name", "xpath", intra, inter);
+
+		ResponsePropertyInfo[] properties = set.getProperties();
 		ResponsePropertyInfo property = properties[FIRST_INDEX];
-		
+
 		// test
 		assertEquals(inter, property.getInterSequenceMatcher());
-		assertEquals(intra, property.getIntraSequenceMatcher());		
+		assertEquals(intra, property.getIntraSequenceMatcher());
 	}
-	
+
 	/**
 	 * That a set accepts two properties with identical names.
-	 */	
+	 */
 	@Test
 	public void testAcceptsTwoPropertiesWithIdenticalNames() {
-		
+
 		set.addProperty("name", "xpath", CoreMatchers.anything(), CoreMatchers.anything());
 		set.addProperty("name", "xpath", CoreMatchers.anything(), CoreMatchers.anything());
-		
+
 		// test
 		assertEquals(2, set.getProperties().length);
 	}
-	
+
 }

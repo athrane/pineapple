@@ -47,207 +47,206 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class ResetCredentialPasswordModalPanel {
 
-    /**
-     * Message provider for I18N support.
-     */
-    @WireVariable
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@WireVariable
+	MessageProvider webMessageProvider;
 
-    /**
-     * New password.
-     */
-    String newPassword;
+	/**
+	 * New password.
+	 */
+	String newPassword;
 
-    /**
-     * Confirm password.
-     */
-    String confirmedPassword;
+	/**
+	 * Confirm password.
+	 */
+	String confirmedPassword;
 
-    /**
-     * Password status.
-     */
-    boolean passwordStatus;
+	/**
+	 * Password status.
+	 */
+	boolean passwordStatus;
 
-    /**
-     * Password status as string.
-     */
-    String passwordStatusAsString;
+	/**
+	 * Password status as string.
+	 */
+	String passwordStatusAsString;
 
-    /**
-     * Initialize view model.
-     */
-    @Init
-    public void init() {
-	newPassword = "";
-	confirmedPassword = "";
-	updateStatus();
-    }
-
-    /**
-     * Event handler for the 'updateStatus' command.
-     * 
-     * Calculates password status.
-     */
-    public void updateStatus() {
-
-	// handle different passwords
-	if (!newPassword.equals(confirmedPassword)) {
-	    passwordStatusAsString = webMessageProvider.getMessage("rcpmp.passwords_doesnt_match_info");
-	    passwordStatus = true;
-	    return;
+	/**
+	 * Initialize view model.
+	 */
+	@Init
+	public void init() {
+		newPassword = "";
+		confirmedPassword = "";
+		updateStatus();
 	}
 
-	// handle empty passwords
-	if (newPassword.isEmpty()) {
-	    passwordStatusAsString = webMessageProvider.getMessage("rcpmp.passwords_empty_info");
-	    passwordStatus = true;
-	    return;
+	/**
+	 * Event handler for the 'updateStatus' command.
+	 * 
+	 * Calculates password status.
+	 */
+	public void updateStatus() {
+
+		// handle different passwords
+		if (!newPassword.equals(confirmedPassword)) {
+			passwordStatusAsString = webMessageProvider.getMessage("rcpmp.passwords_doesnt_match_info");
+			passwordStatus = true;
+			return;
+		}
+
+		// handle empty passwords
+		if (newPassword.isEmpty()) {
+			passwordStatusAsString = webMessageProvider.getMessage("rcpmp.passwords_empty_info");
+			passwordStatus = true;
+			return;
+		}
+
+		passwordStatusAsString = webMessageProvider.getMessage("rcpmp.passwords_match_info");
+		passwordStatus = false;
 	}
 
-	passwordStatusAsString = webMessageProvider.getMessage("rcpmp.passwords_match_info");
-	passwordStatus = false;
-    }
+	/**
+	 * Event handler for onChanging and onFocus events from the newPassword text
+	 * box. Will update the password status.
+	 * 
+	 * @param event
+	 *            event from text box.
+	 */
+	@Command
+	@NotifyChange({ "passwordStatus", "passwordStatusAsString" })
+	public void updateNewPassword(@ContextParam(ContextType.TRIGGER_EVENT) Event event) {
 
-    /**
-     * Event handler for onChanging and onFocus events from the newPassword text
-     * box. Will update the password status.
-     * 
-     * @param event
-     *            event from text box.
-     */
-    @Command
-    @NotifyChange({ "passwordStatus", "passwordStatusAsString" })
-    public void updateNewPassword(@ContextParam(ContextType.TRIGGER_EVENT) Event event) {
+		// get password if from update event
+		if (event instanceof InputEvent) {
 
-	// get password if from update event
-	if (event instanceof InputEvent) {
+			// type cast
+			InputEvent inputEvent = (InputEvent) event;
 
-	    // type cast
-	    InputEvent inputEvent = (InputEvent) event;
+			// set password
+			newPassword = inputEvent.getValue();
+		}
 
-	    // set password
-	    newPassword = inputEvent.getValue();
+		// recalculate status
+		updateStatus();
 	}
 
-	// recalculate status
-	updateStatus();
-    }
+	/**
+	 * Event handler for onChaning and onFocus events from the confirmedPassword
+	 * text box. Will update the password status.
+	 * 
+	 * @param event
+	 *            event from text box.
+	 */
+	@Command
+	@NotifyChange({ "passwordStatus", "passwordStatusAsString" })
+	public void updateConfirmedPassword(@ContextParam(ContextType.TRIGGER_EVENT) Event event) {
 
-    /**
-     * Event handler for onChaning and onFocus events from the confirmedPassword
-     * text box. Will update the password status.
-     * 
-     * @param event
-     *            event from text box.
-     */
-    @Command
-    @NotifyChange({ "passwordStatus", "passwordStatusAsString" })
-    public void updateConfirmedPassword(@ContextParam(ContextType.TRIGGER_EVENT) Event event) {
+		// get password if from update event
+		if (event instanceof InputEvent) {
 
-	// get password if from update event
-	if (event instanceof InputEvent) {
+			// type cast
+			InputEvent inputEvent = (InputEvent) event;
 
-	    // type cast
-	    InputEvent inputEvent = (InputEvent) event;
+			// set password
+			confirmedPassword = inputEvent.getValue();
+		}
 
-	    // set password
-	    confirmedPassword = inputEvent.getValue();
+		// recalculate status
+		updateStatus();
 	}
 
-	// recalculate status
-	updateStatus();
-    }
+	/**
+	 * Get new password.
+	 * 
+	 * @return new password.
+	 */
+	public String getNewPassword() {
+		return newPassword;
+	}
 
-    /**
-     * Get new password.
-     * 
-     * @return new password.
-     */
-    public String getNewPassword() {
-	return newPassword;
-    }
+	/**
+	 * Set new password.
+	 * 
+	 * @param password
+	 *            new password.
+	 */
+	public void setNewPassword(String password) {
+		newPassword = password;
+	}
 
-    /**
-     * Set new password.
-     * 
-     * @param password
-     *            new password.
-     */
-    public void setNewPassword(String password) {
-	newPassword = password;
-    }
+	/**
+	 * Get confirmed password.
+	 * 
+	 * @return confirmed password.
+	 */
+	public String getConfirmedPassword() {
+		return confirmedPassword;
+	}
 
-    /**
-     * Get confirmed password.
-     * 
-     * @return confirmed password.
-     */
-    public String getConfirmedPassword() {
-	return confirmedPassword;
-    }
+	/**
+	 * Set confirmed password.
+	 * 
+	 * @param password
+	 *            confirmed password.
+	 */
+	public void setConfirmedPassword(String password) {
+		confirmedPassword = password;
+	}
 
-    /**
-     * Set confirmed password.
-     * 
-     * @param password
-     *            confirmed password.
-     */
-    public void setConfirmedPassword(String password) {
-	confirmedPassword = password;
-    }
+	/**
+	 * Get password status as text.
+	 * 
+	 * @return confirmed password.
+	 */
+	public String getPasswordStatusAsString() {
+		return passwordStatusAsString;
+	}
 
-    /**
-     * Get password status as text.
-     * 
-     * @return confirmed password.
-     */
-    public String getPasswordStatusAsString() {
-	return passwordStatusAsString;
-    }
+	/**
+	 * Get password status as boolean.
+	 * 
+	 * @return false if the password are matching.
+	 */
+	public boolean getPasswordStatus() {
+		return passwordStatus;
+	}
 
-    /**
-     * Get password status as boolean.
-     * 
-     * @return false if the password are matching.
-     */
-    public boolean getPasswordStatus() {
-	return passwordStatus;
-    }
+	/**
+	 * Event handler for the command "confirmResetPassword".
+	 * 
+	 * The event is triggered from the "confirm" button menu which posts the
+	 * command.
+	 */
+	@Command
+	public void confirmResetPassword() {
 
-    /**
-     * Event handler for the command "confirmResetPassword".
-     * 
-     * The event is triggered from the "confirm" button menu which posts the
-     * command.
-     */
-    @Command
-    public void confirmResetPassword() {
+		// create command arguments with event
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put(CREDENTIAL_PASSWORD_ARG, newPassword);
 
-	// create command arguments with event
-	Map<String, Object> args = new HashMap<String, Object>();
-	args.put(CREDENTIAL_PASSWORD_ARG, newPassword);
+		// post global command to trigger selection of module tab on workspace
+		// panel
+		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE,
+				RESET_CREDENTIAL_PASSWORD_CONFIRMED_GLOBALCOMMAND, args);
 
-	// post global command to trigger selection of module tab on workspace
-	// panel
-	BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE,
-		RESET_CREDENTIAL_PASSWORD_CONFIRMED_GLOBALCOMMAND, args);
+		// clear passwords
+		newPassword = "";
+		confirmedPassword = "";
+	}
 
-	// clear passwords
-	newPassword = "";
-	confirmedPassword = "";
-    }
-
-    /**
-     * Event handler for the command "cancelResetPassword".
-     * 
-     * The event is triggered from the "cancel" button menu which posts the
-     * command.
-     */
-    @Command
-    public void cancelResetPassword() {
-	// clear passwords
-	newPassword = "";
-	confirmedPassword = "";
-    }
+	/**
+	 * Event handler for the command "cancelResetPassword".
+	 * 
+	 * The event is triggered from the "cancel" button menu which posts the command.
+	 */
+	@Command
+	public void cancelResetPassword() {
+		// clear passwords
+		newPassword = "";
+		confirmedPassword = "";
+	}
 
 }

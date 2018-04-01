@@ -3,8 +3,8 @@ package com.alpha.pineapple.plugin.ssh.session;
 import com.jcraft.jsch.UserInfo;
 
 /**
- * Implementation of the {@linkplain UserInfo} interface
- * to support silent user info. 
+ * Implementation of the {@linkplain UserInfo} interface to support silent user
+ * info.
  */
 public class SilentUserInfoImpl implements UserInfo {
 
@@ -12,17 +12,17 @@ public class SilentUserInfoImpl implements UserInfo {
 	 * Password.
 	 */
 	String password;
-	
+
 	/**
 	 * Passphrase.
-	 */	
+	 */
 	String passphrase;
 
 	SilentUserInfoImpl(String password, String passphrase) {
 		this.password = password;
 		this.passphrase = passphrase;
 	}
-	
+
 	@Override
 	public String getPassphrase() {
 		return passphrase;
@@ -52,5 +52,4 @@ public class SilentUserInfoImpl implements UserInfo {
 	public void showMessage(String arg0) {
 	}
 
-	
 }

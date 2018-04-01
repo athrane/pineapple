@@ -41,88 +41,88 @@ import com.alpha.pineapple.substitution.VariableSubstitutionException;
  */
 public class ModuleDescriptorVariablesBuilderImpl implements ModuleDescriptorVariablesBuilder {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Module descriptor.
-     */
-    Module module;
+	/**
+	 * Module descriptor.
+	 */
+	Module module;
 
-    @Override
-    public Variables getVariables() throws VariableSubstitutionException {
+	@Override
+	public Variables getVariables() throws VariableSubstitutionException {
 
-	// if module is undefined throw exception
-	if (module == null) {
-	    String message = messageProvider.getMessage("mdvb.getvariables_model_notdefineded_error");
-	    throw new VariableSubstitutionException(message);
+		// if module is undefined throw exception
+		if (module == null) {
+			String message = messageProvider.getMessage("mdvb.getvariables_model_notdefineded_error");
+			throw new VariableSubstitutionException(message);
+		}
+
+		// create variables data object
+		Map<String, String> variablesMap = new HashMap<String, String>();
+		DefaultVariablesImpl variables = new DefaultVariablesImpl(variablesMap);
+
+		// get variables container
+		com.alpha.pineapple.model.module.Variables modelVariables = module.getVariables();
+		if (modelVariables == null)
+			return variables;
+
+		// get variables list
+		List<Variable> variableList = modelVariables.getVariable();
+		if (variableList == null)
+			return variables;
+
+		// iterate over model vars
+		for (Variable modelVariable : variableList) {
+
+			// handle null key case
+			if (modelVariable.getKey() == null) {
+				String message = messageProvider.getMessage("mdvb.initialize_null_key_warning");
+				logger.info(message);
+				continue;
+			}
+
+			// handle empty key case
+			if (modelVariable.getKey().isEmpty()) {
+				String message = messageProvider.getMessage("mdvb.initialize_empty_key_warning");
+				logger.info(message);
+				continue;
+			}
+
+			// handle null value case
+			if (modelVariable.getValue() == null) {
+				Object[] args = { modelVariable.getKey() };
+				String message = messageProvider.getMessage("mdvb.initialize_null_value_warning", args);
+				logger.info(message);
+				continue;
+			}
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				Object[] args = { modelVariable.getKey(), modelVariable.getValue() };
+				String message = messageProvider.getMessage("mdvb.initialize_variable_info", args);
+				logger.debug(message);
+			}
+
+			// add variable
+			variablesMap.put(modelVariable.getKey(), modelVariable.getValue());
+
+		}
+
+		return variables;
 	}
 
-	// create variables data object
-	Map<String, String> variablesMap = new HashMap<String, String>();
-	DefaultVariablesImpl variables = new DefaultVariablesImpl(variablesMap);
-
-	// get variables container
-	com.alpha.pineapple.model.module.Variables modelVariables = module.getVariables();
-	if (modelVariables == null)
-	    return variables;
-
-	// get variables list
-	List<Variable> variableList = modelVariables.getVariable();
-	if (variableList == null)
-	    return variables;
-
-	// iterate over model vars
-	for (Variable modelVariable : variableList) {
-
-	    // handle null key case
-	    if (modelVariable.getKey() == null) {
-		String message = messageProvider.getMessage("mdvb.initialize_null_key_warning");
-		logger.info(message);
-		continue;
-	    }
-
-	    // handle empty key case
-	    if (modelVariable.getKey().isEmpty()) {
-		String message = messageProvider.getMessage("mdvb.initialize_empty_key_warning");
-		logger.info(message);
-		continue;
-	    }
-
-	    // handle null value case
-	    if (modelVariable.getValue() == null) {
-		Object[] args = { modelVariable.getKey() };
-		String message = messageProvider.getMessage("mdvb.initialize_null_value_warning", args);
-		logger.info(message);
-		continue;
-	    }
-
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		Object[] args = { modelVariable.getKey(), modelVariable.getValue() };
-		String message = messageProvider.getMessage("mdvb.initialize_variable_info", args);
-		logger.debug(message);
-	    }
-
-	    // add variable
-	    variablesMap.put(modelVariable.getKey(), modelVariable.getValue());
-
+	@Override
+	public void setModel(Module module) {
+		this.module = module;
 	}
-
-	return variables;
-    }
-
-    @Override
-    public void setModel(Module module) {
-	this.module = module;
-    }
 
 }

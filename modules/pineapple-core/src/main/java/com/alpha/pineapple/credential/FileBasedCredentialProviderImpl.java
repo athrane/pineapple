@@ -44,377 +44,377 @@ import com.alpha.pineapple.resource.EnvironmentAlreadyExistsException;
  * the package <code>com.alpha.pineapple.model.configuration</code>.
  */
 public class FileBasedCredentialProviderImpl implements CredentialProvider {
-    /**
-     * First array index.
-     */
-    static final int FIRST_INDEX = 0;
+	/**
+	 * First array index.
+	 */
+	static final int FIRST_INDEX = 0;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Command runner
-     */
-    @Resource
-    CommandRunner commandRunner;
+	/**
+	 * Command runner
+	 */
+	@Resource
+	CommandRunner commandRunner;
 
-    /**
-     * Credential configuration marshaller.
-     */
-    @Resource
-    CredentialConfigurationMarshaller credentialConfigurationMarshaller;
+	/**
+	 * Credential configuration marshaller.
+	 */
+	@Resource
+	CredentialConfigurationMarshaller credentialConfigurationMarshaller;
 
-    /**
-     * Credential info factory.
-     */
-    @Resource
-    CredentialInfoFactory credentialInfoFactory;
+	/**
+	 * Credential info factory.
+	 */
+	@Resource
+	CredentialInfoFactory credentialInfoFactory;
 
-    /**
-     * Unmarshall JAXB objects command.
-     */
-    @Resource
-    Command unmarshallJAXBObjectsCommand;
+	/**
+	 * Unmarshall JAXB objects command.
+	 */
+	@Resource
+	Command unmarshallJAXBObjectsCommand;
 
-    /**
-     * Configuration info.
-     */
-    ConfigurationInfo configurationInfo;
+	/**
+	 * Configuration info.
+	 */
+	ConfigurationInfo configurationInfo;
 
-    /**
-     * FileBasedCredentialProviderImpl no-arg constructor.
-     */
-    public FileBasedCredentialProviderImpl() {
-    }
-
-    /**
-     * Internal factory method for creation of credential info.
-     * 
-     * @param id
-     *            credential ID.
-     * @param user
-     *            user name.
-     * @param password
-     *            password.
-     * @param environmentInfo
-     *            target environment info where credential is added to.
-     * 
-     * @return create credential info.
-     */
-    CredentialInfo internalCreateCredentialInfo(String id, String user, String password,
-	    EnvironmentInfo environmentInfo) {
-	// type cast
-	EnvironmentInfoImpl typecastEnvInfo = (EnvironmentInfoImpl) environmentInfo;
-
-	// create credential info
-	CredentialInfo credentialInfo = credentialInfoFactory.createCredentialInfo(id, user, password);
-
-	// add resource
-	typecastEnvInfo.addCredential(credentialInfo);
-	return credentialInfo;
-    }
-
-    /**
-     * Initialize provider.
-     * 
-     * @param envConfiguration
-     *            Environment configuration containing the credentials.
-     * 
-     * @throws Exception
-     *             If initialization fails.
-     */
-    public void initialize(Configuration envConfiguration) throws CoreException {
-	Validate.notNull(envConfiguration, "envConfiguration is undefined.");
-	configurationInfo = credentialConfigurationMarshaller.map(envConfiguration);
-
-	// save to write back encrypted passwords
-	saveProvider();
-
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { configurationInfo.getEnvironments().length };
-	    String message = messageProvider.getMessage("fbcp.initialize_success", args);
-	    logger.debug(message);
-	}
-    }
-
-    /**
-     * Initialize provider.
-     * 
-     * @param file
-     *            File object which defines location of credentials file.
-     * 
-     * @throws Exception
-     *             If initialization fails.
-     */
-    public void initialize(File file) throws CoreException {
-	Validate.notNull(file, "file is undefined.");
-	Configuration envConfiguration = credentialConfigurationMarshaller.load(file);
-	initialize(envConfiguration);
-    }
-
-    @Override
-    public boolean contains(String environment, String id) {
-	// validate parameters
-	Validate.notNull(environment, "environment is undefined.");
-	Validate.notEmpty(environment, "environment is empty.");
-	Validate.notNull(id, "id is undefined.");
-	Validate.notEmpty(id, "id is empty.");
-
-	// attempt to resolve environment
-	if (containsEnvironment(environment)) {
-
-	    EnvironmentInfo environmentInfo = configurationInfo.getEnvironment(environment);
-	    if (environmentInfo.containsCredential(id))
-		return true;
+	/**
+	 * FileBasedCredentialProviderImpl no-arg constructor.
+	 */
+	public FileBasedCredentialProviderImpl() {
 	}
 
-	return false;
-    }
+	/**
+	 * Internal factory method for creation of credential info.
+	 * 
+	 * @param id
+	 *            credential ID.
+	 * @param user
+	 *            user name.
+	 * @param password
+	 *            password.
+	 * @param environmentInfo
+	 *            target environment info where credential is added to.
+	 * 
+	 * @return create credential info.
+	 */
+	CredentialInfo internalCreateCredentialInfo(String id, String user, String password,
+			EnvironmentInfo environmentInfo) {
+		// type cast
+		EnvironmentInfoImpl typecastEnvInfo = (EnvironmentInfoImpl) environmentInfo;
 
-    @Override
-    public Credential get(String environment, String id) throws CredentialNotFoundException {
-	// validate parameters
-	Validate.notNull(environment, "environment is undefined.");
-	Validate.notEmpty(environment, "environment is empty.");
-	Validate.notNull(id, "id is undefined.");
-	Validate.notEmpty(id, "id is empty.");
+		// create credential info
+		CredentialInfo credentialInfo = credentialInfoFactory.createCredentialInfo(id, user, password);
 
-	// attempt to resolve environment
-	if (containsEnvironment(environment)) {
-	    EnvironmentInfo environmentInfo = configurationInfo.getEnvironment(environment);
-
-	    // get credential if it exists exists
-	    if (environmentInfo.containsCredential(id)) {
-		CredentialInfo info = environmentInfo.getCredential(id);
-		return this.credentialConfigurationMarshaller.mapToCredential(info);
-	    }
+		// add resource
+		typecastEnvInfo.addCredential(credentialInfo);
+		return credentialInfo;
 	}
 
-	// throw exception
-	String message = null;
-	if (!containsEnvironment(environment)) {
-	    Object[] args = { environment };
-	    message = messageProvider.getMessage("fbcp.get_credential_env_failed", args);
-	    throw new EnvironmentNotFoundException(message);
+	/**
+	 * Initialize provider.
+	 * 
+	 * @param envConfiguration
+	 *            Environment configuration containing the credentials.
+	 * 
+	 * @throws Exception
+	 *             If initialization fails.
+	 */
+	public void initialize(Configuration envConfiguration) throws CoreException {
+		Validate.notNull(envConfiguration, "envConfiguration is undefined.");
+		configurationInfo = credentialConfigurationMarshaller.map(envConfiguration);
+
+		// save to write back encrypted passwords
+		saveProvider();
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { configurationInfo.getEnvironments().length };
+			String message = messageProvider.getMessage("fbcp.initialize_success", args);
+			logger.debug(message);
+		}
 	}
 
-	Object[] args = { id, environment };
-	message = messageProvider.getMessage("fbcp.get_credential_failed", args);
-	throw new CredentialNotFoundException(message);
-    }
-
-    @Override
-    public CredentialInfo create(String environment, String id, String user, String password)
-	    throws EnvironmentNotFoundException, CredentialAlreadyExitsException {
-
-	// validate parameters
-	Validate.notNull(environment, "environment is undefined.");
-	Validate.notEmpty(environment, "environment is empty.");
-	Validate.notNull(id, "id is undefined.");
-	Validate.notEmpty(id, "id is empty.");
-	Validate.notNull(user, "user is undefined.");
-	Validate.notEmpty(user, "user is empty.");
-	Validate.notNull(password, "password is undefined.");
-	Validate.notEmpty(password, "password is empty.");
-
-	// get environment info - throws exception if environment doesn't exist
-	EnvironmentInfo environmentInfo = getEnvironment(environment);
-
-	// throw exception if credential already exists
-	if (environmentInfo.containsCredential(id)) {
-	    Object[] args = { id, environment };
-	    String message = messageProvider.getMessage("fbcp.credential_already_exists_failure", args);
-	    throw new CredentialAlreadyExitsException(message);
+	/**
+	 * Initialize provider.
+	 * 
+	 * @param file
+	 *            File object which defines location of credentials file.
+	 * 
+	 * @throws Exception
+	 *             If initialization fails.
+	 */
+	public void initialize(File file) throws CoreException {
+		Validate.notNull(file, "file is undefined.");
+		Configuration envConfiguration = credentialConfigurationMarshaller.load(file);
+		initialize(envConfiguration);
 	}
 
-	// create info - bypassing integrity controls
-	CredentialInfo credentialInfo = internalCreateCredentialInfo(id, user, password, environmentInfo);
+	@Override
+	public boolean contains(String environment, String id) {
+		// validate parameters
+		Validate.notNull(environment, "environment is undefined.");
+		Validate.notEmpty(environment, "environment is empty.");
+		Validate.notNull(id, "id is undefined.");
+		Validate.notEmpty(id, "id is empty.");
 
-	// save
-	this.saveProvider();
+		// attempt to resolve environment
+		if (containsEnvironment(environment)) {
 
-	return credentialInfo;
-    }
+			EnvironmentInfo environmentInfo = configurationInfo.getEnvironment(environment);
+			if (environmentInfo.containsCredential(id))
+				return true;
+		}
 
-    @Override
-    public CredentialInfo update(CredentialInfo credentialInfo, String environment, String id, String user,
-	    String password) throws EnvironmentNotFoundException, CredentialNotFoundException {
-
-	// validate parameters
-	Validate.notNull(credentialInfo, "credentialInfo is undefined.");
-	Validate.notNull(environment, "environment is undefined.");
-	Validate.notEmpty(environment, "environment is empty.");
-	Validate.notNull(id, "id is undefined.");
-	Validate.notEmpty(id, "id is empty.");
-	Validate.notNull(user, "user is undefined.");
-	Validate.notEmpty(user, "user is empty.");
-	Validate.notNull(password, "password is undefined.");
-	Validate.notEmpty(password, "password is empty.");
-
-	// get environment info - throws exception if environment doesn't exist
-	EnvironmentInfo environmentInfo = getEnvironment(environment);
-
-	// get credential info - throws exception if credential doesn't exist
-	CredentialInfo validatedInfo = environmentInfo.getCredential(credentialInfo.getId());
-	if (validatedInfo == null) {
-	    Object[] args = { credentialInfo.getId(), environment };
-	    String message = messageProvider.getMessage("fbcp.update_credential_failed", args);
-	    throw new CredentialNotFoundException(message);
+		return false;
 	}
 
-	// type cast
-	EnvironmentInfoImpl typecastEnvInfo = (EnvironmentInfoImpl) environmentInfo;
+	@Override
+	public Credential get(String environment, String id) throws CredentialNotFoundException {
+		// validate parameters
+		Validate.notNull(environment, "environment is undefined.");
+		Validate.notEmpty(environment, "environment is empty.");
+		Validate.notNull(id, "id is undefined.");
+		Validate.notEmpty(id, "id is empty.");
 
-	// delete
-	typecastEnvInfo.deleteCredential(credentialInfo);
+		// attempt to resolve environment
+		if (containsEnvironment(environment)) {
+			EnvironmentInfo environmentInfo = configurationInfo.getEnvironment(environment);
 
-	// create info - bypassing integrity controls
-	CredentialInfo newInfo = internalCreateCredentialInfo(id, user, password, environmentInfo);
+			// get credential if it exists exists
+			if (environmentInfo.containsCredential(id)) {
+				CredentialInfo info = environmentInfo.getCredential(id);
+				return this.credentialConfigurationMarshaller.mapToCredential(info);
+			}
+		}
 
-	// save
-	saveProvider();
+		// throw exception
+		String message = null;
+		if (!containsEnvironment(environment)) {
+			Object[] args = { environment };
+			message = messageProvider.getMessage("fbcp.get_credential_env_failed", args);
+			throw new EnvironmentNotFoundException(message);
+		}
 
-	return newInfo;
-    }
-
-    @Override
-    public void delete(String environment, String id) throws CredentialNotFoundException {
-
-	// get environment info
-	EnvironmentInfo environmentInfo = getEnvironment(environment);
-
-	// get credential info
-	CredentialInfo credentialInfo = environmentInfo.getCredential(id);
-	if (credentialInfo == null) {
-	    Object[] args = { id, environment };
-	    String message = messageProvider.getMessage("fbcp.get_credential_failed", args);
-	    throw new CredentialNotFoundException(message);
+		Object[] args = { id, environment };
+		message = messageProvider.getMessage("fbcp.get_credential_failed", args);
+		throw new CredentialNotFoundException(message);
 	}
 
-	// type cast
-	EnvironmentInfoImpl typecastEnvInfo = (EnvironmentInfoImpl) environmentInfo;
+	@Override
+	public CredentialInfo create(String environment, String id, String user, String password)
+			throws EnvironmentNotFoundException, CredentialAlreadyExitsException {
 
-	// delete
-	typecastEnvInfo.deleteCredential(credentialInfo);
+		// validate parameters
+		Validate.notNull(environment, "environment is undefined.");
+		Validate.notEmpty(environment, "environment is empty.");
+		Validate.notNull(id, "id is undefined.");
+		Validate.notEmpty(id, "id is empty.");
+		Validate.notNull(user, "user is undefined.");
+		Validate.notEmpty(user, "user is empty.");
+		Validate.notNull(password, "password is undefined.");
+		Validate.notEmpty(password, "password is empty.");
 
-	// save
-	saveProvider();
+		// get environment info - throws exception if environment doesn't exist
+		EnvironmentInfo environmentInfo = getEnvironment(environment);
 
-    }
+		// throw exception if credential already exists
+		if (environmentInfo.containsCredential(id)) {
+			Object[] args = { id, environment };
+			String message = messageProvider.getMessage("fbcp.credential_already_exists_failure", args);
+			throw new CredentialAlreadyExitsException(message);
+		}
 
-    @Override
-    public boolean containsEnvironment(String environment) {
-	Validate.notNull(environment, "environment is undefined.");
-	Validate.notEmpty(environment, "environment is empty.");
+		// create info - bypassing integrity controls
+		CredentialInfo credentialInfo = internalCreateCredentialInfo(id, user, password, environmentInfo);
 
-	// exit if repository isn't initialized yet
-	if (configurationInfo == null)
-	    return false;
+		// save
+		this.saveProvider();
 
-	return configurationInfo.containsEnvironment(environment);
-    }
-
-    @Override
-    public EnvironmentInfo getEnvironment(String environment) throws EnvironmentNotFoundException {
-	// validate parameters
-	Validate.notNull(environment, "environment is undefined.");
-	Validate.notEmpty(environment, "environment is empty.");
-
-	if (containsEnvironment(environment)) {
-	    return configurationInfo.getEnvironment(environment);
+		return credentialInfo;
 	}
 
-	// throw exception
-	Object[] args = { environment };
-	String message = messageProvider.getMessage("fbcp.get_environment_notfound_failed", args);
-	throw new EnvironmentNotFoundException(message);
-    }
+	@Override
+	public CredentialInfo update(CredentialInfo credentialInfo, String environment, String id, String user,
+			String password) throws EnvironmentNotFoundException, CredentialNotFoundException {
 
-    @Override
-    public EnvironmentInfo[] getEnvironments() {
-	return configurationInfo.getEnvironments();
-    }
+		// validate parameters
+		Validate.notNull(credentialInfo, "credentialInfo is undefined.");
+		Validate.notNull(environment, "environment is undefined.");
+		Validate.notEmpty(environment, "environment is empty.");
+		Validate.notNull(id, "id is undefined.");
+		Validate.notEmpty(id, "id is empty.");
+		Validate.notNull(user, "user is undefined.");
+		Validate.notEmpty(user, "user is empty.");
+		Validate.notNull(password, "password is undefined.");
+		Validate.notEmpty(password, "password is empty.");
 
-    @Override
-    public EnvironmentInfo createEnvironment(String environment, String description)
-	    throws EnvironmentAlreadyExistsException {
-	// validate parameters
-	Validate.notNull(environment, "environment is undefined.");
-	Validate.notEmpty(environment, "environment is empty.");
+		// get environment info - throws exception if environment doesn't exist
+		EnvironmentInfo environmentInfo = getEnvironment(environment);
 
-	if (configurationInfo.containsEnvironment(environment)) {
-	    Object[] args = { environment };
-	    String message = messageProvider.getMessage("fbcp.environment_already_exists_failure", args);
-	    throw new EnvironmentAlreadyExistsException(message);
+		// get credential info - throws exception if credential doesn't exist
+		CredentialInfo validatedInfo = environmentInfo.getCredential(credentialInfo.getId());
+		if (validatedInfo == null) {
+			Object[] args = { credentialInfo.getId(), environment };
+			String message = messageProvider.getMessage("fbcp.update_credential_failed", args);
+			throw new CredentialNotFoundException(message);
+		}
+
+		// type cast
+		EnvironmentInfoImpl typecastEnvInfo = (EnvironmentInfoImpl) environmentInfo;
+
+		// delete
+		typecastEnvInfo.deleteCredential(credentialInfo);
+
+		// create info - bypassing integrity controls
+		CredentialInfo newInfo = internalCreateCredentialInfo(id, user, password, environmentInfo);
+
+		// save
+		saveProvider();
+
+		return newInfo;
 	}
 
-	// create environment
-	TreeMap<String, CredentialInfo> credentialInfos = new TreeMap<String, CredentialInfo>();
-	EnvironmentInfo environmentInfo = new EnvironmentInfoImpl(environment, description, credentialInfos);
-	configurationInfo.addEnvironment(environmentInfo);
+	@Override
+	public void delete(String environment, String id) throws CredentialNotFoundException {
 
-	// save
-	saveProvider();
+		// get environment info
+		EnvironmentInfo environmentInfo = getEnvironment(environment);
 
-	return environmentInfo;
-    }
+		// get credential info
+		CredentialInfo credentialInfo = environmentInfo.getCredential(id);
+		if (credentialInfo == null) {
+			Object[] args = { id, environment };
+			String message = messageProvider.getMessage("fbcp.get_credential_failed", args);
+			throw new CredentialNotFoundException(message);
+		}
 
-    @Override
-    public void deleteEnvironment(String environment) throws EnvironmentNotFoundException {
-	// get info or provoke exceptions
-	EnvironmentInfo environmentInfo = getEnvironment(environment);
-	configurationInfo.deleteEnvironment(environmentInfo);
+		// type cast
+		EnvironmentInfoImpl typecastEnvInfo = (EnvironmentInfoImpl) environmentInfo;
 
-	// save
-	saveProvider();
-    }
+		// delete
+		typecastEnvInfo.deleteCredential(credentialInfo);
 
-    @Override
-    public EnvironmentInfo updateEnvironment(EnvironmentInfo environmentInfo, String environment, String description) {
+		// save
+		saveProvider();
 
-	// validate parameters
-	Validate.notNull(environmentInfo, "environmentInfo is undefined.");
-	Validate.notNull(environment, "environment is undefined.");
-	Validate.notEmpty(environment, "environment is empty.");
-	Validate.notNull(description, "resource is description.");
+	}
 
-	// get info or provoke exceptions
-	EnvironmentInfo validatedInfo = getEnvironment(environmentInfo.getId());
+	@Override
+	public boolean containsEnvironment(String environment) {
+		Validate.notNull(environment, "environment is undefined.");
+		Validate.notEmpty(environment, "environment is empty.");
 
-	// delete info
-	configurationInfo.deleteEnvironment(validatedInfo);
+		// exit if repository isn't initialized yet
+		if (configurationInfo == null)
+			return false;
 
-	// create environment
-	TreeMap<String, CredentialInfo> credentialInfos = new TreeMap<String, CredentialInfo>();
-	EnvironmentInfo newInfo = new EnvironmentInfoImpl(environment, description, credentialInfos);
-	configurationInfo.addEnvironment(newInfo);
+		return configurationInfo.containsEnvironment(environment);
+	}
 
-	// save
-	saveProvider();
+	@Override
+	public EnvironmentInfo getEnvironment(String environment) throws EnvironmentNotFoundException {
+		// validate parameters
+		Validate.notNull(environment, "environment is undefined.");
+		Validate.notEmpty(environment, "environment is empty.");
 
-	return newInfo;
-    }
+		if (containsEnvironment(environment)) {
+			return configurationInfo.getEnvironment(environment);
+		}
 
-    /**
-     * Save provider.
-     * 
-     * @return true if save succeeded.
-     * 
-     * @throws SaveConfigurationFailedException
-     *             if save fails.
-     */
-    void saveProvider() throws SaveConfigurationFailedException {
-	Configuration configuration = credentialConfigurationMarshaller.map(configurationInfo);
-	credentialConfigurationMarshaller.save(configuration);
-    }
+		// throw exception
+		Object[] args = { environment };
+		String message = messageProvider.getMessage("fbcp.get_environment_notfound_failed", args);
+		throw new EnvironmentNotFoundException(message);
+	}
+
+	@Override
+	public EnvironmentInfo[] getEnvironments() {
+		return configurationInfo.getEnvironments();
+	}
+
+	@Override
+	public EnvironmentInfo createEnvironment(String environment, String description)
+			throws EnvironmentAlreadyExistsException {
+		// validate parameters
+		Validate.notNull(environment, "environment is undefined.");
+		Validate.notEmpty(environment, "environment is empty.");
+
+		if (configurationInfo.containsEnvironment(environment)) {
+			Object[] args = { environment };
+			String message = messageProvider.getMessage("fbcp.environment_already_exists_failure", args);
+			throw new EnvironmentAlreadyExistsException(message);
+		}
+
+		// create environment
+		TreeMap<String, CredentialInfo> credentialInfos = new TreeMap<String, CredentialInfo>();
+		EnvironmentInfo environmentInfo = new EnvironmentInfoImpl(environment, description, credentialInfos);
+		configurationInfo.addEnvironment(environmentInfo);
+
+		// save
+		saveProvider();
+
+		return environmentInfo;
+	}
+
+	@Override
+	public void deleteEnvironment(String environment) throws EnvironmentNotFoundException {
+		// get info or provoke exceptions
+		EnvironmentInfo environmentInfo = getEnvironment(environment);
+		configurationInfo.deleteEnvironment(environmentInfo);
+
+		// save
+		saveProvider();
+	}
+
+	@Override
+	public EnvironmentInfo updateEnvironment(EnvironmentInfo environmentInfo, String environment, String description) {
+
+		// validate parameters
+		Validate.notNull(environmentInfo, "environmentInfo is undefined.");
+		Validate.notNull(environment, "environment is undefined.");
+		Validate.notEmpty(environment, "environment is empty.");
+		Validate.notNull(description, "resource is description.");
+
+		// get info or provoke exceptions
+		EnvironmentInfo validatedInfo = getEnvironment(environmentInfo.getId());
+
+		// delete info
+		configurationInfo.deleteEnvironment(validatedInfo);
+
+		// create environment
+		TreeMap<String, CredentialInfo> credentialInfos = new TreeMap<String, CredentialInfo>();
+		EnvironmentInfo newInfo = new EnvironmentInfoImpl(environment, description, credentialInfos);
+		configurationInfo.addEnvironment(newInfo);
+
+		// save
+		saveProvider();
+
+		return newInfo;
+	}
+
+	/**
+	 * Save provider.
+	 * 
+	 * @return true if save succeeded.
+	 * 
+	 * @throws SaveConfigurationFailedException
+	 *             if save fails.
+	 */
+	void saveProvider() throws SaveConfigurationFailedException {
+		Configuration configuration = credentialConfigurationMarshaller.map(configurationInfo);
+		credentialConfigurationMarshaller.save(configuration);
+	}
 
 }

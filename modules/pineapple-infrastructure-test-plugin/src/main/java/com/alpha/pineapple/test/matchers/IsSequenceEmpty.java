@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.test.matchers;
 
 import org.hamcrest.Description;
@@ -37,33 +36,33 @@ import com.alpha.pineapple.plugin.net.http.HttpInvocationSequence;
 public class IsSequenceEmpty extends TypeSafeMatcher<HttpInvocationSequence> {
 
 	public boolean matchesSafely(HttpInvocationSequence sequence) {
-		
-        // get invocation result sequence
-        HttpInvocationResult[] sequenceAsArray = sequence.getSequence();
 
-        // test whether sequence is empty 
-        return (sequenceAsArray.length == 0);
-		
+		// get invocation result sequence
+		HttpInvocationResult[] sequenceAsArray = sequence.getSequence();
+
+		// test whether sequence is empty
+		return (sequenceAsArray.length == 0);
+
 	}
 
 	public void describeTo(Description description) {
 		description.appendText("a empty HTTP result sequence.");
 	}
-		
-    @Override
-	protected void describeMismatchSafely(HttpInvocationSequence sequence, Description mismatchDescription) {
-    	
-        // get invocation result sequence
-        HttpInvocationResult[] sequenceAsArray = sequence.getSequence();
 
-    	mismatchDescription.appendText("contained");
-    	mismatchDescription.appendValue(sequenceAsArray.length);        
-    	mismatchDescription.appendText(" entries in sequence]");				
+	@Override
+	protected void describeMismatchSafely(HttpInvocationSequence sequence, Description mismatchDescription) {
+
+		// get invocation result sequence
+		HttpInvocationResult[] sequenceAsArray = sequence.getSequence();
+
+		mismatchDescription.appendText("contained");
+		mismatchDescription.appendValue(sequenceAsArray.length);
+		mismatchDescription.appendText(" entries in sequence]");
 	}
 
 	@Factory
-    public static <T> Matcher<HttpInvocationSequence> isSequenceEmpty() {
-        return new IsSequenceEmpty();
-    }
-    
+	public static <T> Matcher<HttpInvocationSequence> isSequenceEmpty() {
+		return new IsSequenceEmpty();
+	}
+
 }

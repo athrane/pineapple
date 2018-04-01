@@ -27,31 +27,31 @@ package com.alpha.pineapple.i18n;
  */
 public class MessageProviderInitializationException extends Exception {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * MessageProviderInitializationException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public MessageProviderInitializationException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * MessageProviderInitializationException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public MessageProviderInitializationException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * MessageProviderInitializationException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public MessageProviderInitializationException(String message) {
-	super(message);
-    }
+	/**
+	 * MessageProviderInitializationException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public MessageProviderInitializationException(String message) {
+		super(message);
+	}
 
 }

@@ -57,27 +57,27 @@ public interface DockerClient {
 	/**
 	 * Create Docker image.
 	 * 
-	 * If image exist in repository then the operation is aborted with a
-	 * successful result. If no image creation info's was received then
-	 * operation is aborted with a failed child result. and a
-	 * {@linkplain DockerClientException} is thrown.
+	 * If image exist in repository then the operation is aborted with a successful
+	 * result. If no image creation info's was received then operation is aborted
+	 * with a failed child result. and a {@linkplain DockerClientException} is
+	 * thrown.
 	 * 
 	 * @param session
 	 *            Docker session.
 	 * @param imageInfo
 	 *            image info.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of the
-	 *            image creation.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of the image
+	 *            creation.
 	 */
 	public void createImage(DockerSession session, ImageInfo imageInfo, ExecutionResult result);
 
 	/**
 	 * Build Docker image from TAR archive.
 	 * 
-	 * If image exist in repository then the operation is aborted with a
-	 * successful result.
+	 * If image exist in repository then the operation is aborted with a successful
+	 * result.
 	 * 
 	 * @param session
 	 *            Docker session.
@@ -89,9 +89,9 @@ public interface DockerClient {
 	 *            if true then then the image is be pulled from registry even if
 	 *            local (older) copy exist.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of the
-	 *            image creation.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of the image
+	 *            creation.
 	 */
 	public void buildImage(DockerSession session, ImageInfo imageInfo, File tarArchive, Boolean pullImageBehavior,
 			ExecutionResult result);
@@ -107,9 +107,9 @@ public interface DockerClient {
 	 * @param imageInfo
 	 *            image info.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of the
-	 *            image deletion.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of the image
+	 *            deletion.
 	 */
 	public void deleteImage(DockerSession session, ImageInfo imageInfo, ExecutionResult result);
 
@@ -120,9 +120,9 @@ public interface DockerClient {
 	 * child result. and a {@linkplain DockerClientException} is thrown.
 	 * 
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of the
-	 *            image deletion.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of the image
+	 *            deletion.
 	 * 
 	 * @param session
 	 *            Docker session.
@@ -140,9 +140,9 @@ public interface DockerClient {
 	 * @param session
 	 *            Docker session.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of
-	 *            listing the images.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of listing the
+	 *            images.
 	 * 
 	 * @return list of images.
 	 */
@@ -151,15 +151,15 @@ public interface DockerClient {
 	/**
 	 * Create report from images.
 	 * 
-	 * The report lists and inspects the images. The information is returned in
-	 * a tree of child execution result objects.
+	 * The report lists and inspects the images. The information is returned in a
+	 * tree of child execution result objects.
 	 * 
 	 * @param session
 	 *            Docker session.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of
-	 *            reporting on the images.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of reporting
+	 *            on the images.
 	 */
 	public void reportOnImages(DockerSession session, ExecutionResult result);
 
@@ -174,9 +174,9 @@ public interface DockerClient {
 	 * @param info
 	 *            Docker image info.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of
-	 *            inspecting the container.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of inspecting
+	 *            the container.
 	 * 
 	 * @return Inspected image info object.
 	 * 
@@ -193,8 +193,8 @@ public interface DockerClient {
 	 * @param info
 	 *            container info.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of the
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of the
 	 *            container creation.
 	 * 
 	 * @return container instance info.
@@ -207,16 +207,16 @@ public interface DockerClient {
 	/**
 	 * Delete Docker container.
 	 * 
-	 * If container doesn't exist then the operation is aborted with a failed
-	 * child result. and a {@linkplain DockerClientException} is thrown.
+	 * If container doesn't exist then the operation is aborted with a failed child
+	 * result. and a {@linkplain DockerClientException} is thrown.
 	 * 
 	 * @param session
 	 *            Docker session.
 	 * @param info
 	 *            container info.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of the
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of the
 	 *            container deletion.
 	 * 
 	 * @throws {@link
@@ -259,17 +259,17 @@ public interface DockerClient {
 	/**
 	 * Start Docker container.
 	 * 
-	 * If container doesn't exist then the operation is aborted with a failed
-	 * child result. and a {@linkplain DockerClientException} is thrown.
+	 * If container doesn't exist then the operation is aborted with a failed child
+	 * result. and a {@linkplain DockerClientException} is thrown.
 	 * 
 	 * @param session
 	 *            Docker session.
 	 * @param info
 	 *            Docker container info.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of
-	 *            starting the container.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of starting
+	 *            the container.
 	 * 
 	 * @throws {@link
 	 *             DockerClientException} if starting the container fails.
@@ -280,68 +280,68 @@ public interface DockerClient {
 	 * Stop Docker container.
 	 * 
 	 * If container doesn't exist then the command is aborted with a failed
-	 * execution result. If container is paused then the container is unpaused
-	 * and stopped.
+	 * execution result. If container is paused then the container is unpaused and
+	 * stopped.
 	 * 
 	 * @param session
 	 *            Docker session.
 	 * @param info
 	 *            Docker instance info.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of
-	 *            stopping the container.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of stopping
+	 *            the container.
 	 */
 	public void stopContainer(DockerSession session, ContainerInfo info, ExecutionResult result);
 
 	/**
 	 * Kill Docker container.
 	 * 
-	 * If container doesn't exist then the operation is aborted with a failed
-	 * child result. and a {@linkplain DockerClientException} is thrown.
+	 * If container doesn't exist then the operation is aborted with a failed child
+	 * result. and a {@linkplain DockerClientException} is thrown.
 	 * 
 	 * @param session
 	 *            Docker session.
 	 * @param info
 	 *            Docker container info.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of
-	 *            killing the container.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of killing the
+	 *            container.
 	 */
 	public void killContainer(DockerSession session, ContainerInfo info, ExecutionResult result);
 
 	/**
 	 * Pause Docker container.
 	 * 
-	 * If container doesn't exist then the operation is aborted with a failed
-	 * child result. and a {@linkplain DockerClientException} is thrown.
+	 * If container doesn't exist then the operation is aborted with a failed child
+	 * result. and a {@linkplain DockerClientException} is thrown.
 	 * 
 	 * @param session
 	 *            Docker session.
 	 * @param info
 	 *            Docker instance info.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of
-	 *            pausing the container.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of pausing the
+	 *            container.
 	 */
 	public void pauseContainer(DockerSession session, ContainerInfo info, ExecutionResult result);
 
 	/**
 	 * Unpause Docker container.
 	 * 
-	 * If container doesn't exist then the operation is aborted with a failed
-	 * child result. and a {@linkplain DockerClientException} is thrown.
+	 * If container doesn't exist then the operation is aborted with a failed child
+	 * result. and a {@linkplain DockerClientException} is thrown.
 	 * 
 	 * @param session
 	 *            Docker session.
 	 * @param info
 	 *            Docker instance info.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of
-	 *            unpausing container.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of unpausing
+	 *            container.
 	 */
 	public void unpauseContainer(DockerSession session, ContainerInfo info, ExecutionResult result);
 
@@ -351,9 +351,9 @@ public interface DockerClient {
 	 * @param session
 	 *            Docker session.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of
-	 *            listing the containers.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of listing the
+	 *            containers.
 	 * 
 	 * @return list of containers.
 	 */
@@ -362,17 +362,17 @@ public interface DockerClient {
 	/**
 	 * Inspect container.
 	 * 
-	 * If container doesn't exist then the operation is aborted with a failed
-	 * child result. and a {@linkplain DockerClientException} is thrown.
+	 * If container doesn't exist then the operation is aborted with a failed child
+	 * result. and a {@linkplain DockerClientException} is thrown.
 	 * 
 	 * @param session
 	 *            Docker session.
 	 * @param info
 	 *            Docker container info.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of
-	 *            inspecting the container.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of inspecting
+	 *            the container.
 	 * 
 	 * @return Inspected container info object.
 	 * 
@@ -384,15 +384,15 @@ public interface DockerClient {
 	/**
 	 * Create report from containers.
 	 * 
-	 * The report lists and inspects the containers. The information is returned
-	 * in a tree of child execution result objects.
+	 * The report lists and inspects the containers. The information is returned in
+	 * a tree of child execution result objects.
 	 * 
 	 * @param session
 	 *            Docker session.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of
-	 *            reporting on the containers.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of reporting
+	 *            on the containers.
 	 */
 	public void reportOnContainers(DockerSession session, ExecutionResult result);
 
@@ -449,9 +449,9 @@ public interface DockerClient {
 	 * @param tarArchive
 	 *            absolute path and name of the created TAR archive.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of
-	 *            creating the archive.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of creating
+	 *            the archive.
 	 */
 	public void createTarArchive(File sourceDirectory, File tarArchive, ExecutionResult result);
 
@@ -466,9 +466,9 @@ public interface DockerClient {
 	 * @param state
 	 *            Expected Docker container state.
 	 * @param result
-	 *            Root execution result. A child execution result is added to
-	 *            the root result. The child result describes the outcome of
-	 *            testing the container.
+	 *            Root execution result. A child execution result is added to the
+	 *            root result. The child result describes the outcome of testing the
+	 *            container.
 	 */
 	public void testContainer(DockerSession session, ContainerInfo info, ContainerState state, ExecutionResult result);
 

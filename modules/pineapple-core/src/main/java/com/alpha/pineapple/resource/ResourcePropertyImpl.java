@@ -27,37 +27,37 @@ package com.alpha.pineapple.resource;
  */
 public class ResourcePropertyImpl implements ResourcePropertyInfo {
 
-    /**
-     * Key.
-     */
-    String key;
+	/**
+	 * Key.
+	 */
+	String key;
 
-    /**
-     * Value.
-     */
-    String value;
+	/**
+	 * Value.
+	 */
+	String value;
 
-    /**
-     * ResourcePropertyImpl constructor.
-     * 
-     * @param key
-     *            property key.
-     * @param value
-     *            property value.
-     */
-    public ResourcePropertyImpl(String key, String value) {
-	this.key = key;
-	this.value = value;
-    }
+	/**
+	 * ResourcePropertyImpl constructor.
+	 * 
+	 * @param key
+	 *            property key.
+	 * @param value
+	 *            property value.
+	 */
+	public ResourcePropertyImpl(String key, String value) {
+		this.key = key;
+		this.value = value;
+	}
 
-    @Override
-    public String getKey() {
-	return key;
-    }
+	@Override
+	public String getKey() {
+		return key;
+	}
 
-    @Override
-    public String getValue() {
-	return value;
-    }
+	@Override
+	public String getValue() {
+		return value;
+	}
 
 }

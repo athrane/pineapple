@@ -43,442 +43,441 @@ import com.alpha.pineapple.model.module.model.Trigger;
  */
 public class DefaultOperationTriggerResolverImplTest {
 
-    /**
-     * SUT.
-     */
-    OperationTriggerResolver resolver;
+	/**
+	 * SUT.
+	 */
+	OperationTriggerResolver resolver;
 
-    /**
-     * Model factory.
-     */
-    ObjectFactory objectFactory = new ObjectFactory();
+	/**
+	 * Model factory.
+	 */
+	ObjectFactory objectFactory = new ObjectFactory();
 
-    /**
-     * Random module.
-     */
-    String randomModule;
+	/**
+	 * Random module.
+	 */
+	String randomModule;
 
-    /**
-     * Random name.
-     */
-    String randomName;
+	/**
+	 * Random name.
+	 */
+	String randomName;
 
-    /**
-     * Random operation.
-     */
-    String randomOperation;
+	/**
+	 * Random operation.
+	 */
+	String randomOperation;
 
-    /**
-     * Random operation.
-     */
-    String randomInvokedOperation;
+	/**
+	 * Random operation.
+	 */
+	String randomInvokedOperation;
 
-    /**
-     * Random value.
-     */
-    String randomValue;
+	/**
+	 * Random value.
+	 */
+	String randomValue;
 
-    /**
-     * Random environment.
-     */
-    String randomEnvironment;
+	/**
+	 * Random environment.
+	 */
+	String randomEnvironment;
 
-    /**
-     * Random result.
-     */
-    String randomResult;
+	/**
+	 * Random result.
+	 */
+	String randomResult;
 
-    @Before
-    public void setUp() throws Exception {
-	randomModule = RandomStringUtils.randomAlphabetic(16);
-	randomName = RandomStringUtils.randomAlphabetic(16);
-	randomOperation = RandomStringUtils.randomAlphabetic(16);
-	randomValue = RandomStringUtils.randomAlphabetic(16);
-	randomEnvironment = RandomStringUtils.randomAlphabetic(16);
-	randomInvokedOperation = RandomStringUtils.randomAlphabetic(16);
-	randomResult = RandomStringUtils.randomAlphabetic(16);
+	@Before
+	public void setUp() throws Exception {
+		randomModule = RandomStringUtils.randomAlphabetic(16);
+		randomName = RandomStringUtils.randomAlphabetic(16);
+		randomOperation = RandomStringUtils.randomAlphabetic(16);
+		randomValue = RandomStringUtils.randomAlphabetic(16);
+		randomEnvironment = RandomStringUtils.randomAlphabetic(16);
+		randomInvokedOperation = RandomStringUtils.randomAlphabetic(16);
+		randomResult = RandomStringUtils.randomAlphabetic(16);
 
-	// create resolver
-	resolver = new DefaultOperationTriggerResolverImpl();
-    }
+		// create resolver
+		resolver = new DefaultOperationTriggerResolverImpl();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Can resolve empty trigger list.
-     */
-    @Test
-    public void testResolveEmptyTriggerList() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+	/**
+	 * Can resolve empty trigger list.
+	 */
+	@Test
+	public void testResolveEmptyTriggerList() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(0, result.count());
-    }
+		// test
+		assertEquals(0, result.count());
+	}
 
-    /**
-     * Trigger with operation wild card is resolved for execution.
-     */
-    @Test
-    public void testTriggerWithOperationWildCardWillExecute() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation(CoreConstants.TRIGGER_WILDCARD_OPERATION);
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with operation wild card is resolved for execution.
+	 */
+	@Test
+	public void testTriggerWithOperationWildCardWillExecute() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation(CoreConstants.TRIGGER_WILDCARD_OPERATION);
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(1, result.count());
-    }
+		// test
+		assertEquals(1, result.count());
+	}
 
-    /**
-     * Trigger with empty result is resolved for execution.
-     */
-    @Test
-    public void testTriggerWithEmptyOperationIsResolved() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation("");
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with empty result is resolved for execution.
+	 */
+	@Test
+	public void testTriggerWithEmptyOperationIsResolved() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation("");
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(1, result.count());
-    }
+		// test
+		assertEquals(1, result.count());
+	}
 
-    /**
-     * Trigger with null operation is resolved for execution.
-     */
-    @Test
-    public void testTriggerWithNullOperationIsResolved() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation(null);
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with null operation is resolved for execution.
+	 */
+	@Test
+	public void testTriggerWithNullOperationIsResolved() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation(null);
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(1, result.count());
-    }
+		// test
+		assertEquals(1, result.count());
+	}
 
-    /**
-     * Trigger with operation wild card with leading space is resolved for
-     * execution.
-     */
-    @Test
-    public void testTriggerWithOperationWildCardAndLeadingSpaceIsResolved() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation(" " + CoreConstants.TRIGGER_WILDCARD_OPERATION);
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with operation wild card with leading space is resolved for
+	 * execution.
+	 */
+	@Test
+	public void testTriggerWithOperationWildCardAndLeadingSpaceIsResolved() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation(" " + CoreConstants.TRIGGER_WILDCARD_OPERATION);
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(1, result.count());
-    }
+		// test
+		assertEquals(1, result.count());
+	}
 
-    /**
-     * Trigger with operation wild card with trailing space is resolved for
-     * execution.
-     */
-    @Test
-    public void testTriggerWithOperationWildCardAndTrailingSpaceIsResolved() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation(CoreConstants.TRIGGER_WILDCARD_OPERATION + " ");
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with operation wild card with trailing space is resolved for
+	 * execution.
+	 */
+	@Test
+	public void testTriggerWithOperationWildCardAndTrailingSpaceIsResolved() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation(CoreConstants.TRIGGER_WILDCARD_OPERATION + " ");
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(1, result.count());
-    }
+		// test
+		assertEquals(1, result.count());
+	}
 
-    /**
-     * Trigger with operation which is identical to invoked model operation is
-     * resolved for execution.
-     */
-    @Test
-    public void testTriggerWithOperationIdenticalWithInvokedModelOperationWillExecute() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation(randomInvokedOperation);
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with operation which is identical to invoked model operation is
+	 * resolved for execution.
+	 */
+	@Test
+	public void testTriggerWithOperationIdenticalWithInvokedModelOperationWillExecute() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation(randomInvokedOperation);
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(1, result.count());
-    }
+		// test
+		assertEquals(1, result.count());
+	}
 
-    /**
-     * Trigger with operation with different state isn't resolved for execution.
-     */
-    @Test
-    public void testTriggerWithOperationDifferentToInvokedModelOperationIsntResolved() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation(randomValue);
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with operation with different state isn't resolved for execution.
+	 */
+	@Test
+	public void testTriggerWithOperationDifferentToInvokedModelOperationIsntResolved() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation(randomValue);
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(0, result.count());
-    }
+		// test
+		assertEquals(0, result.count());
+	}
 
-    /**
-     * Trigger with operation list is resolved for execution.
-     */
-    @Test
-    public void testTriggerWithOperationListWillExecute() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation("{" + randomValue + "}");
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with operation list is resolved for execution.
+	 */
+	@Test
+	public void testTriggerWithOperationListWillExecute() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation("{" + randomValue + "}");
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomValue);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomValue);
 
-	// test
-	assertEquals(1, result.count());
-    }
+		// test
+		assertEquals(1, result.count());
+	}
 
-    /**
-     * Trigger with operation list with two operations is resolved for
-     * execution. operation is matched.
-     */
-    @Test
-    public void testTriggerWithOperationListWithTwoOperationsWillExecute() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation("{" + randomValue + "," + randomInvokedOperation + "}");
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with operation list with two operations is resolved for execution.
+	 * operation is matched.
+	 */
+	@Test
+	public void testTriggerWithOperationListWithTwoOperationsWillExecute() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation("{" + randomValue + "," + randomInvokedOperation + "}");
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(1, result.count());
-    }
+		// test
+		assertEquals(1, result.count());
+	}
 
-    /**
-     * Trigger with operation list with two operations is resolved for
-     * execution. The list contains two identical operations. One result is
-     * matched.
-     */
-    @Test
-    public void testTriggerWithOperationListWithTwoOperationsWillExecute2() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation("{" + randomInvokedOperation + "," + randomInvokedOperation + "}");
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with operation list with two operations is resolved for execution.
+	 * The list contains two identical operations. One result is matched.
+	 */
+	@Test
+	public void testTriggerWithOperationListWithTwoOperationsWillExecute2() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation("{" + randomInvokedOperation + "," + randomInvokedOperation + "}");
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(1, result.count());
-    }
+		// test
+		assertEquals(1, result.count());
+	}
 
-    /**
-     * Trigger with operation list with two operations is resolved for
-     * execution. The list contains two operations which differ from the invoked
-     * operation. No results are matched.
-     */
-    @Test
-    public void testTriggerWithOperationListWithTwoOperationsInstResolved() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation("{" + randomValue + "," + randomValue + "2" + "}");
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with operation list with two operations is resolved for execution.
+	 * The list contains two operations which differ from the invoked operation. No
+	 * results are matched.
+	 */
+	@Test
+	public void testTriggerWithOperationListWithTwoOperationsInstResolved() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation("{" + randomValue + "," + randomValue + "2" + "}");
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(0, result.count());
-    }
+		// test
+		assertEquals(0, result.count());
+	}
 
-    /**
-     * Trigger with operation list with leading space is resolved for execution.
-     */
-    @Test
-    public void testTriggerWithOperationListWithLeadingSpaceWillExecute() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation(" {" + randomInvokedOperation + "}");
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with operation list with leading space is resolved for execution.
+	 */
+	@Test
+	public void testTriggerWithOperationListWithLeadingSpaceWillExecute() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation(" {" + randomInvokedOperation + "}");
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(1, result.count());
-    }
+		// test
+		assertEquals(1, result.count());
+	}
 
-    /**
-     * Trigger with operation list with leading space is resolved for execution.
-     */
-    @Test
-    public void testTriggerWithResultListWithLeadingSpaceWillExecute2() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation("{ " + randomInvokedOperation + "}");
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with operation list with leading space is resolved for execution.
+	 */
+	@Test
+	public void testTriggerWithResultListWithLeadingSpaceWillExecute2() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation("{ " + randomInvokedOperation + "}");
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(1, result.count());
-    }
+		// test
+		assertEquals(1, result.count());
+	}
 
-    /**
-     * Trigger with operation with list with trailing space is resolved for
-     * execution.
-     */
-    @Test
-    public void testTriggerWithOperationListWithTrailingSpaceWillExecute() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation("{" + randomInvokedOperation + " }");
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with operation with list with trailing space is resolved for
+	 * execution.
+	 */
+	@Test
+	public void testTriggerWithOperationListWithTrailingSpaceWillExecute() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation("{" + randomInvokedOperation + " }");
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(1, result.count());
-    }
+		// test
+		assertEquals(1, result.count());
+	}
 
-    /**
-     * Trigger with operation with empty list resolves nothing for execution.
-     */
-    @Test
-    public void testTriggerWithEmptyResultList() {
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation("{}");
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+	/**
+	 * Trigger with operation with empty list resolves nothing for execution.
+	 */
+	@Test
+	public void testTriggerWithEmptyResultList() {
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation("{}");
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(0, result.count());
-    }
+		// test
+		assertEquals(0, result.count());
+	}
 
-    /**
-     * Trigger with operation with empty list resolves nothing for execution.
-     */
-    @Test
-    public void testTriggerWithEmptyResultList2() {
-	ExecutionState state = SUCCESS;
+	/**
+	 * Trigger with operation with empty list resolves nothing for execution.
+	 */
+	@Test
+	public void testTriggerWithEmptyResultList2() {
+		ExecutionState state = SUCCESS;
 
-	AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
-	Trigger trigger = objectFactory.createTrigger();
-	trigger.setEnvironment(randomEnvironment);
-	trigger.setModule(randomModule);
-	trigger.setName(randomName);
-	trigger.setOperation(randomOperation);
-	trigger.setOnTargetOperation("{ }");
-	trigger.setOnResult(randomResult);
-	aggregatedModel.getTrigger().add(trigger);
+		AggregatedModel aggregatedModel = objectFactory.createAggregatedModel();
+		Trigger trigger = objectFactory.createTrigger();
+		trigger.setEnvironment(randomEnvironment);
+		trigger.setModule(randomModule);
+		trigger.setName(randomName);
+		trigger.setOperation(randomOperation);
+		trigger.setOnTargetOperation("{ }");
+		trigger.setOnResult(randomResult);
+		aggregatedModel.getTrigger().add(trigger);
 
-	Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
-	Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
+		Stream<Trigger> triggers = aggregatedModel.getTrigger().stream();
+		Stream<Trigger> result = resolver.resolve(triggers, randomInvokedOperation);
 
-	// test
-	assertEquals(0, result.count());
-    }
+		// test
+		assertEquals(0, result.count());
+	}
 }

@@ -37,64 +37,64 @@ import org.springframework.beans.factory.support.BeanNameGenerator;
  */
 public class PluginNameGeneratorImplTest {
 
-    /**
-     * Object under test.
-     */
-    BeanNameGenerator pluginNameGenerator;
+	/**
+	 * Object under test.
+	 */
+	BeanNameGenerator pluginNameGenerator;
 
-    /**
-     * Mock bean definition.
-     */
-    BeanDefinition definition;
+	/**
+	 * Mock bean definition.
+	 */
+	BeanDefinition definition;
 
-    /**
-     * Mock bean definition registry.
-     */
-    BeanDefinitionRegistry registry;
+	/**
+	 * Mock bean definition registry.
+	 */
+	BeanDefinitionRegistry registry;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	// create generator
-	pluginNameGenerator = new PluginNameGeneratorImpl();
+		// create generator
+		pluginNameGenerator = new PluginNameGeneratorImpl();
 
-	// create mock bean definition
-	definition = EasyMock.createMock(BeanDefinition.class);
+		// create mock bean definition
+		definition = EasyMock.createMock(BeanDefinition.class);
 
-	// create mock bean definition
-	registry = EasyMock.createMock(BeanDefinitionRegistry.class);
-    }
+		// create mock bean definition
+		registry = EasyMock.createMock(BeanDefinitionRegistry.class);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	pluginNameGenerator = null;
-	definition = null;
-	registry = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		pluginNameGenerator = null;
+		definition = null;
+		registry = null;
+	}
 
-    /**
-     * Test that plugin generator generates excpected name.
-     */
-    @Test
-    public void testGenerateBeanNameReturnsExpectedName() {
+	/**
+	 * Test that plugin generator generates excpected name.
+	 */
+	@Test
+	public void testGenerateBeanNameReturnsExpectedName() {
 
-	String pluginId = "some.plugin.id";
-	String pluginClass = pluginId + ".someclass";
+		String pluginId = "some.plugin.id";
+		String pluginClass = pluginId + ".someclass";
 
-	// complete mocks initialization
-	EasyMock.expect(definition.getBeanClassName()).andReturn(pluginClass);
-	EasyMock.replay(definition);
-	EasyMock.replay(registry);
+		// complete mocks initialization
+		EasyMock.expect(definition.getBeanClassName()).andReturn(pluginClass);
+		EasyMock.replay(definition);
+		EasyMock.replay(registry);
 
-	// generate name
-	String name = pluginNameGenerator.generateBeanName(definition, registry);
+		// generate name
+		String name = pluginNameGenerator.generateBeanName(definition, registry);
 
-	// test
-	assertEquals("plugin:" + pluginId, name);
+		// test
+		assertEquals("plugin:" + pluginId, name);
 
-	// verify mocks
-	EasyMock.verify(definition);
-	EasyMock.verify(registry);
-    }
+		// verify mocks
+		EasyMock.verify(definition);
+		EasyMock.verify(registry);
+	}
 
 }

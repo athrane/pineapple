@@ -33,63 +33,63 @@ import com.alpha.pineapple.model.configuration.Credential;
  */
 public interface CredentialConfigurationMarshaller {
 
-    /**
-     * Save credential configuration.
-     * 
-     * The configuration directory is resolved from the runtime directory
-     * provider. The configuration is saved in the default resources
-     * configuration file credentials.xml.
-     * 
-     * @param configuration
-     *            credentials configuration which is saved.
-     * 
-     * @throws SaveConfigurationFailedException
-     *             if save fails.
-     */
+	/**
+	 * Save credential configuration.
+	 * 
+	 * The configuration directory is resolved from the runtime directory provider.
+	 * The configuration is saved in the default resources configuration file
+	 * credentials.xml.
+	 * 
+	 * @param configuration
+	 *            credentials configuration which is saved.
+	 * 
+	 * @throws SaveConfigurationFailedException
+	 *             if save fails.
+	 */
 
-    void save(Configuration configuration) throws SaveConfigurationFailedException;
+	void save(Configuration configuration) throws SaveConfigurationFailedException;
 
-    /**
-     * Load credential configuration.
-     * 
-     * @param credentialsFile
-     *            credentials file which is loaded.
-     * 
-     * @return credential configuration which is loaded.
-     * 
-     * @throws CredentialsFileNotFoundException
-     *             if file wasn't found.
-     */
-    Configuration load(File credentialsFile) throws CredentialsFileNotFoundException;
+	/**
+	 * Load credential configuration.
+	 * 
+	 * @param credentialsFile
+	 *            credentials file which is loaded.
+	 * 
+	 * @return credential configuration which is loaded.
+	 * 
+	 * @throws CredentialsFileNotFoundException
+	 *             if file wasn't found.
+	 */
+	Configuration load(File credentialsFile) throws CredentialsFileNotFoundException;
 
-    /**
-     * Map resources configuration for saving.
-     * 
-     * @param info
-     *            configuration info which is mapped.
-     * 
-     * @return credential configuration which can be marshalled.
-     */
-    Configuration map(ConfigurationInfo info);
+	/**
+	 * Map resources configuration for saving.
+	 * 
+	 * @param info
+	 *            configuration info which is mapped.
+	 * 
+	 * @return credential configuration which can be marshalled.
+	 */
+	Configuration map(ConfigurationInfo info);
 
-    /**
-     * Map resources configuration to info objects.
-     * 
-     * @param configuration
-     *            configuration which is mapped.
-     * 
-     * @return credential configuration represented by info objects.
-     */
-    ConfigurationInfo map(Configuration configuration);
+	/**
+	 * Map resources configuration to info objects.
+	 * 
+	 * @param configuration
+	 *            configuration which is mapped.
+	 * 
+	 * @return credential configuration represented by info objects.
+	 */
+	ConfigurationInfo map(Configuration configuration);
 
-    /**
-     * Map to credential info to credential.
-     * 
-     * @param credentialInfo
-     *            credential info object.
-     * 
-     * @return mapped credential.
-     */
-    Credential mapToCredential(CredentialInfo credentialInfo);
+	/**
+	 * Map to credential info to credential.
+	 * 
+	 * @param credentialInfo
+	 *            credential info object.
+	 * 
+	 * @return mapped credential.
+	 */
+	Credential mapToCredential(CredentialInfo credentialInfo);
 
 }

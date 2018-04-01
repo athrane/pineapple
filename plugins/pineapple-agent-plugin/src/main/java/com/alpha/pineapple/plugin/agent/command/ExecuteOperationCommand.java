@@ -98,278 +98,277 @@ import com.alpha.pineapple.plugin.agent.utils.RestResponseException;
  */
 public class ExecuteOperationCommand implements Command {
 
-    /**
-     * URL environment variable.
-     */
-    static final String URL_VAR_ENVIRONMENT = "environment";
+	/**
+	 * URL environment variable.
+	 */
+	static final String URL_VAR_ENVIRONMENT = "environment";
 
-    /**
-     * URL operation variable.
-     */
-    static final String URL_VAR_OPERATION = "operation";
+	/**
+	 * URL operation variable.
+	 */
+	static final String URL_VAR_OPERATION = "operation";
 
-    /**
-     * URL module variable.
-     */
-    static final String URL_VAR_MODULE = "module";
+	/**
+	 * URL module variable.
+	 */
+	static final String URL_VAR_MODULE = "module";
 
-    /**
-     * First list index.
-     */
-    static final int FIRST_LIST_INDEX = 0;
+	/**
+	 * First list index.
+	 */
+	static final int FIRST_LIST_INDEX = 0;
 
-    /**
-     * Key used to identify property in context: Name of the module.
-     */
-    public static final String MODULE_KEY = URL_VAR_MODULE;
+	/**
+	 * Key used to identify property in context: Name of the module.
+	 */
+	public static final String MODULE_KEY = URL_VAR_MODULE;
 
-    /**
-     * Key used to identify property in context: Operation to invoke.
-     */
-    public static final String OPERATION_KEY = URL_VAR_OPERATION;
+	/**
+	 * Key used to identify property in context: Operation to invoke.
+	 */
+	public static final String OPERATION_KEY = URL_VAR_OPERATION;
 
-    /**
-     * Key used to identify property in context: Name of the environment.
-     */
-    public static final String ENVIRONMENT_KEY = URL_VAR_ENVIRONMENT;
+	/**
+	 * Key used to identify property in context: Name of the environment.
+	 */
+	public static final String ENVIRONMENT_KEY = URL_VAR_ENVIRONMENT;
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Module name.
-     */
-    @Initialize(MODULE_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    String module;
+	/**
+	 * Module name.
+	 */
+	@Initialize(MODULE_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String module;
 
-    /**
-     * Environment name.
-     */
-    @Initialize(ENVIRONMENT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    String environment;
+	/**
+	 * Environment name.
+	 */
+	@Initialize(ENVIRONMENT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String environment;
 
-    /**
-     * Operation name.
-     */
-    @Initialize(OPERATION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    String operation;
+	/**
+	 * Operation name.
+	 */
+	@Initialize(OPERATION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String operation;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    AgentSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	AgentSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Execution result model mapper.
-     */
-    @Resource
-    ExecutionResultMapper resultMapper;
+	/**
+	 * Execution result model mapper.
+	 */
+	@Resource
+	ExecutionResultMapper resultMapper;
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// execute
-	doExecute();
+		// execute
+		doExecute();
 
-	return Command.CONTINUE_PROCESSING;
-    }
-
-    /**
-     * Execute operation.
-     * 
-     * @throws Exception
-     *             If distribution fails.
-     */
-    void doExecute() {
-	try {
-
-	    // create URI
-	    UriComponents uriComponents = UriComponentsBuilder.fromUriString(EXECUTE_MODULE_URI).build()
-		    .expand(module, operation, environment).encode();
-	    String serviceUrl = session.createServiceUrl(uriComponents.toUriString());
-	    session.addServiceUrlMessage(serviceUrl, executionResult);
-
-	    // post to start execution
-	    URI location = session.httpPostForLocation(serviceUrl, AgentConstants.CONTENT_TYPE_TEXT_HTML);
-	    appendLocationMessage(location);
-
-	    // create execution index map and register root result
-	    Map<Integer, ExecutionResult> executionResultMap = resultMapper.createExecutionResultMap(executionResult);
-
-	    // get initial results
-	    Results modelResults = getRemoteExecutionResult(location);
-
-	    // map results
-	    resultMapper.mapModelToResults(modelResults, executionResultMap);
-
-	    // get mapped model root result
-	    ExecutionResult mappedRootResult = getMappedRootExecutionResult(executionResultMap, modelResults, location);
-
-	    while (isOperationExecuting(mappedRootResult)) {
-		ConcurrencyUtils.waitSomeMilliseconds(AgentConstants.OPERATION_STATUS_POLLING_DELAY);
-		modelResults = getRemoteExecutionResult(location);
-
-		// map model
-		resultMapper.mapModelToResults(modelResults, executionResultMap);
-	    }
-
-	    // delete operation status
-	    session.httpDelete(location.toASCIIString());
-
-	    // complete result
-	    executionResult.completeAsComputed(messageProvider, "eoc.completed", null, "eoc.failed", null);
-
-	} catch (RestResponseException e) {
-	    executionResult.addMessage("HTTP Headers", e.getHeaders().toString());
-	    executionResult.addMessage("HTTP Status Code", e.getStatusCode().toString());
-	    executionResult.addMessage("HTTP Body", e.getBody());
-	    executionResult.completeAsError(messageProvider, "eoc.error", e);
-
-	} catch (Exception e) {
-	    executionResult.completeAsError(messageProvider, "eoc.error", e);
+		return Command.CONTINUE_PROCESSING;
 	}
 
-    }
+	/**
+	 * Execute operation.
+	 * 
+	 * @throws Exception
+	 *             If distribution fails.
+	 */
+	void doExecute() {
+		try {
 
-    /**
-     * Get remote execution result from server.
-     * 
-     * @param location
-     *            URI to query for status update.
-     * 
-     * @return execution result model from server.
-     */
-    Results getRemoteExecutionResult(URI location) {
+			// create URI
+			UriComponents uriComponents = UriComponentsBuilder.fromUriString(EXECUTE_MODULE_URI).build()
+					.expand(module, operation, environment).encode();
+			String serviceUrl = session.createServiceUrl(uriComponents.toUriString());
+			session.addServiceUrlMessage(serviceUrl, executionResult);
 
-	// get status
-	Results modelResults = session.httpGetForObject(location.toASCIIString(), Results.class);
+			// post to start execution
+			URI location = session.httpPostForLocation(serviceUrl, AgentConstants.CONTENT_TYPE_TEXT_HTML);
+			appendLocationMessage(location);
 
-	// TODO: retry three times and throw exception
-	// if( modelResults == null)
+			// create execution index map and register root result
+			Map<Integer, ExecutionResult> executionResultMap = resultMapper.createExecutionResultMap(executionResult);
 
-	return modelResults;
-    }
+			// get initial results
+			Results modelResults = getRemoteExecutionResult(location);
 
-    /**
-     * Get first mapped execution result.
-     *
-     * @param resultMap
-     *            execution result map.
-     * @param model
-     *            from first service invocation.
-     * @param location
-     *            URI to query for status update.
-     * 
-     * @return mapped root execution result from server.
-     * 
-     * @throws Exception
-     *             if retrieving result fails.
-     */
-    ExecutionResult getMappedRootExecutionResult(Map<Integer, ExecutionResult> resultMap, Results results, URI location)
-	    throws Exception {
-	ResultSequence sequence = results.getResultSequence();
+			// map results
+			resultMapper.mapModelToResults(modelResults, executionResultMap);
 
-	// validate sequence is defined
-	if (sequence == null) {
-	    Object[] args = { location.toASCIIString() };
-	    String message = messageProvider.getMessage("eoc.undefined_sequence_failure", args);
-	    throw new UnexpectedModelResponseException(message);
+			// get mapped model root result
+			ExecutionResult mappedRootResult = getMappedRootExecutionResult(executionResultMap, modelResults, location);
+
+			while (isOperationExecuting(mappedRootResult)) {
+				ConcurrencyUtils.waitSomeMilliseconds(AgentConstants.OPERATION_STATUS_POLLING_DELAY);
+				modelResults = getRemoteExecutionResult(location);
+
+				// map model
+				resultMapper.mapModelToResults(modelResults, executionResultMap);
+			}
+
+			// delete operation status
+			session.httpDelete(location.toASCIIString());
+
+			// complete result
+			executionResult.completeAsComputed(messageProvider, "eoc.completed", null, "eoc.failed", null);
+
+		} catch (RestResponseException e) {
+			executionResult.addMessage("HTTP Headers", e.getHeaders().toString());
+			executionResult.addMessage("HTTP Status Code", e.getStatusCode().toString());
+			executionResult.addMessage("HTTP Body", e.getBody());
+			executionResult.completeAsError(messageProvider, "eoc.error", e);
+
+		} catch (Exception e) {
+			executionResult.completeAsError(messageProvider, "eoc.error", e);
+		}
+
 	}
 
-	// validate result list is defined
-	List<Result> resultList = sequence.getResult();
-	if (resultList == null) {
-	    Object[] args = { location.toASCIIString() };
-	    String message = messageProvider.getMessage("eoc.undefined_resultlist_failure", args);
-	    throw new UnexpectedModelResponseException(message);
+	/**
+	 * Get remote execution result from server.
+	 * 
+	 * @param location
+	 *            URI to query for status update.
+	 * 
+	 * @return execution result model from server.
+	 */
+	Results getRemoteExecutionResult(URI location) {
+
+		// get status
+		Results modelResults = session.httpGetForObject(location.toASCIIString(), Results.class);
+
+		// TODO: retry three times and throw exception
+		// if( modelResults == null)
+
+		return modelResults;
 	}
 
-	// validate result list isn't empty
-	if (resultList.isEmpty()) {
-	    Object[] args = { location.toASCIIString() };
-	    String message = messageProvider.getMessage("eoc.undefined_resultlist_failure", args);
-	    throw new UnexpectedModelResponseException(message);
+	/**
+	 * Get first mapped execution result.
+	 *
+	 * @param resultMap
+	 *            execution result map.
+	 * @param model
+	 *            from first service invocation.
+	 * @param location
+	 *            URI to query for status update.
+	 * 
+	 * @return mapped root execution result from server.
+	 * 
+	 * @throws Exception
+	 *             if retrieving result fails.
+	 */
+	ExecutionResult getMappedRootExecutionResult(Map<Integer, ExecutionResult> resultMap, Results results, URI location)
+			throws Exception {
+		ResultSequence sequence = results.getResultSequence();
+
+		// validate sequence is defined
+		if (sequence == null) {
+			Object[] args = { location.toASCIIString() };
+			String message = messageProvider.getMessage("eoc.undefined_sequence_failure", args);
+			throw new UnexpectedModelResponseException(message);
+		}
+
+		// validate result list is defined
+		List<Result> resultList = sequence.getResult();
+		if (resultList == null) {
+			Object[] args = { location.toASCIIString() };
+			String message = messageProvider.getMessage("eoc.undefined_resultlist_failure", args);
+			throw new UnexpectedModelResponseException(message);
+		}
+
+		// validate result list isn't empty
+		if (resultList.isEmpty()) {
+			Object[] args = { location.toASCIIString() };
+			String message = messageProvider.getMessage("eoc.undefined_resultlist_failure", args);
+			throw new UnexpectedModelResponseException(message);
+		}
+
+		// get first result
+		Result rootResult = resultList.get(FIRST_LIST_INDEX);
+
+		// validate correlation ID is defined
+		Integer rootCorrelationId = rootResult.getCorrelationId();
+		if (rootCorrelationId == null) {
+			Object[] args = { location.toASCIIString() };
+			String message = messageProvider.getMessage("eoc.undefined_root_correlationid_failure", args);
+			throw new UnexpectedModelResponseException(message);
+		}
+
+		// validate result is mapped with correlation ID
+		ExecutionResult mappedRootResult = resultMap.get(rootCorrelationId);
+		if (mappedRootResult == null) {
+			Object[] args = { location.toASCIIString() };
+			String message = messageProvider.getMessage("eoc.undefined_mappedresult_failure", args);
+			throw new UnexpectedModelResponseException(message);
+		}
+
+		return mappedRootResult;
 	}
 
-	// get first result
-	Result rootResult = resultList.get(FIRST_LIST_INDEX);
-
-	// validate correlation ID is defined
-	Integer rootCorrelationId = rootResult.getCorrelationId();
-	if (rootCorrelationId == null) {
-	    Object[] args = { location.toASCIIString() };
-	    String message = messageProvider.getMessage("eoc.undefined_root_correlationid_failure", args);
-	    throw new UnexpectedModelResponseException(message);
+	/**
+	 * Returns true if operation is still executing.
+	 * 
+	 * @param rootResult
+	 *            mapped model root result.
+	 * 
+	 * @return true if operation is still executing.
+	 */
+	boolean isOperationExecuting(ExecutionResult rootResult) {
+		return rootResult.isExecuting();
 	}
 
-	// validate result is mapped with correlation ID
-	ExecutionResult mappedRootResult = resultMap.get(rootCorrelationId);
-	if (mappedRootResult == null) {
-	    Object[] args = { location.toASCIIString() };
-	    String message = messageProvider.getMessage("eoc.undefined_mappedresult_failure", args);
-	    throw new UnexpectedModelResponseException(message);
+	/**
+	 * Append location message to execution result.
+	 * 
+	 * @param location
+	 *            location URL.
+	 */
+	void appendLocationMessage(URI location) {
+		Object[] args = { session.createServiceUrl(location.toASCIIString()) };
+		String key = messageProvider.getMessage("eoc.agent_communication_info_key");
+		String message = messageProvider.getMessage("eoc.location_info", args);
+		executionResult.addMessage(key, message);
+		return;
 	}
-
-	return mappedRootResult;
-    }
-
-    /**
-     * Returns true if operation is still executing.
-     * 
-     * @param rootResult
-     *            mapped model root result.
-     * 
-     * @return true if operation is still executing.
-     */
-    boolean isOperationExecuting(ExecutionResult rootResult) {
-	return rootResult.isExecuting();
-    }
-
-    /**
-     * Append location message to execution result.
-     * 
-     * @param location
-     *            location URL.
-     */
-    void appendLocationMessage(URI location) {
-	Object[] args = { session.createServiceUrl(location.toASCIIString()) };
-	String key = messageProvider.getMessage("eoc.agent_communication_info_key");
-	String message = messageProvider.getMessage("eoc.location_info", args);
-	executionResult.addMessage(key, message);
-	return;
-    }
 
 }

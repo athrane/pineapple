@@ -59,270 +59,269 @@ import com.alpha.pineapple.web.zk.asynctask.event.UnpackedEntryEvent;
  */
 public class UploadModuleModalPanel {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @WireVariable
-    MessageProvider webMessageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@WireVariable
+	MessageProvider webMessageProvider;
 
-    /**
-     * Runtime directory resolver.
-     */
-    @WireVariable
-    RuntimeDirectoryProvider runtimeDirectoryProvider;
+	/**
+	 * Runtime directory resolver.
+	 */
+	@WireVariable
+	RuntimeDirectoryProvider runtimeDirectoryProvider;
 
-    /**
-     * List of unpacked entries.
-     */
-    List<UnpackedEntry> entries;
+	/**
+	 * List of unpacked entries.
+	 */
+	List<UnpackedEntry> entries;
 
-    /**
-     * Binding list.
-     */
-    BindingListModelList<UnpackedEntry> entriesBindingList;
+	/**
+	 * Binding list.
+	 */
+	BindingListModelList<UnpackedEntry> entriesBindingList;
 
-    /**
-     * Module name.
-     */
-    String moduleName;
+	/**
+	 * Module name.
+	 */
+	String moduleName;
 
-    /**
-     * Destination directory.
-     */
-    String destinationDirectory;
+	/**
+	 * Destination directory.
+	 */
+	String destinationDirectory;
 
-    /**
-     * Number of current ZIP entry.
-     */
-    int zipCurrentEntry;
+	/**
+	 * Number of current ZIP entry.
+	 */
+	int zipCurrentEntry;
 
-    /**
-     * Total number of ZIP entries.
-     */
-    int zipTotalEntries;
+	/**
+	 * Total number of ZIP entries.
+	 */
+	int zipTotalEntries;
 
-    /**
-     * Number of KB unpacked in current ZIP entry.
-     */
-    long fileCurrentEntry;
+	/**
+	 * Number of KB unpacked in current ZIP entry.
+	 */
+	long fileCurrentEntry;
 
-    /**
-     * Total number of KB in current ZIP entry.
-     */
-    long fileTotalEntries;
+	/**
+	 * Total number of KB in current ZIP entry.
+	 */
+	long fileTotalEntries;
 
-    /**
-     * Progress of UNZIP process.
-     */
-    int zipProgress;
+	/**
+	 * Progress of UNZIP process.
+	 */
+	int zipProgress;
 
-    /**
-     * Progress of UNZIP of current ZIP entry.
-     */
-    int fileProgress;
+	/**
+	 * Progress of UNZIP of current ZIP entry.
+	 */
+	int fileProgress;
 
-    /**
-     * Initialize view model.
-     */
-    @Init
-    public void init() {
-	moduleName = "n/a";
-	destinationDirectory = "n/a";
-	zipCurrentEntry = 0;
-	zipTotalEntries = 0;
-	fileCurrentEntry = 0;
-	fileTotalEntries = 0;
-	fileProgress = 0;
-	zipProgress = 0;
-	entries = new ArrayList<UnpackedEntry>();
-	entriesBindingList = new BindingListModelList<UnpackedEntry>(entries, true);
-    }
-
-    /**
-     * Get module name in ZK view.
-     * 
-     * @return module name.
-     */
-    public String getModuleName() {
-	return moduleName;
-    }
-
-    /**
-     * Get destination directory in ZK view.
-     * 
-     * @return destination directory.
-     */
-    public String getDestinationDirectory() {
-	return destinationDirectory;
-    }
-
-    /**
-     * Get number of current ZIP entry.
-     * 
-     * @return number of current ZIP entry.
-     */
-    public String getZipCurrentEntry() {
-	return String.valueOf(zipCurrentEntry);
-    }
-
-    /**
-     * Get total number ZIP entries.
-     * 
-     * @return total number ZIP entries.
-     */
-    public String getZipTotalEntries() {
-	return String.valueOf(zipTotalEntries);
-    }
-
-    /**
-     * Get ZIP progress in percentage.
-     * 
-     * @return ZIP progress in percentage.
-     */
-    public int getZipProgress() {
-	return zipProgress;
-    }
-
-    /**
-     * Get number of KB's unpacked of current ZIP entry.
-     * 
-     * @return number of KB's unpacked of current ZIP entry.
-     */
-    public String getFileCurrentEntry() {
-	return String.valueOf(fileCurrentEntry);
-    }
-
-    /**
-     * Get total number of KB in current ZIP entry.
-     * 
-     * @return total number of KB in current ZIP entry.
-     */
-    public String getFileTotalEntries() {
-	return String.valueOf(fileTotalEntries);
-    }
-
-    /**
-     * Get unpack progress in percentage of current ZIP entry.
-     * 
-     * @return unpack progress in percentage of current ZIP entry.
-     */
-    public int getFileProgress() {
-	return fileProgress;
-    }
-
-    /**
-     * Get list of unpacked entries in ZK view.
-     * 
-     * @return list of unpacked entries in ZK view.
-     */
-    public List<UnpackedEntry> getUnpackedEntries() {
-	return this.entriesBindingList;
-    }
-
-    /**
-     * Event handler for click on the upload module button.
-     * 
-     * Will validate state of uploaded zipped media, updated the GUI and post a
-     * global to trigger the unzip process in the composer.
-     */
-    @Command("uploadModule")
-    @NotifyChange("*")
-    public void uploadModule(BindContext ctx) {
-
-	// clear all values
-	init();
-
-	// get media
-	UploadEvent event = (UploadEvent) ctx.getTriggerEvent();
-	Media uploadedMedia = event.getMedia();
-
-	// exit if file is null
-	if (uploadedMedia == null) {
-	    Messagebox.show(webMessageProvider.getMessage("ummc.file_not_selected"),
-		    webMessageProvider.getMessage("ummc.msgbox_title"), Messagebox.OK, Messagebox.INFORMATION);
-	    return;
+	/**
+	 * Initialize view model.
+	 */
+	@Init
+	public void init() {
+		moduleName = "n/a";
+		destinationDirectory = "n/a";
+		zipCurrentEntry = 0;
+		zipTotalEntries = 0;
+		fileCurrentEntry = 0;
+		fileTotalEntries = 0;
+		fileProgress = 0;
+		zipProgress = 0;
+		entries = new ArrayList<UnpackedEntry>();
+		entriesBindingList = new BindingListModelList<UnpackedEntry>(entries, true);
 	}
 
-	// exit if file isn't ZIP
-	if (!uploadedMedia.getName().endsWith(".zip")) {
-	    Messagebox.show(webMessageProvider.getMessage("ummc.not_zip_postfix_info"),
-		    webMessageProvider.getMessage("ummc.msgbox_title"), Messagebox.OK, Messagebox.INFORMATION);
-	    return;
+	/**
+	 * Get module name in ZK view.
+	 * 
+	 * @return module name.
+	 */
+	public String getModuleName() {
+		return moduleName;
 	}
 
-	// exit if file isn't binary
-	if (!uploadedMedia.isBinary()) {
-	    Messagebox.show(webMessageProvider.getMessage("ummc.not_binary_info"),
-		    webMessageProvider.getMessage("ummc.msgbox_title"), Messagebox.OK, Messagebox.INFORMATION);
-	    return;
+	/**
+	 * Get destination directory in ZK view.
+	 * 
+	 * @return destination directory.
+	 */
+	public String getDestinationDirectory() {
+		return destinationDirectory;
 	}
 
-	// set values
-	moduleName = uploadedMedia.getName();
-	destinationDirectory = runtimeDirectoryProvider.getModulesDirectory().getAbsolutePath();
+	/**
+	 * Get number of current ZIP entry.
+	 * 
+	 * @return number of current ZIP entry.
+	 */
+	public String getZipCurrentEntry() {
+		return String.valueOf(zipCurrentEntry);
+	}
 
-	// create command arguments and add media for composer
-	Map<String, Object> args = new HashMap<String, Object>();
-	args.put(MEDIA_ARG, uploadedMedia);
+	/**
+	 * Get total number ZIP entries.
+	 * 
+	 * @return total number ZIP entries.
+	 */
+	public String getZipTotalEntries() {
+		return String.valueOf(zipTotalEntries);
+	}
 
-	// post global command to trigger asynchronous unpack task at composer
-	BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, UPLOAD_MODULE_GLOBALCOMMAND, args);
-    }
+	/**
+	 * Get ZIP progress in percentage.
+	 * 
+	 * @return ZIP progress in percentage.
+	 */
+	public int getZipProgress() {
+		return zipProgress;
+	}
 
-    /**
-     * Event handler for click on the close button.
-     * 
-     * Will do nothing, since the purpose it to trigger the converter defined in
-     * the view (.zul) to close the modal dialog by detaching it.
-     * 
-     */
-    @Command
-    public void close() {
-	// clear all values
-	init();
-    }
+	/**
+	 * Get number of KB's unpacked of current ZIP entry.
+	 * 
+	 * @return number of KB's unpacked of current ZIP entry.
+	 */
+	public String getFileCurrentEntry() {
+		return String.valueOf(fileCurrentEntry);
+	}
 
-    /**
-     * Event handler for the global command "unpackedModuleEntry". The event is
-     * triggered from the upload module modal panel controller which posts the
-     * global command.
-     * 
-     * The event handler will add the unpacked entry to the list of unpacked
-     * entries and notify the MVVM binder that the view model is updated.
-     */
-    @GlobalCommand
-    @NotifyChange("*")
-    public void unpackedModuleEntry(@BindingParam(UNPACKED_ENTRY_EVENT_ARG) UnpackedEntryEvent evt) {
+	/**
+	 * Get total number of KB in current ZIP entry.
+	 * 
+	 * @return total number of KB in current ZIP entry.
+	 */
+	public String getFileTotalEntries() {
+		return String.valueOf(fileTotalEntries);
+	}
 
-	// create unpacked entry and add it to model
-	UnpackedEntry entry = new UnpackedEntry(evt.getEntryName(), evt.getEntryType(),
-		String.valueOf(evt.getEntrySize()));
+	/**
+	 * Get unpack progress in percentage of current ZIP entry.
+	 * 
+	 * @return unpack progress in percentage of current ZIP entry.
+	 */
+	public int getFileProgress() {
+		return fileProgress;
+	}
 
-	zipCurrentEntry = evt.getCurrent();
-	zipTotalEntries = evt.getTotal();
-	zipProgress = evt.getPercentage();
-	this.entries.add(entry);
-    }
+	/**
+	 * Get list of unpacked entries in ZK view.
+	 * 
+	 * @return list of unpacked entries in ZK view.
+	 */
+	public List<UnpackedEntry> getUnpackedEntries() {
+		return this.entriesBindingList;
+	}
 
-    /**
-     * Event handler for the global command "fileUnpackUpdate". The event is
-     * triggered from the upload module modal panel controller which posts the
-     * global command.
-     * 
-     * The event handler will notify the MVVM binder that the view model is
-     * updated.
-     */
-    @GlobalCommand
-    @NotifyChange("*")
-    public void fileUnpackUpdate(@BindingParam(FILE_UNPACK_EVENT_ARG) FileUnpackUpdateEvent evt) {
-	fileCurrentEntry = evt.getCurrent();
-	fileTotalEntries = evt.getTotal();
-	fileProgress = evt.getPercentage();
-    }
+	/**
+	 * Event handler for click on the upload module button.
+	 * 
+	 * Will validate state of uploaded zipped media, updated the GUI and post a
+	 * global to trigger the unzip process in the composer.
+	 */
+	@Command("uploadModule")
+	@NotifyChange("*")
+	public void uploadModule(BindContext ctx) {
+
+		// clear all values
+		init();
+
+		// get media
+		UploadEvent event = (UploadEvent) ctx.getTriggerEvent();
+		Media uploadedMedia = event.getMedia();
+
+		// exit if file is null
+		if (uploadedMedia == null) {
+			Messagebox.show(webMessageProvider.getMessage("ummc.file_not_selected"),
+					webMessageProvider.getMessage("ummc.msgbox_title"), Messagebox.OK, Messagebox.INFORMATION);
+			return;
+		}
+
+		// exit if file isn't ZIP
+		if (!uploadedMedia.getName().endsWith(".zip")) {
+			Messagebox.show(webMessageProvider.getMessage("ummc.not_zip_postfix_info"),
+					webMessageProvider.getMessage("ummc.msgbox_title"), Messagebox.OK, Messagebox.INFORMATION);
+			return;
+		}
+
+		// exit if file isn't binary
+		if (!uploadedMedia.isBinary()) {
+			Messagebox.show(webMessageProvider.getMessage("ummc.not_binary_info"),
+					webMessageProvider.getMessage("ummc.msgbox_title"), Messagebox.OK, Messagebox.INFORMATION);
+			return;
+		}
+
+		// set values
+		moduleName = uploadedMedia.getName();
+		destinationDirectory = runtimeDirectoryProvider.getModulesDirectory().getAbsolutePath();
+
+		// create command arguments and add media for composer
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put(MEDIA_ARG, uploadedMedia);
+
+		// post global command to trigger asynchronous unpack task at composer
+		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, PINEAPPLE_ZK_SCOPE, UPLOAD_MODULE_GLOBALCOMMAND, args);
+	}
+
+	/**
+	 * Event handler for click on the close button.
+	 * 
+	 * Will do nothing, since the purpose it to trigger the converter defined in the
+	 * view (.zul) to close the modal dialog by detaching it.
+	 * 
+	 */
+	@Command
+	public void close() {
+		// clear all values
+		init();
+	}
+
+	/**
+	 * Event handler for the global command "unpackedModuleEntry". The event is
+	 * triggered from the upload module modal panel controller which posts the
+	 * global command.
+	 * 
+	 * The event handler will add the unpacked entry to the list of unpacked entries
+	 * and notify the MVVM binder that the view model is updated.
+	 */
+	@GlobalCommand
+	@NotifyChange("*")
+	public void unpackedModuleEntry(@BindingParam(UNPACKED_ENTRY_EVENT_ARG) UnpackedEntryEvent evt) {
+
+		// create unpacked entry and add it to model
+		UnpackedEntry entry = new UnpackedEntry(evt.getEntryName(), evt.getEntryType(),
+				String.valueOf(evt.getEntrySize()));
+
+		zipCurrentEntry = evt.getCurrent();
+		zipTotalEntries = evt.getTotal();
+		zipProgress = evt.getPercentage();
+		this.entries.add(entry);
+	}
+
+	/**
+	 * Event handler for the global command "fileUnpackUpdate". The event is
+	 * triggered from the upload module modal panel controller which posts the
+	 * global command.
+	 * 
+	 * The event handler will notify the MVVM binder that the view model is updated.
+	 */
+	@GlobalCommand
+	@NotifyChange("*")
+	public void fileUnpackUpdate(@BindingParam(FILE_UNPACK_EVENT_ARG) FileUnpackUpdateEvent evt) {
+		fileCurrentEntry = evt.getCurrent();
+		fileTotalEntries = evt.getTotal();
+		fileProgress = evt.getPercentage();
+	}
 
 }

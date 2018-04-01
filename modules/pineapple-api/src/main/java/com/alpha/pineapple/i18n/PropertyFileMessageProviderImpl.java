@@ -41,197 +41,197 @@ import com.alpha.javautils.StackTraceHelper;
  */
 public class PropertyFileMessageProviderImpl implements MessageProvider {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Resource bundle
-     */
-    ResourceBundle messages;
+	/**
+	 * Resource bundle
+	 */
+	ResourceBundle messages;
 
-    /**
-     * Current Locale
-     */
-    Locale locale;
+	/**
+	 * Current Locale
+	 */
+	Locale locale;
 
-    /**
-     * Message format cache
-     */
-    HashMap<String, MessageFormat> messageFormatCache;
+	/**
+	 * Message format cache
+	 */
+	HashMap<String, MessageFormat> messageFormatCache;
 
-    /**
-     * PropertyFileMessageProviderImpl constructor.
-     */
-    public PropertyFileMessageProviderImpl() throws MessageProviderInitializationException {
+	/**
+	 * PropertyFileMessageProviderImpl constructor.
+	 */
+	public PropertyFileMessageProviderImpl() throws MessageProviderInitializationException {
 
-	// get default locale
-	locale = Locale.getDefault();
+		// get default locale
+		locale = Locale.getDefault();
 
-	// create message format cache
-	messageFormatCache = new HashMap<String, MessageFormat>();
-    }
+		// create message format cache
+		messageFormatCache = new HashMap<String, MessageFormat>();
+	}
 
-    /**
-     * Set the base name
-     * 
-     * @param baseName
-     *            resource bundle base name which follows the basic
-     *            ResourceBundle convention of not specifying file extension,
-     *            e.g. specifying <code>xyz</code> will load the property bundle
-     *            <code>xyz.properties</code> from the class path.
-     * 
-     * @throws MessageProviderInitializationException
-     *             If message provider initialization fails.
-     */
-    public void setBasename(String baseName) throws MessageProviderInitializationException {
+	/**
+	 * Set the base name
+	 * 
+	 * @param baseName
+	 *            resource bundle base name which follows the basic ResourceBundle
+	 *            convention of not specifying file extension, e.g. specifying
+	 *            <code>xyz</code> will load the property bundle
+	 *            <code>xyz.properties</code> from the class path.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 *             If message provider initialization fails.
+	 */
+	public void setBasename(String baseName) throws MessageProviderInitializationException {
 
-	// validate arguments
-	Validate.notNull(baseName, "baseName is undefined.");
+		// validate arguments
+		Validate.notNull(baseName, "baseName is undefined.");
 
-	// define stream
-	InputStream inStream = null;
+		// define stream
+		InputStream inStream = null;
 
-	try {
+		try {
 
-	    // create file name
-	    String fileName = createFileName(baseName);
+			// create file name
+			String fileName = createFileName(baseName);
 
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		StringBuilder debugMessage = new StringBuilder();
-		debugMessage.append("Starting to load resource bundle [");
-		debugMessage.append(fileName);
-		debugMessage.append("].");
-		logger.debug(debugMessage.toString());
-	    }
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder debugMessage = new StringBuilder();
+				debugMessage.append("Starting to load resource bundle [");
+				debugMessage.append(fileName);
+				debugMessage.append("].");
+				logger.debug(debugMessage.toString());
+			}
 
-	    // create stream
-	    inStream = this.getClass().getResourceAsStream(fileName);
+			// create stream
+			inStream = this.getClass().getResourceAsStream(fileName);
 
-	    // create resource bundle
-	    messages = new PropertyResourceBundle(inStream);
+			// create resource bundle
+			messages = new PropertyResourceBundle(inStream);
 
-	    // log debug message
-	    if (logger.isDebugEnabled()) {
-		StringBuilder debugMessage = new StringBuilder();
-		debugMessage.append("Successfuly loaded resource bundle [");
-		debugMessage.append(fileName);
-		debugMessage.append("] into [");
-		debugMessage.append(messages);
-		debugMessage.append("].");
-		logger.debug(debugMessage.toString());
-	    }
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder debugMessage = new StringBuilder();
+				debugMessage.append("Successfuly loaded resource bundle [");
+				debugMessage.append(fileName);
+				debugMessage.append("] into [");
+				debugMessage.append(messages);
+				debugMessage.append("].");
+				logger.debug(debugMessage.toString());
+			}
 
-	} catch (Exception e) {
+		} catch (Exception e) {
 
-	    // create error message
-	    StringBuilder message = new StringBuilder();
-	    message.append("Failed to initialize message provider with base name [ ");
-	    message.append(baseName);
-	    message.append("] due to exception [ ");
-	    message.append(StackTraceHelper.getStrackTrace(e));
-	    message.append("].");
+			// create error message
+			StringBuilder message = new StringBuilder();
+			message.append("Failed to initialize message provider with base name [ ");
+			message.append(baseName);
+			message.append("] due to exception [ ");
+			message.append(StackTraceHelper.getStrackTrace(e));
+			message.append("].");
 
-	    throw new MessageProviderInitializationException(message.toString(), e);
+			throw new MessageProviderInitializationException(message.toString(), e);
 
-	} finally {
+		} finally {
 
-	    try {
+			try {
 
-		// close stream
-		if (inStream != null) {
-		    inStream.close();
+				// close stream
+				if (inStream != null) {
+					inStream.close();
+				}
+
+			} catch (Exception e) {
+
+				// create error message
+				StringBuilder message = new StringBuilder();
+				message.append("Failed to initialize message provider with base name [ ");
+				message.append(baseName);
+				message.append("] due to exception [ ");
+				message.append(StackTraceHelper.getStrackTrace(e));
+				message.append("].");
+
+				throw new MessageProviderInitializationException(message.toString(), e);
+			}
+		}
+	}
+
+	public String getMessage(String key, Object[] args) {
+
+		// handle undefined args case
+		if (args == null) {
+			return getMessage(key);
 		}
 
-	    } catch (Exception e) {
+		// validate argument
+		Validate.notNull(key, "key is undefined");
 
-		// create error message
-		StringBuilder message = new StringBuilder();
-		message.append("Failed to initialize message provider with base name [ ");
-		message.append(baseName);
-		message.append("] due to exception [ ");
-		message.append(StackTraceHelper.getStrackTrace(e));
-		message.append("].");
+		// get message formatter
+		MessageFormat formatter = getMessageFormat(key);
 
-		throw new MessageProviderInitializationException(message.toString(), e);
-	    }
-	}
-    }
+		// format string with args
+		String value = formatter.format(args);
 
-    public String getMessage(String key, Object[] args) {
-
-	// handle undefined args case
-	if (args == null) {
-	    return getMessage(key);
+		return value;
 	}
 
-	// validate argument
-	Validate.notNull(key, "key is undefined");
+	public String getMessage(String key) {
 
-	// get message formatter
-	MessageFormat formatter = getMessageFormat(key);
+		// validate argument
+		Validate.notNull(key, "key is undefined");
 
-	// format string with args
-	String value = formatter.format(args);
+		// resolve key
+		String value = messages.getString(key);
 
-	return value;
-    }
-
-    public String getMessage(String key) {
-
-	// validate argument
-	Validate.notNull(key, "key is undefined");
-
-	// resolve key
-	String value = messages.getString(key);
-
-	return value;
-    }
-
-    /**
-     * Create file name for resource bundle. The base name is prefixed with a
-     * "/" and postfixed with a ".properties".
-     * 
-     * @param baseName
-     *            Base name from which the file name is created.
-     * 
-     * @return file name for resource property file.
-     */
-    String createFileName(String baseName) {
-	// create file name
-	StringBuilder fileName = new StringBuilder();
-	fileName.append("/");
-	fileName.append(baseName);
-	fileName.append(".properties");
-	return fileName.toString();
-    }
-
-    /**
-     * Look up message formatter from cache. if formatter doesn't exist in cache
-     * the add to the cache.
-     * 
-     * @param key
-     *            Key which identifies message for which a formatter is created.
-     * 
-     * @return Message formatter for a message.
-     */
-    MessageFormat getMessageFormat(String key) {
-
-	// get message format
-	if (messageFormatCache.containsKey(key)) {
-	    return messageFormatCache.get(key);
+		return value;
 	}
 
-	// create message format
-	MessageFormat formatter = new MessageFormat(messages.getString(key));
-	formatter.setLocale(locale);
+	/**
+	 * Create file name for resource bundle. The base name is prefixed with a "/"
+	 * and postfixed with a ".properties".
+	 * 
+	 * @param baseName
+	 *            Base name from which the file name is created.
+	 * 
+	 * @return file name for resource property file.
+	 */
+	String createFileName(String baseName) {
+		// create file name
+		StringBuilder fileName = new StringBuilder();
+		fileName.append("/");
+		fileName.append(baseName);
+		fileName.append(".properties");
+		return fileName.toString();
+	}
 
-	// add format to cache
-	messageFormatCache.put(key, formatter);
+	/**
+	 * Look up message formatter from cache. if formatter doesn't exist in cache the
+	 * add to the cache.
+	 * 
+	 * @param key
+	 *            Key which identifies message for which a formatter is created.
+	 * 
+	 * @return Message formatter for a message.
+	 */
+	MessageFormat getMessageFormat(String key) {
 
-	return formatter;
-    }
+		// get message format
+		if (messageFormatCache.containsKey(key)) {
+			return messageFormatCache.get(key);
+		}
+
+		// create message format
+		MessageFormat formatter = new MessageFormat(messages.getString(key));
+		formatter.setLocale(locale);
+
+		// add format to cache
+		messageFormatCache.put(key, formatter);
+
+		return formatter;
+	}
 
 }

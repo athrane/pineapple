@@ -30,43 +30,43 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class SpringBeansUtils {
 
-    /**
-     * Get Spring context from class path.
-     * 
-     * @param applicationContext
-     *            Application context file name.
-     * 
-     * @return Spring context from class path.
-     */
-    public static ApplicationContext getApplicationContext(String applicationContext) {
-	String[] appConfigFile = new String[] { applicationContext };
-	return new ClassPathXmlApplicationContext(appConfigFile);
-    }
+	/**
+	 * Get Spring context from class path.
+	 * 
+	 * @param applicationContext
+	 *            Application context file name.
+	 * 
+	 * @return Spring context from class path.
+	 */
+	public static ApplicationContext getApplicationContext(String applicationContext) {
+		String[] appConfigFile = new String[] { applicationContext };
+		return new ClassPathXmlApplicationContext(appConfigFile);
+	}
 
-    /**
-     * Get Spring context from class path.
-     * 
-     * @param applicationContext
-     *            Application context file name.
-     * @param activeProfile
-     *            active spring profile.
-     * 
-     * @return Spring context from class path.
-     */
-    public static ApplicationContext getApplicationContext(String applicationContext, String activeProfile) {
-	String[] appConfigFile = new String[] { applicationContext };
-	ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(appConfigFile);
-	context.getEnvironment().setActiveProfiles(activeProfile);
-	return context;
-    }
+	/**
+	 * Get Spring context from class path.
+	 * 
+	 * @param applicationContext
+	 *            Application context file name.
+	 * @param activeProfile
+	 *            active spring profile.
+	 * 
+	 * @return Spring context from class path.
+	 */
+	public static ApplicationContext getApplicationContext(String applicationContext, String activeProfile) {
+		String[] appConfigFile = new String[] { applicationContext };
+		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(appConfigFile);
+		context.getEnvironment().setActiveProfiles(activeProfile);
+		return context;
+	}
 
-    /**
-     * Get bean which is initialized from Spring context.
-     * 
-     * @return bean initialized from Spring context.
-     */
-    public static Object getBean(ApplicationContext context, String beanId) {
-	return context.getBean(beanId);
-    }
+	/**
+	 * Get bean which is initialized from Spring context.
+	 * 
+	 * @return bean initialized from Spring context.
+	 */
+	public static Object getBean(ApplicationContext context, String beanId) {
+		return context.getBean(beanId);
+	}
 
 }

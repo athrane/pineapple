@@ -85,145 +85,144 @@ import com.alpha.pineapple.i18n.MessageProvider;
  * </p>
  */
 public class MarshallJAXBObjectsCommand implements Command {
-    
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Defines the file to marshall
-     * objects to.
-     */
-    public static final String FILE_KEY = "file";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Key used to identify property in context: Defines root of the object
-     * graph which should be marshalled.
-     */
-    public static final String ROOT_KEY = "root";
+	/**
+	 * Key used to identify property in context: Defines the file to marshall
+	 * objects to.
+	 */
+	public static final String FILE_KEY = "file";
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Key used to identify property in context: Defines root of the object graph
+	 * which should be marshalled.
+	 */
+	public static final String ROOT_KEY = "root";
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * File to marshall objects to.
-     */
-    @Initialize(FILE_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    File file;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    /**
-     * Root object in object graph which should be marshalled.
-     */
-    @Initialize(ROOT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    Object rootObject;
+	/**
+	 * File to marshall objects to.
+	 */
+	@Initialize(FILE_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	File file;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Root object in object graph which should be marshalled.
+	 */
+	@Initialize(ROOT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	Object rootObject;
 
-    public boolean execute(Context context) throws Exception {
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
 
-	// marshall
-	doMarshall();
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	// set successful result
-	return Command.CONTINUE_PROCESSING;
-    }
+		// marshall
+		doMarshall();
 
-    /**
-     * Marshall the file.
-     */
-    void doMarshall() {
-
-	// get package name
-	String packageName = rootObject.getClass().getPackage().getName();
-
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    Object[] args = { file.getAbsolutePath(), packageName };
-	    logger.debug(messageProvider.getMessage("mjoc.marshall_info", args));
+		// set successful result
+		return Command.CONTINUE_PROCESSING;
 	}
 
-	// define stream for exception handling
-	OutputStream os = null;
+	/**
+	 * Marshall the file.
+	 */
+	void doMarshall() {
 
-	try {
+		// get package name
+		String packageName = rootObject.getClass().getPackage().getName();
 
-	    // get parent directory
-	    File parent = file.getParentFile();
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			Object[] args = { file.getAbsolutePath(), packageName };
+			logger.debug(messageProvider.getMessage("mjoc.marshall_info", args));
+		}
 
-	    // create parent directories
-	    FileUtils.forceMkdir(parent);
-
-	    // create JAXB context
-	    JAXBContext jaxbContext = JAXBContext.newInstance(packageName);
-
-	    // create marshaller
-	    Marshaller marshaller = jaxbContext.createMarshaller();
-	    marshaller.setProperty("jaxb.formatted.output", Boolean.TRUE);
-
-	    // marshall
-	    os = new FileOutputStream(file);
-	    marshaller.marshal(rootObject, os);
-	    os.close();
-
-	} catch (Exception e) {
-
-	    // complete operation with error
-	    Object[] args = { e.getMessage() };
-	    executionResult.completeAsError(messageProvider, "mjoc.error", args, e);
-
-	} finally {
-	    // close OS
-	    if (os != null) {
+		// define stream for exception handling
+		OutputStream os = null;
 
 		try {
-		    os.close();
-		} catch (IOException e) {
 
-		    // fail if still executing
-		    if (executionResult.isExecuting()) {
+			// get parent directory
+			File parent = file.getParentFile();
+
+			// create parent directories
+			FileUtils.forceMkdir(parent);
+
+			// create JAXB context
+			JAXBContext jaxbContext = JAXBContext.newInstance(packageName);
+
+			// create marshaller
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.setProperty("jaxb.formatted.output", Boolean.TRUE);
+
+			// marshall
+			os = new FileOutputStream(file);
+			marshaller.marshal(rootObject, os);
+			os.close();
+
+		} catch (Exception e) {
 
 			// complete operation with error
-			executionResult.completeAsError(messageProvider, "mjoc.io_error", e);
-			return;
-		    } else {
+			Object[] args = { e.getMessage() };
+			executionResult.completeAsError(messageProvider, "mjoc.error", args, e);
 
-			// create message
-			String message = messageProvider.getMessage("mjoc.io_error");
+		} finally {
+			// close OS
+			if (os != null) {
 
-			// store the messages
-			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
-			executionResult.addMessage(ExecutionResult.MSG_STACKTRACE, StackTraceHelper.getStrackTrace(e));
-			return;
-		    }
+				try {
+					os.close();
+				} catch (IOException e) {
+
+					// fail if still executing
+					if (executionResult.isExecuting()) {
+
+						// complete operation with error
+						executionResult.completeAsError(messageProvider, "mjoc.io_error", e);
+						return;
+					} else {
+
+						// create message
+						String message = messageProvider.getMessage("mjoc.io_error");
+
+						// store the messages
+						executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+						executionResult.addMessage(ExecutionResult.MSG_STACKTRACE, StackTraceHelper.getStrackTrace(e));
+						return;
+					}
+				}
+			}
 		}
-	    }
-	}
 
-	// complete as success
-	if (executionResult.isExecuting()) {
-	    Object[] args = { file };
-	    executionResult.completeAsSuccessful(messageProvider, "mjoc.success", args);
+		// complete as success
+		if (executionResult.isExecuting()) {
+			Object[] args = { file };
+			executionResult.completeAsSuccessful(messageProvider, "mjoc.success", args);
+		}
 	}
-    }
 }

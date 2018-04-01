@@ -41,46 +41,46 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class NullVariablesBuilderImplIntegrationTest {
 
-    /**
-     * Empty string.
-     */
-    static final String EMPTY_STRING = "";
+	/**
+	 * Empty string.
+	 */
+	static final String EMPTY_STRING = "";
 
-    /**
-     * Null string.
-     */
-    static final String NULL_STRING = null;
+	/**
+	 * Null string.
+	 */
+	static final String NULL_STRING = null;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Test that variables construction return empty variables set.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetVariables() throws Exception {
-	NullVariablesBuilderImpl builder = new NullVariablesBuilderImpl();
-	Variables variables = builder.getVariables();
+	/**
+	 * Test that variables construction return empty variables set.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetVariables() throws Exception {
+		NullVariablesBuilderImpl builder = new NullVariablesBuilderImpl();
+		Variables variables = builder.getVariables();
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(0, map.size());
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(0, map.size());
+	}
 
 }

@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.testutils.jetty;
 
 import java.io.IOException;
@@ -40,87 +39,82 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 
 /**
- * Servlet filter which sets a JSESSIONID cookie if it isn't set 
- * in request.
+ * Servlet filter which sets a JSESSIONID cookie if it isn't set in request.
  */
 public class JSessionIdSetterFilter implements Filter {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-	
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	public void destroy() {
 	}
 
-	public void doFilter(ServletRequest request, ServletResponse response,
-			FilterChain chain) throws IOException, ServletException {
-		
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-        	StringBuilder message = new StringBuilder();
-        	message.append("Starting to filter request <");
-        	message.append( request);
-        	message.append(">.");	        	
-            logger.debug( message.toString() );
-        }		
-		
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Starting to filter request <");
+			message.append(request);
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
 		// exit if request isn't HTTP request
 		if (!(request instanceof HttpServletRequest)) {
 			chain.doFilter(request, response);
-			
-	        // log debug message
-	        if ( logger.isDebugEnabled() )
-	        {
-	        	StringBuilder message = new StringBuilder();
-	        	message.append("Successfully completed filtering of non HTTP request <");
-	        	message.append( request);
-	        	message.append(">.");	        	
-	            logger.debug( message.toString() );
-	        }		
-			
-			return;					
+
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder message = new StringBuilder();
+				message.append("Successfully completed filtering of non HTTP request <");
+				message.append(request);
+				message.append(">.");
+				logger.debug(message.toString());
+			}
+
+			return;
 		}
-		
+
 		// type cast request and response
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		HttpServletResponse httpResponse =  (HttpServletResponse) response;
-		
+		HttpServletResponse httpResponse = (HttpServletResponse) response;
+
 		if (!isSessionCookieDefined(httpRequest)) {
 
 			// create session
 			HttpSession session = httpRequest.getSession(true);
-		
+
 			// create cookie
 			Cookie cookie = new Cookie("JSESSIONID", session.getId());
-			
+
 			// add cookie
 			httpResponse.addCookie(cookie);
-			
-	        // log debug message
-	        if ( logger.isDebugEnabled() )
-	        {
-	        	StringBuilder message = new StringBuilder();
-	        	message.append("Added session cookie <");
-	        	message.append( ReflectionToStringBuilder.toString(cookie));	        	
-	        	message.append(">.");	        	
-	            logger.debug( message.toString() );
-	        }		
-			
-		}
-		
-        // log debug message
-        if ( logger.isDebugEnabled() )
-        {
-        	StringBuilder message = new StringBuilder();
-        	message.append("Successfully completed filtering of HTTP request <");
-        	message.append( request);
-        	message.append(">.");	        	
-            logger.debug( message.toString() );
-        }		
 
-		chain.doFilter(request, response);        
+			// log debug message
+			if (logger.isDebugEnabled()) {
+				StringBuilder message = new StringBuilder();
+				message.append("Added session cookie <");
+				message.append(ReflectionToStringBuilder.toString(cookie));
+				message.append(">.");
+				logger.debug(message.toString());
+			}
+
+		}
+
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Successfully completed filtering of HTTP request <");
+			message.append(request);
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
+		chain.doFilter(request, response);
 	}
 
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -129,7 +123,8 @@ public class JSessionIdSetterFilter implements Filter {
 	/**
 	 * Returns true if JSESSIONID cookie is defined in HTTP request.
 	 * 
-	 * @param request HTTP request.
+	 * @param request
+	 *            HTTP request.
 	 * 
 	 * @return true if JSESSIONID cookie is defined in HTTP request.
 	 */
@@ -140,21 +135,21 @@ public class JSessionIdSetterFilter implements Filter {
 
 		// if no cookies is set then return false
 		if (cookies == null) {
-			return false;			
+			return false;
 		}
 
-		// if no cookies is set then return false		
+		// if no cookies is set then return false
 		if (cookies.length == 0) {
 			return false;
-		}						
-	
-		for (Cookie cookie : cookies ) {
-			
+		}
+
+		for (Cookie cookie : cookies) {
+
 			if (cookie.getName().equals("JSESSIONID")) {
 				return true;
-			}						
+			}
 		}
-		
+
 		return true;
-	}	
+	}
 }

@@ -34,6 +34,6 @@ import com.alpha.pineapple.plugin.session.RetrySessionHandlerImpl;
 @Plugin()
 public class PluginImpl {
 
-    public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.exception.channeled";
+	public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.exception.channeled";
 
 }

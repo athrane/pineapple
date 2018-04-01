@@ -37,27 +37,27 @@ import com.alpha.testutils.TestUtilsTestConstants;
  */
 @PluginOperation(TestUtilsTestConstants.helloWorldOperation)
 public class HelloWorldOperationImpl implements Operation {
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-	// log debug message
-	if (logger.isDebugEnabled()) {
-	    StringBuilder message = new StringBuilder();
-	    message.append("Operation invoked with content <");
-	    message.append(content);
-	    message.append("> and session <");
-	    message.append(session);
-	    message.append(">.");
-	    logger.debug(message.toString());
+	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder message = new StringBuilder();
+			message.append("Operation invoked with content <");
+			message.append(content);
+			message.append("> and session <");
+			message.append(session);
+			message.append(">.");
+			logger.debug(message.toString());
+		}
+
+		logger.info("Hello world");
+
+		// compute execution state from children
+		result.setState(ExecutionState.SUCCESS);
 	}
-
-	logger.info("Hello world");
-
-	// compute execution state from children
-	result.setState(ExecutionState.SUCCESS);
-    }
 
 }

@@ -55,8 +55,8 @@ import com.alpha.pineapple.plugin.agent.utils.RestResponseException;
  * context:
  * 
  * <ul>
- * <li><code>name</code> defines the name of the scheduled operation. The type is
- * <code>java.lang.String</code>.</li>
+ * <li><code>name</code> defines the name of the scheduled operation. The type
+ * is <code>java.lang.String</code>.</li>
  * 
  * <li><code>module</code> defines the name of the module scheduled for
  * execution. The type is <code>java.lang.String</code>.</li>
@@ -99,146 +99,144 @@ import com.alpha.pineapple.plugin.agent.utils.RestResponseException;
  */
 public class ScheduleOperationCommand implements Command {
 
-    /**
-     * Key used to identify property in context: Name of the scheduled operation.
-     */
-    public static final String NAME_KEY = "name";
+	/**
+	 * Key used to identify property in context: Name of the scheduled operation.
+	 */
+	public static final String NAME_KEY = "name";
 
-    /**
-     * Key used to identify property in context: Module.
-     */
-    public static final String MODULE_KEY = "module";
+	/**
+	 * Key used to identify property in context: Module.
+	 */
+	public static final String MODULE_KEY = "module";
 
-    /**
-     * Key used to identify property in context: Environment.
-     */
-    public static final String ENVIRONMENT_KEY = "environment";
+	/**
+	 * Key used to identify property in context: Environment.
+	 */
+	public static final String ENVIRONMENT_KEY = "environment";
 
-    /**
-     * Key used to identify property in context: Operation.
-     */
-    public static final String OPERATION_KEY = "operation";
+	/**
+	 * Key used to identify property in context: Operation.
+	 */
+	public static final String OPERATION_KEY = "operation";
 
-    /**
-     * Key used to identify property in context: Scheduling expression using
-     * Cron syntax.
-     */
-    public static final String SCHEDULING_EXPRESSION_KEY = "scheduling-expression";
+	/**
+	 * Key used to identify property in context: Scheduling expression using Cron
+	 * syntax.
+	 */
+	public static final String SCHEDULING_EXPRESSION_KEY = "scheduling-expression";
 
-    /**
-     * Key used to identify property in context: Description.
-     */
-    public static final String DESCRIPTION_KEY = "description";
+	/**
+	 * Key used to identify property in context: Description.
+	 */
+	public static final String DESCRIPTION_KEY = "description";
 
-    /**
-     * Key used to identify property in context: plugin session object.
-     */
-    public static final String SESSION_KEY = "session";
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
+	public static final String SESSION_KEY = "session";
 
-    /**
-     * Key used to identify property in context: Contains execution result
-     * object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
-    /**
-     * Scheduled operation name.
-     */
-    @Initialize(NAME_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    String name;
+	/**
+	 * Scheduled operation name.
+	 */
+	@Initialize(NAME_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String name;
 
-    /**
-     * Scheduled module.
-     */
-    @Initialize(MODULE_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    String module;
+	/**
+	 * Scheduled module.
+	 */
+	@Initialize(MODULE_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String module;
 
-    /**
-     * Environment name.
-     */
-    @Initialize(ENVIRONMENT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    String environment;
+	/**
+	 * Environment name.
+	 */
+	@Initialize(ENVIRONMENT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String environment;
 
-    /**
-     * Operation.
-     */
-    @Initialize(OPERATION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    String operation;
+	/**
+	 * Operation.
+	 */
+	@Initialize(OPERATION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String operation;
 
-    /**
-     * Scheduling expression.
-     */
-    @Initialize(SCHEDULING_EXPRESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    String schedulingExpression;
+	/**
+	 * Scheduling expression.
+	 */
+	@Initialize(SCHEDULING_EXPRESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String schedulingExpression;
 
-    /**
-     * Description.
-     */
-    @Initialize(DESCRIPTION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_EMPTY)
-    String description;
+	/**
+	 * Description.
+	 */
+	@Initialize(DESCRIPTION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String description;
 
-    /**
-     * Plugin session.
-     */
-    @Initialize(SESSION_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    AgentSession session;
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	AgentSession session;
 
-    /**
-     * Defines execution result object.
-     */
-    @Initialize(EXECUTIONRESULT_KEY)
-    @ValidateValue(ValidationPolicy.NOT_NULL)
-    ExecutionResult executionResult;
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
 
-    public boolean execute(Context context) throws Exception {
-	// initialize command
-	CommandInitializer initializer = new CommandInitializerImpl();
-	initializer.initialize(context, this);
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
 
-	try {
+		try {
 
-	    UriComponents uriComponents = UriComponentsBuilder.fromUriString(SCHEDULE_OPERATION_URI).build()
-		    .expand(name, module, environment, operation, schedulingExpression, description).encode();
-	    String serviceUrl = session.createServiceUrl(uriComponents.toUriString());
-	    session.addServiceUrlMessage(serviceUrl, executionResult);
+			UriComponents uriComponents = UriComponentsBuilder.fromUriString(SCHEDULE_OPERATION_URI).build()
+					.expand(name, module, environment, operation, schedulingExpression, description).encode();
+			String serviceUrl = session.createServiceUrl(uriComponents.toUriString());
+			session.addServiceUrlMessage(serviceUrl, executionResult);
 
-	    // create URL variables
-	    MultiValueMap<String, Object> urlVariables = new LinkedMultiValueMap<String, Object>();
+			// create URL variables
+			MultiValueMap<String, Object> urlVariables = new LinkedMultiValueMap<String, Object>();
 
-	    // post
-	    session.httpPost(serviceUrl, urlVariables);
+			// post
+			session.httpPost(serviceUrl, urlVariables);
 
-	    // complete result
-	    executionResult.completeAsSuccessful(messageProvider, "soc.schedule_operation_completed");
+			// complete result
+			executionResult.completeAsSuccessful(messageProvider, "soc.schedule_operation_completed");
 
-	    return Command.CONTINUE_PROCESSING;
+			return Command.CONTINUE_PROCESSING;
 
-	} catch (RestResponseException e) {
-	    executionResult.addMessage("HTTP Headers", e.getHeaders().toString());
-	    executionResult.addMessage("HTTP Status Code", e.getStatusCode().toString());
-	    executionResult.addMessage("HTTP Body", e.getBody());
-	    executionResult.completeAsError(messageProvider, "soc.error", e);
-	    return Command.CONTINUE_PROCESSING;
+		} catch (RestResponseException e) {
+			executionResult.addMessage("HTTP Headers", e.getHeaders().toString());
+			executionResult.addMessage("HTTP Status Code", e.getStatusCode().toString());
+			executionResult.addMessage("HTTP Body", e.getBody());
+			executionResult.completeAsError(messageProvider, "soc.error", e);
+			return Command.CONTINUE_PROCESSING;
 
+		} catch (Exception e) {
+			executionResult.completeAsError(messageProvider, "soc.error", e);
+			return Command.CONTINUE_PROCESSING;
+		}
 
-	} catch (Exception e) {
-	    executionResult.completeAsError(messageProvider, "soc.error", e);
-	    return Command.CONTINUE_PROCESSING;
 	}
-
-    }
 
 }

@@ -30,6 +30,6 @@ import com.alpha.pineapple.plugin.Plugin;
 @Plugin()
 public class NoOperationsPluginImpl {
 
-    public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.nooperations";
+	public static final String PLUGIN_ID = "com.alpha.testutils.testplugins.nooperations";
 
 }

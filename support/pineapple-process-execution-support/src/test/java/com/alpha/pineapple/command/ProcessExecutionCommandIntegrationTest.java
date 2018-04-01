@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.command;
 
 import static org.junit.Assert.assertEquals;
@@ -56,13 +55,13 @@ public class ProcessExecutionCommandIntegrationTest {
 	/**
 	 * Expected number of results.
 	 */
-    static final int EXPECTED_RESULTS = 6;
-	
+	static final int EXPECTED_RESULTS = 6;
+
 	/**
 	 * NULL time out value.
 	 */
 	static final Long NULL_TIMEOUT = null;
-	
+
 	/**
 	 * Object under test.
 	 */
@@ -82,21 +81,21 @@ public class ProcessExecutionCommandIntegrationTest {
 	/**
 	 * Execution result.
 	 */
-	ExecutionResult executionResult;    
-	
+	ExecutionResult executionResult;
+
 	/**
-	 * Script mother. 
+	 * Script mother.
 	 */
-	ObjectMotherScript mother = new ObjectMotherScript(); 
-	
+	ObjectMotherScript mother = new ObjectMotherScript();
+
 	@Before
 	public void setUp() throws Exception {
-		
+
 		// context
 		context = new ContextBase();
-		
-        // create execution result
-		executionResult = new ExecutionResultImpl( "Root result" );		
+
+		// create execution result
+		executionResult = new ExecutionResultImpl("Root result");
 	}
 
 	@After
@@ -115,224 +114,225 @@ public class ProcessExecutionCommandIntegrationTest {
 	/**
 	 * Test that process can be executed.
 	 * 
-	 * @throws Exception If test fails
+	 * @throws Exception
+	 *             If test fails
 	 */
 	@Test
 	public void testCanExecuteProcess() throws Exception {
-		
-		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/test");				
-		String[] arguments = {};		
-		
-    	// create execution result        	
-    	ExecutionResult childResult = executionResult.addChild("Execute external process.");        	
-				
+
+		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/test");
+		String[] arguments = {};
+
+		// create execution result
+		ExecutionResult childResult = executionResult.addChild("Execute external process.");
+
 		// configure context
 		context.put(ProcessExecutionCommand.EXECUTABLE_KEY, testscript.toString());
 		context.put(ProcessExecutionCommand.ARGUMENTS_KEY, arguments);
-		context.put(ProcessExecutionCommand.TIMEOUT_KEY, NULL_TIMEOUT);		
-		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult );
-		
+		context.put(ProcessExecutionCommand.TIMEOUT_KEY, NULL_TIMEOUT);
+		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult);
+
 		// execute command
 		processExecutionCommand.execute(context);
-				
-        // test
-        assertEquals( ExecutionState.SUCCESS, childResult.getState());
-        assertEquals( EXPECTED_RESULTS, childResult.getMessages().size());
-		
-        Map<String, String> messages = childResult.getMessages();		
-        assertEquals("TEST..", messages.get("Standard Out")); 
+
+		// test
+		assertEquals(ExecutionState.SUCCESS, childResult.getState());
+		assertEquals(EXPECTED_RESULTS, childResult.getMessages().size());
+
+		Map<String, String> messages = childResult.getMessages();
+		assertEquals("TEST..", messages.get("Standard Out"));
 	}
-	
+
 	/**
-	 * Test that process can be execution fails if
-	 * executable is unknown
+	 * Test that process can be execution fails if executable is unknown
 	 * 
-	 * @throws Exception If test fails
+	 * @throws Exception
+	 *             If test fails
 	 */
 	@Test
 	public void testCanExecutionFailsIfExecutableIsUnknown() throws Exception {
-		
-		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/unknown-test");				
-		String[] arguments = {};		
-		
-    	// create execution result        	
-    	ExecutionResult childResult = executionResult.addChild("Execute external process.");        	
-				
+
+		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/unknown-test");
+		String[] arguments = {};
+
+		// create execution result
+		ExecutionResult childResult = executionResult.addChild("Execute external process.");
+
 		// configure context
 		context.put(ProcessExecutionCommand.EXECUTABLE_KEY, testscript.toString());
 		context.put(ProcessExecutionCommand.ARGUMENTS_KEY, arguments);
-		context.put(ProcessExecutionCommand.TIMEOUT_KEY, NULL_TIMEOUT);				
-		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult );
-		
+		context.put(ProcessExecutionCommand.TIMEOUT_KEY, NULL_TIMEOUT);
+		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult);
+
 		// execute command
 		processExecutionCommand.execute(context);
-				
-        // test
-        assertEquals( ExecutionState.ERROR, childResult.getState());
-        assertEquals( EXPECTED_RESULTS, childResult.getMessages().size());
-		
-        Map<String, String> messages = childResult.getMessages();		
-        assertEquals("", messages.get("Standard Out")); 
+
+		// test
+		assertEquals(ExecutionState.ERROR, childResult.getState());
+		assertEquals(EXPECTED_RESULTS, childResult.getMessages().size());
+
+		Map<String, String> messages = childResult.getMessages();
+		assertEquals("", messages.get("Standard Out"));
 	}
 
 	/**
 	 * Test that process can be executed with single argument
 	 * 
-	 * @throws Exception If test fails
+	 * @throws Exception
+	 *             If test fails
 	 */
 	@Test
 	public void testCanExecuteProcessWithSingleArgument() throws Exception {
-		
-		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/test");				
-		String[] arguments = {"ARG1" };		
-		
-    	// create execution result        	
-    	ExecutionResult childResult = executionResult.addChild("Execute external process.");        	
-				
+
+		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/test");
+		String[] arguments = { "ARG1" };
+
+		// create execution result
+		ExecutionResult childResult = executionResult.addChild("Execute external process.");
+
 		// configure context
 		context.put(ProcessExecutionCommand.EXECUTABLE_KEY, testscript.toString());
 		context.put(ProcessExecutionCommand.ARGUMENTS_KEY, arguments);
-		context.put(ProcessExecutionCommand.TIMEOUT_KEY, NULL_TIMEOUT);				
-		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult );
-		
+		context.put(ProcessExecutionCommand.TIMEOUT_KEY, NULL_TIMEOUT);
+		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult);
+
 		// execute command
 		processExecutionCommand.execute(context);
-				
-        // test
-        assertEquals( ExecutionState.SUCCESS, childResult.getState());
-        assertEquals( EXPECTED_RESULTS, childResult.getMessages().size());
-		
-        Map<String, String> messages = childResult.getMessages();		
-        assertEquals("TEST..ARG1", messages.get("Standard Out")); 
+
+		// test
+		assertEquals(ExecutionState.SUCCESS, childResult.getState());
+		assertEquals(EXPECTED_RESULTS, childResult.getMessages().size());
+
+		Map<String, String> messages = childResult.getMessages();
+		assertEquals("TEST..ARG1", messages.get("Standard Out"));
 	}
 
 	/**
-	 * Test that process is killed after 5000ms if 
-	 * no time out value is defined.
+	 * Test that process is killed after 5000ms if no time out value is defined.
 	 * 
-	 * @throws Exception If test fails
+	 * @throws Exception
+	 *             If test fails
 	 */
 	@Test
 	public void testProcessIsKilledAfter5000msByDefault() throws Exception {
-		
-		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/forever");				
-		String[] arguments = {};		
-		
-    	// create execution result        	
-    	ExecutionResult childResult = executionResult.addChild("Execute external process.");        	
-				
+
+		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/forever");
+		String[] arguments = {};
+
+		// create execution result
+		ExecutionResult childResult = executionResult.addChild("Execute external process.");
+
 		// configure context
 		context.put(ProcessExecutionCommand.EXECUTABLE_KEY, testscript.toString());
 		context.put(ProcessExecutionCommand.ARGUMENTS_KEY, arguments);
-		context.put(ProcessExecutionCommand.TIMEOUT_KEY, NULL_TIMEOUT);				
-		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult );
-		
+		context.put(ProcessExecutionCommand.TIMEOUT_KEY, NULL_TIMEOUT);
+		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult);
+
 		// execute command
 		processExecutionCommand.execute(context);
-				
-        // test
-        assertEquals( ExecutionState.ERROR, childResult.getState());
-        assertEquals( EXPECTED_RESULTS, childResult.getMessages().size());
-		
-        Map<String, String> messages = childResult.getMessages();		
-        assertEquals("x.\r\nx.\r\nx.\r\nx.\r\nx.", messages.get("Standard Out")); 
+
+		// test
+		assertEquals(ExecutionState.ERROR, childResult.getState());
+		assertEquals(EXPECTED_RESULTS, childResult.getMessages().size());
+
+		Map<String, String> messages = childResult.getMessages();
+		assertEquals("x.\r\nx.\r\nx.\r\nx.\r\nx.", messages.get("Standard Out"));
 	}
 
 	/**
-	 * Test that process is killed after 5000ms if 
-	 * 0 ms out value is defined.
+	 * Test that process is killed after 5000ms if 0 ms out value is defined.
 	 * 
-	 * @throws Exception If test fails
+	 * @throws Exception
+	 *             If test fails
 	 */
 	@Test
 	public void testProcessIsKilledAfter5000msIf0msIsDefined() throws Exception {
-		
-		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/forever");				
-		String[] arguments = {};		
-		
-    	// create execution result        	
-    	ExecutionResult childResult = executionResult.addChild("Execute external process.");        	
-				
+
+		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/forever");
+		String[] arguments = {};
+
+		// create execution result
+		ExecutionResult childResult = executionResult.addChild("Execute external process.");
+
 		// configure context
 		context.put(ProcessExecutionCommand.EXECUTABLE_KEY, testscript.toString());
 		context.put(ProcessExecutionCommand.ARGUMENTS_KEY, arguments);
-		context.put(ProcessExecutionCommand.TIMEOUT_KEY, new Long(0));				
-		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult );
-		
+		context.put(ProcessExecutionCommand.TIMEOUT_KEY, new Long(0));
+		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult);
+
 		// execute command
 		processExecutionCommand.execute(context);
-				
-        // test
-        assertEquals( ExecutionState.ERROR, childResult.getState());
-        assertEquals( EXPECTED_RESULTS, childResult.getMessages().size());
-		
-        Map<String, String> messages = childResult.getMessages();		
-        assertEquals("x.\r\nx.\r\nx.\r\nx.\r\nx.", messages.get("Standard Out")); 
-	}
-	
-	
-	/**
-	 * Test that process is killed after 1000ms if 
-	 * time out value is defined.
-	 * 
-	 * @throws Exception If test fails
-	 */
-	@Test
-	public void testProcessIsKilledAfter1000ms() throws Exception {
-		
-		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/forever");				
-		String[] arguments = {};		
-		
-    	// create execution result        	
-    	ExecutionResult childResult = executionResult.addChild("Execute external process.");        	
-				
-		// configure context
-		context.put(ProcessExecutionCommand.EXECUTABLE_KEY, testscript.toString());
-		context.put(ProcessExecutionCommand.ARGUMENTS_KEY, arguments);
-		context.put(ProcessExecutionCommand.TIMEOUT_KEY, new Long(1000));				
-		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult );
-		
-		// execute command
-		processExecutionCommand.execute(context);
-				
-        // test
-        assertEquals( ExecutionState.ERROR, childResult.getState());
-        assertEquals( EXPECTED_RESULTS, childResult.getMessages().size());
-		
-        Map<String, String> messages = childResult.getMessages();		
-        assertEquals("x.", messages.get("Standard Out")); 
+
+		// test
+		assertEquals(ExecutionState.ERROR, childResult.getState());
+		assertEquals(EXPECTED_RESULTS, childResult.getMessages().size());
+
+		Map<String, String> messages = childResult.getMessages();
+		assertEquals("x.\r\nx.\r\nx.\r\nx.\r\nx.", messages.get("Standard Out"));
 	}
 
 	/**
-	 * Test that process is killed after 5000ms if 
-	 * time out value is defined.
+	 * Test that process is killed after 1000ms if time out value is defined.
 	 * 
-	 * @throws Exception If test fails
+	 * @throws Exception
+	 *             If test fails
 	 */
 	@Test
-	public void testProcessIsKilledAfter5000ms() throws Exception {
-		
-		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/forever");				
-		String[] arguments = {};		
-		
-    	// create execution result        	
-    	ExecutionResult childResult = executionResult.addChild("Execute external process.");        	
-				
+	public void testProcessIsKilledAfter1000ms() throws Exception {
+
+		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/forever");
+		String[] arguments = {};
+
+		// create execution result
+		ExecutionResult childResult = executionResult.addChild("Execute external process.");
+
 		// configure context
 		context.put(ProcessExecutionCommand.EXECUTABLE_KEY, testscript.toString());
 		context.put(ProcessExecutionCommand.ARGUMENTS_KEY, arguments);
-		context.put(ProcessExecutionCommand.TIMEOUT_KEY, new Long(5000));				
-		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult );
-		
+		context.put(ProcessExecutionCommand.TIMEOUT_KEY, new Long(1000));
+		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult);
+
 		// execute command
 		processExecutionCommand.execute(context);
-				
-        // test
-        assertEquals( ExecutionState.ERROR, childResult.getState());
-        assertEquals( EXPECTED_RESULTS, childResult.getMessages().size());
-		
-        Map<String, String> messages = childResult.getMessages();		
-        assertEquals("x.\r\nx.\r\nx.\r\nx.\r\nx.", messages.get("Standard Out"));  
+
+		// test
+		assertEquals(ExecutionState.ERROR, childResult.getState());
+		assertEquals(EXPECTED_RESULTS, childResult.getMessages().size());
+
+		Map<String, String> messages = childResult.getMessages();
+		assertEquals("x.", messages.get("Standard Out"));
 	}
-	
+
+	/**
+	 * Test that process is killed after 5000ms if time out value is defined.
+	 * 
+	 * @throws Exception
+	 *             If test fails
+	 */
+	@Test
+	public void testProcessIsKilledAfter5000ms() throws Exception {
+
+		File testscript = mother.resolveOsSpecificScriptName(testScriptsDir + "/forever");
+		String[] arguments = {};
+
+		// create execution result
+		ExecutionResult childResult = executionResult.addChild("Execute external process.");
+
+		// configure context
+		context.put(ProcessExecutionCommand.EXECUTABLE_KEY, testscript.toString());
+		context.put(ProcessExecutionCommand.ARGUMENTS_KEY, arguments);
+		context.put(ProcessExecutionCommand.TIMEOUT_KEY, new Long(5000));
+		context.put(ProcessExecutionCommand.EXECUTIONRESULT_KEY, childResult);
+
+		// execute command
+		processExecutionCommand.execute(context);
+
+		// test
+		assertEquals(ExecutionState.ERROR, childResult.getState());
+		assertEquals(EXPECTED_RESULTS, childResult.getMessages().size());
+
+		Map<String, String> messages = childResult.getMessages();
+		assertEquals("x.\r\nx.\r\nx.\r\nx.\r\nx.", messages.get("Standard Out"));
+	}
+
 }

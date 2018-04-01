@@ -58,106 +58,105 @@ import com.alpha.pineapple.web.report.ReportRepository;
  */
 public class WebAppCoreFactory {
 
-    /**
-     * Logger object
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Pineapple core factory.
-     */
-    @Resource
-    CoreFactory coreFactory;
+	/**
+	 * Pineapple core factory.
+	 */
+	@Resource
+	CoreFactory coreFactory;
 
-    /**
-     * Web application result listener.
-     */
-    @Resource
-    ResultListener webAppResultListener;
+	/**
+	 * Web application result listener.
+	 */
+	@Resource
+	ResultListener webAppResultListener;
 
-    /**
-     * Reactor.
-     */
-    @Resource
-    Reactor webAppReactor;
+	/**
+	 * Reactor.
+	 */
+	@Resource
+	Reactor webAppReactor;
 
-    /**
-     * Activity repository.
-     */
-    @Resource
-    ActivityRepository activityRepository;
+	/**
+	 * Activity repository.
+	 */
+	@Resource
+	ActivityRepository activityRepository;
 
-    /**
-     * Report repository.
-     */
-    @Resource
-    ReportRepository reportRepository;
+	/**
+	 * Report repository.
+	 */
+	@Resource
+	ReportRepository reportRepository;
 
-    /**
-     * Create report reactor consumer.
-     */
-    @Resource
-    Consumer<Event<ExecutionResultNotification>> createReport;
+	/**
+	 * Create report reactor consumer.
+	 */
+	@Resource
+	Consumer<Event<ExecutionResultNotification>> createReport;
 
-    /**
-     * Combined reactor consumer and ZK event listener.
-     */
-    @Resource
-    CreatedReportNotifierImpl createdReportNotification;
+	/**
+	 * Combined reactor consumer and ZK event listener.
+	 */
+	@Resource
+	CreatedReportNotifierImpl createdReportNotification;
 
-    /**
-     * Combined reactor consumer and ZK event listener.
-     */
-    @Resource
-    OpenModuleActivityInvokerImpl openModuleActivityInvoker;
+	/**
+	 * Combined reactor consumer and ZK event listener.
+	 */
+	@Resource
+	OpenModuleActivityInvokerImpl openModuleActivityInvoker;
 
-    /**
-     * Combined reactor consumer and ZK event listener.
-     */
-    @Resource
-    ExecuteOperationActivityInvokerImpl executeOperationActivityInvoker;
+	/**
+	 * Combined reactor consumer and ZK event listener.
+	 */
+	@Resource
+	ExecuteOperationActivityInvokerImpl executeOperationActivityInvoker;
 
-    /**
-     * Combined reactor consumer and ZK event listener.
-     */
-    @Resource
-    ResultNotificationNotifierImpl resultNotificationNotifier;
+	/**
+	 * Combined reactor consumer and ZK event listener.
+	 */
+	@Resource
+	ResultNotificationNotifierImpl resultNotificationNotifier;
 
-    /**
-     * Create Pineapple core instance.
-     * 
-     * Registers Reactor consumers and configures the core component with a
-     * result listener {@linkplain WebAppResultListenerImpl} which forwards
-     * Pineapple events {@linkplain ExecutionResultNotification} as Reactor
-     * events.
-     *
-     * @return new Pineapple core instance.
-     * 
-     * @throws CoreException
-     *             If core instance creation fails.
-     */
-    public PineappleCore createCore() throws CoreException {
+	/**
+	 * Create Pineapple core instance.
+	 * 
+	 * Registers Reactor consumers and configures the core component with a result
+	 * listener {@linkplain WebAppResultListenerImpl} which forwards Pineapple
+	 * events {@linkplain ExecutionResultNotification} as Reactor events.
+	 *
+	 * @return new Pineapple core instance.
+	 * 
+	 * @throws CoreException
+	 *             If core instance creation fails.
+	 */
+	public PineappleCore createCore() throws CoreException {
 
-	// register Reactor consumers
-	webAppReactor.getConsumerRegistry().clear();
-	webAppReactor.on($(REACTOR_TOPIC_SERVICE_NOTIFICATION), createReport);
-	webAppReactor.on($(REACTOR_TOPIC_SERVICE_NOTIFICATION), resultNotificationNotifier);	
-	webAppReactor.on($(REACTOR_TOPIC_SERVICE_CREATED_REPORT), createdReportNotification);
-	webAppReactor.on(T(OpenModuleActivity.class), openModuleActivityInvoker);
-	webAppReactor.on(T(ExecuteOperationActivity.class), executeOperationActivityInvoker);
+		// register Reactor consumers
+		webAppReactor.getConsumerRegistry().clear();
+		webAppReactor.on($(REACTOR_TOPIC_SERVICE_NOTIFICATION), createReport);
+		webAppReactor.on($(REACTOR_TOPIC_SERVICE_NOTIFICATION), resultNotificationNotifier);
+		webAppReactor.on($(REACTOR_TOPIC_SERVICE_CREATED_REPORT), createdReportNotification);
+		webAppReactor.on(T(OpenModuleActivity.class), openModuleActivityInvoker);
+		webAppReactor.on(T(ExecuteOperationActivity.class), executeOperationActivityInvoker);
 
-	// initialize activity repository
-	activityRepository.initialize();
+		// initialize activity repository
+		activityRepository.initialize();
 
-	// create core and register event listener
-	ResultListener[] listeners = { webAppResultListener };
-	PineappleCore coreComponent = coreFactory.createCore(listeners);
+		// create core and register event listener
+		ResultListener[] listeners = { webAppResultListener };
+		PineappleCore coreComponent = coreFactory.createCore(listeners);
 
-	// initialize report repository
-	ExecutionResult result = new ExecutionResultImpl("Initialize report repository");
-	reportRepository.initialize(result);
+		// initialize report repository
+		ExecutionResult result = new ExecutionResultImpl("Initialize report repository");
+		reportRepository.initialize(result);
 
-	return coreComponent;
-    }
+		return coreComponent;
+	}
 
 }

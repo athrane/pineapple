@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.agent.command;
 
 import static com.alpha.pineapple.plugin.agent.AgentConstants.CREATE_ENVIRONMENT_URI;
@@ -43,118 +42,121 @@ import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.plugin.agent.session.AgentSession;
 
 /**
- * <p>Implementation of the <code>org.apache.commons.chain.Command</code> interface which 
- * creates a environment for resources and credentials.
+ * <p>
+ * Implementation of the <code>org.apache.commons.chain.Command</code> interface
+ * which creates a environment for resources and credentials.
  * 
- * <p>Precondition for execution of the command is definition of these keys in 
- * the context:
+ * <p>
+ * Precondition for execution of the command is definition of these keys in the
+ * context:
  * 
  * <ul>
- * <li><code>environment</code> defines the name of the environment. The type is 
+ * <li><code>environment</code> defines the name of the environment. The type is
  * <code>java.lang.String</code>.</li>
  * 
- * <li><code>description</code> defines a description of environment. The type is 
- * <code>int[]</code>.</li>
+ * <li><code>description</code> defines a description of environment. The type
+ * is <code>int[]</code>.</li>
  * 
- * <li><code>session</code> defines the agent session used communicate with an agent. 
- * The type is <code>com.alpha.pineapple.plugin.agent.session.AgentSession</code>.</li>
+ * <li><code>session</code> defines the agent session used communicate with an
+ * agent. The type is
+ * <code>com.alpha.pineapple.plugin.agent.session.AgentSession</code>.</li>
  * 
- * <li><code>execution-result</code> contains execution result object which collects
- * information about the execution of the test. The type is 
- * <code>com.alpha.pineapple.plugin.execution.ExecutionResult</code>.</li>   
+ * <li><code>execution-result</code> contains execution result object which
+ * collects information about the execution of the test. The type is
+ * <code>com.alpha.pineapple.plugin.execution.ExecutionResult</code>.</li>
  * </ul>
- * </p>      
+ * </p>
  * 
- * <p>Postcondition after execution of the command is: 
+ * <p>
+ * Postcondition after execution of the command is:
  * 
- * <ul> 
+ * <ul>
  * <li>The the state of the supplied <code>ExecutionResult</code> is updated
- * with <code>ExecutionState.SUCCESS</code> if the test succeeded. If the 
- * test failed then the <code>ExecutionState.FAILURE</code> is returned.</li>
- * <li>If the test fails due to an exception then the exception isn't caught, 
- * but passed on the the invoker whose responsibility it is to catch it and update 
- * the <code>ExecutionResult</code> with the state <code>ExecutionState.ERROR</code>.
- * </li>
- * </ul>  
- * </p>           
+ * with <code>ExecutionState.SUCCESS</code> if the test succeeded. If the test
+ * failed then the <code>ExecutionState.FAILURE</code> is returned.</li>
+ * <li>If the test fails due to an exception then the exception isn't caught,
+ * but passed on the the invoker whose responsibility it is to catch it and
+ * update the <code>ExecutionResult</code> with the state
+ * <code>ExecutionState.ERROR</code>.</li>
+ * </ul>
+ * </p>
  */
 public class CreateEnvironmentCommand implements Command {
 
-    /**
-     * Key used to identify property in context: Name of the environment.
-     */
-    public static final String ENVIRONMENT_KEY = "environment";
+	/**
+	 * Key used to identify property in context: Name of the environment.
+	 */
+	public static final String ENVIRONMENT_KEY = "environment";
 
-    /**
-     * Key used to identify property in context: Description of the environment.
-     */
-    public static final String DESCRIPTION_KEY = "description";
-    
-    /**
-     * Key used to identify property in context: plugin session object.
-     */    
+	/**
+	 * Key used to identify property in context: Description of the environment.
+	 */
+	public static final String DESCRIPTION_KEY = "description";
+
+	/**
+	 * Key used to identify property in context: plugin session object.
+	 */
 	public static final String SESSION_KEY = "session";
-    
-    /**
-     * Key used to identify property in context: Contains execution result object,.
-     */
-    public static final String EXECUTIONRESULT_KEY = "execution-result";
-    
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger( this.getClass().getName() );
-        
-    /**
-     * Environment name.
-     */
-    @Initialize( ENVIRONMENT_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )        
-    String environment;
 
-    /**
-     * Environment description.
-     */
-    @Initialize( DESCRIPTION_KEY )
-    @ValidateValue( ValidationPolicy.NOT_EMPTY )        
-    String description;
-    
-    /**
-     * Plugin session.
-     */
-    @Initialize( SESSION_KEY )
-    @ValidateValue( ValidationPolicy.NOT_NULL )        
-    AgentSession session;
-    
-    /**
-     * Defines execution result object.
-     */
-    @Initialize( EXECUTIONRESULT_KEY )
-    @ValidateValue( ValidationPolicy.NOT_NULL )    
-    ExecutionResult executionResult;
-                
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource
-    MessageProvider messageProvider;
-            
-    public boolean execute( Context context ) throws Exception
-    {        
-        // initialize command
-        CommandInitializer initializer = new CommandInitializerImpl();
-        initializer.initialize( context, this );
-        
-		// create URL variables		
+	/**
+	 * Key used to identify property in context: Contains execution result object,.
+	 */
+	public static final String EXECUTIONRESULT_KEY = "execution-result";
+
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
+	/**
+	 * Environment name.
+	 */
+	@Initialize(ENVIRONMENT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String environment;
+
+	/**
+	 * Environment description.
+	 */
+	@Initialize(DESCRIPTION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_EMPTY)
+	String description;
+
+	/**
+	 * Plugin session.
+	 */
+	@Initialize(SESSION_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	AgentSession session;
+
+	/**
+	 * Defines execution result object.
+	 */
+	@Initialize(EXECUTIONRESULT_KEY)
+	@ValidateValue(ValidationPolicy.NOT_NULL)
+	ExecutionResult executionResult;
+
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource
+	MessageProvider messageProvider;
+
+	public boolean execute(Context context) throws Exception {
+		// initialize command
+		CommandInitializer initializer = new CommandInitializerImpl();
+		initializer.initialize(context, this);
+
+		// create URL variables
 		MultiValueMap<String, Object> urlVariables = new LinkedMultiValueMap<String, Object>();
-		
+
 		// post
 		session.httpPost(CREATE_ENVIRONMENT_URI, urlVariables);
-		
+
 		// complete result
-		executionResult.completeAsSuccessful(messageProvider, "cec.create_environment_completed");		
-        
-        return Command.CONTINUE_PROCESSING;        
-    }
-    		
+		executionResult.completeAsSuccessful(messageProvider, "cec.create_environment_completed");
+
+		return Command.CONTINUE_PROCESSING;
+	}
+
 }

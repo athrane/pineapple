@@ -57,326 +57,326 @@ import com.alpha.testutils.DockerTestHelper;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.docker-config.xml" })
 public class TestContainerCommandSystemTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command testContainerCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command testContainerCommand;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Docker session.
-     */
-    DockerSession session;
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
 
-    /**
-     * Docker helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
+	/**
+	 * Docker helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
 
-    /**
-     * Docker info objects builder.
-     */
-    @Resource
-    InfoBuilder dockerInfoBuilder;
+	/**
+	 * Docker info objects builder.
+	 */
+	@Resource
+	InfoBuilder dockerInfoBuilder;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    /**
-     * Container instance info.
-     */
-    ContainerInstanceInfo containerInstanceInfo;
+	/**
+	 * Container instance info.
+	 */
+	ContainerInstanceInfo containerInstanceInfo;
 
-    /**
-     * Container info.
-     */
-    ContainerInfo containerInfo;
+	/**
+	 * Container info.
+	 */
+	ContainerInfo containerInfo;
 
-    /**
-     * Default image info (CentOS).
-     */
-    ImageInfo defaultImageInfo;
+	/**
+	 * Default image info (CentOS).
+	 */
+	ImageInfo defaultImageInfo;
 
-    /**
-     * Tiny image info (Busybox).
-     */
-    ImageInfo tinyImageInfo;
-    
-    /**
-     * Random container ID.
-     */
-    String randomId;
+	/**
+	 * Tiny image info (Busybox).
+	 */
+	ImageInfo tinyImageInfo;
 
-    /**
-     * Random container name.
-     */
-    String randomName;
+	/**
+	 * Random container ID.
+	 */
+	String randomId;
 
-    private ImageInfo registryImage;
+	/**
+	 * Random container name.
+	 */
+	String randomName;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-	randomId = RandomStringUtils.randomAlphabetic(10);
-	randomName = RandomStringUtils.randomAlphabetic(10);
+	private ImageInfo registryImage;
 
-	// create context
-	context = new ContextBase();
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		randomId = RandomStringUtils.randomAlphabetic(10);
+		randomName = RandomStringUtils.randomAlphabetic(10);
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("root");
+		// create context
+		context = new ContextBase();
 
-	// create session
-	session = dockerHelper.createDefaultSessionWithLoggingInterceptor();
+		// create execution result
+		executionResult = new ExecutionResultImpl("root");
 
-	// create image and info's
-	defaultImageInfo = dockerHelper.createDefaultImage(session);
-	tinyImageInfo = dockerHelper.createDefaultTinyImageInfo();
-	dockerHelper.createImage(session, tinyImageInfo);
-    }
+		// create session
+		session = dockerHelper.createDefaultSessionWithLoggingInterceptor();
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-
-	// delete container - if it exists
-	if ((containerInstanceInfo != null) && (dockerClient.containerExists(session, containerInfo))) {
-	    dockerHelper.stopContainer(session, containerInfo);
-	    dockerHelper.deleteContainer(session, containerInfo);
+		// create image and info's
+		defaultImageInfo = dockerHelper.createDefaultImage(session);
+		tinyImageInfo = dockerHelper.createDefaultTinyImageInfo();
+		dockerHelper.createImage(session, tinyImageInfo);
 	}
-    }
 
-    /**
-     * Test that command instance can be created in application context.
-     */
-    @Test
-    public void testCanGetInstance() throws Exception {
-	assertNotNull(testContainerCommand);
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
 
-    /**
-     * Test that command can successfully test running container (CentOS).
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanTestRunningContainerSuccessfully() throws Exception {
+		// delete container - if it exists
+		if ((containerInstanceInfo != null) && (dockerClient.containerExists(session, containerInfo))) {
+			dockerHelper.stopContainer(session, containerInfo);
+			dockerHelper.deleteContainer(session, containerInfo);
+		}
+	}
 
-	// create container
-	containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
-	containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
-	dockerHelper.startContainer(session, containerInfo);
-	assertTrue(dockerClient.isContainerRunning(session, containerInfo));
-	
-	// setup context
-	context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(TestContainerCommand.SESSION_KEY, session);
-	context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
-	context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.RUNNING);
+	/**
+	 * Test that command instance can be created in application context.
+	 */
+	@Test
+	public void testCanGetInstance() throws Exception {
+		assertNotNull(testContainerCommand);
+	}
 
-	// execute command
-	testContainerCommand.execute(context);
+	/**
+	 * Test that command can successfully test running container (CentOS).
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanTestRunningContainerSuccessfully() throws Exception {
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// create container
+		containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
+		containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
+		dockerHelper.startContainer(session, containerInfo);
+		assertTrue(dockerClient.isContainerRunning(session, containerInfo));
 
-    /**
-     * Test that command can successfully test running container (CentOS).
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanTestRunningContainerWithExpectedStateStopped() throws Exception {
+		// setup context
+		context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(TestContainerCommand.SESSION_KEY, session);
+		context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
+		context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.RUNNING);
 
-	// create container
-	containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
-	containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
-	dockerHelper.startContainer(session, containerInfo);
-	assertTrue(dockerClient.isContainerRunning(session, containerInfo));
-	
-	// setup context
-	context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(TestContainerCommand.SESSION_KEY, session);
-	context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
-	context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.STOPPED);
+		// execute command
+		testContainerCommand.execute(context);
 
-	// execute command
-	testContainerCommand.execute(context);
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
-	// test
-	assertTrue(executionResult.isFailed());
-    }
+	/**
+	 * Test that command can successfully test running container (CentOS).
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanTestRunningContainerWithExpectedStateStopped() throws Exception {
 
-    /**
-     * Test that command can successfully test running container (CentOS).
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanTestRunningContainerWithExpectedStateOOM() throws Exception {
+		// create container
+		containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
+		containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
+		dockerHelper.startContainer(session, containerInfo);
+		assertTrue(dockerClient.isContainerRunning(session, containerInfo));
 
-	// create container
-	containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
-	containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
-	dockerHelper.startContainer(session, containerInfo);
-	assertTrue(dockerClient.isContainerRunning(session, containerInfo));
-	
-	// setup context
-	context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(TestContainerCommand.SESSION_KEY, session);
-	context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
-	context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.OOM);
+		// setup context
+		context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(TestContainerCommand.SESSION_KEY, session);
+		context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
+		context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.STOPPED);
 
-	// execute command
-	testContainerCommand.execute(context);
+		// execute command
+		testContainerCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isFailed());
-    }
+		// test
+		assertTrue(executionResult.isFailed());
+	}
 
-    /**
-     * Test that command can successfully test running container (CentOS).
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanTestRunningContainerWithExpectedStatePaused() throws Exception {
+	/**
+	 * Test that command can successfully test running container (CentOS).
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanTestRunningContainerWithExpectedStateOOM() throws Exception {
 
-	// create container
-	containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
-	containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
-	dockerHelper.startContainer(session, containerInfo);
-	assertTrue(dockerClient.isContainerRunning(session, containerInfo));
-	
-	// setup context
-	context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(TestContainerCommand.SESSION_KEY, session);
-	context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
-	context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.PAUSED);
+		// create container
+		containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
+		containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
+		dockerHelper.startContainer(session, containerInfo);
+		assertTrue(dockerClient.isContainerRunning(session, containerInfo));
 
-	// execute command
-	testContainerCommand.execute(context);
+		// setup context
+		context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(TestContainerCommand.SESSION_KEY, session);
+		context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
+		context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.OOM);
 
-	// test
-	assertTrue(executionResult.isFailed());
-    }
-    
-    /**
-     * Test that command can successfully test running container (CentOS).
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanTestRunningContainerWithExpectedStateRestarting() throws Exception {
+		// execute command
+		testContainerCommand.execute(context);
 
-	// create container
-	containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
-	containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
-	dockerHelper.startContainer(session, containerInfo);
-	assertTrue(dockerClient.isContainerRunning(session, containerInfo));
-	
-	// setup context
-	context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(TestContainerCommand.SESSION_KEY, session);
-	context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
-	context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.RESTARTING);
+		// test
+		assertTrue(executionResult.isFailed());
+	}
 
-	// execute command
-	testContainerCommand.execute(context);
+	/**
+	 * Test that command can successfully test running container (CentOS).
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanTestRunningContainerWithExpectedStatePaused() throws Exception {
 
-	// test
-	assertTrue(executionResult.isFailed());
-    }
-    
-    /**
-     * Test that command can successfully test paused container (CentOS).
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanTestPausedContainerSuccessfully() throws Exception {
+		// create container
+		containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
+		containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
+		dockerHelper.startContainer(session, containerInfo);
+		assertTrue(dockerClient.isContainerRunning(session, containerInfo));
 
-	// create container
-	containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
-	containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
-	dockerHelper.startContainer(session, containerInfo);
-	dockerHelper.pauseContainer(session, containerInfo);	
-	assertTrue(dockerClient.isContainerPaused(session, containerInfo));
-	
-	// setup context
-	context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(TestContainerCommand.SESSION_KEY, session);
-	context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
-	context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.PAUSED);
+		// setup context
+		context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(TestContainerCommand.SESSION_KEY, session);
+		context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
+		context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.PAUSED);
 
-	// execute command
-	testContainerCommand.execute(context);
+		// execute command
+		testContainerCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
-    
-    /**
-     * Test that command can successfully test stopped container (CentOS).
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanTestStoppedContainerSuccessfully() throws Exception {
+		// test
+		assertTrue(executionResult.isFailed());
+	}
 
-	// create container
-	containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
-	containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
-	dockerHelper.startContainer(session, containerInfo);
-	dockerHelper.stopContainer(session, containerInfo);	
-	
-	// setup context
-	context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(TestContainerCommand.SESSION_KEY, session);
-	context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
-	context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.STOPPED);
+	/**
+	 * Test that command can successfully test running container (CentOS).
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanTestRunningContainerWithExpectedStateRestarting() throws Exception {
 
-	// execute command
-	testContainerCommand.execute(context);
+		// create container
+		containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
+		containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
+		dockerHelper.startContainer(session, containerInfo);
+		assertTrue(dockerClient.isContainerRunning(session, containerInfo));
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// setup context
+		context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(TestContainerCommand.SESSION_KEY, session);
+		context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
+		context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.RESTARTING);
 
-    /**
-     * Test that command fails to test unknown container.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testFailsToTestUnknownContainer() throws Exception {
+		// execute command
+		testContainerCommand.execute(context);
 
-	// create fake container info's
-	containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
-	containerInstanceInfo = dockerInfoBuilder.buildInstanceInfo(randomId, containerInfo);
+		// test
+		assertTrue(executionResult.isFailed());
+	}
 
-	// setup context
-	context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(TestContainerCommand.SESSION_KEY, session);
-	context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
-	context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.STOPPED);
+	/**
+	 * Test that command can successfully test paused container (CentOS).
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanTestPausedContainerSuccessfully() throws Exception {
 
-	// execute command
-	testContainerCommand.execute(context);
+		// create container
+		containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
+		containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
+		dockerHelper.startContainer(session, containerInfo);
+		dockerHelper.pauseContainer(session, containerInfo);
+		assertTrue(dockerClient.isContainerPaused(session, containerInfo));
 
-	// test
-	assertTrue(executionResult.isFailed());
-    }
-    
+		// setup context
+		context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(TestContainerCommand.SESSION_KEY, session);
+		context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
+		context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.PAUSED);
+
+		// execute command
+		testContainerCommand.execute(context);
+
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
+
+	/**
+	 * Test that command can successfully test stopped container (CentOS).
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanTestStoppedContainerSuccessfully() throws Exception {
+
+		// create container
+		containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
+		containerInstanceInfo = dockerHelper.createContainer(session, containerInfo);
+		dockerHelper.startContainer(session, containerInfo);
+		dockerHelper.stopContainer(session, containerInfo);
+
+		// setup context
+		context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(TestContainerCommand.SESSION_KEY, session);
+		context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
+		context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.STOPPED);
+
+		// execute command
+		testContainerCommand.execute(context);
+
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
+
+	/**
+	 * Test that command fails to test unknown container.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFailsToTestUnknownContainer() throws Exception {
+
+		// create fake container info's
+		containerInfo = dockerInfoBuilder.buildContainerInfo(randomName, defaultImageInfo);
+		containerInstanceInfo = dockerInfoBuilder.buildInstanceInfo(randomId, containerInfo);
+
+		// setup context
+		context.put(TestContainerCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(TestContainerCommand.SESSION_KEY, session);
+		context.put(TestContainerCommand.CONTAINER_INFO_KEY, containerInfo);
+		context.put(TestContainerCommand.CONTAINER_STATE_KEY, ContainerState.STOPPED);
+
+		// execute command
+		testContainerCommand.execute(context);
+
+		// test
+		assertTrue(executionResult.isFailed());
+	}
+
 }

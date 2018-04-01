@@ -27,50 +27,50 @@ package com.alpha.pineapple.docker.model;
  */
 public class ImageInfoImpl implements ImageInfo {
 
-    /**
-     * Image repository.
-     */
-    String repository;
+	/**
+	 * Image repository.
+	 */
+	String repository;
 
-    /**
-     * Image repository.
-     */
-    String tag;
+	/**
+	 * Image repository.
+	 */
+	String tag;
 
-    /**
-     * ImageInfo constructor.
-     * 
-     * @param repository
-     *            image repository.
-     * @param tag
-     *            image tag
-     */
-    ImageInfoImpl(String repository, String tag) {
-	this.repository = repository;
-	this.tag = tag;
-    }
+	/**
+	 * ImageInfo constructor.
+	 * 
+	 * @param repository
+	 *            image repository.
+	 * @param tag
+	 *            image tag
+	 */
+	ImageInfoImpl(String repository, String tag) {
+		this.repository = repository;
+		this.tag = tag;
+	}
 
-    @Override
-    public String getRepository() {
-	return repository;
-    }
+	@Override
+	public String getRepository() {
+		return repository;
+	}
 
-    @Override
-    public String getTag() {
-	return tag;
-    }
+	@Override
+	public String getTag() {
+		return tag;
+	}
 
-    @Override
-    public boolean isTagDefined() {
-	if (tag == null)
-	    return false;
-	return (!tag.isEmpty());
-    }
+	@Override
+	public boolean isTagDefined() {
+		if (tag == null)
+			return false;
+		return (!tag.isEmpty());
+	}
 
-    @Override
-    public String getFullyQualifiedName() {
-	String fqName = new StringBuilder().append(repository).append(":").append(tag).toString();
-	return fqName;
-    }
+	@Override
+	public String getFullyQualifiedName() {
+		String fqName = new StringBuilder().append(repository).append(":").append(tag).toString();
+		return fqName;
+	}
 
 }

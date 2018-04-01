@@ -37,139 +37,139 @@ import com.alpha.pineapple.model.configuration.Resource;
  */
 public class ObjectMotherResource {
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Add properties to resource.
-     * 
-     * @param properties
-     *            Hash map containing properties which is added to resource .
-     * @param resource
-     *            Target resource.
-     */
-    void addProperties(HashMap<String, String> properties, Resource resource) {
-	// get properties
-	List<Property> resourceProps = resource.getProperty();
+	/**
+	 * Add properties to resource.
+	 * 
+	 * @param properties
+	 *            Hash map containing properties which is added to resource .
+	 * @param resource
+	 *            Target resource.
+	 */
+	void addProperties(HashMap<String, String> properties, Resource resource) {
+		// get properties
+		List<Property> resourceProps = resource.getProperty();
 
-	// map properties to resource properties
-	Set<String> keys = properties.keySet();
-	for (String key : keys) {
-	    String value = properties.get(key);
+		// map properties to resource properties
+		Set<String> keys = properties.keySet();
+		for (String key : keys) {
+			String value = properties.get(key);
 
-	    // create new property
-	    Property resourceProp = new Property();
-	    resourceProp.setKey(key);
-	    resourceProp.setValue(value);
+			// create new property
+			Property resourceProp = new Property();
+			resourceProp.setKey(key);
+			resourceProp.setValue(value);
 
-	    // store property
-	    resourceProps.add(resourceProp);
+			// store property
+			resourceProps.add(resourceProp);
+		}
 	}
-    }
 
-    /**
-     * Create resource with no properties.
-     */
-    public Resource createResourceWithNoProperties() {
-	return createResourceWithNoProperties("some-id", "some-plugin-id");
-    }
+	/**
+	 * Create resource with no properties.
+	 */
+	public Resource createResourceWithNoProperties() {
+		return createResourceWithNoProperties("some-id", "some-plugin-id");
+	}
 
-    /**
-     * Create resource with no properties.
-     * 
-     * @param id
-     *            resource ID.
-     * @param pluginId
-     *            plugin ID.
-     */
-    public Resource createResourceWithNoProperties(String id) {
-	return createResourceWithNoProperties(id, "some-plugin-id");
-    }
+	/**
+	 * Create resource with no properties.
+	 * 
+	 * @param id
+	 *            resource ID.
+	 * @param pluginId
+	 *            plugin ID.
+	 */
+	public Resource createResourceWithNoProperties(String id) {
+		return createResourceWithNoProperties(id, "some-plugin-id");
+	}
 
-    /**
-     * Create resource with no properties.
-     * 
-     * @param id
-     *            resource ID.
-     * @param pluginId
-     *            plugin ID.
-     */
-    public Resource createResourceWithNoProperties(String id, String pluginId) {
-	Resource resource = new Resource();
-	resource.setId(id);
-	resource.setCredentialIdRef("some-credential-id");
-	resource.setPluginId(pluginId);
-	return resource;
-    }
+	/**
+	 * Create resource with no properties.
+	 * 
+	 * @param id
+	 *            resource ID.
+	 * @param pluginId
+	 *            plugin ID.
+	 */
+	public Resource createResourceWithNoProperties(String id, String pluginId) {
+		Resource resource = new Resource();
+		resource.setId(id);
+		resource.setCredentialIdRef("some-credential-id");
+		resource.setPluginId(pluginId);
+		return resource;
+	}
 
-    /**
-     * Create resource with no properties.
-     * 
-     * @param id
-     *            resource ID.
-     * @param pluginId
-     *            plugin ID.
-     */
-    public Resource createResourceWithNoPropertiesNoCredential(String id, String pluginId) {
-	Resource resource = new Resource();
-	resource.setId(id);
-	resource.setPluginId(pluginId);
-	return resource;
-    }
+	/**
+	 * Create resource with no properties.
+	 * 
+	 * @param id
+	 *            resource ID.
+	 * @param pluginId
+	 *            plugin ID.
+	 */
+	public Resource createResourceWithNoPropertiesNoCredential(String id, String pluginId) {
+		Resource resource = new Resource();
+		resource.setId(id);
+		resource.setPluginId(pluginId);
+		return resource;
+	}
 
-    /**
-     * Create resource with no properties.
-     * 
-     * @param id
-     *            resource ID.
-     * @param pluginId
-     *            plugin ID.
-     * @param credentialIdRef
-     *            credential ID reference
-     */
-    public Resource createResourceWithNoPropertiesNoCredential(String id, String pluginId, String credentialIdRef) {
-	Resource resource = new Resource();
-	resource.setId(id);
-	resource.setPluginId(pluginId);
-	resource.setCredentialIdRef(credentialIdRef);
-	return resource;
-    }
+	/**
+	 * Create resource with no properties.
+	 * 
+	 * @param id
+	 *            resource ID.
+	 * @param pluginId
+	 *            plugin ID.
+	 * @param credentialIdRef
+	 *            credential ID reference
+	 */
+	public Resource createResourceWithNoPropertiesNoCredential(String id, String pluginId, String credentialIdRef) {
+		Resource resource = new Resource();
+		resource.setId(id);
+		resource.setPluginId(pluginId);
+		resource.setCredentialIdRef(credentialIdRef);
+		return resource;
+	}
 
-    /**
-     * Create test-resource with no properties.
-     */
-    public Resource createTestResourceWithNoProperties() {
-	Resource resource = new Resource();
-	resource.setId(TestUtilsTestConstants.resourceIdTestResource);
-	resource.setCredentialIdRef(TestUtilsTestConstants.credentialIdTestResource);
-	resource.setPluginId(TestUtilsTestConstants.pluginIdTestResource);
-	return resource;
-    }
+	/**
+	 * Create test-resource with no properties.
+	 */
+	public Resource createTestResourceWithNoProperties() {
+		Resource resource = new Resource();
+		resource.setId(TestUtilsTestConstants.resourceIdTestResource);
+		resource.setCredentialIdRef(TestUtilsTestConstants.credentialIdTestResource);
+		resource.setPluginId(TestUtilsTestConstants.pluginIdTestResource);
+		return resource;
+	}
 
-    /**
-     * Create resource with properties.
-     * 
-     * @param properties
-     *            Properties in a hash map.
-     */
-    public Resource createResourceWithProperties(HashMap<String, String> properties) {
-	Resource resource = createResourceWithNoProperties();
-	addProperties(properties, resource);
-	return resource;
-    }
+	/**
+	 * Create resource with properties.
+	 * 
+	 * @param properties
+	 *            Properties in a hash map.
+	 */
+	public Resource createResourceWithProperties(HashMap<String, String> properties) {
+		Resource resource = createResourceWithNoProperties();
+		addProperties(properties, resource);
+		return resource;
+	}
 
-    /**
-     * Create test-resource with properties.
-     * 
-     * @param properties
-     *            Properties in a hash map.
-     */
-    public Resource createTestResourceWithProperties(HashMap<String, String> properties) {
-	Resource resource = createTestResourceWithNoProperties();
-	addProperties(properties, resource);
-	return resource;
-    }
+	/**
+	 * Create test-resource with properties.
+	 * 
+	 * @param properties
+	 *            Properties in a hash map.
+	 */
+	public Resource createTestResourceWithProperties(HashMap<String, String> properties) {
+		Resource resource = createTestResourceWithNoProperties();
+		addProperties(properties, resource);
+		return resource;
+	}
 
 }

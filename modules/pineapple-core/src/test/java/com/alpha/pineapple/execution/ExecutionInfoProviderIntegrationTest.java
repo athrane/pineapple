@@ -40,27 +40,27 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class ExecutionInfoProviderIntegrationTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    ExecutionInfoProviderImpl executionInfoProvider;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	ExecutionInfoProviderImpl executionInfoProvider;
 
-    @Before
-    public void setUp() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	executionInfoProvider = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		executionInfoProvider = null;
+	}
 
-    /**
-     * Test that provider can be looked up from the context.
-     */
-    @Test
-    public void testCanGetProviderFromContext() {
-	assertNotNull(executionInfoProvider);
-    }
+	/**
+	 * Test that provider can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetProviderFromContext() {
+		assertNotNull(executionInfoProvider);
+	}
 
 }

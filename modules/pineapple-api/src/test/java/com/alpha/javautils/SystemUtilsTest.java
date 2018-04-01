@@ -44,206 +44,206 @@ import com.alpha.pineapple.i18n.MessageProvider;
  */
 public class SystemUtilsTest {
 
-    /**
-     * Mock Java System properties.
-     */
-    Properties systemProperties;
+	/**
+	 * Mock Java System properties.
+	 */
+	Properties systemProperties;
 
-    /**
-     * Random value.
-     */
-    String randomValue;
+	/**
+	 * Random value.
+	 */
+	String randomValue;
 
-    /**
-     * Object under test.
-     */
-    SystemUtils systemUtils;
+	/**
+	 * Object under test.
+	 */
+	SystemUtils systemUtils;
 
-    /**
-     * Mock message provider.
-     */
-    MessageProvider messageProvider;
+	/**
+	 * Mock message provider.
+	 */
+	MessageProvider messageProvider;
 
-    @Before
-    public void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 
-	randomValue = RandomStringUtils.randomAlphabetic(10);
+		randomValue = RandomStringUtils.randomAlphabetic(10);
 
-	// create mock properties
-	systemProperties = createMock(Properties.class);
+		// create mock properties
+		systemProperties = createMock(Properties.class);
 
-	// create utils
-	systemUtils = new SystemUtils();
+		// create utils
+		systemUtils = new SystemUtils();
 
-	// create mock provider
-	messageProvider = EasyMock.createMock(MessageProvider.class);
+		// create mock provider
+		messageProvider = EasyMock.createMock(MessageProvider.class);
 
-	// inject message provider
-	ReflectionTestUtils.setField(systemUtils, "messageProvider", messageProvider);
+		// inject message provider
+		ReflectionTestUtils.setField(systemUtils, "messageProvider", messageProvider);
 
-	// complete mock source initialization
-	IAnswer<String> answer = new MessageProviderAnswerImpl();
-	EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
-	EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-	EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class),
-		(Object[]) EasyMock.isA(Object[].class)));
-	EasyMock.expectLastCall().andAnswer(answer).anyTimes();
-	EasyMock.replay(messageProvider);
+		// complete mock source initialization
+		IAnswer<String> answer = new MessageProviderAnswerImpl();
+		EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class)));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+		EasyMock.expect(messageProvider.getMessage((String) EasyMock.isA(String.class),
+				(Object[]) EasyMock.isA(Object[].class)));
+		EasyMock.expectLastCall().andAnswer(answer).anyTimes();
+		EasyMock.replay(messageProvider);
 
-    }
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Fails if system properties is undefined.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testIsWindowsOperatingSystemFailsIfSystemPropertiesIsUndefined() {
+	/**
+	 * Fails if system properties is undefined.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testIsWindowsOperatingSystemFailsIfSystemPropertiesIsUndefined() {
 
-	// complete mock setup
-	replay(systemProperties);
+		// complete mock setup
+		replay(systemProperties);
 
-	// invoke
-	systemUtils.isWindowsOperatingSystem(null);
+		// invoke
+		systemUtils.isWindowsOperatingSystem(null);
 
-	// test
-	verify(systemProperties);
-    }
+		// test
+		verify(systemProperties);
+	}
 
-    /**
-     * Returns true if OS is windows.
-     */
-    @Test
-    public void testIsWindowsOperatingSystemSucceeds() {
+	/**
+	 * Returns true if OS is windows.
+	 */
+	@Test
+	public void testIsWindowsOperatingSystemSucceeds() {
 
-	// complete mock setup
-	expect(systemProperties.getProperty("os.name")).andReturn(systemUtils.OS_NAME_WINDOWS_PREFIX);
-	replay(systemProperties);
+		// complete mock setup
+		expect(systemProperties.getProperty("os.name")).andReturn(systemUtils.OS_NAME_WINDOWS_PREFIX);
+		replay(systemProperties);
 
-	// test
-	assertTrue(systemUtils.isWindowsOperatingSystem(systemProperties));
+		// test
+		assertTrue(systemUtils.isWindowsOperatingSystem(systemProperties));
 
-	// test
-	verify(systemProperties);
-    }
+		// test
+		verify(systemProperties);
+	}
 
-    /**
-     * Returns false if OS isn't windows.
-     */
-    @Test
-    public void testIsWindowsOperatingSystemFails() {
+	/**
+	 * Returns false if OS isn't windows.
+	 */
+	@Test
+	public void testIsWindowsOperatingSystemFails() {
 
-	// complete mock setup
-	expect(systemProperties.getProperty("os.name")).andReturn(randomValue);
-	replay(systemProperties);
+		// complete mock setup
+		expect(systemProperties.getProperty("os.name")).andReturn(randomValue);
+		replay(systemProperties);
 
-	// test
-	assertFalse(systemUtils.isWindowsOperatingSystem(systemProperties));
+		// test
+		assertFalse(systemUtils.isWindowsOperatingSystem(systemProperties));
 
-	// test
-	verify(systemProperties);
-    }
+		// test
+		verify(systemProperties);
+	}
 
-    /**
-     * Fails if system properties is undefined.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testIsPineappleHomeDefinedFailsIfsystemPropertiesIsUndefined() {
+	/**
+	 * Fails if system properties is undefined.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testIsPineappleHomeDefinedFailsIfsystemPropertiesIsUndefined() {
 
-	// complete mock setup
-	replay(systemProperties);
+		// complete mock setup
+		replay(systemProperties);
 
-	// invoke
-	systemUtils.isPineappleHomeDefined(null);
+		// invoke
+		systemUtils.isPineappleHomeDefined(null);
 
-	// test
-	verify(systemProperties);
-    }
+		// test
+		verify(systemProperties);
+	}
 
-    /**
-     * Returns true if Pineapple home system property is defined.
-     */
-    @Test
-    public void testIsPineappleHomeDefinedSucceeds() {
+	/**
+	 * Returns true if Pineapple home system property is defined.
+	 */
+	@Test
+	public void testIsPineappleHomeDefinedSucceeds() {
 
-	// complete mock setup
-	expect(systemProperties.getProperty(systemUtils.PINEAPPLE_HOMEDIR)).andReturn(randomValue);
-	replay(systemProperties);
+		// complete mock setup
+		expect(systemProperties.getProperty(systemUtils.PINEAPPLE_HOMEDIR)).andReturn(randomValue);
+		replay(systemProperties);
 
-	// test
-	assertTrue(systemUtils.isPineappleHomeDefined(systemProperties));
+		// test
+		assertTrue(systemUtils.isPineappleHomeDefined(systemProperties));
 
-	// test
-	verify(systemProperties);
-    }
+		// test
+		verify(systemProperties);
+	}
 
-    /**
-     * Returns fails if Pineapple home system property is defined.
-     */
-    @Test
-    public void testIsPineappleHomeDefinedFails() {
+	/**
+	 * Returns fails if Pineapple home system property is defined.
+	 */
+	@Test
+	public void testIsPineappleHomeDefinedFails() {
 
-	// complete mock setup
-	expect(systemProperties.getProperty(systemUtils.PINEAPPLE_HOMEDIR)).andReturn(null);
-	replay(systemProperties);
+		// complete mock setup
+		expect(systemProperties.getProperty(systemUtils.PINEAPPLE_HOMEDIR)).andReturn(null);
+		replay(systemProperties);
 
-	// test
-	assertFalse(systemUtils.isPineappleHomeDefined(systemProperties));
+		// test
+		assertFalse(systemUtils.isPineappleHomeDefined(systemProperties));
 
-	// test
-	verify(systemProperties);
-    }
+		// test
+		verify(systemProperties);
+	}
 
-    /**
-     * Fails if system properties is undefined.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetSystemPropertyFailsIfSystemPropertiesIsUndefined() {
+	/**
+	 * Fails if system properties is undefined.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetSystemPropertyFailsIfSystemPropertiesIsUndefined() {
 
-	// complete mock setup
-	replay(systemProperties);
+		// complete mock setup
+		replay(systemProperties);
 
-	// invoke
-	systemUtils.getSystemProperty(randomValue, null);
+		// invoke
+		systemUtils.getSystemProperty(randomValue, null);
 
-	// test
-	verify(systemProperties);
-    }
+		// test
+		verify(systemProperties);
+	}
 
-    /**
-     * Fails if property is undefined.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetSystemPropertyFailsIfPropertyIsUndefined() {
+	/**
+	 * Fails if property is undefined.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetSystemPropertyFailsIfPropertyIsUndefined() {
 
-	// complete mock setup
-	replay(systemProperties);
+		// complete mock setup
+		replay(systemProperties);
 
-	// invoke
-	systemUtils.getSystemProperty(null, systemProperties);
+		// invoke
+		systemUtils.getSystemProperty(null, systemProperties);
 
-	// test
-	verify(systemProperties);
-    }
+		// test
+		verify(systemProperties);
+	}
 
-    /**
-     * Fails if property throws security exception .
-     */
-    @Test
-    public void testGetSystemPropertyFailsIfSecurityExceptionIsThrown() {
+	/**
+	 * Fails if property throws security exception .
+	 */
+	@Test
+	public void testGetSystemPropertyFailsIfSecurityExceptionIsThrown() {
 
-	// complete mock setup
-	Throwable exception = new SecurityException();
-	expect(systemProperties.getProperty(randomValue)).andThrow(exception);
-	replay(systemProperties);
+		// complete mock setup
+		Throwable exception = new SecurityException();
+		expect(systemProperties.getProperty(randomValue)).andThrow(exception);
+		replay(systemProperties);
 
-	// invoke
-	assertEquals(null, systemUtils.getSystemProperty(randomValue, systemProperties));
+		// invoke
+		assertEquals(null, systemUtils.getSystemProperty(randomValue, systemProperties));
 
-	// test
-	verify(systemProperties);
-    }
+		// test
+		verify(systemProperties);
+	}
 
 }

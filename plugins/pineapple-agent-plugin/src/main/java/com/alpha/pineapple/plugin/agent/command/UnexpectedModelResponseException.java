@@ -20,42 +20,39 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.agent.command;
 
 /**
- * Exception class for signaling undefined response in the returned result model. 
+ * Exception class for signaling undefined response in the returned result
+ * model.
  */
-public class UnexpectedModelResponseException extends RuntimeException
-{
+public class UnexpectedModelResponseException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * UnexpectedResponseException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public UnexpectedModelResponseException( String message, Throwable cause )
-    {
-        super( message, cause );
-    }
+	/**
+	 * UnexpectedResponseException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public UnexpectedModelResponseException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * UnexpectedResponseException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public UnexpectedModelResponseException( String message )
-    {
-        super( message );
-    }
+	/**
+	 * UnexpectedResponseException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public UnexpectedModelResponseException(String message) {
+		super(message);
+	}
 
 }

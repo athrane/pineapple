@@ -28,36 +28,35 @@ package com.alpha.pineapple.docker.model;
  */
 public interface ImageInfo {
 
-    /**
-     * Get repository where image is defined. Example of official repository
-     * name is "ubuntu" which holds Ubuntu images. Example of user repository
-     * (which has the name format user/repo) is thrane/pineapple
-     * 
-     * @return Docker repository where image is defined.
-     */
-    String getRepository();
+	/**
+	 * Get repository where image is defined. Example of official repository name is
+	 * "ubuntu" which holds Ubuntu images. Example of user repository (which has the
+	 * name format user/repo) is thrane/pineapple
+	 * 
+	 * @return Docker repository where image is defined.
+	 */
+	String getRepository();
 
-    /**
-     * Get image tag. Example of image tags are "latest" and "12.10".
-     * 
-     * @return image tag.
-     */
-    String getTag();
+	/**
+	 * Get image tag. Example of image tags are "latest" and "12.10".
+	 * 
+	 * @return image tag.
+	 */
+	String getTag();
 
-    /**
-     * Get fully qualified image name. The name is the combination of the
-     * repository and the image tag, i.e. REPO:TAG. Example of the fully
-     * qualified name for an image defined in a official repository name is
-     * "ubuntu:latest".
-     * 
-     * @return fully qualified image name.
-     */
-    String getFullyQualifiedName();
+	/**
+	 * Get fully qualified image name. The name is the combination of the repository
+	 * and the image tag, i.e. REPO:TAG. Example of the fully qualified name for an
+	 * image defined in a official repository name is "ubuntu:latest".
+	 * 
+	 * @return fully qualified image name.
+	 */
+	String getFullyQualifiedName();
 
-    /**
-     * Return true if image tag is defined, i.e. not null or empty.
-     * 
-     * @return true if image tag is defined, i.e. not null or empty.
-     */
-    boolean isTagDefined();
+	/**
+	 * Return true if image tag is defined, i.e. not null or empty.
+	 * 
+	 * @return true if image tag is defined, i.e. not null or empty.
+	 */
+	boolean isTagDefined();
 }

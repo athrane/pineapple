@@ -42,48 +42,48 @@ import org.zkoss.zk.ui.event.Events;
  */
 public class DetachConverter implements Converter, Serializable {
 
-    private static final long serialVersionUID = 1463169907348730644L;
-
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
-
-    @Override
-    public Object coerceToUi(Object val, Component component, BindContext ctx) {
-
-	Boolean b = (Boolean) Classes.coerce(Boolean.class, val);
-	if (b != null && b.booleanValue()) {
-	    Event evt = new Event("onPostDetach", component);
-	    component.addEventListener(evt.getName(), _listener);
-	    Events.postEvent(evt);
-	}
-	return IGNORED_VALUE;
-    }
-
-    static private PostDetachListener _listener = new PostDetachListener();
-
-    static class PostDetachListener implements EventListener<Event>, Serializable {
+	private static final long serialVersionUID = 1463169907348730644L;
 
 	/**
 	 * Logger object.
 	 */
 	Logger logger = Logger.getLogger(this.getClass().getName());
 
-	private static final long serialVersionUID = 1L;
+	@Override
+	public Object coerceToUi(Object val, Component component, BindContext ctx) {
+
+		Boolean b = (Boolean) Classes.coerce(Boolean.class, val);
+		if (b != null && b.booleanValue()) {
+			Event evt = new Event("onPostDetach", component);
+			component.addEventListener(evt.getName(), _listener);
+			Events.postEvent(evt);
+		}
+		return IGNORED_VALUE;
+	}
+
+	static private PostDetachListener _listener = new PostDetachListener();
+
+	static class PostDetachListener implements EventListener<Event>, Serializable {
+
+		/**
+		 * Logger object.
+		 */
+		Logger logger = Logger.getLogger(this.getClass().getName());
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void onEvent(Event event) throws Exception {
+
+			Component comp = event.getTarget();
+			comp.removeEventListener(event.getName(), this);
+			comp.detach();
+		}
+	}
 
 	@Override
-	public void onEvent(Event event) throws Exception {
-
-	    Component comp = event.getTarget();
-	    comp.removeEventListener(event.getName(), this);
-	    comp.detach();
+	public Object coerceToBean(Object val, Component component, BindContext ctx) {
+		return val;
 	}
-    }
-
-    @Override
-    public Object coerceToBean(Object val, Component component, BindContext ctx) {
-	return val;
-    }
 
 }

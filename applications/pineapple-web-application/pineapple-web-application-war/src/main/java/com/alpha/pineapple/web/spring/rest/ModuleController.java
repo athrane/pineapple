@@ -77,469 +77,469 @@ import com.alpha.pineapple.web.model.RestResultMapper;
 @RequestMapping(WebApplicationConstants.REST_MODULE_URI)
 public class ModuleController {
 
-    /**
-     * 100% percentage.
-     */
-    static final int HUNDRED_PERCENTAGE = 100;
+	/**
+	 * 100% percentage.
+	 */
+	static final int HUNDRED_PERCENTAGE = 100;
 
-    /**
-     * Copy buffer size.
-     */
-    static final int ONE_KB_BUFFER = 1024;
+	/**
+	 * Copy buffer size.
+	 */
+	static final int ONE_KB_BUFFER = 1024;
 
-    /**
-     * Logger object.
-     */
-    Logger logger = Logger.getLogger(this.getClass().getName());
+	/**
+	 * Logger object.
+	 */
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
-    /**
-     * Message provider for I18N support.
-     */
-    @Resource(name = "webMessageProvider")
-    MessageProvider messageProvider;
+	/**
+	 * Message provider for I18N support.
+	 */
+	@Resource(name = "webMessageProvider")
+	MessageProvider messageProvider;
 
-    /**
-     * Runtime directory resolver.
-     */
-    @Resource
-    RuntimeDirectoryProvider runtimeDirectoryResolver;
+	/**
+	 * Runtime directory resolver.
+	 */
+	@Resource
+	RuntimeDirectoryProvider runtimeDirectoryResolver;
 
-    /**
-     * Pineapple core component.
-     */
-    @Resource
-    PineappleCore coreComponent;
+	/**
+	 * Pineapple core component.
+	 */
+	@Resource
+	PineappleCore coreComponent;
 
-    /**
-     * REST result mapper.
-     */
-    @javax.annotation.Resource
-    RestResultMapper restResultMapper;
+	/**
+	 * REST result mapper.
+	 */
+	@javax.annotation.Resource
+	RestResultMapper restResultMapper;
 
-    /**
-     * Refresh modules.
-     * 
-     * Will refresh the module repository.
-     * 
-     * Only intended to be used when the modules are updated outside the control
-     * of the web application, e.g. manually.
-     */
-    @RequestMapping(value = REST_MODULE_REFRESH_PATH, method = RequestMethod.POST, produces = {
-	    MediaType.APPLICATION_XML_VALUE })
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public void refresh() {
-	Administration admin = coreComponent.getAdministration();
-	ModuleRepository modulesRepository = admin.getModuleRepository();
-	modulesRepository.initialize();
-    }
+	/**
+	 * Refresh modules.
+	 * 
+	 * Will refresh the module repository.
+	 * 
+	 * Only intended to be used when the modules are updated outside the control of
+	 * the web application, e.g. manually.
+	 */
+	@RequestMapping(value = REST_MODULE_REFRESH_PATH, method = RequestMethod.POST, produces = {
+			MediaType.APPLICATION_XML_VALUE })
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public void refresh() {
+		Administration admin = coreComponent.getAdministration();
+		ModuleRepository modulesRepository = admin.getModuleRepository();
+		modulesRepository.initialize();
+	}
 
-    /**
-     * Create module model.
-     * 
-     * @param module
-     *            module ID.
-     * @param environment
-     *            environment ID.
-     * 
-     * @throws ModuleNotFoundException
-     *             if creation fails. The exception is handled by the spring
-     *             exception handler.
-     * @throws IllegalArgumentException
-     *             if parameters are illegal. The exception is handled by the
-     *             spring exception handler.
-     */
-    @RequestMapping(value = REST_MODULE_CREATE_MODEL_PATH, method = RequestMethod.POST)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public void createModel(@PathVariable String module, @PathVariable String environment) {
-	Administration admin = coreComponent.getAdministration();
-	ModuleRepository moduleRepository = admin.getModuleRepository();
-	ModuleInfo moduleInfo = moduleRepository.get(module);
-	moduleRepository.createModel(moduleInfo, environment);
-    }
+	/**
+	 * Create module model.
+	 * 
+	 * @param module
+	 *            module ID.
+	 * @param environment
+	 *            environment ID.
+	 * 
+	 * @throws ModuleNotFoundException
+	 *             if creation fails. The exception is handled by the spring
+	 *             exception handler.
+	 * @throws IllegalArgumentException
+	 *             if parameters are illegal. The exception is handled by the spring
+	 *             exception handler.
+	 */
+	@RequestMapping(value = REST_MODULE_CREATE_MODEL_PATH, method = RequestMethod.POST)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public void createModel(@PathVariable String module, @PathVariable String environment) {
+		Administration admin = coreComponent.getAdministration();
+		ModuleRepository moduleRepository = admin.getModuleRepository();
+		ModuleInfo moduleInfo = moduleRepository.get(module);
+		moduleRepository.createModel(moduleInfo, environment);
+	}
 
-    /**
-     * Delete module model.
-     * 
-     * @param module
-     *            module ID.
-     * @param environment
-     *            environment ID.
-     * 
-     * @throws ModuleNotFoundException
-     *             if deletion fails. The exception is handled by the spring
-     *             exception handler.
-     * @throws ModelNotFoundException
-     *             if deletion fails. The exception is handled by the spring
-     *             exception handler.
-     * @throws IllegalArgumentException
-     *             if parameters are illegal. The exception is handled by the
-     *             spring exception handler.
-     */
-    @RequestMapping(value = REST_MODULE_DELETE_MODEL_PATH, method = RequestMethod.DELETE)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteModel(@PathVariable String module, @PathVariable String environment) {
-	Administration admin = coreComponent.getAdministration();
-	ModuleRepository moduleRepository = admin.getModuleRepository();
-	ModuleInfo moduleInfo = moduleRepository.get(module);
-	moduleRepository.deleteModel(moduleInfo, environment);
-    }
+	/**
+	 * Delete module model.
+	 * 
+	 * @param module
+	 *            module ID.
+	 * @param environment
+	 *            environment ID.
+	 * 
+	 * @throws ModuleNotFoundException
+	 *             if deletion fails. The exception is handled by the spring
+	 *             exception handler.
+	 * @throws ModelNotFoundException
+	 *             if deletion fails. The exception is handled by the spring
+	 *             exception handler.
+	 * @throws IllegalArgumentException
+	 *             if parameters are illegal. The exception is handled by the spring
+	 *             exception handler.
+	 */
+	@RequestMapping(value = REST_MODULE_DELETE_MODEL_PATH, method = RequestMethod.DELETE)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public void deleteModel(@PathVariable String module, @PathVariable String environment) {
+		Administration admin = coreComponent.getAdministration();
+		ModuleRepository moduleRepository = admin.getModuleRepository();
+		ModuleInfo moduleInfo = moduleRepository.get(module);
+		moduleRepository.deleteModel(moduleInfo, environment);
+	}
 
-    /**
-     * Get modules.
-     * 
-     * @return collection of modules and HTTP 200 (OK).
-     */
-    @RequestMapping(value = REST_MODULE_GET_MODULES_PATH, method = RequestMethod.GET)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public Modules getModules() {
-	Administration admin = coreComponent.getAdministration();
-	ModuleRepository repository = admin.getModuleRepository();
-	return restResultMapper.mapModules(repository.getInfos());
-    }
+	/**
+	 * Get modules.
+	 * 
+	 * @return collection of modules and HTTP 200 (OK).
+	 */
+	@RequestMapping(value = REST_MODULE_GET_MODULES_PATH, method = RequestMethod.GET)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public Modules getModules() {
+		Administration admin = coreComponent.getAdministration();
+		ModuleRepository repository = admin.getModuleRepository();
+		return restResultMapper.mapModules(repository.getInfos());
+	}
 
-    /**
-     * Upload module.
-     * 
-     * @param module
-     *            name of module to upload.
-     * @return view name.... MAYBE...
-     */
-    @RequestMapping(value = REST_MODULE_UPLOAD_PATH, method = RequestMethod.POST)
-    @ResponseBody
-    public String upload(@RequestParam(value = "file") MultipartFile file) {
-	try {
+	/**
+	 * Upload module.
+	 * 
+	 * @param module
+	 *            name of module to upload.
+	 * @return view name.... MAYBE...
+	 */
+	@RequestMapping(value = REST_MODULE_UPLOAD_PATH, method = RequestMethod.POST)
+	@ResponseBody
+	public String upload(@RequestParam(value = "file") MultipartFile file) {
+		try {
 
-	    if (file == null) {
-		logger.error("File is null - exiting upload");
+			if (file == null) {
+				logger.error("File is null - exiting upload");
+				return "upload";
+			}
+
+			String fileName = file.getOriginalFilename();
+
+			// store uploaded file at temp directory.
+			File tmpFile = new File(runtimeDirectoryResolver.getTempDirectory(), fileName);
+			FileOutputStream fos = new FileOutputStream(tmpFile);
+			InputStream is = file.getInputStream();
+			IOUtils.copy(is, fos);
+
+			// unpack zipped tmp file to module directory
+			unpackZippedModule(tmpFile);
+
+		} catch (IOException e) {
+			logger.error("ERROR:" + StackTraceHelper.getStrackTrace(e));
+		}
+
 		return "upload";
-	    }
-
-	    String fileName = file.getOriginalFilename();
-
-	    // store uploaded file at temp directory.
-	    File tmpFile = new File(runtimeDirectoryResolver.getTempDirectory(), fileName);
-	    FileOutputStream fos = new FileOutputStream(tmpFile);
-	    InputStream is = file.getInputStream();
-	    IOUtils.copy(is, fos);
-
-	    // unpack zipped tmp file to module directory
-	    unpackZippedModule(tmpFile);
-
-	} catch (IOException e) {
-	    logger.error("ERROR:" + StackTraceHelper.getStrackTrace(e));
 	}
 
-	return "upload";
-    }
+	/**
+	 * Delete module.
+	 * 
+	 * @param module
+	 *            name of module to delete.
+	 * 
+	 * @throws ModuleNotFoundException
+	 *             if operation ID isn't known. The exception is handled by the
+	 *             spring exception handler.
+	 * @throws ModuleDeletionFailueException
+	 *             if deletion failed. The exception is handled by the spring
+	 *             exception handler.
+	 */
+	@RequestMapping(value = REST_MODULE_DELETE_PATH, method = RequestMethod.DELETE)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public void delete(@PathVariable String module) {
+		Administration admin = coreComponent.getAdministration();
+		ModuleRepository moduleRepository = admin.getModuleRepository();
+		moduleRepository.delete(module);
+	}
 
-    /**
-     * Delete module.
-     * 
-     * @param module
-     *            name of module to delete.
-     * 
-     * @throws ModuleNotFoundException
-     *             if operation ID isn't known. The exception is handled by the
-     *             spring exception handler.
-     * @throws ModuleDeletionFailueException
-     *             if deletion failed. The exception is handled by the spring
-     *             exception handler.
-     */
-    @RequestMapping(value = REST_MODULE_DELETE_PATH, method = RequestMethod.DELETE)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable String module) {
-	Administration admin = coreComponent.getAdministration();
-	ModuleRepository moduleRepository = admin.getModuleRepository();
-	moduleRepository.delete(module);
-    }
+	public void unpackZippedModule(File fileName) {
 
-    public void unpackZippedModule(File fileName) {
+		// declare streams
+		FileInputStream is = null;
+		ZipInputStream zis = null;
+		BufferedInputStream bis = null;
+		FileOutputStream fos = null;
+		BufferedOutputStream bos = null;
 
-	// declare streams
-	FileInputStream is = null;
-	ZipInputStream zis = null;
-	BufferedInputStream bis = null;
-	FileOutputStream fos = null;
-	BufferedOutputStream bos = null;
+		try {
+			// set counters
+			int entryNumber = 0;
+			int numberEntries = countArchiveEntries(fileName);
 
-	try {
-	    // set counters
-	    int entryNumber = 0;
-	    int numberEntries = countArchiveEntries(fileName);
+			// get media as zip stream
+			is = new FileInputStream(fileName);
+			zis = new ZipInputStream(is);
+			bis = new BufferedInputStream(zis);
 
-	    // get media as zip stream
-	    is = new FileInputStream(fileName);
-	    zis = new ZipInputStream(is);
-	    bis = new BufferedInputStream(zis);
+			// iterate over archive content
+			ZipEntry zipEntry;
+			while ((zipEntry = zis.getNextEntry()) != null) {
 
-	    // iterate over archive content
-	    ZipEntry zipEntry;
-	    while ((zipEntry = zis.getNextEntry()) != null) {
+				// define next file to unpack
+				File file = new File(runtimeDirectoryResolver.getModulesDirectory(), zipEntry.getName());
 
-		// define next file to unpack
-		File file = new File(runtimeDirectoryResolver.getModulesDirectory(), zipEntry.getName());
+				// compute progress
+				entryNumber++;
+				int zipPercentage = (HUNDRED_PERCENTAGE * entryNumber) / numberEntries;
 
-		// compute progress
-		entryNumber++;
-		int zipPercentage = (HUNDRED_PERCENTAGE * entryNumber) / numberEntries;
+				// schedule event
+				// UnpackedEntryEvent event = new
+				// UnpackedEntryEvent(zipPercentage, zipEntry, entryNumber,
+				// numberEntries );
+				// asyncTaskHelper.scheduleEvent(event, desktop, eventListener);
+				// logger.debug("DEBUG Unpacked entry:" + file);
+				// logger.debug("DEBUG zipPercentage:" + zipPercentage);
+				// logger.debug("DEBUG zipEntry:" + zipEntry);
+				// logger.debug("DEBUG entryNumber:" + entryNumber);
+				// logger.debug("DEBUG numberEntries:" + numberEntries);
 
-		// schedule event
-		// UnpackedEntryEvent event = new
-		// UnpackedEntryEvent(zipPercentage, zipEntry, entryNumber,
-		// numberEntries );
-		// asyncTaskHelper.scheduleEvent(event, desktop, eventListener);
-		// logger.debug("DEBUG Unpacked entry:" + file);
-		// logger.debug("DEBUG zipPercentage:" + zipPercentage);
-		// logger.debug("DEBUG zipEntry:" + zipEntry);
-		// logger.debug("DEBUG entryNumber:" + entryNumber);
-		// logger.debug("DEBUG numberEntries:" + numberEntries);
+				// if entry is directory then create it
+				if (zipEntry.isDirectory()) {
+					file.mkdirs();
+					continue;
+				}
 
-		// if entry is directory then create it
-		if (zipEntry.isDirectory()) {
-		    file.mkdirs();
-		    continue;
+				// unpack entry as file
+				createParentDirectory(file);
+
+				// set counters
+				int unpackedSizeKb = 0;
+				long totalSizeKb = computeTotalFileSizeInKb(zipEntry);
+				int lastFilePercentage = 0;
+				long lastTimeStamp = System.currentTimeMillis();
+				long timeStamp = lastTimeStamp;
+
+				// open streams
+				fos = new FileOutputStream(file);
+				bos = new BufferedOutputStream(fos);
+				byte buffer[] = new byte[ONE_KB_BUFFER];
+
+				// unzip file
+				for (int b; (b = bis.read(buffer, 0, ONE_KB_BUFFER)) != -1;) {
+					bos.write(buffer, 0, b);
+
+					// compute progress
+					unpackedSizeKb++;
+					int filePercentage = computeFileProgress(totalSizeKb, unpackedSizeKb);
+
+					// we don't skip at hundred percentage
+					if (filePercentage < HUNDRED_PERCENTAGE) {
+
+						// skip scheduling event if we haven't changed
+						// percentage
+						if (filePercentage == lastFilePercentage)
+							continue;
+
+						// skip scheduling event if last event is less than a
+						// second old
+						timeStamp = System.currentTimeMillis();
+						if ((timeStamp - lastTimeStamp) < 1000)
+							continue;
+					}
+
+					// update
+					lastTimeStamp = timeStamp;
+					lastFilePercentage = filePercentage;
+
+					// schedule event
+					// FileUnpackUpdateEvent event2 = new
+					// FileUnpackUpdateEvent(filePercentage, unpackedSizeKb,
+					// totalSizeKb);
+					// asyncTaskHelper.scheduleEvent(event2, desktop,
+					// eventListener);
+					// logger.debug("DEBUG filePercentage:" + filePercentage);
+					// logger.debug("DEBUG unpackedSizeKb:" + unpackedSizeKb);
+					// logger.debug("DEBUG totalSizeKb:" + totalSizeKb);
+				}
+
+				// close streams
+				bos.flush();
+				bos.close();
+				fos.close();
+			}
+
+			// close streams
+			bis.close();
+			zis.close();
+			is.close();
+
+			// get modules repository
+			Administration admin = coreComponent.getAdministration();
+			ModuleRepository modulesRepository = admin.getModuleRepository();
+
+			// refresh module repository
+			modulesRepository.initialize();
+
+		} catch (Exception e) {
+
+			// log error message
+			Object[] args = { StackTraceHelper.getStrackTrace(e) };
+			String message = messageProvider.getMessage("mc.install_failed", args);
+			logger.error(message);
+
+		} finally {
+			IOUtils.closeQuietly(bos);
+			IOUtils.closeQuietly(fos);
+			IOUtils.closeQuietly(bis);
+			IOUtils.closeQuietly(zis);
+			IOUtils.closeQuietly(is);
 		}
 
-		// unpack entry as file
-		createParentDirectory(file);
+	}
 
-		// set counters
-		int unpackedSizeKb = 0;
-		long totalSizeKb = computeTotalFileSizeInKb(zipEntry);
-		int lastFilePercentage = 0;
-		long lastTimeStamp = System.currentTimeMillis();
-		long timeStamp = lastTimeStamp;
+	/**
+	 * Compute total file size in KB.
+	 * 
+	 * If file size is less than 1 KB then 1 KB is returned.
+	 * 
+	 * @param zipEntry
+	 *            Zip entry to calculate size for.
+	 * 
+	 * @return total file size in KB.
+	 */
+	long computeTotalFileSizeInKb(ZipEntry zipEntry) {
+		if (zipEntry.getSize() < ONE_KB_BUFFER)
+			return 1;
+		double sizeKb = (double) zipEntry.getSize() / (double) ONE_KB_BUFFER;
+		sizeKb = Math.ceil(sizeKb);
+		return (long) sizeKb;
+	}
 
-		// open streams
-		fos = new FileOutputStream(file);
-		bos = new BufferedOutputStream(fos);
-		byte buffer[] = new byte[ONE_KB_BUFFER];
+	/**
+	 * Compute file unpack progress in percentage.
+	 * 
+	 * @param totalSize
+	 *            Total file size in KB.
+	 * @param counter
+	 *            Number of KB unpacked.
+	 * 
+	 * @return file unpack progress in percentage.
+	 */
+	int computeFileProgress(long totalSize, int counter) {
+		if (totalSize == 0)
+			return 0;
+		int result = (int) ((100 * counter) / totalSize);
+		return result;
+	}
 
-		// unzip file
-		for (int b; (b = bis.read(buffer, 0, ONE_KB_BUFFER)) != -1;) {
-		    bos.write(buffer, 0, b);
+	/**
+	 * Create parent directory for zipped file.
+	 * 
+	 * @param file
+	 *            Zipped file.
+	 */
+	File createParentDirectory(File file) {
+		File dir = new File(file.getParent());
+		dir.mkdirs();
+		return dir;
+	}
 
-		    // compute progress
-		    unpackedSizeKb++;
-		    int filePercentage = computeFileProgress(totalSizeKb, unpackedSizeKb);
+	/**
+	 * Count the number of archive entries.
+	 * 
+	 * @return number of archive entries.
+	 * 
+	 * @throws Exception
+	 *             If count operation fails.
+	 */
+	int countArchiveEntries(File fileName) throws Exception {
 
-		    // we don't skip at hundred percentage
-		    if (filePercentage < HUNDRED_PERCENTAGE) {
+		// declare stream
+		ZipInputStream zis = null;
+		InputStream is = null;
 
-			// skip scheduling event if we haven't changed
-			// percentage
-			if (filePercentage == lastFilePercentage)
-			    continue;
+		try {
+			// get zip stream
+			is = new FileInputStream(fileName);
+			zis = new ZipInputStream(is);
 
-			// skip scheduling event if last event is less than a
-			// second old
-			timeStamp = System.currentTimeMillis();
-			if ((timeStamp - lastTimeStamp) < 1000)
-			    continue;
-		    }
+			// iterate to count
+			int counter = 0;
+			ZipEntry zipEntry = null;
+			while ((zipEntry = zis.getNextEntry()) != null) {
+				counter++;
+			}
 
-		    // update
-		    lastTimeStamp = timeStamp;
-		    lastFilePercentage = filePercentage;
+			return counter;
 
-		    // schedule event
-		    // FileUnpackUpdateEvent event2 = new
-		    // FileUnpackUpdateEvent(filePercentage, unpackedSizeKb,
-		    // totalSizeKb);
-		    // asyncTaskHelper.scheduleEvent(event2, desktop,
-		    // eventListener);
-		    // logger.debug("DEBUG filePercentage:" + filePercentage);
-		    // logger.debug("DEBUG unpackedSizeKb:" + unpackedSizeKb);
-		    // logger.debug("DEBUG totalSizeKb:" + totalSizeKb);
+		} finally {
+			IOUtils.closeQuietly(zis);
+			IOUtils.closeQuietly(is);
 		}
-
-		// close streams
-		bos.flush();
-		bos.close();
-		fos.close();
-	    }
-
-	    // close streams
-	    bis.close();
-	    zis.close();
-	    is.close();
-
-	    // get modules repository
-	    Administration admin = coreComponent.getAdministration();
-	    ModuleRepository modulesRepository = admin.getModuleRepository();
-
-	    // refresh module repository
-	    modulesRepository.initialize();
-
-	} catch (Exception e) {
-
-	    // log error message
-	    Object[] args = { StackTraceHelper.getStrackTrace(e) };
-	    String message = messageProvider.getMessage("mc.install_failed", args);
-	    logger.error(message);
-
-	} finally {
-	    IOUtils.closeQuietly(bos);
-	    IOUtils.closeQuietly(fos);
-	    IOUtils.closeQuietly(bis);
-	    IOUtils.closeQuietly(zis);
-	    IOUtils.closeQuietly(is);
 	}
 
-    }
-
-    /**
-     * Compute total file size in KB.
-     * 
-     * If file size is less than 1 KB then 1 KB is returned.
-     * 
-     * @param zipEntry
-     *            Zip entry to calculate size for.
-     * 
-     * @return total file size in KB.
-     */
-    long computeTotalFileSizeInKb(ZipEntry zipEntry) {
-	if (zipEntry.getSize() < ONE_KB_BUFFER)
-	    return 1;
-	double sizeKb = (double) zipEntry.getSize() / (double) ONE_KB_BUFFER;
-	sizeKb = Math.ceil(sizeKb);
-	return (long) sizeKb;
-    }
-
-    /**
-     * Compute file unpack progress in percentage.
-     * 
-     * @param totalSize
-     *            Total file size in KB.
-     * @param counter
-     *            Number of KB unpacked.
-     * 
-     * @return file unpack progress in percentage.
-     */
-    int computeFileProgress(long totalSize, int counter) {
-	if (totalSize == 0)
-	    return 0;
-	int result = (int) ((100 * counter) / totalSize);
-	return result;
-    }
-
-    /**
-     * Create parent directory for zipped file.
-     * 
-     * @param file
-     *            Zipped file.
-     */
-    File createParentDirectory(File file) {
-	File dir = new File(file.getParent());
-	dir.mkdirs();
-	return dir;
-    }
-
-    /**
-     * Count the number of archive entries.
-     * 
-     * @return number of archive entries.
-     * 
-     * @throws Exception
-     *             If count operation fails.
-     */
-    int countArchiveEntries(File fileName) throws Exception {
-
-	// declare stream
-	ZipInputStream zis = null;
-	InputStream is = null;
-
-	try {
-	    // get zip stream
-	    is = new FileInputStream(fileName);
-	    zis = new ZipInputStream(is);
-
-	    // iterate to count
-	    int counter = 0;
-	    ZipEntry zipEntry = null;
-	    while ((zipEntry = zis.getNextEntry()) != null) {
-		counter++;
-	    }
-
-	    return counter;
-
-	} finally {
-	    IOUtils.closeQuietly(zis);
-	    IOUtils.closeQuietly(is);
+	/**
+	 * Exception handler for handling unknown module.
+	 * 
+	 * @param e
+	 *            module not found exception.
+	 * @param response
+	 *            HTTP response.
+	 * 
+	 * @return module not found HTTP status code and error message.
+	 */
+	@ExceptionHandler(ModuleNotFoundException.class)
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	@ResponseBody
+	public String handleException(ModuleNotFoundException e, HttpServletResponse response) {
+		return e.getMessage();
 	}
-    }
 
-    /**
-     * Exception handler for handling unknown module.
-     * 
-     * @param e
-     *            module not found exception.
-     * @param response
-     *            HTTP response.
-     * 
-     * @return module not found HTTP status code and error message.
-     */
-    @ExceptionHandler(ModuleNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public String handleException(ModuleNotFoundException e, HttpServletResponse response) {
-	return e.getMessage();
-    }
+	/**
+	 * Exception handler for handling unknown model.
+	 * 
+	 * @param e
+	 *            model not found exception.
+	 * @param response
+	 *            HTTP response.
+	 * 
+	 * @return model not found HTTP status code and error message.
+	 */
+	@ExceptionHandler(ModelNotFoundException.class)
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	@ResponseBody
+	public String handleException(ModelNotFoundException e, HttpServletResponse response) {
+		return e.getMessage();
+	}
 
-    /**
-     * Exception handler for handling unknown model.
-     * 
-     * @param e
-     *            model not found exception.
-     * @param response
-     *            HTTP response.
-     * 
-     * @return model not found HTTP status code and error message.
-     */
-    @ExceptionHandler(ModelNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public String handleException(ModelNotFoundException e, HttpServletResponse response) {
-	return e.getMessage();
-    }
+	/**
+	 * Exception handler for handling failed module deletion.
+	 * 
+	 * @param e
+	 *            module deletion failure exception.
+	 * @param response
+	 *            HTTP response.
+	 * 
+	 * @return module deletion failure HTTP status code and error message.
+	 */
+	@ExceptionHandler(ModuleDeletionFailedException.class)
+	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public String handleException(ModuleDeletionFailedException e, HttpServletResponse response) {
+		return e.getMessage();
+	}
 
-    /**
-     * Exception handler for handling failed module deletion.
-     * 
-     * @param e
-     *            module deletion failure exception.
-     * @param response
-     *            HTTP response.
-     * 
-     * @return module deletion failure HTTP status code and error message.
-     */
-    @ExceptionHandler(ModuleDeletionFailedException.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public String handleException(ModuleDeletionFailedException e, HttpServletResponse response) {
-	return e.getMessage();
-    }
-
-    /**
-     * Exception handler for handling illegal argument exception.
-     * 
-     * @param e
-     *            illegal argument exception.
-     * @param response
-     *            HTTP response.
-     * 
-     * @return illegal argument HTTP status code and error message.
-     */
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public String handleException(IllegalArgumentException e, HttpServletResponse response) {
-	return e.getMessage();
-    }
+	/**
+	 * Exception handler for handling illegal argument exception.
+	 * 
+	 * @param e
+	 *            illegal argument exception.
+	 * @param response
+	 *            HTTP response.
+	 * 
+	 * @return illegal argument HTTP status code and error message.
+	 */
+	@ExceptionHandler(IllegalArgumentException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public String handleException(IllegalArgumentException e, HttpServletResponse response) {
+		return e.getMessage();
+	}
 
 }

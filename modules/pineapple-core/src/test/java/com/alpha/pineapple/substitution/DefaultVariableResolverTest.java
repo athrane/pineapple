@@ -41,299 +41,299 @@ import com.alpha.pineapple.substitution.variables.Variables;
  */
 public class DefaultVariableResolverTest {
 
-    /**
-     * Empty string.
-     */
-    static final String EMPTY_STRING = "";
+	/**
+	 * Empty string.
+	 */
+	static final String EMPTY_STRING = "";
 
-    /**
-     * Null string.
-     */
-    static final String NULL_STRING = null;
+	/**
+	 * Null string.
+	 */
+	static final String NULL_STRING = null;
 
-    /**
-     * Object under test.
-     */
-    VariableResolver resolver;
+	/**
+	 * Object under test.
+	 */
+	VariableResolver resolver;
 
-    /**
-     * Random variable name.
-     */
-    String randomVarName;
+	/**
+	 * Random variable name.
+	 */
+	String randomVarName;
 
-    /**
-     * Random variable name.
-     */
-    String randomVarName2;
+	/**
+	 * Random variable name.
+	 */
+	String randomVarName2;
 
-    /**
-     * Random variable value.
-     */
-    String randomVarValue;
+	/**
+	 * Random variable value.
+	 */
+	String randomVarValue;
 
-    /**
-     * Random variable value.
-     */
-    String randomVarValue2;
+	/**
+	 * Random variable value.
+	 */
+	String randomVarValue2;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-	randomVarName = RandomStringUtils.randomAlphabetic(10) + "-var";
-	randomVarName2 = RandomStringUtils.randomAlphabetic(10) + "-var";
-	randomVarValue = RandomStringUtils.randomAlphabetic(10);
-	randomVarValue2 = RandomStringUtils.randomAlphabetic(10);
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		randomVarName = RandomStringUtils.randomAlphabetic(10) + "-var";
+		randomVarName2 = RandomStringUtils.randomAlphabetic(10) + "-var";
+		randomVarValue = RandomStringUtils.randomAlphabetic(10);
+		randomVarValue2 = RandomStringUtils.randomAlphabetic(10);
 
-	// create resolver
-	resolver = new DefaultVariableResolverImpl();
-    }
+		// create resolver
+		resolver = new DefaultVariableResolverImpl();
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Create random variable from random variable name #1.
-     * 
-     * @return
-     */
-    String createRandomVariablefromVarNameOne() {
-	String randomVar = new StringBuilder().append("${").append(randomVarName).append("}").toString();
-	return randomVar;
-    }
+	/**
+	 * Create random variable from random variable name #1.
+	 * 
+	 * @return
+	 */
+	String createRandomVariablefromVarNameOne() {
+		String randomVar = new StringBuilder().append("${").append(randomVarName).append("}").toString();
+		return randomVar;
+	}
 
-    /**
-     * Create random variable from random variable name #2.
-     * 
-     * @return
-     */
-    String createRandomVariablefromVarNameTwo() {
-	String randomVar = new StringBuilder().append("${").append(randomVarName2).append("}").toString();
-	return randomVar;
-    }
+	/**
+	 * Create random variable from random variable name #2.
+	 * 
+	 * @return
+	 */
+	String createRandomVariablefromVarNameTwo() {
+		String randomVar = new StringBuilder().append("${").append(randomVarName2).append("}").toString();
+		return randomVar;
+	}
 
-    /**
-     * Test that empty string can be processed.
-     */
-    @Test
-    public void testSubstituteEmptyString() {
-	// create map
-	Map<String, String> varMap = new HashMap<String, String>();
-	varMap.put(randomVarName, randomVarValue);
+	/**
+	 * Test that empty string can be processed.
+	 */
+	@Test
+	public void testSubstituteEmptyString() {
+		// create map
+		Map<String, String> varMap = new HashMap<String, String>();
+		varMap.put(randomVarName, randomVarValue);
 
-	// create variables and resolve
-	Variables variables = new DefaultVariablesImpl(varMap);
-	String actual = resolver.resolve(variables, EMPTY_STRING);
+		// create variables and resolve
+		Variables variables = new DefaultVariablesImpl(varMap);
+		String actual = resolver.resolve(variables, EMPTY_STRING);
 
-	// test
-	assertEquals(EMPTY_STRING, actual);
-    }
+		// test
+		assertEquals(EMPTY_STRING, actual);
+	}
 
-    /**
-     * Test that variable can be processed.
-     */
-    @Test
-    public void testSubstituteVariable() {
-	String source = createRandomVariablefromVarNameOne();
+	/**
+	 * Test that variable can be processed.
+	 */
+	@Test
+	public void testSubstituteVariable() {
+		String source = createRandomVariablefromVarNameOne();
 
-	// create map
-	Map<String, String> varMap = new HashMap<String, String>();
-	varMap.put(randomVarName, randomVarValue);
+		// create map
+		Map<String, String> varMap = new HashMap<String, String>();
+		varMap.put(randomVarName, randomVarValue);
 
-	// create variables and resolve
-	Variables variables = new DefaultVariablesImpl(varMap);
-	String actual = resolver.resolve(variables, source);
+		// create variables and resolve
+		Variables variables = new DefaultVariablesImpl(varMap);
+		String actual = resolver.resolve(variables, source);
 
-	// test
-	assertEquals(randomVarValue, actual);
-    }
+		// test
+		assertEquals(randomVarValue, actual);
+	}
 
-    /**
-     * Test that variable which occurs twice can be processed.
-     */
-    @Test
-    public void testSubstituteVariableWhichOccursTwice() {
-	String variable = createRandomVariablefromVarNameOne();
+	/**
+	 * Test that variable which occurs twice can be processed.
+	 */
+	@Test
+	public void testSubstituteVariableWhichOccursTwice() {
+		String variable = createRandomVariablefromVarNameOne();
 
-	// create source string
-	String source = new StringBuilder().append(variable).append(variable).toString();
+		// create source string
+		String source = new StringBuilder().append(variable).append(variable).toString();
 
-	// create map
-	Map<String, String> varMap = new HashMap<String, String>();
-	varMap.put(randomVarName, randomVarValue);
+		// create map
+		Map<String, String> varMap = new HashMap<String, String>();
+		varMap.put(randomVarName, randomVarValue);
 
-	// create variables and resolve
-	Variables variables = new DefaultVariablesImpl(varMap);
-	String actual = resolver.resolve(variables, source);
+		// create variables and resolve
+		Variables variables = new DefaultVariablesImpl(varMap);
+		String actual = resolver.resolve(variables, source);
 
-	// test
-	assertEquals(2, StringUtils.countMatches(actual, randomVarValue));
-    }
+		// test
+		assertEquals(2, StringUtils.countMatches(actual, randomVarValue));
+	}
 
-    /**
-     * Test that variable can be processed which doesn't occur.
-     */
-    @Test
-    public void testSubstituteVariableWhichDoesntOccur() {
+	/**
+	 * Test that variable can be processed which doesn't occur.
+	 */
+	@Test
+	public void testSubstituteVariableWhichDoesntOccur() {
 
-	// create source string
-	String source = RandomStringUtils.randomAlphabetic(100);
+		// create source string
+		String source = RandomStringUtils.randomAlphabetic(100);
 
-	// create map
-	Map<String, String> varMap = new HashMap<String, String>();
-	varMap.put(randomVarName, randomVarValue);
+		// create map
+		Map<String, String> varMap = new HashMap<String, String>();
+		varMap.put(randomVarName, randomVarValue);
 
-	// create variables and resolve
-	Variables variables = new DefaultVariablesImpl(varMap);
-	String actual = resolver.resolve(variables, source);
+		// create variables and resolve
+		Variables variables = new DefaultVariablesImpl(varMap);
+		String actual = resolver.resolve(variables, source);
 
-	// test
-	assertEquals(0, StringUtils.countMatches(actual, randomVarValue));
-    }
+		// test
+		assertEquals(0, StringUtils.countMatches(actual, randomVarValue));
+	}
 
-    /**
-     * Test that two variables can be processed. The variables have different
-     * name and values.
-     */
-    @Test
-    public void testSubstituteTwoVariables() {
-	String variable = createRandomVariablefromVarNameOne();
-	String variable2 = createRandomVariablefromVarNameTwo();
+	/**
+	 * Test that two variables can be processed. The variables have different name
+	 * and values.
+	 */
+	@Test
+	public void testSubstituteTwoVariables() {
+		String variable = createRandomVariablefromVarNameOne();
+		String variable2 = createRandomVariablefromVarNameTwo();
 
-	// create source string
-	String source = new StringBuilder().append(variable).append(variable2).toString();
+		// create source string
+		String source = new StringBuilder().append(variable).append(variable2).toString();
 
-	// create map
-	Map<String, String> varMap = new HashMap<String, String>();
-	varMap.put(randomVarName, randomVarValue);
-	varMap.put(randomVarName2, randomVarValue2);
+		// create map
+		Map<String, String> varMap = new HashMap<String, String>();
+		varMap.put(randomVarName, randomVarValue);
+		varMap.put(randomVarName2, randomVarValue2);
 
-	// create variables and resolve
-	Variables variables = new DefaultVariablesImpl(varMap);
-	String actual = resolver.resolve(variables, source);
+		// create variables and resolve
+		Variables variables = new DefaultVariablesImpl(varMap);
+		String actual = resolver.resolve(variables, source);
 
-	// test
-	assertEquals(1, StringUtils.countMatches(actual, randomVarValue));
-	assertEquals(1, StringUtils.countMatches(actual, randomVarValue2));
-    }
+		// test
+		assertEquals(1, StringUtils.countMatches(actual, randomVarValue));
+		assertEquals(1, StringUtils.countMatches(actual, randomVarValue2));
+	}
 
-    /**
-     * Test that two variables can be processed. The variables have different
-     * name and but identical values.
-     */
-    @Test
-    public void testSubstituteTwoVariablesWithIdentialValues() {
-	String variable = createRandomVariablefromVarNameOne();
-	String variable2 = createRandomVariablefromVarNameTwo();
+	/**
+	 * Test that two variables can be processed. The variables have different name
+	 * and but identical values.
+	 */
+	@Test
+	public void testSubstituteTwoVariablesWithIdentialValues() {
+		String variable = createRandomVariablefromVarNameOne();
+		String variable2 = createRandomVariablefromVarNameTwo();
 
-	// create source string
-	String source = new StringBuilder().append(variable).append(variable2).toString();
+		// create source string
+		String source = new StringBuilder().append(variable).append(variable2).toString();
 
-	// create map
-	Map<String, String> varMap = new HashMap<String, String>();
-	varMap.put(randomVarName, randomVarValue);
-	varMap.put(randomVarName2, randomVarValue);
+		// create map
+		Map<String, String> varMap = new HashMap<String, String>();
+		varMap.put(randomVarName, randomVarValue);
+		varMap.put(randomVarName2, randomVarValue);
 
-	// create variables and resolve
-	Variables variables = new DefaultVariablesImpl(varMap);
-	String actual = resolver.resolve(variables, source);
+		// create variables and resolve
+		Variables variables = new DefaultVariablesImpl(varMap);
+		String actual = resolver.resolve(variables, source);
 
-	// test
-	assertEquals(2, StringUtils.countMatches(actual, randomVarValue));
-    }
+		// test
+		assertEquals(2, StringUtils.countMatches(actual, randomVarValue));
+	}
 
-    /**
-     * Test that variable with null key is ignored for substitution.
-     */
-    @Test
-    public void testVariableWithNullKeyIsntSubstituted() {
-	String variable = NULL_STRING;
+	/**
+	 * Test that variable with null key is ignored for substitution.
+	 */
+	@Test
+	public void testVariableWithNullKeyIsntSubstituted() {
+		String variable = NULL_STRING;
 
-	// create source string
-	String source = new StringBuilder().append(variable).toString();
+		// create source string
+		String source = new StringBuilder().append(variable).toString();
 
-	// create map
-	Map<String, String> varMap = new HashMap<String, String>();
-	varMap.put(randomVarName, randomVarValue);
+		// create map
+		Map<String, String> varMap = new HashMap<String, String>();
+		varMap.put(randomVarName, randomVarValue);
 
-	// create variables and resolve
-	Variables variables = new DefaultVariablesImpl(varMap);
-	String actual = resolver.resolve(variables, source);
+		// create variables and resolve
+		Variables variables = new DefaultVariablesImpl(varMap);
+		String actual = resolver.resolve(variables, source);
 
-	// test
-	assertEquals(0, StringUtils.countMatches(actual, randomVarValue));
-    }
+		// test
+		assertEquals(0, StringUtils.countMatches(actual, randomVarValue));
+	}
 
-    /**
-     * Test that variable with empty key is ignored for substitution.
-     */
-    @Test
-    public void testVariableWithEmptyKeyIsntSubstituted() {
-	String variable = EMPTY_STRING;
+	/**
+	 * Test that variable with empty key is ignored for substitution.
+	 */
+	@Test
+	public void testVariableWithEmptyKeyIsntSubstituted() {
+		String variable = EMPTY_STRING;
 
-	// create source string
-	String source = new StringBuilder().append(variable).toString();
+		// create source string
+		String source = new StringBuilder().append(variable).toString();
 
-	// create map
-	Map<String, String> varMap = new HashMap<String, String>();
-	varMap.put(randomVarName, randomVarValue);
+		// create map
+		Map<String, String> varMap = new HashMap<String, String>();
+		varMap.put(randomVarName, randomVarValue);
 
-	// create variables and resolve
-	Variables variables = new DefaultVariablesImpl(varMap);
-	String actual = resolver.resolve(variables, source);
+		// create variables and resolve
+		Variables variables = new DefaultVariablesImpl(varMap);
+		String actual = resolver.resolve(variables, source);
 
-	// test
-	assertEquals(0, StringUtils.countMatches(actual, randomVarValue));
-    }
+		// test
+		assertEquals(0, StringUtils.countMatches(actual, randomVarValue));
+	}
 
-    /**
-     * Test that variable with null value is ignored for substitution.
-     */
-    @Test
-    public void testVariableWithNullValueIsntSubstituted() {
-	String variable = createRandomVariablefromVarNameOne();
+	/**
+	 * Test that variable with null value is ignored for substitution.
+	 */
+	@Test
+	public void testVariableWithNullValueIsntSubstituted() {
+		String variable = createRandomVariablefromVarNameOne();
 
-	// create source string
-	String source = new StringBuilder().append(variable).toString();
+		// create source string
+		String source = new StringBuilder().append(variable).toString();
 
-	// create map
-	Map<String, String> varMap = new HashMap<String, String>();
-	varMap.put(randomVarName, NULL_STRING);
+		// create map
+		Map<String, String> varMap = new HashMap<String, String>();
+		varMap.put(randomVarName, NULL_STRING);
 
-	// create variables and resolve
-	Variables variables = new DefaultVariablesImpl(varMap);
-	String actual = resolver.resolve(variables, source);
+		// create variables and resolve
+		Variables variables = new DefaultVariablesImpl(varMap);
+		String actual = resolver.resolve(variables, source);
 
-	// test
-	assertEquals(0, StringUtils.countMatches(actual, randomVarValue));
-    }
+		// test
+		assertEquals(0, StringUtils.countMatches(actual, randomVarValue));
+	}
 
-    /**
-     * Test that variable with empty value is substituted.
-     */
-    @Test
-    public void testVariableWithEmptyValueIsSubstituted() {
-	String variable = createRandomVariablefromVarNameOne();
+	/**
+	 * Test that variable with empty value is substituted.
+	 */
+	@Test
+	public void testVariableWithEmptyValueIsSubstituted() {
+		String variable = createRandomVariablefromVarNameOne();
 
-	// create source string
-	String source = new StringBuilder().append(variable).toString();
+		// create source string
+		String source = new StringBuilder().append(variable).toString();
 
-	// create map
-	Map<String, String> varMap = new HashMap<String, String>();
-	varMap.put(randomVarName, EMPTY_STRING);
+		// create map
+		Map<String, String> varMap = new HashMap<String, String>();
+		varMap.put(randomVarName, EMPTY_STRING);
 
-	// create variables and resolve
-	Variables variables = new DefaultVariablesImpl(varMap);
-	String actual = resolver.resolve(variables, source);
+		// create variables and resolve
+		Variables variables = new DefaultVariablesImpl(varMap);
+		String actual = resolver.resolve(variables, source);
 
-	// test
-	assertEquals(0, StringUtils.countMatches(actual, randomVarValue));
-	assertEquals(EMPTY_STRING, actual);
-    }
+		// test
+		assertEquals(0, StringUtils.countMatches(actual, randomVarValue));
+		assertEquals(EMPTY_STRING, actual);
+	}
 
 }

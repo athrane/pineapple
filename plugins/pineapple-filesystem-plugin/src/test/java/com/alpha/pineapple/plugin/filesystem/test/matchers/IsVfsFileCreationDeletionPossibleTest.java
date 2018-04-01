@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.filesystem.test.matchers;
 
 import static org.junit.Assert.assertFalse;
@@ -48,7 +47,7 @@ public class IsVfsFileCreationDeletionPossibleTest {
 	 */
 	@SuppressWarnings("unchecked")
 	Matcher matcher;
-	
+
 	/**
 	 * Mock description.
 	 */
@@ -60,25 +59,25 @@ public class IsVfsFileCreationDeletionPossibleTest {
 	FileSystemSession session;
 
 	/**
-	 *  Mock file object.
+	 * Mock file object.
 	 */
 	FileObject fileObject;
-	
+
 	@Before
 	public void setUp() throws Exception {
-				
-		// create mock session 
-		session = EasyMock.createMock( FileSystemSession.class);
+
+		// create mock session
+		session = EasyMock.createMock(FileSystemSession.class);
 
 		// create mock file object
-		fileObject = EasyMock.createMock( FileObject.class);
-				
-		// create matcher		
-		matcher = IsVfsFileCreationDeletionPossible.isVfsFileCreationDeletionPossible(session);			
+		fileObject = EasyMock.createMock(FileObject.class);
+
+		// create matcher
+		matcher = IsVfsFileCreationDeletionPossible.isVfsFileCreationDeletionPossible(session);
 	}
 
 	@After
-	public void tearDown() throws Exception {		
+	public void tearDown() throws Exception {
 		matcher = null;
 		session = null;
 		fileObject = null;
@@ -87,167 +86,173 @@ public class IsVfsFileCreationDeletionPossibleTest {
 	/**
 	 * Test positive match if file object can be created and deleted.
 	 * 
-	 * @throws Exception If test fails.
+	 * @throws Exception
+	 *             If test fails.
 	 */
 	@Test
-	public void testIsPositiveMatchIfFileObjectCanBeCreatedAndDeleted() throws Exception  {
-				
+	public void testIsPositiveMatchIfFileObjectCanBeCreatedAndDeleted() throws Exception {
+
 		String path = "/some-path";
 
-		// complete mock set setup		
-		FileObject ChildFileObject = EasyMock.createMock( FileObject.class);
-		EasyMock.expect( ChildFileObject.exists()).andReturn(false);
+		// complete mock set setup
+		FileObject ChildFileObject = EasyMock.createMock(FileObject.class);
+		EasyMock.expect(ChildFileObject.exists()).andReturn(false);
 		ChildFileObject.createFolder();
-		EasyMock.expect( ChildFileObject.exists()).andReturn(true);
-		EasyMock.expect( ChildFileObject.delete()).andReturn(true);
-		EasyMock.expect( ChildFileObject.exists()).andReturn(false);
-		EasyMock.replay( ChildFileObject );
-		
+		EasyMock.expect(ChildFileObject.exists()).andReturn(true);
+		EasyMock.expect(ChildFileObject.delete()).andReturn(true);
+		EasyMock.expect(ChildFileObject.exists()).andReturn(false);
+		EasyMock.replay(ChildFileObject);
+
 		// complete mock set setup
-		EasyMock.expect( fileObject.resolveFile( EasyMock.isA(String.class), EasyMock.isA(NameScope.class) )).andReturn(ChildFileObject);			
-		EasyMock.replay( fileObject );		
-		
+		EasyMock.expect(fileObject.resolveFile(EasyMock.isA(String.class), EasyMock.isA(NameScope.class)))
+				.andReturn(ChildFileObject);
+		EasyMock.replay(fileObject);
+
 		// complete mock set setup
-		EasyMock.expect( session.resolveFile(path)).andReturn(fileObject);	
-		EasyMock.replay( session );		
-		
+		EasyMock.expect(session.resolveFile(path)).andReturn(fileObject);
+		EasyMock.replay(session);
+
 		// test
-		assertTrue(matcher.matches( path ));		
+		assertTrue(matcher.matches(path));
 
 		// verify mocks
-		EasyMock.verify( session );
-		EasyMock.verify( fileObject );		
-		EasyMock.verify( ChildFileObject );		
+		EasyMock.verify(session);
+		EasyMock.verify(fileObject);
+		EasyMock.verify(ChildFileObject);
 	}
 
 	/**
 	 * Test negative match if test folder already exists.
 	 * 
-	 * @throws Exception If test fails.
+	 * @throws Exception
+	 *             If test fails.
 	 */
 	@Test
-	public void testIsNegativeMatchIfTestFolderAlreadyExists() throws Exception  {
-				
+	public void testIsNegativeMatchIfTestFolderAlreadyExists() throws Exception {
+
 		String path = "/some-path";
 
-		// complete mock set setup		
-		FileObject ChildFileObject = EasyMock.createMock( FileObject.class);
-		EasyMock.expect( ChildFileObject.exists()).andReturn(true);
-		EasyMock.replay( ChildFileObject );
-		
 		// complete mock set setup
-		EasyMock.expect( fileObject.resolveFile( EasyMock.isA(String.class), EasyMock.isA(NameScope.class) )).andReturn(ChildFileObject);			
-		EasyMock.replay( fileObject );		
-		
+		FileObject ChildFileObject = EasyMock.createMock(FileObject.class);
+		EasyMock.expect(ChildFileObject.exists()).andReturn(true);
+		EasyMock.replay(ChildFileObject);
+
 		// complete mock set setup
-		EasyMock.expect( session.resolveFile(path)).andReturn(fileObject);	
-		EasyMock.replay( session );		
-		
+		EasyMock.expect(fileObject.resolveFile(EasyMock.isA(String.class), EasyMock.isA(NameScope.class)))
+				.andReturn(ChildFileObject);
+		EasyMock.replay(fileObject);
+
+		// complete mock set setup
+		EasyMock.expect(session.resolveFile(path)).andReturn(fileObject);
+		EasyMock.replay(session);
+
 		// test
-		assertFalse(matcher.matches( path ));		
+		assertFalse(matcher.matches(path));
 
 		// verify mocks
-		EasyMock.verify( session );
-		EasyMock.verify( fileObject );		
-		EasyMock.verify( ChildFileObject );		
+		EasyMock.verify(session);
+		EasyMock.verify(fileObject);
+		EasyMock.verify(ChildFileObject);
 	}
 
 	/**
-	 * Test negative match if test folder file can't
-	 * be created.
+	 * Test negative match if test folder file can't be created.
 	 * 
-	 * @throws Exception If test fails.
+	 * @throws Exception
+	 *             If test fails.
 	 */
 	@Test
-	public void testIsNegativeMatchIfTestFolderCantBeCreated() throws Exception  {
-				
+	public void testIsNegativeMatchIfTestFolderCantBeCreated() throws Exception {
+
 		String path = "/some-path";
 
-		// complete mock set setup		
-		FileObject ChildFileObject = EasyMock.createMock( FileObject.class);
-		EasyMock.expect( ChildFileObject.exists()).andReturn(false);
+		// complete mock set setup
+		FileObject ChildFileObject = EasyMock.createMock(FileObject.class);
+		EasyMock.expect(ChildFileObject.exists()).andReturn(false);
 		ChildFileObject.createFolder();
-		EasyMock.expect( ChildFileObject.exists()).andReturn(false);
-		EasyMock.replay( ChildFileObject );
-		
+		EasyMock.expect(ChildFileObject.exists()).andReturn(false);
+		EasyMock.replay(ChildFileObject);
+
 		// complete mock set setup
-		EasyMock.expect( fileObject.resolveFile( EasyMock.isA(String.class), EasyMock.isA(NameScope.class) )).andReturn(ChildFileObject);			
-		EasyMock.replay( fileObject );		
-		
+		EasyMock.expect(fileObject.resolveFile(EasyMock.isA(String.class), EasyMock.isA(NameScope.class)))
+				.andReturn(ChildFileObject);
+		EasyMock.replay(fileObject);
+
 		// complete mock set setup
-		EasyMock.expect( session.resolveFile(path)).andReturn(fileObject);	
-		EasyMock.replay( session );		
-		
+		EasyMock.expect(session.resolveFile(path)).andReturn(fileObject);
+		EasyMock.replay(session);
+
 		// test
-		assertFalse(matcher.matches( path ));		
+		assertFalse(matcher.matches(path));
 
 		// verify mocks
-		EasyMock.verify( session );
-		EasyMock.verify( fileObject );		
-		EasyMock.verify( ChildFileObject );		
+		EasyMock.verify(session);
+		EasyMock.verify(fileObject);
+		EasyMock.verify(ChildFileObject);
 	}
 
 	/**
-	 * Test negative match if test folder file can't
-	 * be deleted again.
+	 * Test negative match if test folder file can't be deleted again.
 	 * 
-	 * @throws Exception If test fails.
+	 * @throws Exception
+	 *             If test fails.
 	 */
 	@Test
-	public void testIsNegativeMatchIfTestFolderCantBeDeleted() throws Exception  {
-				
+	public void testIsNegativeMatchIfTestFolderCantBeDeleted() throws Exception {
+
 		String path = "/some-path";
 
 		// complete mock set setup
-		FileObject ChildFileObject = EasyMock.createMock( FileObject.class);
-		EasyMock.expect( ChildFileObject.exists()).andReturn(false);
+		FileObject ChildFileObject = EasyMock.createMock(FileObject.class);
+		EasyMock.expect(ChildFileObject.exists()).andReturn(false);
 		ChildFileObject.createFolder();
-		EasyMock.expect( ChildFileObject.exists()).andReturn(true);
-		EasyMock.expect( ChildFileObject.delete()).andReturn(true);
-		EasyMock.expect( ChildFileObject.exists()).andReturn(true);
-		EasyMock.replay( ChildFileObject );
-		
+		EasyMock.expect(ChildFileObject.exists()).andReturn(true);
+		EasyMock.expect(ChildFileObject.delete()).andReturn(true);
+		EasyMock.expect(ChildFileObject.exists()).andReturn(true);
+		EasyMock.replay(ChildFileObject);
+
 		// complete mock set setup
-		EasyMock.expect( fileObject.resolveFile( EasyMock.isA(String.class), EasyMock.isA(NameScope.class) )).andReturn(ChildFileObject);			
-		EasyMock.replay( fileObject );		
-		
+		EasyMock.expect(fileObject.resolveFile(EasyMock.isA(String.class), EasyMock.isA(NameScope.class)))
+				.andReturn(ChildFileObject);
+		EasyMock.replay(fileObject);
+
 		// complete mock set setup
-		EasyMock.expect( session.resolveFile(path)).andReturn(fileObject);	
-		EasyMock.replay( session );		
-		
+		EasyMock.expect(session.resolveFile(path)).andReturn(fileObject);
+		EasyMock.replay(session);
+
 		// test
-		assertFalse(matcher.matches( path ));		
+		assertFalse(matcher.matches(path));
 
 		// verify mocks
-		EasyMock.verify( session );
-		EasyMock.verify( fileObject );		
-		EasyMock.verify( ChildFileObject );		
+		EasyMock.verify(session);
+		EasyMock.verify(fileObject);
+		EasyMock.verify(ChildFileObject);
 	}
-	
 
 	/**
 	 * Test negative match if session throws exception.
 	 * 
-	 * @throws Exception If test fails.
+	 * @throws Exception
+	 *             If test fails.
 	 */
 	@Test
-	public void testIsNegativeMatchIfSessionThrowsException() throws Exception  {
-				
+	public void testIsNegativeMatchIfSessionThrowsException() throws Exception {
+
 		String path = "/some-path";
 
 		// complete mock set setup
-		EasyMock.replay( fileObject );		
-		
+		EasyMock.replay(fileObject);
+
 		// complete mock set setup
-		EasyMock.expect( session.resolveFile(path)).andThrow(new SessionException("..."));	
-		EasyMock.replay( session );		
-		
+		EasyMock.expect(session.resolveFile(path)).andThrow(new SessionException("..."));
+		EasyMock.replay(session);
+
 		// test
-		assertFalse(matcher.matches( path ));		
+		assertFalse(matcher.matches(path));
 
 		// verify mocks
-		EasyMock.verify( session );
-		EasyMock.verify( fileObject );		
+		EasyMock.verify(session);
+		EasyMock.verify(fileObject);
 	}
-	
+
 }

@@ -50,291 +50,290 @@ import com.alpha.testutils.ObjectMotherModule;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
 public class ModuleDescriptorVariablesBuilderImplIntegrationTest {
 
-    /**
-     * Empty string.
-     */
-    static final String EMPTY_STRING = "";
+	/**
+	 * Empty string.
+	 */
+	static final String EMPTY_STRING = "";
 
-    /**
-     * Null string.
-     */
-    static final String NULL_STRING = null;
+	/**
+	 * Null string.
+	 */
+	static final String NULL_STRING = null;
 
-    /**
-     * Factory.
-     */
-    @Resource
-    ObjectFactory<ModuleDescriptorVariablesBuilder> moduleDescriptorVariablesBuilderFactory;
+	/**
+	 * Factory.
+	 */
+	@Resource
+	ObjectFactory<ModuleDescriptorVariablesBuilder> moduleDescriptorVariablesBuilderFactory;
 
-    /**
-     * Object mother for module.
-     */
-    ObjectMotherModule moduleMother;
+	/**
+	 * Object mother for module.
+	 */
+	ObjectMotherModule moduleMother;
 
-    /**
-     * Random variable name.
-     */
-    String randomVarName;
+	/**
+	 * Random variable name.
+	 */
+	String randomVarName;
 
-    /**
-     * Random variable name.
-     */
-    String randomVarName2;
+	/**
+	 * Random variable name.
+	 */
+	String randomVarName2;
 
-    /**
-     * Random resource name.
-     */
-    String randomResourceId;
+	/**
+	 * Random resource name.
+	 */
+	String randomResourceId;
 
-    /**
-     * Random variable value.
-     */
-    String randomVariableValue;
+	/**
+	 * Random variable value.
+	 */
+	String randomVariableValue;
 
-    /**
-     * Random variable value.
-     */
-    String randomVariableValue2;
+	/**
+	 * Random variable value.
+	 */
+	String randomVariableValue2;
 
-    /**
-     * Module descriptor object factory.
-     */
-    com.alpha.pineapple.model.module.ObjectFactory modelFactory;
+	/**
+	 * Module descriptor object factory.
+	 */
+	com.alpha.pineapple.model.module.ObjectFactory modelFactory;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-	randomVarName = RandomStringUtils.randomAlphabetic(10) + "-var";
-	randomVarName2 = RandomStringUtils.randomAlphabetic(10) + "-var";
-	randomResourceId = RandomStringUtils.randomAlphabetic(10) + "-res";
-	randomVariableValue = RandomStringUtils.randomAlphabetic(10);
-	randomVariableValue2 = RandomStringUtils.randomAlphabetic(10);
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		randomVarName = RandomStringUtils.randomAlphabetic(10) + "-var";
+		randomVarName2 = RandomStringUtils.randomAlphabetic(10) + "-var";
+		randomResourceId = RandomStringUtils.randomAlphabetic(10) + "-res";
+		randomVariableValue = RandomStringUtils.randomAlphabetic(10);
+		randomVariableValue2 = RandomStringUtils.randomAlphabetic(10);
 
-	// create module object mother
-	moduleMother = new ObjectMotherModule();
+		// create module object mother
+		moduleMother = new ObjectMotherModule();
 
-	// create model object factory
-	modelFactory = new com.alpha.pineapple.model.module.ObjectFactory();
-    }
+		// create model object factory
+		modelFactory = new com.alpha.pineapple.model.module.ObjectFactory();
+	}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    /**
-     * Build variables.
-     * 
-     * @param descriptor
-     *            module descriptor to build variables from.
-     * 
-     * @return variables.
-     * 
-     * @throws VariableSubstitutionException
-     *             if build fails.
-     */
-    Variables buildVariables(Module descriptor) throws VariableSubstitutionException {
-	ModuleDescriptorVariablesBuilder builder = moduleDescriptorVariablesBuilderFactory.getObject();
-	builder.setModel(descriptor);
-	Variables variables = builder.getVariables();
-	return variables;
-    }
+	/**
+	 * Build variables.
+	 * 
+	 * @param descriptor
+	 *            module descriptor to build variables from.
+	 * 
+	 * @return variables.
+	 * 
+	 * @throws VariableSubstitutionException
+	 *             if build fails.
+	 */
+	Variables buildVariables(Module descriptor) throws VariableSubstitutionException {
+		ModuleDescriptorVariablesBuilder builder = moduleDescriptorVariablesBuilderFactory.getObject();
+		builder.setModel(descriptor);
+		Variables variables = builder.getVariables();
+		return variables;
+	}
 
-    /**
-     * Test that factory can be looked up from the context.
-     */
-    @Test
-    public void testCanGetFactoryFromContext() {
-	assertNotNull(moduleDescriptorVariablesBuilderFactory);
-    }
+	/**
+	 * Test that factory can be looked up from the context.
+	 */
+	@Test
+	public void testCanGetFactoryFromContext() {
+		assertNotNull(moduleDescriptorVariablesBuilderFactory);
+	}
 
-    /**
-     * Test builder can be created from factory.
-     */
-    @Test
-    public void testCanCreateBuilder() {
-	assertNotNull(moduleDescriptorVariablesBuilderFactory.getObject());
-    }
+	/**
+	 * Test builder can be created from factory.
+	 */
+	@Test
+	public void testCanCreateBuilder() {
+		assertNotNull(moduleDescriptorVariablesBuilderFactory.getObject());
+	}
 
-    /**
-     * Test that variables construction fails if model isn't configured.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test(expected = VariableSubstitutionException.class)
-    public void testVariablesConstructionFailsIfModelIsntSet() throws Exception {
-	ModuleDescriptorVariablesBuilder builder = moduleDescriptorVariablesBuilderFactory.getObject();
-	builder.setModel(null);
-	builder.getVariables();
-    }
+	/**
+	 * Test that variables construction fails if model isn't configured.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test(expected = VariableSubstitutionException.class)
+	public void testVariablesConstructionFailsIfModelIsntSet() throws Exception {
+		ModuleDescriptorVariablesBuilder builder = moduleDescriptorVariablesBuilderFactory.getObject();
+		builder.setModel(null);
+		builder.getVariables();
+	}
 
-    /**
-     * Test that variables can be created from descriptor with no variables
-     * section defined.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetVariablesFromDescriptorWithNoVariablesSectionDefined() throws Exception {
-	Module descriptor = moduleMother.createModuleObject();
-	descriptor.setVariables(null);
+	/**
+	 * Test that variables can be created from descriptor with no variables section
+	 * defined.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetVariablesFromDescriptorWithNoVariablesSectionDefined() throws Exception {
+		Module descriptor = moduleMother.createModuleObject();
+		descriptor.setVariables(null);
 
-	Variables variables = buildVariables(descriptor);
+		Variables variables = buildVariables(descriptor);
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(0, map.size());
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(0, map.size());
+	}
 
-    /**
-     * Test that variables can be created from descriptor with empty variables
-     * section.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetVariablesFromDescriptorWithNoVariablesDefined() throws Exception {
-	Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
+	/**
+	 * Test that variables can be created from descriptor with empty variables
+	 * section.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetVariablesFromDescriptorWithNoVariablesDefined() throws Exception {
+		Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
 
-	Variables variables = buildVariables(descriptor);
+		Variables variables = buildVariables(descriptor);
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(0, map.size());
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(0, map.size());
+	}
 
-    /**
-     * Test that variables can be created from model with single variable
-     * defined.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetVariablesFromModelWithSingleVariableDefined() throws Exception {
-	Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
-	moduleMother.addVariable(descriptor, randomVarName, randomVariableValue);
+	/**
+	 * Test that variables can be created from model with single variable defined.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetVariablesFromModelWithSingleVariableDefined() throws Exception {
+		Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
+		moduleMother.addVariable(descriptor, randomVarName, randomVariableValue);
 
-	Variables variables = buildVariables(descriptor);
+		Variables variables = buildVariables(descriptor);
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(1, map.size());
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(1, map.size());
+	}
 
-    /**
-     * Test that variables can be created from model with two variable defined.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetVariablesFromModelWithTwoVariablesDefined() throws Exception {
-	Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
-	moduleMother.addVariable(descriptor, randomVarName, randomVariableValue);
-	moduleMother.addVariable(descriptor, randomVarName2, randomVariableValue2);
+	/**
+	 * Test that variables can be created from model with two variable defined.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetVariablesFromModelWithTwoVariablesDefined() throws Exception {
+		Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
+		moduleMother.addVariable(descriptor, randomVarName, randomVariableValue);
+		moduleMother.addVariable(descriptor, randomVarName2, randomVariableValue2);
 
-	Variables variables = buildVariables(descriptor);
+		Variables variables = buildVariables(descriptor);
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(2, map.size());
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(2, map.size());
+	}
 
-    /**
-     * Test that variables with identical keys is only added once.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testGetVariablesWithIdentialVariablesIsOnlyAddedOnce() throws Exception {
-	Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
-	moduleMother.addVariable(descriptor, randomVarName, randomVariableValue);
-	moduleMother.addVariable(descriptor, randomVarName, randomVariableValue2);
+	/**
+	 * Test that variables with identical keys is only added once.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testGetVariablesWithIdentialVariablesIsOnlyAddedOnce() throws Exception {
+		Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
+		moduleMother.addVariable(descriptor, randomVarName, randomVariableValue);
+		moduleMother.addVariable(descriptor, randomVarName, randomVariableValue2);
 
-	Variables variables = buildVariables(descriptor);
+		Variables variables = buildVariables(descriptor);
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(1, map.size());
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(1, map.size());
+	}
 
-    /**
-     * Test that variable with null key isn't added to variables.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testVariableWithNullKeyIsntAddedToVariables() throws Exception {
-	Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
-	moduleMother.addVariable(descriptor, null, randomVariableValue);
+	/**
+	 * Test that variable with null key isn't added to variables.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testVariableWithNullKeyIsntAddedToVariables() throws Exception {
+		Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
+		moduleMother.addVariable(descriptor, null, randomVariableValue);
 
-	Variables variables = buildVariables(descriptor);
+		Variables variables = buildVariables(descriptor);
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(0, map.size());
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(0, map.size());
+	}
 
-    /**
-     * Test that variable with empty key isn't added to variables.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testVariableWithEmptyKeyIsntAddedToVariables() throws Exception {
-	Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
-	moduleMother.addVariable(descriptor, "", randomVariableValue);
+	/**
+	 * Test that variable with empty key isn't added to variables.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testVariableWithEmptyKeyIsntAddedToVariables() throws Exception {
+		Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
+		moduleMother.addVariable(descriptor, "", randomVariableValue);
 
-	Variables variables = buildVariables(descriptor);
+		Variables variables = buildVariables(descriptor);
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(0, map.size());
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(0, map.size());
+	}
 
-    /**
-     * Test that variable with null value isn't added to variables.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testVariableWithNullValueIsntAddedToVariables() throws Exception {
-	Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
-	moduleMother.addVariable(descriptor, randomVarName, null);
+	/**
+	 * Test that variable with null value isn't added to variables.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testVariableWithNullValueIsntAddedToVariables() throws Exception {
+		Module descriptor = moduleMother.createModuleObjectWithEmptyVariables();
+		moduleMother.addVariable(descriptor, randomVarName, null);
 
-	Variables variables = buildVariables(descriptor);
+		Variables variables = buildVariables(descriptor);
 
-	// test
-	assertNotNull(variables);
-	Map<String, String> map = variables.getMap();
-	assertNotNull(map);
-	assertEquals(0, map.size());
-    }
+		// test
+		assertNotNull(variables);
+		Map<String, String> map = variables.getMap();
+		assertNotNull(map);
+		assertEquals(0, map.size());
+	}
 
 }

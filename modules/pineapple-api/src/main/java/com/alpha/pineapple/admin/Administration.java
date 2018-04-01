@@ -36,60 +36,61 @@ import com.alpha.pineapple.module.ModuleRepository;;
  */
 public interface Administration {
 
-    /**
-     * Get resource repository used for resource management of the environment
-     * configuration.
-     * 
-     * @return resource repository.
-     */
-    ResourceRepository getResourceRepository();
+	/**
+	 * Get resource repository used for resource management of the environment
+	 * configuration.
+	 * 
+	 * @return resource repository.
+	 */
+	ResourceRepository getResourceRepository();
 
-    /**
-     * Get result repository used for execution management.
-     * 
-     * @return result repository.
-     */
-    ResultRepository getResultRepository();
+	/**
+	 * Get result repository used for execution management.
+	 * 
+	 * @return result repository.
+	 */
+	ResultRepository getResultRepository();
 
-    /**
-     * Get credential provider used for credential management.
-     * 
-     * @return credential provider used for credential management.
-     */
-    CredentialProvider getCredentialProvider();
+	/**
+	 * Get credential provider used for credential management.
+	 * 
+	 * @return credential provider used for credential management.
+	 */
+	CredentialProvider getCredentialProvider();
 
-    /**
-     * Set credential provider used for credential management.
-     * 
-     * @param provider
-     *            credential provider used for credential management.
-     */
-    void setCredentialProvider(CredentialProvider provider);
+	/**
+	 * Set credential provider used for credential management.
+	 * 
+	 * @param provider
+	 *            credential provider used for credential management.
+	 */
+	void setCredentialProvider(CredentialProvider provider);
 
-    /**
-     * Get module repository used for execution management.
-     * 
-     * @return module repository.
-     */
-    ModuleRepository getModuleRepository();
+	/**
+	 * Get module repository used for execution management.
+	 * 
+	 * @return module repository.
+	 */
+	ModuleRepository getModuleRepository();
 
-    /**
-     * Get synchronous operation task used for execution management.
-     */
-    OperationTask getOperationTask();
+	/**
+	 * Get synchronous operation task used for execution management.
+	 */
+	OperationTask getOperationTask();
 
-    /**
-     * Get plugin repository used for plugin management.
-     * 
-     * @return plugin repository.
-     */
-    PluginRepository getPluginRepository();
+	/**
+	 * Get plugin repository used for plugin management.
+	 * 
+	 * @return plugin repository.
+	 */
+	PluginRepository getPluginRepository();
 
-    /**
-     * Get scheduled operation repository used for management of scheduled operations.
-     * 
-     * @return scheduled operation repository.
-     */
-    ScheduledOperationRespository getScheduledOperationRespository();
+	/**
+	 * Get scheduled operation repository used for management of scheduled
+	 * operations.
+	 * 
+	 * @return scheduled operation repository.
+	 */
+	ScheduledOperationRespository getScheduledOperationRespository();
 
 }

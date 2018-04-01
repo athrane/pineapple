@@ -56,251 +56,251 @@ import com.alpha.testutils.DockerTestHelper;
 @ContextConfiguration(locations = { "/com.alpha.pineapple.docker-config.xml" })
 public class CreateTaggedImageCommandSystemTest {
 
-    /**
-     * Object under test.
-     */
-    @Resource
-    Command createTaggedImageCommand;
+	/**
+	 * Object under test.
+	 */
+	@Resource
+	Command createTaggedImageCommand;
 
-    /**
-     * Context.
-     */
-    Context context;
+	/**
+	 * Context.
+	 */
+	Context context;
 
-    /**
-     * Execution result.
-     */
-    ExecutionResult executionResult;
+	/**
+	 * Execution result.
+	 */
+	ExecutionResult executionResult;
 
-    /**
-     * Docker session.
-     */
-    DockerSession session;
+	/**
+	 * Docker session.
+	 */
+	DockerSession session;
 
-    /**
-     * Docker helper.
-     */
-    @Resource
-    DockerTestHelper dockerHelper;
+	/**
+	 * Docker helper.
+	 */
+	@Resource
+	DockerTestHelper dockerHelper;
 
-    /**
-     * Docker client.
-     */
-    @Resource
-    DockerClient dockerClient;
+	/**
+	 * Docker client.
+	 */
+	@Resource
+	DockerClient dockerClient;
 
-    /**
-     * Source image info.
-     */
-    ImageInfo sourceImageInfo;
+	/**
+	 * Source image info.
+	 */
+	ImageInfo sourceImageInfo;
 
-    /**
-     * Target image info.
-     */
-    ImageInfo targetImageInfo;
+	/**
+	 * Target image info.
+	 */
+	ImageInfo targetImageInfo;
 
-    /**
-     * Target image info.
-     */
-    ImageInfo targetImageInfo2;
+	/**
+	 * Target image info.
+	 */
+	ImageInfo targetImageInfo2;
 
-    /**
-     * Docker info objects builder.
-     */
-    @Resource
-    InfoBuilder dockerInfoBuilder;
+	/**
+	 * Docker info objects builder.
+	 */
+	@Resource
+	InfoBuilder dockerInfoBuilder;
 
-    /**
-     * Random repository.
-     */
-    String randomRepository;
+	/**
+	 * Random repository.
+	 */
+	String randomRepository;
 
-    /**
-     * Random tag.
-     */
-    String randomTag;
+	/**
+	 * Random tag.
+	 */
+	String randomTag;
 
-    /**
-     * Random image.
-     */
-    String randomImage;
+	/**
+	 * Random image.
+	 */
+	String randomImage;
 
-    /**
-     * Random image.
-     */
-    String randomImage2;
+	/**
+	 * Random image.
+	 */
+	String randomImage2;
 
-    @Before
-    public void setUp() throws Exception {
-	randomRepository = RandomStringUtils.randomAlphabetic(10).toLowerCase();
-	randomTag = RandomStringUtils.randomAlphabetic(10);
-	randomImage = RandomStringUtils.randomAlphabetic(10).toLowerCase();
-	randomImage2 = RandomStringUtils.randomAlphabetic(10).toLowerCase();
+	@Before
+	public void setUp() throws Exception {
+		randomRepository = RandomStringUtils.randomAlphabetic(10).toLowerCase();
+		randomTag = RandomStringUtils.randomAlphabetic(10);
+		randomImage = RandomStringUtils.randomAlphabetic(10).toLowerCase();
+		randomImage2 = RandomStringUtils.randomAlphabetic(10).toLowerCase();
 
-	// create context
-	context = new ContextBase();
+		// create context
+		context = new ContextBase();
 
-	// create execution result
-	executionResult = new ExecutionResultImpl("root");
+		// create execution result
+		executionResult = new ExecutionResultImpl("root");
 
-	// create session
-	session = dockerHelper.createDefaultSession();
+		// create session
+		session = dockerHelper.createDefaultSession();
 
-	// create image info's
-	sourceImageInfo = dockerHelper.createDefaultTinyImageInfo();
-	targetImageInfo = dockerHelper.createDefaultTaggedImageInfo();
-	targetImageInfo2 = dockerHelper.createDefaultTaggedImageInfo();
-    }
+		// create image info's
+		sourceImageInfo = dockerHelper.createDefaultTinyImageInfo();
+		targetImageInfo = dockerHelper.createDefaultTaggedImageInfo();
+		targetImageInfo2 = dockerHelper.createDefaultTaggedImageInfo();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	dockerHelper.deleteImage(session, targetImageInfo);
-	dockerHelper.deleteImage(session, targetImageInfo2);
-    }
+	@After
+	public void tearDown() throws Exception {
+		dockerHelper.deleteImage(session, targetImageInfo);
+		dockerHelper.deleteImage(session, targetImageInfo2);
+	}
 
-    /**
-     * Test that command instance can be created in application context.
-     */
-    @Test
-    public void testCanGetInstance() throws Exception {
-	assertNotNull(createTaggedImageCommand);
-    }
+	/**
+	 * Test that command instance can be created in application context.
+	 */
+	@Test
+	public void testCanGetInstance() throws Exception {
+		assertNotNull(createTaggedImageCommand);
+	}
 
-    /**
-     * Test that command can create tagged image and return a single successful
-     * root result.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCreateTaggedImage() throws Exception {
-	dockerHelper.createImage(session, sourceImageInfo);
+	/**
+	 * Test that command can create tagged image and return a single successful root
+	 * result.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCreateTaggedImage() throws Exception {
+		dockerHelper.createImage(session, sourceImageInfo);
 
-	// setup context
-	context.put(CreateTaggedImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(CreateTaggedImageCommand.SESSION_KEY, session);
-	context.put(CreateTaggedImageCommand.SOURCE_IMAGE_INFO_KEY, sourceImageInfo);
-	context.put(CreateTaggedImageCommand.TARGET_IMAGE_INFO_KEY, targetImageInfo);
+		// setup context
+		context.put(CreateTaggedImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(CreateTaggedImageCommand.SESSION_KEY, session);
+		context.put(CreateTaggedImageCommand.SOURCE_IMAGE_INFO_KEY, sourceImageInfo);
+		context.put(CreateTaggedImageCommand.TARGET_IMAGE_INFO_KEY, targetImageInfo);
 
-	// execute command
-	createTaggedImageCommand.execute(context);
+		// execute command
+		createTaggedImageCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
-    /**
-     * Test that command can create tagged image from tagged image. and return a
-     * single successful root result.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanTagTaggedImage() throws Exception {
-	dockerHelper.createImage(session, sourceImageInfo);
-	dockerHelper.tagImage(session, sourceImageInfo, targetImageInfo);
+	/**
+	 * Test that command can create tagged image from tagged image. and return a
+	 * single successful root result.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanTagTaggedImage() throws Exception {
+		dockerHelper.createImage(session, sourceImageInfo);
+		dockerHelper.tagImage(session, sourceImageInfo, targetImageInfo);
 
-	// setup context
-	context.put(CreateTaggedImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(CreateTaggedImageCommand.SESSION_KEY, session);
-	context.put(CreateTaggedImageCommand.SOURCE_IMAGE_INFO_KEY, targetImageInfo);
-	context.put(CreateTaggedImageCommand.TARGET_IMAGE_INFO_KEY, targetImageInfo2);
+		// setup context
+		context.put(CreateTaggedImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(CreateTaggedImageCommand.SESSION_KEY, session);
+		context.put(CreateTaggedImageCommand.SOURCE_IMAGE_INFO_KEY, targetImageInfo);
+		context.put(CreateTaggedImageCommand.TARGET_IMAGE_INFO_KEY, targetImageInfo2);
 
-	// execute command
-	createTaggedImageCommand.execute(context);
+		// execute command
+		createTaggedImageCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
-    /**
-     * Test that command can tag existing image with a successful result.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testTagImageIsIdempotent() throws Exception {
-	dockerHelper.createImage(session, sourceImageInfo);
-	dockerHelper.tagImage(session, sourceImageInfo, targetImageInfo);
+	/**
+	 * Test that command can tag existing image with a successful result.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testTagImageIsIdempotent() throws Exception {
+		dockerHelper.createImage(session, sourceImageInfo);
+		dockerHelper.tagImage(session, sourceImageInfo, targetImageInfo);
 
-	// setup context
-	context.put(CreateTaggedImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(CreateTaggedImageCommand.SESSION_KEY, session);
-	context.put(CreateTaggedImageCommand.SOURCE_IMAGE_INFO_KEY, sourceImageInfo);
-	context.put(CreateTaggedImageCommand.TARGET_IMAGE_INFO_KEY, targetImageInfo);
+		// setup context
+		context.put(CreateTaggedImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(CreateTaggedImageCommand.SESSION_KEY, session);
+		context.put(CreateTaggedImageCommand.SOURCE_IMAGE_INFO_KEY, sourceImageInfo);
+		context.put(CreateTaggedImageCommand.TARGET_IMAGE_INFO_KEY, targetImageInfo);
 
-	// execute command
-	createTaggedImageCommand.execute(context);
+		// execute command
+		createTaggedImageCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
-    /**
-     * Test that command can create tagged image from itself (e.g. the operation
-     * is idempotent) and return a single successful root result.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testTagImageWithItselfIsIdempotent() throws Exception {
-	dockerHelper.createImage(session, sourceImageInfo);
-	dockerHelper.tagImage(session, sourceImageInfo, targetImageInfo);
+	/**
+	 * Test that command can create tagged image from itself (e.g. the operation is
+	 * idempotent) and return a single successful root result.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testTagImageWithItselfIsIdempotent() throws Exception {
+		dockerHelper.createImage(session, sourceImageInfo);
+		dockerHelper.tagImage(session, sourceImageInfo, targetImageInfo);
 
-	// setup context
-	context.put(CreateTaggedImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(CreateTaggedImageCommand.SESSION_KEY, session);
-	context.put(CreateTaggedImageCommand.SOURCE_IMAGE_INFO_KEY, targetImageInfo);
-	context.put(CreateTaggedImageCommand.TARGET_IMAGE_INFO_KEY, targetImageInfo);
+		// setup context
+		context.put(CreateTaggedImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(CreateTaggedImageCommand.SESSION_KEY, session);
+		context.put(CreateTaggedImageCommand.SOURCE_IMAGE_INFO_KEY, targetImageInfo);
+		context.put(CreateTaggedImageCommand.TARGET_IMAGE_INFO_KEY, targetImageInfo);
 
-	// execute command
-	createTaggedImageCommand.execute(context);
+		// execute command
+		createTaggedImageCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-    }
+		// test
+		assertTrue(executionResult.isSuccess());
+	}
 
-    /**
-     * Test that command can create tagged image with custom version tag.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testCanTagTaggedImageWithCustomVersionedTag() throws Exception {
-	dockerHelper.createImage(session, sourceImageInfo);
-	targetImageInfo = dockerInfoBuilder.buildImageInfo(randomRepository, "9.9");
+	/**
+	 * Test that command can create tagged image with custom version tag.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCanTagTaggedImageWithCustomVersionedTag() throws Exception {
+		dockerHelper.createImage(session, sourceImageInfo);
+		targetImageInfo = dockerInfoBuilder.buildImageInfo(randomRepository, "9.9");
 
-	// setup context
-	context.put(CreateTaggedImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(CreateTaggedImageCommand.SESSION_KEY, session);
-	context.put(CreateTaggedImageCommand.SOURCE_IMAGE_INFO_KEY, sourceImageInfo);
-	context.put(CreateTaggedImageCommand.TARGET_IMAGE_INFO_KEY, targetImageInfo);
+		// setup context
+		context.put(CreateTaggedImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(CreateTaggedImageCommand.SESSION_KEY, session);
+		context.put(CreateTaggedImageCommand.SOURCE_IMAGE_INFO_KEY, sourceImageInfo);
+		context.put(CreateTaggedImageCommand.TARGET_IMAGE_INFO_KEY, targetImageInfo);
 
-	// execute command
-	createTaggedImageCommand.execute(context);
+		// execute command
+		createTaggedImageCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isSuccess());
-	assertTrue(dockerClient.imageExists(session, targetImageInfo));
+		// test
+		assertTrue(executionResult.isSuccess());
+		assertTrue(dockerClient.imageExists(session, targetImageInfo));
 
-    }
+	}
 
-    /**
-     * Test that command fails if source image doesn't exists and return a
-     * failed result.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testFailsIfSourceImageDoesntExists() throws Exception {
-	sourceImageInfo = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
-	targetImageInfo = dockerInfoBuilder.buildImageInfo(randomImage2, LATEST_IMAGE_TAG);
+	/**
+	 * Test that command fails if source image doesn't exists and return a failed
+	 * result.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFailsIfSourceImageDoesntExists() throws Exception {
+		sourceImageInfo = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
+		targetImageInfo = dockerInfoBuilder.buildImageInfo(randomImage2, LATEST_IMAGE_TAG);
 
-	// setup context
-	context.put(CreateTaggedImageCommand.EXECUTIONRESULT_KEY, executionResult);
-	context.put(CreateTaggedImageCommand.SESSION_KEY, session);
-	context.put(CreateTaggedImageCommand.SOURCE_IMAGE_INFO_KEY, sourceImageInfo);
-	context.put(CreateTaggedImageCommand.TARGET_IMAGE_INFO_KEY, targetImageInfo);
+		// setup context
+		context.put(CreateTaggedImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(CreateTaggedImageCommand.SESSION_KEY, session);
+		context.put(CreateTaggedImageCommand.SOURCE_IMAGE_INFO_KEY, sourceImageInfo);
+		context.put(CreateTaggedImageCommand.TARGET_IMAGE_INFO_KEY, targetImageInfo);
 
-	// execute command
-	createTaggedImageCommand.execute(context);
+		// execute command
+		createTaggedImageCommand.execute(context);
 
-	// test
-	assertTrue(executionResult.isFailed());
-    }
+		// test
+		assertTrue(executionResult.isFailed());
+	}
 
 }

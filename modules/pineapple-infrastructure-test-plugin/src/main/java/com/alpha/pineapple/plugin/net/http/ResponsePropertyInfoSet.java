@@ -20,14 +20,13 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.net.http;
 
 import org.hamcrest.Matcher;
 
 /**
- * Defines a collection of {@link ResponsePropertyInfo} which can tested
- * against the content of a {@link HttpInvocationsSet}.  
+ * Defines a collection of {@link ResponsePropertyInfo} which can tested against
+ * the content of a {@link HttpInvocationsSet}.
  */
 public interface ResponsePropertyInfoSet {
 
@@ -41,11 +40,15 @@ public interface ResponsePropertyInfoSet {
 	/**
 	 * Register a response property object.
 	 * 
-	 * @param name The name of the property.
-	 * @param xpath XPath expression which defines where the value can be
-	 * extracted from a HTTP response.   
-	 * @param intra Intra sequence matcher. 
-	 * @param inter Inter sequence matcher.
+	 * @param name
+	 *            The name of the property.
+	 * @param xpath
+	 *            XPath expression which defines where the value can be extracted
+	 *            from a HTTP response.
+	 * @param intra
+	 *            Intra sequence matcher.
+	 * @param inter
+	 *            Inter sequence matcher.
 	 */
 	void addProperty(String name, String xpath, Matcher<?> intra, Matcher<?> inter);
 }

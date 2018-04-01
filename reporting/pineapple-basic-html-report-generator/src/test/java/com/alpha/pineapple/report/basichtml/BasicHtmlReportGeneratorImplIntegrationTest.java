@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.report.basichtml;
 
 import static org.junit.Assert.assertEquals;
@@ -50,27 +49,27 @@ import com.alpha.pineapple.execution.ResultListener;
 import com.alpha.springutils.DirectoryTestExecutionListener;
 
 /**
- * Integration test for the <code>BasicHtmlReportGeneratorImpl</code> class.  
+ * Integration test for the <code>BasicHtmlReportGeneratorImpl</code> class.
  */
-@RunWith( SpringJUnit4ClassRunner.class )
-@TestExecutionListeners( {DependencyInjectionTestExecutionListener.class, DirectoryTestExecutionListener.class} )
-@ContextConfiguration( locations = { "/com.alpha.pineapple.report.basichtml-config.xml" } )
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirectoryTestExecutionListener.class })
+@ContextConfiguration(locations = { "/com.alpha.pineapple.report.basichtml-config.xml" })
 public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 	/**
 	 * Operation name.
 	 */
 	static final String OPERATION = "operation on module";
-	
-    /**
-     * Object under test.
-     */
-    @Resource( name = BasicHtmlReportGeneratorImpl.GENERATOR_BEAN_ID )
-    ResultListener generator;
-    
-    /**
-     * Current test directory.
-     */
+
+	/**
+	 * Object under test.
+	 */
+	@Resource(name = BasicHtmlReportGeneratorImpl.GENERATOR_BEAN_ID)
+	ResultListener generator;
+
+	/**
+	 * Current test directory.
+	 */
 	File testDirectory;
 
 	/**
@@ -82,40 +81,44 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 	 * Root execution result.
 	 */
 	ExecutionResult rootResult;
-	
+
 	@Before
 	public void setUp() throws Exception {
-		
+
 		// get the test directory
 		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		
+
 		testDirectory = null;
 	}
 
 	/**
-	 * Create result  notification.
+	 * Create result notification.
+	 * 
 	 * @return
 	 */
 	ExecutionResultNotification createNotificationAndRootResult() {
-		rootResult = new ExecutionResultImpl( OPERATION );
+		rootResult = new ExecutionResultImpl(OPERATION);
 		rootResult.setState(ExecutionState.SUCCESS);
 		notification = ExecutionResultNotificationImpl.getInstance(rootResult, ExecutionState.SUCCESS);
 		return notification;
-	}	
-	
+	}
+
 	/**
-	 * Return first file with suffix. 
-	 * @param directory Directory to search.
-	 * @param suffix Suffix to search for.
+	 * Return first file with suffix.
+	 * 
+	 * @param directory
+	 *            Directory to search.
+	 * @param suffix
+	 *            Suffix to search for.
 	 * 
 	 * @return Return first file with suffix.
 	 */
 	File getFile(File[] directory, String suffix) {
-		
+
 		for (File content : directory) {
 			if (content.getName().endsWith(suffix)) {
 				return content;
@@ -127,25 +130,26 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 	/**
 	 * Get content of time stamped directory.
 	 * 
-	 * @param generator Report generator.
+	 * @param generator
+	 *            Report generator.
 	 * 
 	 * @return content of time stamped directory.
 	 */
-	File[] getTimeStampedDirectoryContent( ResultListener generator) {
-		
+	File[] getTimeStampedDirectoryContent(ResultListener generator) {
+
 		// type cast
 		ReportGeneratorInfo generatorInfo = (ReportGeneratorInfo) generator;
-		
+
 		// get directory and files
-		File reportDirectory = generatorInfo.getCurrentReportDirectory();		
+		File reportDirectory = generatorInfo.getCurrentReportDirectory();
 		File[] reportdirectoryContent = reportDirectory.listFiles();
-		
+
 		// get time stamped directory
 		File timestamedDirectory = reportdirectoryContent[0];
 		File[] timestamedDirectoryContent = timestamedDirectory.listFiles();
 		return timestamedDirectoryContent;
-	}	
-	
+	}
+
 	/**
 	 * Test that generator can be obtained from the Spring context.
 	 */
@@ -158,311 +162,307 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 	 * Test that generator can be obtained from no-arg factory method.
 	 */
 	@Test
-	public void testCanGetInstanceFromNoArgFactoryMethod() {		
+	public void testCanGetInstanceFromNoArgFactoryMethod() {
 		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance();		
-		assertNotNull(factoryCreatedGenerator );
+		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance();
+		assertNotNull(factoryCreatedGenerator);
 	}
-	
+
 	/**
 	 * Test that generator can be obtained from factory method.
 	 */
 	@Test
-	public void testCanGetInstanceFromFactoryMethod() {		
-		
-		File rootDirectory = new File(testDirectory, "reports" );				
+	public void testCanGetInstanceFromFactoryMethod() {
+
+		File rootDirectory = new File(testDirectory, "reports");
 		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);		
-		assertNotNull(factoryCreatedGenerator );
+		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+		assertNotNull(factoryCreatedGenerator);
 	}
 
 	/**
-	 * Test that factory method rejects  an undefined report directory. 
+	 * Test that factory method rejects an undefined report directory.
 	 */
-	@Test( expected=IllegalArgumentException.class)
-	public void testRejectsUndefinedReportDirectory() {		
-						
+	@Test(expected = IllegalArgumentException.class)
+	public void testRejectsUndefinedReportDirectory() {
+
 		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(null);		
-		assertNotNull(factoryCreatedGenerator );
+		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(null);
+		assertNotNull(factoryCreatedGenerator);
 	}
 
 	/**
-	 * Test that generator creates a single time stamped directory for a report. 
+	 * Test that generator creates a single time stamped directory for a report.
 	 */
 	@Test
 	public void testCreatesTimeStampedDirectory() {
-		
+
 		notification = createNotificationAndRootResult();
-		
+
 		// create generator
-		File rootDirectory = new File(testDirectory, "reports" );				
+		File rootDirectory = new File(testDirectory, "reports");
 		ResultListener factoryCreatedGenerator;
 		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
-		
+
 		// create report
 		factoryCreatedGenerator.notify(notification);
-	
+
 		// type cast
 		ReportGeneratorInfo generatorInfo = (ReportGeneratorInfo) factoryCreatedGenerator;
-		
+
 		// get directory and files
-		File reportDirectory = generatorInfo.getCurrentReportDirectory();		
+		File reportDirectory = generatorInfo.getCurrentReportDirectory();
 		File[] reportdirectoryContent = reportDirectory.listFiles();
-								
+
 		// test
-		assertEquals( 1, reportdirectoryContent.length );	
+		assertEquals(1, reportdirectoryContent.length);
 	}
-	
+
 	/**
-	 * Test that generator creates a single time stamped directory with a correct name. 
+	 * Test that generator creates a single time stamped directory with a correct
+	 * name.
 	 */
 	@Test
 	public void testTimeStampedDirectoryHasCorrectName() {
-		
+
 		notification = createNotificationAndRootResult();
-		
+
 		// create generator
-		File rootDirectory = new File(testDirectory, "reports" );				
+		File rootDirectory = new File(testDirectory, "reports");
 		ResultListener factoryCreatedGenerator;
 		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
-		
+
 		// create report
 		factoryCreatedGenerator.notify(notification);
-	
+
 		// type cast
 		ReportGeneratorInfo generatorInfo = (ReportGeneratorInfo) factoryCreatedGenerator;
-		
+
 		// get directory and files
-		File reportDirectory = generatorInfo.getCurrentReportDirectory();		
+		File reportDirectory = generatorInfo.getCurrentReportDirectory();
 		File[] reportdirectoryContent = reportDirectory.listFiles();
-		
+
 		// get time stamped directory
 		File timestamedDirectory = reportdirectoryContent[0];
-		
+
 		// test
-		assertTrue( timestamedDirectory.getName().startsWith("report-" ) );			
+		assertTrue(timestamedDirectory.getName().startsWith("report-"));
 	}
-	
-	
+
 	/**
-	 * Test that generator creates a single time stamped directory 
-	 * which contains an XML report file. 
+	 * Test that generator creates a single time stamped directory which contains an
+	 * XML report file.
 	 */
 	@Test
 	public void testTimeStampedDirectoryContainsXmlFile() {
-		
+
 		notification = createNotificationAndRootResult();
-		
+
 		// create generator
-		File rootDirectory = new File(testDirectory, "reports" );				
+		File rootDirectory = new File(testDirectory, "reports");
 		ResultListener factoryCreatedGenerator;
 		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
-		
+
 		// create report
 		factoryCreatedGenerator.notify(notification);
-	
-		// get content		
-		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);		
-		
+
+		// get content
+		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
+
 		// test
-		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));				
+		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));
 	}
 
 	/**
-	 * Test that generator creates a single time stamped directory 
-	 * which contains an Html report file. 
+	 * Test that generator creates a single time stamped directory which contains an
+	 * Html report file.
 	 */
 	@Test
 	public void testTimeStampedDirectoryContainsHtmlFile() {
-		
+
 		notification = createNotificationAndRootResult();
-		
+
 		// create generator
-		File rootDirectory = new File(testDirectory, "reports" );				
+		File rootDirectory = new File(testDirectory, "reports");
 		ResultListener factoryCreatedGenerator;
 		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
-		
+
 		// create report
 		factoryCreatedGenerator.notify(notification);
-	
-		// get content		
-		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);		
-		
+
+		// get content
+		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
+
 		// test
-		assertNotNull(getFile(timestamedDirectoryContent, ".html"));				
+		assertNotNull(getFile(timestamedDirectoryContent, ".html"));
 	}
-		
+
 	/**
-	 * Test that generator can create simple report
-	 * with the operation a single node.
+	 * Test that generator can create simple report with the operation a single
+	 * node.
 	 */
 	@Test
 	public void testCanCreateSimpleReport() {
-		
+
 		notification = createNotificationAndRootResult();
-		
+
 		// create generator
-		File rootDirectory = new File(testDirectory, "reports" );				
+		File rootDirectory = new File(testDirectory, "reports");
 		ResultListener factoryCreatedGenerator;
 		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
-		
+
 		// create report
 		factoryCreatedGenerator.notify(notification);
 
 		// get content
-		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);		
+		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
 
 		// test
-		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));		
-		assertNotNull(getFile(timestamedDirectoryContent, ".html"));		
+		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));
+		assertNotNull(getFile(timestamedDirectoryContent, ".html"));
 	}
-	
+
 	/**
-	 * Test that generator can create a report with a
-	 * single model node.
+	 * Test that generator can create a report with a single model node.
 	 */
 	@Test
 	public void testCanCreateReportWithSingleModel() {
-		
+
 		notification = createNotificationAndRootResult();
 
 		ExecutionResult child = rootResult.addChild("model#1");
-		child.setState(ExecutionState.SUCCESS);		
-			
+		child.setState(ExecutionState.SUCCESS);
+
 		// create generator
-		File rootDirectory = new File(testDirectory, "reports" );				
+		File rootDirectory = new File(testDirectory, "reports");
 		ResultListener factoryCreatedGenerator;
 		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
-		
+
 		// create report
 		factoryCreatedGenerator.notify(notification);
-	
+
 		// get content
-		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);		
+		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
 
 		// test
-		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));		
-		assertNotNull(getFile(timestamedDirectoryContent, ".html"));				
-	}		
-	
+		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));
+		assertNotNull(getFile(timestamedDirectoryContent, ".html"));
+	}
+
 	/**
-	 * Test that generator can create a report with a
-	 * two model nodes.
+	 * Test that generator can create a report with a two model nodes.
 	 */
 	@Test
 	public void testCanCreateReportWithTwoModels() {
-		
+
 		notification = createNotificationAndRootResult();
 
 		ExecutionResult child = rootResult.addChild("model#1");
-		child.setState(ExecutionState.SUCCESS);	
-		
+		child.setState(ExecutionState.SUCCESS);
+
 		ExecutionResult child2 = rootResult.addChild("model#2");
-		child2.setState(ExecutionState.SUCCESS);		
-		
-			
+		child2.setState(ExecutionState.SUCCESS);
+
 		// create generator
-		File rootDirectory = new File(testDirectory, "reports" );				
+		File rootDirectory = new File(testDirectory, "reports");
 		ResultListener factoryCreatedGenerator;
 		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
-		
+
 		// create report
 		factoryCreatedGenerator.notify(notification);
-	
+
 		// get content
-		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);		
+		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
 
 		// test
-		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));		
-		assertNotNull(getFile(timestamedDirectoryContent, ".html"));				
+		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));
+		assertNotNull(getFile(timestamedDirectoryContent, ".html"));
 	}
-	
+
 	/**
-	 * Test that generator can create a report with a
-	 * single model node with a single child.
+	 * Test that generator can create a report with a single model node with a
+	 * single child.
 	 */
 	@Test
 	public void testCanCreateReportWithSingleModelAndChild() {
-		
+
 		notification = createNotificationAndRootResult();
 
 		ExecutionResult modelResult = rootResult.addChild("model#1");
-		modelResult.setState(ExecutionState.SUCCESS);		
+		modelResult.setState(ExecutionState.SUCCESS);
 
 		ExecutionResult child = modelResult.addChild("child#1");
-		child.setState(ExecutionState.SUCCESS);		
-				
+		child.setState(ExecutionState.SUCCESS);
+
 		// create generator
-		File rootDirectory = new File(testDirectory, "reports" );				
+		File rootDirectory = new File(testDirectory, "reports");
 		ResultListener factoryCreatedGenerator;
 		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
-		
+
 		// create report
 		factoryCreatedGenerator.notify(notification);
-	
+
 		// get content
-		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);		
+		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
 
 		// test
-		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));		
-		assertNotNull(getFile(timestamedDirectoryContent, ".html"));				
-	}		
+		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));
+		assertNotNull(getFile(timestamedDirectoryContent, ".html"));
+	}
 
 	/**
-	 * Test that generator can create a report with a
-	 * single model node with a single child with two
-	 * messages.
+	 * Test that generator can create a report with a single model node with a
+	 * single child with two messages.
 	 */
 	@Test
 	public void testCanCreateReportWithSingleModelAndChildAndTwoMessages() {
-		
+
 		notification = createNotificationAndRootResult();
 
 		ExecutionResult modelResult = rootResult.addChild("model#1");
-		modelResult.setState(ExecutionState.SUCCESS);		
+		modelResult.setState(ExecutionState.SUCCESS);
 
 		ExecutionResult child = modelResult.addChild("child#1");
 		child.setState(ExecutionState.SUCCESS);
 		child.addMessage("Message", "...some message");
 		child.addMessage("AnotherMessage", "...another message");
-				
+
 		// create generator
-		File rootDirectory = new File(testDirectory, "reports" );				
+		File rootDirectory = new File(testDirectory, "reports");
 		ResultListener factoryCreatedGenerator;
 		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
-		
+
 		// create report
 		factoryCreatedGenerator.notify(notification);
-	
+
 		// get content
-		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);		
+		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
 
 		// test
-		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));		
-		assertNotNull(getFile(timestamedDirectoryContent, ".html"));				
-	}		
+		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));
+		assertNotNull(getFile(timestamedDirectoryContent, ".html"));
+	}
 
 	/**
 	 * Test that generator adds report ID to root execution result.
 	 */
 	@Test
 	public void testAddsReportIdToRootResult() {
-		
+
 		notification = createNotificationAndRootResult();
-		
+
 		// create generator
-		File rootDirectory = new File(testDirectory, "reports" );				
+		File rootDirectory = new File(testDirectory, "reports");
 		ResultListener factoryCreatedGenerator;
 		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
-		
+
 		// create report
 		factoryCreatedGenerator.notify(notification);
 
 		// test
-		Map<String, String> messages = rootResult.getMessages();		
-		assertTrue(messages.containsKey(ExecutionResult.MSG_REPORT));		
-		assertNotNull(messages.get(ExecutionResult.MSG_REPORT));		
+		Map<String, String> messages = rootResult.getMessages();
+		assertTrue(messages.containsKey(ExecutionResult.MSG_REPORT));
+		assertNotNull(messages.get(ExecutionResult.MSG_REPORT));
 	}
 
 	/**
@@ -470,14 +470,14 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 	 */
 	@Test
 	public void testAddsReportIdCorrespondsToReportDir() {
-		
+
 		notification = createNotificationAndRootResult();
-		
+
 		// create generator
-		File rootDirectory = new File(testDirectory, "reports" );				
+		File rootDirectory = new File(testDirectory, "reports");
 		ResultListener factoryCreatedGenerator;
 		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
-		
+
 		// create report
 		factoryCreatedGenerator.notify(notification);
 
@@ -487,17 +487,17 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// type cast
 		ReportGeneratorInfo generatorInfo = (ReportGeneratorInfo) factoryCreatedGenerator;
-		
+
 		// get directory and files
-		File reportDirectory = generatorInfo.getCurrentReportDirectory();		
+		File reportDirectory = generatorInfo.getCurrentReportDirectory();
 		File[] reportdirectoryContent = reportDirectory.listFiles();
-		
+
 		// get time stamped directory
 		File timestamedDirectory = reportdirectoryContent[0];
-		
+
 		// test
 		assertEquals(reportId, timestamedDirectory.getName());
 
 	}
-	
+
 }

@@ -27,20 +27,20 @@ package com.alpha.pineapple.execution;
  */
 public interface OperationResolver {
 
-    /**
-     * Returns true if operation should be restricted from execution current
-     * model. Execution can be restricted due to the usage of the
-     * target-operation attribute.
-     * 
-     * @param operation
-     *            current operation.
-     * @param targetOperation
-     *            target operation defined in module model.
-     * @param rootResult
-     *            Root execution result for operation.
-     * 
-     * @return true if operation shouldn't be executed.
-     */
-    boolean restrictOperationFromExecution(String operation, String targetOperation, ExecutionResult rootResult);
+	/**
+	 * Returns true if operation should be restricted from execution current model.
+	 * Execution can be restricted due to the usage of the target-operation
+	 * attribute.
+	 * 
+	 * @param operation
+	 *            current operation.
+	 * @param targetOperation
+	 *            target operation defined in module model.
+	 * @param rootResult
+	 *            Root execution result for operation.
+	 * 
+	 * @return true if operation shouldn't be executed.
+	 */
+	boolean restrictOperationFromExecution(String operation, String targetOperation, ExecutionResult rootResult);
 
 }

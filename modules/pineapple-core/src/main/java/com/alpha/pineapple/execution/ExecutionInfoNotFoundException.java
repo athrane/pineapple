@@ -28,31 +28,31 @@ package com.alpha.pineapple.execution;
  */
 public class ExecutionInfoNotFoundException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * ContextNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public ExecutionInfoNotFoundException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * ContextNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public ExecutionInfoNotFoundException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * ContextNotFoundException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public ExecutionInfoNotFoundException(String message) {
-	super(message);
-    }
+	/**
+	 * ContextNotFoundException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public ExecutionInfoNotFoundException(String message) {
+		super(message);
+	}
 
 }

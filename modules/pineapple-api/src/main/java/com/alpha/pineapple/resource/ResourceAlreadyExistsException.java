@@ -28,31 +28,31 @@ package com.alpha.pineapple.resource;
  */
 public class ResourceAlreadyExistsException extends RuntimeException {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 4848432043385964993L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 4848432043385964993L;
 
-    /**
-     * ResourceAlreadyExistsException constructor.
-     * 
-     * @param message
-     *            Error message.
-     * @param cause
-     *            Cause of the exception.
-     */
-    public ResourceAlreadyExistsException(String message, Throwable cause) {
-	super(message, cause);
-    }
+	/**
+	 * ResourceAlreadyExistsException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 * @param cause
+	 *            Cause of the exception.
+	 */
+	public ResourceAlreadyExistsException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-     * ResourceAlreadyExistsException constructor.
-     * 
-     * @param message
-     *            Error message.
-     */
-    public ResourceAlreadyExistsException(String message) {
-	super(message);
-    }
+	/**
+	 * ResourceAlreadyExistsException constructor.
+	 * 
+	 * @param message
+	 *            Error message.
+	 */
+	public ResourceAlreadyExistsException(String message) {
+		super(message);
+	}
 
 }

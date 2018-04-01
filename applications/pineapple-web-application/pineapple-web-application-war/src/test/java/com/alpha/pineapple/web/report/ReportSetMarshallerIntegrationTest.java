@@ -75,224 +75,224 @@ import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/webapp-config.xml")
 public class ReportSetMarshallerIntegrationTest {
 
-    /**
-     * Current test directory.
-     */
-    File testDirectory;
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
 
-    /**
-     * Subject under test.
-     */
-    @Resource(name = "reportSetMarshaller")
-    ReportSetMarshaller marshaller;
+	/**
+	 * Subject under test.
+	 */
+	@Resource(name = "reportSetMarshaller")
+	ReportSetMarshaller marshaller;
 
-    /**
-     * Runtime directory resolver.
-     */
-    @Resource
-    RuntimeDirectoryProvider runtimeDirectoryProvider;
+	/**
+	 * Runtime directory resolver.
+	 */
+	@Resource
+	RuntimeDirectoryProvider runtimeDirectoryProvider;
 
-    /**
-     * Web application core component factory.
-     */
-    @Resource
-    WebAppCoreFactory webAppCoreFactory;
+	/**
+	 * Web application core component factory.
+	 */
+	@Resource
+	WebAppCoreFactory webAppCoreFactory;
 
-    /**
-     * Object mother for environment configuration.
-     */
-    ObjectMotherEnvironmentConfiguration envConfigMother;
+	/**
+	 * Object mother for environment configuration.
+	 */
+	ObjectMotherEnvironmentConfiguration envConfigMother;
 
-    /**
-     * Report directory.
-     */
-    File reportsDir;
+	/**
+	 * Report directory.
+	 */
+	File reportsDir;
 
-    /**
-     * Random value.
-     */
-    String randomName;
+	/**
+	 * Random value.
+	 */
+	String randomName;
 
-    /**
-     * Random environment.
-     */
-    String randomEnvironment;
+	/**
+	 * Random environment.
+	 */
+	String randomEnvironment;
 
-    /**
-     * Core component.
-     * 
-     * Initialize by web application core component factory.
-     */
-    PineappleCore coreComponent;
+	/**
+	 * Core component.
+	 * 
+	 * Initialize by web application core component factory.
+	 */
+	PineappleCore coreComponent;
 
-    @Before
-    public void setUp() throws Exception {
-	randomName = RandomStringUtils.randomAlphabetic(10);
-	randomEnvironment = RandomStringUtils.randomAlphabetic(10);
+	@Before
+	public void setUp() throws Exception {
+		randomName = RandomStringUtils.randomAlphabetic(10);
+		randomEnvironment = RandomStringUtils.randomAlphabetic(10);
 
-	// create environment configuration object mother
-	envConfigMother = new ObjectMotherEnvironmentConfiguration();
+		// create environment configuration object mother
+		envConfigMother = new ObjectMotherEnvironmentConfiguration();
 
-	// get the test directory
-	testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
-	// set the pineapple.home.dir system property
-	System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
+		// set the pineapple.home.dir system property
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
-	// define directory names
-	reportsDir = new File(testDirectory, REPORTS_DIR);
-	reportsDir.mkdir();
-    }
+		// define directory names
+		reportsDir = new File(testDirectory, REPORTS_DIR);
+		reportsDir.mkdir();
+	}
 
-    @After
-    public void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 
-	// clear the pineapple.home.dir system property
-	System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
+		// clear the pineapple.home.dir system property
+		System.getProperties().remove(SystemUtils.PINEAPPLE_HOMEDIR);
 
-	// fail if the the pineapple.home.dir system property is set
-	assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
-    }
+		// fail if the the pineapple.home.dir system property is set
+		assertNull(System.getProperty(SystemUtils.PINEAPPLE_HOMEDIR));
+	}
 
-    /**
-     * Test that instance can be retrieved from application context.
-     */
-    @Test
-    public void testGetInstanceFromContext() {
-	assertNotNull(marshaller);
-    }
+	/**
+	 * Test that instance can be retrieved from application context.
+	 */
+	@Test
+	public void testGetInstanceFromContext() {
+		assertNotNull(marshaller);
+	}
 
-    /**
-     * Test that empty reports file can be saved.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testSaveEmptyReports() throws Exception {
-	File reportsFile = new File(runtimeDirectoryProvider.getReportsDirectory(), REPORTS_FILE);
-	assertFalse(reportsFile.exists());
-	assertFalse(reportsFile.isFile());
+	/**
+	 * Test that empty reports file can be saved.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testSaveEmptyReports() throws Exception {
+		File reportsFile = new File(runtimeDirectoryProvider.getReportsDirectory(), REPORTS_FILE);
+		assertFalse(reportsFile.exists());
+		assertFalse(reportsFile.isFile());
 
-	Reports reports = envConfigMother.createEmptyReports();
-	marshaller.save(reports);
+		Reports reports = envConfigMother.createEmptyReports();
+		marshaller.save(reports);
 
-	// test
-	assertTrue(reportsFile.exists());
-	assertTrue(reportsFile.isFile());
-    }
+		// test
+		assertTrue(reportsFile.exists());
+		assertTrue(reportsFile.isFile());
+	}
 
-    /**
-     * Test that configuration can be saved.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testSaveReports() throws Exception {
-	File reportsFile = new File(runtimeDirectoryProvider.getReportsDirectory(), REPORTS_FILE);
-	assertFalse(reportsFile.exists());
-	assertFalse(reportsFile.isFile());
+	/**
+	 * Test that configuration can be saved.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testSaveReports() throws Exception {
+		File reportsFile = new File(runtimeDirectoryProvider.getReportsDirectory(), REPORTS_FILE);
+		assertFalse(reportsFile.exists());
+		assertFalse(reportsFile.isFile());
 
-	Reports reports = envConfigMother.createReportsWithOneReport(randomName);
-	marshaller.save(reports);
+		Reports reports = envConfigMother.createReportsWithOneReport(randomName);
+		marshaller.save(reports);
 
-	// test
-	assertTrue(reportsFile.exists());
-	assertTrue(reportsFile.isFile());
-    }
+		// test
+		assertTrue(reportsFile.exists());
+		assertTrue(reportsFile.isFile());
+	}
 
-    /**
-     * Test that empty reports file can be loaded.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testLoadEmptyReports() throws Exception {
-	File reportsFile = new File(runtimeDirectoryProvider.getReportsDirectory(), REPORTS_FILE);
-	assertFalse(reportsFile.exists());
-	assertFalse(reportsFile.isFile());
+	/**
+	 * Test that empty reports file can be loaded.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testLoadEmptyReports() throws Exception {
+		File reportsFile = new File(runtimeDirectoryProvider.getReportsDirectory(), REPORTS_FILE);
+		assertFalse(reportsFile.exists());
+		assertFalse(reportsFile.isFile());
 
-	// save
-	Reports reports = envConfigMother.createEmptyReports();
-	marshaller.save(reports);
+		// save
+		Reports reports = envConfigMother.createEmptyReports();
+		marshaller.save(reports);
 
-	// load
-	ExecutionResultImpl result = new ExecutionResultImpl("Load reports");
-	Reports loadedReports = marshaller.load(result);
+		// load
+		ExecutionResultImpl result = new ExecutionResultImpl("Load reports");
+		Reports loadedReports = marshaller.load(result);
 
-	// get child result
-	ExecutionResult[] children = result.getChildren();
-	assertNotNull(children);
-	assertEquals(1, children.length);
-	ExecutionResult loadResult = result.getFirstChild();
+		// get child result
+		ExecutionResult[] children = result.getChildren();
+		assertNotNull(children);
+		assertEquals(1, children.length);
+		ExecutionResult loadResult = result.getFirstChild();
 
-	// test
-	assertTrue(loadResult.isSuccess());
-	assertNotNull(loadedReports);
-	assertTrue(loadedReports.getReport().isEmpty());
-    }
+		// test
+		assertTrue(loadResult.isSuccess());
+		assertNotNull(loadedReports);
+		assertTrue(loadedReports.getReport().isEmpty());
+	}
 
-    /**
-     * Test that configuration can be loaded with one report.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testLoadReports() throws Exception {
-	File reportsFile = new File(runtimeDirectoryProvider.getReportsDirectory(), REPORTS_FILE);
-	assertFalse(reportsFile.exists());
-	assertFalse(reportsFile.isFile());
+	/**
+	 * Test that configuration can be loaded with one report.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testLoadReports() throws Exception {
+		File reportsFile = new File(runtimeDirectoryProvider.getReportsDirectory(), REPORTS_FILE);
+		assertFalse(reportsFile.exists());
+		assertFalse(reportsFile.isFile());
 
-	// save
-	Reports reports = envConfigMother.createReportsWithOneReport(randomName);
-	marshaller.save(reports);
+		// save
+		Reports reports = envConfigMother.createReportsWithOneReport(randomName);
+		marshaller.save(reports);
 
-	// load
-	ExecutionResultImpl result = new ExecutionResultImpl("Load reports");
-	Reports loadedReports = marshaller.load(result);
+		// load
+		ExecutionResultImpl result = new ExecutionResultImpl("Load reports");
+		Reports loadedReports = marshaller.load(result);
 
-	// get child result
-	ExecutionResult[] children = result.getChildren();
-	assertNotNull(children);
-	assertEquals(1, children.length);
-	ExecutionResult loadResult = result.getFirstChild();
+		// get child result
+		ExecutionResult[] children = result.getChildren();
+		assertNotNull(children);
+		assertEquals(1, children.length);
+		ExecutionResult loadResult = result.getFirstChild();
 
-	// test
-	assertTrue(loadResult.isSuccess());
-	assertNotNull(loadedReports);
-	assertEquals(1, loadedReports.getReport().size());
-    }
+		// test
+		assertTrue(loadResult.isSuccess());
+		assertNotNull(loadedReports);
+		assertEquals(1, loadedReports.getReport().size());
+	}
 
-    /**
-     * Test that non-existing configuration can be loaded and then an empty
-     * configuration is returned.
-     * 
-     * @throws Exception
-     *             if test fails.
-     */
-    @Test
-    public void testLoadNonExistingReportsFile() throws Exception {
-	File reportsFile = new File(runtimeDirectoryProvider.getReportsDirectory(), REPORTS_FILE);
-	assertFalse(reportsFile.exists());
-	assertFalse(reportsFile.isFile());
+	/**
+	 * Test that non-existing configuration can be loaded and then an empty
+	 * configuration is returned.
+	 * 
+	 * @throws Exception
+	 *             if test fails.
+	 */
+	@Test
+	public void testLoadNonExistingReportsFile() throws Exception {
+		File reportsFile = new File(runtimeDirectoryProvider.getReportsDirectory(), REPORTS_FILE);
+		assertFalse(reportsFile.exists());
+		assertFalse(reportsFile.isFile());
 
-	// load
-	ExecutionResultImpl result = new ExecutionResultImpl("Load reports");
-	Reports loadedReports = marshaller.load(result);
+		// load
+		ExecutionResultImpl result = new ExecutionResultImpl("Load reports");
+		Reports loadedReports = marshaller.load(result);
 
-	// get child result
-	ExecutionResult[] children = result.getChildren();
-	assertNotNull(children);
-	assertEquals(1, children.length);
-	ExecutionResult loadResult = result.getFirstChild();
+		// get child result
+		ExecutionResult[] children = result.getChildren();
+		assertNotNull(children);
+		assertEquals(1, children.length);
+		ExecutionResult loadResult = result.getFirstChild();
 
-	// test
-	assertTrue(loadResult.isSuccess());
-	assertNotNull(loadedReports);
-	assertEquals(0, loadedReports.getReport().size());
-    }
+		// test
+		assertTrue(loadResult.isSuccess());
+		assertNotNull(loadedReports);
+		assertEquals(0, loadedReports.getReport().size());
+	}
 
 }

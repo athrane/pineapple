@@ -20,7 +20,6 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-
 package com.alpha.pineapple.plugin.filesystem.session.uri;
 
 /**
@@ -31,10 +30,11 @@ public interface VfsUriGenerator {
 	/**
 	 * Create URI.
 	 * 
-	 * @param path Path to file/folder which should addressed.
-	 *   
+	 * @param path
+	 *            Path to file/folder which should addressed.
+	 * 
 	 * @return Absolute Path to file/folder which should addressed.
 	 */
 	String createUri(String path);
-	
+
 }

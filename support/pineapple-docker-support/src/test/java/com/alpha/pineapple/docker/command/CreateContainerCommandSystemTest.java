@@ -286,8 +286,8 @@ public class CreateContainerCommandSystemTest {
 	}
 
 	/**
-	 * Test that command can create container from tagged image and return a
-	 * single successful root result.
+	 * Test that command can create container from tagged image and return a single
+	 * successful root result.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -403,8 +403,8 @@ public class CreateContainerCommandSystemTest {
 	}
 
 	/**
-	 * Test that command succeeds to create container with the name of an
-	 * existing container.
+	 * Test that command succeeds to create container with the name of an existing
+	 * container.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -1069,8 +1069,8 @@ public class CreateContainerCommandSystemTest {
 	}
 
 	/**
-	 * Test that command can create container with two identical UDP port
-	 * bindings. The second binding is ignored
+	 * Test that command can create container with two identical UDP port bindings.
+	 * The second binding is ignored
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -1197,8 +1197,8 @@ public class CreateContainerCommandSystemTest {
 	}
 
 	/**
-	 * Test that command can create container with zero commands. The result
-	 * command is inherited from the CMD directive in the CentOS Dockerfile.
+	 * Test that command can create container with zero commands. The result command
+	 * is inherited from the CMD directive in the CentOS Dockerfile.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test

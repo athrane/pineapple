@@ -16,7 +16,7 @@ Overview
 
 	Pineapple can help you with:
 
-	* <<Automated deployment of Docker images:>>
+	* <<Automated deployment of Docker containers:>>
 
 		* Creation and deletion of a Docker image.
 
@@ -26,6 +26,8 @@ Overview
 		
 		* Control of Docker containers.
 
+		* Test of Docker containers.
+
 		[]
 
 	* <<Automated test of infrastructure:>> 
@@ -33,13 +35,19 @@ Overview
 		* Test of DNS entry definitions, port scans, layout of FTP-sites.
 
 		* Test of load-balancing and stickyness of HTTP-sessions.
-
-		* SSH based test of settings of accessed hosts.
 		
 		[]
 
-	* <<Scheduled test and configuration of tasks>> 
+	* <<Execution of scheduled operations>> 
 
+		* Jobs can be scheduled with a fixed frequency.
+		
+	* <<Configuration and test of Linux:>>
+	
+		* SSH based test of settings on Linux hosts.
+			
+		* SSH based configuration of Linux hosts.
+		
 	[]
 	
 * Usage

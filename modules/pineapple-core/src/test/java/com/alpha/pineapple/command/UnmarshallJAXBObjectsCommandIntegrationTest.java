@@ -24,16 +24,15 @@ package com.alpha.pineapple.command;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 
 import javax.annotation.Resource;
-import javax.xml.bind.UnmarshalException;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 import org.apache.commons.chain.impl.ContextBase;
+import org.apache.commons.lang.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,8 +42,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.alpha.javautils.StackTraceHelper;
-import com.alpha.pineapple.command.initialization.CommandInitializationFailedException;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResultImpl;
 import com.alpha.pineapple.model.configuration.Configuration;
@@ -79,17 +76,30 @@ public class UnmarshallJAXBObjectsCommandIntegrationTest {
 	File testDirectory;
 
 	/**
+	 * Random value.
+	 */
+	String randomXmlFileName;
+
+	/**
+	 * Random value.
+	 */
+	String randomDescription;
+
+	/**
 	 * Configuration object mother
 	 */
 	ObjectMotherEnvironmentConfiguration configMother;
 
 	@Before
 	public void setUp() throws Exception {
+		randomXmlFileName = RandomStringUtils.randomAlphabetic(10) + ".xml";
+		randomDescription = RandomStringUtils.randomAlphabetic(10);
+
 		// get the test directory
 		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
 
 		// create execution result
-		executionResult = new ExecutionResultImpl("Root result");
+		executionResult = new ExecutionResultImpl(randomDescription);
 
 		// configuration object mother
 		configMother = new ObjectMotherEnvironmentConfiguration();
@@ -117,10 +127,8 @@ public class UnmarshallJAXBObjectsCommandIntegrationTest {
 		Context context = new ContextBase();
 
 		// create file name
-		StringBuilder fileName = new StringBuilder();
-		fileName.append(testDirectory.getAbsolutePath());
-		fileName.append(File.separatorChar);
-		fileName.append("testdata.xml");
+		StringBuilder fileName = new StringBuilder().append(testDirectory.getAbsolutePath()).append(File.separatorChar)
+				.append(randomXmlFileName);
 
 		// create file
 		File file = new File(fileName.toString());
@@ -149,8 +157,7 @@ public class UnmarshallJAXBObjectsCommandIntegrationTest {
 
 		// test
 		assertTrue(executionResult.isSuccess());
-		Root expected;
-		expected = (Root) context.get(UnmarshallJAXBObjectsCommand.UNMARSHALLING_RESULT_KEY);
+		Root expected = (Root) context.get(UnmarshallJAXBObjectsCommand.UNMARSHALLING_RESULT_KEY);
 		assertNotNull(expected);
 	}
 

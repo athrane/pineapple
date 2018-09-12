@@ -24,8 +24,6 @@ Overview
 
 		* Deployable web application.
 		
-		* Maven plugin.
-		
 		[]
 	
 	* <<Core component:>> The purpose of the core component is to collect all 

@@ -30,9 +30,6 @@
 	<packaging>pom</packaging>
 	<name>Pineapple applications</name>
 	<modules>
-		<!-- 
-		<module>pineapple-maven-plugin</module>			
-		 -->
 		<module>pineapple-web-application</module>			
   </modules>
 </project>

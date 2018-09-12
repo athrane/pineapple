@@ -39,7 +39,7 @@ echo Starting Pineapple - a browser window will be opened unless your computer f
 # define variables
 piddir=/var/run/pineapple
 pidfile=${piddir}/pineapple.pid
-VM_OPTS="-Dsun.lang.ClassLoader.allowArraySyntax=true"
+JVM_OPTS=
 PINEAPPLE_OPTS="-Dpineapple.jettystarter.home=${SCRIPT_PATH}" 
 PINEAPPLE_OPTS="${PINEAPPLE_OPTS} -Dpineapple.jettystarter.host=${PINEAPPLE_HTTP_HOST}" 
 PINEAPPLE_OPTS="${PINEAPPLE_OPTS} -Dpineapple.jettystarter.port=${PINEAPPLE_HTTP_PORT}"

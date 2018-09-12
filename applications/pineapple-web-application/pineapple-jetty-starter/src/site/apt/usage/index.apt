@@ -50,7 +50,7 @@ cls
 setlocal 
 
 set CURR_DIR=%~dp0
-set JVM_OPTS=-Dsun.lang.ClassLoader.allowArraySyntax=true 
+set JVM_OPTS= 
 set PINEAPPLE_OPTS=-Dpineapple.jettystarter.home=%CURR_DIR% 
 set PINEAPPLE_OPTS=%PINEAPPLE_OPTS% -Dpineapple.jettystarter.host=localhost 
 set PINEAPPLE_OPTS=%PINEAPPLE_OPTS% -Dpineapple.jettystarter.port=8080

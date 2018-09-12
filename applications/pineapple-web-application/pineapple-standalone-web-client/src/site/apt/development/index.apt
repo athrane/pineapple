@@ -123,27 +123,7 @@ org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog
 	
 	org.mortbay.jetty:jsp-2.1-glassfish:jar:2.1.v20100127:runtime
 	org.eclipse.jetty:jetty-jsp-2.1:jar:7.1.6.v20100715:runtime
-	
-	
-* Handling JDK incompatibility when running Pineapple from JDK1.6 towards WebLogic on JDK1.5 
-
-	Running Pineapple on a JDK1.6 which connects to JMX running on WebLogic 9.2 
-	server with JDK1.5 results in a thrown exception on the client side. The most 
-	relevant exception seems to be:
-
-	<<<Caused by: java.rmi.UnmarshalException: failed to unmarshal class 
-	weblogic.security.acl.internal.AuthenticatedUser; nested exception is: 
-	java.io.StreamCorruptedException: invalid type code: 31>>>
-
-	There was a behavior change in <<<ClassLoader.loadClass()>>> handling byte array. 
-	As discussed in http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6434149. Adding 
-	this VM argument to client JVM preserves the backward compatible behavior 
-	of the <<<loadClass()>>> method. 		
-
-	This issue is currently addressed by adding the VM argument  
-	<<<-Dsun.lang.ClassLoader.allowArraySyntax=true>>> when the client 
-	is invoked in <<<runPineapple.cmd/.sh>>>.
-		
+			
 * Application version
 
 	The master POM for the Pineapple project contains a property definition named <<<pineapple.release.version>>> 

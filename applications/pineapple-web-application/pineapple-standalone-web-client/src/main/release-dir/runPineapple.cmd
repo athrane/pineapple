@@ -43,8 +43,7 @@ set CURRENT_DIRECTORY=%CURRENT_DIRECTORY:~0,-1%
 :: Configure JVM, Log4J and Pineapple options
 ::
 
-set JVM_OPTS=-Dsun.lang.ClassLoader.allowArraySyntax=true
-
+set JVM_OPTS=
 set PINEAPPLE_OPTIONS="-Dpineapple.jettystarter.home=%CURRENT_DIRECTORY%"
 set PINEAPPLE_OPTIONS=%PINEAPPLE_OPTIONS% "-Dpineapple.home.dir=%PINEAPPLE_HOME%"
 set PINEAPPLE_OPTIONS=%PINEAPPLE_OPTIONS% -Dpineapple.jettystarter.host=%PINEAPPLE_HTTP_HOST%

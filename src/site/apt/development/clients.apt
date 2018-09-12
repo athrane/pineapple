@@ -14,14 +14,12 @@ Pineapple clients overview
 	A client provides a user interface and uses the core component 
 	to execute operations.
 	
-	Three clients exists for Pineapple:
+	Two clients exists for Pineapple:
 
 	* Deployable web application 
 	
 	* Standalone web application	
 	
-	* Maven 2 plugin
-
 * Deployable web application 
 	
 	The deployable web application is a web application (WAR) which provides
@@ -67,10 +65,3 @@ Pineapple clients overview
 	* {{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/index.html}pineapple-standalone-web-client}}. 		  	
    
     []
-
-* Maven 3 plugin
-
-	The plugin provides the functionality of Pineapple within the 
-	Maven 3 environment. A link to the project documentation can be found 
-	{{{../pineapple-applications/pineapple-maven-plugin/index.html}here}}.
-		 		

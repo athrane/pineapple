@@ -56,9 +56,13 @@ Architecture description
 	The purpose of a client is to provide a user interface and to invoke the core component 
 	to execute operations.
 	
-	There are multiple types of available clients as shown by this illustration:
+	There are currently two types of clients available:
 	
-[../images/available-clients.jpg]	 
+	* Deployable web application 
+	
+	* Standalone web application	
+	
+	[]
 		
 	For more information about the available clients, please consult the  
 	{{{./clients.html}Pineapple clients overview}}.

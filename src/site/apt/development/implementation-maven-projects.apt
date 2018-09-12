@@ -37,7 +37,6 @@ Maven project organization
 pineapple-project
      |
      +--- applications
-     |     +--- pineapple-maven-plugin
      |     +--- pineapple-web-application	 
      |           +--- pineapple-jetty-starter
      |           +--- pineapple-standalone-web-client
@@ -134,15 +133,6 @@ pineapple-project
 	
 * Application projects	
 	
-** pineapple-maven-plugin
-	
-	Location: pineapple-project/applications/pineapple-maven-plugin
-	
-	POM-type project which produces a JAR file which contains a Maven 2.0 plugin.
-	
-	A link to the project documentation for the plugin can be found 
-	{{{../pineapple-applications/pineapple-maven-plugin/index.html}here}}.		
-
 ** pineapple-web-application
 	
 	Location: pineapple-project/applications/pineapple-web-application

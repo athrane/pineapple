@@ -136,27 +136,6 @@ Development documentation
 	
 	[]
 		  
-*** weblogic.xml
-
-	WebLogic specific deployment descriptor for web applications is located 
-	in <<<src/main/webapp/WEB-INF/weblogic.xml>>>
-	
-	The descriptor defines:
-	
-	* JSP <<<page-check-seconds>>> is set to -1, i.e. disabled.
-	
-	* <<<servlet-reload-check-secs>>> is set to -1, i.e. disabled.
-
-	* <<<resource-reload-check-secs>>> is set to -1, i.e. disabled.
-	
-	* <<<prefer-web-inf-classes>>> is set to true. Setting this element to true subverts 
-	the class loader delegation model so that class definitions from the web application 
-	are loaded in preference to class definitions in higher-level class loaders. This allows the
-	web application to use its own version of a third-party class, which might also be part of 
-	WebLogic Server. 
-			
-	[]	 
-
 *** zk.xml
 
 	ZK specific deployment descriptor for web applications is located 

@@ -68,8 +68,6 @@ pineapple-web-application-war.war
      |     +--- spring	 
      |     |     	 
      |     |--- web.xml
-     |     `--- weblogic.xml	 
-     |               
 	 
 +---+	 	 
 

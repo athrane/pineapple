@@ -31,7 +31,7 @@ Docker is available at: http://192.168.99.11:8082
 Required modifications
 -----------------------
 1) Create a Vagrant Box using the Vagrantfile included in the module.
-2) Add the weblogic-full-client-VERSION.jar and other 3rd party artifacts to the bin directory.
+2) Add 3rd party artifacts to the bin directory.
 
 Intended operations
 -----------------------
@@ -46,7 +46,6 @@ Module content
 * "bin/artifactory.config.xml" - Artifactory main configuration file.
 * "bin/create-docker-user.sh" - shell script for setting the Docker user to run the Docker host under.
 * "bin/daemon.json" - Docker daemon configuration file.
-* "weblogic-full-client-12.1.2.pom" - Maven POM for the WebLogic client JAR.
 * "dockersrc/ci/config.xml" - Jenkins main configuration file.
 * "dockersrc/ci/Dockerfile" - Dockerfile for building the pineapple/ci image.
 * "dockersrc/ci/hudson.tasks.Maven.xml" - Jenkins Maven configuration file.

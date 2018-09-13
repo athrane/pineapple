@@ -21,8 +21,6 @@
 		<mmd:variable key="create-user-script" value="create-docker-user.sh" />          
 
 		<!-- 3rd party libraries variables -->
-        <mmd:variable key="weblogic-client-1212-jar" value="weblogic-full-client-12.1.2.jar" />
-        <mmd:variable key="weblogic-client-1212-pom" value="weblogic-full-client-12.1.2.pom" />
         <mmd:variable key="zcommon-702-jar" value="zcommon-7.0.2.jar" />
         <mmd:variable key="zcommon-702-pom" value="zcommon-7.0.2.pom" />
         <mmd:variable key="zel-702-jar" value="zel-7.0.2.jar" />
@@ -156,20 +154,6 @@
 				<shp:execute command="rm -f ${tmp-dir}/${repo-config}" />
 
 				<!-- deploy Pineapple 3rd party libraries -->
-				<!-- weblogic -->				
-				<shp:copy-to source="modulepath:bin/${weblogic-client-1212-jar}"
-					destination="${tmp-dir}/${weblogic-client-1212-jar}"
-					substitute-variables="false" chmod="775" />
-				<shp:execute
-					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${weblogic-client-1212-jar} http://${resource.host}:${repo-port}/artifactory/ext-release-local/oracle/weblogic-full-client/12.1.2/${weblogic-client-1212-jar}" />
-				<shp:execute command="rm -f ${tmp-dir}/${weblogic-client-1212-jar}" />
-				<shp:copy-to source="modulepath:bin/${weblogic-client-1212-pom}"
-					destination="${tmp-dir}/${weblogic-client-1212-pom}"
-					substitute-variables="false" chmod="775" />
-				<shp:execute
-					command="curl -u ${repo-user}:${repo-password} -X PUT  -T ${tmp-dir}/${weblogic-client-1212-pom} http://${resource.host}:${repo-port}/artifactory/ext-release-local/oracle/weblogic-full-client/12.1.2/${weblogic-client-1212-pom}" />
-				<shp:execute command="rm -f ${tmp-dir}/${weblogic-client-1212-pom}" />
-
 				<!-- zcommon -->
 				<shp:copy-to source="modulepath:bin/${zcommon-702-jar}"
 					destination="${tmp-dir}/${zcommon-702-jar}"

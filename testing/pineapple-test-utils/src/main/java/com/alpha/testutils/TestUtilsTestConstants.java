@@ -59,26 +59,10 @@ public class TestUtilsTestConstants {
 	public static final String credentialIdTestResource = "test-resource-credential-id";
 
 	/**
-	 * Resource id for WebLogic JMX Edit MBean server used in unit tests.
-	 */
-	public static final String resourceIdWLSEdit = "wls-edit";
-
-	/**
-	 * Resource id for Test-Resource used in unit tests.
-	 */
-	public static final String resourceIdNetworkResource = "network-test";
-
-	/**
 	 * The operation supported by the test plugin in the
 	 * com.alpha.pineapple.plugin.test package.
 	 */
 	public static final String helloWorldOperation = "hello-world";
-
-	/**
-	 * The target environment used in unit tests.
-	 */
-	@Deprecated
-	public static String targetEnvironment = "jotun-environment";
 
 	/**
 	 * File name for credentials file used in unit tests.
@@ -98,7 +82,7 @@ public class TestUtilsTestConstants {
 	/**
 	 * The environment used in unit tests.
 	 */
-	public static String environmentIdOne = "environment-1";
+	public static final String environmentIdOne = "environment-1";
 
 	/**
 	 * Test-Resource user.

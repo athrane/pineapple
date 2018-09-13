@@ -554,7 +554,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	@Test
 	public void testHomeDirectoryIsResolvedForNonWindowsOS2() {
 
-		final String path = "/home/weblogic/";
+		final String path = "/home/"+randomValue+"/";
 		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
 
 		// complete mock setup
@@ -575,7 +575,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		expected.append(File.separatorChar);
 		expected.append("home");
 		expected.append(File.separatorChar);
-		expected.append("weblogic");
+		expected.append(randomValue);
 		expected.append(File.separatorChar);
 		expected.append(PINEAPPLE_DIR);
 

@@ -45,7 +45,6 @@ import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-//import weblogic.management.configuration.DomainMBean;
 
 /**
  * Unit test of the <code>MethodUtilsImpl</code> class.
@@ -53,12 +52,10 @@ import org.junit.Test;
 public class MethodUtilsTest {
 
 	/**
-	 * Model package for WebLogic MBeans.
+	 * Model packages.
 	 */
-	static final String[] MODEL_PACKAGES = { "weblogic.management.configuration", "weblogic.management.security",
-			"weblogic.management.security.audit", "weblogic.management.security.authentication",
-			"weblogic.management.security.authorization", "weblogic.management.security.credential",
-			"weblogic.management.security.pk" };
+	static final String[] MODEL_PACKAGES = { "alpha.management.configuration", "alpha.management.security",
+			"alpha.management.security.audit" };
 
 	/**
 	 * Method matcher object.

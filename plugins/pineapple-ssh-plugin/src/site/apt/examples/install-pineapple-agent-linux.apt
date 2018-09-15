@@ -127,11 +127,7 @@ How-to: Install a Pineapple agent on Linux using SSH
 		
 	* <<<pineapple>>>. Creation of a dedicated Pineapple user, completed with the required 
 	privileges. This choice make sense if Pineapple is used for infrastructure testing.      
-	
-	* <<<weblogic>>> (or alternately <<<oracle>>>). Piggy-backing on the user used to run Fusion Middleware. This choice make 
-	sense if Pineapple is used for provisioning a Fusion Middleware platform. The piggy-backing strategy 
-	is described as part of {{{../../../usage/linux-users.html}the default Linux user setup described for Pineapple}}. 	    
-	
+		
 	[]
 
 	Installation using the <<<pineapple>>> user is implemented in this example.

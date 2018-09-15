@@ -57,9 +57,6 @@ pineapple-project
      |     +--- pineapple-ssh-plugin     
      |     +--- pineapple-docker-plugin     
      |     +--- pineapple-filesystem-plugin     
-     |     +--- pineapple-fusion-middleware-installation-plugin     
-     |     +--- pineapple-weblogic-installation-plugin     
-     |     +--- pineapple-weblogic-scripting-tool-plugin     
      |                	 
      +--- support
      |     +--- pineapple-hamcrest-support          
@@ -275,36 +272,6 @@ pineapple-project
 	
 	A link to the project documentation for the plugin can be found 
 	{{{../pineapple-plugins/pineapple-docker-plugin/index.html}here}}.		
-
-** pineapple-fusion-middleware-installation-plugin
-
-	Location: pineapple-project/plugins/pineapple-fusion-middleware-installation-plugin
-
-	JAR-type project which produces a JAR file which implements a plugin for 
-	to installation and uninstallation of Oracle Fusion Middleware.
-	
-	A link to the project documentation for the plugin can be found 
-	{{{../pineapple-plugins/pineapple-fusion-middleware-installation-plugin/index.html}here}}.		
-
-** pineapple-weblogic-installation-plugin
-
-	Location: pineapple-project/plugins/pineapple-weblogic-installation-plugin
-
-	JAR-type project which produces a JAR file which implements a plugin for 
-	to installation and uninstallation of the WebLogic server.
-	
-	A link to the project documentation for the plugin can be found 
-	{{{../pineapple-plugins/pineapple-weblogic-installation-plugin/index.html}here}}.		
-
-** pineapple-weblogic-scripting-tool-plugin
-
-	Location: pineapple-project/plugins/pineapple-weblogic-scripting-tool-plugin
-
-	JAR-type project which produces a JAR file which implements a plugin for 
-	to installation and uninstallation of the WebLogic server.
-	
-	A link to the project documentation for the plugin can be found 
-	{{{../pineapple-plugins/pineapple-weblogic-scripting-tool-plugin/index.html}here}}.		
 	
 * Support projects				
 

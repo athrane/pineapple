@@ -122,7 +122,7 @@ Pineapple Continuous Integration
 
 ** Operating System
 
-	CentOS 7.1 is used as operating system.
+	CentOS 7.5 is used as operating system.
 
 ** Memory
 
@@ -155,7 +155,7 @@ Pineapple Continuous Integration
 
 ** Operating System
 
-	CentOS 7.1 is used as operating system.
+	CentOS 7.5 is used as operating system.
 
 ** Memory
 
@@ -621,8 +621,7 @@ Pineapple Continuous Integration
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-#BOX_NAME = ENV.fetch("BOX_NAME", "bento/centos-7.1") 
-BOX_NAME = ENV.fetch("BOX_NAME", "chef/centos-7.0") 
+BOX_NAME = ENV.fetch("BOX_NAME", "bento/centos-7.5") 
 BOX_IP = ENV.fetch("BOX_IP", "192.168.99.10") 
 BOX2_IP = ENV.fetch("BOX_IP", "192.168.99.11") 
 BOX_MEM = ENV.fetch("BOX_MEM", "2048") 

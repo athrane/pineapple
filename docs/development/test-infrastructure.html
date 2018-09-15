@@ -315,7 +315,7 @@
 <h3>Build server VM configuration <a name="Build_server_VM_configuration"></a></h3>
 <div class="section">
 <h4>Operating System<a name="Operating_System"></a></h4>
-<p>CentOS 7.1 is used as operating system.</p></div>
+<p>CentOS 7.5 is used as operating system.</p></div>
 <div class="section">
 <h4>Memory<a name="Memory"></a></h4>
 <p>The VM is configured with 2048 MB.</p></div>
@@ -339,7 +339,7 @@
 <h3>Test containers VM configuration <a name="Test_containers_VM_configuration"></a></h3>
 <div class="section">
 <h4>Operating System<a name="Operating_System"></a></h4>
-<p>CentOS 7.1 is used as operating system.</p></div>
+<p>CentOS 7.5 is used as operating system.</p></div>
 <div class="section">
 <h4>Memory<a name="Memory"></a></h4>
 <p>The VM is configured with 2048 MB.</p></div>
@@ -684,8 +684,7 @@
 <pre># -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-#BOX_NAME = ENV.fetch(&quot;BOX_NAME&quot;, &quot;bento/centos-7.1&quot;) 
-BOX_NAME = ENV.fetch(&quot;BOX_NAME&quot;, &quot;chef/centos-7.0&quot;) 
+BOX_NAME = ENV.fetch(&quot;BOX_NAME&quot;, &quot;bento/centos-7.5&quot;) 
 BOX_IP = ENV.fetch(&quot;BOX_IP&quot;, &quot;192.168.99.10&quot;) 
 BOX2_IP = ENV.fetch(&quot;BOX_IP&quot;, &quot;192.168.99.11&quot;) 
 BOX_MEM = ENV.fetch(&quot;BOX_MEM&quot;, &quot;2048&quot;) 

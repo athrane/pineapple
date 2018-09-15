@@ -85,8 +85,6 @@ Usage
 	* {{{../pineapple-applications/pineapple-web-application/pineapple-standalone-web-client/index.html}Stand-alone web application.}}		 	
 
 	* {{{../pineapple-applications/pineapple-web-application/pineapple-web-application-war/index.html}Deployable web application.}}		 
-		
-	* {{{../pineapple-applications/pineapple-maven-plugin/index.html}Maven 3 plugin.}}
 
 	[]
 

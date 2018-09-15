@@ -55,21 +55,7 @@ Default Configuration
 		* <<*>> - The wildcard environment to enable common functionality (e.g. plugins) in all environments.
 
 		* <<local>> - Environment to support execution of modules on a local host.
-				
-		* <<windows-default>> - Environment to support execution of modules on a local Windows based host where default values 
-		are used for Fusion Middleware Software (e.g. JRockit, WebLogic, SOA Suite ).
-		
-		* <<windows-enterprise>> - Environment to support execution of modules on a local Linux based host where values from
-		the Oracle enterprise deployment guides are used for Fusion Middleware Software (e.g. JRockit, WebLogic, SOA Suite ).
-				
-		* <<linux-default>> - Environment to support execution of modules on a local Linux based host where default values 
-		are used for Fusion Middleware Software (e.g. JRockit, WebLogic, SOA Suite ).
-		
-		* <<linux-enterprise>> - Environment to support execution of modules on a local Linux based host where values from
-		the Oracle enterprise deployment guides are used for Fusion Middleware Software (e.g. JRockit, WebLogic, SOA Suite ).
-				
-		* <<linux-exalogic>> - Example environment configured according to the Exalogic Deployment Guide (E18479-07).		
-
+						
 		* <<linux-pineapple-ci>> - Environment which consist of several (Linux) hosts in a Vagrant network 
 		to support development and test of Pineapple.
 				

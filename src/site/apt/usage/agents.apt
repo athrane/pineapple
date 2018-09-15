@@ -40,18 +40,6 @@ Pineapple agent architecture overview
 	
 	Examples of plugins which supports local operation are: 
 	
-	* <<The WebLogic installation plugin>> - which support installation of WebLogic on the host where Pineapple is executing. 
-	
-	* <<The JRockit installation plugin>> - which support installation of JRockit on the host where Pineapple is executing.
-		
-	* <<WebLogic WLST plugin>> - which supports execution of WLST script of a Fusion Middleware installation such
-	as WebLogic, SOA Suite or WebCenter. WLST scripts have a remote component to them, due to the WLST online part, 
-	which requires a connection to a running WebLogic. This remote aspect is supported by the plugin. Despite the support 
-	for WLST online, the plugin is still considered to be a plugin which support local operation because its 
-	requirement for a Fusion Middleware installation to run off. The reason for this requirement is decouple Pineapple
-	from the WLST internals and to provide support for execution for all WLST custom commands delivered by Oracle
-	with their Fusion Middleware products.        
-			
 	* <<Infrastructure test plugin>> - which support basic test of IT infrastructure.  	
 
 	* <<Composite execution plugin>> - which supports execution of bulk execution of Pineapple modules.  
@@ -67,7 +55,7 @@ Pineapple agent architecture overview
 	
 	* <<Infrastructure test plugin>> - which support basic test of IT infrastructure.
 	
-	* <<Windows WBEM plugin>> - which support test of Windows based server through a combination of WBEM and WMI.
+	* <<Docker plugin>> - which support configuration of Docker containers.
 	
 	* <<Agent plugin>> - which support remote invocation of functionality of Pineapple agents.
 		

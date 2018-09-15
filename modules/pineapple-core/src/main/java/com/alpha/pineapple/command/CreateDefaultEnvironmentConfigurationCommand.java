@@ -116,31 +116,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	/**
 	 * Environment description.
 	 */
-	static final String EXALOGIC_DESC = "Environment configured according to the Exalogic Deployment Guide (E18479-07).";
-
-	/**
-	 * Environment description.
-	 */
-	static final String DEFAULT_LINUX_DESC = "Environment to support execution of modules on a local Linux host with default values.";
-
-	/**
-	 * Environment description.
-	 */
-	static final String ENTERPRISE_LINUX_DESC = "Environment to support execution of modules on a local Linux host with enterprise deployment settings.";
-
-	/**
-	 * Environment description.
-	 */
-	static final String DEFAULT_WIN_DESC = "Environment to support execution of modules on a local Windows based host with default values.";
-
-	/**
-	 * Environment description.
-	 */
-	static final String ENTERPRISE_WIN_DESC = "Environment to support execution of modules on a local Windows host with enterprise deployment settings.";
-
-	/**
-	 * Environment description.
-	 */
 	static final String LOCAL_DESC = "Environment to support execution of modules on a local host.";
 
 	/**
@@ -151,7 +126,7 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	/**
 	 * Environment description.
 	 */
-	static final String PINEAPPLE_CI_LINUX_DESC = "Environment to for the Pineapple Continous Integration setup.";
+	static final String PINEAPPLE_CI_LINUX_DESC = "Environment to for the Pineapple continous integration setup.";
 
 	/**
 	 * Environment description.

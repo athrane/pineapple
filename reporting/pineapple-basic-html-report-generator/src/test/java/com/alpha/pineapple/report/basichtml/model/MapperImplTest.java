@@ -588,7 +588,6 @@ public class MapperImplTest {
 		verify(objectFactory);
 		verify(executionResult);
 		verify(reportResult);
-		verify(messages);
 		verify(message);
 		verify(MessageValue);
 	}

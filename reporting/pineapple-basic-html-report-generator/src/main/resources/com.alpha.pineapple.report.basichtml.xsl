@@ -1,8 +1,7 @@
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	version="1.0" xmlns:lxslt="http://xml.apache.org/xslt"
-	xmlns:rbh="http://pineapple.dev.java.net/ns/report/basic_html_1_0"
-	xmlns:java="java">
-	<xsl:output method="html" indent="yes" encoding="US-ASCII"
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0" 
+	xmlns:rbh="http://pineapple.dev.java.net/ns/report/basic_html_1_0" >
+	<xsl:output method="html" indent="yes" encoding="UTF-8"
 		doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN" />
 	<xsl:decimal-format decimal-separator="."
 		grouping-separator="," />
@@ -158,14 +157,13 @@
 			<table border="0" width="95%">
 				<tr>
 					<th align="left">
-						<xsl:value-of select="@rbh:name" />
-						:
+						<xsl:value-of select="@name" />:
 					</th>
 				</tr><!-- list all message values -->
-				<xsl:for-each select="current()/rbh:value">
+				<xsl:for-each select="rbh:value">
 					<tr>
 						<td align="left">
-							<xsl:value-of select="@rbh:value" />
+							<xsl:value-of select="@value" />
 						</td>
 					</tr>
 				</xsl:for-each>
@@ -201,11 +199,11 @@
 			</tr>
 
 			<!-- list all models recursively -->
-			<xsl:for-each select="//rbh:result[@rbh:type='model']">
-				<xsl:variable name="executionsCount" select="sum(current()/@rbh:children)" />
-				<xsl:variable name="failureCount" select="sum(current()/@rbh:failures)" />
-				<xsl:variable name="errorCount" select="sum(current()/@rbh:errors)" />
-				<xsl:variable name="timeCount" select="sum(current()/@rbh:time)" />
+			<xsl:for-each select="//rbh:result[@type='model']">
+				<xsl:variable name="executionsCount" select="sum(@children)" />
+				<xsl:variable name="failureCount" select="sum(@failures)" />
+				<xsl:variable name="errorCount" select="sum(@errors)" />
+				<xsl:variable name="timeCount" select="sum(@time)" />
 
 				<!-- write a summary for the model -->
 				<tr valign="top">
@@ -217,8 +215,8 @@
                     </xsl:choose>
                 </xsl:attribute>
 					<td>
-						<a href="#{@rbh:reportId}">
-							<xsl:value-of select="@rbh:description" />
+						<a href="#{@reportId}">
+							<xsl:value-of select="@description" />
 						</a>
 					</td>
 					<td>
@@ -231,7 +229,7 @@
 						<xsl:value-of select="$failureCount" />
 					</td>
 					<td>
-						<xsl:value-of select="@rbh:startTime" />
+							<xsl:value-of select="@startTime" />
 					</td>
 					<td>
 						<xsl:call-template name="display-time">
@@ -251,33 +249,32 @@
 		</table>
 
 		<!-- Write details for each module model -->
-		<xsl:for-each select="//rbh:result[@rbh:type='model']">
+		<xsl:for-each select="//rbh:result[@type='model']">
 
 			<!-- create an anchor for this module model -->
-			<a name="{@rbh:reportId}"></a>
+			<a name="{@reportId}"></a>
 
 			<table class="headers" border="0" cellpadding="5" cellspacing="2"
 				width="95%">
 				<tr>
 					<th align="left">
-						<xsl:value-of select="@rbh:description" />
+						<xsl:value-of select="@description" />
 					</th>
 				</tr>
 			</table>
 
 			<!-- create table with properties -->
-			<xsl:for-each select="current()/rbh:messages/rbh:message">
+			<xsl:for-each select="rbh:messages/rbh:message">
 				<table border="0" width="95%">
 					<tr>
 						<th align="left">
-							<xsl:value-of select="@rbh:name" />
-							:
+							<xsl:value-of select="@name" />:
 						</th>
 					</tr><!-- list all message values -->
-					<xsl:for-each select="current()/rbh:value">
+					<xsl:for-each select="rbh:value">
 						<tr>
 							<td align="left">
-								<xsl:value-of select="@rbh:value" />
+								<xsl:value-of select="@value" />
 							</td>
 						</tr>
 					</xsl:for-each>
@@ -297,7 +294,7 @@
 					<th nowrap="nowrap">Time(ms)</th>
 				</tr>
 				<!-- match the results for this model -->
-				<xsl:apply-templates select="current()/rbh:result[@rbh:type='default']"
+				<xsl:apply-templates select="rbh:result[@type='default']"
 					mode="print.child.result" />
 			</table>
 			<br />
@@ -313,20 +310,20 @@
 			<!-- set a nice color depending if there is an error/failure -->
 			<xsl:attribute name="class">
             <xsl:choose>
-                <xsl:when test="contains(@rbh:state,'FAILURE')">Failure</xsl:when>
-                <xsl:when test="contains(@rbh:state,'ERROR')">Error</xsl:when>
+                <xsl:when test="contains(@state,'FAILURE')">Failure</xsl:when>
+                <xsl:when test="contains(@state,'ERROR')">Error</xsl:when>
             </xsl:choose>
         </xsl:attribute>
 			<td>
-				<a href="#{@rbh:reportId}">
-					<xsl:value-of select="@rbh:description" />
+				<a href="#{@reportId}">
+					<xsl:value-of select="@description" />
 				</a>
 			</td>
 			<xsl:choose>
-				<xsl:when test="contains(@rbh:state,'FAILURE')">
+				<xsl:when test="contains(@state,'FAILURE')">
 					<td>Failure</td>
 				</xsl:when>
-				<xsl:when test="contains(@rbh:state,'ERROR')">
+				<xsl:when test="contains(@state,'ERROR')">
 					<td>Error</td>
 				</xsl:when>
 				<xsl:otherwise>
@@ -334,20 +331,20 @@
 				</xsl:otherwise>
 			</xsl:choose>
 			<td>
-				<xsl:value-of select="@rbh:children" />
+				<xsl:value-of select="@children" />
 			</td>
 			<td>
-				<xsl:value-of select="@rbh:errors" />
+				<xsl:value-of select="@errors" />
 			</td>
 			<td>
-				<xsl:value-of select="@rbh:failures" />
+				<xsl:value-of select="@failures" />
 			</td>
 			<td>
-				<xsl:value-of select="@rbh:startTime" />
+				<xsl:value-of select="@startTime" />
 			</td>
 			<td>
 				<xsl:call-template name="display-time">
-					<xsl:with-param name="value" select="@rbh:time" />
+					<xsl:with-param name="value" select="@time" />
 				</xsl:call-template>
 			</td>
 		</tr>
@@ -364,35 +361,34 @@
 		</table>
 
 		<!-- write out all execution results -->
-		<xsl:for-each select="//rbh:result[@rbh:type='default']">
+		<xsl:for-each select="//rbh:result[@type='default']">
 			<xsl:variable name="resultMessage"
-				select="current()/rbh:messages/rbh:message[@rbh:name='Message']/rbh:value[1]/@rbh:value" />
+				select="rbh:messages/rbh:message[@name='Message']/rbh:value[1]/@value" />
 
 			<!-- create an anchor to this execution result name -->
-			<a name="{@rbh:reportId}"></a>
+			<a name="{@reportId}"></a>
 
 			<!-- create table with properties -->
 			<table class="headers" border="0" cellpadding="5" cellspacing="2"
 				width="95%">
 				<tr>
 					<th align="left">
-						<xsl:value-of select="@rbh:description" />
+						<xsl:value-of select="@description" />
 					</th>
 				</tr>
 
 				<!-- create table with properties -->
-				<xsl:for-each select="current()/rbh:messages/rbh:message">
+				<xsl:for-each select="rbh:messages/rbh:message">
 					<table border="0" width="95%">
 						<tr>
 							<th align="left">
-								<xsl:value-of select="@rbh:name" />
-								:
+								<xsl:value-of select="@name" />:
 							</th>
 						</tr><!-- list all message values -->
-						<xsl:for-each select="current()/rbh:value">
+						<xsl:for-each select="rbh:value">
 							<tr>
 								<td align="left">
-									<xsl:value-of select="@rbh:value" />
+									<xsl:value-of select="@value" />
 								</td>
 							</tr>
 						</xsl:for-each>
@@ -402,7 +398,7 @@
 			</table>
 
 			<xsl:choose>
-				<xsl:when test="@rbh:children &gt; 0">
+				<xsl:when test="@children &gt; 0">
 					<table class="details" border="0" cellpadding="5"
 						cellspacing="2" width="80%">
 						<tr valign="top">
@@ -415,7 +411,7 @@
 							<th nowrap="nowrap">Time(ms)</th>
 						</tr>
 						<!-- match the results for this execution result -->
-						<xsl:apply-templates select="current()/rbh:result[@rbh:type='default']"
+						<xsl:apply-templates select="rbh:result[@type='default']"
 							mode="print.child.result" />
 					</table>
 				</xsl:when>

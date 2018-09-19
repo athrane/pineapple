@@ -24,8 +24,8 @@ Development documentation
 
 * Generation of classes from XML schemas
 
-	The project uses JABX through the Maven 2 plugin <<<maven-jaxb2-plugin>>> 
-	to generate classes from XML schemas.		
+	The project uses JAXB through the Maven plugin <<<cxf-xjc-plugin>>> 
+	to generate classes from XML schema.		
 	 	
 ** customised package names
 	 	
@@ -437,14 +437,6 @@ Development documentation
 	using the custom JABX adaptor <<<GraphDriverDataMapAdapter>>>.
 	The map and JAXB adaptor is shared with the other bindings in the section.
 	
-** JAXB Links
-
-	More information about JAXB can be found	
-	{{{https://jaxb.dev.java.net/}here.}}
-	
-	More information about <<<maven-jaxb2-plugin>>> can be found	
-	{{{https://maven-jaxb2-plugin.dev.java.net/}here.}}	
-
 * Internal configuration
 
 ** Logging

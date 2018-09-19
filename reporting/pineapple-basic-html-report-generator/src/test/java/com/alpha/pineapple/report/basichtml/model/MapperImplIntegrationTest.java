@@ -40,13 +40,12 @@ import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
 import com.alpha.pineapple.execution.ExecutionResultImpl;
 import com.alpha.pineapple.model.report.basichtml.Report;
 import com.alpha.pineapple.model.report.basichtml.Result;
-import com.alpha.springutils.DirectoryTestExecutionListener;
 
 /**
  * Integration test of the class <code>MapperImpl</code>.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirectoryTestExecutionListener.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class})
 @ContextConfiguration(locations = { "/com.alpha.pineapple.report.basichtml-config.xml" })
 public class MapperImplIntegrationTest {
 

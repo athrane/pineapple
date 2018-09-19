@@ -37,9 +37,19 @@
 	    	      	
    		<south border="none" size="10%" >
 	        <hbox pack="end" align="center" spacing="10px" hflex="1" vflex="1" >      
-	            <button id="openModuleButton" label="Open Module" onClick="@command('openModule')" mold="trendy" />
-	            <button id="refreshButton" label="Refresh Modules" onClick="@command('refreshModules')" mold="trendy" />	            
-	            <button id="cancelButton" label="Cancel" onClick="@command('cancel')" mold="trendy" />
+	            <button id="openModuleButton" 
+	            	label="Open Module" 
+	            	onClick="@command('openModule')" 
+	            	disabled="@load(vm.selectedModule eq null)" 	            	
+	            	mold="trendy" />
+	            <button id="refreshButton" 
+	            	label="Refresh Modules" 
+	            	onClick="@command('refreshModules')" 
+	            	mold="trendy" />	            
+	            <button id="cancelButton" 
+	            	label="Cancel" 
+	            	onClick="@command('cancel')" 
+	            	mold="trendy" />
 	        </hbox>        	
    		</south>
    	</borderlayout>											

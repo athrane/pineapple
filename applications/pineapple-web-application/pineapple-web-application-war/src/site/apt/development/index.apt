@@ -58,6 +58,8 @@ Development documentation
 	applications is located in <<<src/main/webapp/WEB-INF/web.xml>>>.	
 	The descriptor is defined with the version 3.0 schema, i.e. <http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd>.
 	
+	The descriptor is defined with <<<metadata-complete="false">>> to enable scanning of annotations (servlets etc.). 
+	
 	The descriptor defines:
 
 	* A <<<context-param>>> element with the name <<<pineapple.home.dir>>> which 
@@ -101,23 +103,13 @@ Development documentation
  		* http://forum.springsource.org/showthread.php?t=50631
  		
  		[]
- 		
-	* A <<<listener>>> element of the class 
-	<<<org.zkoss.zk.ui.http.HttpSessionListener>>> which initializes the <ZK Session Cleaner>
-	 whose purpose it is to clean up when a session is destroyed.
-	
+ 			
 	* A <<<servlet>>> element of the class <<<DispatcherServlet>>>
 	which configures the Spring web MVC servlet. The servlet is configured load its
 	application context file from <<</WEB-INF/spring/webapp-config.xml>>>   
 
 	* A <<<servlet-mapping>>> for the Spring web MVC servlet
 	which handles all requests which matches the pattern <<</>>>. 				
-
-	* A <<<servlet>>> element of the class <<<org.zkoss.zk.ui.http.DHtmlLayoutServlet>>>
-	which configures the ZK loader for ZUML pages.
-
-	* A <<<servlet>>> element of the class <<<org.zkoss.zk.au.http.DHtmlUpdateServlet>>>
-	which configures the asynchronous update engine for ZK.
 	  
 	* Session time out is set to 60 minutes.
 	
@@ -139,14 +131,11 @@ Development documentation
 	* <<<server-push-class>>> is set to <<<org.zkoss.zkex.ui.comet.CometServerPush>>>.
 	The used server push implementation doesn't use servlet 3 asynchronous processing support. 
 	The implementation is choosen over the <<<org.zkoss.zkmax.ui.comet.CometServerPush>>> implementation which supports
-	asynchronous processing but doesn't work with Jetty 9.1+ (Please visit: PINEAPPLE-705 & PINEAPPLE-708).
+	asynchronous processing but doesn't work with Jetty 9.1+ (Please visit: the GitHub issue athrane/pineapple #235).
 	
 	* <<<session-timeout>>> is set to 0 seconds to use the time out value defined in <<<web.xml>>>.
 	
 	* <<<timeout-message>>> is configured with a time out message.
-
-	* A <<<listener>>> element defines a ZK life cycle event listener <<<LifecycleEventListener>>> 
-	which is used to capture an event when a ZK desktop is destroyed (i.e. when a browser is closed).
 	
 	[]
 	

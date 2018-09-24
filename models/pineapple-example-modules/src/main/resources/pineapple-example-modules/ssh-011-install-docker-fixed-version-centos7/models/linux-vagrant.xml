@@ -62,9 +62,11 @@
     <mmd:model target-resource="ssh-node1" target-operation="undeploy-configuration" description="Uninstall Docker" >
       <mmd:content>
         <shp:ssh>        
-          <shp:execute command="sudo systemctl stop docker.service" /> 
-          <shp:execute command="sudo yum -y remove docker-engine.x86_64 " /> 
+          <shp:execute command="sudo systemctl stop docker" /> 
+          <shp:execute command="sudo systemctl disable docker" />           
+          <shp:execute command="sudo yum -y remove docker-ce" /> 
           <shp:execute command="sudo rm -rf /var/lib/docker" /> 
+          <shp:execute command="sudo rm -rf ${docker-target-config-dir}" />        						                    
         </shp:ssh>			
       </mmd:content>
     </mmd:model>

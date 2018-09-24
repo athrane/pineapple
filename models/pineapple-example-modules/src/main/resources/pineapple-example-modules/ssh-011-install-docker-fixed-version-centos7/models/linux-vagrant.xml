@@ -19,20 +19,19 @@
       </mmd:content>
     </mmd:model>
 
-   <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Update YUM (can take some time)" >
-      <mmd:content>
-        <shp:ssh>
-        <shp:execute command="sudo yum --assumeyes update" />
-        </shp:ssh>    		
-      </mmd:content>
-    </mmd:model>
-
    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Add Docker repository to YUM" >
       <mmd:content>
         <shp:ssh>
           <shp:execute command="sudo yum install -y yum-utils device-mapper-persistent-data lvm2" />    							                    
           <shp:execute command="sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo" />  
-          <shp:execute command="sudo yum -y update" />  
+        </shp:ssh>    		
+      </mmd:content>
+    </mmd:model>
+
+   <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Update YUM (can take some time)" >
+      <mmd:content>
+        <shp:ssh>
+        <shp:execute command="sudo yum --assumeyes update" />
         </shp:ssh>    		
       </mmd:content>
     </mmd:model>

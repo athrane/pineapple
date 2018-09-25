@@ -73,7 +73,7 @@
 		description="Install Docker">
 		<mmd:content>
 			<shp:ssh>			
-				<shp:execute command="sudo yum --assumeyes install ${docker-package}-${docker-version}" />     
+				<shp:execute command="sudo yum --assumeyes --setopt=obsoletes=0 install ${docker-package}-${docker-version}" />     
 				<shp:copy-to source="modulepath:bin/${docker-daemon-config}" destination="${tmp-dir}/${docker-daemon-config}" chmod="775" />
 				<shp:execute command="sudo mkdir ${docker-daemon-config-dir}" />        						                              
 				<shp:execute command="sudo mv ${tmp-dir}/${docker-daemon-config} ${docker-daemon-config-dir}/${docker-daemon-config}" />    							                          

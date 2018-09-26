@@ -37,6 +37,12 @@
 			<groupId>commons-chain</groupId>
 			<artifactId>commons-chain</artifactId>
 		</dependency>
+		<!-- JavaBeans(TM) Activation Framework support -->					
+		<dependency>
+		  <groupId>com.sun.activation</groupId>
+		  <artifactId>javax.activation</artifactId>
+		  <scope>provided</scope>		  
+		</dependency>		
 		<!-- provides access to @resource annotation -->
 		<dependency>
 			<groupId>javax.annotation</groupId>

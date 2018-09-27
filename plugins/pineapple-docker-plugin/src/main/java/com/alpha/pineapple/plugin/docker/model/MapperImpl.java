@@ -387,7 +387,8 @@ public class MapperImpl implements Mapper {
 			if(targetHostConfig == null) {
 				targetContainerInfo.createHostConfiguration();
 				targetHostConfig = targetContainerConfig.getHostConfig();
-			} 			
+			} 
+			
 			
 			// resolve referenced configuration
 			ContainerConfigurationHostConfig refHostConfig = null;

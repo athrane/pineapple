@@ -203,7 +203,7 @@
 			<dependency>
 				<groupId>commons-lang</groupId>
 				<artifactId>commons-lang</artifactId>
-				<version>2.4</version>
+				<version>3.8.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-chain</groupId>
@@ -304,12 +304,6 @@
             	<artifactId>jaxb-core</artifactId>
             	<version>${jaxb-api.version}</version>
         	</dependency>
-		<!-- JavaBeans Activiation Framework Java 9 support -->       	
-			<dependency>
-				<groupId>com.sun.activation</groupId>
-			  	<artifactId>javax.activation</artifactId>
-			  	<version>1.2.0</version>
-			</dependency>       	        					
 			<!-- Spring framework -->
 			<dependency>
 				<groupId>org.springframework</groupId>

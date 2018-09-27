@@ -22,7 +22,7 @@
 
 package com.alpha.pineapple.plugin.session;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.ObjectFactory;
 
 import com.alpha.pineapple.model.configuration.Credential;

@@ -31,7 +31,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 import com.alpha.pineapple.command.execution.CommandRunner;
 import com.alpha.pineapple.docker.command.BuildImageCommand;

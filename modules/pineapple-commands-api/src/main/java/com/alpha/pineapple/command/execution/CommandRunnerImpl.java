@@ -25,7 +25,7 @@ package com.alpha.pineapple.command.execution;
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 import org.apache.commons.chain.impl.ContextBase;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;

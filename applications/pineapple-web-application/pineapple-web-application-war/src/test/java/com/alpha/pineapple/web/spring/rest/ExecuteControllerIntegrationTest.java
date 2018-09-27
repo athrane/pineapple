@@ -42,7 +42,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.hamcrest.core.StringContains;
 import org.junit.After;

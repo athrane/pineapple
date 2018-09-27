@@ -22,7 +22,7 @@
 
 package com.alpha.pineapple.docker.utils;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.alpha.pineapple.docker.model.rest.HostConfig;
 import com.alpha.pineapple.docker.model.rest.CreatedContainer;

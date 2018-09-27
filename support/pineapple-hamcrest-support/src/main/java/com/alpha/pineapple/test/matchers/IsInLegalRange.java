@@ -25,7 +25,7 @@ package com.alpha.pineapple.test.matchers;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;

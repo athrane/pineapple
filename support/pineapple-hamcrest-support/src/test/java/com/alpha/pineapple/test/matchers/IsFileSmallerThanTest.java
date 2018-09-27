@@ -29,7 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.easymock.EasyMock;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;

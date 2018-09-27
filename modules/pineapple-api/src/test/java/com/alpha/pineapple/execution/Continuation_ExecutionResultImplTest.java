@@ -28,8 +28,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.After;

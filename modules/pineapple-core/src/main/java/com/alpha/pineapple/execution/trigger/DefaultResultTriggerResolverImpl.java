@@ -27,7 +27,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
 import com.alpha.pineapple.model.module.model.Trigger;

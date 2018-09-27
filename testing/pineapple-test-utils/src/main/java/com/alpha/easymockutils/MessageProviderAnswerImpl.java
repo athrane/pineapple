@@ -22,7 +22,7 @@
 
 package com.alpha.easymockutils;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;

@@ -38,8 +38,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.Validate;
 
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResultFactory;

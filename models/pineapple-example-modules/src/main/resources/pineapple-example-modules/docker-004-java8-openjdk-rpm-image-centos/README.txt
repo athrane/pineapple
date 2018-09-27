@@ -2,7 +2,7 @@
 Description
 -------------
 This example illustrates how the Docker plugin can be used to create a image from a Dockerfile
-with Open JDK 8 installed. 
+with OpenJDK 8 installed. 
 
 The module contains the /dockersrc directory which is the source directory for the image.
 The source directory contain a Dockerfile used to direct the image creation.
@@ -23,8 +23,8 @@ Required modifications
 
 Intended operations
 -----------------------
-* "deploy-configuration"  - which will create the tagged Docker image from the Dockerfile.
-* "undeploy-configuration"  - which will delete the Docker image.
+* "deploy-configuration" - which will create the tagged Docker image from the Dockerfile.
+* "undeploy-configuration" - which will delete the Docker image.
 * "create-report" - which will list the created Docker images and containers.
 
 The model is targeted to the "deploy-configuration", "undeploy-configuration" and

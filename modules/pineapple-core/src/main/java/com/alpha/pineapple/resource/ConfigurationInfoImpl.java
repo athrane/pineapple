@@ -25,7 +25,7 @@ package com.alpha.pineapple.resource;
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Implementation of the {@linkplain ConfigurationInfo} interface.

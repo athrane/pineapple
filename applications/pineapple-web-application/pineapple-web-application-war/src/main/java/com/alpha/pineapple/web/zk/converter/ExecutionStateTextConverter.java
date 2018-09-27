@@ -22,7 +22,7 @@
 
 package com.alpha.pineapple.web.zk.converter;
 
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.zkoss.bind.BindContext;
 import org.zkoss.bind.Converter;
 import org.zkoss.zk.ui.Component;

@@ -24,7 +24,7 @@ package com.alpha.testutils.testplugins.pluginprovider.executioninfo;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.execution.ExecutionInfoProvider;

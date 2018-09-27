@@ -26,7 +26,7 @@ import java.io.File;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 /**
  * Implementation of the { {@link ModuleInfo} interface.

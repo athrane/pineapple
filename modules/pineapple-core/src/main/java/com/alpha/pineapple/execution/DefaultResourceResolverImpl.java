@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.alpha.pineapple.resource.ResourceInfo;
 import com.alpha.pineapple.resource.ResourceRepository;

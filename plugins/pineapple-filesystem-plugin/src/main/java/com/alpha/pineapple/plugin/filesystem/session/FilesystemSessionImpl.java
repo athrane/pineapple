@@ -24,8 +24,8 @@ package com.alpha.pineapple.plugin.filesystem.session;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;

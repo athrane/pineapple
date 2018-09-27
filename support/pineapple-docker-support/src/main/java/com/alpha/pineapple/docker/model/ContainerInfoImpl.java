@@ -26,7 +26,7 @@ import static com.alpha.pineapple.docker.DockerConstants.PORTBINDING_NULL_HOST_I
 
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 import com.alpha.javautils.NetworkUtils;
 import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationLabelsMap;

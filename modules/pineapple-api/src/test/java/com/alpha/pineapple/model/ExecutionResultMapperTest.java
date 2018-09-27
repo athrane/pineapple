@@ -26,15 +26,13 @@ package com.alpha.pineapple.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.math.RandomUtils;
-import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.After;

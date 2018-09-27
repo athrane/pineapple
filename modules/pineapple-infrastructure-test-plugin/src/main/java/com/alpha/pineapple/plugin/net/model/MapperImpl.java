@@ -32,7 +32,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.chain.Context;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hamcrest.Matcher;
 

@@ -47,8 +47,8 @@
 
 package com.alpha.pineapple.execution;
 
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
 

@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.apache.commons.lang.math.RandomUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;

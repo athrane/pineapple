@@ -27,10 +27,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.SystemUtils;
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.log4j.Logger;
 
 import com.alpha.javautils.StackTraceHelper;

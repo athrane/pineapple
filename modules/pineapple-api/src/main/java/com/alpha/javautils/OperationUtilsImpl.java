@@ -24,7 +24,7 @@ package com.alpha.javautils;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.plugin.PluginExecutionFailedException;

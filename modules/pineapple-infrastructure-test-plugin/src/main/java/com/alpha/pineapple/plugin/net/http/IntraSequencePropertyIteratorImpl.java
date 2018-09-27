@@ -25,7 +25,7 @@ package com.alpha.pineapple.plugin.net.http;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 
 /**

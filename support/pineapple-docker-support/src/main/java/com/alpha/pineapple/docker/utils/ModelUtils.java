@@ -25,8 +25,8 @@ import static com.alpha.pineapple.docker.DockerConstants.UNDEFINED_REPO_TAG;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import com.alpha.pineapple.docker.model.ImageInfo;
 import com.alpha.pineapple.docker.model.rest.JsonMessage;

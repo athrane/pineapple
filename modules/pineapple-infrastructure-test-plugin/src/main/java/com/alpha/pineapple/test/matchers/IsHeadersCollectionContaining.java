@@ -25,7 +25,7 @@ package com.alpha.pineapple.test.matchers;
 import java.util.Map;
 
 import org.apache.commons.httpclient.Header;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Description;

@@ -50,7 +50,7 @@ public class StringUtils {
 		// if string contains newline then abbreviate at new line
 		if (valueAsString.contains("\n")) {
 			int width = valueAsString.indexOf("\n");
-			return org.apache.commons.lang.StringUtils.abbreviate(valueAsString, width);
+			return org.apache.commons.lang3.StringUtils.abbreviate(valueAsString, width);
 		}
 
 		return valueAsString;

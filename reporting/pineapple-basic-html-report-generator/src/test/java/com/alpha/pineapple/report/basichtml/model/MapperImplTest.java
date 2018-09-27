@@ -33,9 +33,9 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.math.RandomUtils;
-import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -24,7 +24,7 @@ package com.alpha.pineapple.execution;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.alpha.pineapple.CoreConstants;
 import com.alpha.pineapple.i18n.MessageProvider;

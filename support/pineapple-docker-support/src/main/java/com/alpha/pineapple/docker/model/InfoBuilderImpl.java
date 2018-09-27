@@ -25,7 +25,7 @@ import static com.alpha.pineapple.docker.DockerConstants.DEFAULT_CENTOS_REPOSITO
 import static com.alpha.pineapple.docker.DockerConstants.LATEST_IMAGE_TAG;
 import static com.alpha.pineapple.docker.utils.ModelUtils.containsSeparator;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 public class InfoBuilderImpl implements InfoBuilder {
 

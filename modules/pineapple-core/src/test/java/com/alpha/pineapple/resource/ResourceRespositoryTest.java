@@ -31,7 +31,7 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.After;

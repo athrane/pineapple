@@ -28,8 +28,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.After;
@@ -1411,7 +1411,7 @@ public class ExecutionResultImplTest {
 
 		// test
 		assertEquals(0, compositeMsg.compareToIgnoreCase(compositeMsg2));
-		assertEquals(1, org.apache.commons.lang.StringUtils.countMatches(compositeMsg2, "Results: "));
+		assertEquals(1, org.apache.commons.lang3.StringUtils.countMatches(compositeMsg2, "Results: "));
 	}
 
 	/**
@@ -1458,7 +1458,7 @@ public class ExecutionResultImplTest {
 
 		// get text
 		String compositeMsg = result.getMessages().get(ExecutionResult.MSG_COMPOSITE);
-		assertEquals(1, org.apache.commons.lang.StringUtils.countMatches(compositeMsg,
+		assertEquals(1, org.apache.commons.lang3.StringUtils.countMatches(compositeMsg,
 				"Results: 0, successful: 0, failures: 0, errors: 0, interrupted: 0"));
 
 		// add child
@@ -1472,7 +1472,7 @@ public class ExecutionResultImplTest {
 
 		// assert texts are identical
 		assertEquals(-1, compositeMsg.compareToIgnoreCase(compositeMsg2));
-		assertEquals(1, org.apache.commons.lang.StringUtils.countMatches(compositeMsg2,
+		assertEquals(1, org.apache.commons.lang3.StringUtils.countMatches(compositeMsg2,
 				"Results: 1, successful: 1, failures: 0, errors: 0, interrupted: 0."));
 	}
 

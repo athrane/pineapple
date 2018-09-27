@@ -24,7 +24,7 @@ package com.alpha.pineapple.plugin.net.http;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 import org.hamcrest.Matcher;
 

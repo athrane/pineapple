@@ -38,8 +38,8 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.math.RandomUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

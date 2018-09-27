@@ -24,7 +24,7 @@ package com.alpha.pineapple.substitution;
 
 import java.util.Map;
 
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang3.text.StrSubstitutor;
 
 import com.alpha.pineapple.substitution.variables.Variables;
 

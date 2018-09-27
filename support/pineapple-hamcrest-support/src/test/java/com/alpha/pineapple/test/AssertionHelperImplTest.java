@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.hamcrest.Matcher;

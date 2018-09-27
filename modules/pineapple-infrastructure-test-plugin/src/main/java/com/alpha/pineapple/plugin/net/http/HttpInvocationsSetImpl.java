@@ -24,7 +24,7 @@ package com.alpha.pineapple.plugin.net.http;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 /**
  * Implementation of the <code>HttpInvocationsSet</code>

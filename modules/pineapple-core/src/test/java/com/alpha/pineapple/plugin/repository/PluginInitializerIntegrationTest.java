@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

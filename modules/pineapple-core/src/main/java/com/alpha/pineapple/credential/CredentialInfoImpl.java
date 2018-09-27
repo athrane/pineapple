@@ -22,8 +22,8 @@
 
 package com.alpha.pineapple.credential;
 
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Implementation of the {@link CredentialInfo} interface.

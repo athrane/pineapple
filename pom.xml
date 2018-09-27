@@ -285,7 +285,6 @@
 			<dependency>
 			  <groupId>com.sun.activation</groupId>
 			  <artifactId>javax.activation</artifactId>
-			  <scope>provided</scope>		  
 			  <version>1.2.0</version>
 			</dependency>					
 			<!-- JAXB Java 9 support -->			

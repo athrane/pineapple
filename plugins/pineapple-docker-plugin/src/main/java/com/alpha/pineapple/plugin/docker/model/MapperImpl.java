@@ -382,10 +382,13 @@ public class MapperImpl implements Mapper {
 
 			ContainerConfigurationHostConfig srcHostConfig = sourceContainerConfig.getHostConfig();
 
-			// get target configuration
-			HostConfig targetHostConfig;
-			targetHostConfig = targetContainerConfig.getHostConfig();
-
+			// get target host configuration
+			HostConfig targetHostConfig = targetContainerConfig.getHostConfig();
+			if(targetHostConfig == null) {
+				targetContainerInfo.createHostConfiguration();
+				targetHostConfig = targetContainerConfig.getHostConfig();
+			} 			
+			
 			// resolve referenced configuration
 			ContainerConfigurationHostConfig refHostConfig = null;
 			if (isRefDefined)

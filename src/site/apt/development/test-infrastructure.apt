@@ -266,12 +266,9 @@ Pineapple Continuous Integration
 
 	The Jenkins image inherits from the <<<java:8-jdk>>> docker image
 	which installs the OpenJDK 1.8.0 JDK.
-	
  	The JDK is installed to allow it to be used by Jenkins for compilation in build jobs.	
-	Alternately The Oracle JDK could be used, but it requires a valid Oracle account with 
-	user name/password.  
-	
-	JAVA_HOME for this image is <<</usr/lib/jvm/java-8-oracle>>>.
+
+	The OpenJDK 11.x is installed in support compilation of Pineapple with Java 11.
 	
 *** Jenkins JVM configuration 
 
@@ -282,9 +279,18 @@ Pineapple Continuous Integration
   ...
   <jdks>
     <jdk>
-      <name>java-1.8.0-openjdk</name>
-      <home>/usr/lib/jvm/java-1.8.0-openjdk-amd64</home>
-      <properties/>
+      <name>openjdk-11_linux-x64</name>
+      <home></home>
+      <properties>
+        <hudson.tools.InstallSourceProperty>
+          <installers>
+            <hudson.tools.ZipExtractionInstaller>
+              <url>https://download.java.net/java/ga/jdk11/openjdk-11_linux-x64_bin.tar.gz</url>
+              <subdir>jdk-11</subdir>
+            </hudson.tools.ZipExtractionInstaller>
+          </installers>
+        </hudson.tools.InstallSourceProperty>
+      </properties>
     </jdk>
   </jdks>
   ...

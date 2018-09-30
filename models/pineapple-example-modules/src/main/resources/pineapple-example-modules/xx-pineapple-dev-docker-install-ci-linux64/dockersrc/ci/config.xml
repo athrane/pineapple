@@ -1,10 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <hudson>
   <jdks>
-    <jdk>
-      <name>java-1.8.0-openjdk</name>
-      <home>/usr/lib/jvm/java-1.8.0-openjdk-amd64</home>
-      <properties/>
+<jdk>
+      <name>openjdk-11_linux-x64</name>
+      <home></home>
+      <properties>
+        <hudson.tools.InstallSourceProperty>
+          <installers>
+            <hudson.tools.ZipExtractionInstaller>
+              <url>https://download.java.net/java/ga/jdk11/openjdk-11_linux-x64_bin.tar.gz</url>
+              <subdir>jdk-11</subdir>
+            </hudson.tools.ZipExtractionInstaller>
+          </installers>
+        </hudson.tools.InstallSourceProperty>
+      </properties>
     </jdk>
   </jdks>
 </hudson>

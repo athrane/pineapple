@@ -138,10 +138,9 @@
        	</dependency>						   
 		<!-- JavaBeans Activation Framework Java 9+ support -->       	
 		<dependency>
-			  <groupId>com.sun.activation</groupId>
-			  <artifactId>javax.activation</artifactId>
-		</dependency>       	
-       	      			  				
+		    <groupId>javax.activation</groupId>
+		    <artifactId>javax.activation-api</artifactId>
+		</dependency>		       	      			  				
 	</dependencies>
 	
 </project>

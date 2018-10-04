@@ -281,12 +281,12 @@
 				<artifactId>jsr250-api</artifactId>
 				<version>1.0</version>
 			</dependency>
-			<!-- JavaBeans Activation Framework Java 9+ support -->       	
+			<!-- JavaBeans Activation Framework Java 9+ support -->
 			<dependency>
-				<groupId>com.sun.activation</groupId>
-				<artifactId>javax.activation</artifactId>
-			  	<version>1.2.0</version>				  
-			</dependency>       	
+			    <groupId>javax.activation</groupId>
+			    <artifactId>javax.activation-api</artifactId>
+			    <version>1.2.0</version>
+			</dependency>		
 			<!-- JAXB Java 9 support -->			
 			<dependency>
             	<groupId>javax.xml.bind</groupId>
@@ -547,7 +547,14 @@
 				<plugin>
 					<groupId>org.apache.cxf</groupId>
 					<artifactId>cxf-xjc-plugin</artifactId>
-					<version>3.2.1</version>
+					<version>3.2.2</version>
+					<dependencies>
+        				<dependency>
+						    <groupId>javax.activation</groupId>
+						    <artifactId>javax.activation-api</artifactId>
+						    <version>1.2.0</version>
+        				</dependency>
+    				</dependencies>					
 				</plugin>				
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

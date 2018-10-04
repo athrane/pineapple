@@ -42,6 +42,11 @@
 		    <groupId>javax.activation</groupId>
 		    <artifactId>javax.activation-api</artifactId>
 		</dependency>		
+		<!-- JAXB Java 9 support -->			
+		<dependency>
+           	<groupId>javax.xml.bind</groupId>
+           	<artifactId>jaxb-api</artifactId>
+       	</dependency>
 		<!-- provides access to @resource annotation -->
 		<dependency>
 			<groupId>javax.annotation</groupId>

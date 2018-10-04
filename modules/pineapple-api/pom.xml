@@ -41,7 +41,6 @@
 		<dependency>
 		  <groupId>com.sun.activation</groupId>
 		  <artifactId>javax.activation</artifactId>
-		  <scope>provided</scope>		  
 		</dependency>		
 		<!-- provides access to @resource annotation -->
 		<dependency>

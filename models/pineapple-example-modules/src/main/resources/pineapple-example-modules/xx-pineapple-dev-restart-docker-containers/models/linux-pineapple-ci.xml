@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"
+    xmlns:cep="http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0"
+    xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0"
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0">
+		
+	<mmd:model target-resource="docker-ci-node1"
+		description="Start Docker containers" target-operation="deploy-configuration">
+		<mmd:content>
+			<dkp:docker>
+    			<dkp:container name="repo" state="running">
+					<dkp:image repository="pineapple/registry" tag="1.0" />
+				</dkp:container>
+                <dkp:container name="ci" state="running">
+					<dkp:image repository="pineapple/ci" tag="1.0" />
+				</dkp:container>
+				<dkp:container name="repo" state="running">
+					<dkp:image repository="pineapple/repo" tag="1.0" />
+				</dkp:container>
+			</dkp:docker>
+		</mmd:content>
+	</mmd:model>
+	
+</mmd:models>

@@ -41,6 +41,11 @@
 			<artifactId>pineapple-docker-support</artifactId>
 		</dependency>
 		<!-- external dependencies -->
+		<!-- JAXB, Java 11+ support -->			
+		<dependency>
+           	<groupId>javax.xml.bind</groupId>
+           	<artifactId>jaxb-api</artifactId>
+       	</dependency>		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -57,12 +62,7 @@
 			<artifactId>spring-oxm</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- JAXB Java 9 support -->
-		<dependency>
-           	<groupId>javax.xml.bind</groupId>
-           	<artifactId>jaxb-api</artifactId>
-			<scope>test</scope>			           	
-       	</dependency>
+		<!-- JAXB, Java 11+ support -->			
        	<dependency>
            	<groupId>com.sun.xml.bind</groupId>
            	<artifactId>jaxb-impl</artifactId>

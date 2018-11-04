@@ -56,6 +56,8 @@
 		<jstl.version>1.1.2</jstl.version>
 		<servlet.version>3.1.0</servlet.version>
 		<jaxb-api.version>2.3.0</jaxb-api.version>
+		<jaf-api.version>1.2.0</jaf-api.version>
+		<jaxws-api.version>2.3.0</jaxws-api.version>		
 		<zk.version>7.0.2</zk.version>
 		<zkspring.version>3.1</zkspring.version>
 		<pineapple.examplemodules.project.version>1.0.0</pineapple.examplemodules.project.version>
@@ -281,13 +283,13 @@
 				<artifactId>jsr250-api</artifactId>
 				<version>1.0</version>
 			</dependency>
-			<!-- JavaBeans Activation Framework Java 9+ support -->
+			<!-- JavaBeans Activation Framework (JAF), Java 11+ support -->
 			<dependency>
 			    <groupId>javax.activation</groupId>
 			    <artifactId>javax.activation-api</artifactId>
-			    <version>1.2.0</version>
+			    <version>${jaf-api.version}</version>
 			</dependency>		
-			<!-- JAXB Java 9 support -->			
+			<!-- JAXB Java 11+ support -->			
 			<dependency>
             	<groupId>javax.xml.bind</groupId>
             	<artifactId>jaxb-api</artifactId>
@@ -549,11 +551,39 @@
 					<artifactId>cxf-xjc-plugin</artifactId>
 					<version>3.2.2</version>
 					<dependencies>
-        				<dependency>
+		                <dependency>
+		                    <groupId>com.sun.xml.bind</groupId>
+		                    <artifactId>jaxb-xjc</artifactId>
+		                    <version>${jaxb-api.version}</version>
+		                </dependency>
+						<!-- Java Architecture for XML Binding (JAXB), Java 11+ support -->							                
+						<dependency>
+			            	<groupId>javax.xml.bind</groupId>
+			            	<artifactId>jaxb-api</artifactId>
+			            	<version>${jaxb-api.version}</version>
+			        	</dependency>		                
+		                <dependency>
+		                    <groupId>com.sun.xml.bind</groupId>
+		                    <artifactId>jaxb-impl</artifactId>
+		                    <version>${jaxb-api.version}</version>
+		                </dependency>
+		                <dependency>
+		                    <groupId>com.sun.xml.bind</groupId>
+		                    <artifactId>jaxb-core</artifactId>
+		                    <version>${jaxb-api.version}</version>
+		                </dependency>
+						<!-- JavaBeans Activation Framework (JAF), Java 11+ support -->
+						<dependency>
 						    <groupId>javax.activation</groupId>
 						    <artifactId>javax.activation-api</artifactId>
-						    <version>1.2.0</version>
-        				</dependency>
+						    <version>${jaf-api.version}</version>
+						</dependency>		
+        				<!-- Java API for XML Web Services (JAX-WS), Java 11+ support -->
+        				<dependency>
+    						<groupId>javax.xml.ws</groupId>
+    						<artifactId>jaxws-api</artifactId>
+    						<version>${jaxws-api.version}</version>
+						</dependency>
     				</dependencies>					
 				</plugin>				
 				<plugin>
@@ -664,9 +694,9 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>maven2-repository.dev.java.net</id>
-			<name>Java.net Repository for Maven</name>
-			<url>http://download.java.net/maven/2/</url>
+			<id>maven-central</id>
+			<name>Maven central repository </name>
+			<url>http://central.maven.org/maven2/</url>
 			<layout>default</layout>
 		</repository>
 		<!-- Spring Source repository -->
@@ -702,14 +732,9 @@
 			</snapshots>
 		</pluginRepository>
 		<pluginRepository>
-			<id>maven2-repository.dev.java.net</id>
-			<name>Java.net Maven 2 Repository</name>
-			<url>http://download.java.net/maven/2</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>maven-repository.dev.java.net</id>
-			<name>Java.net Maven 1 Repository (legacy)</name>
-			<url>http://download.java.net/maven/1</url>
+			<id>maven-central</id>
+			<name>Maven central repository </name>
+			<url>http://central.maven.org/maven2/</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<distributionManagement>

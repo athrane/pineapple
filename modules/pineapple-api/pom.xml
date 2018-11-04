@@ -37,12 +37,7 @@
 			<groupId>commons-chain</groupId>
 			<artifactId>commons-chain</artifactId>
 		</dependency>
-		<!-- JavaBeans Activation Framework Java 9+ support -->       	
-		<dependency>
-		    <groupId>javax.activation</groupId>
-		    <artifactId>javax.activation-api</artifactId>
-		</dependency>		
-		<!-- JAXB Java 9 support -->			
+		<!-- JAXB, Java 11+ support -->			
 		<dependency>
            	<groupId>javax.xml.bind</groupId>
            	<artifactId>jaxb-api</artifactId>

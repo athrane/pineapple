@@ -611,29 +611,6 @@
 							</goals>
 						</execution>
 					</executions>
-					<configuration>
-						<reportPlugins>
-							<plugin>
-								<groupId>org.apache.maven.plugins</groupId>
-								<artifactId>maven-project-info-reports-plugin</artifactId>
-								<version>3.0.0</version>
-								<configuration>
-									<dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-									<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-								</configuration>
-								<reportSets>
-									<reportSet>
-										<reports>
-											<report>dependencies</report>
-											<report>project-team</report>
-											<report>license</report>
-											<report>issue-tracking</report>
-										</reports>
-									</reportSet>
-								</reportSets>
-							</plugin>
-						</reportPlugins>
-					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.jetty</groupId>
@@ -737,6 +714,21 @@
 			<url>http://central.maven.org/maven2/</url>
 		</pluginRepository>
 	</pluginRepositories>
+	
+	<reporting>
+	  <plugins>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-project-info-reports-plugin</artifactId>
+	      <version>3.0.0</version>
+	      <configuration>
+	        <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+	        <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+	      </configuration>
+	    </plugin>
+	  </plugins>	    
+	</reporting>	
+		
 	<distributionManagement>
 		<site>
 			<id>local</id>

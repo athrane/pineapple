@@ -76,7 +76,7 @@ Building Pineapple
 	</activeProfiles>
 +--  
 
-	[[3]] Configure credentil in settings.xml
+	[[3]] Configure credentials in settings.xml
 
 +--  
 	<server>
@@ -92,10 +92,16 @@ Building Pineapple
 	mvn deploy
 +--  
 
+** Build documentation web site
 
-
-
+	[[1]] From command-prompt, cd into the pineapple directory and run:
 	
++--  
+	mvn site site:deploy 
++--  
+
+The generated documentation is stored in the <<</doc>>> directory. 
+
 
 
 

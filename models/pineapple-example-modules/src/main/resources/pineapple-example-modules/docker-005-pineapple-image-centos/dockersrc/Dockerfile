@@ -1,16 +1,17 @@
 # Pull base image
 # ---------------
-FROM pineapple/centos-openjdk-java:8
+FROM openjdk:11
+#hirokimatsumoto/alpine-openjdk-11
 
 # Maintainer
 # ----------
 MAINTAINER Allan Thrane Andersen <einheriii@gmail.com>
 
 # Define variable
-ENV PINEAPPLE_ARCHIVE pineapple-standalone-web-client-1.10.0.zip \
+ENV PINEAPPLE_ARCHIVE pineapple-standalone-web-client-1.11.0.zip \
 	PINEAPPLE_INSTALL_DIR /opt \
 	PINEAPPLE_HOME_DIR /var/pineapple \
-	PINEAPPLE_DIR $PINEAPPLE_INSTALL_DIR/pineapple-standalone-web-client-1.10.0 \
+	PINEAPPLE_DIR $PINEAPPLE_INSTALL_DIR/pineapple-standalone-web-client-1.11.0 \
 	PINEAPPLE_USER pineapple \
 	PINEAPPLE_GROUP pineapple \
 	PINEAPPLE_HOME $PINEAPPLE_HOME_DIR \

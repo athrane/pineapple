@@ -8,7 +8,7 @@
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/guides/mini/guide-apt-format.html
 
-How-to: Install latest Docker version in a Vagrant box with CentOS 7.0 using SSH
+How-to: Install latest Docker version in a Vagrant box with CentOS 7.5 using SSH
 
 * Overview
 
@@ -46,7 +46,7 @@ How-to: Install latest Docker version in a Vagrant box with CentOS 7.0 using SSH
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-BOX_NAME = ENV.fetch("BOX_NAME", "chef/centos-7.0") 
+BOX_NAME = ENV.fetch("BOX_NAME", "bento/centos-7.5") 
 BOX_IP = ENV.fetch("BOX_IP", "192.168.34.10") 
 BOX_MEM = ENV.fetch("BOX_MEM", "2048") 
 BOX_CPUS = ENV.fetch("BOX_CPUS", "2") 

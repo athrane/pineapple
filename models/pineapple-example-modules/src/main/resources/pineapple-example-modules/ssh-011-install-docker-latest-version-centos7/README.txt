@@ -39,6 +39,7 @@ Module content
 * "vagrant/Vagrantfile" - Vagrant file for creation of CentOS 7.0 VM.
 * "bin/daemon.json" - Docker daemon configuration file.
 * "bin/create-docker-user.sh" - shell script to create docker user and add it to sudoers.
+* "bin/systemd-override.conf" - Docker systemd drop-in replacement file (see issue https://github.com/athrane/pineapple/issues/273)
 
 Environments
 -----------------------

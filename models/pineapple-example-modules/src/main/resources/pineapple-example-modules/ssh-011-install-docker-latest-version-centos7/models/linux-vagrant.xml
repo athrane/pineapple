@@ -4,7 +4,9 @@
     <mmd:variables>
       <mmd:variable key="tmp-dir" value="/tmp" />        	   
       <mmd:variable key="docker-daemon-config" value="daemon.json" />    
-      <mmd:variable key="docker-daemon-config-dir" value="/etc/docker" />                      
+      <mmd:variable key="docker-daemon-config-dir" value="/etc/docker" />  
+      <mmd:variable key="docker-systemd-override-config" value="systemd-override.conf" />           
+      <mmd:variable key="docker-systemd-config-dir" value="/etc/systemd/system/docker.service.d" />                        
       <mmd:variable key="docker-repo" value="https://download.docker.com/linux/centos/docker-ce.repo" />    
       <mmd:variable key="docker-package" value="docker-ce" />          
       <mmd:variable key="create-user-script" value="create-docker-user.sh" />          
@@ -43,7 +45,10 @@
           <shp:execute command="sudo yum --assumeyes install ${docker-package}" />     
           <shp:copy-to source="modulepath:bin/${docker-daemon-config}" destination="${tmp-dir}/${docker-daemon-config}" chmod="775" />
           <shp:execute command="sudo mkdir ${docker-daemon-config-dir}" />        						                              
-          <shp:execute command="sudo mv ${tmp-dir}/${docker-daemon-config} ${docker-daemon-config-dir}/${docker-daemon-config}" />    							                          
+          <shp:execute command="sudo mv ${tmp-dir}/${docker-daemon-config} ${docker-daemon-config-dir}/${docker-daemon-config}" />             
+          <shp:copy-to source="modulepath:bin/${docker-systemd-override-config}" destination="${tmp-dir}/${docker-systemd-override-config}" chmod="775" />
+          <shp:execute command="sudo mkdir ${docker-systemd-config-dir}" />            					                                        
+          <shp:execute command="sudo mv ${tmp-dir}/${docker-systemd-override-config} ${docker-systemd-config-dir}/${docker-systemd-override-config}" />    							                               							                          
           <shp:execute command="sudo systemctl enable  docker" /> 
           <shp:execute command="sudo systemctl start docker" /> 
         </shp:ssh>			
@@ -66,7 +71,8 @@
           <shp:execute command="sudo systemctl stop docker" /> 
           <shp:execute command="sudo yum -y remove ${docker-package}" /> 
           <shp:execute command="sudo rm -rf /var/lib/docker" />           
-          <shp:execute command="sudo rm -rf ${docker-daemon-config-dir}" />           
+          <shp:execute command="sudo rm -rf ${docker-daemon-config-dir}" />    
+          <shp:execute command="sudo rm -rf ${docker-systemd-config-dir}" />                 
         </shp:ssh>			
       </mmd:content>
     </mmd:model>

@@ -234,17 +234,32 @@ ssh-011-install-docker-latest-version-centos7
 
 		*  Listen on 0.0.0.0:8082 to support remote usage of the REST API.
 		
-		[]
-		
+		[]	
 		
 	The file contains:
-	
+		
 +---
 {
 	"hosts": [ "unix:///var/run/docker.sock",
 	"tcp://0.0.0.0:8082" ]	
 }
 +---	
+	
+	* <<<systemd-override.conf>>> is a Docker systemd configuration file. 
+	The file is installed in <<</etc/systemd/system/docker.service.d/systemd-override.conf>>>. 
+	The purpose of the file is to clear any default host flags from the systemd configuration file installed by Docker.
+	This will avoid conflict with the <<<etc/docker/daemon.json>>>.
+		
+	The file contains:
+	
++---
+[Service]
+# This line resets / "removes" the original ExecStart as was defined in the main systemd unit file
+ExecStart=
+
+# This line defines the new ExecStart to use _instead_
+ExecStart=/usr/bin/dockerd
++---
 	
 	[]
 	
@@ -362,7 +377,7 @@ ssh-011-install-docker-latest-version-centos7
 		* <<Install Docker>>. Docker is installed as a systemctrl service.
 		The Docker daemon is configured using the configuration file <<<etc/docker/daemon.json>>>
 		 which defines the API to listen on <<</var/run/docker.sock/>>> and <<<[::]:8082>>>.           
-		The Docker systemd configuration overridden by the systemd drop-in configuration file
+		The Docker systemd configuration is overridden by the systemd drop-in configuration file
 		<<</etc/systemd/system/docker.service.d/systemd-override.conf>>> which clears any host flags 
 		from the systemd configuration to avoid conflict with the <<<etc/docker/daemon.json>>>.
 

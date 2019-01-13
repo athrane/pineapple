@@ -46,6 +46,7 @@ Module content
 * "bin/artifactory.config.xml" - Artifactory main configuration file.
 * "bin/create-docker-user.sh" - shell script for setting the Docker user to run the Docker host under.
 * "bin/daemon.json" - Docker daemon configuration file.
+* "bin/systemd-override.conf" - Docker systemd drop-in replacement file (see issue https://github.com/athrane/pineapple/issues/273)
 * "dockersrc/ci/config.xml" - Jenkins main configuration file.
 * "dockersrc/ci/Dockerfile" - Dockerfile for building the pineapple/ci image.
 * "dockersrc/ci/hudson.tasks.Maven.xml" - Jenkins Maven configuration file.

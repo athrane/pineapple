@@ -86,6 +86,12 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='jsonRawMessageType']" >
+			<jaxb:class name="JsonRawMessage" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='portSetType']" >
 			<jaxb:class name="PortSet" />				
 		</jaxb:bindings>		 
@@ -124,6 +130,12 @@
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='deviceMappingType']" >
 			<jaxb:class name="DeviceMapping" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='imageMetadataType']" >
+			<jaxb:class name="ImageMetadata" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 

@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
- * Copyright (C) 2007-2015 Allan Thrane Andersen.
+ * Copyright (C) 2007-2019 Allan Thrane Andersen.
  * 
  * This file is part of Pineapple.
  * 
@@ -24,11 +24,12 @@ package com.alpha.pineapple.docker.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.alpha.pineapple.docker.model.rest.HostConfig;
 import com.alpha.pineapple.docker.model.rest.CreatedContainer;
+import com.alpha.pineapple.docker.model.rest.HostConfig;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettings;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettingsNetworkValue;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerState;
+import com.alpha.pineapple.docker.model.rest.JsonRawMessage;
 import com.alpha.pineapple.docker.model.rest.ListedContainer;
 import com.alpha.pineapple.docker.model.rest.ListedImage;
 import com.alpha.pineapple.docker.model.rest.Mount;
@@ -43,7 +44,7 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
  *
  */
 public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
-
+	
 	/**
 	 * Serial Version UID.
 	 */
@@ -63,12 +64,12 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 	public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method, String defaultName) {
 
 		// get method name
-		String methodName = method.getDeclaringClass().getName();
-
+		String className = method.getDeclaringClass().getName();
+		
 		// handle case for ListedImage.id
 		// - map received JSON property "Id" to ListedImage.id as defined in the
 		// Docker schema
-		if (methodName.equals(ListedImage.class.getName())) {
+		if (className.equals(ListedImage.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("id"))
@@ -78,7 +79,7 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 		// handle case for ListedContainer.imageId
 		// - map received JSON property "ImageID" to ListedImage.imageId as
 		// defined in the Docker schema
-		if (methodName.equals(ListedContainer.class.getName())) {
+		if (className.equals(ListedContainer.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("imageId"))
@@ -88,7 +89,7 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 		// handle case for CreatedContainer.id
 		// - map received JSON property "Id" to CreatedContainer.id as defined
 		// in the Docker schema
-		if (methodName.equals(CreatedContainer.class.getName())) {
+		if (className.equals(CreatedContainer.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("id"))
@@ -99,7 +100,7 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 		// example: map received JSON property "UTSMode" to
 		// HostConfig.utsMode as defined in the Docker
 		// schema
-		if (methodName.equals(HostConfig.class.getName())) {
+		if (className.equals(HostConfig.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("utsMode"))
@@ -111,7 +112,7 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 		// HostConfig.ioMaximumIOps as defined in the
 		// Docker
 		// schema
-		if (methodName.equals(HostConfig.class.getName())) {
+		if (className.equals(HostConfig.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("ioMaximumIOps"))
@@ -123,7 +124,7 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 		// HostConfig.ioMaximumBandwidth as defined in the
 		// Docker
 		// schema
-		if (methodName.equals(HostConfig.class.getName())) {
+		if (className.equals(HostConfig.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("ioMaximumBandwidth"))
@@ -133,7 +134,7 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 		// handle case for Mount.rw
 		// - map received JSON property "RW" to
 		// ContainerMounts.rw as defined in the Docker schema
-		if (methodName.equals(Mount.class.getName())) {
+		if (className.equals(Mount.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("rw"))
@@ -144,7 +145,7 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 		// - example: map received JSON property "IPAddress" to
 		// InspectedContainerNetworkSettings.ipAddress as defined in the Docker
 		// schema
-		if (methodName.equals(InspectedContainerNetworkSettings.class.getName())) {
+		if (className.equals(InspectedContainerNetworkSettings.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("ipAddress"))
@@ -180,7 +181,7 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 		// properties. Example: map received JSON property "IPAddress" to
 		// InspectedContainerNetworkSettingsNetworkValue.ipAddress as defined in
 		// the Docker schema
-		if (methodName.equals(InspectedContainerNetworkSettingsNetworkValue.class.getName())) {
+		if (className.equals(InspectedContainerNetworkSettingsNetworkValue.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("ipAddress"))
@@ -220,7 +221,7 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 		// handle case for InspectedContainerState.oomKilled
 		// - map received JSON property "OOMKilled" to
 		// InspectedContainerState.oomKilled as defined in the Docker schema
-		if (methodName.equals(InspectedContainerState.class.getName())) {
+		if (className.equals(InspectedContainerState.class.getName())) {
 			// if field name matches name from schema then return name of JSON
 			// property.
 			if (defaultName.equals("oomKilled"))

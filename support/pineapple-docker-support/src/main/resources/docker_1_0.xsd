@@ -60,7 +60,7 @@
 
 	<!-- 
 		Corresponds to GraphDriverData    
-		https://github.com/moby/moby/blob/04295d26df3034a9a92da8400418f843d7c48780/api/types/blkiodev/blkio.go
+		https://github.com/moby/moby/blob/master/api/types/graph_driver_data.go
 	 -->
 	<xs:complexType name="graphDriverDataType" >
 		<xs:annotation>
@@ -188,14 +188,14 @@
 		Corresponds to json.RawMessage which is a standard in the GO package encoding/json
 		https://golang.org/pkg/encoding/json/#RawMessage
 		
-		xsd:base64Binary is used as approimated type for bytes[]
+		xsd:base64Binary is used as approximated type for bytes[]
 		https://stackoverflow.com/questions/5912526/representing-byte-array-as-an-xsd-schema		
 	-->
 	<xs:complexType name="jsonRawMessageType" >
 		<xs:annotation>
 			<xs:documentation>jsonRawMessageType wraps byte stream</xs:documentation>
 		</xs:annotation>
-		<xs:attribute name="code" type="xs:base64Binary" use="optional"/> 				
+		<xs:attribute name="id" type="xs:base64Binary" use="optional"/> 				
 	</xs:complexType>
 
 	<!-- 
@@ -280,6 +280,17 @@
 		<xs:attribute name="cgroupPermissions" type="xs:string" use="optional"/>		
 	</xs:complexType>
 
+	<!-- 
+		Corresponds to ImageMetadata   
+		https://github.com/moby/moby/blob/master/api/types/types.go
+	-->
+	<xs:complexType name="imageMetadataType" >
+		<xs:annotation>
+			<xs:documentation>Engine-local data about the image (Output from inspecting an image or container).</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="lastTagTime" type="xs:string" use="optional"/>		
+	</xs:complexType>
+
 	<!-- Image definitions -->
 
 	<xs:complexType name="listedImageType" >
@@ -312,6 +323,7 @@
 			<xs:element name="containerConfig" type="containerConfigurationType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="config" type="containerConfigurationType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="graphDriver" type="graphDriverType" minOccurs="0" maxOccurs="1" />			
+			<xs:element name="metadata" type="imageMetadataType" minOccurs="0" maxOccurs="1" />									
 			<xs:element name="repoDigests" type="stringList" minOccurs="0" maxOccurs="1" />						
 			<xs:element name="repoTags" type="stringList" minOccurs="0" maxOccurs="1" />								
 			<xs:element name="rootFS" type="rootFSType" minOccurs="0" maxOccurs="1" />						
@@ -341,7 +353,7 @@
 		<xs:sequence>
 			<xs:element name="progressDetail" type="jsonProgressType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="errorDetail" type="jsonErrorType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="aux" type="jsonRawMessageType" minOccurs="0" maxOccurs="1" /> <!-- approximation of Aux which is implemented as a json.RawMessage -->											
+			<xs:element name="aux" type="jsonRawMessageType" minOccurs="0" maxOccurs="1" />											
 		</xs:sequence>
 		<xs:attribute name="error" type="xs:string" use="optional"/>				
 		<xs:attribute name="from" type="xs:string" use="optional"/>		

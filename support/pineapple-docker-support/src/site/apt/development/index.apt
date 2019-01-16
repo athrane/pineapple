@@ -69,7 +69,7 @@ Development documentation
 	
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
 	
-	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/blkiodev/blkio.go}WeightDevice}}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/graph_driver_data.go}GraphDriverData}}
 
 *** weightDevicesType	
 
@@ -128,6 +128,14 @@ Development documentation
 	Used by the schema type <<<jsonMessageType>>>.
 	
 	Defined Docker type: {{{https://github.com/moby/moby/blob/master/pkg/jsonmessage/jsonmessage.go}JSONError}}
+
+*** jsonRawMessageType 
+
+	Corresponds to json.RawMessage which is a standard in the GO package encoding/json.
+			
+	Used by the schema type <<<jsonMessageType>>>.
+	
+	Defined Go type: {{{https://golang.org/pkg/encoding/json/#RawMessage}json.RawMessage}}
 
 *** portSetType
 
@@ -195,6 +203,14 @@ Development documentation
 	Used by the schema type <<<portMapElementType>>>.
 
 	Defined Docker type: {{{https://github.com/docker/go-connections/blob/master/nat/nat.go}PortBinding}}
+
+*** imageMetadataType
+
+	ImageMetadata contains engine-local data about the image.
+
+	Used by the schema type <<<imageInspectType>>>.
+
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/types.go}ImageMetadata}}
 
 *** deviceMappingType
 
@@ -302,10 +318,7 @@ Development documentation
 	* <<<listedContainerType>>>
 	
 	[]	
-	
-	TODO: Rename this type to the Docker type...
-	
-
+		
 	TODO: rewrite from here:
 
 	The schema contains these types for handling container:

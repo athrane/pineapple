@@ -287,8 +287,7 @@ public class DockerSessionImpl implements DockerSession {
 		URI expandedServiceUri = expandServiceUri(uriVariables, serviceUri);
 
 		// invoke post
-		// result is requested as string since Docker returns multiple JSON root
-		// elements
+		// result is requested as string since Docker returns multiple JSON root elements
 		String resultAsString = restTemplateWithoutMessageConverters.postForObject(expandedServiceUri, request,
 				String.class);
 
@@ -298,7 +297,6 @@ public class DockerSessionImpl implements DockerSession {
 		try {
 
 			// parse string to JSON
-			jacksonObjectMapper = new ObjectMapper();
 			T[] array = jacksonObjectMapper.readValue(jsonArrayAsString, responseType);
 			return array;
 

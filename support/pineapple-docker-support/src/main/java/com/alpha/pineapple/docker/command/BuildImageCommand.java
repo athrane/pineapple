@@ -42,7 +42,6 @@ import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.hamcrest.Matcher;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -163,11 +162,6 @@ public class BuildImageCommand implements Command {
 	 * objects.
 	 */
 	public static final String IMAGE_CREATION_INFOS_KEY = "image-creation-infos";
-
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Image info.

@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
- * Copyright (C) 2007-2015 Allan Thrane Andersen..
+ * Copyright (C) 2007-2019 Allan Thrane Andersen..
  * 
  * This file is part of Pineapple.
  * 
@@ -25,6 +25,7 @@ package com.alpha.pineapple.docker.command;
 import static com.alpha.pineapple.docker.DockerConstants.BUILD_IMAGE_URI;
 import static com.alpha.pineapple.docker.DockerConstants.CONTENT_TYPE_KEY;
 import static com.alpha.pineapple.docker.DockerConstants.CONTENT_TYPE_TAR;
+import static com.alpha.pineapple.docker.utils.ModelUtils.containsErrorUpdate;
 import static com.alpha.pineapple.docker.utils.ModelUtils.containsStatusUpdate;
 import static com.alpha.pineapple.docker.utils.ModelUtils.containsStreamUpdate;
 import static com.alpha.pineapple.docker.utils.ModelUtils.remoteLfFromStreamUpdate;
@@ -304,6 +305,10 @@ public class BuildImageCommand implements Command {
 			return;
 		}
 
+		// define error flag 
+		boolean errorReported = false;
+		String errorMessage = null;
+		
 		// add messages
 		Object[] args = { infos.length };
 		String message = messageProvider.getMessage("bic.list_image_info", args);
@@ -311,14 +316,15 @@ public class BuildImageCommand implements Command {
 
 		for (JsonMessage info : infos) {
 
-			// handle normal status update
+			// handle status update
 			if (containsStatusUpdate(info)) {
 				Object[] args2 = { info.getStatus() };
 				String message2 = messageProvider.getMessage("bic.list_single_info", args2);
 				executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message2);
 				continue;
 			}
-
+			
+			// handle stream update
 			if (containsStreamUpdate(info)) {
 				Object[] args2 = { remoteLfFromStreamUpdate(info.getStream()) };
 				String message2 = messageProvider.getMessage("bic.list_single_stream_info", args2);
@@ -326,15 +332,35 @@ public class BuildImageCommand implements Command {
 				continue;
 			}
 
+			// handle error update
+			if (containsErrorUpdate(info)) {
+				Object[] args2 = { info.getError() };
+				String message2 = messageProvider.getMessage("bic.list_single_error_info", args2);
+				executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message2);				
+				
+				// signal error 
+				errorReported = true;
+				errorMessage = info.getError();
+				continue;
+			}
+			
 		}
 
 		// store creation info's
 		context.put(IMAGE_CREATION_INFOS_KEY, infos);
 
+		// complete with failure
+		if (errorReported) {
+			Object[] args2 = { errorMessage };
+			executionResult.completeAsFailure(messageProvider, "bic.build_image_build_error", args2);			
+			return;
+		}
+		
 		// complete successfully
 		Object[] args2 = { imageInfo.getFullyQualifiedName() };
 		executionResult.completeAsSuccessful(messageProvider, "bic.build_image_completed", args2);
 	}
+
 
 	/**
 	 * Return the pull image behaviour as a string.

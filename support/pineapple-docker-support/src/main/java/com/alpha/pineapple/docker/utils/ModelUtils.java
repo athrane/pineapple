@@ -120,6 +120,26 @@ public class ModelUtils {
 	}
 
 	/**
+	 * Returns true if image creation object contains a error update information in
+	 * the error field, i.e. it is defined with a non-null or non-empty value.
+	 * 
+	 * @param message
+	 *            JSON message object.
+	 * 
+	 * @return true if image creation object contains error update information in
+	 *         the error field. Returns false if the status field is null or empty.
+	 */
+	public static boolean containsErrorUpdate(JsonMessage message) {
+		Validate.notNull(message, "info is undefined");
+
+		if (message.getError() == null)
+			return false;
+		if (message.getError().isEmpty())
+			return false;
+		return true;
+	}
+	
+	/**
 	 * Create truncated ID which is reduced to 12 characters long.
 	 * 
 	 * @param id

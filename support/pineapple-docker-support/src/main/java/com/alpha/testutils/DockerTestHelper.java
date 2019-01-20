@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
- * Copyright (C) 2007-2015 Allan Thrane Andersen.
+ * Copyright (C) 2007-2019 Allan Thrane Andersen.
  * 
  * This file is part of Pineapple.
  * 
@@ -690,6 +690,43 @@ public class DockerTestHelper {
 
 	}
 
+	/**
+	 * Create DockerFile in target directory with FROM command and custom command.
+	 * 
+	 * If target directory doesn't exist then it is created. the created Docker file
+	 * will contain a a FROM command with the image info supplied as parameter.
+	 * 
+	 * @param targetDirectory
+	 *            directory where Docker it created.
+	 * @param imageInfo
+	 * @param command custom command added to the Dockerfile.
+	 */
+	public void createDockerFileWithFromAndCustomCommand(File targetDirectory, ImageInfo imageInfo, String command) {
+
+		try {
+
+			// create directory if it doesn't exist
+			if (targetDirectory.exists())
+				targetDirectory.mkdir();
+
+			File dockerFile = new File(targetDirectory, DOCKERFILE_NAME);
+
+			// create file content
+			Collection<String> lines = new ArrayList<String>();
+			lines.add("FROM " + imageInfo.getFullyQualifiedName());
+			lines.add(command);
+
+			// write the file
+			FileUtils.writeLines(dockerFile, lines);
+
+		} catch (IOException e) {
+			Object[] args = { e.getMessage() };
+			String message = messageProvider.getMessage("dh.create_dockerfile_failure", args);
+			throw new DockerTestHelperException(message, e);
+		}
+
+	}
+	
 	/**
 	 * Create TAR archive for building a Docker image.
 	 * 

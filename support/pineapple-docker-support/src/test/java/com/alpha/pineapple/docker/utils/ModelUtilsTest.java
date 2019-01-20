@@ -32,6 +32,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 
 import com.alpha.pineapple.docker.DockerConstants;
+import com.alpha.pineapple.docker.model.rest.JsonMessage;
 import com.alpha.pineapple.docker.model.rest.ListedContainer;
 import com.alpha.pineapple.docker.model.rest.ListedImage;
 import com.alpha.pineapple.docker.model.rest.ObjectFactory;
@@ -230,4 +231,70 @@ public class ModelUtilsTest {
 		ModelUtils.isImageRepoTagDefined(container);
 	}
 
+	/**
+	 * Test that false is returned for JSON message with no error message.
+	 */
+	@Test
+	public void testReturnsFalseForUndefinedErrorMessage() {
+		objectFactory = new ObjectFactory();
+		JsonMessage message = objectFactory.createJsonMessage();
+		message.setError(null);
+		assertFalse(ModelUtils.containsErrorUpdate(message));
+	}
+
+	/**
+	 * Test that false is returned for JSON message with empty error message.
+	 */
+	@Test
+	public void testReturnsFalseForEmptyErrorMessage() {
+		objectFactory = new ObjectFactory();
+		JsonMessage message = objectFactory.createJsonMessage();
+		message.setError("");
+		assertFalse(ModelUtils.containsErrorUpdate(message));
+	}
+	
+	/**
+	 * Test that true is returned for JSON message with error message.
+	 */
+	@Test
+	public void testReturnsTrueForDefinedErrorMessage() {
+		objectFactory = new ObjectFactory();
+		JsonMessage message = objectFactory.createJsonMessage();
+		message.setError(RandomStringUtils.randomAlphabetic(10));
+		assertTrue(ModelUtils.containsErrorUpdate(message));
+	}
+
+	/**
+	 * Test that false is returned for JSON message with no stream message.
+	 */
+	@Test
+	public void testReturnsFalseForUndefinedStreamMessage() {
+		objectFactory = new ObjectFactory();
+		JsonMessage message = objectFactory.createJsonMessage();
+		message.setStream(null);
+		assertFalse(ModelUtils.containsStreamUpdate(message));
+	}
+
+	/**
+	 * Test that false is returned for JSON message with empty stream message.
+	 */
+	@Test
+	public void testReturnsFalseForEmptyStreamMessage() {
+		objectFactory = new ObjectFactory();
+		JsonMessage message = objectFactory.createJsonMessage();
+		message.setStream("");
+		assertFalse(ModelUtils.containsStreamUpdate(message));
+	}
+	
+	/**
+	 * Test that true is returned for JSON message with stream message.
+	 */
+	@Test
+	public void testReturnsTrueForDefinedStreamMessage() {
+		objectFactory = new ObjectFactory();
+		JsonMessage message = objectFactory.createJsonMessage();
+		message.setStream(RandomStringUtils.randomAlphabetic(10));
+		assertTrue(ModelUtils.containsStreamUpdate(message));
+	}
+	
 }

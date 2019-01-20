@@ -25,6 +25,7 @@ package com.alpha.pineapple.docker.command;
 import static com.alpha.pineapple.docker.DockerConstants.DEFAULT_CENTOS_REPOSITORY;
 import static com.alpha.pineapple.docker.DockerConstants.LATEST_IMAGE_TAG;
 import static com.alpha.testutils.DockerTestConstants.TEST_DOCKER_ROOT_BUSYBOX_IMAGE;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -105,6 +106,11 @@ public class BuildImageCommandSystemTest {
 	String randomArchive;
 
 	/**
+	 * Random image.
+	 */
+	String randomImage;
+	
+	/**
 	 * Source directory for TAR archive.
 	 */
 	File sourceDirectory;
@@ -145,6 +151,7 @@ public class BuildImageCommandSystemTest {
 		randomRepository = RandomStringUtils.randomAlphabetic(10).toLowerCase();
 		randomTag = RandomStringUtils.randomAlphabetic(10);
 		randomArchive = RandomStringUtils.randomAlphabetic(10);
+		randomImage = RandomStringUtils.randomAlphabetic(10).toLowerCase();
 
 		// create context
 		context = new ContextBase();
@@ -440,4 +447,40 @@ public class BuildImageCommandSystemTest {
 
 	}
 
+	/**
+	 * Test that command fails with invalid Dockerfile.
+	 * The Dockerfile is created with a FROM with a random string as image.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCommandFailsWithInvalidDockerfile() throws Exception {
+		
+		// create image info for tagged built image
+		imageInfo = dockerHelper.createDefaultTaggedImageInfo();
+
+		// create TAR archive
+		ImageInfo imageInfo2 = dockerInfoBuilder.buildImageInfo(randomImage, LATEST_IMAGE_TAG);
+		dockerHelper.createDockerFileWithFromCommand(sourceDirectory, imageInfo2);
+		File tarArchive = dockerHelper.createTarArchiveName(testDirectory, randomArchive);
+		dockerHelper.createTarArchive(sourceDirectory, tarArchive);
+
+		// setup context
+		context.put(BuildImageCommand.EXECUTIONRESULT_KEY, executionResult);
+		context.put(BuildImageCommand.SESSION_KEY, session);
+		context.put(BuildImageCommand.IMAGE_INFO_KEY, imageInfo);
+		context.put(BuildImageCommand.TAR_ARCHIVE_KEY, tarArchive);
+		context.put(BuildImageCommand.PULL_IMAGE_KEY, Boolean.valueOf(false));
+
+		// execute command
+		buildImageCommand.execute(context);
+
+		// test
+		assertTrue(executionResult.isFailed());
+		assertTrue(context.containsKey(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+		assertNotNull(context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY));
+		JsonMessage[] infos = (JsonMessage[]) context.get(CreateImageCommand.IMAGE_CREATION_INFOS_KEY);
+		assertTrue(infos.length != 0);
+		assertFalse(dockerClient.imageExists(session, imageInfo));
+	}
+	
 }

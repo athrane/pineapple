@@ -22,7 +22,6 @@
 
 package com.alpha.pineapple.docker.utils;
 
-import com.alpha.pineapple.docker.model.rest.JsonMessage;
 import com.alpha.pineapple.docker.model.rest.JsonRawMessage;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
@@ -43,23 +42,16 @@ public class MultipleRootElementsStyleStrategy extends PropertyNamingStrategy {
 
 	@Override
 	public String nameForField(MapperConfig<?> config, AnnotatedField field, String defaultName) {
-		System.out.println("nameForField::defaultName="+defaultName);		
 		return defaultName;		
 	}
 
 	@Override
 	public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method, String defaultName) {
-		System.out.println("nameForGetterMethod::class="+method.getDeclaringClass().getName());
-		System.out.println("nameForGetterMethod::method="+method.getName());		
-		System.out.println("nameForGetterMethod::defaultName="+defaultName);		
 		return defaultName;
 	}
 
 	@Override
 	public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method, String defaultName) {
-		System.out.println("nameForSetterMethod::class="+method.getDeclaringClass().getName());
-		System.out.println("nameForSetterMethod::method="+method.getName());
-		System.out.println("nameForSetterMethod::defaultName="+defaultName);
 
 		// get class name
 		String className = method.getDeclaringClass().getName();

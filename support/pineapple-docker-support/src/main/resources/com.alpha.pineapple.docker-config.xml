@@ -49,7 +49,7 @@
 	<!-- define Jackson JSON object mapper  -->
 	<bean id="jacksonObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
 		<property name="propertyNamingStrategy">			
-			<bean class="com.alpha.pineapple.docker.utils.UpperCaseStyleStrategy" />
+			<bean class="com.alpha.pineapple.docker.utils.CapitaliseStyleStrategy" />
 		</property>
 		<property name="serializationInclusion">
            	<value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_DEFAULT</value>

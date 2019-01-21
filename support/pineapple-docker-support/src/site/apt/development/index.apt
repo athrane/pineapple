@@ -568,7 +568,8 @@ Development documentation
 	
 	[]
 	
-	The created JSON array is then marshalled by a Jackson JSON object mapper into objects and returned.
+	The created JSON array is then marshalled by the Jackson JSON object mapper (the Spring bean is named 
+	<<<jacksonObjectMapperForRestTemplateWithoutMessageConverters>>>) into objects and returned.
 				
 ** Spring RestTemplate configuration  
 
@@ -576,7 +577,7 @@ Development documentation
 		
 	One instance of RestTemplate is configured with the <<<MappingJackson2HttpMessageConverter>>>  
 	which supports marshalling of JSON using the Jackson library and the <<<StringHttpMessageConverter>>>
-	which supports marshalling of string based messages frin the HTTP response body.
+	which supports marshalling of string based messages in the HTTP response body.
 
 	The second instance of RestTemplate is configured without any message converters. This instance is used
 	to parse responses from Docker isn't a valid JSON but a string containing multiple JSON responses.
@@ -601,9 +602,11 @@ Development documentation
 
 	The package <<<com.alpha.pineapple.docker.utils>>> also contains helper classes used during marshalling JSON to objects:
 
-	* <<<UpperCaseStyleStrategy>>> implements the Jackson <<<PropertyNamingStrategy>>> interface 
+	* <<<CapitaliseStyleStrategy>>> implements the Jackson <<<PropertyNamingStrategy>>> interface 
 	to provide a customised property naming strategy during marshalling. The strategy generates
-	upper case target attribute names in objects for for JSON attribute to be mapped to. Special cases:
+	capitalised target attribute names in objects for for JSON attribute to be mapped to. 
+	The class is used by the <<RestTemplate>>> use to invoke the Docker API.
+	Special cases:
 	
 		* If the target object attribute is <<<ListedImage.id>>> then the received JSON property <<<Id>>> is
 		mapped to to the target attribute <<<id>>>.
@@ -672,6 +675,20 @@ Development documentation
 		mapped to to the target attribute <<<rw>>>.
 				
 		[]
+
+	* <<<MultipleRootElementsStyleStrategy>>> implements the Jackson <<<PropertyNamingStrategy>>> interface 
+	to provide a customised property naming strategy during marshalling. 
+	The strategy DON'T capitalised target attribute names in objects for for JSON attribute to be mapped to.
+	Instead it lets the property names be lower case since that is required to map JSON received by the Docker API.
+	The class is used by the <<<DockertSessionImpl.httpPostForObjectWithMultipleRootElements(..)>>> to parse responses from Docker 
+	which doesn't contains a valid JSON but a string containing multiple JSON responses.
+	
+	Special cases:
+
+		* If the target object attribute is <<<JsonRawMessage.id>>> then the received JSON property <<<ID>>> is
+		mapped to to the target attribute <<<id>>>.
+		
+		[] 
 		
 	[]			
 

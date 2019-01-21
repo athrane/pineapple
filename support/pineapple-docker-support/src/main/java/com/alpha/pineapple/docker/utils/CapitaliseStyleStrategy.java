@@ -29,7 +29,6 @@ import com.alpha.pineapple.docker.model.rest.HostConfig;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettings;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettingsNetworkValue;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerState;
-import com.alpha.pineapple.docker.model.rest.JsonMessage;
 import com.alpha.pineapple.docker.model.rest.ListedContainer;
 import com.alpha.pineapple.docker.model.rest.ListedImage;
 import com.alpha.pineapple.docker.model.rest.Mount;
@@ -39,11 +38,11 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedField;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 
 /**
- * Extension of the {@linkplain PropertyNamingStrategy} which implements a upper
- * case strategy for JSON marshalled object attributes.
+ * Extension of the {@linkplain PropertyNamingStrategy} which implements a capitalise 
+ * strategy for JSON marshalled object attributes.
  *
  */
-public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
+public class CapitaliseStyleStrategy extends PropertyNamingStrategy {
 	
 	/**
 	 * Serial Version UID.
@@ -62,8 +61,6 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 
 	@Override
 	public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method, String defaultName) {
-		System.out.println("class="+method.getDeclaringClass().getName());
-		System.out.println("method="+method.getName());
 				
 		// get class name
 		String className = method.getDeclaringClass().getName();
@@ -231,10 +228,7 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 		}
 
 		// use default capitalise strategy.
-		System.out.println(defaultName);
-		String a = convert(defaultName);
-		System.out.println(a);		
-		return a;
+		return convert(defaultName);
 	}
 
 	/**

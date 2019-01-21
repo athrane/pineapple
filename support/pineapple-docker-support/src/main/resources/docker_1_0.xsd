@@ -186,16 +186,14 @@
 
 	<!-- 
 		Corresponds to json.RawMessage which is a standard in the GO package encoding/json
-		https://golang.org/pkg/encoding/json/#RawMessage
-		
-		xsd:base64Binary is used as approximated type for bytes[]
-		https://stackoverflow.com/questions/5912526/representing-byte-array-as-an-xsd-schema		
+		https://golang.org/pkg/encoding/json/#RawMessage		
+		xsd:string is used as approximated type for bytes[]
 	-->
 	<xs:complexType name="jsonRawMessageType" >
 		<xs:annotation>
 			<xs:documentation>jsonRawMessageType wraps byte stream</xs:documentation>
 		</xs:annotation>
-		<xs:attribute name="id" type="xs:base64Binary" use="optional"/> 				
+		<xs:attribute name="id" type="xs:string" use="optional"/> 				
 	</xs:complexType>
 
 	<!-- 

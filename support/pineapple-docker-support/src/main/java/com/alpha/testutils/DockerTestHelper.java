@@ -104,7 +104,7 @@ public class DockerTestHelper {
 	/**
 	 * Jackson object mapper. Used to support creation of Docker session.
 	 */
-	@Resource
+	@Resource(name = "jacksonObjectMapperForRestTemplateWithoutMessageConverters")
 	ObjectMapper jacksonObjectMapper;
 
 	/**

@@ -55,6 +55,14 @@
            	<value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_DEFAULT</value>
 		</property>
 	</bean>
+	<bean id="jacksonObjectMapperForRestTemplateWithoutMessageConverters" class="com.fasterxml.jackson.databind.ObjectMapper">
+		<property name="propertyNamingStrategy">			
+			<bean class="com.alpha.pineapple.docker.utils.MultipleRootElementsStyleStrategy" />
+		</property>
+		<property name="serializationInclusion">
+           	<value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_DEFAULT</value>
+		</property>
+	</bean>
 
 	<!-- define command objects -->
 	<bean id="buildImageCommand" class="com.alpha.pineapple.docker.command.BuildImageCommand" />

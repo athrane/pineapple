@@ -99,7 +99,7 @@ public class DockerSessionImpl implements DockerSession {
 	/**
 	 * Jackson object mapper.
 	 */
-	@Resource
+	@Resource(name = "jacksonObjectMapperForRestTemplateWithoutMessageConverters")
 	ObjectMapper jacksonObjectMapper;
 
 	/**
@@ -134,7 +134,7 @@ public class DockerSessionImpl implements DockerSession {
 	 * @param restTemplateWithoutMessageConverters
 	 *            REST Template without message converters.
 	 * @param objectMapper
-	 *            Jackson object mapper.
+	 *            Jackson object mapper, used by REST Template without message converters.
 	 * 
 	 * @throws Exception
 	 *             If session creation fails.
@@ -293,16 +293,17 @@ public class DockerSessionImpl implements DockerSession {
 
 		// transforms string with multiple JSON root elements into JSON array
 		String jsonArrayAsString = transformStringToJsonArray(resultAsString);
-
+		
 		try {
 
 			// parse string to JSON
+			//jacksonObjectMapper = new ObjectMapper();
 			T[] array = jacksonObjectMapper.readValue(jsonArrayAsString, responseType);
 			return array;
 
 		} catch (Exception e) {
 
-			Object[] args = { serviceUri, e.getMessage() };
+			Object[] args = { serviceUri, jsonArrayAsString, e.getMessage() };
 			String message = messageProvider.getMessage("ds.parse_json_failure", args);
 			throw new SessionException(message, e);
 		}

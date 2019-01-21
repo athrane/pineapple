@@ -29,7 +29,7 @@ import com.alpha.pineapple.docker.model.rest.HostConfig;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettings;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerNetworkSettingsNetworkValue;
 import com.alpha.pineapple.docker.model.rest.InspectedContainerState;
-import com.alpha.pineapple.docker.model.rest.JsonRawMessage;
+import com.alpha.pineapple.docker.model.rest.JsonMessage;
 import com.alpha.pineapple.docker.model.rest.ListedContainer;
 import com.alpha.pineapple.docker.model.rest.ListedImage;
 import com.alpha.pineapple.docker.model.rest.Mount;
@@ -62,10 +62,12 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 
 	@Override
 	public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method, String defaultName) {
-
-		// get method name
+		System.out.println("class="+method.getDeclaringClass().getName());
+		System.out.println("method="+method.getName());
+				
+		// get class name
 		String className = method.getDeclaringClass().getName();
-		
+				
 		// handle case for ListedImage.id
 		// - map received JSON property "Id" to ListedImage.id as defined in the
 		// Docker schema
@@ -228,15 +230,25 @@ public class UpperCaseStyleStrategy extends PropertyNamingStrategy {
 				return "OOMKilled";
 		}
 
-		// use default capitalize strategy.
-		return convert(defaultName);
+		// use default capitalise strategy.
+		System.out.println(defaultName);
+		String a = convert(defaultName);
+		System.out.println(a);		
+		return a;
 	}
 
-	String convert(String input) {
-		if (input != null) {
-			if (input.equalsIgnoreCase("ip"))
-				return input.toUpperCase();
+	/**
+	 * Capitalise property.
+	 * 
+	 * @param name property name.
+	 * 
+	 * @return capitalized property name.
+	 */
+	String convert(String name) {
+		if (name != null) {
+			if (name.equalsIgnoreCase("ip"))
+				return name.toUpperCase();
 		}
-		return StringUtils.capitalize(input);
+		return StringUtils.capitalize(name);
 	}
 }

@@ -111,6 +111,16 @@ Development documentation
 	
 	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/mount/mount.go}Mount}}
 
+*** EndpointSettings
+
+	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
+
+	EndpointSettings stores the network endpoint details. 
+		
+	Network output from the {{{https://docs.docker.com/engine/api/v1.37/#operation/ContainerList}List containers (v1.37)}} operation.	
+	
+	Value in map. Used by the schema type <<<inspectedContainerNetworkSettingsNetworkType>>>.
+
 *** jsonProgressType 
 
 	JSONProgress describes a Progress.
@@ -249,6 +259,14 @@ Development documentation
 
 ** Schema types for containers
 
+*** listedContainerType
+
+	Info about a listed Docker container.
+	
+	Output from listing containers.
+	
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/types.go}Container}}
+	
 *** containerConfigurationType
 
 	Info about Docker container configuration. 
@@ -382,6 +400,8 @@ Development documentation
 	<<<InspectedContainerNetworkSettingsNetworksMap>>> using the 
 	<<<InspectedContainerNetworkSettingsNetworksMapAdapter>>>.
 
+	
+	TODO: inspectedContainerNetworkSettingsType
 			
 	[]
 
@@ -415,6 +435,11 @@ Development documentation
 	using the custom JABX adaptor <<<ContainerConfigurationLabelsMapAdapter>>>.
 	The map and JAXB adaptor is shared with the other bindings in the section.
 
+	To support binding of schema element <<<InspectedContainerNetworkSettingsNetworkValue.driverOpts>>> to a map, 
+	the binding is customised to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
+	using the custom JABX adaptor <<<ContainerConfigurationLabelsMapAdapter>>>.
+	The map and JAXB adaptor is shared with the other bindings in the section.
+
 *** Port binding
 
 	To support binding of schema element <<<hostConfigType.portBindings>>> to a map, 
@@ -425,8 +450,6 @@ Development documentation
 	the binding is customised to bind to the custom map <<<PortMapMap>>> 
 	using the custom JABX adaptor <<<PortMapMapAdapter>>>.
 	
-	inspectedContainerNetworkSettingsType
-
 *** Restart policy
 
 	TODO:..

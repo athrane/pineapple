@@ -758,13 +758,14 @@
 
 	<!-- 
 		Corresponds to EndpointSettings 
-		https://github.com/docker/docker/blob/3d13fddd2bc4d679f0eaa68b0be877e5a816ad53/vendor/src/github.com/docker/engine-api/types/network/network.go		
+		https://github.com/moby/moby/blob/master/api/types/network/network.go		
 	 -->
 	<xs:complexType name="inspectedContainerNetworkSettingsNetworkValueType">
 		<xs:annotation>
 			<xs:documentation>Info about a network from a container network settings inspection info. (value in map)</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
+			<xs:element name="driverOpts" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />							
 			<xs:element name="links" type="stringList" minOccurs="0" maxOccurs="1" />				
 			<xs:element name="aliases" type="stringList" minOccurs="0" maxOccurs="1" />							
 		</xs:sequence>		

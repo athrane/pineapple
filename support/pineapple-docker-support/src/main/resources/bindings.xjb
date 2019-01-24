@@ -357,6 +357,14 @@
 		</jaxb:bindings>
 	</jaxb:bindings>
 
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerNetworkSettingsNetworkValueType']//xs:element[@name='driverOpts']">
+			<jaxb:property>
+				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationLabelsMap" />
+			</jaxb:property>
+		</jaxb:bindings>
+	</jaxb:bindings>
+
 
 	<!-- Map definitions for generic types -->
 

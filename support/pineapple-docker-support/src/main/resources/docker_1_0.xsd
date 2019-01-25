@@ -537,7 +537,7 @@
 			<xs:element name="extraHosts" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="groupAdd" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="links" type="stringList" minOccurs="0" maxOccurs="1" />				
-			<xs:element name="logConfig" type="containerConfigurationHostConfigLogConfigType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="logConfig" type="logConfigType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="maskedPaths" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="mounts" type="mountType" minOccurs="0" maxOccurs="unbounded" />			
 			<xs:element name="portBindings" type="portMapType" minOccurs="0" maxOccurs="1" />
@@ -592,7 +592,7 @@
 		<xs:attribute name="volumeDriver" type="xs:string" use="optional"/> 											
 	</xs:complexType>
 
-	<xs:complexType name="containerConfigurationHostConfigLogConfigType" >
+	<xs:complexType name="logConfigType" >
 		<xs:annotation>
 			<xs:documentation>
 				Info about log configuration from container configuration and inspected container.

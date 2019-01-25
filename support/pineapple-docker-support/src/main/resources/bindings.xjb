@@ -235,8 +235,8 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationHostConfigLogConfigType']" >
-			<jaxb:class name="ContainerConfigurationHostConfigLogConfig" />				
+		<jaxb:bindings node="//xs:complexType[@name='logConfigType']" >
+			<jaxb:class name="LogConfig" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 

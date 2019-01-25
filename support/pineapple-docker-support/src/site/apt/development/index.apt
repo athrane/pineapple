@@ -461,13 +461,6 @@ Development documentation
 
 *** Labels
 
-TODO:.....
-	To support binding of schema element <<<containerConfigurationType.labels>>> to a map, 
-	the binding is customised to bind to the custom map <<<LabelMap>>> 
-	using the custom JABX adaptor <<<LabelMapAdapter>>>.
-	The map and JAXB adaptor is shared with the other bindings in the section.
-
-
 	To support binding of schema element <<<containerConfigurationType.labels>>> to a map, 
 	the binding is customised to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
 	using the custom JABX adaptor <<<ContainerConfigurationLabelsMapAdapter>>>.
@@ -489,8 +482,13 @@ TODO:.....
 	The map and JAXB adaptor is shared with the other bindings in the section.
 
 	To support binding of schema element <<<InspectedContainerNetworkSettingsNetworkValue.driverOpts>>> to a map, 
-	the binding is customised to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
-	using the custom JABX adaptor <<<ContainerConfigurationLabelsMapAdapter>>>.
+	the binding is customised to bind to the custom map <<<StringMapMap>>> 
+	using the custom JABX adaptor <<<StringMapAdapter>>>.
+	The map and JAXB adaptor is shared with the other bindings in the section.
+
+	To support binding of schema element <<<logConfigType.config>>> to a map, 
+	the binding is customised to bind to the custom map <<<StringMapMap>>> 
+	using the custom JABX adaptor <<<StringMapAdapter>>>.
 	The map and JAXB adaptor is shared with the other bindings in the section.
 
 *** Port binding
@@ -888,12 +886,12 @@ TODO:.....
 	The package <<<com.alpha.pineapple.docker.model.jaxb>>> contains objects 
 	for implementation of customised JAXB bindings:
 
-	* <<<LabelMapMap>>> custom map implementation. 
-	Used bind to the schema generated type <<<LabelMap>>> into a map.
+	* <<<StringMapMap>>> custom map implementation. 
+	Used bind to the schema generated type <<<StringMap>>> into a map.
 
-	* <<<LabelMapAdapter>>> JAXB binding adapter. 
-	Implements binding of schema generated type <<<LabelMap>>>
-	to <<<LabelMapMap>>> and back.
+	* <<<StringMapAdapter>>> JAXB binding adapter. 
+	Implements binding of schema generated type <<<StringMap>>>
+	to <<<StringMapMap>>> and back.
 
 	* <<<PortSetMap>>> custom map implementation. 
 	Used bind to the schema generated type <<<PortSet>>> into a map.

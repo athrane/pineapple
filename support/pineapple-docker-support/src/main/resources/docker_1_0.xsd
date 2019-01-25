@@ -592,7 +592,7 @@
 	</xs:complexType>
 
 	<!-- 
-		Corresponds to logConfig   
+		Corresponds to LogConfig   
 		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
 	-->
 	<xs:complexType name="logConfigType" >
@@ -602,17 +602,9 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="config" type="containerConfigurationHostConfigLogConfigConfigType" />
+			<xs:element name="config" type="stringMapType" minOccurs="0" maxOccurs="1" />							
  		</xs:sequence>		
 		<xs:attribute name="type" type="xs:string" use="optional"/>		
-	</xs:complexType>
-
-	<xs:complexType name="containerConfigurationHostConfigLogConfigConfigType" >
-		<xs:annotation>
-			<xs:documentation>
-				Info about detailed log configuration from container configuration and inspected container.
-			</xs:documentation>
-		</xs:annotation>
 	</xs:complexType>
 
 	<!-- 

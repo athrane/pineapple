@@ -241,12 +241,6 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationHostConfigLogConfigConfigType']" >
-			<jaxb:class name="ContainerConfigurationHostConfigLogConfigConfig" />				
-		</jaxb:bindings>		 
-	</jaxb:bindings>
-
-	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='createdContainerType']" >
 			<jaxb:class name="CreatedContainer" />				
 		</jaxb:bindings>		 
@@ -373,11 +367,18 @@
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='inspectedContainerNetworkSettingsNetworkValueType']//xs:element[@name='driverOpts']">
 			<jaxb:property>
-				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationLabelsMap" />
+				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.StringMapMap" />
 			</jaxb:property>
 		</jaxb:bindings>
 	</jaxb:bindings>
 
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='logConfigType']//xs:element[@name='config']">
+			<jaxb:property>
+				<jaxb:baseType name="com.alpha.pineapple.docker.model.jaxb.StringMapMap" />
+			</jaxb:property>
+		</jaxb:bindings>
+	</jaxb:bindings>
 
 	<!-- Map definitions for generic types -->
 

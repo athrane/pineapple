@@ -214,6 +214,26 @@ Development documentation
 
 	Defined Docker type: {{{https://github.com/docker/go-connections/blob/master/nat/nat.go}PortBinding}}
 
+*** stringMapType
+
+	Map with string keys and string value.
+	
+	Used by the schema types:
+	
+	* <<<TODO>>>.
+
+	[]
+
+	Defined Docker type: <<map[string]string>>.
+
+*** stringMapElementType
+
+	String map element. The value is a string.
+		
+	Used by the schema type <<<stringMapType>>>.
+	
+	No corresponding Docker type.
+
 *** imageMetadataType
 
 	ImageMetadata contains engine-local data about the image.
@@ -380,7 +400,6 @@ Development documentation
 	* <<<listedContainerPortType>>> - Info about a port from a container info 
 	(Partial output from listing a container).
 
-
 	* <<<inspectedContainerStateType>>> - Info about the state of a Docker container 
 	(Partial output from inspecting a containers).
 
@@ -414,6 +433,13 @@ Development documentation
 	using the custom JABX adaptor <<<PortSetMapAdapter>>>.
 
 *** Labels
+
+TODO:.....
+	To support binding of schema element <<<containerConfigurationType.labels>>> to a map, 
+	the binding is customised to bind to the custom map <<<LabelMap>>> 
+	using the custom JABX adaptor <<<LabelMapAdapter>>>.
+	The map and JAXB adaptor is shared with the other bindings in the section.
+
 
 	To support binding of schema element <<<containerConfigurationType.labels>>> to a map, 
 	the binding is customised to bind to the custom map <<<ContainerConfigurationLabelsMap>>> 
@@ -834,6 +860,13 @@ Development documentation
 
 	The package <<<com.alpha.pineapple.docker.model.jaxb>>> contains objects 
 	for implementation of customised JAXB bindings:
+
+	* <<<LabelMapMap>>> custom map implementation. 
+	Used bind to the schema generated type <<<LabelMap>>> into a map.
+
+	* <<<LabelMapAdapter>>> JAXB binding adapter. 
+	Implements binding of schema generated type <<<LabelMap>>>
+	to <<<LabelMapMap>>> and back.
 
 	* <<<PortSetMap>>> custom map implementation. 
 	Used bind to the schema generated type <<<PortSet>>> into a map.

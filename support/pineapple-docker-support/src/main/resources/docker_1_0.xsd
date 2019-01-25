@@ -265,6 +265,25 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<xs:complexType name="stringMapType" >
+		<xs:annotation>
+			<xs:documentation>Map with string key/values.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="element" type="stringMapElementType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>		
+	</xs:complexType>
+
+	<xs:complexType name="stringMapElementType">
+		<xs:annotation>
+			<xs:documentation>String key/value element in map .</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="key" type="xs:string" /> <!-- key in map -->
+			<xs:element name="value" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
 	<!-- 
 		Corresponds to DeviceMapping   
 		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
@@ -519,8 +538,10 @@
 			<xs:element name="groupAdd" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="links" type="stringList" minOccurs="0" maxOccurs="1" />				
 			<xs:element name="logConfig" type="containerConfigurationHostConfigLogConfigType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="maskedPaths" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="mounts" type="mountType" minOccurs="0" maxOccurs="unbounded" />			
 			<xs:element name="portBindings" type="portMapType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="readonlyPaths" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="restartPolicy" type="containerConfigurationHostConfigRestartPolicyType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="securityOpt" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="volumesFrom" type="stringList" minOccurs="0" maxOccurs="1" />				
@@ -531,7 +552,7 @@
 		<xs:attribute name="capDrop" type="xs:string" use="optional"/> <!-- wrong type -->
 		<xs:attribute name="cgroup" type="xs:string" use="optional"/> <!-- approximation of the CgroupSpec which is implemented as a string -->					
 		<xs:attribute name="cgroupParent" type="xs:string" use="optional"/> 		
-		<xs:attribute name="containerIDFile" type="xs:string" use="optional"/> <!-- Not implemented yet-->		 				
+		<xs:attribute name="containerIDFile" type="xs:string" use="optional"/> 			
 		<xs:attribute name="cpuCount" type="xs:long" use="optional"/>  <!-- approximation of the CpuCount which is implemented as a int64 -->				
 		<xs:attribute name="cpuPercent" type="xs:long" use="optional"/>	<!-- approximation of the CpuPercent which is implemented as a int64 -->			
 		<xs:attribute name="cpuPeriod" type="xs:long" use="optional"/> <!-- approximation of the CPUPeriod which is implemented as a int64 -->				
@@ -549,6 +570,7 @@
 		<xs:attribute name="ipcMode" type="xs:string" use="optional"/> <!-- approximation of the IPCMode which is implemented as a string -->						
 		<xs:attribute name="isolation" type="xs:string" use="optional"/> <!-- approximation of the Isolation which is implemented as a string -->			
 		<xs:attribute name="kernelMemory" type="xs:long" use="optional"/> <!-- approximation of the KernelMemory which is implemented as a int64 -->			
+		<xs:attribute name="ernelMemoryTCP" type="xs:long" use="optional"/> <!-- approximation of the KernelMemory which is implemented as a int64 -->			
 		<xs:attribute name="nanoCpus" type="xs:long" use="optional"/> <!-- approximation of the NanoCPUs which is implemented as a int64 -->				
 		<xs:attribute name="networkMode" type="xs:string" use="optional"/> <!-- approximation of the NetworkMode which is implemented as a string -->				
 		<xs:attribute name="memory" type="xs:long" use="optional"/>	<!-- approximation of the Memory which is implemented as a int64 -->	
@@ -677,10 +699,10 @@
 		<xs:attribute name="name" type="xs:string" use="optional"/>	
 		<xs:attribute name="mountLabel" type="xs:string" use="optional"/>	
 		<xs:attribute name="path" type="xs:string" use="optional"/>		
+		<xs:attribute name="platform" type="xs:string" use="optional"/>	
 		<xs:attribute name="processLabel" type="xs:string" use="optional"/>	
 		<xs:attribute name="restartCount" type="xs:long" use="optional"/>	
 		<xs:attribute name="resolvConfPath" type="xs:string" use="optional"/>	
-		<xs:attribute name="sysInitPath" type="xs:string" use="optional"/>		
 	</xs:complexType>
 
 	<xs:complexType name="inspectedContainerStateType" >
@@ -765,7 +787,7 @@
 			<xs:documentation>Info about a network from a container network settings inspection info. (value in map)</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="driverOpts" type="containerConfigurationLabelsType" minOccurs="0" maxOccurs="1" />							
+			<xs:element name="driverOpts" type="stringMapType" minOccurs="0" maxOccurs="1" />							
 			<xs:element name="links" type="stringList" minOccurs="0" maxOccurs="1" />				
 			<xs:element name="aliases" type="stringList" minOccurs="0" maxOccurs="1" />							
 		</xs:sequence>		

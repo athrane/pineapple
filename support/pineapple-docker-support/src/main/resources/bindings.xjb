@@ -19,6 +19,19 @@
 
 	<!-- Generic definitions -->
 
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" > 
+		<jaxb:bindings node="//xs:complexType[@name='stringMapType']" >
+			<jaxb:class name="StringMap" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
+		<jaxb:bindings node="//xs:complexType[@name='stringMapElementType']" >
+			<jaxb:class name="StringMapElement" />				
+		</jaxb:bindings>		 
+	</jaxb:bindings>
+
+
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
 		<jaxb:bindings node="//xs:complexType[@name='errorType']" >
 			<jaxb:class name="Error" />				

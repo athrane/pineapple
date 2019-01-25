@@ -496,7 +496,6 @@
 	<!-- 
 		Corresponds to HostConfig   
 		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
-
 		Please notice:
 		
 		THe Hostconfig references the Resources type which is embedded in this schema type.
@@ -592,10 +591,14 @@
 		<xs:attribute name="volumeDriver" type="xs:string" use="optional"/> 											
 	</xs:complexType>
 
+	<!-- 
+		Corresponds to logConfig   
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
+	-->
 	<xs:complexType name="logConfigType" >
 		<xs:annotation>
 			<xs:documentation>
-				Info about log configuration from container configuration and inspected container.
+				LogConfig represents the logging configuration of the container.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>

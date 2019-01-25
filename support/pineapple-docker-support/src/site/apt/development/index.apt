@@ -345,7 +345,7 @@ Development documentation
 	
 	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
 
-	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/types.go}HostConfig}}
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/container/host_config.go}HostConfig}}
 	
 	Used by these schema types:
 	
@@ -355,6 +355,20 @@ Development documentation
 
 	* <<<listedContainerType>>>
 	
+	[]	
+
+*** logConfigType
+
+	LogConfig represents the logging configuration of the container.
+
+	Partial output from the {{{https://docs.docker.com/engine/api/v1.28/#operation/ContainerInspect}Inspect a container (v1.28)}} operation.	
+
+	Defined Docker type: {{{https://github.com/moby/moby/blob/master/api/types/container/host_config.go}LogConfig}}
+
+	Used by these schema types:
+	
+	* <<<hostConfigType >>>
+
 	[]	
 		
 	TODO: rewrite from here:

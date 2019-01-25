@@ -229,8 +229,8 @@
 	</jaxb:bindings>
 
 	<jaxb:bindings schemaLocation="docker_1_0.xsd" >
-		<jaxb:bindings node="//xs:complexType[@name='containerConfigurationHostConfigRestartPolicyType']" >
-			<jaxb:class name="ContainerConfigurationHostConfigRestartPolicy" />				
+		<jaxb:bindings node="//xs:complexType[@name='restartPolicyType']" >
+			<jaxb:class name="RestartPolicy" />				
 		</jaxb:bindings>		 
 	</jaxb:bindings>
 

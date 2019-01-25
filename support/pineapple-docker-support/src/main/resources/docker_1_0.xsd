@@ -541,7 +541,7 @@
 			<xs:element name="mounts" type="mountType" minOccurs="0" maxOccurs="unbounded" />			
 			<xs:element name="portBindings" type="portMapType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="readonlyPaths" type="stringList" minOccurs="0" maxOccurs="1" />	
-			<xs:element name="restartPolicy" type="containerConfigurationHostConfigRestartPolicyType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="restartPolicy" type="restartPolicyType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="securityOpt" type="stringList" minOccurs="0" maxOccurs="1" />	
 			<xs:element name="volumesFrom" type="stringList" minOccurs="0" maxOccurs="1" />				
  		</xs:sequence>
@@ -615,10 +615,14 @@
 		</xs:annotation>
 	</xs:complexType>
 
-	<xs:complexType name="containerConfigurationHostConfigRestartPolicyType" >
+	<!-- 
+		Corresponds to RestartPolicy
+		https://github.com/moby/moby/blob/master/api/types/container/host_config.go
+	-->
+	<xs:complexType name="restartPolicyType" >
 		<xs:annotation>
 			<xs:documentation>
-				Info about restart policy from container configuration and inspected container.
+				RestartPolicy represents the restart policies of the container.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:attribute name="maximumRetryCount" type="xs:string" use="optional"/>		

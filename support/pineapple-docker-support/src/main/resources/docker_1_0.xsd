@@ -96,18 +96,6 @@
 	</xs:complexType>
 
 	<!-- 
-		Container for throttleDeviceType (implemented as default JAXB list)   
-	 -->
-	<xs:complexType name="throttleDevicesType" >
-		<xs:annotation>
-			<xs:documentation>Container for device throttling.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="devices" type="throttleDeviceType" minOccurs="0" maxOccurs="unbounded" />
- 		</xs:sequence>		
-	</xs:complexType>
-
-	<!-- 
 		Corresponds to ThrottleDevice     
 		https://github.com/moby/moby/blob/master/api/types/blkiodev/blkio.go
 	 -->
@@ -511,10 +499,10 @@
 		<xs:sequence>
 			<xs:element name="binds" type="stringList" minOccurs="0" maxOccurs="1" /> 			
 			<xs:element name="blkioWeightDevice" type="weightDeviceType" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="blkioDeviceReadBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="blkioDeviceWriteBps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="blkioDeviceReadIOps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="blkioDeviceWriteIOps" type="throttleDevicesType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="blkioDeviceReadBps" type="throttleDeviceType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="blkioDeviceWriteBps" type="throttleDeviceType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="blkioDeviceReadIOps" type="throttleDeviceType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="blkioDeviceWriteIOps" type="throttleDeviceType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="consoleSize" type="intList" minOccurs="0" maxOccurs="1" /> 			
 			<xs:element name="devices" type="deviceMappingType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="deviceCgroupRules" type="stringList" minOccurs="0" maxOccurs="1" />

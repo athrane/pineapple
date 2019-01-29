@@ -34,39 +34,46 @@
 	hflex="1" vflex="1" border="none">
 		
 	<borderlayout hflex="1" vflex="1" >
-	    <north border="none" >	    	
+	    <north border="none" >	    	                        
 	    	<vlayout spacing="0" >	
- 				<include src="menu.zul" />	    	    		    	    	
 	    		<grid sizedByContent="true" span="true" hflex="1" vflex="1" style="border:0" >
 					<columns>
 	            		<column>
-					    	<hlayout spacing="0" >
-								<space bar="false" spacing="5px" />
-								<vlayout spacing="0" height="40px" >
-									<image src="/images/logo-40x40.png" />					    	
-								</vlayout> 	
-								<space bar="false" spacing="5px" />
-								<vlayout spacing="0" style="line-height:1.2;padding:0;" >
-									<label value="Pineapple" style="font-size:20px" />
-									<hlayout >
-					            		<label value="@load(vm.userName)" style="font-size:10px;font-weight:bold" />																				
-					            		<label value="@" style="font-size:10px" />																				
-					            		<label value="@load(vm.hostName)" style="font-size:10px;font-weight:bold" />																				
-									</hlayout>
-				            	</vlayout>
-								<space bar="true" spacing="50px" />
-								<vlayout spacing="0" style="line-height:1.1;padding:0;" >
-					            	<label value="@load(vm.moduleName)" style="color:black;font-size:14px;font-weight:bold" />
-					            	<label value="Module" style="font-size:10px" />
-				            	</vlayout>
-								<space bar="true" spacing="50px" />																
-			       				<vlayout spacing="0" style="line-height:1.1;padding:0;" >
-			       					<label value="@load(vm.modelName)" style="color:black;font-size:14px;font-weight:bold" />
-			       					<label value="Model for target environment" style="font-size:10px" />	            			            			            			            				
-			       				</vlayout>            					            			            			            			
-			       				<vlayout spacing="0" >
-			       				</vlayout>            					            			            			            			
-					    	</hlayout>
+			    	    	<div style="float:left">
+							    	<hlayout spacing="0" >
+										<space bar="false" spacing="5px" />
+										<vlayout spacing="0" >
+											<image src="/images/logo-20x20.png" />					    	
+										</vlayout> 										
+										<space bar="false" spacing="5px" />
+										<vlayout spacing="0" >
+											<label value="Pineapple" style="font-size:14px" />									
+						            	</vlayout>								
+										<space bar="true" spacing="20px" />								
+										<vlayout spacing="0" >
+							            	<label value="@load(vm.moduleName)" style="color:black;font-size:14px;font-weight:bold" />
+						            	</vlayout>
+										<vlayout spacing="0" >
+							            	<label value=" / " style="color:black;font-size:14px;font-weight:bold" />
+						            	</vlayout>
+					       				<vlayout spacing="0" >
+					       					<label value="@load(vm.modelName)" style="color:black;font-size:14px;font-weight:bold" />
+					       				</vlayout>            					            			            						       				            			
+							    	</hlayout>
+		                    </div>
+			    	    	<div style="float:right">
+								<hlayout spacing="0" >	    	    	
+									<include src="menu.zul" />	 
+									<space bar="true" spacing="20px" />															   	    		    	    							
+									<vlayout spacing="0" >
+										<hlayout >										
+							            		<label value="@load(vm.userName)" style="font-size:10px;font-weight:bold" />																				
+							            		<label value="@" style="font-size:10px" />																				
+							            		<label value="@load(vm.hostName)" style="font-size:10px;font-weight:bold" />																														
+										</hlayout>
+					            	</vlayout>	                    
+								</hlayout>
+		                    </div>	            		
 						</column>            			
 				   </columns>				        
 		    	</grid>		    	

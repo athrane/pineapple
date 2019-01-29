@@ -7,6 +7,17 @@
     .z-menu-content i:not(.z-menu-icon), .z-menuitem-content i:not(.z-menu-icon) {
         margin-right: 9px;
     }
+    
+	.z-menubar {
+		border:0;
+		padding:0;
+		margin:0;	
+	}    
+		
+	.z-window-content {
+    	padding:0;
+		background-color: transparent;		    	
+	}	
   	</style>
 
 	<window id="menuWindow" 
@@ -184,7 +195,7 @@
 			     			iconSclass="z-icon-rss" />						    		            										            			            		            		            
 			        </menupopup>
 			    </menu>	    	    		    		    		    		        		    		    		    		    	    		    		    		    		    
-			</menubar>                
+			</menubar>               
 		</vlayout>
 	</window>
 </zk>

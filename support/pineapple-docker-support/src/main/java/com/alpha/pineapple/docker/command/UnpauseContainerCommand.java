@@ -23,7 +23,7 @@
 package com.alpha.pineapple.docker.command;
 
 import static com.alpha.pineapple.docker.DockerConstants.UNPAUSE_CONTAINER_URI;
-import static com.alpha.pineapple.docker.utils.ModelUtils.isStringMessageDefined;
+import static com.alpha.pineapple.docker.utils.ModelUtils.isErrorDefined;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -142,11 +142,11 @@ public class UnpauseContainerCommand implements Command {
 		uriVariables.put("id", containerInfo.getName());
 
 		// post to start container
-		String stringMessage = session.httpPostForObject(UNPAUSE_CONTAINER_URI, uriVariables, String.class);
+		Error error = session.httpPostForObject(UNPAUSE_CONTAINER_URI, uriVariables, Error.class);
 
 		// capture any returned string message
-		if (isStringMessageDefined(stringMessage)) {
-			Object[] args = { stringMessage };
+		if (isErrorDefined(error )) {
+			Object[] args = { error.getMessage() };
 			String message = messageProvider.getMessage("upcc.message_info", args);
 			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
 		}

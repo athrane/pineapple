@@ -205,17 +205,20 @@ public class ModelUtils {
 	}
 
 	/**
-	 * Return true if string message is not null or empty.
+	 * Return true if error message is not null or empty.
 	 * 
-	 * @param stringMessage
-	 *            optional string message.
+	 * @param error 
+	 *            optional error message.
 	 * 
-	 * @return true if string message is not null or empty.
+	 * @return true if error message is not null or empty.
 	 */
-	public static boolean isStringMessageDefined(String stringMessage) {
-		if (stringMessage == null)
+	public static boolean isErrorDefined(Error error) {
+		if (error == null)
 			return false;
-		return (!stringMessage.isEmpty());
+		String message = error.getMessage();
+		if (message == null)
+			return false;
+		return (!message.isEmpty());
 	}
 
 	/**

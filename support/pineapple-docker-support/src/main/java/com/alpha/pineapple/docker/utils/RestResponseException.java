@@ -48,6 +48,12 @@ public class RestResponseException extends RuntimeException {
 	HttpHeaders headers;
 
 	/**
+	 * Message.
+	 */
+	String message;
+	
+	
+	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 4848432043385964993L;
@@ -62,10 +68,11 @@ public class RestResponseException extends RuntimeException {
 	 * @param headers
 	 *            HTTP headers.
 	 */
-	public RestResponseException(HttpStatus statusCode, String body, HttpHeaders headers) {
+	public RestResponseException(HttpStatus statusCode, String body, HttpHeaders headers, String message) {
 		this.statusCode = statusCode;
 		this.body = body;
 		this.headers = headers;
+		this.message = message;
 	}
 
 	/**
@@ -97,8 +104,7 @@ public class RestResponseException extends RuntimeException {
 
 	@Override
 	public String getMessage() {
-		return new StringBuilder().append("Docker host reported error: ").append(getBody())
-				.append(". Reported status code:").append(getStatusCode()).toString();
+		return message;
 	}
 
 }

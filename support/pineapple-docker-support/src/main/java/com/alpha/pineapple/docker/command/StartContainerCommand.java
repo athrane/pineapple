@@ -23,7 +23,6 @@
 package com.alpha.pineapple.docker.command;
 
 import static com.alpha.pineapple.docker.DockerConstants.START_CONTAINER_URI;
-import static com.alpha.pineapple.docker.utils.ModelUtils.isErrorDefined;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +41,7 @@ import com.alpha.pineapple.command.initialization.ValidationPolicy;
 import com.alpha.pineapple.docker.DockerClient;
 import com.alpha.pineapple.docker.model.ContainerInfo;
 import com.alpha.pineapple.docker.session.DockerSession;
+import com.alpha.pineapple.docker.utils.RestResponseException;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.i18n.MessageProvider;
 
@@ -166,20 +166,21 @@ public class StartContainerCommand implements Command {
 		Map<String, String> uriVariables = new HashMap<String, String>();
 		uriVariables.put("id", containerInfo.getName());
 
-		// post to start container
-		Error error = session.httpPostForObject(START_CONTAINER_URI, uriVariables, Error.class);
+		try {
+				
+			// post to start container
+			session.httpPost(START_CONTAINER_URI, uriVariables);
 
-		// capture any returned (error) message
-		if (isErrorDefined(error )) {
-			Object[] args = { error.getMessage() };
-			String message = messageProvider.getMessage("scc.message_info", args);
-			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+		} catch (RestResponseException rre) {						
+			Object[] args = { rre.getStatusCode(), rre.getMessage() };
+			executionResult.completeAsFailure(messageProvider, "scc.start_container_failed", args);
+			return Command.CONTINUE_PROCESSING;
 		}
-
+		
 		// complete result
 		Object[] args = { containerInfo.getName() };
 		executionResult.completeAsSuccessful(messageProvider, "scc.start_container_completed", args);
-
+		
 		return Command.CONTINUE_PROCESSING;
 	}
 

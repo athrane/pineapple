@@ -23,7 +23,6 @@
 package com.alpha.pineapple.docker.command;
 
 import static com.alpha.pineapple.docker.DockerConstants.UNPAUSE_CONTAINER_URI;
-import static com.alpha.pineapple.docker.utils.ModelUtils.isErrorDefined;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +40,7 @@ import com.alpha.pineapple.command.initialization.ValidateValue;
 import com.alpha.pineapple.command.initialization.ValidationPolicy;
 import com.alpha.pineapple.docker.model.ContainerInfo;
 import com.alpha.pineapple.docker.session.DockerSession;
+import com.alpha.pineapple.docker.utils.RestResponseException;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.i18n.MessageProvider;
 
@@ -141,16 +141,17 @@ public class UnpauseContainerCommand implements Command {
 		Map<String, String> uriVariables = new HashMap<String, String>();
 		uriVariables.put("id", containerInfo.getName());
 
-		// post to start container
-		Error error = session.httpPostForObject(UNPAUSE_CONTAINER_URI, uriVariables, Error.class);
+		try {
+			
+			// post to start container
+			session.httpPost(UNPAUSE_CONTAINER_URI, uriVariables);
 
-		// capture any returned string message
-		if (isErrorDefined(error )) {
-			Object[] args = { error.getMessage() };
-			String message = messageProvider.getMessage("upcc.message_info", args);
-			executionResult.addMessage(ExecutionResult.MSG_MESSAGE, message);
+		} catch (RestResponseException rre) {						
+			Object[] args = { rre.getStatusCode(), rre.getMessage() };
+			executionResult.completeAsFailure(messageProvider, "upcc.unpause_container_failed", args);
+			return Command.CONTINUE_PROCESSING;
 		}
-
+		
 		// complete result
 		Object[] args = { containerInfo.getName() };
 		executionResult.completeAsSuccessful(messageProvider, "upcc.unpause_container_completed", args);

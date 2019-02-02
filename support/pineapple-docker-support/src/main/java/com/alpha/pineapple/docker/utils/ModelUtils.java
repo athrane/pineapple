@@ -205,23 +205,6 @@ public class ModelUtils {
 	}
 
 	/**
-	 * Return true if error message is not null or empty.
-	 * 
-	 * @param error 
-	 *            optional error message.
-	 * 
-	 * @return true if error message is not null or empty.
-	 */
-	public static boolean isErrorDefined(Error error) {
-		if (error == null)
-			return false;
-		String message = error.getMessage();
-		if (message == null)
-			return false;
-		return (!message.isEmpty());
-	}
-
-	/**
 	 * Return true if container name is prefixed with "/".
 	 * 
 	 * @param name

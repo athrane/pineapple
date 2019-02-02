@@ -34,12 +34,19 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Implementation of the {@linkplain ResponseErrorHandler} interface to provide
  * a customized error handler for exceptions returned by
  * {@linkplain RestTemplate}.
  */
 public class RestResponseErrorHandler implements ResponseErrorHandler {
+
+	/**
+	 * Empty string.
+	 */
+	static final String EMPTY_STRING = "";
 
 	/**
 	 * Logger object.
@@ -52,6 +59,12 @@ public class RestResponseErrorHandler implements ResponseErrorHandler {
 	@Resource
 	ResponseErrorHandler defaultResponseErrorHandler;
 
+	/**
+	 * Jackson object mapper.
+	 */
+	@Resource
+	ObjectMapper jacksonObjectMapper;
+	
 	@Override
 	public boolean hasError(ClientHttpResponse response) throws IOException {
 		return defaultResponseErrorHandler.hasError(response);
@@ -62,11 +75,41 @@ public class RestResponseErrorHandler implements ResponseErrorHandler {
 		HttpStatus statusCode = response.getStatusCode();
 		String body = IOUtils.toString(response.getBody());
 		HttpHeaders headers = response.getHeaders();
+		
+		// parse body into message		
+		String message = parseMessageFromHttpBody(body);
+
+		// log
 		logger.error("Status code: " + statusCode);
 		logger.error("Body: " + body);
 		logger.error("Headers: " + headers);
-		RestResponseException exception = new RestResponseException(statusCode, body, headers);
+		logger.error("Message: " + message);		
+		
+		RestResponseException exception = new RestResponseException(statusCode, body, headers, message);
 		throw exception;
+	}
+
+	/**
+	 * Parse returned message in {@linkplain Error} object from Docker Rest API.
+	 * 
+	 * @param body HTTP response body.
+	 * 
+	 * @return parsed message with error object in HTTP body. 
+	 * Returns an empty string if parsing of the Error object fails.
+	 */
+	String parseMessageFromHttpBody(String body) {
+		try {
+			// parse Error object from HTTP body
+			Error error = jacksonObjectMapper.readValue(body, Error.class);			
+			return error.getMessage();			
+			
+		} catch (Exception e) {			
+			
+			logger.error("Failed to parse HTTP body for Docker message, due to the error: " + e.getMessage());		
+
+			// return empty string to signal failure to parse body
+			return EMPTY_STRING;
+		}
 	}
 
 }

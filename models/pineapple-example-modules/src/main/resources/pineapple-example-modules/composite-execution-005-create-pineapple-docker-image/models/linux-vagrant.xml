@@ -6,7 +6,7 @@
             <cep:composite-execution>
                 <cep:module name="ssh-011-install-docker-latest-version-centos7" />
                 <cep:module name="docker-004-java8-openjdk-rpm-image-centos" />
-                <cep:module name="docker-005-pineapple-image-centos" />
+                <cep:module name="docker-005-pineapple-image" />
             </cep:composite-execution>
         </mmd:content>
     </mmd:model>

@@ -5,7 +5,7 @@ This example illustrates how to  create a Pineapple Docker image
 from a empty Linux server using several composite modules in sequence:
 1) ssh-011-install-docker-latest-version-centos7
 2) docker-004-java8-openjdk-rpm-image-centos
-3)docker-005-pineapple-image-centos
+3)docker-005-pineapple-image
 
 Required modifications
 -----------------------

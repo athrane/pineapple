@@ -13,7 +13,7 @@ How-to: Create simple Pineapple Docker image
 * Overview
 
 	This example illustrates how the Docker plugin can be used to create a Docker 
-	image based on CentOS 7.0 with Java 8 and Pineapple installed.
+	image based on Oracle Linux 7 with Java 11 and Pineapple installed.
 	
 	Pineapple is installed in the most simple fashion, basically an unzip with no 
 	consideration for the used user within the Docker image. The user <<<root>>> will be used.
@@ -32,7 +32,7 @@ How-to: Create simple Pineapple Docker image
 	
 	For the remaining part of this example is assumed that Docker is installed using the above example. The assumed configuration is:
 	
-	* The Vagrant box is running CentOS 7.0 and has IP address 192.168.34.10. 
+	* The Vagrant box is running CentOS 7.5 and has IP address 192.168.34.10. 
 	
 	* The Docker daemon is accessible at 192.168.34.10:8082. 
 	
@@ -57,7 +57,7 @@ docker-005-pineapple-image-from-dockerfile-centos
  |     +--- linux-vagrant.xml 
  +--- dockersrc	 
        +--- Dockerfile
-       +----pineapple-standalone-web-client-1.10.0.zip       
+       +----pineapple-standalone-web-client-1.11.0.zip       
 +---
 	
 * Define the module model
@@ -68,11 +68,11 @@ docker-005-pineapple-image-from-dockerfile-centos
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
     xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" >
-    <mmd:model target-resource="docker-node" description="Define tagged Docker image: pineapple/pineapple:1.10.0 from Dockerfile" >
+    <mmd:model target-resource="docker-node" description="Define tagged Docker image: pineapple/pineapple:1.11.0 from Dockerfile" >
         <mmd:content>
             <dkp:docker>
                 <dkp:image-from-dockerfile source-directory="modulepath:dockersrc" pull-image="false" >
-                    <dkp:target-image repository="pineapple/pineapple" tag="1.10.0" />
+                    <dkp:target-image repository="pineapple/pineapple" tag="1.11.0" />
                 </dkp:image-from-dockerfile>
             </dkp:docker>                       
         </mmd:content>
@@ -114,115 +114,145 @@ docker-005-pineapple-image-from-dockerfile-centos
 	The Dockerfile contains:
 	
 +----	 
-# Pull base image
-# ---------------
-FROM pineapple/centos-openjdk-java:8
+# Pull base image for builder image
+# ----------------------------------
+FROM openjdk:11.0-jdk-oraclelinux7 as builder
 
-# Maintainer
-# ----------
-MAINTAINER Allan Thrane Andersen <einheriii@gmail.com>
+LABEL maintainer="einheriii@gmail.com"
 
-# Define variable
-ENV PINEAPPLE_ARCHIVE pineapple-standalone-web-client-1.10.0.zip
-ENV PINEAPPLE_INSTALL_DIR /opt
-ENV PINEAPPLE_DIR $PINEAPPLE_INSTALL_DIR/pineapple-standalone-web-client-1.10.0
-ENV PINEAPPLE_HOME_DIR /var/pineapple
-ENV PINEAPPLE_USER pineapple
-ENV PINEAPPLE_GROUP pineapple
+ARG PINEAPPLE_VERSION=1.11.0
+ARG PINEAPPLE_HOME=/var/pineapple
+ARG PINEAPPLE_INSTALL=/opt/pineapple
 
-# Define runtime variables to configure Pineapple
-ENV PINEAPPLE_HOME $PINEAPPLE_HOME_DIR
-ENV PINEAPPLE_HTTP_HOST 0.0.0.0
-ENV PINEAPPLE_HTTP_PORT 8080
-
-# Install unzip
-RUN yum --assumeyes install unzip
-RUN yum clean all
+# Map arguments into environment variables
+ENV PINEAPPLE_VERSION=${PINEAPPLE_VERSION} \
+	PINEAPPLE_HOME=${PINEAPPLE_HOME} \
+    PINEAPPLE_INSTALL=${PINEAPPLE_INSTALL}
+		
+RUN set -eux; \
+	yum install -y unzip; \
+	rm -rf /var/cache/yum
 
 # Install Pineapple binary 
-COPY $PINEAPPLE_ARCHIVE /tmp/
-RUN unzip /tmp/$PINEAPPLE_ARCHIVE -d $PINEAPPLE_INSTALL_DIR
-RUN rm -rf /tmp/$PINEAPPLE_ARCHIVE
+COPY pineapple-standalone-web-client-${PINEAPPLE_VERSION}.zip /tmp/archive.zip 
+RUN unzip /tmp/archive.zip -d /opt; \
+	mv /opt/pineapple-standalone-web-client-${PINEAPPLE_VERSION} ${PINEAPPLE_INSTALL}
 
-# Creates default user, directory and make pineapple executable  
-RUN chmod +x $PINEAPPLE_DIR/bin/setup.sh
-RUN $PINEAPPLE_DIR/bin/setup.sh $PINEAPPLE_DIR $PINEAPPLE_USER $PINEAPPLE_GROUP
+# make script executable and create home directory
+RUN chmod +x ${PINEAPPLE_INSTALL}/runPineapple.sh; \
+	mkdir -p ${PINEAPPLE_HOME} 
 
-# Temporary solution to make logging work
-RUN mkdir -p /var/pineapple/logs
-RUN chown -R $PINEAPPLE_USER:$PINEAPPLE_GROUP /var/pineapple
-RUN chmod -R 775 /var/pineapple
+# Pull base image for final image
+# --------------------------------
+FROM openjdk:11.0-jdk-oraclelinux7 
 
-# Make pineapple executable
-WORKDIR $PINEAPPLE_DIR
+LABEL maintainer="einheriii@gmail.com"
+
+ARG PINEAPPLE_HOME=/var/pineapple
+ARG PINEAPPLE_INSTALL=/opt/pineapple
+ARG PINEAPPLE_HTTP_HOST=0.0.0.0
+ARG PINEAPPLE_HTTP_PORT=8080
+
+# Map arguments into environment variables
+ENV PINEAPPLE_HOME=${PINEAPPLE_HOME} \
+    PINEAPPLE_INSTALL=${PINEAPPLE_INSTALL} \
+	PINEAPPLE_HTTP_HOST=${PINEAPPLE_HTTP_HOST} \
+	PINEAPPLE_HTTP_PORT=${PINEAPPLE_HTTP_PORT} 
+	
+# Copy directories from builder
+COPY --from=builder ${PINEAPPLE_INSTALL} ${PINEAPPLE_INSTALL}
+COPY --from=builder ${PINEAPPLE_HOME} ${PINEAPPLE_HOME}
+	
+# Set work directory
+WORKDIR ${PINEAPPLE_INSTALL}
 
 # Expose port to host
-EXPOSE $PINEAPPLE_HTTP_PORT
+EXPOSE ${PINEAPPLE_HTTP_PORT}
 
 # Define volume
-VOLUME $PINEAPPLE_HOME_DIR
-
-# set user 
-USER $PINEAPPLE_USER
+VOLUME ${PINEAPPLE_HOME}
 
 # Start pineapple when container is created
-ENTRYPOINT $PINEAPPLE_DIR/runPineapple.sh
+ENTRYPOINT ${PINEAPPLE_INSTALL}/runPineapple.sh
 +----	 
 
-	The FROM command specifies that the image <<<pineapple/centos-oracle-java:8>>> should be pulled 
+	The image is constructed using a multi-stage build.
+	A builder image is used and then a the final image is constructed.
+
+***	The builder image
+
+	The FROM command specifies that the image <<<openjdk:11.0-jdk-oraclelinux7 >>> should be pulled 
 	from the local registry orDockerHub.		 		 
 
-	The MAINTAINER command declares the proud author.
+	The LABEL command declares the proud author.
 	
-	The some variables are declares using the ENV command:
-	
-	* The name of Pineapple archive which is installed in the image.
-	
-	* The parent directory relative to where Pineapple will be installed.
+	Some arguments (along with default values) are declares using the ARG command 
+	to support the construction of the image:
 
-	* The directory where Pineapple will be installed.
+	* The version of Pineapple archive which is installed in the image.
 
-	* The home directory where Pineapple will use to runtime files.
-		
-	* The name of the Pineapple OS user.
-	
-	* The name of the Pineapple OS group.			
-		
-	* The remaining three variables are used by the runner script <<<runPineapple.sh>>>
-	One of them defines the listen address for Pineapple, because Docker doesn't like the default Pineapple listen address localhost.
+	* The installation directory where Pineapple will be installed.
+
+	* The Pineapple home directory (used for runtime files).
 
 	[] 
-			
-	The RUN command uses YUM to installs the unzip tool.
 	
-	The RUN clears the YUM cache.
+	The arguments are mapped into environments variables using the ENV command.
 	
+	The RUN command uses YUM to installs the unzip tool and clears the YUM cache.
+
 	THE COPY command copies the Pineapple archive from the uploaded TAR archive into 
 	the <</tmp>> directory on image.
-	
+
 	The RUN command unzips Pineapple.
 			
 	The RUN command deletes the Pineapple archive from the <</tmp>> directory.
+
+	The RUN command renames the installation directory to <</opt/pineapple>>.
+	command deletes the Pineapple archive from the <</tmp>> directory.
 	
-	The RUN command make the Pineapple setup.sh script executable.
+	The RUN command makes the Pineapple main script <<runPineapple.sh>> executable.
 	
-	The RUN command executes the setup.sh script to create the user and group, set permission for 
-	the installation directory and make the main Pineapple script executable.
+	The RUN command creates the Pineapple home directory.
+
+*** The final image
+
+	The FROM command specifies that the image <<<openjdk:11.0-jdk-oraclelinux7 >>> should be pulled 
+	from the local registry orDockerHub.		 		 
+
+	The LABEL command declares the proud author.
+
+	Some arguments (along with default values) are declares using the ARG command 
+	to support the construction of the image:
+
+	* The installation directory where Pineapple is installed.
+
+	* The Pineapple home directory (used for runtime files).
+
+	* The listen address for Pineapple, because Docker doesn't like the 
+	default Pineapple listen address <<localhost>>. It is set to <<0.0.0.0>>.
+
+	* The listen port for Pineapple. It is set to <<8080>>.
+
+	[] 
+
+	The arguments are mapped into environments variables using the ENV command
+	to ensure they are available in the final image.
+	
+	The COPY commands is used to copy the installation and home directories from 
+	the builder image into the final image.			
 		
 	The WORKDIR command defines Pineapple installation directory as the current directory.
-	
-	The RUN command ensures that the Pineapple runner script is executable.
-	
+		
 	The EXPOSE command exposes port 8080 from the image.
 
 	The VOLUME command defines a volume for the runtime directory where Pineapple writes its files.
 	
 	The ENTRYPOINT defines the command to run when a container is started.
-	The command will start Pineapple at 0.0.0.0:8080
 
 * Add binary
 
-	The Pineapple binary <<pineapple-standalone-web-client-1.10.0.zip>> must be downloaded and added to
+	The Pineapple binary <<pineapple-standalone-web-client-1.11.0.zip>> must be downloaded and added to
 	the <<<dockersrc>>> directory within the module.
 		 		 
 * Invoke Pineapple to execute model 
@@ -233,7 +263,7 @@ ENTRYPOINT $PINEAPPLE_DIR/runPineapple.sh
 	
 	* Select the <<linux-vagrant>> model.
 	
-	* Invoke the <<deploy-configuration>> to create the Docker Image named <<pineapple/pineapple:1.10.0>>.
+	* Invoke the <<deploy-configuration>> to create the Docker Image named <<pineapple/pineapple:1.11.0>>.
 	
 	[]
 
@@ -242,7 +272,7 @@ ENTRYPOINT $PINEAPPLE_DIR/runPineapple.sh
 	To create a container a the command line within the Vagrant box:
 	
 +----
-sudo docker run --name="pineapple" -p 8080:8080 pineapple/pineapple:1.10.0
+sudo docker run --name="pineapple" -p 8080:8080 pineapple/pineapple:1.11.0
 +----
 	
 	Pineapple will run at http:/0.0.0.0:8080 within the Docker image as the <<<pineapple:pineapple>>> user.
@@ -252,7 +282,3 @@ sudo docker run --name="pineapple" -p 8080:8080 pineapple/pineapple:1.10.0
 	Pineapple will be configured to use the home directory <<</var/pineapple>>>.
 	The home directory is mapped to a volume to retain data between container execution.	
 	Modules can be uploaded and run using either the GUI or the REST API.
-
-
-
-	

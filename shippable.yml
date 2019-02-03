@@ -11,10 +11,8 @@ branches:
     - release*
 
 jdk:
-  - openjdk9
-  - oraclejdk9
-  - openjdk8
-  - oraclejdk8
+  - openjdk11
+  - oraclejdk11
    
 before_install:
 

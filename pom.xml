@@ -670,63 +670,29 @@
 			<id>maven-central</id>
 			<name>Maven central repository</name>
 			<url>https://repo.maven.apache.org/maven2/</url>
-			<layout>default</layout>
-			<releases>
-            	<updatePolicy>never</updatePolicy>
-        	</releases>
-        	<snapshots>
-            	<updatePolicy>never</updatePolicy>
-        	</snapshots>			
 		</repository>
 		<!-- Spring Source repository -->
 		<repository>
 			<id>repository.springsource.milestone</id>
 			<name>SpringSource Milestone Repository</name>
 			<url>https://repo.springsource.org/milestone</url>
-			<releases>
-            	<updatePolicy>never</updatePolicy>
-        	</releases>
-        	<snapshots>
-            	<updatePolicy>never</updatePolicy>
-        	</snapshots>			
 		</repository>
 		<repository>
 			<id>repository.springsource.release</id>
 			<name>SpringSource GA Repository</name>
 			<url>https://repo.springsource.org/release</url>
-			<releases>
-            	<updatePolicy>never</updatePolicy>
-        	</releases>
-        	<snapshots>
-            	<updatePolicy>never</updatePolicy>
-        	</snapshots>			
 		</repository>
 		<!-- ZK repositories -->
 		<repository>
 			<id>ZK CE</id>
 			<url>https://mavensync.zkoss.org/maven2</url>
-			<releases>
-            	<updatePolicy>never</updatePolicy>
-        	</releases>
-        	<snapshots>
-            	<updatePolicy>never</updatePolicy>
-        	</snapshots>			
 		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
-			<id>central</id>
-			<name>Maven Repository Switchboard</name>
-			<layout>default</layout>
-			<url>http://repo1.maven.org/maven2</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
 			<id>maven-central</id>
-			<name>Maven central repository </name>
-			<url>http://central.maven.org/maven2/</url>
+			<name>Maven central repository</name>
+			<url>https://repo.maven.apache.org/maven2/</url>
 		</pluginRepository>
 	</pluginRepositories>
 	

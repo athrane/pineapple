@@ -671,10 +671,13 @@
 			<name>Maven Repository Switchboard</name>
 			<layout>default</layout>
 			<url>http://repo1.maven.org/maven2</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
+			<releases>
+            	<updatePolicy>never</updatePolicy>
+        	</releases>
+        	<snapshots>
+            	<updatePolicy>never</updatePolicy>
+        	</snapshots>
+        </repository>
 		<repository>
 			<id>maven-central</id>
 			<name>Maven central repository </name>
@@ -695,7 +698,7 @@
 		<!-- ZK repositories -->
 		<repository>
 			<id>ZK CE</id>
-			<url>http://mavensync.zkoss.org/maven2</url>
+			<url>https://mavensync.zkoss.org/maven2</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>

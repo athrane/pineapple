@@ -18,6 +18,7 @@ before_install:
 
 build:
   ci:
+  - source /etc/drydock/.env  
   - echo $COMMIT    
   - echo $BUILD_NUMBER    
 

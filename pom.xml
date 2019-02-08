@@ -683,19 +683,14 @@
 		</repository>
 		<!-- Spring Source repository -->
 		<repository>
-			<id>repository.springsource.snapshot</id>
-			<name>SpringSource Snapshot Repository</name>
-			<url>http://repo.springsource.org/snapshot</url>
-		</repository>
-		<repository>
 			<id>repository.springsource.milestone</id>
 			<name>SpringSource Milestone Repository</name>
-			<url>http://repo.springsource.org/milestone</url>
+			<url>https://repo.springsource.org/milestone</url>
 		</repository>
 		<repository>
 			<id>repository.springsource.release</id>
 			<name>SpringSource GA Repository</name>
-			<url>http://repo.springsource.org/release</url>
+			<url>https://repo.springsource.org/release</url>
 		</repository>
 		<!-- ZK repositories -->
 		<repository>

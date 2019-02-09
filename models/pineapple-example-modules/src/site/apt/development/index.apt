@@ -18,17 +18,3 @@ Development documentation
 	
 	All of the implementation of the project resides in the Maven POM.
 				
-* Application version
-
-	The master POM for the Pineapple project contains a property definition named <<<pineapple.examplemodules.project.version>>> 
-	which contains the release version for the examples.:
-		
-+---+
-	<properties>
-		<pineapple.examplemodules.project.version>1.0.0</pineapple.examplemodules.project.version>		
-	</properties>
-+---+	 
-
-	The version number is added to name of the created JAR file.
-
-

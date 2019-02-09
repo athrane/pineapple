@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Pineapple - a tool to install, configure and test Java web applications 
-	and infrastructure. Copyright (C) 2007-2018 Allan Thrane Andersen.. This 
+	and infrastructure. Copyright (C) 2007-2019 Allan Thrane Andersen.. This 
 	file is part of Pineapple. Pineapple is free software: you can redistribute 
 	it and/or modify it under the terms of the GNU General Public License as 
 	published by the Free Software Foundation, either version 3 of the License, 
@@ -60,7 +60,6 @@
 		<jaxws-api.version>2.3.0</jaxws-api.version>		
 		<zk.version>7.0.2</zk.version>
 		<zkspring.version>3.1</zkspring.version>
-		<pineapple.examplemodules.project.version>1.0.0</pineapple.examplemodules.project.version>
 		<pineapple.webapp.jettystarter.version>1.0.0</pineapple.webapp.jettystarter.version>
 
 		<!-- Pineapple release version -->
@@ -147,7 +146,7 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>pineapple-example-modules</artifactId>
-				<version>${pineapple.examplemodules.project.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<!-- external dependencies -->
 			<dependency>

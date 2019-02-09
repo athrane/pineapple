@@ -3,7 +3,7 @@
   Pineapple - a tool to install, configure and test Java web 
   applications and infrastructure. 
   
-  Copyright (C) 2007-2018 Allan Thrane Andersen..
+  Copyright (C) 2007-2019 Allan Thrane Andersen..
   
   This file is part of Pineapple.
   
@@ -28,7 +28,6 @@
 		<version>1.11.0</version>
 	</parent>
 	<artifactId>pineapple-example-modules</artifactId>
-	<version>${pineapple.examplemodules.project.version}</version>	
 	<packaging>jar</packaging>
 	<name>Pineapple example modules</name>
 	<url>http://maven.apache.org</url>

@@ -100,7 +100,7 @@ Building Pineapple
 	mvn site site:deploy 
 +--  
 
-The generated documentation is stored in the <<</doc>>> directory. 
+	The generated documentation is stored in the <<</doc>>> directory. 
 
 
 

@@ -49,11 +49,10 @@ pineapple-standalone-web-client-${pineapple.release.version}
            +--- log4j-1.2.14.jar
            +--- slf4j-api-1.7.7.jar           
            +--- slf4j-log4j12-1.7.7.jar           
-           `--- servlet-api-3.1.0.jar
 +---+	 	 
 	
 	The <<<runPineapple.cmd>>> or <<<runPineapple.sh>>> invokes Java with the Jetty starter JAR file 
-	<<<pineapple-jetty-starter-1.0.jar>>> which starts Jetty as a stand-alone application.
+	<<<pineapple-jetty-starter-X.0.jar>>> which starts Jetty as a stand-alone application.
 	
 	When Jetty starts, it will deploy the Pineapple <<<pineapple-web-application-war.war>>>
 	and thus make it available as a stand-alone application.
@@ -62,14 +61,8 @@ pineapple-standalone-web-client-${pineapple.release.version}
 	
 	The <<<webapps>>> directory contains the Pineapple web application (war) which are deployed into Jetty.
 	
-	The <<<lib>>> directory contains all the jar files that constitutes the Jetty web server, which are:
-
-		* The Jetty jars required for web application deployment
-		
-		* <<<servlet-api-3.1.0.jar>>> which is required by Jetty 9.2.x
-		
-		[]
-		
+	The <<<lib>>> directory contains all the jar files that constitutes the Jetty web server.
+			
 * Internal configuration
 
 	The stand-alone web application uses two configuration files. The source files are 
@@ -116,14 +109,7 @@ org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog
 	* The connectors and handlers
 		
 	[]
-	
-** Enabling JSP support in Jetty
-
-	TODO: this still doesn't work ...
-	
-	org.mortbay.jetty:jsp-2.1-glassfish:jar:2.1.v20100127:runtime
-	org.eclipse.jetty:jetty-jsp-2.1:jar:7.1.6.v20100715:runtime
-			
+				
 * Application version
 
 	The master POM for the Pineapple project contains a property definition named <<<pineapple.release.version>>> 
@@ -142,5 +128,9 @@ org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog
 	{{{../../../../development/version-info.html}version info page}}.
 
 
+** Substituting the release version into the starter scripts
 
-	
+	The <<<runPineapple.cmd>>> or <<<runPineapple.sh>>> invokes Java with the Jetty starter JAR file 
+	<<<pineapple-jetty-starter-X.0.jar>>> which starts Jetty as a stand-alone application.
+
+	TODO.	

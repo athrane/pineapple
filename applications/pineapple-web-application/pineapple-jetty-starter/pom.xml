@@ -3,7 +3,7 @@
   Pineapple - a tool to install, configure and test Java web 
   applications and infrastructure. 
   
-  Copyright (C) 2007-2013 Allan Thrane Andersen..
+  Copyright (C) 2007-2019 Allan Thrane Andersen..
   
   This file is part of Pineapple.
   
@@ -30,7 +30,6 @@
 	</parent>
 
 	<artifactId>pineapple-jetty-starter</artifactId>
-	<version>${pineapple.webapp.jettystarter.version}</version>	
 	<packaging>jar</packaging>
 	<name>Pineapple Jetty web server starter</name>
 	<description>Bootstrapper which starts the Jetty web server and deploys the Pineapple web application</description>

@@ -46,7 +46,7 @@ PINEAPPLE_OPTS="${PINEAPPLE_OPTS} -Dpineapple.jettystarter.port=${PINEAPPLE_HTTP
 PINEAPPLE_OPTS="${PINEAPPLE_OPTS} -Dpineapple.jettystarter.stdoutlogging=true"
 PINEAPPLE_OPTS="${PINEAPPLE_OPTS} -Dpineapple.home.dir=${PINEAPPLE_HOME}"
 LOG4J_OPTS="-Dslf4j=false -Dlog4j.configuration=file:${SCRIPT_PATH}/conf/log4j.properties" 
-PINAPPLE_JAR="${SCRIPT_PATH}/lib/pineapple-jetty-starter-1.0.0.jar"
+PINAPPLE_JAR="${SCRIPT_PATH}/lib/pineapple-jetty-starter-${pineapple.release.version}.jar"
 
 # run in background if daemon piddir is defined
 if [ -d "$piddir" ]

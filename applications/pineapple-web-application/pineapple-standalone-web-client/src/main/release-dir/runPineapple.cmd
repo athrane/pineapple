@@ -51,7 +51,7 @@ set PINEAPPLE_OPTIONS=%PINEAPPLE_OPTIONS% -Dpineapple.jettystarter.port=%PINEAPP
 set PINEAPPLE_OPTIONS=%PINEAPPLE_OPTIONS% -Dpineapple.jettystarter.stdoutlogging=true
 set LOG4J_OPTS=-Dslf4j=false -Dlog4j.configuration=%LOG4J_PROPERTIES%
 
-set PINAPPLE_JAR=./lib/pineapple-jetty-starter-1.0.0.jar
+set PINAPPLE_JAR=./lib/pineapple-jetty-starter-${pineapple.release.version}.jar
 
 echo.
 echo Pineapple configuration details:

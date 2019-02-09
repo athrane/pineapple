@@ -5,6 +5,18 @@
     <format>zip</format>
   </formats>
   <includeBaseDirectory>true</includeBaseDirectory>
+  <files>
+    <file>
+      <source>src/main/release-dir/runPineapple.sh</source>
+      <outputDirectory></outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/release-dir/runPineapple.cmd</source>
+      <outputDirectory></outputDirectory>
+      <filtered>true</filtered>
+    </file>
+  </files>  
   <fileSets>
 	<!-- add release directories and files -->
     <fileSet>
@@ -12,6 +24,8 @@
       <filtered>false</filtered>
       <excludes>
         <exclude>**/dummy.txt</exclude>
+        <exclude>runPineapple.sh</exclude>
+        <exclude>runPineapple.cmd</exclude>
       </excludes>      
       <outputDirectory></outputDirectory>
     </fileSet>  

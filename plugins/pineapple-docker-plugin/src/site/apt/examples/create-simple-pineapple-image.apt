@@ -57,7 +57,7 @@ docker-005-pineapple-image-from-dockerfile-centos
  |     +--- linux-vagrant.xml 
  +--- dockersrc	 
        +--- Dockerfile
-       +----pineapple-standalone-web-client-1.11.0.zip       
+       +----pineapple-standalone-web-client-1.12.0.zip       
 +---
 	
 * Define the module model
@@ -68,11 +68,11 @@ docker-005-pineapple-image-from-dockerfile-centos
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
     xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" >
-    <mmd:model target-resource="docker-node" description="Define tagged Docker image: pineapple/pineapple:1.11.0 from Dockerfile" >
+    <mmd:model target-resource="docker-node" description="Define tagged Docker image: pineapple/pineapple:1.12.0 from Dockerfile" >
         <mmd:content>
             <dkp:docker>
                 <dkp:image-from-dockerfile source-directory="modulepath:dockersrc" pull-image="false" >
-                    <dkp:target-image repository="pineapple/pineapple" tag="1.11.0" />
+                    <dkp:target-image repository="pineapple/pineapple" tag="1.12.0" />
                 </dkp:image-from-dockerfile>
             </dkp:docker>                       
         </mmd:content>
@@ -120,7 +120,7 @@ FROM openjdk:11.0-jdk-oraclelinux7 as builder
 
 LABEL maintainer="einheriii@gmail.com"
 
-ARG PINEAPPLE_VERSION=1.11.0
+ARG PINEAPPLE_VERSION=1.12.0
 ARG PINEAPPLE_HOME=/var/pineapple
 ARG PINEAPPLE_INSTALL=/opt/pineapple
 
@@ -252,7 +252,7 @@ ENTRYPOINT ${PINEAPPLE_INSTALL}/runPineapple.sh
 
 * Add binary
 
-	The Pineapple binary <<pineapple-standalone-web-client-1.11.0.zip>> must be downloaded and added to
+	The Pineapple binary <<pineapple-standalone-web-client-1.12.0.zip>> must be downloaded and added to
 	the <<<dockersrc>>> directory within the module.
 		 		 
 * Invoke Pineapple to execute model 
@@ -263,7 +263,7 @@ ENTRYPOINT ${PINEAPPLE_INSTALL}/runPineapple.sh
 	
 	* Select the <<linux-vagrant>> model.
 	
-	* Invoke the <<deploy-configuration>> to create the Docker Image named <<pineapple/pineapple:1.11.0>>.
+	* Invoke the <<deploy-configuration>> to create the Docker Image named <<pineapple/pineapple:1.12.0>>.
 	
 	[]
 
@@ -272,7 +272,7 @@ ENTRYPOINT ${PINEAPPLE_INSTALL}/runPineapple.sh
 	To create a container a the command line within the Vagrant box:
 	
 +----
-sudo docker run --name="pineapple" -p 8080:8080 pineapple/pineapple:1.11.0
+sudo docker run --name="pineapple" -p 8080:8080 pineapple/pineapple:1.12.0
 +----
 	
 	Pineapple will run at http:/0.0.0.0:8080 within the Docker image as the <<<pineapple:pineapple>>> user.

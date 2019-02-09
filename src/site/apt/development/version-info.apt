@@ -27,7 +27,7 @@ Pineapple Version Information
 	<groupId>com.alpha.pineapple</groupId>
 	<artifactId>pineapple-project</artifactId>
 	<packaging>pom</packaging>
-	<version>1.11.0</version>
+	<version>1.12.0</version>
 +----
 		
 	The version info is used as source for linking child projects.
@@ -54,7 +54,7 @@ Pineapple Version Information
   <parent>
     <groupId>com.alpha.pineapple</groupId>
     <artifactId>pineapple-modules</artifactId>
-    <version>1.11.0</version>
+    <version>1.12.0</version>
   </parent>
 +----
 		

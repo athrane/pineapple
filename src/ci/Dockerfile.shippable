@@ -6,7 +6,7 @@ FROM openjdk:11.0-jdk-oraclelinux7 as builder
 
 LABEL maintainer="einheriii@gmail.com"
 
-ARG PINEAPPLE_VERSION=1.11.0
+ARG PINEAPPLE_VERSION=1.12.0
 ARG PINEAPPLE_HOME=/var/pineapple
 ARG PINEAPPLE_INSTALL=/opt/pineapple
 

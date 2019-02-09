@@ -25,7 +25,7 @@ The "linux-vagrant" environment defines the Linux environment on the Vagrant box
 Required modifications
 -----------------------
 1) Create a Vagrant Box using the Vagrantfile included in the example module named "ssh-011-install-docker-latest-version".
-2) Download Pineapple pineapple-standalone-web-client-1.11.0.zip and place it in the /dockersrc directory.
+2) Download Pineapple pineapple-standalone-web-client-1.12.0.zip and place it in the /dockersrc directory.
 2) Execute the example module named "ssh-011-install-docker-latest-version-centos7" to install Docker on the Vagrant box.
 3) Execute the example module named "docker-005-pineapple-image" to create a Docker image with Pineapple.
 

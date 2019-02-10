@@ -446,15 +446,9 @@ ExecStart=/usr/bin/dockerd
 	The extension is implemented through definition of a new docker image named <<<pineapple/repo:1.0>>>.
 	The dockerfile for the CI container is located in <xx-pineapple-dev-docker-install-ci-linux64/dockersrc/repo>
 	
-	The image defines the recommended volumes:
+	The image defines the data volume:
 	
-	* <<</artifactory/data>>>
-	
-	* <<</artifactory/logs>>>
-	
-	* <<</artifactory/backup>>>
-	
-	* <<</artifactory/etc>>>
+	* <<</var/opt/jfrog/artifactory>>>
 	
 	[]		
 

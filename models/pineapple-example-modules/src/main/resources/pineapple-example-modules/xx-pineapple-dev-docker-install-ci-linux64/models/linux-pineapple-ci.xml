@@ -104,10 +104,7 @@
 							</dkp:port-bindings>
 						</dkp:host-config>
 						<dkp:volumes>
-							<dkp:volume mountpoint="${artifactory-home}/data" />
-							<dkp:volume mountpoint="${artifactory-home}/logs" />
-							<dkp:volume mountpoint="${artifactory-home}/backup" />
-							<dkp:volume mountpoint="${artifactory-home}/etc" />
+							<dkp:volume mountpoint="${artifactory-home}" />						
 						</dkp:volumes>
 					</dkp:configuration>
 				</dkp:container>

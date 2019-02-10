@@ -273,7 +273,6 @@ ExecStart=/usr/bin/dockerd
 	When <<<jenkins.sh>>> is run (as part of starting a container) then the files are copied to the <<</var/jenkins_home>>> volume
 	used by the jenkins container.
 	
-
 *** Docker container 
 
 	The CI container is named "ci".
@@ -284,9 +283,7 @@ ExecStart=/usr/bin/dockerd
 
 *** JVM
 
-	The Jenkins image inherits from the <<<java:8-jdk>>> docker image
-	which installs the OpenJDK 1.8.0 JDK.
- 	The JDK is installed to allow it to be used by Jenkins for compilation in build jobs.	
+	The Jenkins image inherits from the <<<FROM jenkins/jenkins:2.163-jdk11>>> docker image which installs OpenJDK 11.
 
 	The OpenJDK 11.x is installed in support compilation of Pineapple with Java 11.
 	

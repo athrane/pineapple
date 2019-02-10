@@ -13,8 +13,9 @@ COPY settings.xml /usr/share/jenkins/ref/settings.xml
 COPY pineapple-build.config.xml /usr/share/jenkins/ref/jobs/pineapple-build/config.xml
 COPY pineapple-build-test.config.xml /usr/share/jenkins/ref/jobs/pineapple-build-test/config.xml
 
-# Setup plugins
-COPY plugins.txt /usr/share/jenkins/ref/
-RUN /usr/local/bin/plugins.sh /usr/share/jenkins/ref/plugins.txt
-
+#Install plugins
+RUN /usr/local/bin/install-plugins.sh \
+    blueocean:1.10.2 \
+    disk-usage:0.28 
+		
 CMD /usr/local/bin/jenkins.sh

@@ -1,7 +1,7 @@
 
 # Pull base image
 # ---------------
-FROM jenkins
+FROM jenkins/jenkins:2.163-jdk11
 # defines JENKINS_HOME environment variable: JENKINS_HOME = /var/jenkins_home
 
 LABEL maintainer="einheriii@gmail.com"

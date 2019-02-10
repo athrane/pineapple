@@ -4,9 +4,7 @@
 FROM jenkins
 # defines JENKINS_HOME environment variable: JENKINS_HOME = /var/jenkins_home
 
-# Maintainer
-# ----------
-MAINTAINER Allan Thrane Andersen <einheriii@gmail.com>
+LABEL maintainer="einheriii@gmail.com"
 
 # Copy Jenkins configuration file to Jenkins staging directory - see Jenkins image for more info
 COPY config.xml /usr/share/jenkins/ref/config.xml

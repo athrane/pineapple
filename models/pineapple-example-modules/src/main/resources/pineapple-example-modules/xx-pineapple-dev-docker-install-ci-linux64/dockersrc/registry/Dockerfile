@@ -3,9 +3,7 @@
 # ---------------
 FROM registry:2
 
-# Maintainer
-# ----------
-MAINTAINER Allan Thrane Andersen <einheriii@gmail.com>
+LABEL maintainer="einheriii@gmail.com"
 
 # Define registry volumes
 # https://docs.docker.com/registry/deploying/

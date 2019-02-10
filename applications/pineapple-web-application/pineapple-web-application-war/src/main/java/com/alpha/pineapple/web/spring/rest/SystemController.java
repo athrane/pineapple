@@ -111,7 +111,6 @@ public class SystemController {
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	public String getVersion() {
-		logger.debug(coreComponent.toString());
 		return coreComponent.toString();
 	}
 

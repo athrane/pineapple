@@ -29,7 +29,6 @@ import static com.alpha.pineapple.web.WebApplicationConstants.REST_SYSTEM_VERSIO
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,11 +47,6 @@ import com.alpha.pineapple.i18n.MessageProvider;
 @Controller
 @RequestMapping(REST_SYSTEM_URI)
 public class SystemController {
-
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Message provider for I18N support.

@@ -318,7 +318,8 @@
           <shp:execute command="sudo systemctl stop docker" /> 
           <shp:execute command="sudo yum -y remove docker-engine.x86_64 " /> 
           <shp:execute command="sudo rm -rf /var/lib/docker" /> 
-          <shp:execute command="sudo rm -rf ${docker-systemd-config-dir}" />                           
+          <shp:execute command="sudo rm -rf ${docker-systemd-config-dir}" />        
+          <shp:execute command="sudo rm -rf ${docker-daemon-config-dir}" />                                
         </shp:ssh>			
       </mmd:content>
     </mmd:model>

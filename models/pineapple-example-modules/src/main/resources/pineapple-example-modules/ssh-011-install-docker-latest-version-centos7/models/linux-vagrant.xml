@@ -72,7 +72,8 @@
           <shp:execute command="sudo yum -y remove ${docker-package}" /> 
           <shp:execute command="sudo rm -rf /var/lib/docker" />           
           <shp:execute command="sudo rm -rf ${docker-daemon-config-dir}" />    
-          <shp:execute command="sudo rm -rf ${docker-systemd-config-dir}" />                 
+          <shp:execute command="sudo rm -rf ${docker-systemd-config-dir}" />
+          <shp:execute command="sudo rm -rf ${docker-daemon-config-dir}" />                               
         </shp:ssh>			
       </mmd:content>
     </mmd:model>

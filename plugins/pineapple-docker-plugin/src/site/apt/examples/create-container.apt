@@ -23,12 +23,12 @@ How-to: Create Docker container
 ** Installation of Docker
 
 	This example requires the presence of a Docker daemon. The example	
-	{{{../../pineapple-ssh-plugin/examples/install-docker-latest-centos7-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 7.0 using SSH.}}		
+	{{{../../pineapple-ssh-plugin/examples/install-docker-latest-centos7-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 7.6 using SSH.}}		
 	describes how Pineapple can be used to install Docker on a Vagrant box for the purpose of the example.
 	
 	For the remaining part of this example is assumed that Docker is installed using the above example. The assumed configuration is:
 	
-	* The Vagrant box is running CentOS 7.0 and has IP address 192.168.34.10. 
+	* The Vagrant box is running CentOS 7.6 and has IP address 192.168.34.10. 
 	
 	* The Docker daemon is accessible at 192.168.34.10:8082. 
 	

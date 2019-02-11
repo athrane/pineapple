@@ -15,7 +15,7 @@ How-to:  How-to: Clean up a Docker host using SSH
 	This example illustrates how the SSH plugin can be used to cleanup a Docker host. 
 	The example executes various Docker prune commands.  
  	
-	This example modifies the {{{./install-docker-latest-centos7-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 7.0 using SSH}} example.
+	This example modifies the {{{./install-docker-latest-centos7-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 7.6 using SSH}} example.
 
 ** Part of the default configuration
 

@@ -12,7 +12,7 @@ How-to: Install latest Docker version in a Vagrant box with CentOS 7.5 using SSH
 
 * Overview
 
-	This example illustrates how the SSH plugin can be used to install the latest Docker version on CentOS 7.0. 
+	This example illustrates how the SSH plugin can be used to install the latest Docker version on CentOS 7.6. 
 	The example installs Docker and starts the daemon using systemd.  
  	
 	Two steps are required to install Docker:
@@ -46,7 +46,7 @@ How-to: Install latest Docker version in a Vagrant box with CentOS 7.5 using SSH
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-BOX_NAME = ENV.fetch("BOX_NAME", "bento/centos-7.5") 
+BOX_NAME = ENV.fetch("BOX_NAME", "bento/centos-7.6") 
 BOX_IP = ENV.fetch("BOX_IP", "192.168.34.10") 
 BOX_MEM = ENV.fetch("BOX_MEM", "2048") 
 BOX_CPUS = ENV.fetch("BOX_CPUS", "2") 
@@ -74,7 +74,7 @@ end
 +---	
  	
  	[[4]] Open a prompt, CD into the Vagrant project directory and create the box with the command: <<<vagrant up>>>. 
- 	It will download a CentOS 7.0 image and start the VM with the IP address 192.168.34.10.
+ 	It will download a CentOS 7.6 image and start the VM with the IP address 192.168.34.10.
  	
  	[] 
  	

@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-BOX_NAME = ENV.fetch("BOX_NAME", "bento/centos-7.5") 
+BOX_NAME = ENV.fetch("BOX_NAME", "bento/centos-7.6") 
 BOX_IP = ENV.fetch("BOX_IP", "192.168.34.10") 
 BOX_MEM = ENV.fetch("BOX_MEM", "2048") 
 BOX_CPUS = ENV.fetch("BOX_CPUS", "2") 

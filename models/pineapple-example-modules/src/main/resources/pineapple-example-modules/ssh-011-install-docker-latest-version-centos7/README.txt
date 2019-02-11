@@ -2,7 +2,7 @@
 Description
 -------------
 This example illustrates how the SSH plugin can be used to remote install Docker 
-in a Vagrant box running  CentOS 7.0 based on the instructions can found here: 
+in a Vagrant box running CentOS 7.6 based on the instructions can found here: 
 https://docs.docker.com/engine/installation/centos/
 
 1) Create and add Docker user to sudoers.
@@ -36,7 +36,7 @@ All other operations is NOP.
 Module content
 -----------------------
 * "models/linux-vagrant.xml" - model file for the "linux-vagrant" environment. 
-* "vagrant/Vagrantfile" - Vagrant file for creation of CentOS 7.0 VM.
+* "vagrant/Vagrantfile" - Vagrant file for creation of CentOS 7.6VM.
 * "bin/daemon.json" - Docker daemon configuration file.
 * "bin/create-docker-user.sh" - shell script to create docker user and add it to sudoers.
 * "bin/systemd-override.conf" - Docker systemd drop-in replacement file (see issue https://github.com/athrane/pineapple/issues/273)

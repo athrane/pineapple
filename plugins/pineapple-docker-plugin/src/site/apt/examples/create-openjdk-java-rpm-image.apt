@@ -13,7 +13,7 @@ How-to: Create OpenJDK Docker image
 * Overview
 
 	This example illustrates how the Docker plugin can be used to 
-	create a Docker image based on CentOS 7.0 with Open JDK (Java Development Kit) 8 installed.
+	create a Docker image based on CentOS 7.6 with Open JDK (Java Development Kit) 8 installed.
 
 ** Part of the default configuration
 

@@ -34,9 +34,9 @@ Overview
 
 	* {{{../pineapple-ssh-plugin/examples/install-docker-lastest-linux-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 6.5 using SSH.}}		
 
-	* {{{../pineapple-ssh-plugin/examples/install-docker-latest-centos7-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 7.0 using SSH.}}		
+	* {{{../pineapple-ssh-plugin/examples/install-docker-latest-centos7-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 7.6 using SSH.}}		
 
-	* {{{../pineapple-ssh-plugin/examples/install-docker-fixed-version-centos7-vagrant.html}How-to: Install specific version of Docker in a Vagrant box with CentOS 7.0 using SSH.}}		
+	* {{{../pineapple-ssh-plugin/examples/install-docker-fixed-version-centos7-vagrant.html}How-to: Install specific version of Docker in a Vagrant box with CentOS 7.6 using SSH.}}		
 	
 	[]
 	

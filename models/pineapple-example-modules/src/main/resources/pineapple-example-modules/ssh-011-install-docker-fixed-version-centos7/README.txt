@@ -2,7 +2,7 @@
 Description
 -------------
 This example illustrates how the SSH plugin can be used to remote install Docker 
-wit a fxied version in a Vagrant box running  CentOS 7.5 based on the instructions can found here: 
+wit a fxied version in a Vagrant box running  CentOS 7.6 based on the instructions can found here: 
 https://docs.docker.com/install/linux/docker-ce/centos/
 
 The Docker is defined by the variable ${docker-version}.
@@ -38,7 +38,7 @@ All other operations is NOP.
 Module content
 -----------------------
 * "models/linux-vagrant.xml" - model file for the "linux-vagrant" environment. 
-* "vagrant/Vagrantfile" - Vagrant file for creation of CentOS 7.0 VM.
+* "vagrant/Vagrantfile" - Vagrant file for creation of CentOS 7.6 VM.
 * "bin/docker.service" - Docker systemd configuration file.
 * "bin/docker.conf" - Docker systemd drop-in configuration file.
 * "bin/create-docker-user.sh" - shell script to create docker user and add it to sudoers.

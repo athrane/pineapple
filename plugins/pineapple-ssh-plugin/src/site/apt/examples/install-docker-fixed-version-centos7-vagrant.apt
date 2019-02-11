@@ -16,7 +16,7 @@ How-to: Install specific version of Docker in a Vagrant box with CentOS 7.5 usin
 	This example illustrates how the SSH plugin can be used to install Docker in a specific version on CentOS 7.5. 
 	The example installs Docker and starts the daemon using systemd.  
  	
-	This example modifies the {{{./install-docker-latest-centos7-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 7.0 using SSH}} example.
+	This example modifies the {{{./install-docker-latest-centos7-vagrant.html}How-to: Install latest Docker version in a Vagrant box with CentOS 7.6 using SSH}} example.
  		
 ** The model file
 	

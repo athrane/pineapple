@@ -1,8 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-BOX_NAME = ENV.fetch("BOX_NAME", "pineapple-box") 
-BOX_URI = ENV.fetch("BOX_URI", "http://puppet-vagrant-boxes.puppetlabs.com/centos-65-x64-virtualbox-puppet.box") 
+BOX_NAME = ENV.fetch("BOX_NAME", "bento/centos-7.6") 
 BOX_IP = ENV.fetch("BOX_IP", "192.168.34.10") 
 BOX_MEM = ENV.fetch("BOX_MEM", "2048") 
 BOX_CPUS = ENV.fetch("BOX_CPUS", "2") 
@@ -20,7 +19,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 	config.vm.define :pineapple_ci do |ci_config|
 		ci_config.vm.box = BOX_NAME    
-		ci_config.vm.box_url = BOX_URI    
 		ci_config.vm.network "private_network", ip: BOX_IP	
 	end
 		

@@ -120,7 +120,7 @@ public class DockerTestHelper {
 	ExecutionResultFactory executionResultFactory;
 
 	/**
-	 * Create connected Docker session with default settings: host: 192.168.34.10
+	 * Create connected Docker session with default settings: host: 192.168.99.11
 	 * port: 8082 timeout: 5000
 	 * 
 	 * @return connected Docker session with default settings.
@@ -131,7 +131,7 @@ public class DockerTestHelper {
 	}
 
 	/**
-	 * Create connected Docker session with default settings: host: 192.168.34.10
+	 * Create connected Docker session with default settings: host: 192.168.99.11
 	 * port: 8082 timeout: 5000
 	 * 
 	 * @return connected Docker session with default settings and RestTemaplate
@@ -149,7 +149,7 @@ public class DockerTestHelper {
 	}
 
 	/**
-	 * Create connected Docker session with default settings: host: 192.168.34.10
+	 * Create connected Docker session with default settings: host: 192.168.99.11
 	 * port: 8082 timeout: 5000
 	 * 
 	 * @param messageProvider

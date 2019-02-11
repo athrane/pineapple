@@ -30,8 +30,7 @@ public interface DockerConstants {
 	/**
 	 * Default Docker host.
 	 */
-	// public static final String DEFAULT_HOST = "192.168.99.11";
-	public static final String DEFAULT_HOST = "192.168.34.10";
+	public static final String DEFAULT_HOST = "192.168.99.11";
 
 	/**
 	 * Default port.

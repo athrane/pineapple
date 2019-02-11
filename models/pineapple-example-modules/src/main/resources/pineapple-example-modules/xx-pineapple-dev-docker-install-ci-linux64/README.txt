@@ -50,8 +50,6 @@ Module content
 * "dockersrc/ci/config.xml" - Jenkins main configuration file.
 * "dockersrc/ci/Dockerfile" - Dockerfile for building the pineapple/ci image.
 * "dockersrc/ci/hudson.tasks.Maven.xml" - Jenkins Maven configuration file.
-* "dockersrc/ci/pineapple-build-test.config.xml" - Jenkins configuration file for the Pineapple build job.
-* "dockersrc/ci/pineapple-build.config.xml" - Jenkins configuration file for the Pineapple build job.
 * "dockersrc/ci/plugin.xml" - List of Jenkins plugins to install (used by the official Jenkins image).
 * "dockersrc/ci/settings.xml" - Main configuration file used to configured Maven settings in build jobs
 * "dockersrc/ci/Dockerfile" - Dockerfile for building the pineapple/repo image.

@@ -1,15 +1,14 @@
+
+
 pipeline {
-    agent {
-        docker {
-            image '3.6.0-jdk-11-slim' 
-            args '-v /root/.m2:/root/.m2' 
-        }
-    }
-    stages {
-        stage('Build') { 
-            steps {
-                sh 'mvn -B -DskipTests clean package' 
-            }
-        }
-    }
+    stages {    
+		stage('Build') {
+		    withMaven(
+		    maven: 'maven-3.5.4'
+		    jdk: 'openjdk-11_linux-x64') {				
+				sh 'mvn -DskipTests clean install'
+		    }
+		}		
+	}		
+    
 }

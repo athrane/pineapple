@@ -12,7 +12,6 @@ pipeline {
 			    	mavenSettingsFilePath: '/var/jenkins_home/settings.xml',
 			    	mavenLocalRepo:'~/.m2/repository' ) {							
 
-	                    sh "echo JAVA_HOME=$JAVA_HOME"
     	                sh "mvn clean"
                 }
             }
@@ -26,10 +25,29 @@ pipeline {
 			    	mavenSettingsFilePath: '/var/jenkins_home/settings.xml',
 			    	mavenLocalRepo:'~/.m2/repository' ) {							
 
-						sh 'mvn -DskipTests clean install'
+						sh 'mvn -P SkipTests install'
 			    }
             }
 		}		
+
+		stage('Test') {
+        	steps {	
+			    withMaven(
+			    	maven: 'maven-3.5.4', 
+			    	jdk: 'openjdk-11_linux-x64',
+			    	mavenSettingsFilePath: '/var/jenkins_home/settings.xml',
+			    	mavenLocalRepo:'~/.m2/repository' ) {							
+
+						sh 'mvn -P DoTests -Dmaven.test.failure.ignore=true test'
+			    }
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }            
+		}		
+
 	}		    
 }
 

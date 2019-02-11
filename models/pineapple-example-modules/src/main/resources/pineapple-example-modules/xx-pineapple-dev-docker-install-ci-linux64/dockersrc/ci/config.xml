@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <hudson>
   <jdks>
-<jdk>
+	<jdk>
       <name>openjdk-11_linux-x64</name>
       <home></home>
       <properties>

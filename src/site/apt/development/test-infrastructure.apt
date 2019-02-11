@@ -11,12 +11,32 @@
 
 Pineapple Continuous Integration
 
-	This page describes the design of the test infrastructure and continuous integration setup
-	used to test the Pineapple project.
-	
-* Used Components
+	This page describes the design of the continuous integration setup used to build 
+	and test the Pineapple project.
 
-	The continuous integration setup for Pineapple consists of the components:
+	Two setups are used to develop Pineapple:
+	
+		
+	* A CI setup is implemented at Shippable.
+	
+	* A local setup is implemented which can be installed as a module.
+
+	[]
+
+* CI setup at Shippable
+
+	Shippable provides a dashboard for the CI setup at: 
+	<<{{{https://app.shippable.com/github/athrane/pineapple/dashboard}Pineapple dashboard at Shippable}}>>\
+	
+	A new build is initiated when a commit is made to the master branch.
+	
+	The build creates the Pineapple Docker image and uploads it to DockerHub.
+	
+	The build uploads the Pineapple binaries to Bintray.
+	
+* Local CI setup 
+
+	The local continuous integration setup for Pineapple consists of the components:
 
 	* <<JUnit>> will be used as test framework. At some point, it must be determined
 	whether JUnit is suitable for implementation of larger scale system tests which
@@ -122,7 +142,7 @@ Pineapple Continuous Integration
 
 ** Operating System
 
-	CentOS 7.5 is used as operating system.
+	CentOS 7.6 is used as operating system.
 
 ** Memory
 
@@ -155,7 +175,7 @@ Pineapple Continuous Integration
 
 ** Operating System
 
-	CentOS 7.5 is used as operating system.
+	CentOS 7.6 is used as operating system.
 
 ** Memory
 
@@ -263,7 +283,7 @@ ExecStart=/usr/bin/dockerd
 	
 *** Docker image 
 
-	The image for the CI container is based on the official Jenkins Docker image.
+	The image for the CI container is based on the official Jenkins Docker image <<<jenkins/jenkins:2.163-jdk11>>>.
 
 	The Jenkins image is extended to support configuration of Jenkins with the Pineapple configurations and build jobs.
 	The extension is implemented through definition of a new docker image named <<<pineapple/ci:1.0>>>.
@@ -272,6 +292,28 @@ ExecStart=/usr/bin/dockerd
 	The dockerfile copies the Jenkins configuration files to the Jenkins staging directory <<</usr/share/jenkins/ref/>>>.
 	When <<<jenkins.sh>>> is run (as part of starting a container) then the files are copied to the <<</var/jenkins_home>>> volume
 	used by the jenkins container.
+
+*** Jenkins plugins
+
+	The set of used plugins are defined in the Dockerfile for the <<<pineapple/ci:1.0>>> image:
+	
++---
+# Install plugins
+RUN /usr/local/bin/install-plugins.sh \
+    blueocean:1.10.2 \
+    disk-usage:0.28 \
+    pipeline-maven:3.67	
++---
+
+*** Jenkins admin user
+
+	The Jenkins admin user is defined in the Dockerfile for the <<<pineapple/ci:1.0>>> image:
+	
++---
+# Setting up environment variables for Jenkins admin user
+ENV JENKINS_USER admin
+ENV JENKINS_PASS admin
++---
 	
 *** Docker container 
 
@@ -283,8 +325,7 @@ ExecStart=/usr/bin/dockerd
 
 *** JVM
 
-	The Jenkins image inherits from the <<<FROM jenkins/jenkins:2.163-jdk11>>> docker image which installs OpenJDK 11.
-
+	The used Jenkins image is based on OpenJDK 11.
 	The OpenJDK 11.x is installed in support compilation of Pineapple with Java 11.
 	
 *** Jenkins JVM configuration 
@@ -792,39 +833,6 @@ end
 		
 		[]
 
-** Test Server Configuration for the WebLogic JMX plugin
-
-	Additional configurations to support testing the WebLogic JMX plugin.
-	
-*** Network
-
-	* WebLogic JMX Test host:
-	
-		* Purpose: Integration test of the WebLogic JMX Plugin. 
-	
-		* IP address: 192.168.100.11
-				
-		[]
-
-*** Users 
-
-	A setup must be installed to support usage of WebLogic and the Pineapple agent.
-	
-	TODO: Describe used user setup.
-
-*** Software
-
-	A JVM is installed to support the Pineapple agent and WebLogic.
-	
-	TODO: Describe JVM in relationship to Pineapple agent and WebLogic requirements.
-
-	WebLogic is installed.	
-	
-	TODO: Describe support for multiple WebLogic versions.	
-
-*** Services
-
-	The Pineapple agent is installed and listens on 0.0.0.0:7099.	
 
 		 		
 		 		

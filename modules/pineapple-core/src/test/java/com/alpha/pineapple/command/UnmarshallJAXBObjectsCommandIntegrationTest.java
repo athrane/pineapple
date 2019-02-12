@@ -214,7 +214,7 @@ public class UnmarshallJAXBObjectsCommandIntegrationTest {
 		unmarshallJAXBObjectsCommand.execute(context);
 
 		// test
-		assertTrue(executionResult.isError());
+		assertTrue(executionResult.isFailed());
 	}
 
 	/**

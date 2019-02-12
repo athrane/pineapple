@@ -23,18 +23,15 @@
 package com.alpha.pineapple.command;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URL;
 
 import javax.annotation.Resource;
-import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 import org.apache.commons.configuration.ConfigurationUtils;
-import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.command.initialization.CommandInitializer;
 import com.alpha.pineapple.command.initialization.CommandInitializerImpl;
@@ -116,11 +113,6 @@ public class UnmarshallJAXBObjectsCommand implements Command {
 	public static final String UNMARSHALLING_RESULT_KEY = "unmarshalling-result";
 
 	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
-
-	/**
 	 * Message provider for I18N support.
 	 */
 	@Resource
@@ -171,12 +163,16 @@ public class UnmarshallJAXBObjectsCommand implements Command {
 				// if file isn't absolute then locate the file
 				fileURL = ConfigurationUtils.locate(file.getName());
 
-				// validate URL is defined
+				// complete as failure URL is undefined
 				if (fileURL == null) {
 					Object[] args2 = { file.getName() };
 					executionResult.completeAsFailure(messageProvider, "ujoc.fileurl_location_failure", args2);
+					
+					// set successful result
+					return Command.CONTINUE_PROCESSING;					
 				}
 
+				// load located file
 				Object[] args2 = { fileURL };
 				executionResult.addMessage(ExecutionResult.MSG_MESSAGE,
 						messageProvider.getMessage("ujoc.unmarshall_url_info", args2));

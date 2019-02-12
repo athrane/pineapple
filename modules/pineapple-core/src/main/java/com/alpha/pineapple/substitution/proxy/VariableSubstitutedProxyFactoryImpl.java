@@ -21,6 +21,8 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.substitution.proxy;
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import javax.annotation.Resource;
 
@@ -84,7 +86,7 @@ public class VariableSubstitutedProxyFactoryImpl implements VariableSubstitutedP
 
 	@Override
 	public void initialize(Variables variables) {
-		Validate.notNull(variables, "variables is undefined.");
+		notNull(variables, "variables is undefined.");
 
 		this.variables = variables;
 		variableSubstitutionInterceptor.setVariables(variables);

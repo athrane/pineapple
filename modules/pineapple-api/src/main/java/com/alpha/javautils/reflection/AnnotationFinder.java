@@ -22,11 +22,12 @@
 
 package com.alpha.javautils.reflection;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 /**
@@ -54,10 +55,8 @@ public class AnnotationFinder {
 	 * @IllegalArgumentException If the parameter annotation is undefined.
 	 */
 	public Field[] findAnnotatedFields(Object annotatedObject, Class<? extends Annotation> annotationClass) {
-
-		// validate parameters
-		Validate.notNull(annotatedObject, "annotatedObject is undefined");
-		Validate.notNull(annotationClass, "annotation is undefined");
+		notNull(annotatedObject, "annotatedObject is undefined");
+		notNull(annotationClass, "annotation is undefined");
 
 		// get fields
 		Field[] fields = annotatedObject.getClass().getDeclaredFields();

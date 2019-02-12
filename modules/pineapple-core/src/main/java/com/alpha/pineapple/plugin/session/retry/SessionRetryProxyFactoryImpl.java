@@ -22,9 +22,10 @@
 
 package com.alpha.pineapple.plugin.session.retry;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.ObjectFactory;
@@ -35,7 +36,6 @@ import org.springframework.retry.support.RetryTemplate;
 import com.alpha.javautils.ReflectionHelper;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.i18n.MessageProvider;
-import com.alpha.pineapple.plugin.session.retry.SessionRetryListener;
 import com.alpha.pineapple.session.Session;
 
 /**
@@ -87,8 +87,8 @@ public class SessionRetryProxyFactoryImpl implements SessionRetryProxyFactory {
 	 * @return JDK proxy.
 	 */
 	public Session decorateWithProxy(Session session, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined");
-		Validate.notNull(result, "result is undefined");
+		notNull(session, "session is undefined");
+		notNull(result, "result is undefined");
 
 		if (logger.isDebugEnabled()) {
 			Object[] args = { session };

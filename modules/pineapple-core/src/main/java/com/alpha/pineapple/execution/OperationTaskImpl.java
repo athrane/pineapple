@@ -21,6 +21,7 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.execution;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
 import java.io.File;
 import java.util.Map;
@@ -29,7 +30,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.command.InitializeOperationCommand;
@@ -109,8 +109,7 @@ public class OperationTaskImpl implements OperationTask {
 	Command invokePluginsCommand;
 
 	public void execute(ExecutionInfo info) {
-		// validate parameters
-		Validate.notNull(info, "execution info is undefined.");
+		notNull(info, "execution info is undefined.");
 
 		// log debug message
 		if (logger.isDebugEnabled()) {

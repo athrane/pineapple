@@ -22,13 +22,14 @@
 
 package com.alpha.pineapple.execution;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.chain.Context;
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.i18n.MessageProvider;
@@ -56,8 +57,8 @@ public class ExecutionContextRepositoryImpl implements ExecutionContextRepositor
 
 	@Override
 	public void register(ExecutionInfo info, Context context) {
-		Validate.notNull(context, "context is undefined");
-		Validate.notNull(info, "info is undefined");
+		notNull(context, "context is undefined");
+		notNull(info, "info is undefined");
 
 		ExecutionResult result = info.getResult();
 		contexts.put(result, context);
@@ -65,7 +66,7 @@ public class ExecutionContextRepositoryImpl implements ExecutionContextRepositor
 
 	@Override
 	public void unregister(Context context) {
-		Validate.notNull(context, "context is undefined");
+		notNull(context, "context is undefined");
 
 		if (!contexts.containsValue(context))
 			return;
@@ -74,7 +75,7 @@ public class ExecutionContextRepositoryImpl implements ExecutionContextRepositor
 
 	@Override
 	public Context get(ExecutionInfo info) {
-		Validate.notNull(info, "info is undefined");
+		notNull(info, "info is undefined");
 
 		ExecutionResult result = info.getResult();
 		if (!contexts.containsKey(result))
@@ -84,7 +85,7 @@ public class ExecutionContextRepositoryImpl implements ExecutionContextRepositor
 
 	@Override
 	public Context get(ExecutionResult result) {
-		Validate.notNull(result, "result is undefined");
+		notNull(result, "result is undefined");
 
 		// if context is defined return it
 		if (contexts.containsKey(result)) {

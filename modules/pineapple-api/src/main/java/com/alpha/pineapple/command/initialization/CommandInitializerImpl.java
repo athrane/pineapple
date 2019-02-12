@@ -21,12 +21,12 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.command.initialization;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
 import java.lang.reflect.Field;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.javautils.reflection.AnnotationFinder;
@@ -78,9 +78,8 @@ public class CommandInitializerImpl implements CommandInitializer {
 	}
 
 	public void initialize(Context context, Command command) throws CommandInitializationFailedException {
-		// validate arguments
-		Validate.notNull(context, "context is undefined.");
-		Validate.notNull(command, "command is undefined.");
+		notNull(context, "context is undefined.");
+		notNull(command, "command is undefined.");
 
 		// variable used for exception handling
 		Field exceptionHandlingField = null;

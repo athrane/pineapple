@@ -23,11 +23,12 @@
 
 package com.alpha.javautils;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import java.util.Properties;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.i18n.MessageProvider;
@@ -139,8 +140,8 @@ public class SystemUtils {
 	 *         occurs
 	 */
 	public String getSystemProperty(String property, Properties systemProperties) {
-		Validate.notNull(property, "property is undefined.");
-		Validate.notNull(systemProperties, "systemProperties is undefined.");
+		notNull(property, "property is undefined.");
+		notNull(systemProperties, "systemProperties is undefined.");
 
 		try {
 			return systemProperties.getProperty(property);

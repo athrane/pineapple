@@ -22,10 +22,12 @@
 
 package com.alpha.pineapple.web.report;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
 import static com.alpha.pineapple.web.WebApplicationConstants.MSG_ENVIRONMENT;
 import static com.alpha.pineapple.web.WebApplicationConstants.MSG_MODULE;
 import static com.alpha.pineapple.web.WebApplicationConstants.MSG_OPERATION;
 import static com.alpha.pineapple.web.WebApplicationConstants.SIMPLE_DATE_FORMAT;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import java.io.File;
 import java.util.Comparator;
@@ -37,8 +39,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Resource;
-
-import org.apache.commons.lang3.Validate;
 
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResultFactory;
@@ -124,9 +124,9 @@ public class ReportRepositoryImpl implements ReportRepository {
 
 	@Override
 	public Report add(String id, ExecutionResult result) {
-		Validate.notNull(id, "id is undefined.");
-		Validate.notEmpty(id, "id is empty.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(id, "id is undefined.");
+		notEmpty(id, "id is empty.");
+		notNull(result, "result is undefined.");
 
 		// return report if it exists
 		if (reports.containsKey(id))
@@ -179,8 +179,8 @@ public class ReportRepositoryImpl implements ReportRepository {
 
 	@Override
 	public void delete(String id) {
-		Validate.notNull(id, "id is undefined");
-		Validate.notEmpty(id, "id is empty");
+		notNull(id, "id is undefined");
+		notEmpty(id, "id is empty");
 
 		// exit if report doesn't exist
 		if (!reports.containsKey(id))

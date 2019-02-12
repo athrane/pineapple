@@ -21,7 +21,7 @@
  ******************************************************************************/
 
 package com.alpha.testutils;
-
+import static com.alpha.javautils.ArgumentUtils.notNull;
 import static com.alpha.pineapple.docker.DockerConstants.DEFAULT_CENTOS_REPOSITORY;
 import static com.alpha.pineapple.docker.DockerConstants.DEFAULT_CONNECT_TIMEOUT;
 import static com.alpha.pineapple.docker.DockerConstants.DEFAULT_HOST;
@@ -35,6 +35,7 @@ import static com.alpha.testutils.DockerTestConstants.TEST_DOCKER_DEFAULT_REGIST
 import static com.alpha.testutils.DockerTestConstants.TEST_DOCKER_DEFAULT_REGISTRY_TAG;
 import static com.alpha.testutils.DockerTestConstants.TEST_DOCKER_TINY_IMAGE;
 import static com.alpha.testutils.DockerTestConstants.TEST_DOCKER_USER_REPOSITORY;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +47,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.Validate;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
@@ -771,13 +771,13 @@ public class DockerTestHelper {
 	 * @return container name.
 	 */
 	public String getContainerName(ContainerInfo info) {
-		Validate.notNull(info, "Container info is undefined");
+		notNull(info, "Container info is undefined");
 
 		// get name
 		String name = info.getName();
 
-		Validate.notNull(name, "Container name is undefined");
-		Validate.notEmpty(name, "Container name is empty");
+		notNull(name, "Container name is undefined");
+		notEmpty(name, "Container name is empty");
 		return name;
 	}
 
@@ -790,13 +790,13 @@ public class DockerTestHelper {
 	 * @return container ID.
 	 */
 	public String getContainerId(ContainerInstanceInfo info) {
-		Validate.notNull(info.getContainerInfo(), "Container info is undefined");
+		notNull(info.getContainerInfo(), "Container info is undefined");
 
 		// get id
 		String id = info.getId();
 
-		Validate.notNull(id, "Container id is undefined");
-		Validate.notEmpty(id, "Container id is empty");
+		notNull(id, "Container id is undefined");
+		notEmpty(id, "Container id is empty");
 		return id;
 	}
 

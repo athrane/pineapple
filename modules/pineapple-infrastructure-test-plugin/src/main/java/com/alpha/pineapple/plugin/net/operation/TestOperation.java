@@ -22,13 +22,14 @@
 
 package com.alpha.pineapple.plugin.net.operation;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import java.util.HashMap;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.javautils.StackTraceHelper;
@@ -125,17 +126,9 @@ public class TestOperation implements Operation {
 
 	public void execute(Object content, Session session, ExecutionResult executionResult)
 			throws PluginExecutionFailedException {
-		// validate parameters
-		Validate.notNull(content, "content is undefined.");
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(executionResult, "executionResult is undefined.");
-
-		// log debug message
-		if (logger.isDebugEnabled()) {
-			Object[] args = { content.getClass().getName(), content };
-			String message = messageProvider.getMessage("to.start", args);
-			logger.debug(message);
-		}
+		notNull(content, "content is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(executionResult, "executionResult is undefined.");
 
 		// throw exception if required type isn't available
 		if (!(content instanceof Infrastructure)) {

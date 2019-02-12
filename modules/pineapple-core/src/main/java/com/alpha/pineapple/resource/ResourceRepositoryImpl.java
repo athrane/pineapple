@@ -36,6 +36,8 @@ import com.alpha.pineapple.execution.ExecutionResultImpl;
 import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.model.configuration.Configuration;
 import com.alpha.pineapple.model.configuration.ObjectFactory;
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 /**
  * Implementation of the {@link ResourceRepository} interface.
@@ -97,11 +99,10 @@ public class ResourceRepositoryImpl implements ResourceRepository {
 
 	@Override
 	public boolean contains(String environment, String resource) {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
-		Validate.notNull(resource, "resource is undefined.");
-		Validate.notEmpty(resource, "resource is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
+		notNull(resource, "resource is undefined.");
+		notEmpty(resource, "resource is empty.");
 
 		// attempt to resolve environment
 		if (containsEnvironment(environment)) {
@@ -122,11 +123,10 @@ public class ResourceRepositoryImpl implements ResourceRepository {
 	}
 
 	public ResourceInfo get(String environment, String id) throws ResourceNotFoundException {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
-		Validate.notNull(id, "id is undefined.");
-		Validate.notEmpty(id, "id is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
+		notNull(id, "id is undefined.");
+		notEmpty(id, "id is empty.");
 
 		// attempt to resolve environment
 		if (containsEnvironment(environment)) {
@@ -162,14 +162,12 @@ public class ResourceRepositoryImpl implements ResourceRepository {
 	@Override
 	public ResourceInfo create(String environment, String resource, String pluginId, String credentialIdRef)
 			throws ResourceAlreadyExistsException {
-
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
-		Validate.notNull(resource, "resource is undefined.");
-		Validate.notEmpty(resource, "resource is empty.");
-		Validate.notNull(pluginId, "pluginId is undefined.");
-		Validate.notEmpty(pluginId, "pluginId is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
+		notNull(resource, "resource is undefined.");
+		notEmpty(resource, "resource is empty.");
+		notNull(pluginId, "pluginId is undefined.");
+		notEmpty(pluginId, "pluginId is empty.");
 
 		// create resource info
 		Map<String, ResourcePropertyInfo> properties = new HashMap<String, ResourcePropertyInfo>();
@@ -225,14 +223,13 @@ public class ResourceRepositoryImpl implements ResourceRepository {
 	@Override
 	public ResourceInfo update(ResourceInfo resourceInfo, String environment, String resource, String pluginId,
 			String credentialIdRef) {
-		// validate parameters
-		Validate.notNull(resourceInfo, "resourceInfo is undefined.");
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
-		Validate.notNull(resource, "resource is undefined.");
-		Validate.notEmpty(resource, "resource is empty.");
-		Validate.notNull(pluginId, "pluginId is undefined.");
-		Validate.notEmpty(pluginId, "pluginId is empty.");
+		notNull(resourceInfo, "resourceInfo is undefined.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
+		notNull(resource, "resource is undefined.");
+		notEmpty(resource, "resource is empty.");
+		notNull(pluginId, "pluginId is undefined.");
+		notEmpty(pluginId, "pluginId is empty.");
 
 		// get resource info for internal data structure
 		ResourceInfo validatedInfo = get(environment, resourceInfo.getId());
@@ -262,15 +259,14 @@ public class ResourceRepositoryImpl implements ResourceRepository {
 
 	@Override
 	public void createResourceProperty(String environment, String id, String key, String value) {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
-		Validate.notNull(id, "id is undefined.");
-		Validate.notEmpty(id, "id is empty.");
-		Validate.notNull(key, "key is undefined.");
-		Validate.notEmpty(key, "key is empty.");
-		Validate.notNull(value, "value is undefined.");
-		Validate.notEmpty(value, "value is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
+		notNull(id, "id is undefined.");
+		notEmpty(id, "id is empty.");
+		notNull(key, "key is undefined.");
+		notEmpty(key, "key is empty.");
+		notNull(value, "value is undefined.");
+		notEmpty(value, "value is empty.");
 
 		// get resource info
 		ResourceInfo resourceInfo = get(environment, id);
@@ -297,13 +293,12 @@ public class ResourceRepositoryImpl implements ResourceRepository {
 
 	@Override
 	public void deleteResourceProperty(String environment, String id, String key) {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
-		Validate.notNull(id, "id is undefined.");
-		Validate.notEmpty(id, "id is empty.");
-		Validate.notNull(key, "key is undefined.");
-		Validate.notEmpty(key, "key is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
+		notNull(id, "id is undefined.");
+		notEmpty(id, "id is empty.");
+		notNull(key, "key is undefined.");
+		notEmpty(key, "key is empty.");
 
 		// get resource info
 		ResourceInfo resourceInfo = get(environment, id);
@@ -363,8 +358,8 @@ public class ResourceRepositoryImpl implements ResourceRepository {
 
 	@Override
 	public ResourceInfo[] getResources(String environment) {
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
 
 		if (configurationInfo.containsEnvironment(environment)) {
 			EnvironmentInfo environmentInfo = configurationInfo.getEnvironment(environment);
@@ -383,9 +378,8 @@ public class ResourceRepositoryImpl implements ResourceRepository {
 	}
 
 	public boolean containsEnvironment(String environment) {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
 
 		// exit if repository isn't initialized yet
 		if (configurationInfo == null)
@@ -396,9 +390,8 @@ public class ResourceRepositoryImpl implements ResourceRepository {
 
 	@Override
 	public EnvironmentInfo getEnvironment(String environment) throws EnvironmentNotFoundException {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
 
 		if (containsEnvironment(environment)) {
 			return configurationInfo.getEnvironment(environment);
@@ -413,9 +406,8 @@ public class ResourceRepositoryImpl implements ResourceRepository {
 	@Override
 	public EnvironmentInfo createEnvironment(String environment, String description)
 			throws EnvironmentAlreadyExistsException {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
 
 		if (configurationInfo.containsEnvironment(environment)) {
 			Object[] args = { environment };
@@ -436,11 +428,10 @@ public class ResourceRepositoryImpl implements ResourceRepository {
 
 	@Override
 	public EnvironmentInfo updateEnvironment(EnvironmentInfo environmentInfo, String id, String description) {
-		// validate parameters
-		Validate.notNull(environmentInfo, "environmentInfo is undefined.");
-		Validate.notNull(id, "id is undefined.");
-		Validate.notEmpty(id, "id is empty.");
-		Validate.notNull(description, "description is undefined.");
+		notNull(environmentInfo, "environmentInfo is undefined.");
+		notNull(id, "id is undefined.");
+		notEmpty(id, "id is empty.");
+		notNull(description, "description is undefined.");
 
 		// get environment info for internal data structure
 		EnvironmentInfo validatedInfo = getEnvironment(environmentInfo.getId());

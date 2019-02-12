@@ -47,7 +47,8 @@
 
 package com.alpha.pineapple.execution;
 
-import org.apache.commons.lang3.Validate;
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
@@ -102,8 +103,8 @@ public class ExecutionResultNotificationImpl implements ExecutionResultNotificat
 	 * @return execution result notification.
 	 */
 	public static ExecutionResultNotification getInstance(ExecutionResult result, ExecutionState state) {
-		Validate.notNull(result, "result is undefined.");
-		Validate.notNull(state, "state is undefined.");
+		notNull(result, "result is undefined.");
+		notNull(state, "state is undefined.");
 		return new ExecutionResultNotificationImpl(result, state);
 	}
 

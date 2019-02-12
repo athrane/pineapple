@@ -22,8 +22,6 @@
 
 package com.alpha.pineapple.session;
 
-import org.apache.log4j.Logger;
-
 import com.alpha.pineapple.model.configuration.Credential;
 import com.alpha.pineapple.model.configuration.Resource;
 
@@ -32,11 +30,6 @@ import com.alpha.pineapple.model.configuration.Resource;
  * resource and credential.
  */
 public class DefaultSessionImpl implements Session {
-
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Resource.
@@ -52,27 +45,9 @@ public class DefaultSessionImpl implements Session {
 		// store parameters
 		this.resource = resource;
 		this.credential = credential;
-
-		// log debug message
-		if (logger.isDebugEnabled()) {
-			StringBuilder message = new StringBuilder();
-			message.append("Successfully connected to resource <.");
-			message.append(resource);
-			message.append("> using credential with id <");
-			message.append(credential.getId());
-			message.append(">.");
-			logger.debug(message.toString());
-		}
-
 	}
 
 	public void disconnect() throws SessionDisconnectException {
-		// log debug message
-		if (logger.isDebugEnabled()) {
-			StringBuilder message = new StringBuilder();
-			message.append("Successfully disconnected..");
-			logger.debug(message.toString());
-		}
 	}
 
 	public Resource getResource() {

@@ -22,10 +22,11 @@
 
 package com.alpha.pineapple.resource;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.model.configuration.Property;
@@ -72,9 +73,7 @@ public class ResourcePropertyGetter {
 	 *            resource which contains properties.
 	 */
 	public void setResource(Resource resource) {
-
-		// validate parameters
-		Validate.notNull(resource, "resource is undefined.");
+		notNull(resource, "resource is undefined.");
 
 		this.resource = resource;
 

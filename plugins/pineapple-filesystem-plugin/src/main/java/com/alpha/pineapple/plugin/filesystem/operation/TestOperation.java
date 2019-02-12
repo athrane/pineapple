@@ -21,6 +21,8 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.plugin.filesystem.operation;
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import java.util.List;
 
@@ -54,11 +56,6 @@ public class TestOperation implements Operation {
 	static final int FIRST_INDEX = 0;
 
 	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
-
-	/**
 	 * VFS file resolution test command.
 	 */
 	@Resource
@@ -84,17 +81,9 @@ public class TestOperation implements Operation {
 
 	public void execute(Object content, Session session, ExecutionResult executionResult)
 			throws PluginExecutionFailedException {
-		// validate parameters
-		Validate.notNull(content, "content is undefined.");
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(executionResult, "executionResult is undefined.");
-
-		// log debug message
-		if (logger.isDebugEnabled()) {
-			Object[] args = { content.getClass().getName(), content };
-			String message = messageProvider.getMessage("to.start", args);
-			logger.debug(message);
-		}
+		notNull(content, "content is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(executionResult, "executionResult is undefined.");
 
 		// throw exception if required type isn't available
 		if (!(content instanceof Filesystem)) {

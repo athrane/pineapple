@@ -22,8 +22,7 @@
 
 package com.alpha.pineapple.execution.continuation;
 
-import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
 import com.alpha.pineapple.execution.ExecutionResult;
 
@@ -31,11 +30,6 @@ import com.alpha.pineapple.execution.ExecutionResult;
  * Default implementation of the {@linkplain ContinuationPolicy} interface.
  */
 public class DefaultContinuationPolicyImpl implements ContinuationPolicy {
-
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Continue-on-failure directive.
@@ -92,14 +86,14 @@ public class DefaultContinuationPolicyImpl implements ContinuationPolicy {
 	public void disableContinueOnFailure() {
 		if (continueOnFailure != null)
 			return;
-		continueOnFailure = new Boolean(false);
+		continueOnFailure = Boolean.TRUE;
 	}
 
 	@Override
 	public void enableContinueOnFailure() {
 		if (continueOnFailure != null)
 			return;
-		continueOnFailure = new Boolean(true);
+		continueOnFailure = Boolean.TRUE; 
 	}
 
 	@Override
@@ -109,7 +103,7 @@ public class DefaultContinuationPolicyImpl implements ContinuationPolicy {
 
 	@Override
 	public void setFailed(ExecutionResult result) {
-		Validate.notNull(result, "result is undefined");
+		notNull(result, "result is undefined");
 		if (failedResult != null)
 			return;
 		failedResult = result;

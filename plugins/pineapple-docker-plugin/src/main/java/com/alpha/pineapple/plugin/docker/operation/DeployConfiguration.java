@@ -22,6 +22,7 @@
 
 package com.alpha.pineapple.plugin.docker.operation;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
 import static com.alpha.pineapple.plugin.docker.DockerConstants.LEGAL_CONTENT_TYPES;
 import static com.alpha.pineapple.plugin.docker.DockerConstants.TAR_ARCHIVE;
 
@@ -30,9 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-
-import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
 
 import com.alpha.javautils.OperationUtils;
 import com.alpha.pineapple.OperationNames;
@@ -65,11 +63,6 @@ import com.alpha.pineapple.session.Session;
 public class DeployConfiguration implements Operation {
 
 	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
-
-	/**
 	 * Message provider for I18N support.
 	 */
 	@Resource
@@ -100,17 +93,9 @@ public class DeployConfiguration implements Operation {
 	RuntimeDirectoryProvider coreRuntimeDirectoryProvider;
 
 	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-		// validate parameters
-		Validate.notNull(content, "content is undefined.");
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(result, "result is undefined.");
-
-		// log debug message
-		if (logger.isDebugEnabled()) {
-			Object[] args = { content.getClass().getName(), content };
-			String message = messageProvider.getMessage("dc.start", args);
-			logger.debug(message);
-		}
+		notNull(content, "content is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(result, "result is undefined.");
 
 		// validate parameters
 		operationUtils.validateContentType(content, LEGAL_CONTENT_TYPES);

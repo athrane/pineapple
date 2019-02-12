@@ -22,10 +22,9 @@
 
 package com.alpha.pineapple.plugin.docker.operation;
 
-import javax.annotation.Resource;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
-import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
+import javax.annotation.Resource;
 
 import com.alpha.javautils.OperationUtils;
 import com.alpha.pineapple.OperationNames;
@@ -48,10 +47,6 @@ import com.alpha.pineapple.session.Session;
  */
 @PluginOperation(OperationNames.CREATE_REPORT)
 public class CreateReport implements Operation {
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Message provider for I18N support.
@@ -78,17 +73,9 @@ public class CreateReport implements Operation {
 	DockerClient dockerClient;
 
 	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-		// validate parameters
-		Validate.notNull(content, "content is undefined.");
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(result, "result is undefined.");
-
-		// log debug message
-		if (logger.isDebugEnabled()) {
-			Object[] args = { content.getClass().getName(), content };
-			String message = messageProvider.getMessage("cr.start", args);
-			logger.debug(message);
-		}
+		notNull(content, "content is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(result, "result is undefined.");
 
 		// validate parameters
 		operationUtils.validateContentType(content, DockerConstants.LEGAL_CONTENT_TYPES);

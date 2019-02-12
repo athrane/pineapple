@@ -21,6 +21,8 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.plugin.activation;
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
@@ -207,11 +209,9 @@ public class PluginActivatorImpl implements PluginActivator {
 
 	public void initialize(CredentialProvider provider, ResourceRepository resourceRepository,
 			PluginRuntimeRepository pluginRepository) {
-
-		// validate parameters
-		Validate.notNull(provider, "provider is undefined.");
-		Validate.notNull(resourceRepository, "resourceRepository is undefined.");
-		Validate.notNull(pluginRepository, "pluginRepository is undefined.");
+		notNull(provider, "provider is undefined.");
+		notNull(resourceRepository, "resourceRepository is undefined.");
+		notNull(pluginRepository, "pluginRepository is undefined.");
 
 		// set parameters
 		this.provider = provider;
@@ -272,9 +272,8 @@ public class PluginActivatorImpl implements PluginActivator {
 	}
 
 	public Unmarshaller getUnmarshaller(String environment, String resource) throws PluginExecutionFailedException {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notNull(resource, "resource is undefined.");
+		notNull(environment, "environment is undefined.");
+		notNull(resource, "resource is undefined.");
 
 		try {
 			String pluginId = resolvePluginId(environment, resource);
@@ -293,9 +292,8 @@ public class PluginActivatorImpl implements PluginActivator {
 	}
 
 	public Session getSession(String environment, String resource) {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notNull(resource, "resource is undefined.");
+		notNull(environment, "environment is undefined.");
+		notNull(resource, "resource is undefined.");
 
 		try {
 			// log debug message
@@ -326,9 +324,8 @@ public class PluginActivatorImpl implements PluginActivator {
 
 	@Override
 	public boolean isInputMarshallingEnabled(String environment, String resource) {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notNull(resource, "resource is undefined.");
+		notNull(environment, "environment is undefined.");
+		notNull(resource, "resource is undefined.");
 
 		try {
 			String pluginId = resolvePluginId(environment, resource);

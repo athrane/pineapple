@@ -21,12 +21,12 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.session;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.command.ProcessExecutionCommand;
@@ -93,9 +93,8 @@ public class ProcessExecutionSessionImpl implements ProcessExecutionSession {
 
 	public void connect(com.alpha.pineapple.model.configuration.Resource resource, Credential credential)
 			throws SessionConnectException {
-		// validate parameters
-		Validate.notNull(resource, "resource is undefined.");
-		Validate.notNull(credential, "credential is undefined.");
+		notNull(resource, "resource is undefined.");
+		notNull(credential, "credential is undefined.");
 
 		// store in fields
 		this.credential = credential;

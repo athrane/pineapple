@@ -21,13 +21,12 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.plugin.docker.operation;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-
-import org.apache.commons.lang3.Validate;
 
 import com.alpha.javautils.OperationUtils;
 import com.alpha.pineapple.OperationNames;
@@ -48,7 +47,6 @@ import com.alpha.pineapple.plugin.docker.model.Docker;
 import com.alpha.pineapple.plugin.docker.model.DockerCommand;
 import com.alpha.pineapple.plugin.docker.model.Mapper;
 import com.alpha.pineapple.session.Session;
-import com.fasterxml.jackson.core.type.ResolvedType;
 
 /**
  * Implements the test operation.
@@ -85,10 +83,9 @@ public class TestOperation implements Operation {
 	DockerClient dockerClient;
 
 	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-		// validate parameters
-		Validate.notNull(content, "content is undefined.");
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(content, "content is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(result, "result is undefined.");
 
 		// validate parameters
 		operationUtils.validateContentType(content, DockerConstants.LEGAL_CONTENT_TYPES);

@@ -21,8 +21,8 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.plugin.session;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
-import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.ObjectFactory;
 
 import com.alpha.pineapple.model.configuration.Credential;
@@ -62,8 +62,8 @@ public class RetrySessionHandlerFactoryImpl implements SessionHandlerFactory {
 	 *            Operation object.
 	 */
 	public Operation getInstance(Resource resource, Credential credential, Operation operation) {
-		Validate.notNull(resource, "resource is undefined.");
-		Validate.notNull(operation, "operation is undefined.");
+		notNull(resource, "resource is undefined.");
+		notNull(operation, "operation is undefined.");
 
 		// create session handler from Spring context and initialize
 		if (credential == null)

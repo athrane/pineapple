@@ -22,6 +22,8 @@
 
 package com.alpha.javautils.reflection;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -74,9 +76,8 @@ public class ReflectionHelper {
 	 *             If instance creation fails.
 	 */
 	public Object createObject(Class<?> classs, String argument) {
-		// validate parameters
-		Validate.notNull(classs, "classs is undefined.");
-		Validate.notNull(argument, "argument is undefined.");
+		notNull(classs, "classs is undefined.");
+		notNull(argument, "argument is undefined.");
 
 		try {
 			// create string constructor argument
@@ -113,8 +114,7 @@ public class ReflectionHelper {
 	 *             If instance creation fails.
 	 */
 	public Object createObject(String className) {
-		// validate parameters
-		Validate.notNull(className, "className is undefined.");
+		notNull(className, "className is undefined.");
 		Validate.notEmpty(className, "className is empty string.");
 
 		try {
@@ -206,8 +206,7 @@ public class ReflectionHelper {
 	 * @return Setter method name .
 	 */
 	String createSetterMethodName(String fieldName) {
-		// validate parameters
-		Validate.notNull(fieldName);
+		notNull(fieldName, "fieldName is undefined.");
 
 		// create setter method name
 		StringBuilder setterName = new StringBuilder();
@@ -240,9 +239,9 @@ public class ReflectionHelper {
 	 */
 	public void invokeSetterMethod(Object targetObject, Field field, Object setterParameter) throws SecurityException,
 			NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		// validate parameters
-		Validate.notNull(targetObject);
-		Validate.notNull(field);
+
+		notNull(targetObject, "targetObject is undefined.");
+		notNull(field, "field is undefined.");
 
 		// lookup setter
 		Method setterMethod = getSetterMethod(targetObject, field);
@@ -306,9 +305,9 @@ public class ReflectionHelper {
 	 */
 	public void setFieldValue(Object targetObject, Field field, Object fieldValue)
 			throws IllegalArgumentException, IllegalAccessException {
-		// validate parameters
-		Validate.notNull(targetObject);
-		Validate.notNull(field);
+
+		notNull(targetObject, "targetObject is undefined.");
+		notNull(field, "field is undefined.");
 
 		// make field accessible
 		if (!field.isAccessible()) {
@@ -400,6 +399,7 @@ public class ReflectionHelper {
 	 * @return True if field type is <code>String[]</code>.
 	 */
 	boolean isStringArray(Class<?> fieldType) {
+		notNull(fieldType, "fieldType is undefined.");
 
 		// exit if type isn't array
 		if (!fieldType.isArray())

@@ -21,10 +21,10 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.plugin.filesystem.session;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
@@ -141,9 +141,8 @@ public class FilesystemSessionImpl implements FileSystemSession {
 
 	public void connect(com.alpha.pineapple.model.configuration.Resource resource, Credential credential)
 			throws SessionConnectException {
-		// validate parameters
-		Validate.notNull(resource, "resource is undefined.");
-		Validate.notNull(credential, "credential is undefined.");
+		notNull(resource, "resource is undefined.");
+		notNull(credential, "credential is undefined.");
 
 		try {
 

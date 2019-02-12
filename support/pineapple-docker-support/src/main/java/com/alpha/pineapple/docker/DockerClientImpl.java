@@ -21,8 +21,10 @@
  */
 package com.alpha.pineapple.docker;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
 import static com.alpha.pineapple.docker.DockerConstants.CONTAINER_STOP_TIMEOUT;
 import static com.alpha.pineapple.docker.DockerConstants.DOCKER_NAME_PREFIX;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import java.io.File;
 import java.util.List;
@@ -31,7 +33,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
-import org.apache.commons.lang3.Validate;
 
 import com.alpha.pineapple.command.execution.CommandRunner;
 import com.alpha.pineapple.docker.command.BuildImageCommand;
@@ -207,11 +208,8 @@ public class DockerClientImpl implements DockerClient {
 
 	@Override
 	public boolean imageExists(DockerSession session, ImageInfo imageInfo) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(imageInfo, "imageInfo is undefined.");
-
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(imageInfo, "imageInfo is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(imageInfo, "imageInfo is undefined.");
 
 		ExecutionResult result = executionResultFactory.startExecution("List Docker images");
 		ListedImage[] images = listImages(session, result);
@@ -248,9 +246,9 @@ public class DockerClientImpl implements DockerClient {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void createImage(DockerSession session, ImageInfo imageInfo, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(imageInfo, "imageInfo is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(imageInfo, "imageInfo is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { imageInfo.getFullyQualifiedName() };
@@ -277,10 +275,10 @@ public class DockerClientImpl implements DockerClient {
 	@Override
 	public void buildImage(DockerSession session, ImageInfo imageInfo, File tarArchive, Boolean pullImageBehavior,
 			ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(imageInfo, "imageInfo is undefined.");
-		Validate.notNull(pullImageBehavior, "pullImageBehavior is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(imageInfo, "imageInfo is undefined.");
+		notNull(pullImageBehavior, "pullImageBehavior is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { imageInfo.getFullyQualifiedName() };
@@ -308,9 +306,9 @@ public class DockerClientImpl implements DockerClient {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void deleteImage(DockerSession session, ImageInfo imageInfo, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(imageInfo, "imageInfo is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(imageInfo, "imageInfo is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { imageInfo.getFullyQualifiedName() };
@@ -338,10 +336,10 @@ public class DockerClientImpl implements DockerClient {
 	public void tagImage(DockerSession session, ImageInfo sourceImageInfo, ImageInfo targetImageInfo,
 			ExecutionResult result) {
 
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(sourceImageInfo, "sourceImageInfo is undefined.");
-		Validate.notNull(targetImageInfo, "targetImageInfo is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(sourceImageInfo, "sourceImageInfo is undefined.");
+		notNull(targetImageInfo, "targetImageInfo is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { targetImageInfo.getFullyQualifiedName(), sourceImageInfo.getFullyQualifiedName() };
@@ -368,8 +366,8 @@ public class DockerClientImpl implements DockerClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ListedImage[] listImages(DockerSession session, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		String message = messageProvider.getMessage("dci.list_images_info");
@@ -393,8 +391,8 @@ public class DockerClientImpl implements DockerClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void reportOnImages(DockerSession session, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		String message = messageProvider.getMessage("dci.report_images_info");
@@ -418,9 +416,9 @@ public class DockerClientImpl implements DockerClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ImageInspect inspectImage(DockerSession session, ImageInfo info, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { info.getFullyQualifiedName() };
@@ -453,9 +451,9 @@ public class DockerClientImpl implements DockerClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ContainerInstanceInfo createContainer(DockerSession session, ContainerInfo info, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { info.getName(), info.getImageInfo().getFullyQualifiedName() };
@@ -481,9 +479,9 @@ public class DockerClientImpl implements DockerClient {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void deleteContainer(DockerSession session, ContainerInfo info, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { getContainerName(info), info.getImageInfo().getFullyQualifiedName() };
@@ -509,8 +507,8 @@ public class DockerClientImpl implements DockerClient {
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean containerExists(DockerSession session, ContainerInfo info) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
 
 		// create prefixed container name
 		String name = new StringBuilder().append(DOCKER_NAME_PREFIX).append(getContainerName(info)).toString();
@@ -564,8 +562,8 @@ public class DockerClientImpl implements DockerClient {
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean containerExistsQueryById(DockerSession session, ContainerInstanceInfo info) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
 
 		String id = info.getId();
 
@@ -604,9 +602,9 @@ public class DockerClientImpl implements DockerClient {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void startContainer(DockerSession session, ContainerInfo info, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { getContainerName(info) };
@@ -632,9 +630,9 @@ public class DockerClientImpl implements DockerClient {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void stopContainer(DockerSession session, ContainerInfo info, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { getContainerName(info) };
@@ -661,9 +659,9 @@ public class DockerClientImpl implements DockerClient {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void killContainer(DockerSession session, ContainerInfo info, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { getContainerName(info) };
@@ -696,9 +694,9 @@ public class DockerClientImpl implements DockerClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void pauseContainer(DockerSession session, ContainerInfo info, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { getContainerName(info) };
@@ -731,9 +729,9 @@ public class DockerClientImpl implements DockerClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void unpauseContainer(DockerSession session, ContainerInfo info, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { getContainerName(info) };
@@ -767,8 +765,8 @@ public class DockerClientImpl implements DockerClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ListedContainer[] listContainers(DockerSession session, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		String message = messageProvider.getMessage("dci.list_containers_info");
@@ -792,9 +790,9 @@ public class DockerClientImpl implements DockerClient {
 	@Override
 	@SuppressWarnings("unchecked")
 	public ContainerJson inspectContainer(DockerSession session, ContainerInfo info, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { getContainerName(info) };
@@ -827,8 +825,8 @@ public class DockerClientImpl implements DockerClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void reportOnContainers(DockerSession session, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		String message = messageProvider.getMessage("dci.report_containers_info");
@@ -852,10 +850,10 @@ public class DockerClientImpl implements DockerClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void testContainer(DockerSession session, ContainerInfo info, ContainerState state, ExecutionResult result) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
-		Validate.notNull(state, "state is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
+		notNull(state, "state is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { getContainerName(info) };
@@ -886,8 +884,8 @@ public class DockerClientImpl implements DockerClient {
 
 	@Override
 	public boolean isContainerRunning(DockerSession session, ContainerInfo info) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
 
 		ExecutionResult result = executionResultFactory.startExecution("Inspect container");
 		ContainerJson inspectedContainer = inspectContainer(session, info, result);
@@ -897,8 +895,8 @@ public class DockerClientImpl implements DockerClient {
 
 	@Override
 	public boolean isContainerPaused(DockerSession session, ContainerInfo info) {
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(info, "info is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(info, "info is undefined.");
 
 		ExecutionResult result = executionResultFactory.startExecution("Inspect container");
 		ContainerJson inspectedContainer = inspectContainer(session, info, result);
@@ -909,9 +907,9 @@ public class DockerClientImpl implements DockerClient {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void createTarArchive(File sourceDirectory, File tarArchive, ExecutionResult result) {
-		Validate.notNull(sourceDirectory, "sourceDirectory is undefined.");
-		Validate.notNull(tarArchive, "tarArchive is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(sourceDirectory, "sourceDirectory is undefined.");
+		notNull(tarArchive, "tarArchive is undefined.");
+		notNull(result, "result is undefined.");
 
 		// create execution result
 		Object[] args = { sourceDirectory };
@@ -943,13 +941,13 @@ public class DockerClientImpl implements DockerClient {
 	 * @return container name.
 	 */
 	String getContainerName(ContainerInfo info) {
-		Validate.notNull(info, "Container info is undefined");
+		notNull(info, "Container info is undefined");
 
 		// get name
 		String name = info.getName();
 
-		Validate.notNull(name, "Container name is undefined");
-		Validate.notEmpty(name, "Container name is empty");
+		notNull(name, "Container name is undefined");
+		notEmpty(name, "Container name is empty");
 		return name;
 	}
 

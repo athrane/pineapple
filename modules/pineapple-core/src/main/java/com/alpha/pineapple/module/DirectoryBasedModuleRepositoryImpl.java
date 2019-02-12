@@ -22,6 +22,9 @@
 
 package com.alpha.pineapple.module;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -37,7 +40,6 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.i18n.MessageProvider;
@@ -160,8 +162,8 @@ public class DirectoryBasedModuleRepositoryImpl implements DirectoryBasedModuleR
 	}
 
 	public boolean contains(String id) {
-		Validate.notNull(id, "id is undefined.");
-		Validate.notEmpty(id, "id is empty.");
+		notNull(id, "id is undefined.");
+		notEmpty(id, "id is empty.");
 		return modules.containsKey(id);
 	}
 
@@ -236,9 +238,9 @@ public class DirectoryBasedModuleRepositoryImpl implements DirectoryBasedModuleR
 
 	@Override
 	public void createModel(ModuleInfo info, String environment) {
-		Validate.notNull(info, "info is undefined.");
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
+		notNull(info, "info is undefined.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
 
 		// validate module - trigger expection if module doesn't exist
 		ModuleInfo validatedInfo = get(info.getId());
@@ -262,9 +264,9 @@ public class DirectoryBasedModuleRepositoryImpl implements DirectoryBasedModuleR
 
 	@Override
 	public void deleteModel(ModuleInfo info, String environment) {
-		Validate.notNull(info, "info is undefined.");
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
+		notNull(info, "info is undefined.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
 
 		// validate module and model - trigger expection if module and model
 		// doesn't exist

@@ -21,9 +21,8 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.substitution;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
-import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.ObjectFactory;
 
 import com.alpha.pineapple.i18n.MessageProvider;
@@ -41,11 +40,6 @@ import com.alpha.pineapple.substitution.variables.Variables;
  * Implementation of the {@linkplain ModelVariableSubstitutor} interface.
  */
 public class ModelVariableSubstitutorImpl implements ModelVariableSubstitutor {
-
-	/**
-	 * Logger object
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Message provider for I18N support.
@@ -86,9 +80,9 @@ public class ModelVariableSubstitutorImpl implements ModelVariableSubstitutor {
 	@Override
 	public <T> T createObjectWithSubstitution(Module module, Models model, Resource resource, T targetObject)
 			throws VariableSubstitutionException {
-		Validate.notNull(module, "module is undefined.");
-		Validate.notNull(model, "model is undefined.");
-		Validate.notNull(resource, "resource is undefined.");
+		notNull(module, "module is undefined.");
+		notNull(model, "model is undefined.");
+		notNull(resource, "resource is undefined.");
 
 		// create variables from module, model and resource
 		ModuleDescriptorVariablesBuilder moduleBuilder = moduleDescriptorVariablesBuilderFactory.getObject();

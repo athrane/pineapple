@@ -22,16 +22,16 @@
 
 package com.alpha.javautils.reflection;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
+
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
 
 import com.alpha.javautils.StackTraceHelper;
 
@@ -39,11 +39,6 @@ import com.alpha.javautils.StackTraceHelper;
  * Helper class which provides helper functions for reflection.
  */
 public class ReflectionHelper {
-
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * ReflectionHelper no-arg constructor.
@@ -56,21 +51,17 @@ public class ReflectionHelper {
 	 * Create object instance for class which takes single String as constructor
 	 * argument.
 	 * 
-	 * @param classs
-	 *            Class to instantiate object from.
-	 * @param argument
-	 *            String argument which should be used as parameter when invoking
-	 *            the constructor.
+	 * @param classs   Class to instantiate object from.
+	 * @param argument String argument which should be used as parameter when
+	 *                 invoking the constructor.
 	 * 
 	 * @return object instance of supplied class.
 	 * 
-	 * @throws InstantiationError
-	 *             If instance creation fails.
+	 * @throws InstantiationError If instance creation fails.
 	 */
 	public Object createObject(Class<?> classs, String argument) {
-		// validate parameters
-		Validate.notNull(classs, "classs is undefined.");
-		Validate.notNull(argument, "argument is undefined.");
+		notNull(classs, "classs is undefined.");
+		notNull(argument, "argument is undefined.");
 
 		try {
 			// create string constructor argument
@@ -98,18 +89,15 @@ public class ReflectionHelper {
 	/**
 	 * Create object instance with no-arg constructor.
 	 * 
-	 * @param className
-	 *            Class name to create instance of.
+	 * @param className Class name to create instance of.
 	 * 
 	 * @return object instance of requested class.
 	 * 
-	 * @throws InstantiationError
-	 *             If instance creation fails.
+	 * @throws InstantiationError If instance creation fails.
 	 */
 	public Object createObject(String className) {
-		// validate parameters
-		Validate.notNull(className, "className is undefined.");
-		Validate.notEmpty(className, "className is empty string.");
+		notNull(className, "className is undefined.");
+		notEmpty(className, "className is empty string.");
 
 		try {
 			Class<?> classs = Class.forName(className);
@@ -132,18 +120,14 @@ public class ReflectionHelper {
 	 * Get setter method from object. The target objects is searched for a setter
 	 * method with the name set + &lt; field-name &gt;.
 	 * 
-	 * @param targetObject
-	 *            The object which is searched for a setter method.
-	 * @param field
-	 *            Field on target object whose name is used to search for a
-	 *            corresponding setter method.
+	 * @param targetObject The object which is searched for a setter method.
+	 * @param field        Field on target object whose name is used to search for a
+	 *                     corresponding setter method.
 	 * 
 	 * @return Setter method from target object.
 	 * 
-	 * @throws SecurityException
-	 *             If setter method resolution fails.
-	 * @throws NoSuchMethodException
-	 *             If setter method resolution fails.
+	 * @throws SecurityException     If setter method resolution fails.
+	 * @throws NoSuchMethodException If setter method resolution fails.
 	 */
 	public Method getSetterMethod(Object targetObject, Field field) throws SecurityException, NoSuchMethodException {
 		// get field name
@@ -151,17 +135,6 @@ public class ReflectionHelper {
 
 		// create setter method name
 		String setterName = createSetterMethodName(fieldName);
-
-		// log debug message
-		if (logger.isDebugEnabled()) {
-			// create error message
-			StringBuilder message = new StringBuilder();
-			message.append("Created setter method name <");
-			message.append(setterName);
-			message.append(">.");
-
-			logger.debug(message.toString());
-		}
 
 		// get class for target object
 		Class<? extends Object> targetClass = targetObject.getClass();
@@ -173,94 +146,24 @@ public class ReflectionHelper {
 		Method setterMethod;
 		setterMethod = targetClass.getMethod(setterName.toString(), setterParamsType);
 
-		// log debug message
-		if (logger.isDebugEnabled()) {
-			// create error message
-			StringBuilder message = new StringBuilder();
-			message.append("Looked up setter method <");
-			message.append(setterMethod);
-			message.append("> on target object <");
-			message.append(targetObject);
-			message.append("> from field <");
-			message.append(field);
-			message.append(">.");
-
-			logger.debug(message.toString());
-		}
-
 		return setterMethod;
 	}
 
 	/**
 	 * Create setter method name from the name of the field.
 	 * 
-	 * @param String
-	 *            fieldName The name of the field..
+	 * @param String fieldName The name of the field..
 	 * 
 	 * @return Setter method name .
 	 */
 	String createSetterMethodName(String fieldName) {
-		// validate parameters
-		Validate.notNull(fieldName);
+		notNull(fieldName, "fieldName is undefined.");
 
 		// create setter method name
 		StringBuilder setterName = new StringBuilder();
 		setterName.append("set");
 		setterName.append(StringUtils.capitalize(fieldName));
 		return setterName.toString();
-	}
-
-	/**
-	 * Invoke setter method on target object.
-	 * 
-	 * @param targetObject
-	 *            The object on which the setter method is invoked.
-	 * @param field
-	 *            Field on target object whose name is used to search for a setter
-	 *            method.
-	 * @param setterParameter
-	 *            The value which used when the setter method is invoked.
-	 * 
-	 * @throws SecurityException
-	 *             If setter method invocation fails.
-	 * @throws NoSuchMethodException
-	 *             If setter method invocation fails.
-	 * @throws IllegalArgumentException
-	 *             If setter method invocation fails.
-	 * @throws IllegalAccessException
-	 *             If setter method invocation fails.
-	 * @throws InvocationTargetException
-	 *             If setter method invocation fails.
-	 */
-	public void invokeSetterMethod(Object targetObject, Field field, Object setterParameter) throws SecurityException,
-			NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		// validate parameters
-		Validate.notNull(targetObject);
-		Validate.notNull(field);
-
-		// lookup setter
-		Method setterMethod = getSetterMethod(targetObject, field);
-
-		// initialize parameter
-		Object[] setterArgs = new Object[] { setterParameter };
-
-		// invoke setter
-		setterMethod.invoke(targetObject, setterArgs);
-
-		// log debug message
-		if (logger.isDebugEnabled()) {
-			// create error message
-			StringBuilder message = new StringBuilder();
-			message.append("Invoked setter method <");
-			message.append(setterMethod);
-			message.append("> on target object <");
-			message.append(targetObject);
-			message.append("> with parameter <");
-			message.append(setterParameter);
-			message.append(">.");
-
-			logger.debug(message.toString());
-		}
 	}
 
 	/**
@@ -286,23 +189,18 @@ public class ReflectionHelper {
 	 * array entries before the value is assigned.
 	 * </p>
 	 * 
-	 * @param targetObject
-	 *            The object on which the field is defined.
-	 * @param field
-	 *            Field on target object whose value is set.
-	 * @param fieldValue
-	 *            The value which is assigned to the field.
+	 * @param targetObject The object on which the field is defined.
+	 * @param field        Field on target object whose value is set.
+	 * @param fieldValue   The value which is assigned to the field.
 	 * 
-	 * @throws IllegalAccessException
-	 *             If field assignment fails.
-	 * @throws IllegalArgumentException
-	 *             If field assignment fails.
+	 * @throws IllegalAccessException   If field assignment fails.
+	 * @throws IllegalArgumentException If field assignment fails.
 	 */
 	public void setFieldValue(Object targetObject, Field field, Object fieldValue)
 			throws IllegalArgumentException, IllegalAccessException {
-		// validate parameters
-		Validate.notNull(targetObject);
-		Validate.notNull(field);
+
+		notNull(targetObject, "targetObject is undefined.");
+		notNull(field, "field is undefined.");
 
 		// make field accessible
 		if (!field.isAccessible()) {
@@ -314,19 +212,6 @@ public class ReflectionHelper {
 
 		// skip assignment if value is null and type is primitive
 		if (fieldValue == null && fieldType.isPrimitive()) {
-
-			// log debug message
-			if (logger.isDebugEnabled()) {
-				// create error message
-				StringBuilder message = new StringBuilder();
-				message.append("Skipping null value assignment to primitive field <");
-				message.append(field);
-				message.append("> on target object <");
-				message.append(targetObject);
-				message.append(">.");
-
-				logger.debug(message.toString());
-			}
 
 			// exit
 			return;
@@ -342,19 +227,6 @@ public class ReflectionHelper {
 			// target type is primitive then convert
 			if (fieldType.isPrimitive()) {
 
-				// log debug message
-				if (logger.isDebugEnabled()) {
-					// create error message
-					StringBuilder message = new StringBuilder();
-					message.append("Converting field value of type String <");
-					message.append(fieldValue);
-					message.append("> to primitive type  <");
-					message.append(fieldType);
-					message.append(">.");
-
-					logger.debug(message.toString());
-				}
-
 				// convert from string to primitive type
 				PropertyEditor editor = PropertyEditorManager.findEditor(fieldType);
 				editor.setAsText(valueAsString);
@@ -363,19 +235,6 @@ public class ReflectionHelper {
 
 			// if target type is string[] then convert string to string[]
 			if (isStringArray(fieldType)) {
-
-				// log debug message
-				if (logger.isDebugEnabled()) {
-					// create error message
-					StringBuilder message = new StringBuilder();
-					message.append("Converting field value of type String <");
-					message.append(fieldValue);
-					message.append("> to String[] <");
-					message.append(fieldType);
-					message.append(">.");
-
-					logger.debug(message.toString());
-				}
 
 				// convert from string to primitive type
 				PropertyEditor editor = PropertyEditorManager.findEditor(fieldType);
@@ -387,17 +246,16 @@ public class ReflectionHelper {
 
 		// do assignment
 		field.set(targetObject, fieldValue);
-
 	}
 
 	/**
 	 * Determine whether field type is <code>String[]</code>.
 	 * 
-	 * @param fieldType
-	 *            The field type to test.
+	 * @param fieldType The field type to test.
 	 * @return True if field type is <code>String[]</code>.
 	 */
 	boolean isStringArray(Class<?> fieldType) {
+		notNull(fieldType, "fieldType is undefined.");
 
 		// exit if type isn't array
 		if (!fieldType.isArray())

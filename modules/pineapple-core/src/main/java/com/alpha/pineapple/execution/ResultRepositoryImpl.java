@@ -22,7 +22,9 @@
 
 package com.alpha.pineapple.execution;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
 import static com.alpha.pineapple.CoreConstants.EXECUTION_HISTORY_CAPACITY;
+import static org.apache.commons.lang3.Validate.isTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -168,9 +170,7 @@ public class ResultRepositoryImpl implements ResultRepository {
 	}
 
 	public void notifyOfResultStateChange(ExecutionResult result) {
-
-		// validate parameter
-		Validate.notNull(result, "result is undefined.");
+		notNull(result, "result is undefined.");
 
 		// log debug message
 		if (logger.isDebugEnabled()) {
@@ -192,9 +192,7 @@ public class ResultRepositoryImpl implements ResultRepository {
 	}
 
 	public void addListener(ResultListener listener) {
-
-		// validate parameter
-		Validate.notNull(listener, "listener is undefined.");
+		notNull(listener, "listener is undefined.");
 
 		// exit if repository contains listener
 		if (this.listeners.contains(listener))
@@ -211,9 +209,7 @@ public class ResultRepositoryImpl implements ResultRepository {
 	}
 
 	public void removeListener(ResultListener listener) {
-
-		// validate parameter
-		Validate.notNull(listener, "listener is undefined.");
+		notNull(listener, "listener is undefined.");
 
 		// exit if repository doesn't contain listener.
 		if (!this.listeners.contains(listener))
@@ -235,12 +231,10 @@ public class ResultRepositoryImpl implements ResultRepository {
 
 	public ExecutionResultNotification[] getResultSequence(ExecutionInfo executionInfo, int firstIndex, int lastIndex)
 			throws ExecutionInfoNotFoundException {
-
-		// validate parameter
-		Validate.notNull(executionInfo, "executionInfo is undefined.");
-		Validate.isTrue(firstIndex >= 0, "firstIndex is less then zero. Legal values are 0....max-number-of-results");
-		Validate.isTrue(lastIndex >= 0, "lastIndex is less then zero. Legal values are 0....max-number-of-results");
-		Validate.isTrue(lastIndex >= firstIndex,
+		notNull(executionInfo, "executionInfo is undefined.");
+		isTrue(firstIndex >= 0, "firstIndex is less then zero. Legal values are 0....max-number-of-results");
+		isTrue(lastIndex >= 0, "lastIndex is less then zero. Legal values are 0....max-number-of-results");
+		isTrue(lastIndex >= firstIndex,
 				"lastIndex larger the firstIndex. The first index must be smaller of equal to the last index.");
 
 		// resolve root result
@@ -273,9 +267,7 @@ public class ResultRepositoryImpl implements ResultRepository {
 
 	@Override
 	public int getCurrentResultIndex(ExecutionInfo executionInfo) throws ExecutionInfoNotFoundException {
-
-		// validate parameter
-		Validate.notNull(executionInfo, "executionInfo is undefined.");
+		notNull(executionInfo, "executionInfo is undefined.");
 
 		// resolve root result
 		ExecutionResult rootResult = executionInfo.getResult();

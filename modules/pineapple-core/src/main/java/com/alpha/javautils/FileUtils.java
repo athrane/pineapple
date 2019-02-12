@@ -22,13 +22,13 @@
 
 package com.alpha.javautils;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
+
 import java.io.File;
 import java.util.Properties;
 
 import javax.annotation.Resource;
-
-import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.i18n.MessageProvider;
 
@@ -57,11 +57,6 @@ public class FileUtils {
 	 * Search string for 8.3 format directories.
 	 */
 	static final String TILDE_STR = "~";
-
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Message provider for I18N support.
@@ -203,9 +198,9 @@ public class FileUtils {
 	 *         Setting\USER", where USER is the supplied user name.
 	 */
 	public boolean isPathInDocumentsAndSettingsDir(String path, String userName) {
-		Validate.notEmpty(path, "path is empty");
-		Validate.notNull(path, "path is undefined");
-		Validate.notNull(userName, "user is undefined");
+		notEmpty(path, "path is empty");
+		notNull(path, "path is undefined");
+		notNull(userName, "user is undefined");
 
 		// define expected pattern
 		StringBuilder expected = new StringBuilder();

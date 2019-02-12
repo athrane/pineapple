@@ -22,6 +22,8 @@
 
 package com.alpha.pineapple.report.basichtml;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,7 +41,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -487,9 +488,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	 * @return instance of the basic HTML report generator.
 	 */
 	public static ResultListener getInstance(File reportDirectory) {
-
-		// validate argument
-		Validate.notNull(reportDirectory, "reportDirectory is undefined");
+		notNull(reportDirectory, "reportDirectory is undefined");
 
 		// create instance form spring context
 		BasicHtmlReportGeneratorImpl generator = getInstanceFromSpring();

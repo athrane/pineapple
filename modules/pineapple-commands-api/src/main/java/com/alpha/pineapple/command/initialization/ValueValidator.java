@@ -22,13 +22,15 @@
 
 package com.alpha.pineapple.command.initialization;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
 
 /**
  * Helper class for {@link CommandInitializerImpl} which do value validation
@@ -36,10 +38,6 @@ import org.apache.log4j.Logger;
  *
  */
 class ValueValidator {
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Validate context value based on validation policies defined by
@@ -55,8 +53,7 @@ class ValueValidator {
 	 *             If value validation fails.
 	 */
 	public void validateValue(Object value, Field field) throws CommandInitializationFailedException {
-		// validate parameters
-		Validate.notNull(field, "field is undefined");
+		notNull(field, "field is undefined");
 
 		// exit if no validation annotation is defined on field
 		if (!field.isAnnotationPresent(ValidateValue.class)) {
@@ -102,8 +99,7 @@ class ValueValidator {
 	 */
 	void validateNotNull(Object value, Field field) throws CommandInitializationFailedException {
 		try {
-			// validate
-			Validate.notNull(value);
+			notNull(value);
 		} catch (IllegalArgumentException e) {
 
 			// create error message
@@ -134,21 +130,20 @@ class ValueValidator {
 	 */
 	void validateNotEmpty(Object value, Field field) throws CommandInitializationFailedException {
 		try {
-			// do initial not-null validation
-			Validate.notNull(value);
+			notNull(value);
 
 			// validate
 			if (value instanceof String) {
-				Validate.notEmpty((String) value);
+				notEmpty((String) value);
 			}
 			if (value instanceof Map) {
-				Validate.notEmpty((Map) value);
+				notEmpty((Map) value);
 			}
 			if (value instanceof Collection) {
-				Validate.notEmpty((Collection) value);
+				notEmpty((Collection) value);
 			}
 			if (value instanceof Object[]) {
-				Validate.notEmpty((Object[]) value);
+				notEmpty((Object[]) value);
 			}
 			if (value instanceof File) {
 				File file = (File) value;

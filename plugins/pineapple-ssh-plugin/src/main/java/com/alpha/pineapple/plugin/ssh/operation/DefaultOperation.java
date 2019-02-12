@@ -21,6 +21,8 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.plugin.ssh.operation;
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import static com.alpha.pineapple.plugin.ssh.SshConstants.EXECUTION_PAUSE;
 
@@ -111,17 +113,9 @@ public class DefaultOperation implements Operation {
 	@SuppressWarnings("unchecked")
 	public void execute(Object content, Session session, ExecutionResult executionResult)
 			throws PluginExecutionFailedException {
-		// validate parameters
-		Validate.notNull(content, "content is undefined.");
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(executionResult, "executionResult is undefined.");
-
-		// log debug message
-		if (logger.isDebugEnabled()) {
-			Object[] args = { content.getClass().getName(), content };
-			String message = messageProvider.getMessage("do.start", args);
-			logger.debug(message);
-		}
+		notNull(content, "content is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(executionResult, "executionResult is undefined.");
 
 		// validate parameters
 		operationUtils.validateContentType(content, SshConstants.LEGAL_CONTENT_TYPES);

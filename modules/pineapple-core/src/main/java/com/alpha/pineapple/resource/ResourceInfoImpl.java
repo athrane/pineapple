@@ -22,10 +22,11 @@
 
 package com.alpha.pineapple.resource;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.alpha.pineapple.model.configuration.Resource;
@@ -77,15 +78,15 @@ public class ResourceInfoImpl implements ResourceInfo {
 	 *            resource configuration marshaller.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             if the resource parameter is undefined.
+	 *             if the parameters are undefined.
 	 */
 	public ResourceInfoImpl(String id, String pluginId, String credentialRefId,
 			Map<String, ResourcePropertyInfo> properties,
 			ResourceConfigurationMarshaller resourceConfigurationMarshaller) {
 		// validate parameters
-		Validate.notNull(id, "id is undefined.");
-		Validate.notNull(pluginId, "pluginId is undefined.");
-		Validate.notNull(properties, "properties is undefined.");
+		notNull(id, "id is undefined.");
+		notNull(pluginId, "pluginId is undefined.");
+		notNull(properties, "properties is undefined.");
 		this.id = id;
 		this.pluginId = pluginId;
 		this.credentialIdRef = credentialRefId;

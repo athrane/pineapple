@@ -22,11 +22,11 @@
 
 package com.alpha.pineapple.plugin.session;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
 import static com.alpha.pineapple.CoreConstants.MSG_SESSION;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.javautils.StackTraceHelper;
@@ -100,8 +100,7 @@ public class RetrySessionHandlerImpl implements Operation {
 	public void execute(Object content, Session session, ExecutionResult result) {
 
 		try {
-			// validate arguments
-			Validate.notNull(result, "result is undefined");
+			notNull(result, "result is undefined");
 
 			// if session is null then skip session handling
 			// invoke operation with null session

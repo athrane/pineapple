@@ -22,12 +22,14 @@
 
 package com.alpha.pineapple;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
 import static com.alpha.pineapple.CoreConstants.CREDENTIALS_FILE;
 import static com.alpha.pineapple.CoreConstants.MSG_ENVIRONMENT;
 import static com.alpha.pineapple.CoreConstants.MSG_MODULE;
 import static com.alpha.pineapple.CoreConstants.MSG_MODULE_FILE;
 import static com.alpha.pineapple.CoreConstants.MSG_OPERATION;
 import static com.alpha.pineapple.CoreConstants.RESOURCE_FILE;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import java.io.File;
 
@@ -35,7 +37,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.admin.Administration;
@@ -179,14 +180,11 @@ class CoreImpl implements PineappleCore {
 	 * Will attempt to load environment configuration file which contains resource
 	 * definitions from class path using the name "resources.xml".
 	 * 
-	 * @param provider
-	 *            Credential provider, which can provide credentials for external
-	 *            resources.
+	 * @param provider Credential provider, which can provide credentials for
+	 *                 external resources.
 	 * 
-	 * @throws CoreException
-	 *             If initialization fails.
-	 * @throws NullPointerException
-	 *             if provider parameter is undefined.
+	 * @throws CoreException            If initialization fails.
+	 * @throws IllegalArgumentException if parameter is undefined.
 	 */
 	void initialize(CredentialProvider provider) throws CoreException {
 		initialize(provider, new File(RESOURCE_FILE));
@@ -195,21 +193,17 @@ class CoreImpl implements PineappleCore {
 	/**
 	 * Initialize the core component.
 	 * 
-	 * @param resources
-	 *            Environment configuration file which contains resource
-	 *            definitions.
-	 * @param provider
-	 *            Credential provider, which can provide credentials for external
-	 *            resources.
+	 * @param resources Environment configuration file which contains resource
+	 *                  definitions.
+	 * @param provider  Credential provider, which can provide credentials for
+	 *                  external resources.
 	 * 
-	 * @throws CoreException
-	 *             If initialization fails.
-	 * @throws NullPointerException
-	 *             if provider parameter is undefined.
+	 * @throws CoreException            If initialization fails.
+	 * @throws IllegalArgumentException if parameters are undefined.
 	 */
 	void initialize(CredentialProvider provider, File resources) throws CoreException {
-		Validate.notNull(provider, "provider is undefined.");
-		Validate.notNull(resources, "resources is undefined.");
+		notNull(provider, "provider is undefined.");
+		notNull(resources, "resources is undefined.");
 
 		// create execution result
 		String message = messageProvider.getMessage("ci.initialize_info");
@@ -249,8 +243,7 @@ class CoreImpl implements PineappleCore {
 	/**
 	 * Initialize the core component.
 	 * 
-	 * @throws CoreException
-	 *             If initialization fails.
+	 * @throws CoreException If initialization fails.
 	 */
 	void initialize() throws CoreException {
 
@@ -305,7 +298,6 @@ class CoreImpl implements PineappleCore {
 	 * @return execution result from initialization. If component isn't initialized
 	 *         then null is returned.
 	 */
-
 	@Override
 	public String getInitializationInfoAsString() {
 		if (initializationInfoResult == null) {
@@ -327,11 +319,10 @@ class CoreImpl implements PineappleCore {
 	/**
 	 * Initialize file based credential provider.
 	 * 
-	 * @param credential
-	 *            Defines absolute path where the credentials should be loaded from.
+	 * @param credential Defines absolute path where the credentials should be
+	 *                   loaded from.
 	 * 
-	 * @throws CoreException
-	 *             If initialization fails.
+	 * @throws CoreException If initialization fails.
 	 */
 	void initializeCredentialProvider(File credentials) throws CoreException {
 
@@ -377,18 +368,16 @@ class CoreImpl implements PineappleCore {
 	/**
 	 * Load resources configuration.
 	 * 
-	 * @param resources
-	 *            Resources file object. Defines location/filename where the
-	 *            resources file should be loaded from.
-	 * @param result
-	 *            execution result.
+	 * @param resources Resources file object. Defines location/filename where the
+	 *                  resources file should be loaded from.
+	 * @param result    execution result.
 	 * 
-	 * @throws CommandFacadeException
-	 *             if load fails.
+	 * @throws CommandFacadeException   if load fails.
+	 * @throws IllegalArgumentException if parameters are undefined.
 	 */
 	void loadResourceConfiguration(File resources, ExecutionResult result) {
-		Validate.notNull(resources, "resources is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(resources, "resources is undefined.");
+		notNull(result, "result is undefined.");
 		Object config = commandFacade.loadJaxbObjects(resources, Configuration.class, result);
 		resourcesConfiguration = Configuration.class.cast(config);
 	}
@@ -396,14 +385,13 @@ class CoreImpl implements PineappleCore {
 	/**
 	 * initialize plugin activator.
 	 * 
-	 * @param result
-	 *            execution result.
+	 * @param result execution result.
 	 * 
-	 * @throws CommandFacadeException
-	 *             if load fails.
+	 * @throws CommandFacadeException   if load fails.
+	 * @throws IllegalArgumentException if result is undefined.
 	 */
 	void initializePluginActivator(ExecutionResult result) {
-		Validate.notNull(result, "result is undefined.");
+		notNull(result, "result is undefined.");
 		pluginActivator = commandFacade.initializePluginActivator(credentialProvider, resourcesConfiguration, result);
 	}
 
@@ -425,8 +413,7 @@ class CoreImpl implements PineappleCore {
 	/**
 	 * Initialize the scheduled operation repository.
 	 * 
-	 * @param result
-	 *            execution result.
+	 * @param result execution result.
 	 */
 	void initializeScheduledOperationRepository(ExecutionResult result) {
 		scheduledOperationRepository.initialize(result);
@@ -487,7 +474,7 @@ class CoreImpl implements PineappleCore {
 
 	@Override
 	public void cancelOperation(ExecutionInfo executionInfo) {
-		Validate.notNull(executionInfo, "executionInfo is undefined.");
+		notNull(executionInfo, "executionInfo is undefined.");
 
 		// cancel operation
 		ExecutionResult result = executionInfo.getResult();
@@ -507,28 +494,27 @@ class CoreImpl implements PineappleCore {
 	 * Validate operation arguments. Throws an {@link IllegalArgumentException} if
 	 * an argument doesn't pass validation.
 	 * 
-	 * @param operation
-	 *            Operation argument.
-	 * @param environment
-	 *            Environment argument.
-	 * @param Module
-	 *            Module argument.
+	 * @param operation   Operation argument.
+	 * @param environment Environment argument.
+	 * @param Module      Module argument.
 	 */
 	void validateExcutionArguments(String operation, String environment, String module) {
-		Validate.notNull(operation, "operation is undefined.");
-		Validate.notEmpty(operation, "operation is empty string.");
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty string.");
-		Validate.notNull(module, "module is undefined.");
-		Validate.notEmpty(module, "module is empty string.");
+		notNull(operation, "operation is undefined.");
+		notEmpty(operation, "operation is empty string.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty string.");
+		notNull(module, "module is undefined.");
+		notEmpty(module, "module is empty string.");
 	}
 
 	public void addListener(ResultListener listener) {
+		notNull(listener, "listener is undefined.");
+
 		this.resultRepository.addListener(listener);
 	}
 
 	public void addListeners(ResultListener[] listeners) {
-		Validate.notNull(listeners, "listeners is undefined.");
+		notNull(listeners, "listeners is undefined.");
 
 		// add listeners
 		for (ResultListener listener : listeners) {
@@ -564,8 +550,7 @@ class CoreImpl implements PineappleCore {
 	/**
 	 * Add some meta data for reports.
 	 * 
-	 * @param executionResult
-	 *            root execution result to which the data is added.
+	 * @param executionResult root execution result to which the data is added.
 	 */
 	void addMetadataForReport(ExecutionResult executionResult) {
 		String message = messageProvider.getMessage("ci.report_metadata_operation_info");

@@ -22,12 +22,12 @@
 
 package com.alpha.pineapple.command.initialization;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import java.lang.reflect.Field;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
-import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
 
 import com.alpha.javautils.reflection.AnnotationFinder;
 import com.alpha.javautils.reflection.ReflectionHelper;
@@ -36,10 +36,6 @@ import com.alpha.javautils.reflection.ReflectionHelper;
  * Implementation of the {@link CommandInitializer} interface.
  */
 public class CommandInitializerImpl implements CommandInitializer {
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Reflection helper
@@ -78,9 +74,8 @@ public class CommandInitializerImpl implements CommandInitializer {
 	}
 
 	public void initialize(Context context, Command command) throws CommandInitializationFailedException {
-		// validate arguments
-		Validate.notNull(context, "context is undefined.");
-		Validate.notNull(command, "command is undefined.");
+		notNull(context, "context is undefined.");
+		notNull(command, "command is undefined.");
 
 		// variable used for exception handling
 		Field exceptionHandlingField = null;
@@ -109,33 +104,7 @@ public class CommandInitializerImpl implements CommandInitializer {
 				// initialize command field with value
 				helper.setFieldValue(command, field, contextValue);
 			}
-		} catch (IllegalArgumentException e) {
-			// create error message
-			StringBuilder message = new StringBuilder();
-			message.append("Setter invocation failed for field <");
-			message.append(exceptionHandlingField);
-			message.append("> on command < ");
-			message.append(command);
-			message.append("> with value <");
-			message.append(contextValue);
-			message.append(">. Inspect embbeded exception for details.");
-
-			// throw exception
-			throw new CommandInitializationFailedException(message.toString(), e);
-		} catch (SecurityException e) {
-			// create error message
-			StringBuilder message = new StringBuilder();
-			message.append("Setter invocation failed for field <");
-			message.append(exceptionHandlingField);
-			message.append("> on command < ");
-			message.append(command);
-			message.append("> with value <");
-			message.append(contextValue);
-			message.append(">. Inspect embbeded exception for details.");
-
-			// throw exception
-			throw new CommandInitializationFailedException(message.toString(), e);
-		} catch (IllegalAccessException e) {
+		} catch (Exception e) {
 			// create error message
 			StringBuilder message = new StringBuilder();
 			message.append("Setter invocation failed for field <");
@@ -163,6 +132,9 @@ public class CommandInitializerImpl implements CommandInitializer {
 	 *             If key isn't defined in the context.
 	 */
 	String getContextKey(Context context, Field field) throws CommandInitializationFailedException {
+		notNull(context, "context is undefined.");
+		notNull(field, "field is undefined.");
+
 		// get annotation
 		Initialize annotation;
 		annotation = field.getAnnotation(Initialize.class);
@@ -201,9 +173,10 @@ public class CommandInitializerImpl implements CommandInitializer {
 	 * @return Value from context.
 	 */
 	Object getContextValue(Context context, String contextKey) {
-		// lookup value from context
+		notNull(context, "context is undefined.");
+		notNull(contextKey, "contextKey is undefined.");
+		
 		Object contextValue = context.get(contextKey);
-
 		return contextValue;
 	}
 

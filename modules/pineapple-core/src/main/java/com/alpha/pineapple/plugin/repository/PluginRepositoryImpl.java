@@ -21,6 +21,8 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.plugin.repository;
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,9 +84,8 @@ public class PluginRepositoryImpl implements PluginRuntimeRepository {
 	@Override
 	public void initialize(ExecutionResult executionResult, String[] pluginIds)
 			throws PluginInitializationFailedException {
-		// validate parameters
-		Validate.notNull(executionResult, "executionResult is undefined.");
-		Validate.notNull(pluginIds, "pluginIds is undefined.");
+		notNull(executionResult, "executionResult is undefined.");
+		notNull(pluginIds, "pluginIds is undefined.");
 
 		// log debug message
 		if (logger.isDebugEnabled()) {
@@ -121,11 +122,9 @@ public class PluginRepositoryImpl implements PluginRuntimeRepository {
 
 	public void initializePlugin(ExecutionResult executionResult, String pluginId)
 			throws PluginInitializationFailedException {
-
-		// validate parameters
-		Validate.notNull(pluginId, "pluginId is undefined.");
-		Validate.notEmpty(pluginId, "pluginId is empty.");
-		Validate.notNull(executionResult, "executionResult is undefined.");
+		notNull(pluginId, "pluginId is undefined.");
+		notEmpty(pluginId, "pluginId is empty.");
+		notNull(executionResult, "executionResult is undefined.");
 
 		ExecutionResult pluginResult = createExecutionResultForPlugin(executionResult, pluginId);
 

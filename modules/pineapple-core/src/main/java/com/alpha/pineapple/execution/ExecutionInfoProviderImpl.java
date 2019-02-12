@@ -22,11 +22,11 @@
 
 package com.alpha.pineapple.execution;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.chain.Context;
-import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.CoreConstants;
 import com.alpha.pineapple.i18n.MessageProvider;
@@ -35,11 +35,6 @@ import com.alpha.pineapple.i18n.MessageProvider;
  * Implementation of the {@link ExecutionInfoProvider} interface.
  */
 public class ExecutionInfoProviderImpl implements ExecutionInfoProvider {
-
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Message provider for I18N support.
@@ -54,7 +49,7 @@ public class ExecutionInfoProviderImpl implements ExecutionInfoProvider {
 	ExecutionContextRepository executionContextRepository;
 
 	public ExecutionInfo get(ExecutionResult result) {
-		Validate.notNull(result, "result is undefined.");
+		notNull(result, "result is undefined.");
 
 		// get context
 		Context context = executionContextRepository.get(result);

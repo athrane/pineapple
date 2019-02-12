@@ -21,15 +21,15 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.web.activity;
-
+import static com.alpha.javautils.ArgumentUtils.notNull;
 import static com.alpha.pineapple.web.WebApplicationConstants.SIMPLE_DATE_FORMAT;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.i18n.MessageProvider;
@@ -83,9 +83,9 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
 	@Override
 	public void addOpenModuleActivity(Account account, String module) {
-		Validate.notNull(account, "account is undefined");
-		Validate.notNull(module, "module is undefined");
-		Validate.notEmpty(module, "module is empty");
+		notNull(account, "account is undefined");
+		notNull(module, "module is undefined");
+		notEmpty(module, "module is empty");
 
 		// initialize info
 		ActivityInfo info = webAppObjectFactory.createActivityInfo();
@@ -105,7 +105,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
 	@Override
 	public void addRefreshConfigurationActivity(Account account) {
-		Validate.notNull(account, "account is undefined");
+		notNull(account, "account is undefined");
 
 		// initialize info
 		ActivityInfo info = webAppObjectFactory.createActivityInfo();
@@ -124,13 +124,13 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
 	@Override
 	public void addExecuteOperationActivity(Account account, String module, String operation, String environment) {
-		Validate.notNull(account, "account is undefined");
-		Validate.notNull(module, "module is undefined");
-		Validate.notEmpty(module, "module is empty");
-		Validate.notNull(operation, "operation is undefined");
-		Validate.notEmpty(operation, "operation is empty");
-		Validate.notNull(environment, "environment is undefined");
-		Validate.notEmpty(environment, "environment is empty");
+		notNull(account, "account is undefined");
+		notNull(module, "module is undefined");
+		notEmpty(module, "module is empty");
+		notNull(operation, "operation is undefined");
+		notEmpty(operation, "operation is empty");
+		notNull(environment, "environment is undefined");
+		notEmpty(environment, "environment is empty");
 
 		// initialize info
 		ActivityInfo info = webAppObjectFactory.createActivityInfo();

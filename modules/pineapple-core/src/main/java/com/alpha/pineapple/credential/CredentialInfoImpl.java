@@ -22,7 +22,8 @@
 
 package com.alpha.pineapple.credential;
 
-import org.apache.commons.lang3.Validate;
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -55,10 +56,9 @@ public class CredentialInfoImpl implements CredentialInfo {
 	 *            password.
 	 */
 	public CredentialInfoImpl(String id, String user, String password) {
-		// validate parameters
-		Validate.notNull(id, "id is undefined.");
-		Validate.notNull(user, "user is undefined.");
-		Validate.notNull(password, "password is undefined.");
+		notNull(id, "id is undefined.");
+		notNull(user, "user is undefined.");
+		notNull(password, "password is undefined.");
 		this.id = id;
 		this.user = user;
 		this.password = password;

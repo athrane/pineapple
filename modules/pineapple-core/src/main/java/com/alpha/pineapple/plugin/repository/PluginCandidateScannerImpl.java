@@ -21,6 +21,7 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.plugin.repository;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
 import java.io.IOException;
 import java.net.URL;
@@ -29,7 +30,6 @@ import java.util.Enumeration;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -71,9 +71,7 @@ public class PluginCandidateScannerImpl implements PluginCandidateScanner {
 	BeanNameGenerator pluginNameGenerator;
 
 	public ApplicationContext scanForPlugins(String[] pluginIds) throws PluginInitializationFailedException {
-
-		// validate parameters
-		Validate.notNull(pluginIds, "pluginIds is undefined.");
+		notNull(pluginIds, "pluginIds is undefined.");
 
 		try {
 			// get class loader

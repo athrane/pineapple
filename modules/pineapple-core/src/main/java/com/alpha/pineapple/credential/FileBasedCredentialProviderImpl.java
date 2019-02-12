@@ -22,6 +22,12 @@
 
 package com.alpha.pineapple.credential;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
+
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
+
 import java.io.File;
 import java.util.TreeMap;
 
@@ -98,14 +104,10 @@ public class FileBasedCredentialProviderImpl implements CredentialProvider {
 	/**
 	 * Internal factory method for creation of credential info.
 	 * 
-	 * @param id
-	 *            credential ID.
-	 * @param user
-	 *            user name.
-	 * @param password
-	 *            password.
-	 * @param environmentInfo
-	 *            target environment info where credential is added to.
+	 * @param id              credential ID.
+	 * @param user            user name.
+	 * @param password        password.
+	 * @param environmentInfo target environment info where credential is added to.
 	 * 
 	 * @return create credential info.
 	 */
@@ -125,14 +127,12 @@ public class FileBasedCredentialProviderImpl implements CredentialProvider {
 	/**
 	 * Initialize provider.
 	 * 
-	 * @param envConfiguration
-	 *            Environment configuration containing the credentials.
+	 * @param envConfiguration Environment configuration containing the credentials.
 	 * 
-	 * @throws Exception
-	 *             If initialization fails.
+	 * @throws Exception If initialization fails.
 	 */
 	public void initialize(Configuration envConfiguration) throws CoreException {
-		Validate.notNull(envConfiguration, "envConfiguration is undefined.");
+		notNull(envConfiguration, "envConfiguration is undefined.");
 		configurationInfo = credentialConfigurationMarshaller.map(envConfiguration);
 
 		// save to write back encrypted passwords
@@ -149,25 +149,22 @@ public class FileBasedCredentialProviderImpl implements CredentialProvider {
 	/**
 	 * Initialize provider.
 	 * 
-	 * @param file
-	 *            File object which defines location of credentials file.
+	 * @param file File object which defines location of credentials file.
 	 * 
-	 * @throws Exception
-	 *             If initialization fails.
+	 * @throws Exception If initialization fails.
 	 */
 	public void initialize(File file) throws CoreException {
-		Validate.notNull(file, "file is undefined.");
+		notNull(file, "file is undefined.");
 		Configuration envConfiguration = credentialConfigurationMarshaller.load(file);
 		initialize(envConfiguration);
 	}
 
 	@Override
 	public boolean contains(String environment, String id) {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
-		Validate.notNull(id, "id is undefined.");
-		Validate.notEmpty(id, "id is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
+		notNull(id, "id is undefined.");
+		notEmpty(id, "id is empty.");
 
 		// attempt to resolve environment
 		if (containsEnvironment(environment)) {
@@ -182,11 +179,10 @@ public class FileBasedCredentialProviderImpl implements CredentialProvider {
 
 	@Override
 	public Credential get(String environment, String id) throws CredentialNotFoundException {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
-		Validate.notNull(id, "id is undefined.");
-		Validate.notEmpty(id, "id is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
+		notNull(id, "id is undefined.");
+		notEmpty(id, "id is empty.");
 
 		// attempt to resolve environment
 		if (containsEnvironment(environment)) {
@@ -217,14 +213,14 @@ public class FileBasedCredentialProviderImpl implements CredentialProvider {
 			throws EnvironmentNotFoundException, CredentialAlreadyExitsException {
 
 		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
-		Validate.notNull(id, "id is undefined.");
-		Validate.notEmpty(id, "id is empty.");
-		Validate.notNull(user, "user is undefined.");
-		Validate.notEmpty(user, "user is empty.");
-		Validate.notNull(password, "password is undefined.");
-		Validate.notEmpty(password, "password is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
+		notNull(id, "id is undefined.");
+		notEmpty(id, "id is empty.");
+		notNull(user, "user is undefined.");
+		notEmpty(user, "user is empty.");
+		notNull(password, "password is undefined.");
+		notEmpty(password, "password is empty.");
 
 		// get environment info - throws exception if environment doesn't exist
 		EnvironmentInfo environmentInfo = getEnvironment(environment);
@@ -249,16 +245,15 @@ public class FileBasedCredentialProviderImpl implements CredentialProvider {
 	public CredentialInfo update(CredentialInfo credentialInfo, String environment, String id, String user,
 			String password) throws EnvironmentNotFoundException, CredentialNotFoundException {
 
-		// validate parameters
-		Validate.notNull(credentialInfo, "credentialInfo is undefined.");
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
-		Validate.notNull(id, "id is undefined.");
-		Validate.notEmpty(id, "id is empty.");
-		Validate.notNull(user, "user is undefined.");
-		Validate.notEmpty(user, "user is empty.");
-		Validate.notNull(password, "password is undefined.");
-		Validate.notEmpty(password, "password is empty.");
+		notNull(credentialInfo, "credentialInfo is undefined.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
+		notNull(id, "id is undefined.");
+		notEmpty(id, "id is empty.");
+		notNull(user, "user is undefined.");
+		notEmpty(user, "user is empty.");
+		notNull(password, "password is undefined.");
+		notEmpty(password, "password is empty.");
 
 		// get environment info - throws exception if environment doesn't exist
 		EnvironmentInfo environmentInfo = getEnvironment(environment);
@@ -313,8 +308,8 @@ public class FileBasedCredentialProviderImpl implements CredentialProvider {
 
 	@Override
 	public boolean containsEnvironment(String environment) {
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
 
 		// exit if repository isn't initialized yet
 		if (configurationInfo == null)
@@ -325,9 +320,8 @@ public class FileBasedCredentialProviderImpl implements CredentialProvider {
 
 	@Override
 	public EnvironmentInfo getEnvironment(String environment) throws EnvironmentNotFoundException {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
 
 		if (containsEnvironment(environment)) {
 			return configurationInfo.getEnvironment(environment);
@@ -347,9 +341,8 @@ public class FileBasedCredentialProviderImpl implements CredentialProvider {
 	@Override
 	public EnvironmentInfo createEnvironment(String environment, String description)
 			throws EnvironmentAlreadyExistsException {
-		// validate parameters
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
 
 		if (configurationInfo.containsEnvironment(environment)) {
 			Object[] args = { environment };
@@ -380,12 +373,10 @@ public class FileBasedCredentialProviderImpl implements CredentialProvider {
 
 	@Override
 	public EnvironmentInfo updateEnvironment(EnvironmentInfo environmentInfo, String environment, String description) {
-
-		// validate parameters
-		Validate.notNull(environmentInfo, "environmentInfo is undefined.");
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty.");
-		Validate.notNull(description, "resource is description.");
+		notNull(environmentInfo, "environmentInfo is undefined.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty.");
+		notNull(description, "resource is description.");
 
 		// get info or provoke exceptions
 		EnvironmentInfo validatedInfo = getEnvironment(environmentInfo.getId());
@@ -409,8 +400,7 @@ public class FileBasedCredentialProviderImpl implements CredentialProvider {
 	 * 
 	 * @return true if save succeeded.
 	 * 
-	 * @throws SaveConfigurationFailedException
-	 *             if save fails.
+	 * @throws SaveConfigurationFailedException if save fails.
 	 */
 	void saveProvider() throws SaveConfigurationFailedException {
 		Configuration configuration = credentialConfigurationMarshaller.map(configurationInfo);

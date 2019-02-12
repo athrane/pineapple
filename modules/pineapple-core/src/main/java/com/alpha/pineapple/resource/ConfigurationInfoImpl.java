@@ -21,11 +21,10 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.resource;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
 import java.util.Collection;
 import java.util.Map;
-
-import org.apache.commons.lang3.Validate;
 
 /**
  * Implementation of the {@linkplain ConfigurationInfo} interface.
@@ -44,7 +43,7 @@ public class ConfigurationInfoImpl implements ConfigurationInfo {
 	 *            collection of environments info's.
 	 */
 	public ConfigurationInfoImpl(Map<String, EnvironmentInfo> environments) {
-		Validate.notNull(environments, "infos is undefined.");
+		notNull(environments, "infos is undefined.");
 		this.environments = environments;
 	}
 
@@ -68,7 +67,7 @@ public class ConfigurationInfoImpl implements ConfigurationInfo {
 
 	@Override
 	public void addEnvironment(EnvironmentInfo environmentInfo) {
-		Validate.notNull(environmentInfo, "environmentInfo is undefined.");
+		notNull(environmentInfo, "environmentInfo is undefined.");
 		if (containsEnvironment(environmentInfo.getId()))
 			return;
 		environments.put(environmentInfo.getId(), environmentInfo);
@@ -76,7 +75,7 @@ public class ConfigurationInfoImpl implements ConfigurationInfo {
 
 	@Override
 	public void deleteEnvironment(EnvironmentInfo environmentInfo) {
-		Validate.notNull(environmentInfo, "environmentInfo is undefined.");
+		notNull(environmentInfo, "environmentInfo is undefined.");
 		if (!containsEnvironment(environmentInfo.getId()))
 			return;
 		environments.remove(environmentInfo.getId());

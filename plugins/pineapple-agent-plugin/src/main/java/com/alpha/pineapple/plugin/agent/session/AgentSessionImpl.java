@@ -22,13 +22,14 @@
 
 package com.alpha.pineapple.plugin.agent.session;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -111,9 +112,8 @@ public class AgentSessionImpl implements AgentSession {
 
 	public void connect(com.alpha.pineapple.model.configuration.Resource resource, Credential credential)
 			throws SessionConnectException {
-		// validate parameters
-		Validate.notNull(resource, "resource is undefined.");
-		Validate.notNull(credential, "credential is undefined.");
+		notNull(resource, "resource is undefined.");
+		notNull(credential, "credential is undefined.");
 
 		// log debug message
 		if (logger.isDebugEnabled()) {
@@ -159,11 +159,11 @@ public class AgentSessionImpl implements AgentSession {
 	@Override
 	public void connect(String host, int port, String user, String password, int timeOut)
 			throws SessionConnectException {
-		Validate.notNull(host, "host is undefined.");
-		Validate.notNull(port, "port is undefined.");
-		Validate.notNull(user, "user is undefined.");
-		Validate.notNull(password, "password is undefined.");
-		Validate.notNull(timeOut, "timeOut is undefined.");
+		notNull(host, "host is undefined.");
+		notNull(port, "port is undefined.");
+		notNull(user, "user is undefined.");
+		notNull(password, "password is undefined.");
+		notNull(timeOut, "timeOut is undefined.");
 
 		// log debug message
 		if (logger.isDebugEnabled()) {

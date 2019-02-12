@@ -21,7 +21,7 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.io.file;
-
+import static com.alpha.javautils.ArgumentUtils.notNull;
 import static com.alpha.javautils.SystemUtils.JAVA_IO_TMPDIR;
 import static com.alpha.javautils.SystemUtils.USER_HOME;
 import static com.alpha.javautils.SystemUtils.USER_NAME;
@@ -30,13 +30,13 @@ import static com.alpha.pineapple.CoreConstants.CRDENTIALPROVIDER_PASSWORD_FILE;
 import static com.alpha.pineapple.CoreConstants.MODULES_DIR;
 import static com.alpha.pineapple.CoreConstants.PINEAPPLE_DIR;
 import static com.alpha.pineapple.CoreConstants.REPORTS_DIR;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import java.io.File;
 import java.util.Properties;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.javautils.ConversionFailedException;
@@ -202,9 +202,9 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 
 	@Override
 	public File resolveModelPath(String path, ModuleInfo info) {
-		Validate.notNull(path, "path is undefined");
-		Validate.notEmpty(path, "path is empty");
-		Validate.notNull(info, "info is undefined");
+		notNull(path, "path is undefined");
+		notEmpty(path, "path is empty");
+		notNull(info, "info is undefined");
 
 		// resolve path if it starts with 'modulepath:'
 		if (startsWithModulePathPrefix(path)) {
@@ -220,9 +220,9 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 
 	@Override
 	public File resolveModelPath(String path, ExecutionResult result) {
-		Validate.notNull(path, "path is undefined");
-		Validate.notEmpty(path, "path is empty");
-		Validate.notNull(result, "result is undefined");
+		notNull(path, "path is undefined");
+		notEmpty(path, "path is empty");
+		notNull(result, "result is undefined");
 
 		// exit if prefix isn't present
 		if (!startsWithModulePathPrefix(path))

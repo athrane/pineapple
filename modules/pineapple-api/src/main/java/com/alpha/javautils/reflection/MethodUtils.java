@@ -21,13 +21,11 @@
  ******************************************************************************/
 
 package com.alpha.javautils.reflection;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-
-import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
 
 /**
  * Helper class for getting reflection info about Java methods and invoking
@@ -38,11 +36,6 @@ public class MethodUtils {
 	 * String string for retrieving getter method for any package.
 	 */
 	static final String ANY_PACKAGE_NAME = "";
-
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Resolve getter methods from attribute name and method matcher object.
@@ -59,9 +52,9 @@ public class MethodUtils {
 	 */
 	public static Method[] resolveGetterMethods(Object targetObject, String attributeName,
 			GetterMethodMatcher matcher) {
-		Validate.notNull(targetObject, "targetObject is undefined.");
-		Validate.notNull(attributeName, "attributeName is undefined.");
-		Validate.notNull(matcher, "matcher is undefined.");
+		notNull(targetObject, "targetObject is undefined.");
+		notNull(attributeName, "attributeName is undefined.");
+		notNull(matcher, "matcher is undefined.");
 
 		/**
 		 * // log debug message if (logger.isDebugEnabled()) { StringBuilder message =
@@ -103,15 +96,6 @@ public class MethodUtils {
 		// convert to array
 		Method[] resultArray = result.toArray(new Method[result.size()]);
 
-		/**
-		 * // log debug message if (logger.isDebugEnabled()) { StringBuilder message =
-		 * new StringBuilder(); message.append( "Successfully resolved getters methods
-		 * on object <" ); message.append( StringUtils.substringBefore(
-		 * targetObject.toString(), "\n" ) ); message.append( "> with result <" );
-		 * message.append( ReflectionToStringBuilder.toString( resultArray) );
-		 * message.append( ">." ); logger.debug( message.toString() ); }
-		 **/
-
 		return resultArray;
 	}
 
@@ -127,16 +111,8 @@ public class MethodUtils {
 	 * @return getter methods resolved from from attribute name.
 	 */
 	public static Method[] resolveGetterMethods(Object targetObject, GetterMethodMatcher matcher) {
-		Validate.notNull(targetObject, "targetObject is undefined.");
-		Validate.notNull(matcher, "matcher is undefined.");
-
-		/**
-		 * // log debug message if (logger.isDebugEnabled()) { StringBuilder message =
-		 * new StringBuilder(); message.append( "Starting to resolve getter methods from
-		 * <" ); message.append( StringUtils.substringBefore( targetObject.toString(),
-		 * "\n" ) ); message.append( "> using method matcher <" ); message.append(
-		 * matcher ); message.append( ">." ); logger.debug( message.toString() ); }
-		 **/
+		notNull(targetObject, "targetObject is undefined.");
+		notNull(matcher, "matcher is undefined.");
 
 		// create result
 		ArrayList<Method> result = new ArrayList<Method>();
@@ -157,15 +133,6 @@ public class MethodUtils {
 
 		// convert to array
 		Method[] resultArray = result.toArray(new Method[result.size()]);
-
-		/**
-		 * // log debug message if (logger.isDebugEnabled()) { StringBuilder message =
-		 * new StringBuilder(); message.append( "Successfully resolved getters methods
-		 * on object <" ); message.append( StringUtils.substringBefore(
-		 * targetObject.toString(), "\n" ) ); message.append( "> with result <" );
-		 * message.append( ReflectionToStringBuilder.toString( resultArray) );
-		 * message.append( ">." ); logger.debug( message.toString() ); }
-		 **/
 
 		return resultArray;
 	}
@@ -279,7 +246,6 @@ public class MethodUtils {
 	 * @return true if the method has no parameters.
 	 */
 	public static boolean methodReturnsPrimitiveBoolean(Method method) {
-		// get return type
 		Class<?> returnType = method.getReturnType();
 		return (returnType == java.lang.Boolean.TYPE);
 	}
@@ -306,7 +272,7 @@ public class MethodUtils {
 	 * @return true if method returns a standard Java primitive.
 	 */
 	public static boolean methodReturnsPrimitive(Method method) {
-		Validate.notNull(method, "method is undefined.");
+		notNull(method, "method is undefined.");
 
 		Class<?> returnType = method.getReturnType();
 
@@ -336,7 +302,7 @@ public class MethodUtils {
 	 * @return true if method returns a standard Java primitive.
 	 */
 	public static boolean methodReturnsPrimitiveAsObject(Method method) {
-		Validate.notNull(method, "method is undefined.");
+		notNull(method, "method is undefined.");
 
 		Class<?> returnType = method.getReturnType();
 
@@ -378,8 +344,8 @@ public class MethodUtils {
 	 * @return true if method returns designated class.
 	 */
 	public static boolean methodReturnsObject(Method method, Class<?> classObject) {
-		Validate.notNull(method, "method is undefined.");
-		Validate.notNull(classObject, "classObject is undefined.");
+		notNull(method, "method is undefined.");
+		notNull(classObject, "classObject is undefined.");
 
 		Class<?> returnType = method.getReturnType();
 		if (returnType instanceof Class) {
@@ -403,8 +369,8 @@ public class MethodUtils {
 	 *         packages.
 	 */
 	public static boolean methodReturnsObjectInPackage(Method method, String packageName) {
-		Validate.notNull(method, "method is undefined.");
-		Validate.notNull(packageName, "packageName is undefined.");
+		notNull(method, "method is undefined.");
+		notNull(packageName, "packageName is undefined.");
 
 		Class<?> returnType = method.getReturnType();
 		if (returnType instanceof Class) {
@@ -491,14 +457,6 @@ public class MethodUtils {
 	 */
 	public static Method[] getGetterMethods(Object targetObject, String packageName) {
 
-		/**
-		 * // log debug message if (logger.isDebugEnabled()) { StringBuilder message =
-		 * new StringBuilder(); message.append( "Starting to process object <" );
-		 * message.append( targetObject ); message.append( "> for getter methods which
-		 * are declared by classes in package <" ); message.append( packageName );
-		 * message.append( ">." ); logger.debug( message.toString() ); }
-		 **/
-
 		// create result
 		ArrayList<Method> result = new ArrayList<Method>();
 
@@ -525,14 +483,6 @@ public class MethodUtils {
 
 		// convert to array
 		Method[] resultArray = result.toArray(new Method[result.size()]);
-
-		/**
-		 * // log debug message if (logger.isDebugEnabled()) { StringBuilder message =
-		 * new StringBuilder(); message.append( "Successfully processed object <" );
-		 * message.append( targetObject ); message.append( "> for getter methods <" );
-		 * message.append( ReflectionToStringBuilder.toString( resultArray) );
-		 * message.append( ">." ); logger.debug( message.toString() ); }
-		 **/
 
 		return resultArray;
 	}

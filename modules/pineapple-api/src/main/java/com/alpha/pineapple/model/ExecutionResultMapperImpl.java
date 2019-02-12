@@ -22,6 +22,8 @@
 
 package com.alpha.pineapple.model;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +31,11 @@ import java.util.TreeSet;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.execution.ExecutionResult;
-import com.alpha.pineapple.execution.ExecutionResultNotification;
 import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
+import com.alpha.pineapple.execution.ExecutionResultNotification;
 import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.model.execution.Message;
 import com.alpha.pineapple.model.execution.MessageValue;
@@ -83,7 +84,7 @@ public class ExecutionResultMapperImpl implements ExecutionResultMapper {
 
 	@Override
 	public Results mapNotificationsToModel(ExecutionResultNotification[] notifications) {
-		Validate.notNull(notifications, "notifications is undefined.");
+		notNull(notifications, "notifications is undefined.");
 
 		// create model
 		Results modelResults = resultModelObjectFactory.createResults();
@@ -114,7 +115,7 @@ public class ExecutionResultMapperImpl implements ExecutionResultMapper {
 	 * @return mapped model execution result.
 	 */
 	Result internalMapSingleNotificationToModel(ExecutionResultNotification notification) {
-		Validate.notNull(notification, "notification is undefined.");
+		notNull(notification, "notification is undefined.");
 
 		// create model result and set attributes
 		ExecutionResult result = notification.getResult();
@@ -157,8 +158,8 @@ public class ExecutionResultMapperImpl implements ExecutionResultMapper {
 
 	@Override
 	public void mapModelToResults(Results modelResults, Map<Integer, ExecutionResult> resultsMap) {
-		Validate.notNull(modelResults, "modelResults is undefined.");
-		Validate.notNull(resultsMap, "results is undefined.");
+		notNull(modelResults, "modelResults is undefined.");
+		notNull(resultsMap, "results is undefined.");
 
 		// get model updates
 		ResultSequence resultSequence = modelResults.getResultSequence();
@@ -185,7 +186,7 @@ public class ExecutionResultMapperImpl implements ExecutionResultMapper {
 
 	@Override
 	public Map<Integer, ExecutionResult> createExecutionResultMap(ExecutionResult rootResult) {
-		Validate.notNull(rootResult, "rootResult is undefined.");
+		notNull(rootResult, "rootResult is undefined.");
 
 		Map<Integer, ExecutionResult> resultsMap = new HashMap<Integer, ExecutionResult>();
 		resultsMap.put(LOCAL_ROOT_INDEX_INTEGER, rootResult);
@@ -254,6 +255,8 @@ public class ExecutionResultMapperImpl implements ExecutionResultMapper {
 	 *            map of known execution results.
 	 */
 	void updateResult(Result modelResult, Map<Integer, ExecutionResult> results) {
+		notNull(modelResult, "modelResult is undefined.");
+		notNull(results, "results is undefined.");
 
 		// get target result
 		ExecutionResult targetResult = results.get(modelResult.getCorrelationId());
@@ -292,6 +295,7 @@ public class ExecutionResultMapperImpl implements ExecutionResultMapper {
 	 * @return parent correlation ID.
 	 */
 	int resolveParentCorrelationId(Result modelResult) {
+		notNull(modelResult, "modelResult is undefined.");
 
 		// handle root case
 		// if parent correlation ID is null then result is handled as remote

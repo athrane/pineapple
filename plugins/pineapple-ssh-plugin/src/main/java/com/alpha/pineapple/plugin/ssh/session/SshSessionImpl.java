@@ -21,10 +21,11 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.plugin.ssh.session;
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.command.execution.CommandRunner;
@@ -137,9 +138,8 @@ public class SshSessionImpl implements SshSession {
 
 	public void connect(com.alpha.pineapple.model.configuration.Resource resource, Credential credential)
 			throws SessionConnectException {
-		// validate parameters
-		Validate.notNull(resource, "resource is undefined.");
-		Validate.notNull(credential, "credential is undefined.");
+		notNull(resource, "resource is undefined.");
+		notNull(credential, "credential is undefined.");
 
 		// log debug message
 		if (logger.isDebugEnabled()) {
@@ -196,12 +196,11 @@ public class SshSessionImpl implements SshSession {
 	@Override
 	public void connect(String host, int port, String user, String password, int timeOut)
 			throws SessionConnectException {
-		// validate parameters
-		Validate.notNull(host, "host is undefined.");
-		Validate.notNull(port, "port is undefined.");
-		Validate.notNull(user, "user is undefined.");
-		Validate.notNull(password, "password is undefined.");
-		Validate.notNull(timeOut, "timeOut is undefined.");
+		notNull(host, "host is undefined.");
+		notNull(port, "port is undefined.");
+		notNull(user, "user is undefined.");
+		notNull(password, "password is undefined.");
+		notNull(timeOut, "timeOut is undefined.");
 
 		// log debug message
 		if (logger.isDebugEnabled()) {
@@ -246,14 +245,13 @@ public class SshSessionImpl implements SshSession {
 	@Override
 	public void connect(String host, int port, String user, String passPhrase, String privateKeyFile, int timeOut)
 			throws SessionConnectException {
-		// validate parameters
-		Validate.notNull(host, "host is undefined.");
-		Validate.notEmpty(user, "host is empty.");
-		Validate.notNull(port, "port is undefined.");
-		Validate.notNull(user, "user is undefined.");
-		Validate.notNull(user, "privateKeyFile is undefined.");
-		Validate.notEmpty(user, "privateKeyFile is empty.");
-		Validate.notNull(timeOut, "timeOut is undefined.");
+		notNull(host, "host is undefined.");
+		notEmpty(user, "host is empty.");
+		notNull(port, "port is undefined.");
+		notNull(user, "user is undefined.");
+		notNull(user, "privateKeyFile is undefined.");
+		notEmpty(user, "privateKeyFile is empty.");
+		notNull(timeOut, "timeOut is undefined.");
 
 		// log debug message
 		if (logger.isDebugEnabled()) {

@@ -21,6 +21,7 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.execution;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.log4j.Logger;
@@ -133,8 +133,8 @@ public class ExecutionResultImpl implements ExecutionResult {
 		super();
 
 		// validate parameters
-		Validate.notNull(description, "description is undefined");
-		Validate.notNull(policy, "policy is undefined");
+		notNull(description, "description is undefined");
+		notNull(policy, "policy is undefined");
 
 		// set attributes
 		this.correlationId = hashCode();

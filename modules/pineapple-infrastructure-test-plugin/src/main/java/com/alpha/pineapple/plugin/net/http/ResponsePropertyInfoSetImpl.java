@@ -22,18 +22,13 @@
 
 package com.alpha.pineapple.plugin.net.http;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import java.util.ArrayList;
 
-import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
 import org.hamcrest.Matcher;
 
 public class ResponsePropertyInfoSetImpl implements ResponsePropertyInfoSet {
-
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * List of response property info objects.
@@ -49,32 +44,14 @@ public class ResponsePropertyInfoSetImpl implements ResponsePropertyInfoSet {
 	}
 
 	public void addProperty(String name, String xpath, Matcher<?> intra, Matcher<?> inter) {
-
-		// validate parameters
-		Validate.notNull(name, "name is undefined");
-		Validate.notNull(xpath, "xpath is undefined");
+		notNull(name, "name is undefined");
+		notNull(xpath, "xpath is undefined");
 
 		// create property info
 		ResponsePropertyInfo property = new ResponsePropertyInfoImpl(name, xpath, intra, inter);
 
 		// add property
 		properties.add(property);
-
-		// log debug message
-		if (logger.isDebugEnabled()) {
-			StringBuilder message = new StringBuilder();
-			message.append("Successfully registered response property with name <");
-			message.append(name);
-			message.append(">, XPath expression <");
-			message.append(xpath);
-			message.append(">, intra matcher <");
-			message.append(intra);
-			message.append("> and inter matcher <");
-			message.append(inter);
-			message.append(">.");
-			logger.debug(message.toString());
-		}
-
 	}
 
 }

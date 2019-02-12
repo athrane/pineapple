@@ -22,6 +22,8 @@
 
 package com.alpha.pineapple.i18n;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -29,7 +31,6 @@ import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.javautils.StackTraceHelper;
@@ -86,9 +87,7 @@ public class PropertyFileMessageProviderImpl implements MessageProvider {
 	 *             If message provider initialization fails.
 	 */
 	public void setBasename(String baseName) throws MessageProviderInitializationException {
-
-		// validate arguments
-		Validate.notNull(baseName, "baseName is undefined.");
+		notNull(baseName, "baseName is undefined.");
 
 		// define stream
 		InputStream inStream = null;
@@ -168,7 +167,7 @@ public class PropertyFileMessageProviderImpl implements MessageProvider {
 		}
 
 		// validate argument
-		Validate.notNull(key, "key is undefined");
+		notNull(key, "key is undefined");
 
 		// get message formatter
 		MessageFormat formatter = getMessageFormat(key);
@@ -180,13 +179,8 @@ public class PropertyFileMessageProviderImpl implements MessageProvider {
 	}
 
 	public String getMessage(String key) {
-
-		// validate argument
-		Validate.notNull(key, "key is undefined");
-
-		// resolve key
+		notNull(key, "key is undefined");
 		String value = messages.getString(key);
-
 		return value;
 	}
 
@@ -200,6 +194,8 @@ public class PropertyFileMessageProviderImpl implements MessageProvider {
 	 * @return file name for resource property file.
 	 */
 	String createFileName(String baseName) {
+		notNull(baseName, "baseName is undefined");
+		
 		// create file name
 		StringBuilder fileName = new StringBuilder();
 		fileName.append("/");
@@ -218,6 +214,7 @@ public class PropertyFileMessageProviderImpl implements MessageProvider {
 	 * @return Message formatter for a message.
 	 */
 	MessageFormat getMessageFormat(String key) {
+		notNull(key, "key is undefined");
 
 		// get message format
 		if (messageFormatCache.containsKey(key)) {

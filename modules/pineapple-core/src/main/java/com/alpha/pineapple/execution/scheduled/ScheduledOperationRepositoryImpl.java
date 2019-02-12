@@ -21,16 +21,17 @@
  */
 package com.alpha.pineapple.execution.scheduled;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
+
 import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.Validate;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
@@ -131,17 +132,17 @@ public class ScheduledOperationRepositoryImpl implements ScheduledOperationRespo
 	@Override
 	public ScheduledOperationInfo create(String name, String module, String operation, String environment,
 			String description, String cron) {
-		Validate.notNull(name, "name is undefined");
-		Validate.notEmpty(name, "name is empty");
-		Validate.notNull(operation, "operation is undefined");
-		Validate.notEmpty(operation, "operation is empty");
-		Validate.notNull(environment, "environment is undefined");
-		Validate.notEmpty(environment, "environment is empty");
-		Validate.notNull(module, "module is undefined");
-		Validate.notEmpty(module, "module is empty");
-		Validate.notNull(description, "description is undefined");
-		Validate.notNull(cron, "cron is undefined");
-		Validate.notEmpty(cron, "cron is empty");
+		notNull(name, "name is undefined");
+		notEmpty(name, "name is empty");
+		notNull(operation, "operation is undefined");
+		notEmpty(operation, "operation is empty");
+		notNull(environment, "environment is undefined");
+		notEmpty(environment, "environment is empty");
+		notNull(module, "module is undefined");
+		notEmpty(module, "module is empty");
+		notNull(description, "description is undefined");
+		notNull(cron, "cron is undefined");
+		notEmpty(cron, "cron is empty");
 
 		// create operation
 		ScheduledOperation scheduledOperation = scheduledOperationModelObjectFactory.createScheduledOperation();
@@ -157,7 +158,7 @@ public class ScheduledOperationRepositoryImpl implements ScheduledOperationRespo
 
 	@Override
 	public ScheduledOperationInfo create(ScheduledOperation operation) {
-		Validate.notNull(operation, "operation is undefined");
+		notNull(operation, "operation is undefined");
 
 		// validate name is unique
 		if (operations.containsKey(operation.getName())) {
@@ -187,8 +188,8 @@ public class ScheduledOperationRepositoryImpl implements ScheduledOperationRespo
 
 	@Override
 	public void delete(String name) {
-		Validate.notNull(name, "name is undefined");
-		Validate.notEmpty(name, "name is empty");
+		notNull(name, "name is undefined");
+		notEmpty(name, "name is empty");
 
 		if (!operations.containsKey(name)) {
 			Object[] args = { name };

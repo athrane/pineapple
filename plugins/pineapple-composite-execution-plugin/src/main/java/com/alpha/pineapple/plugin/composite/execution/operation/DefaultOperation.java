@@ -22,12 +22,14 @@
 
 package com.alpha.pineapple.plugin.composite.execution.operation;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
+
 import java.io.File;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.javautils.OperationUtils;
@@ -98,10 +100,9 @@ public class DefaultOperation implements Operation {
 	ExecutionInfoProvider coreExecutionInfoProvider;
 
 	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
-		// validate parameters
-		Validate.notNull(content, "content is undefined.");
-		Validate.notNull(session, "session is undefined.");
-		Validate.notNull(result, "result is undefined.");
+		notNull(content, "content is undefined.");
+		notNull(session, "session is undefined.");
+		notNull(result, "result is undefined.");
 
 		// log debug message
 		if (logger.isDebugEnabled()) {
@@ -239,12 +240,12 @@ public class DefaultOperation implements Operation {
 	 *            Module argument.
 	 */
 	void validateExcutionArguments(String operation, String environment, String module) {
-		Validate.notNull(operation, "operation is undefined.");
-		Validate.notEmpty(operation, "operation is empty string.");
-		Validate.notNull(environment, "environment is undefined.");
-		Validate.notEmpty(environment, "environment is empty string.");
-		Validate.notNull(module, "module is undefined.");
-		Validate.notEmpty(module, "module is empty string.");
+		notNull(operation, "operation is undefined.");
+		notEmpty(operation, "operation is empty string.");
+		notNull(environment, "environment is undefined.");
+		notEmpty(environment, "environment is empty string.");
+		notNull(module, "module is undefined.");
+		notEmpty(module, "module is empty string.");
 	}
 
 	/**

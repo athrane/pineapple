@@ -21,7 +21,8 @@
  */
 package com.alpha.pineapple.execution.scheduled;
 
-import org.apache.commons.lang3.Validate;
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import com.alpha.pineapple.execution.OperationTask;
 
@@ -64,13 +65,13 @@ public class ScheduledOperationTask implements Runnable {
 	 *            synchronous operation task to delegate execution to.
 	 */
 	public ScheduledOperationTask(String operation, String environment, String module, OperationTask operationTask) {
-		Validate.notNull(operation, "operation is undefined");
-		Validate.notEmpty(operation, "operation is empty");
-		Validate.notNull(environment, "environment is undefined");
-		Validate.notEmpty(environment, "environment is empty");
-		Validate.notNull(module, "module is undefined");
-		Validate.notEmpty(module, "module is empty");
-		Validate.notNull(operationTask, "core is undefined");
+		notNull(operation, "operation is undefined");
+		notEmpty(operation, "operation is empty");
+		notNull(environment, "environment is undefined");
+		notEmpty(environment, "environment is empty");
+		notNull(module, "module is undefined");
+		notEmpty(module, "module is empty");
+		notNull(operationTask, "core is undefined");
 		this.operation = operation;
 		this.environment = environment;
 		this.module = module;

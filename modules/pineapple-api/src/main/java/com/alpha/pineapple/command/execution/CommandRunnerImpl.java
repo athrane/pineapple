@@ -22,10 +22,11 @@
 
 package com.alpha.pineapple.command.execution;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 import org.apache.commons.chain.impl.ContextBase;
-import org.apache.commons.lang3.Validate;
 
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
@@ -63,9 +64,9 @@ public class CommandRunnerImpl implements CommandRunner {
 
 	@SuppressWarnings("unchecked")
 	public ExecutionResult run(Command command, String description, Context context) {
-		Validate.notNull(command, "command was undefined.");
-		Validate.notNull(description, "description was undefined.");
-		Validate.notNull(context, "context was undefined.");
+		notNull(command, "command was undefined.");
+		notNull(description, "description was undefined.");
+		notNull(context, "context was undefined.");
 
 		// create execution result object
 		ExecutionResult executionResult = getExecutionResult().addChild(description);
@@ -76,9 +77,9 @@ public class CommandRunnerImpl implements CommandRunner {
 
 	@SuppressWarnings("unchecked")
 	public ExecutionResult run(Command command, ExecutionResult result, Context context) {
-		Validate.notNull(command, "command was undefined.");
-		Validate.notNull(result, "result was undefined.");
-		Validate.notNull(context, "context was undefined.");
+		notNull(command, "command was undefined.");
+		notNull(result, "result was undefined.");
+		notNull(context, "context was undefined.");
 
 		// add execution result to context
 		context.put(EXECUTION_RESULT_CONTEXT_KEY, result);

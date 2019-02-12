@@ -21,12 +21,10 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.plugin.net.model;
+import static com.alpha.javautils.ArgumentUtils.notNull;
 
 import java.util.HashMap;
 import java.util.List;
-
-import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.plugin.infrastructure.model.AssertionValues;
 import com.alpha.pineapple.plugin.infrastructure.model.Properties;
@@ -37,11 +35,6 @@ import com.alpha.pineapple.plugin.infrastructure.model.Property;
  * {@link AssertionValues} object.
  */
 public class AssertionValuesPropertyGetter {
-
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * The AssertionValues which is accessed.
@@ -57,8 +50,7 @@ public class AssertionValuesPropertyGetter {
 	 * AssertionValuesPropertyGetter constructor.
 	 */
 	public AssertionValuesPropertyGetter(AssertionValues assertionValues) {
-		// validate parameters
-		Validate.notNull(assertionValues, "assertionValues  is undefined.");
+		notNull(assertionValues, "assertionValues  is undefined.");
 
 		this.assertionValues = assertionValues;
 
@@ -111,18 +103,6 @@ public class AssertionValuesPropertyGetter {
 	public String getProperty(String key) {
 		// validate property exists
 		if (!cache.containsKey(key)) {
-
-			if (logger.isDebugEnabled()) {
-				// create error message
-				StringBuilder message = new StringBuilder();
-				message.append("Property lookup failed with key <");
-				message.append(key);
-				message.append("> in assertion values <");
-				message.append(this);
-				message.append(">. Property is not defined. Null string 'null' is returned.");
-				logger.debug(message.toString());
-			}
-
 			return "null";
 		}
 

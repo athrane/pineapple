@@ -22,13 +22,13 @@
 
 package com.alpha.pineapple.docker.model;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
+import static com.alpha.javautils.NetworkUtils.validatePort;
 import static com.alpha.pineapple.docker.DockerConstants.PORTBINDING_NULL_HOST_IP;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import java.util.List;
 
-import org.apache.commons.lang3.Validate;
-
-import com.alpha.javautils.NetworkUtils;
 import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationLabelsMap;
 import com.alpha.pineapple.docker.model.jaxb.ContainerConfigurationVolumesMap;
 import com.alpha.pineapple.docker.model.jaxb.PortMapMap;
@@ -127,9 +127,9 @@ public class ContainerInfoImpl implements ContainerInfo {
 	 *             if port number is invalid.
 	 */
 	void addPort(int portNumber, String portType) {
-		NetworkUtils.validatePort(portNumber);
-		Validate.notNull(portType, "portType is undefined");
-		Validate.notEmpty(portType, "portType is empty");
+		validatePort(portNumber);
+		notNull(portType, "portType is undefined");
+		notEmpty(portType, "portType is empty");
 
 		String portKey = createPortString(portNumber, portType);
 		if (configuration.getExposedPorts() == null)
@@ -140,8 +140,8 @@ public class ContainerInfoImpl implements ContainerInfo {
 
 	@Override
 	public void addVolume(String volume) {
-		Validate.notNull(volume, "volume is undefined.");
-		Validate.notEmpty(volume, "volume is empty.");
+		notNull(volume, "volume is undefined.");
+		notEmpty(volume, "volume is empty.");
 
 		// get volumes map
 		if (configuration.getVolumes() == null)
@@ -154,10 +154,10 @@ public class ContainerInfoImpl implements ContainerInfo {
 
 	@Override
 	public void addEnvironmentVariable(String name, String value) {
-		Validate.notNull(name, "name is undefined.");
-		Validate.notEmpty(name, "name is empty.");
-		Validate.notNull(value, "value is undefined.");
-		Validate.notEmpty(value, "value is empty.");
+		notNull(name, "name is undefined.");
+		notEmpty(name, "name is empty.");
+		notNull(value, "value is undefined.");
+		notEmpty(value, "value is empty.");
 
 		List<String> envs = configuration.getEnv();
 		String env = new StringBuilder().append(name).append("=").append(value).toString();
@@ -166,10 +166,10 @@ public class ContainerInfoImpl implements ContainerInfo {
 
 	@Override
 	public void addLabel(String key, String value) {
-		Validate.notNull(key, "key is undefined.");
-		Validate.notEmpty(key, "key is empty.");
-		Validate.notNull(value, "value is undefined.");
-		Validate.notEmpty(value, "value is empty.");
+		notNull(key, "key is undefined.");
+		notEmpty(key, "key is empty.");
+		notNull(value, "value is undefined.");
+		notEmpty(value, "value is empty.");
 
 		// get labels map
 		if (configuration.getLabels() == null)
@@ -204,10 +204,10 @@ public class ContainerInfoImpl implements ContainerInfo {
 	 *             if port number is invalid.
 	 */
 	void addPortBinding(int containerPortNumber, String containerPortType, int hostPortNumber) {
-		NetworkUtils.validatePort(containerPortNumber);
-		Validate.notNull(containerPortType, "containerPortType is undefined.");
-		Validate.notEmpty(containerPortType, "containerPortType is empty.");
-		NetworkUtils.validatePort(hostPortNumber);
+		validatePort(containerPortNumber);
+		notNull(containerPortType, "containerPortType is undefined.");
+		notEmpty(containerPortType, "containerPortType is empty.");
+		validatePort(hostPortNumber);
 
 		// get host config
 		if (configuration.getHostConfig() == null)

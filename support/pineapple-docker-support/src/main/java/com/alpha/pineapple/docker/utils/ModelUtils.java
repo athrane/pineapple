@@ -21,12 +21,12 @@
  */
 package com.alpha.pineapple.docker.utils;
 
+import static com.alpha.javautils.ArgumentUtils.notNull;
 import static com.alpha.pineapple.docker.DockerConstants.UNDEFINED_REPO_TAG;
 
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 
 import com.alpha.pineapple.docker.model.ImageInfo;
 import com.alpha.pineapple.docker.model.rest.JsonMessage;
@@ -68,8 +68,7 @@ public class ModelUtils {
 	 * @return true if the tag parameter is defined and not empty.
 	 */
 	public static boolean isTaggedImage(ImageInfo info) {
-		Validate.notNull(info, "info is undefined");
-
+		notNull(info, "info is undefined");
 		if (info.getTag() == null)
 			return false;
 		if (info.getTag().isEmpty())
@@ -90,8 +89,7 @@ public class ModelUtils {
 	 *         null or empty.
 	 */
 	public static boolean containsStatusUpdate(JsonMessage info) {
-		Validate.notNull(info, "info is undefined");
-
+		notNull(info, "info is undefined");
 		if (info.getStatus() == null)
 			return false;
 		if (info.getStatus().isEmpty())
@@ -110,8 +108,7 @@ public class ModelUtils {
 	 *         the stream field. Returns false if the status field is null or empty.
 	 */
 	public static boolean containsStreamUpdate(JsonMessage info) {
-		Validate.notNull(info, "info is undefined");
-
+		notNull(info, "info is undefined");
 		if (info.getStream() == null)
 			return false;
 		if (info.getStream().isEmpty())
@@ -130,8 +127,7 @@ public class ModelUtils {
 	 *         the error field. Returns false if the status field is null or empty.
 	 */
 	public static boolean containsErrorUpdate(JsonMessage message) {
-		Validate.notNull(message, "info is undefined");
-
+		notNull(message, "info is undefined");
 		if (message.getError() == null)
 			return false;
 		if (message.getError().isEmpty())
@@ -200,7 +196,7 @@ public class ModelUtils {
 	 * @return true if repository tag is defined in image name.
 	 */
 	public static boolean isImageRepoTagDefined(ListedContainer container) {
-		Validate.notNull(container, "container is undefined.");
+		notNull(container, "container is undefined.");
 		return containsSeparator(container.getImage());
 	}
 
@@ -213,6 +209,7 @@ public class ModelUtils {
 	 * @return true if container name is prefixed with "/"..
 	 */
 	public static boolean isContainerNamePrefixed(String name) {
+		notNull(name, "name is undefined.");						
 		if (name == null)
 			return false;
 		if (name.isEmpty())
@@ -229,6 +226,7 @@ public class ModelUtils {
 	 * @return container name with prefix removed.
 	 */
 	public static String removeContainerNamePrefix(String name) {
+		notNull(name, "name is undefined.");				
 		if (!isContainerNamePrefixed(name))
 			return name;
 		return name.substring(INDEX_FOR_PREFIX_REMOVAL);
@@ -243,6 +241,7 @@ public class ModelUtils {
 	 * @return first list entry.
 	 */
 	public static String getFirstListEntry(List<String> list) {
+		notNull(list, "list is undefined.");		
 		if (list.isEmpty())
 			return null;
 		return list.get(FIRST_INDEX);
@@ -257,7 +256,7 @@ public class ModelUtils {
 	 * @return true if string contains separator ":".
 	 */
 	public static boolean containsSeparator(String name) {
-		Validate.notNull(name, "name is undefined.");
+		notNull(name, "name is undefined.");
 		int index = name.indexOf(":");
 		return (index != -1);
 	}

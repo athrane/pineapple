@@ -118,7 +118,7 @@ public class ScheduledOperationConfigurationMarshallerImpl implements ScheduledO
 			ExecutionResult failedResult = e.getResult();
 
 			// create and throw exception
-			String stackTraceMessage = failedResult.getMessages().get(ExecutionResult.MSG_STACKTRACE);
+			String stackTraceMessage = failedResult.getMessages().get(ExecutionResult.MSG_ERROR_MESSAGE);
 			Object[] args = { stackTraceMessage };
 			String errorMessage = messageProvider.getMessage("socm.load_operations_failed", args);
 			throw new LoadConfigurationFailedException(errorMessage);

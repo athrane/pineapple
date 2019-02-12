@@ -31,6 +31,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
@@ -49,6 +50,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.alpha.javautils.SystemUtils;
 import com.alpha.pineapple.execution.ExecutionInfo;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResultFactory;
@@ -58,6 +60,9 @@ import com.alpha.springutils.DirectoryTestExecutionListener;
 
 /**
  * Integration test of the {@linkplain ScheduledOperationRepositoryImpl} class.
+ * 
+ * The Pineapple home directory system property is set to the test directory
+ * to direct all file access to use the test directory.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("integration-test")
@@ -122,6 +127,11 @@ public class ScheduledOperationRepositoryIntegrationTest {
 	 */
 	ExecutionResult result;
 
+	/**
+	 * Current test directory.
+	 */
+	File testDirectory;
+	
 	@Before
 	public void setUp() throws Exception {
 		randomName = RandomStringUtils.randomAlphabetic(10);
@@ -131,6 +141,14 @@ public class ScheduledOperationRepositoryIntegrationTest {
 		randomDescription = RandomStringUtils.randomAlphabetic(10);
 
 		result = executionResultFactory.startExecution(randomDescription);
+
+		// get the test directory
+		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
+		
+		// set the pineapple.home.dir system property
+		// The Pineapple home directory system property is set to the test directory
+		// to direct all file access to use the test directory.		
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());		
 	}
 
 	@After

@@ -146,12 +146,22 @@ public class ExecutionResultImpl implements ExecutionResult {
 		this.watch = new StopWatch();
 		this.detailMessages = new HashMap<String, String>();
 
+		// log debug message
+		if (logger.isDebugEnabled()) {
+			StringBuilder debugMessage = new StringBuilder();
+			debugMessage.append(this.hashCode());
+			debugMessage.append(": Created result [");
+			debugMessage.append(description);
+			debugMessage.append("].");
+			logger.debug(debugMessage.toString());
+		}
+		
 		// start timing
 		watch.start();
 		isWatchRunning = true;
 
 		// trigger event at repository
-		notifyRepository();
+		notifyRepository();			
 	}
 
 	/**
@@ -286,7 +296,8 @@ public class ExecutionResultImpl implements ExecutionResult {
 		// log debug message
 		if (logger.isDebugEnabled()) {
 			StringBuilder debugMessage = new StringBuilder();
-			debugMessage.append("State is set to [");
+			debugMessage.append(this.hashCode());
+			debugMessage.append(": State is set to [");
 			debugMessage.append(this.state);
 			debugMessage.append("] for [");
 			debugMessage.append(description);
@@ -485,7 +496,8 @@ public class ExecutionResultImpl implements ExecutionResult {
 			// log debug message
 			if (logger.isDebugEnabled()) {
 				StringBuilder debugMessage = new StringBuilder();
-				debugMessage.append("Message added with id [");
+				debugMessage.append(this.hashCode());				
+				debugMessage.append(": Message added with id [");
 				debugMessage.append(id);
 				debugMessage.append("] and content [");
 				debugMessage.append(message);
@@ -514,7 +526,8 @@ public class ExecutionResultImpl implements ExecutionResult {
 		// log debug message
 		if (logger.isDebugEnabled()) {
 			StringBuilder debugMessage = new StringBuilder();
-			debugMessage.append("Updated Message with id [");
+			debugMessage.append(this.hashCode());			
+			debugMessage.append(": Updated Message with id [");
 			debugMessage.append(id);
 			debugMessage.append("] and new content [");
 			debugMessage.append(message);

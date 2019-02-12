@@ -24,6 +24,6 @@ ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 RUN /usr/local/bin/install-plugins.sh \
     blueocean:1.10.2 \
     disk-usage:0.28 \
-    pipeline-maven:3.67
+    pipeline-maven:3.6.7
 		
 CMD /usr/local/bin/jenkins.sh

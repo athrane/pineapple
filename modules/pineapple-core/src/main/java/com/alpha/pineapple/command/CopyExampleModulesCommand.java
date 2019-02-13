@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
-* Copyright (C) 2007-2015 Allan Thrane Andersen.
+* Copyright (C) 2007-2018 Allan Thrane Andersen.
  * 
  * This file is part of Pineapple.
  * 
@@ -36,7 +36,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.hamcrest.core.IsAnything;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -187,8 +186,7 @@ public class CopyExampleModulesCommand implements Command, ApplicationContextAwa
 	/**
 	 * Copy resource as a file.
 	 * 
-	 * @param resource
-	 *            Spring resource.
+	 * @param resource Spring resource.
 	 * 
 	 * @throws IOException
 	 */
@@ -217,11 +215,9 @@ public class CopyExampleModulesCommand implements Command, ApplicationContextAwa
 	/**
 	 * Create directory if required.
 	 * 
-	 * @param file
-	 *            Destination path for file.
+	 * @param file Destination path for file.
 	 * 
-	 * @throws IOException
-	 *             If creation fails.
+	 * @throws IOException If creation fails.
 	 */
 	void createDirectory(File file) throws IOException {
 		if (!file.getParentFile().exists()) {
@@ -232,11 +228,9 @@ public class CopyExampleModulesCommand implements Command, ApplicationContextAwa
 	/**
 	 * Copy file.
 	 * 
-	 * @param file
-	 *            Destination path for file.
+	 * @param file Destination path for file.
 	 * 
-	 * @throws IOException
-	 *             If creation fails.
+	 * @throws IOException If creation fails.
 	 */
 	void copyFile(org.springframework.core.io.Resource resource, File file) throws IOException {
 		InputStream inputStream = null;
@@ -247,20 +241,17 @@ public class CopyExampleModulesCommand implements Command, ApplicationContextAwa
 
 		} finally {
 			IOUtils.closeQuietly(inputStream);
-			;
 		}
 	}
 
 	/**
 	 * Returns true if resource is a file.
 	 * 
-	 * @param resource
-	 *            Spring resource.
+	 * @param resource Spring resource.
 	 * 
 	 * @return true if resource is a file.
 	 * 
-	 * @throws IOException
-	 *             if query fails.
+	 * @throws IOException if query fails.
 	 */
 	boolean isResourceFile(org.springframework.core.io.Resource resource) throws IOException {
 		URI uri = resource.getURI();

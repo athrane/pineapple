@@ -33,7 +33,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
-import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.CoreConstants;
 import com.alpha.pineapple.command.initialization.CommandInitializer;
@@ -145,11 +144,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	public static final String EXAMPLE_MODULES_KEY = "example-modules";
 
 	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
-
-	/**
 	 * JAXB object factory.
 	 */
 	ObjectFactory factory = new ObjectFactory();
@@ -259,10 +253,8 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	 * Validate of configuration exist. Configuration is deemed to exist if either
 	 * the resource file or the credentials file exist.
 	 * 
-	 * @param resourcesFile
-	 *            resource file.
-	 * @param credentialsFile
-	 *            credentials file.
+	 * @param resourcesFile   resource file.
+	 * @param credentialsFile credentials file.
 	 * 
 	 * @return true if resource file or credentials file exist.
 	 */
@@ -345,12 +337,9 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	/**
 	 * Create environment
 	 * 
-	 * @param environments
-	 *            Environments container.
-	 * @param id
-	 *            Environment id.
-	 * @param desc
-	 *            Environment description.
+	 * @param environments Environments container.
+	 * @param id           Environment id.
+	 * @param desc         Environment description.
 	 * @return Created environment.
 	 */
 	Environment createEnvironment(List<Environment> environments, String id, String desc) {
@@ -365,8 +354,7 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	/**
 	 * Create resource for composite execution plugin.
 	 * 
-	 * @param environment
-	 *            Environment where resource is added to.
+	 * @param environment Environment where resource is added to.
 	 */
 	void addCompositeExecutionResource(Environment environment) {
 		com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
@@ -378,8 +366,7 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	/**
 	 * Create resource for infrastructure test plugin.
 	 * 
-	 * @param environment
-	 *            Environment where resource is added to.
+	 * @param environment Environment where resource is added to.
 	 */
 	void addInfrastructureTestResource(Environment environment) {
 		com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
@@ -391,14 +378,10 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	/**
 	 * Create resource for SSH plugin.
 	 * 
-	 * @param environment
-	 *            Environment where resource is added to.
-	 * @param id
-	 *            Resource ID.
-	 * @param host
-	 *            SSH host.
-	 * @param port
-	 *            SSH port.
+	 * @param environment Environment where resource is added to.
+	 * @param id          Resource ID.
+	 * @param host        SSH host.
+	 * @param port        SSH port.
 	 */
 	void addSshResource(Environment environment, String id, String host, String port) {
 		com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
@@ -416,14 +399,10 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	/**
 	 * Create resource for Agent plugin.
 	 * 
-	 * @param environment
-	 *            Environment where resource is added to.
-	 * @param id
-	 *            Resource ID.
-	 * @param host
-	 *            agent host.
-	 * @param port
-	 *            agent port.
+	 * @param environment Environment where resource is added to.
+	 * @param id          Resource ID.
+	 * @param host        agent host.
+	 * @param port        agent port.
 	 */
 	void addAgentResource(Environment environment, String id, String host, String port) {
 		com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
@@ -440,14 +419,10 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	/**
 	 * Create resource for Docker plugin.
 	 * 
-	 * @param environment
-	 *            Environment where resource is added to.
-	 * @param id
-	 *            Resource ID.
-	 * @param host
-	 *            Docker daemon host.
-	 * @param port
-	 *            Docker daemon port.
+	 * @param environment Environment where resource is added to.
+	 * @param id          Resource ID.
+	 * @param host        Docker daemon host.
+	 * @param port        Docker daemon port.
 	 */
 	void addDockerResource(Environment environment, String id, String host, String port) {
 		com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
@@ -494,12 +469,9 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	/**
 	 * Create environment for credentials.
 	 * 
-	 * @param environments
-	 *            Environments container.
-	 * @param id
-	 *            Environment id.
-	 * @param desc
-	 *            Environment description.
+	 * @param environments Environments container.
+	 * @param id           Environment id.
+	 * @param desc         Environment description.
 	 * @return Created environment.
 	 */
 	Environment createCredentialEnvironment(List<Environment> environments, String id, String desc) {
@@ -514,10 +486,8 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	/**
 	 * Add credential for SSH plugin.
 	 * 
-	 * @param environment
-	 *            Environment where credential is added to.
-	 * @param id
-	 *            Resource ID.
+	 * @param environment Environment where credential is added to.
+	 * @param id          Resource ID.
 	 */
 	void addSshCredential(Environment environment, String id) {
 		Credential credential = factory.createCredential();
@@ -530,10 +500,8 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	/**
 	 * Add properties to resource.
 	 * 
-	 * @param properties
-	 *            Hash map containing properties which is added to resource .
-	 * @param resource
-	 *            Target resource.
+	 * @param properties Hash map containing properties which is added to resource .
+	 * @param resource   Target resource.
 	 */
 	void addProperties(HashMap<String, String> properties, com.alpha.pineapple.model.configuration.Resource resource) {
 		// get properties

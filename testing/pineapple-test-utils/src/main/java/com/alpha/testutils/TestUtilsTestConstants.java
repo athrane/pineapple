@@ -31,7 +31,7 @@ public class TestUtilsTestConstants {
 	/**
 	 * Runtime directory used by unit test to store data.
 	 */
-	public static String TEST_RUNTIME_ROOT_DIRECTORY = new File(System.getProperty("java.io.tmpdir")).getAbsolutePath();
+	public static final String TEST_RUNTIME_ROOT_DIRECTORY = new File(System.getProperty("java.io.tmpdir")).getAbsolutePath();
 
 	/**
 	 * Default directory for directory based unit tests.

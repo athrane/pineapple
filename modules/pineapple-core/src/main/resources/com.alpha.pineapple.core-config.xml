@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:task="http://www.springframework.org/schema/task"
-	xmlns:aop="http://www.springframework.org/schema/aop"		
+	xmlns:aop="http://www.springframework.org/schema/aop"
 
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 			http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
@@ -11,123 +12,160 @@
 			http://www.springframework.org/schema/aop
 			http://www.springframework.org/schema/aop/spring-aop-3.0.xsd    		 
     		http://www.springframework.org/schema/task 
-    		http://www.springframework.org/schema/task/spring-task-3.0.xsd" >
+    		http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
 	<!-- enable annotation based configuration -->
 	<context:annotation-config />
-	<task:annotation-driven executor="operationExecutor" scheduler="operationScheduler" />
-		
+	<task:annotation-driven
+		executor="operationExecutor" scheduler="operationScheduler" />
+
 	<!-- Configures pineapple-api -->
 	<import resource="classpath:com.alpha.pineapple.api-config.xml" />
 
 	<!-- Configures pineapple-commands-api -->
-	<import resource="classpath:com.alpha.pineapple.commands-api-config.xml" />
+	<import
+		resource="classpath:com.alpha.pineapple.commands-api-config.xml" />
 
 	<!-- Configures pineapple-hamcrest-matchers -->
-	<import resource="classpath:com.alpha.pineapple.hamcrest-config.xml" />
+	<import
+		resource="classpath:com.alpha.pineapple.hamcrest-config.xml" />
 
 	<!-- define message provider for internationalization -->
 	<bean id="messageProvider"
 		class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">
-		<property name="basename" value="com.alpha.pineapple.core-messages" />
+		<property name="basename"
+			value="com.alpha.pineapple.core-messages" />
 	</bean>
 
 	<!-- define utilities -->
 	<bean id="fileUtils" class="com.alpha.javautils.FileUtils" />
-	<bean id="reflectionHelper" class="com.alpha.javautils.ReflectionHelper" />
-	
+	<bean id="reflectionHelper"
+		class="com.alpha.javautils.ReflectionHelper" />
+
 	<!-- define resolvers -->
-	<bean id="resourceResolver" class="com.alpha.pineapple.execution.DefaultResourceResolverImpl" />
-	<bean id="operationResolver" class="com.alpha.pineapple.execution.DefaultOperationResolverImpl" />
-	<bean id="resultTriggerResolver" class="com.alpha.pineapple.execution.trigger.DefaultResultTriggerResolverImpl" />
-	<bean id="operationTriggerResolver" class="com.alpha.pineapple.execution.trigger.DefaultOperationTriggerResolverImpl" />
+	<bean id="resourceResolver"
+		class="com.alpha.pineapple.execution.DefaultResourceResolverImpl" />
+	<bean id="operationResolver"
+		class="com.alpha.pineapple.execution.DefaultOperationResolverImpl" />
+	<bean id="resultTriggerResolver"
+		class="com.alpha.pineapple.execution.trigger.DefaultResultTriggerResolverImpl" />
+	<bean id="operationTriggerResolver"
+		class="com.alpha.pineapple.execution.trigger.DefaultOperationTriggerResolverImpl" />
 
 	<!-- Defined variables builder, factories and resolver -->
-   	<bean id="resourceVariablesBuilder" class="com.alpha.pineapple.substitution.variables.ResourceVariablesBuilderImpl" scope="prototype"/>
-   	<bean id="resourceVariablesBuilderFactory"
-       class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+	<bean id="resourceVariablesBuilder"
+		class="com.alpha.pineapple.substitution.variables.ResourceVariablesBuilderImpl"
+		scope="prototype" />
+	<bean id="resourceVariablesBuilderFactory"
+		class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
 		<property name="targetBeanName">
-       		<idref local="resourceVariablesBuilder"/>
-    	</property>
-   	</bean>
-   	<bean id="compositeVariablesBuilder" class="com.alpha.pineapple.substitution.variables.CompositeVariablesBuilderImpl" scope="prototype"/>
-   	<bean id="compositeVariablesBuilderFactory"
-       class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+			<idref local="resourceVariablesBuilder" />
+		</property>
+	</bean>
+	<bean id="compositeVariablesBuilder"
+		class="com.alpha.pineapple.substitution.variables.CompositeVariablesBuilderImpl"
+		scope="prototype" />
+	<bean id="compositeVariablesBuilderFactory"
+		class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
 		<property name="targetBeanName">
-       		<idref local="compositeVariablesBuilder"/>
-    	</property>
-   	</bean>
-   	<bean id="modelVariablesBuilder" class="com.alpha.pineapple.substitution.variables.ModelVariablesBuilderImpl" scope="prototype"/>   	
-   	<bean id="modelVariablesBuilderFactory"
-       class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+			<idref local="compositeVariablesBuilder" />
+		</property>
+	</bean>
+	<bean id="modelVariablesBuilder"
+		class="com.alpha.pineapple.substitution.variables.ModelVariablesBuilderImpl"
+		scope="prototype" />
+	<bean id="modelVariablesBuilderFactory"
+		class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
 		<property name="targetBeanName">
-       		<idref local="modelVariablesBuilder"/>
-    	</property>
-   	</bean>
-   	<bean id="moduleDescriptorVariablesBuilder" class="com.alpha.pineapple.substitution.variables.ModuleDescriptorVariablesBuilderImpl" scope="prototype"/>   	
-   	<bean id="moduleDescriptorVariablesBuilderFactory"
-       class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+			<idref local="modelVariablesBuilder" />
+		</property>
+	</bean>
+	<bean id="moduleDescriptorVariablesBuilder"
+		class="com.alpha.pineapple.substitution.variables.ModuleDescriptorVariablesBuilderImpl"
+		scope="prototype" />
+	<bean id="moduleDescriptorVariablesBuilderFactory"
+		class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
 		<property name="targetBeanName">
-       		<idref local="moduleDescriptorVariablesBuilder"/>
-    	</property>
-   	</bean>   	   	   	   	   	
-   	<bean id="nullVariablesBuilder" class="com.alpha.pineapple.substitution.variables.NullVariablesBuilderImpl" scope="prototype"/>
-   	<bean id="variableResolver" class="com.alpha.pineapple.substitution.DefaultVariableResolverImpl" />
-   	
-   	<!-- define proxy factory and advice for variable substitution in models -->   	
-   	<bean id="modelVariableSubstitutor" class="com.alpha.pineapple.substitution.ModelVariableSubstitutorImpl" />
-   	<bean id="variableSubstitutedProxyFactoryFactory"
-       class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+			<idref local="moduleDescriptorVariablesBuilder" />
+		</property>
+	</bean>
+	<bean id="nullVariablesBuilder"
+		class="com.alpha.pineapple.substitution.variables.NullVariablesBuilderImpl"
+		scope="prototype" />
+	<bean id="variableResolver"
+		class="com.alpha.pineapple.substitution.DefaultVariableResolverImpl" />
+
+	<!-- define proxy factory and advice for variable substitution in models -->
+	<bean id="modelVariableSubstitutor"
+		class="com.alpha.pineapple.substitution.ModelVariableSubstitutorImpl" />
+	<bean id="variableSubstitutedProxyFactoryFactory"
+		class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
 		<property name="targetBeanName">
-       		<idref local="variableSubstitutedProxyFactory"/>
-    	</property>
-   	</bean>   	   	   	   	   	   	   	   	
-   	<bean id="variableSubstitutedProxyFactory" class="com.alpha.pineapple.substitution.proxy.VariableSubstitutedProxyFactoryImpl" />   	
-   	<bean id="variableSubstitutionInterceptor" class="com.alpha.pineapple.substitution.proxy.VariableSubstitutionInterceptor" />   	
+			<idref local="variableSubstitutedProxyFactory" />
+		</property>
+	</bean>
+	<bean id="variableSubstitutedProxyFactory"
+		class="com.alpha.pineapple.substitution.proxy.VariableSubstitutedProxyFactoryImpl" />
+	<bean id="variableSubstitutionInterceptor"
+		class="com.alpha.pineapple.substitution.proxy.VariableSubstitutionInterceptor" />
 
 	<!-- define session retry configuration -->
-   	<bean id="sessionRetryProxyFactory" class="com.alpha.pineapple.plugin.session.retry.SessionRetryProxyFactoryImpl" />   	
-	<bean id="sessionRetryListener" class=" com.alpha.pineapple.plugin.session.retry.SessionRetryListenerImpl" scope="prototype" />
-	<bean id="simpleRetryPolicy" class="org.springframework.retry.policy.SimpleRetryPolicy">
-        <property name="maxAttempts" value="4"/>
+	<bean id="sessionRetryProxyFactory"
+		class="com.alpha.pineapple.plugin.session.retry.SessionRetryProxyFactoryImpl" />
+	<bean id="sessionRetryListener"
+		class=" com.alpha.pineapple.plugin.session.retry.SessionRetryListenerImpl"
+		scope="prototype" />
+	<bean id="simpleRetryPolicy"
+		class="org.springframework.retry.policy.SimpleRetryPolicy">
+		<property name="maxAttempts" value="4" />
 	</bean>
-	<bean id="exponentialBackOffPolicy" class="org.springframework.retry.backoff.ExponentialBackOffPolicy" >
-        <property name="initialInterval" value="100"/>
-        <property name="maxInterval" value="5000"/>
-        <property name="multiplier" value="2"/>
-	</bean>    
-	<bean id="retryTemplate" class="org.springframework.retry.support.RetryTemplate" scope="prototype">
-    	<property name="retryPolicy" ref="simpleRetryPolicy" />
-		<property name="backOffPolicy" ref="exponentialBackOffPolicy" />        	
+	<bean id="exponentialBackOffPolicy"
+		class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
+		<property name="initialInterval" value="100" />
+		<property name="maxInterval" value="5000" />
+		<property name="multiplier" value="2" />
 	</bean>
-	<bean id="retryOperationsInterceptor" class="org.springframework.retry.interceptor.RetryOperationsInterceptor" scope="prototype">
+	<bean id="retryTemplate"
+		class="org.springframework.retry.support.RetryTemplate"
+		scope="prototype">
+		<property name="retryPolicy" ref="simpleRetryPolicy" />
+		<property name="backOffPolicy" ref="exponentialBackOffPolicy" />
 	</bean>
-  	<bean id="springRetryTemplateFactory" class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+	<bean id="retryOperationsInterceptor"
+		class="org.springframework.retry.interceptor.RetryOperationsInterceptor"
+		scope="prototype">
+	</bean>
+	<bean id="springRetryTemplateFactory"
+		class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
 		<property name="targetBeanName">
-       		<idref local="retryTemplate"/>
-    	</property>
-   	</bean>
-  	<bean id="sessionRetryListenerFactory" class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+			<idref local="retryTemplate" />
+		</property>
+	</bean>
+	<bean id="sessionRetryListenerFactory"
+		class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
 		<property name="targetBeanName">
-       		<idref local="sessionRetryListener"/>
-    	</property>
-   	</bean>
-  	<bean id="springRetryOperationsInterceptorFactory" class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+			<idref local="sessionRetryListener" />
+		</property>
+	</bean>
+	<bean id="springRetryOperationsInterceptorFactory"
+		class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
 		<property name="targetBeanName">
-       		<idref local="retryOperationsInterceptor"/>
-    	</property>
-   	</bean>
+			<idref local="retryOperationsInterceptor" />
+		</property>
+	</bean>
 
 	<!-- define plugin providers -->
-	<bean id="runtimeDirectoryProvider" class="com.alpha.pineapple.io.file.DefaultRuntimeDirectoryProviderImpl" />
-	<bean id="executionInfoProvider" class="com.alpha.pineapple.execution.ExecutionInfoProviderImpl" />
-	<bean id="administrationProvider" class="com.alpha.pineapple.admin.AdministrationProviderImpl" />
-	<bean id="variableSubstitutionProvider" class="com.alpha.pineapple.substitution.VariableSubstitutionProviderImpl" />
+	<bean id="runtimeDirectoryProvider"
+		class="com.alpha.pineapple.io.file.DefaultRuntimeDirectoryProviderImpl" />
+	<bean id="executionInfoProvider"
+		class="com.alpha.pineapple.execution.ExecutionInfoProviderImpl" />
+	<bean id="administrationProvider"
+		class="com.alpha.pineapple.admin.AdministrationProviderImpl" />
+	<bean id="variableSubstitutionProvider"
+		class="com.alpha.pineapple.substitution.VariableSubstitutionProviderImpl" />
 
-	<!-- 
-		definition of system properties to support injection of properties 
-		in runtime directory provider to testing 
-	-->
+	<!-- definition of system properties to support injection of properties 
+		in runtime directory provider to testing -->
 	<bean id="systemProperties" class="java.lang.System"
 		factory-method="getProperties" />
 
@@ -136,62 +174,83 @@
 		class="com.alpha.pineapple.module.DirectoryBasedModuleRepositoryImpl" />
 
 	<!-- definition of resource repository. -->
-	<bean id="resourceRepository" class="com.alpha.pineapple.resource.ResourceRepositoryImpl" />
-	<bean id="resourceConfigurationMarshaller" class="com.alpha.pineapple.resource.ResourceConfigurationMarshallerImpl" />
+	<bean id="resourceRepository"
+		class="com.alpha.pineapple.resource.ResourceRepositoryImpl" />
+	<bean id="resourceConfigurationMarshaller"
+		class="com.alpha.pineapple.resource.ResourceConfigurationMarshallerImpl" />
 
 	<!-- definition of result and context repository. -->
-	<bean id="resultRepository" class="com.alpha.pineapple.execution.ResultRepositoryImpl" />
-	<bean id="executionContextRepository" class="com.alpha.pineapple.execution.ExecutionContextRepositoryImpl" />
+	<bean id="resultRepository"
+		class="com.alpha.pineapple.execution.ResultRepositoryImpl" />
+	<bean id="executionContextRepository"
+		class="com.alpha.pineapple.execution.ExecutionContextRepositoryImpl" />
 
 	<!-- define plugin repository -->
-	<bean id="pluginRepository" class="com.alpha.pineapple.plugin.repository.PluginRepositoryImpl" />
+	<bean id="pluginRepository"
+		class="com.alpha.pineapple.plugin.repository.PluginRepositoryImpl" />
 
 	<!-- define bean name generators -->
-	<bean id="operationNameGenerator" class="com.alpha.pineapple.plugin.repository.OperationNameGeneratorImpl" />
-	<bean id="sessionNameGenerator" class="com.alpha.pineapple.plugin.repository.SessionNameGeneratorImpl" />
-	<bean id="pluginNameGenerator" class="com.alpha.pineapple.plugin.repository.PluginNameGeneratorImpl" />
+	<bean id="operationNameGenerator"
+		class="com.alpha.pineapple.plugin.repository.OperationNameGeneratorImpl" />
+	<bean id="sessionNameGenerator"
+		class="com.alpha.pineapple.plugin.repository.SessionNameGeneratorImpl" />
+	<bean id="pluginNameGenerator"
+		class="com.alpha.pineapple.plugin.repository.PluginNameGeneratorImpl" />
 
 	<!-- define plugin candidate scanner -->
-	<bean id="pluginCandidateScanner" class="com.alpha.pineapple.plugin.repository.PluginCandidateScannerImpl" />
+	<bean id="pluginCandidateScanner"
+		class="com.alpha.pineapple.plugin.repository.PluginCandidateScannerImpl" />
 
 	<!-- define plugin initializer -->
-	<bean id="pluginInitializer" class="com.alpha.pineapple.plugin.repository.PluginInitializerImpl" />
+	<bean id="pluginInitializer"
+		class="com.alpha.pineapple.plugin.repository.PluginInitializerImpl" />
 
 	<!-- define session handler -->
-	<bean id="retrySessionHandlerFactory" class="com.alpha.pineapple.plugin.session.RetrySessionHandlerFactoryImpl" />
-   	<bean id="unintializedRetrySessionHandler" class="com.alpha.pineapple.plugin.session.RetrySessionHandlerImpl" scope="prototype"/>
-   	<bean id="springRetrySessionHandlerFactory" class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
+	<bean id="retrySessionHandlerFactory"
+		class="com.alpha.pineapple.plugin.session.RetrySessionHandlerFactoryImpl" />
+	<bean id="unintializedRetrySessionHandler"
+		class="com.alpha.pineapple.plugin.session.RetrySessionHandlerImpl"
+		scope="prototype" />
+	<bean id="springRetrySessionHandlerFactory"
+		class="org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean">
 		<property name="targetBeanName">
-       		<idref local="unintializedRetrySessionHandler"/>
-    	</property>
-   	</bean>
+			<idref local="unintializedRetrySessionHandler" />
+		</property>
+	</bean>
 
 	<!-- definition of an initialized plugin activator -->
-	<bean id="pluginActivator" class="com.alpha.pineapple.plugin.activation.PluginActivatorImpl" />
+	<bean id="pluginActivator"
+		class="com.alpha.pineapple.plugin.activation.PluginActivatorImpl" />
 
 	<!-- define scheduled operation repository -->
-	<bean id="scheduledOperationRepository" class="com.alpha.pineapple.execution.scheduled.ScheduledOperationRepositoryImpl" />
-	<bean id="scheduledOperationConfigurationMarshaller" class="com.alpha.pineapple.execution.scheduled.ScheduledOperationConfigurationMarshallerImpl" />
-
+	<bean id="scheduledOperationRepository"
+		class="com.alpha.pineapple.execution.scheduled.ScheduledOperationRepositoryImpl" />
+	<bean id="scheduledOperationConfigurationMarshaller"
+		class="com.alpha.pineapple.execution.scheduled.ScheduledOperationConfigurationMarshallerImpl" />
 
 	<!-- definition of command facade -->
-	<bean id="commandFacade" class="com.alpha.pineapple.command.CommandFacadeImpl"
+	<bean id="commandFacade"
+		class="com.alpha.pineapple.command.CommandFacadeImpl"
 		scope="prototype" />
 
 	<!-- definition of command objects -->
-	<bean id="initializeOperationCommand" class="com.alpha.pineapple.command.InitializeOperationCommand"
+	<bean id="initializeOperationCommand"
+		class="com.alpha.pineapple.command.InitializeOperationCommand"
 		scope="prototype" />
 	<bean id="initializePluginActivatorCommand"
 		class="com.alpha.pineapple.command.InitializePluginActivatorCommand"
 		scope="prototype" />
-	<bean id="invokePluginsCommand" class="com.alpha.pineapple.command.InvokePluginsCommand"
+	<bean id="invokePluginsCommand"
+		class="com.alpha.pineapple.command.InvokePluginsCommand"
 		scope="prototype" />
-	<bean id="invokeTriggersCommand" class="com.alpha.pineapple.command.InvokeTriggersCommand"
-		scope="prototype" />		
+	<bean id="invokeTriggersCommand"
+		class="com.alpha.pineapple.command.InvokeTriggersCommand"
+		scope="prototype" />
 	<bean id="unmarshallJAXBObjectsCommand"
 		class="com.alpha.pineapple.command.UnmarshallJAXBObjectsCommand"
 		scope="prototype" />
-	<bean id="marshallJAXBObjectsCommand" class="com.alpha.pineapple.command.MarshallJAXBObjectsCommand"
+	<bean id="marshallJAXBObjectsCommand"
+		class="com.alpha.pineapple.command.MarshallJAXBObjectsCommand"
 		scope="prototype" />
 	<bean id="createDefaultEnvironmentConfigurationCommand"
 		class="com.alpha.pineapple.command.CreateDefaultEnvironmentConfigurationCommand"
@@ -199,14 +258,20 @@
 	<bean id="initializeHomeDirectoriesCommand"
 		class="com.alpha.pineapple.command.InitializeHomeDirectoriesCommand"
 		scope="prototype" />
-	<bean id="copyExampleModulesCommand" class="com.alpha.pineapple.command.CopyExampleModulesCommand"
+	<bean id="copyExampleModulesCommand"
+		class="com.alpha.pineapple.command.CopyExampleModulesCommand"
 		scope="prototype" />
 
 	<!-- definition of task objects for execution of operations. -->
-	<bean id="operationTask" class="com.alpha.pineapple.execution.OperationTaskImpl" scope="prototype" />
-	<bean id="asyncOperationTask" class="com.alpha.pineapple.execution.AsyncOperationTaskImpl" scope="prototype" />
+	<bean id="operationTask"
+		class="com.alpha.pineapple.execution.OperationTaskImpl"
+		scope="prototype" />
+	<bean id="asyncOperationTask"
+		class="com.alpha.pineapple.execution.AsyncOperationTaskImpl"
+		scope="prototype" />
 
-	<!-- definition of task executor used to handle the asynchronous execution of the asyncOperationTask bean. -->
+	<!-- definition of task executor used to handle the asynchronous execution 
+		of the asyncOperationTask bean. -->
 	<bean id="operationExecutor"
 		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
 		<property name="corePoolSize" value="5" />
@@ -214,45 +279,55 @@
 		<property name="queueCapacity" value="100" />
 	</bean>
 
-	<!-- definition of scheduler used to handle the scheduled execution of the scheduledOperationTask bean. -->
+	<!-- definition of scheduler used to handle the scheduled execution of the 
+		scheduledOperationTask bean. -->
 	<bean id="operationScheduler"
 		class="org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler">
 		<property name="poolSize" value="5" />
 	</bean>
 
-	<!-- definition of uninitialized pineapple core component. Intended only for use by the CoreFactory. -->
-	<bean id="uninitializedPineappleCore" class="com.alpha.pineapple.CoreImpl" />
+	<!-- definition of uninitialized pineapple core component. Intended only 
+		for use by the CoreFactory. -->
+	<bean id="uninitializedPineappleCore"
+		class="com.alpha.pineapple.CoreImpl" />
 
-	<!-- definition of uninitialized JAXB credential provider. Intended only for use by the CoreFactory. -->
-	<bean id="uninitializedFileBasedCredentialProvider" class="com.alpha.pineapple.credential.FileBasedCredentialProviderImpl" />
-	<bean id="defaultCredentialConfigurationMarshaller" class="com.alpha.pineapple.credential.CredentialConfigurationMarshallerImpl" />	
-	<bean id="credentialConfigurationMarshaller" class="com.alpha.pineapple.credential.encryption.PasswordEncryptingCredentialConfigurationMarshallerImpl" />	
-	<bean id="credentialInfoFactory" class="com.alpha.pineapple.credential.encryption.PasswordEncryptingCredentialInfoFactoryImpl" />	
+	<!-- definition of uninitialized JAXB credential provider. Intended only 
+		for use by the CoreFactory. -->
+	<bean id="uninitializedFileBasedCredentialProvider"
+		class="com.alpha.pineapple.credential.FileBasedCredentialProviderImpl" />
+	<bean id="defaultCredentialConfigurationMarshaller"
+		class="com.alpha.pineapple.credential.CredentialConfigurationMarshallerImpl" />
+	<bean id="credentialConfigurationMarshaller"
+		class="com.alpha.pineapple.credential.encryption.PasswordEncryptingCredentialConfigurationMarshallerImpl" />
+	<bean id="credentialInfoFactory"
+		class="com.alpha.pineapple.credential.encryption.PasswordEncryptingCredentialInfoFactoryImpl" />
 
 	<!-- definition of text encryptor -->
-	<bean id="fileBasedPasswordPBEConfigImpl" 
-		class="com.alpha.pineapple.credential.encryption.FileBasedPasswordPBEConfigImpl" 
+	<bean id="fileBasedPasswordPBEConfigImpl"
+		class="com.alpha.pineapple.credential.encryption.FileBasedPasswordPBEConfigImpl"
 		init-method="getPassword">
-	    <property name="algorithm" value="PBEWithMD5AndDES" />
+		<property name="algorithm" value="PBEWithMD5AndDES" />
 		<property name="saltGenerator">
 			<bean class="org.jasypt.salt.FixedStringSaltGenerator">
-				<property name="salt" value="sellthehouse!sellthecar?sellthekids" />
+				<property name="salt"
+					value="sellthehouse!sellthecar?sellthekids" />
 			</bean>
-		</property>	    
-	</bean>				
-    <bean id="textEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor" >
-		<property name="config" ref="fileBasedPasswordPBEConfigImpl"/>
-    </bean>
-	
-	<!-- definition of factory for Pineapple core component, intended for public use by clients. -->
+		</property>
+	</bean>
+	<bean id="textEncryptor"
+		class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<property name="config" ref="fileBasedPasswordPBEConfigImpl" />
+	</bean>
+
+	<!-- definition of factory for Pineapple core component, intended for public 
+		use by clients. -->
 	<bean id="coreFactory" class="com.alpha.pineapple.CoreFactory" />
 
- 	<!-- 
- 		definitions used by the integration tests. 
- 		Only available for test with @ActiveProfiles("integration-test") 
- 	-->
-	<beans profile="integration-test" >				
-		<bean id="ObjectMotherCredentialProvider" class="com.alpha.testutils.ObjectMotherCredentialProvider" />			    	    				
+	<!-- definitions used by the integration tests. Only available for test 
+		with @ActiveProfiles("integration-test") -->
+	<beans profile="integration-test">
+		<bean id="ObjectMotherCredentialProvider"
+			class="com.alpha.testutils.ObjectMotherCredentialProvider" />
 	</beans>
 
 </beans>

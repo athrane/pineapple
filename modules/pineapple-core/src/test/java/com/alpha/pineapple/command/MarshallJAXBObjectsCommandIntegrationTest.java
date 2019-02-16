@@ -259,6 +259,7 @@ public class MarshallJAXBObjectsCommandIntegrationTest {
 
 	/**
 	 * Test that marshalling fails if directory is illegal.
+	 * It is illegal to use "\0" or "/" in directory names in Windows and Linux.
 	 * 
 	 * @throws Exception
 	 *             If test fails.
@@ -270,8 +271,9 @@ public class MarshallJAXBObjectsCommandIntegrationTest {
 		// create context
 		Context context = new ContextBase();
 
-		// create file
-		File file = new File(new File(randomName), randomXmlFileName);
+		// create file	
+		File dir = new File(testDirectory, randomName+"\0");		
+		File file = new File(dir, randomXmlFileName);
 
 		// create document
 		ObjectFactory factory = new ObjectFactory();
@@ -296,7 +298,7 @@ public class MarshallJAXBObjectsCommandIntegrationTest {
 		marshallJAXBObjectsCommand.execute(context);
 
 		// test
-		assertTrue(executionResult.isFailed());
+		assertTrue(executionResult.isError());
 		assertFalse(executionResult.isExecuting());
 	}
 

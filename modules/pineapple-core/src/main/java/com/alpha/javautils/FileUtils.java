@@ -49,9 +49,9 @@ import com.alpha.pineapple.i18n.MessageProvider;
 public class FileUtils {
 
 	/**
-	 * Windows document and settings directory.
+	 * Windows Users directory.
 	 */
-	public static final String DOCUMENTS_AND_SETTINGS = "Documents and Settings";
+	public static final String USERS_DIR = "Users";
 
 	/**
 	 * Search string for 8.3 format directories.
@@ -88,14 +88,13 @@ public class FileUtils {
 	 * Only paths with ~1 is supported. If paths with ~2+ is encountered then an
 	 * exception is thrown.
 	 * 
-	 * @param path
-	 *            path which is converted.
+	 * @param path path which is converted.
 	 * 
 	 * @return converted path.
 	 * 
-	 * @throws ConversionFailedException
-	 *             If conversion fails.
+	 * @throws ConversionFailedException If conversion fails.
 	 */
+	@Deprecated
 	public File convertToLongWindowsPath(File path) throws ConversionFailedException {
 
 		// if OS isn't windows then exit
@@ -172,32 +171,28 @@ public class FileUtils {
 	 * path doesn't represent a directory (but a file) then then the original path
 	 * is returned unchanged.
 	 * 
-	 * @param path
-	 *            path which is converted.
+	 * @param path path which is converted.
 	 * 
 	 * @return converted path.
 	 * 
-	 * @throws ConversionFailedException
-	 *             If conversion fails.
+	 * @throws ConversionFailedException If conversion fails.
 	 */
+	@Deprecated
 	public File convertToLongWindowsPath(String path) throws ConversionFailedException {
 		return convertToLongWindowsPath(new File(path));
 	}
 
 	/**
-	 * Returns true if the path is located in the "Documents and Settings" directory
-	 * on Windows.
+	 * Returns true if the path is located in the "Users" directory on Windows.
 	 * 
-	 * @param path
-	 *            String which represents a path.
-	 * @param userName
-	 *            User name from the Java system properties.
+	 * @param path     String which represents a path.
+	 * @param userName User name from the Java system properties.
 	 * 
-	 * @return Returns true if the path is located in the "Documents and Settings"
-	 *         directory on Windows, by matching the pattern "\Documents and
-	 *         Setting\USER", where USER is the supplied user name.
+	 * @return Returns true if the path is located in the "Users" directory on
+	 *         Windows, by matching the pattern "\Users\USER", where USER is the
+	 *         supplied user name.
 	 */
-	public boolean isPathInDocumentsAndSettingsDir(String path, String userName) {
+	public boolean isPathInUsersDir(String path, String userName) {
 		notEmpty(path, "path is empty");
 		notNull(path, "path is undefined");
 		notNull(userName, "user is undefined");
@@ -205,12 +200,11 @@ public class FileUtils {
 		// define expected pattern
 		StringBuilder expected = new StringBuilder();
 		expected.append(File.separatorChar);
-		expected.append(DOCUMENTS_AND_SETTINGS);
+		expected.append(USERS_DIR);
 		expected.append(File.separatorChar);
 		expected.append(userName);
 
-		// validate if user.home is located in the document and settings
-		// directory
+		// validate if user.home is located in the "Users" directory
 		return (path.contains(expected.toString()));
 	}
 

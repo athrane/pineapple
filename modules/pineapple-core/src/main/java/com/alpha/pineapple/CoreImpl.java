@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
- * Copyright (C) 2007-2015 Allan Thrane Andersen..
+ * Copyright (C) 2007-2019 Allan Thrane Andersen..
  * 
  * This file is part of Pineapple.
  * 
@@ -35,15 +35,11 @@ import java.io.File;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.chain.Command;
-import org.apache.commons.chain.Context;
 import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.admin.Administration;
 import com.alpha.pineapple.command.CommandFacade;
 import com.alpha.pineapple.command.CommandFacadeException;
-import com.alpha.pineapple.command.CreateDefaultEnvironmentConfigurationCommand;
-import com.alpha.pineapple.command.execution.CommandRunner;
 import com.alpha.pineapple.credential.CredentialProvider;
 import com.alpha.pineapple.credential.FileBasedCredentialProviderImpl;
 import com.alpha.pineapple.execution.ExecutionInfo;
@@ -65,11 +61,6 @@ import com.alpha.pineapple.plugin.activation.PluginActivator;
  * Implementation of the PineappleCore interface.
  */
 class CoreImpl implements PineappleCore {
-
-	/**
-	 * Example modules directory.
-	 */
-	static final File EXAMPLES_MODULES = new File("example-modules");
 
 	/**
 	 * Logger object.
@@ -101,12 +92,6 @@ class CoreImpl implements PineappleCore {
 	ScheduledOperationRespository scheduledOperationRepository;
 
 	/**
-	 * Command runner
-	 */
-	@Resource
-	CommandRunner commandRunner;
-
-	/**
 	 * Asynchronous operation task.
 	 */
 	@Resource
@@ -117,18 +102,6 @@ class CoreImpl implements PineappleCore {
 	 */
 	@Resource
 	CommandFacade commandFacade;
-
-	/**
-	 * Create default environment configuration command.
-	 */
-	@Resource
-	Command createDefaultEnvironmentConfigurationCommand;
-
-	/**
-	 * Initialize home directories command.
-	 */
-	@Resource
-	Command initializeHomeDirectoriesCommand;
 
 	/**
 	 * Runtime directory provider.
@@ -209,9 +182,6 @@ class CoreImpl implements PineappleCore {
 		String message = messageProvider.getMessage("ci.initialize_info");
 		ExecutionResult executionResult = resultRepository.startExecution(message);
 
-		// configure command runner with execution result
-		commandRunner.setExecutionResult(executionResult);
-
 		// set provider
 		this.credentialProvider = provider;
 
@@ -249,10 +219,7 @@ class CoreImpl implements PineappleCore {
 
 		// create execution result
 		String message = messageProvider.getMessage("ci.initialize_info");
-		ExecutionResult executionResult = resultRepository.startExecution(message);
-
-		// configure command runner with execution result
-		commandRunner.setExecutionResult(executionResult);
+		ExecutionResult result = resultRepository.startExecution(message);
 
 		// get conf directory
 		File confDirectory = runtimeDirectoryProvider.getConfigurationDirectory();
@@ -265,28 +232,27 @@ class CoreImpl implements PineappleCore {
 
 		try {
 
-			addMetadataForReport(executionResult);
+			addMetadataForReport(result);
 
 			// initialize components
-			initializeHomeDirectories();
-			createDefaultConfiguration();
+			initializeHomeDirectories(result);
+			createDefaultConfiguration(result);
 			initializeCredentialProvider(credentials);
-			loadResourceConfiguration(resources, executionResult);
-			initializePluginActivator(executionResult);
+			loadResourceConfiguration(resources, result);
+			initializePluginActivator(result);
 			initializeAdministration();
 			initializeModuleRepository();
-			initializeScheduledOperationRepository(executionResult);
+			initializeScheduledOperationRepository(result);
 
 		} catch (CommandFacadeException e) {
 			// catch error to abort initialization
 		}
 
 		// compute execution state from children
-		executionResult.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed",
-				null);
+		result.completeAsComputed(messageProvider, "ci.initialize_completed", null, "ci.initialize_failed", null);
 
 		// store initialization info result
-		initializationInfoResult = executionResult;
+		initializationInfoResult = result;
 
 		// log info message
 		logInitializationInfo();
@@ -338,31 +304,27 @@ class CoreImpl implements PineappleCore {
 
 	/**
 	 * Initialize home directories.
+	 * 
+	 * @param result execution result.
+	 * 
+	 * @throws CommandFacadeException   if initialisation fails.
+	 * @throws IllegalArgumentException if parameters are undefined.
 	 */
-	void initializeHomeDirectories() {
-
-		// create description and setup context
-		String message = messageProvider.getMessage("ci.initialize_homedirectories_info");
-		Context context = commandRunner.createContext();
-
-		// run command
-		commandRunner.run(initializeHomeDirectoriesCommand, message, context);
+	void initializeHomeDirectories(ExecutionResult result) {
+		commandFacade.initializeHomeDirectories(result);
 	}
 
 	/**
 	 * Create default resources configuration.
+	 * 
+	 * @param result execution result.
+	 * 
+	 * @throws CommandFacadeException   if initialisation fails.
+	 * @throws IllegalArgumentException if parameters are undefined.
 	 */
 	@SuppressWarnings("unchecked")
-	void createDefaultConfiguration() {
-
-		// create description and setup context
-		Object[] args = { runtimeDirectoryProvider.getConfigurationDirectory() };
-		String message = messageProvider.getMessage("ci.create_defaultconfiguration_info", args);
-		Context context = commandRunner.createContext();
-		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, EXAMPLES_MODULES);
-
-		// run command
-		commandRunner.run(createDefaultEnvironmentConfigurationCommand, message, context);
+	void createDefaultConfiguration(ExecutionResult result) {
+		commandFacade.createDefaultConfiguration(result);
 	}
 
 	/**

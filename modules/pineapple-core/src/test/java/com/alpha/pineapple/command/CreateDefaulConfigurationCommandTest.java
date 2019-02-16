@@ -37,7 +37,6 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-
 import com.alpha.easymockutils.MessageProviderAnswerImpl;
 import com.alpha.pineapple.command.initialization.CommandInitializationFailedException;
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -157,14 +156,13 @@ public class CreateDefaulConfigurationCommandTest {
 	/**
 	 * Test that command fails if example modules file property is undefined.
 	 */
-	@SuppressWarnings("unchecked")
 	@Test(expected = CommandInitializationFailedException.class)
 	public void testCommandFailsIfResourcesFileKeyIsUndefinedInContext() throws Exception {
 		// complete mock execution result setup
 		EasyMock.replay(executionResult);
 
 		// setup context
-		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, null);
+		// NO-OP
 
 		// execute command
 		command.execute(context);
@@ -176,14 +174,13 @@ public class CreateDefaulConfigurationCommandTest {
 	/**
 	 * Test that command fails if example modules file property is string.
 	 */
-	@SuppressWarnings("unchecked")
 	@Test(expected = CommandInitializationFailedException.class)
 	public void testCommandFailsIfExampleModulesFileKeyIsStringInContext() throws Exception {
 		// complete mock execution result setup
 		EasyMock.replay(executionResult);
 
 		// setup context
-		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, randomName);
+		// NO-OP
 
 		// execute command
 		command.execute(context);

@@ -784,7 +784,7 @@ Development documentation
 		[[2]] If the system property isn't defined then Pineapple will resolve to its home directory to
 		either one of these:
 		
-			* On Windows: <<<C:\\Document and Settings\\$\{user.name\}\\.pineapple>>>  	
+			* On Windows: <<<C:\\Users\\$\{user.name\}\\.pineapple>>>  	
 			
 			* Others: <<<$\{user.home\}/.pineapple>>>
 			
@@ -1074,6 +1074,19 @@ Development documentation
 	in the context.
 		
 	[]
+
+*** CommandFacadeImpl
+
+	The facade object provides a facade for the command objects.
+	Thus the facade has references to the commands objects.	
+	But the individual command objects also uses the facade to invoke other commands.
+	Thus the command objects has references to the facade.
+	
+	This introduces circular dependencies between the facade and the command objects.
+
+	To enable Spring to handle the circular dependencies, the command objects are on the facade 
+	set using using setter injection. The same applies to the usage of setter injection on 
+	the commands to set the facade.
 
 *** InvokePluginsCommand
 

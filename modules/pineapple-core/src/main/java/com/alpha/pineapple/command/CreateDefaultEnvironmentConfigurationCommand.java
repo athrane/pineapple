@@ -33,6 +33,8 @@ import javax.annotation.Resource;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 import com.alpha.pineapple.CoreConstants;
 import com.alpha.pineapple.command.initialization.CommandInitializer;
@@ -71,11 +73,6 @@ import com.alpha.pineapple.test.AssertionHelper;
  * context:
  * 
  * <ul>
- * <li><code>example-modules</code> Defines the file name of example modules JAR
- * archive to be unpacked. The type is <code>java.io.File</code>. If the parent
- * part of the file is undefined (i.e. only a file name is specified) then
- * command is searching the user home directory, the current classpath and the
- * system classpath for the file.</li>
  * <li><code>execution-result</code> contains execution result object which
  * collects information about the execution of the test. The type is
  * <code>com.alpha.pineapple.plugin.execution.ExecutionResult</code>.</li>
@@ -95,9 +92,9 @@ import com.alpha.pineapple.test.AssertionHelper;
  * update the <code>ExecutionResult</code> with the state
  * <code>ExecutionState.ERROR</code>.</li>
  * 
- * <li>If none of the configurations files existed then both of the conguration
- * files are created with some example configurations. Furthermore a set of
- * example modules are created.</li>
+ * <li>If none of the configurations files existed then both of the
+ * configuration files are created with some example configurations. Furthermore
+ * a set of example modules are created.</li>
  * </ul>
  * </p>
  */
@@ -138,12 +135,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	public static final String EXECUTIONRESULT_KEY = "execution-result";
 
 	/**
-	 * Key used to identify property in context: Defines the example modules file
-	 * name.
-	 */
-	public static final String EXAMPLE_MODULES_KEY = "example-modules";
-
-	/**
 	 * JAXB object factory.
 	 */
 	ObjectFactory factory = new ObjectFactory();
@@ -179,13 +170,6 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 	AssertionHelper assertionHelper;
 
 	/**
-	 * Name of example modules archive.
-	 */
-	@Initialize(EXAMPLE_MODULES_KEY)
-	@ValidateValue(ValidationPolicy.NOT_EMPTY)
-	File exampleModulesFileName;
-
-	/**
 	 * Defines execution result object.
 	 */
 	@Initialize(EXECUTIONRESULT_KEY)
@@ -211,6 +195,7 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 		Configuration resourcesConfiguration = createDefaultResourceConfiguration();
 
 		try {
+
 			// save resource configuration
 			commandFacade.saveJaxbObjects(resourcesFile, resourcesConfiguration, executionResult);
 

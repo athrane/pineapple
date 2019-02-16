@@ -38,131 +38,130 @@ public interface CommandFacade {
 	/**
 	 * Unmarshall JAXB objects from file.
 	 * 
-	 * @param file
-	 *            file to load.
-	 * @param targetClass
-	 *            root target JAXB generated class that XML file is marshalled into.
-	 * @param result
-	 *            root execution result. A child execution result is added to the
-	 *            root result. The child result describes the outcome of loading the
-	 *            file.
+	 * @param file        file to load.
+	 * @param targetClass root target JAXB generated class that XML file is
+	 *                    marshalled into.
+	 * @param result      root execution result. A child execution result is added
+	 *                    to the root result. The child result describes the outcome
+	 *                    of loading the file.
 	 * 
 	 * @return root object of the unmarshalled object.
 	 * 
-	 * @throws CommandFacadeException
-	 *             if load fails.
+	 * @throws CommandFacadeException if load fails.
 	 */
 	<T> T unmarshallJaxbObjects(File file, Class<T> targetClass, ExecutionResult result);
 
 	/**
 	 * Load JAXB objects from XML file.
 	 * 
-	 * @param file
-	 *            file to load.
-	 * @param targetClass
-	 *            root target JAXB generated class that XML file is marshalled into.
-	 * @param result
-	 *            root execution result. A child execution result is added to the
-	 *            root result. The child result describes the outcome of loading the
-	 *            file.
+	 * @param file        file to load.
+	 * @param targetClass root target JAXB generated class that XML file is
+	 *                    marshalled into.
+	 * @param result      root execution result. A child execution result is added
+	 *                    to the root result. The child result describes the outcome
+	 *                    of loading the file.
 	 * 
 	 * @return root object of the unmarshalled object.
 	 * 
-	 * @throws CommandFacadeException
-	 *             if load fails.
+	 * @throws CommandFacadeException if load fails.
 	 */
 	<T> T loadJaxbObjects(File file, Class<T> targetClass, ExecutionResult result);
 
 	/**
 	 * Marshall JAXB objects to file.
 	 * 
-	 * @param file
-	 *            file to marshall objects to. If the file isn't specified as a
-	 *            absolute path the the operation terminates with a failure. If any
-	 *            directories in the path doesn't exist then they will be created.
-	 * @param root
-	 *            Defines the root object in the object graph which should be
-	 *            marshalled.
-	 * @param result
-	 *            root execution result. A child execution result is added to the
-	 *            root result. The child result describes the outcome of saving the
-	 *            file.
+	 * @param file   file to marshall objects to. If the file isn't specified as a
+	 *               absolute path the the operation terminates with a failure. If
+	 *               any directories in the path doesn't exist then they will be
+	 *               created.
+	 * @param root   Defines the root object in the object graph which should be
+	 *               marshalled.
+	 * @param result root execution result. A child execution result is added to the
+	 *               root result. The child result describes the outcome of saving
+	 *               the file.
 	 * 
-	 * @throws CommandFacadeException
-	 *             if save fails.
+	 * @throws CommandFacadeException if save fails.
 	 */
 	void marshallJaxbObjects(File file, Object root, ExecutionResult result);
 
 	/**
 	 * Save JAXB objects to file.
 	 * 
-	 * @param file
-	 *            file to marshall objects to. If the file isn't specified as a
-	 *            absolute path the the operation terminates with a failure. If any
-	 *            directories in the path doesn't exist then they will be created.
-	 * @param root
-	 *            Defines the root object in the object graph which should be
-	 *            marshalled.
-	 * @param result
-	 *            root execution result. A child execution result is added to the
-	 *            root result. The child result describes the outcome of saving the
-	 *            file.
+	 * @param file   file to marshall objects to. If the file isn't specified as a
+	 *               absolute path the the operation terminates with a failure. If
+	 *               any directories in the path doesn't exist then they will be
+	 *               created.
+	 * @param root   Defines the root object in the object graph which should be
+	 *               marshalled.
+	 * @param result root execution result. A child execution result is added to the
+	 *               root result. The child result describes the outcome of saving
+	 *               the file.
 	 * 
-	 * @throws CommandFacadeException
-	 *             if save fails.
+	 * @throws CommandFacadeException if save fails.
 	 */
 	void saveJaxbObjects(File file, Object root, ExecutionResult result);
 
 	/**
 	 * Copy example modules to target directory.
 	 * 
-	 * @param modulesDirectory
-	 *            target directory for examples modules.
-	 * @param result
-	 *            root execution result. A child execution result is added to the
-	 *            root result. The child result describes the outcome of saving the
-	 *            file.
+	 * @param modulesDirectory target directory for examples modules.
+	 * @param result           root execution result. A child execution result is
+	 *                         added to the root result. The child result describes
+	 *                         the outcome of saving the file.
 	 * 
-	 * @throws CommandFacadeException
-	 *             if copy fails.
+	 * @throws CommandFacadeException if copy fails.
 	 */
 	void copyExampleModules(File modulesDirectory, ExecutionResult result);
 
 	/**
-	 * Initialize plugin activator.
+	 * Initialise plugin activator.
 	 * 
-	 * @param provider
-	 *            credential provider.
-	 * @param configuration
-	 *            resource configuration.
-	 * @param result
-	 *            root execution result. A child execution result is added to the
-	 *            root result. The child result describes the outcome of saving the
-	 *            file.
+	 * @param provider      credential provider.
+	 * @param configuration resource configuration.
+	 * @param result        root execution result. A child execution result is added
+	 *                      to the root result. The child result describes the
+	 *                      outcome of the initialisation .
 	 * 
-	 * @return initialized plugin activator
+	 * @return initialised plugin activator
 	 * 
-	 * @throws CommandFacadeException
-	 *             if initialization fails.
+	 * @throws CommandFacadeException if initialisation fails.
 	 */
 	PluginActivator initializePluginActivator(CredentialProvider provider, Configuration configuration,
 			ExecutionResult result);
 
 	/**
+	 * Initialise home directories.
+	 * 
+	 * @param result root execution result. A child execution result is added to the
+	 *               root result. The child result describes the outcome of the
+	 *               initialisation .
+	 * 
+	 * @throws CommandFacadeException if initialisation fails.
+	 */
+	void initializeHomeDirectories(ExecutionResult result);
+
+	/**
+	 * Initialise default configuration.
+	 * 
+	 * @param result root execution result. A child execution result is added to the
+	 *               root result. The child result describes the outcome of the
+	 *               initialisation .
+	 * 
+	 * @throws CommandFacadeException if initialisation fails.
+	 */
+	public void createDefaultConfiguration(ExecutionResult result);
+
+	/**
 	 * Execute triggers in aggregate module model.
 	 * 
-	 * @param model
-	 *            aggregated model containing the triggers.
-	 * @param executionInfo
-	 *            execution info.
-	 * @param modelResult
-	 *            model result. Used for reading the execution result to match
-	 *            trigger resolution directive to determine whether a trigger should
-	 *            be executed.
-	 * @param result
-	 *            model result. A child execution result is added to the model
-	 *            result. The child result describes the outcome of executing any
-	 *            triggers.
+	 * @param model         aggregated model containing the triggers.
+	 * @param executionInfo execution info.
+	 * @param modelResult   model result. Used for reading the execution result to
+	 *                      match trigger resolution directive to determine whether
+	 *                      a trigger should be executed.
+	 * @param result        model result. A child execution result is added to the
+	 *                      model result. The child result describes the outcome of
+	 *                      executing any triggers.
 	 */
 	void executeTriggers(AggregatedModel model, ExecutionInfo executionInfo, ExecutionResult modelResult,
 			ExecutionResult result);

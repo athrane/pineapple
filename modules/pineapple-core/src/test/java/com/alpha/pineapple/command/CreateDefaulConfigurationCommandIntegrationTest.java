@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
-* Copyright (C) 2007-2015 Allan Thrane Andersen.
+* Copyright (C) 2007-2019 Allan Thrane Andersen.
  * 
  * This file is part of Pineapple.
  * 
@@ -165,8 +165,7 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 	/**
 	 * Test that files are create if none exists.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -187,7 +186,6 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 		// setup context
 		Context context = new ContextBase();
 		context.put(CreateDefaultEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);
-		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, exampleModulesdir);
 
 		// execute command
 		createDefaultEnvironmentConfigurationCommand.execute(context);
@@ -208,8 +206,7 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 	 * Test that files are create if none exists and even if all directories doesn't
 	 * exist
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -232,7 +229,6 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 		// setup context
 		Context context = new ContextBase();
 		context.put(CreateDefaultEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);
-		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, exampleModulesdir);
 		context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
 		// execute command
@@ -251,10 +247,10 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 	}
 
 	/**
-	 * Test that creating the configuration fails if directory is illegal.
+	 * Test that creating the configuration fails if directory is illegal. Usage of
+	 * "\0" is illegal in file and directory names on Window sand Linux.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -264,7 +260,7 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 		File credentailsFile = new File(randomName, randomXmlCredentialsName);
 
 		// complete mock setup
-		EasyMock.expect(runtimeDirectoryProvider.getConfigurationDirectory()).andReturn(new File(randomName));
+		EasyMock.expect(runtimeDirectoryProvider.getConfigurationDirectory()).andReturn(new File(randomName+"\0"));
 		EasyMock.replay(runtimeDirectoryProvider);
 
 		// test
@@ -274,7 +270,6 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 		// setup context
 		Context context = new ContextBase();
 		context.put(CreateDefaultEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);
-		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, exampleModulesdir);
 		context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
 		// execute command
@@ -295,8 +290,7 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 	/**
 	 * Test that creation is skipped if resources configuration file exists.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -322,7 +316,6 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 		// setup context
 		Context context = new ContextBase();
 		context.put(CreateDefaultEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);
-		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, exampleModulesdir);
 		context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
 		// execute command
@@ -343,8 +336,7 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 	/**
 	 * Test that creation is skipped if credential configuration file exists.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -370,7 +362,6 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 		// setup context
 		Context context = new ContextBase();
 		context.put(CreateDefaultEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);
-		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, exampleModulesdir);
 		context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
 		// execute command
@@ -391,8 +382,7 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 	/**
 	 * Test created resources configuration contains expected number environments.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -416,7 +406,6 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 		// setup context
 		Context context = new ContextBase();
 		context.put(CreateDefaultEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);
-		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, exampleModulesdir);
 		context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
 		// execute command
@@ -444,8 +433,7 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 	 * Test created credentials configuration contains expected number environments.
 	 * *
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -465,7 +453,6 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 		// setup context
 		Context context = new ContextBase();
 		context.put(CreateDefaultEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);
-		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, exampleModulesdir);
 		context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
 		// execute command
@@ -492,8 +479,7 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 	/**
 	 * Test created configuration contains example modules.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -511,7 +497,6 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 		// setup context
 		Context context = new ContextBase();
 		context.put(CreateDefaultEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);
-		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, exampleModulesdir);
 		context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
 		// execute command
@@ -532,8 +517,7 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 	 * Test created resources configuration contains expected wild card
 	 * environments.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -557,7 +541,6 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 		// setup context
 		Context context = new ContextBase();
 		context.put(CreateDefaultEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);
-		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, exampleModulesdir);
 		context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
 		// execute command
@@ -587,8 +570,7 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 	 * Test created resources configuration contains expected wild card
 	 * environments.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -613,7 +595,6 @@ public class CreateDefaulConfigurationCommandIntegrationTest {
 		// setup context
 		Context context = new ContextBase();
 		context.put(CreateDefaultEnvironmentConfigurationCommand.EXECUTIONRESULT_KEY, executionResult);
-		context.put(CreateDefaultEnvironmentConfigurationCommand.EXAMPLE_MODULES_KEY, exampleModulesdir);
 		context.put(MarshallJAXBObjectsCommand.EXECUTIONRESULT_KEY, executionResult);
 
 		// execute command

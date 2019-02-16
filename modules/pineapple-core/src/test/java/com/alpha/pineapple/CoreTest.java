@@ -56,7 +56,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.alpha.easymockutils.MessageProviderAnswerImpl;
 import com.alpha.pineapple.admin.Administration;
 import com.alpha.pineapple.command.CommandFacade;
-import com.alpha.pineapple.command.execution.CommandRunner;
 import com.alpha.pineapple.credential.CredentialProvider;
 import com.alpha.pineapple.execution.ExecutionInfo;
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -166,11 +165,6 @@ public class CoreTest {
 	ScheduledOperationRespository scheduledOperationRespository;
 
 	/**
-	 * Mock command runner
-	 */
-	CommandRunner commandRunner;
-
-	/**
 	 * Command facade.
 	 */
 	CommandFacade commandFacade;
@@ -210,10 +204,22 @@ public class CoreTest {
 	 */
 	String randomFileName;
 
+	/**
+	 * Random module name.
+	 */
+	String randomModuleName;
+
+	/**
+	 * Random environment name.
+	 */
+	String randomEnvironmentName;
+
 	@Before
 	public void setUp() throws Exception {
 		randomTime = new Random().nextLong();
 		randomFileName = RandomStringUtils.randomAlphabetic(10);
+		randomModuleName = RandomStringUtils.randomAlphabetic(10);
+		randomEnvironmentName = RandomStringUtils.randomAlphabetic(10);
 
 		// create coreImpl
 		coreImpl = new CoreImpl();
@@ -249,7 +255,6 @@ public class CoreTest {
 		moduleRepository = createMock(ModuleRepository.class);
 		scheduledOperationRespository = createMock(ScheduledOperationRespository.class);
 		asyncOperationTask = createMock(OperationTask.class);
-		commandRunner = createMock(CommandRunner.class);
 		commandFacade = createMock(CommandFacade.class);
 		context = createMock(Context.class);
 		administrationProvider = createMock(Administration.class);
@@ -259,7 +264,6 @@ public class CoreTest {
 		ReflectionTestUtils.setField(coreImpl, "moduleRepository", moduleRepository);
 		ReflectionTestUtils.setField(coreImpl, "scheduledOperationRepository", scheduledOperationRespository);
 		ReflectionTestUtils.setField(coreImpl, "asyncOperationTask", asyncOperationTask);
-		ReflectionTestUtils.setField(coreImpl, "commandRunner", commandRunner);
 		ReflectionTestUtils.setField(coreImpl, "commandFacade", commandFacade);
 		ReflectionTestUtils.setField(coreImpl, "administrationProvider", administrationProvider);
 
@@ -312,8 +316,7 @@ public class CoreTest {
 	/**
 	 * Complete mock repository initialization for execution of operations.
 	 * 
-	 * @param info
-	 *            Execution info object.
+	 * @param info Execution info object.
 	 * 
 	 * @return mock execution result.
 	 */
@@ -327,29 +330,16 @@ public class CoreTest {
 	/**
 	 * Complete mock context initialization.
 	 * 
-	 * @param configuration
-	 *            Environment configuration.
+	 * @param configuration Environment configuration.
 	 */
 	void completeMockContextInitialization(Configuration configuration) {
 		replay(context);
 	}
 
 	/**
-	 * Complete mock command runner initialization.
-	 * 
-	 * @param result
-	 *            Mock Execution result.
-	 */
-	void completeCommandRunnerInitialization(ExecutionResult result) {
-		commandRunner.setExecutionResult(result);
-		replay(commandRunner);
-	}
-
-	/**
 	 * Complete mock command facade initialization.
 	 * 
-	 * @param result
-	 *            Mock Execution result.
+	 * @param result Mock Execution result.
 	 */
 	void completeCommandFacadeInitialization(ExecutionResult result) {
 		expect(commandFacade.loadJaxbObjects(isA(File.class), isA(Class.class), isA(ExecutionResult.class)))
@@ -362,8 +352,7 @@ public class CoreTest {
 	/**
 	 * Complete mock scheduled operation repository initialization.
 	 * 
-	 * @param result
-	 *            execution result used to initialize repository.
+	 * @param result execution result used to initialize repository.
 	 */
 	void completeMockScheduledOperationRepositoryInitialization(ExecutionResult result) {
 		scheduledOperationRespository.initialize(result);
@@ -373,8 +362,7 @@ public class CoreTest {
 	/**
 	 * Complete mock execution result initialization with report metadata.
 	 * 
-	 * @param result
-	 *            mock execution result
+	 * @param result mock execution result
 	 */
 	void completeMockResultInitializationWithReportMetadata(ExecutionResult result) {
 		result.addMessage(MSG_OPERATION, "ci.report_metadata_operation_info");
@@ -390,15 +378,13 @@ public class CoreTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testInitializeCore() throws CoreException {
 		// complete mock initializations
 		completeMockContextInitialization(configuration);
 		ExecutionResult result = completeMockRepositoryInitialization();
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 		completeMockAdministrationInitialization();
 		completeMockScheduledOperationRepositoryInitialization(result);
@@ -419,7 +405,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(scheduledOperationRespository);
@@ -433,8 +418,7 @@ public class CoreTest {
 	 * Test that core component can be initialized with external resources file. The
 	 * file is specified by an absolute file name.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testInitializeCoreWithExternalResourcesFile() throws Exception {
@@ -451,7 +435,6 @@ public class CoreTest {
 		// complete mock initializations
 		completeMockContextInitialization(resourcesConfiguration);
 		ExecutionResult result = completeMockRepositoryInitialization();
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 		completeMockAdministrationInitialization();
 		completeMockScheduledOperationRepositoryInitialization(result);
@@ -472,7 +455,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -487,8 +469,7 @@ public class CoreTest {
 	 * which isn't named "resources.xml". The resources file is specified by an
 	 * absolute file name.
 	 * 
-	 * @throws Exception
-	 *             If test fails
+	 * @throws Exception If test fails
 	 */
 	@Test
 	public void testInitializeCoreWithExternalResourcesFile2() throws Exception {
@@ -505,7 +486,6 @@ public class CoreTest {
 		// complete mock initializations
 		completeMockContextInitialization(resourcesConfiguration);
 		ExecutionResult result = completeMockRepositoryInitialization();
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 		completeMockAdministrationInitialization();
 		completeMockScheduledOperationRepositoryInitialization(result);
@@ -526,7 +506,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(context);
 		verify(resultRepository);
 		verify(configuration);
@@ -544,15 +523,13 @@ public class CoreTest {
 	 * The resources file defines the test plugin "com.alpha.pineapple.plugin.test"
 	 * located in the test-utils project.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testInitializeCoreWithNamedInternalResourcesFile() throws Exception {
 		// complete mock initializations
 		completeMockContextInitialization(configuration);
 		ExecutionResult result = completeMockRepositoryInitialization();
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 		completeMockAdministrationInitialization();
 		completeMockScheduledOperationRepositoryInitialization(result);
@@ -576,7 +553,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -589,26 +565,30 @@ public class CoreTest {
 	/**
 	 * Test that test operation can be executed.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testCanExecuteOperation() throws Exception {
 		File rootDir = testDirectory;
-		String moduleName = "some-module";
-		String environmentName = "yeti-environment";
+		String moduleName = randomModuleName;
+		String environmentName = randomEnvironmentName;
 		String operation = TestUtilsTestConstants.helloWorldOperation;
 
 		// complete mock initializations
 		completeMockContextInitialization(configuration);
 		ExecutionInfo info = createMock(ExecutionInfo.class);
-		ExecutionResult result = completeMockRepositoryInitializationForExecution(info);
-		completeCommandRunnerInitialization(result);
+
+		ExecutionResult result = createMock(ExecutionResult.class);
+		expect(resultRepository.startExecution(isA(String.class))).andReturn(result);
+		expect(resultRepository.startExecution(isA(ModuleInfo.class), isA(String.class), isA(String.class)))
+				.andReturn(info);
+		replay(resultRepository);		
+		
 		completeCommandFacadeInitialization(result);
 		completeMockAdministrationInitialization();
 		completeMockScheduledOperationRepositoryInitialization(result);
 		completeMockResultInitializationWithReportMetadata(result);
-
+		
 		// complete mock execution result initialization
 		expect(result.getTime()).andReturn(randomTime);
 		expect(result.isSuccess()).andReturn(true);
@@ -624,10 +604,11 @@ public class CoreTest {
 
 		// complete mock module repository initialization
 		moduleRepository.initialize();
+		expect(moduleRepository.resolveModule(moduleName, environmentName)).andReturn(moduleInfo);		
 		replay(moduleRepository);
 
 		// complete mock task initialization
-		expect(asyncOperationTask.execute(operation, environmentName, moduleName)).andReturn(info);
+		asyncOperationTask.execute(info);
 		replay(asyncOperationTask);
 
 		// initialize core component
@@ -645,7 +626,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -662,14 +642,13 @@ public class CoreTest {
 	 * Test that test operation can be executed which fails with module not found
 	 * exception.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testCanExecuteOperationWhichFailsWithException() throws Exception {
 		File rootDir = testDirectory;
-		String moduleName = "some-module";
-		String environmentName = "yeti-environment";
+		String moduleName = randomModuleName;
+		String environmentName = randomEnvironmentName;
 		String operation = TestUtilsTestConstants.helloWorldOperation;
 
 		// complete mock initializations
@@ -682,7 +661,6 @@ public class CoreTest {
 				.andReturn(info);
 		replay(resultRepository);
 
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 		completeMockAdministrationInitialization();
 		completeMockScheduledOperationRepositoryInitialization(result);
@@ -704,14 +682,15 @@ public class CoreTest {
 		ModuleInfo moduleInfo = createMock(ModuleInfo.class);
 		replay(moduleInfo);
 
-		// complete mock module repository initialization which THROWS an
-		// exception
+		// complete mock module repository initialization 
 		moduleRepository.initialize();
+		expect(moduleRepository.resolveModule(moduleName, environmentName)).andReturn(moduleInfo);
 		replay(moduleRepository);
 
-		// complete mock task initialization
+		// complete mock task initialization which THROWS an exception
 		Exception e = new ModuleNotFoundException("exception-message");
-		expect(asyncOperationTask.execute(operation, environmentName, moduleName)).andThrow(e);
+		asyncOperationTask.execute(info);
+		expectLastCall().andThrow(new ModuleNotFoundException("exception-message"));		
 		replay(asyncOperationTask);
 
 		// initialize core component
@@ -729,7 +708,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -745,14 +723,13 @@ public class CoreTest {
 	/**
 	 * Test that undefined operation is rejected.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testExecuteRejectsUndefinedOperation() throws Exception {
 		File rootDir = testDirectory;
-		String moduleName = "some-module";
-		String environmentName = "yeti-environment";
+		String moduleName = randomModuleName;
+		String environmentName = randomEnvironmentName;
 
 		// create null module info
 		ModuleInfo moduleInfo = ModuleInfoImpl.getNullInstance();
@@ -769,7 +746,6 @@ public class CoreTest {
 		// initialize result repository for NULL operation
 		expect(resultRepository.startExecution(moduleInfo, environmentName, null)).andReturn(info);
 		replay(resultRepository);
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 
 		// complete mock execution result initialization
@@ -806,7 +782,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -822,14 +797,13 @@ public class CoreTest {
 	/**
 	 * Test that empty operation is rejected.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testExecuteRejectsEmptyOperation() throws Exception {
 		File rootDir = testDirectory;
-		String moduleName = "some-module";
-		String environmentName = "yeti-environment";
+		String moduleName = randomModuleName;
+		String environmentName = randomEnvironmentName;
 
 		// create null module info
 		ModuleInfo moduleInfo = ModuleInfoImpl.getNullInstance();
@@ -846,7 +820,6 @@ public class CoreTest {
 		// initialize result repository for EMPTY operation
 		expect(resultRepository.startExecution(moduleInfo, environmentName, "")).andReturn(info);
 		replay(resultRepository);
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 
 		// complete mock execution result initialization
@@ -883,7 +856,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -899,14 +871,13 @@ public class CoreTest {
 	/**
 	 * Test that undefined environment is rejected.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testExecuteRejectsUndefinedEnvironment() throws Exception {
 		File rootDir = testDirectory;
-		String moduleName = "some-module";
-		String environmentName = "yeti-environment";
+		String moduleName = randomModuleName;
+		String environmentName = randomEnvironmentName;
 		String operation = TestUtilsTestConstants.helloWorldOperation;
 
 		// create null module info
@@ -924,7 +895,6 @@ public class CoreTest {
 		// initialize result repository for EMPTY operation
 		expect(resultRepository.startExecution(moduleInfo, null, operation)).andReturn(info);
 		replay(resultRepository);
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 
 		// complete mock execution result initialization
@@ -961,7 +931,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -978,14 +947,13 @@ public class CoreTest {
 	/**
 	 * Test that empty environment is rejected.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testExecuteRejectsEmptyEnvironment() throws Exception {
 		File rootDir = testDirectory;
-		String moduleName = "some-module";
-		String environmentName = "yeti-environment";
+		String moduleName = randomModuleName;
+		String environmentName = randomEnvironmentName;
 		String operation = TestUtilsTestConstants.helloWorldOperation;
 
 		// create null module info
@@ -1003,7 +971,6 @@ public class CoreTest {
 		// initialize result repository for EMPTY operation
 		expect(resultRepository.startExecution(moduleInfo, "", operation)).andReturn(info);
 		replay(resultRepository);
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 
 		// complete mock execution result initialization
@@ -1040,7 +1007,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -1056,14 +1022,13 @@ public class CoreTest {
 	/**
 	 * Test that undefined module is rejected.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testExecuteRejectsUndefinedModule() throws Exception {
 		File rootDir = testDirectory;
-		String moduleName = "some-module";
-		String environmentName = "yeti-environment";
+		String moduleName = randomModuleName;
+		String environmentName = randomEnvironmentName;
 		String operation = TestUtilsTestConstants.helloWorldOperation;
 
 		// create null module info
@@ -1081,7 +1046,6 @@ public class CoreTest {
 		// initialize result repository for EMPTY operation
 		expect(resultRepository.startExecution(moduleInfo, environmentName, operation)).andReturn(info);
 		replay(resultRepository);
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 
 		// complete mock execution result initialization
@@ -1118,7 +1082,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -1134,14 +1097,13 @@ public class CoreTest {
 	/**
 	 * Test that empty module is rejected.
 	 * 
-	 * @throws Exception
-	 *             If test fails
+	 * @throws Exception If test fails
 	 */
 	@Test
 	public void testExecuteRejectsEmptyModule() throws Exception {
 		File rootDir = testDirectory;
-		String moduleName = "some-module";
-		String environmentName = "yeti-environment";
+		String moduleName = randomModuleName;
+		String environmentName = randomEnvironmentName;
 		String operation = TestUtilsTestConstants.helloWorldOperation;
 
 		// create null module info
@@ -1159,7 +1121,6 @@ public class CoreTest {
 		// initialize result repository for EMPTY operation
 		expect(resultRepository.startExecution(moduleInfo, environmentName, operation)).andReturn(info);
 		replay(resultRepository);
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 
 		// complete mock execution result initialization
@@ -1196,7 +1157,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -1217,13 +1177,11 @@ public class CoreTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testInitializationInfoStringIsDefinedBeforeCoreInitialization() throws CoreException {
 		// complete mock initializations
-		replay(commandRunner);
 		replay(commandFacade);
 		replay(context);
 		replay(resultRepository);
@@ -1236,7 +1194,6 @@ public class CoreTest {
 
 		// assert
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -1253,15 +1210,13 @@ public class CoreTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testInitializationInfoStringIsDefinedAfterSuccessfulCoreInitialization() throws CoreException {
 		// complete mock initializations
 		completeMockContextInitialization(configuration);
 		ExecutionResult result = completeMockRepositoryInitialization();
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 		completeMockAdministrationInitialization();
 		completeMockScheduledOperationRepositoryInitialization(result);
@@ -1282,7 +1237,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -1300,8 +1254,7 @@ public class CoreTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testInitializationInfoStringIsDefinedAfterFailedCoreInitialization() throws CoreException {
@@ -1309,7 +1262,6 @@ public class CoreTest {
 		// complete mock initializations
 		completeMockContextInitialization(configuration);
 		ExecutionResult result = completeMockRepositoryInitialization();
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 		completeMockAdministrationInitialization();
 		completeMockScheduledOperationRepositoryInitialization(result);
@@ -1330,7 +1282,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -1344,13 +1295,11 @@ public class CoreTest {
 	 * Test that initialization info (as an execution result) isn't defined before
 	 * core component is initialized.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testInitializationInfoIsntDefinedBeforeCoreInitialization() throws CoreException {
 		// complete mock initializations
-		replay(commandRunner);
 		replay(commandFacade);
 		replay(context);
 		replay(resultRepository);
@@ -1364,7 +1313,6 @@ public class CoreTest {
 
 		// assert
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);
@@ -1382,15 +1330,13 @@ public class CoreTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testInitializationInfoIsDefinedAfterCoreInitialization() throws CoreException {
 		// complete mock initializations
 		completeMockContextInitialization(configuration);
 		ExecutionResult result = completeMockRepositoryInitialization();
-		completeCommandRunnerInitialization(result);
 		completeCommandFacadeInitialization(result);
 		completeMockAdministrationInitialization();
 		completeMockScheduledOperationRepositoryInitialization(result);
@@ -1411,7 +1357,6 @@ public class CoreTest {
 		// assert
 		verify(result);
 		verify(provider);
-		verify(commandRunner);
 		verify(commandFacade);
 		verify(context);
 		verify(resultRepository);

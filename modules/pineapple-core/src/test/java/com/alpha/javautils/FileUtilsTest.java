@@ -292,7 +292,7 @@ public class FileUtilsTest {
 	 * Fails if system properties is undefined.
 	 */
 	@Test(expected = IllegalArgumentException.class)
-	public void testIsPathInDocumentAndSettingsDirFailsIfsystemPropertiesIsUndefined() {
+	public void testIsPathInUsersDirFailsIfsystemPropertiesIsUndefined() {
 
 		// complete mock setup
 		replay(systemUtils);
@@ -301,7 +301,7 @@ public class FileUtilsTest {
 		replay(systemProperties);
 
 		// invoke
-		fileUtils.isPathInDocumentsAndSettingsDir(randomValue, null);
+		fileUtils.isPathInUsersDir(randomValue, null);
 
 		// test
 		verify(systemUtils);
@@ -309,7 +309,7 @@ public class FileUtilsTest {
 	}
 
 	/**
-	 * Test that method succeeds if path is in ""Documents and Settings" directory.
+	 * Test that method succeeds if path is in ""Users" directory.
 	 */
 	@Test
 	public void testIsPathInDocumentAndSettingsDirSucceeds() {
@@ -321,21 +321,21 @@ public class FileUtilsTest {
 		replay(systemProperties);
 
 		// define path
-		String path = File.separatorChar + FileUtils.DOCUMENTS_AND_SETTINGS + File.separatorChar + randomValue;
+		String path = File.separatorChar + FileUtils.USERS_DIR + File.separatorChar + randomValue;
 
 		// test
-		assertTrue(fileUtils.isPathInDocumentsAndSettingsDir(path, randomValue));
+		assertTrue(fileUtils.isPathInUsersDir(path, randomValue));
 
 		// test
 		verify(systemProperties);
 	}
 
 	/**
-	 * Test that method fails if path isn't in ""Documents and Settings" directory,
+	 * Test that method fails if path isn't in "Users" directory,
 	 * e.g. user name doesn't match.
 	 */
 	@Test
-	public void testIsPathInDocumentAndSettingsDirFails() {
+	public void testIsPathInUsersDirFails() {
 
 		// complete mock setup
 		replay(systemUtils);
@@ -344,10 +344,10 @@ public class FileUtilsTest {
 		replay(systemProperties);
 
 		// define path
-		String path = File.separatorChar + FileUtils.DOCUMENTS_AND_SETTINGS + File.separatorChar + randomValue2;
+		String path = File.separatorChar + FileUtils.USERS_DIR + File.separatorChar + randomValue2;
 
 		// test
-		assertFalse(fileUtils.isPathInDocumentsAndSettingsDir(path, randomValue));
+		assertFalse(fileUtils.isPathInUsersDir(path, randomValue));
 
 		// test
 		verify(systemUtils);
@@ -355,11 +355,11 @@ public class FileUtilsTest {
 	}
 
 	/**
-	 * Test that method fails if path isn't in ""Documents and Settings" directory,
+	 * Test that method fails if path isn't in "Users" directory,
 	 * e.g. user name is missing.
 	 */
 	@Test
-	public void testIsPathInDocumentAndSettingsDirFails2() {
+	public void testIsPathInUsersDirFails2() {
 
 		// complete mock setup
 		replay(systemUtils);
@@ -368,10 +368,10 @@ public class FileUtilsTest {
 		replay(systemProperties);
 
 		// define path
-		String path = FileUtils.DOCUMENTS_AND_SETTINGS + File.separatorChar;
+		String path = FileUtils.USERS_DIR + File.separatorChar;
 
 		// test
-		assertFalse(fileUtils.isPathInDocumentsAndSettingsDir(path, randomValue));
+		assertFalse(fileUtils.isPathInUsersDir(path, randomValue));
 
 		// test
 		verify(systemUtils);
@@ -379,11 +379,11 @@ public class FileUtilsTest {
 	}
 
 	/**
-	 * Test that method fails if path isn't in ""Documents and Settings" directory,
+	 * Test that method fails if path isn't in "Users" directory,
 	 * e.g. leading separator is missing.
 	 */
 	@Test
-	public void testIsPathInDocumentAndSettingsDirFails3() {
+	public void testIsPathInUsersDirFails3() {
 
 		// complete mock setup
 		replay(systemUtils);
@@ -392,10 +392,10 @@ public class FileUtilsTest {
 		replay(systemProperties);
 
 		// define path
-		String path = FileUtils.DOCUMENTS_AND_SETTINGS + File.separatorChar + randomValue;
+		String path = FileUtils.USERS_DIR + File.separatorChar + randomValue;
 
 		// test
-		assertFalse(fileUtils.isPathInDocumentsAndSettingsDir(path, randomValue));
+		assertFalse(fileUtils.isPathInUsersDir(path, randomValue));
 
 		// test
 		verify(systemUtils);

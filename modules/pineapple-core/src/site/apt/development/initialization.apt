@@ -186,7 +186,7 @@ Core component initialization
 		[[2]] If the system property isn't defined then Pineapple will resolve to its home directory to
 		either one of these:
 		
-			* On Windows: <<<C:\\Document and Settings\\$\{user.name\}\\.pineapple>>>  	
+			* On Windows: <<<C:\\Users\\$\{user.name\}\\.pineapple>>>  	
 			
 			* Others: <<<$\{user.home\}/.pineapple>>>
 			

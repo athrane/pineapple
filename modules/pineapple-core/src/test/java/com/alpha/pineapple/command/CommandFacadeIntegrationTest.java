@@ -293,10 +293,11 @@ public class CommandFacadeIntegrationTest {
 
 	/**
 	 * Test that a {@linkplain CommandFacadeException} is thrown if save fails.
+	 * Usage of "\0" is illegal in file and directory names on Linux and Windows.
 	 */
 	@Test(expected = CommandFacadeException.class)
-	public void testFailsToSaveToUnknownDirectory() {
-		File file = new File(randomName, randomName + ".xml");
+	public void testFailsToSaveToIllegalDirectory() {
+		File file = new File(randomName, randomName + ".xml" + "\0");
 
 		// create document
 		ObjectFactory factory = new ObjectFactory();
@@ -313,6 +314,29 @@ public class CommandFacadeIntegrationTest {
 	}
 
 	/**
+	 * Test that a {@linkplain CommandFacadeException} is thrown if save fails.
+	 */
+	@Test
+	public void testSucceedsToSaveToUnknownDirectory() {
+		File file = new File(randomName, randomName + ".xml");
+
+		// create document
+		ObjectFactory factory = new ObjectFactory();
+		Root root = factory.createRoot();
+		root.setContainer(factory.createContainerType());
+		ItemType item1 = factory.createItemType();
+		item1.setName("item1");
+		ItemType item2 = factory.createItemType();
+		item2.setName("item2");
+		root.getContainer().getItems().add(item1);
+		root.getContainer().getItems().add(item2);
+
+		commandFacade.marshallJaxbObjects(file, root, executionResult);
+		assertTrue(executionResult.isExecuting());
+		assertTrue(executionResult.getFirstChild().isSuccess());		
+	}
+	
+	/**
 	 * Test that thrown {@linkplain CommandFacadeException} contains embedded
 	 * {@linkplain ExecutionResult}.
 	 */
@@ -324,7 +348,7 @@ public class CommandFacadeIntegrationTest {
 		} catch (CommandFacadeException e) {
 			assertNotNull(e.getResult());
 			assertTrue(executionResult.isExecuting());
-			assertTrue(executionResult.getFirstChild().isError());
+			assertTrue(executionResult.getFirstChild().isFailed());
 		}
 	}
 
@@ -466,4 +490,17 @@ public class CommandFacadeIntegrationTest {
 		commandFacade.executeTriggers(aggregatedModel, executionInfo, modelResult, executionResult);
 	}
 
+	/**
+	 * Test that default configuration  can be created .
+	 */
+	@Test
+	public void testCreateDefaultEnvironmentConfiguration() {
+
+		commandFacade.createDefaultConfiguration(executionResult);
+
+		// test
+		assertTrue(executionResult.isExecuting());
+		assertTrue(executionResult.getFirstChild().isSuccess());
+	}
+	
 }

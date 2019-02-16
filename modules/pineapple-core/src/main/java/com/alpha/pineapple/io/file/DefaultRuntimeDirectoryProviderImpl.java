@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
-* Copyright (C) 2007-2015 Allan Thrane Andersen.
+* Copyright (C) 2007-2019 Allan Thrane Andersen.
  * 
  * This file is part of Pineapple.
  * 
@@ -21,8 +21,11 @@
  ******************************************************************************/
 
 package com.alpha.pineapple.io.file;
+
 import static com.alpha.javautils.ArgumentUtils.notNull;
 import static com.alpha.javautils.SystemUtils.JAVA_IO_TMPDIR;
+import static com.alpha.javautils.SystemUtils.PINEAPPLE_CREDENTIALPROVIDER_PASSWORD_FILE;
+import static com.alpha.javautils.SystemUtils.PINEAPPLE_HOMEDIR;
 import static com.alpha.javautils.SystemUtils.USER_HOME;
 import static com.alpha.javautils.SystemUtils.USER_NAME;
 import static com.alpha.pineapple.CoreConstants.CONF_DIR;
@@ -57,7 +60,7 @@ import com.alpha.pineapple.module.ModuleInfo;
  * directory is resolved to this directory.
  * 
  * Otherwise if the the OS is Windows then runtime directory is resolved to
- * <code>C&#058;&#092;Documents and Settings&#092;&#036;&#123;user.name&#125;&#092;.pineapple</code>
+ * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple</code>
  * 
  * Finally, otherwise the runtime root directory is resolved to value of the
  * system property <code>&#036;&#123;user.home&#125;&#092;.pineapple</code>
@@ -67,7 +70,7 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 	/**
 	 * Windows C drive.
 	 */
-	static final String C_DRIVE = "C:";
+	static final String C_DRIVE = "C:\\";
 
 	/**
 	 * Module path constant.
@@ -116,7 +119,7 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 		if (systemUtils.isPineappleHomeDefined(systemProperties)) {
 
 			// get Pineapple home defined in system properties
-			String pineappleHome = systemUtils.getSystemProperty(SystemUtils.PINEAPPLE_HOMEDIR, systemProperties);
+			String pineappleHome = systemUtils.getSystemProperty(PINEAPPLE_HOMEDIR, systemProperties);
 			File pineappleHomeDir = new File(pineappleHome);
 			return pineappleHomeDir;
 		}
@@ -128,23 +131,21 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 		// handle windows OS
 		if (systemUtils.isWindowsOperatingSystem(systemProperties)) {
 
-			// validate if user.home is located in the document and settings
-			// directory
-			if (!fileUtils.isPathInDocumentsAndSettingsDir(userHome, userName)) {
+			// validate if user.home is located in the "Users" directory
+			if (!fileUtils.isPathInUsersDir(userHome, userName)) {
 
-				// construct home directory in in the document and settings
-				// directory
+				// construct home directory in in the "Users" directory
 				File rootDir = new File(C_DRIVE);
-				File documentAndSettingsDir = new File(rootDir, FileUtils.DOCUMENTS_AND_SETTINGS);
+				File documentAndSettingsDir = new File(rootDir, FileUtils.USERS_DIR);
 				File userHomeDir = new File(documentAndSettingsDir, userName);
 				File pineappleHomeDir = new File(userHomeDir, PINEAPPLE_DIR);
+
 				return pineappleHomeDir;
 			}
 
 			// use already set user home
 			File pineappleHomeDir = new File(userHome, PINEAPPLE_DIR);
 			return pineappleHomeDir;
-
 		}
 
 		// define default pineapple home directory
@@ -248,7 +249,7 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 		if (systemUtils.isPineappleCredentialProviderPasswordHomeDefined(systemProperties)) {
 
 			// get password file defined in system properties
-			String passwordFile = systemUtils.getSystemProperty(SystemUtils.PINEAPPLE_CREDENTIALPROVIDER_PASSWORD_FILE,
+			String passwordFile = systemUtils.getSystemProperty(PINEAPPLE_CREDENTIALPROVIDER_PASSWORD_FILE,
 					systemProperties);
 			return new File(passwordFile);
 		}

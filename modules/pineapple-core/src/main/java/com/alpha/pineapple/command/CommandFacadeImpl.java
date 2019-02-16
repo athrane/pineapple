@@ -27,6 +27,8 @@ import javax.annotation.Resource;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 import com.alpha.pineapple.command.execution.CommandRunner;
 import com.alpha.pineapple.credential.CredentialProvider;
@@ -44,36 +46,69 @@ public class CommandFacadeImpl implements CommandFacade {
 
 	/**
 	 * Unmarshall command.
+	 * 
+	 * Please notice: The command isn't set by constructor injection (i.e. using
+	 * the @Resource annotation) but injected using setter injection. The purpose is
+	 * to avoid circular dependencies between the facade and the commands.
 	 */
-	@Resource
 	Command unmarshallJAXBObjectsCommand;
 
 	/**
 	 * Marshall JAXB objects command.
+	 * 
+	 * Please notice: The command isn't set by constructor injection (i.e. using
+	 * the @Resource annotation) but injected using setter injection. The purpose is
+	 * to avoid circular dependencies between the facade and the commands.
 	 */
-	@Resource
 	Command marshallJAXBObjectsCommand;
 
 	/**
 	 * Copy example modules command.
+	 * 
+	 * Please notice: The command isn't set by constructor injection (i.e. using
+	 * the @Resource annotation) but injected using setter injection. The purpose is
+	 * to avoid circular dependencies between the facade and the commands.
 	 */
-	@Resource
 	Command copyExampleModulesCommand;
 
 	/**
 	 * Initialize plugin activator command.
+	 * 
+	 * Please notice: The command isn't set by constructor injection (i.e. using
+	 * the @Resource annotation) but injected using setter injection. The purpose is
+	 * to avoid circular dependencies between the facade and the commands.
 	 */
-	@Resource
 	Command initializePluginActivatorCommand;
 
 	/**
-	 * Invoke triggers command.
+	 * Initialize home directories command.
+	 * 
+	 * Please notice: The command isn't set by constructor injection (i.e. using
+	 * the @Resource annotation) but injected using setter injection. The purpose is
+	 * to avoid circular dependencies between the facade and the commands.
 	 */
-	@Resource
+	Command initializeHomeDirectoriesCommand;
+
+	/**
+	 * Create default environment configuration command.
+	 * 
+	 * Please notice: The command isn't set by constructor injection (i.e. using
+	 * the @Resource annotation) but injected using setter injection. The purpose is
+	 * to avoid circular dependencies between the facade and the commands.
+	 */
+	Command createDefaultEnvironmentConfigurationCommand;
+
+	/**
+	 * Invoke triggers command.
+	 * 
+	 * Please notice: The command isn't set by constructor injection (i.e. using
+	 * the @Resource annotation) but injected using setter injection. The purpose is
+	 * to avoid circular dependencies between the facade and the commands.
+	 */
 	Command invokeTriggersCommand;
 
 	/**
-	 * Command runner
+	 * Command runner.
 	 */
 	@Resource
 	CommandRunner commandRunner;
@@ -83,6 +118,89 @@ public class CommandFacadeImpl implements CommandFacade {
 	 */
 	@Resource
 	MessageProvider messageProvider;
+
+	/**
+	 * Set command. Implemented to avoid circular dependencies between the facade
+	 * and the command(s).
+	 * 
+	 * @param command inject command into facade.
+	 */
+	@Lazy
+	@Autowired
+	public void setCommand(UnmarshallJAXBObjectsCommand command) {
+		this.unmarshallJAXBObjectsCommand = command;
+	}
+
+	/**
+	 * Set command. Implemented to avoid circular dependencies between the facade
+	 * and the command(s).
+	 * 
+	 * @param command inject command into facade.
+	 */
+	@Lazy
+	@Autowired
+	public void setCommand(MarshallJAXBObjectsCommand command) {
+		this.marshallJAXBObjectsCommand = command;
+	}
+
+	/**
+	 * Set command. Implemented to avoid circular dependencies between the facade
+	 * and the command(s).
+	 * 
+	 * @param command inject command into facade.
+	 */
+	@Lazy
+	@Autowired
+	public void setCommand(CopyExampleModulesCommand command) {
+		this.copyExampleModulesCommand = command;
+	}
+
+	/**
+	 * Set command. Implemented to avoid circular dependencies between the facade
+	 * and the command(s).
+	 * 
+	 * @param command inject command into facade.
+	 */
+	@Lazy
+	@Autowired
+	public void setCommand(InitializePluginActivatorCommand command) {
+		this.initializePluginActivatorCommand = command;
+	}
+
+	/**
+	 * Set command. Implemented to avoid circular dependencies between the facade
+	 * and the command(s).
+	 * 
+	 * @param command inject command into facade.
+	 */
+	@Lazy
+	@Autowired
+	public void setCommand(InitializeHomeDirectoriesCommand command) {
+		this.initializeHomeDirectoriesCommand = command;
+	}
+
+	/**
+	 * Set command. Implemented to avoid circular dependencies between the facade
+	 * and the command(s).
+	 * 
+	 * @param command inject command into facade.
+	 */
+	@Lazy
+	@Autowired
+	public void setCreateDefaultEnvironmentConfigurationCommand(CreateDefaultEnvironmentConfigurationCommand command) {
+		this.createDefaultEnvironmentConfigurationCommand = command;
+	}
+
+	/**
+	 * Set command. Implemented to avoid circular dependencies between the facade
+	 * and the command(s).
+	 * 
+	 * @param command inject command into facade.
+	 */
+	@Resource
+	public void setCommand(InvokeTriggersCommand command) {
+		this.invokeTriggersCommand = command;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -176,7 +294,7 @@ public class CommandFacadeImpl implements CommandFacade {
 			ExecutionResult result) {
 
 		// create execution result
-		String message = messageProvider.getMessage("cf.initpluginactivator_info");
+		String message = messageProvider.getMessage("cf.init_pluginactivator_info");
 		ExecutionResult commandResult = result.addChild(message);
 
 		// create and setup context
@@ -193,6 +311,49 @@ public class CommandFacadeImpl implements CommandFacade {
 
 		// handle successful execution
 		return (PluginActivator) context.get(InitializePluginActivatorCommand.PLUGIN_ACTIVATOR_KEY);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void initializeHomeDirectories(ExecutionResult result) {
+
+		// create execution result
+		String message = messageProvider.getMessage("cf.init_homedirectories_info");
+		ExecutionResult commandResult = result.addChild(message);
+
+		// create and setup context
+		Context context = commandRunner.createContext();
+
+		// run command
+		commandRunner.run(initializeHomeDirectoriesCommand, commandResult, context);
+
+		// handle unsuccessful execution
+		if (!commandResult.isSuccess())
+			throw new CommandFacadeException(commandResult);
+
+		// handle successful execution
+		// NO-OP
+	}
+
+	@Override
+	public void createDefaultConfiguration(ExecutionResult result) {
+
+		// create execution result
+		String message = messageProvider.getMessage("cf.create_defaultconfiguration_info");
+		ExecutionResult commandResult = result.addChild(message);
+
+		// create and setup context
+		Context context = commandRunner.createContext();
+
+		// run command
+		commandRunner.run(createDefaultEnvironmentConfigurationCommand, commandResult, context);
+
+		// handle unsuccessful execution
+		if (!commandResult.isSuccess())
+			throw new CommandFacadeException(commandResult);
+
+		// handle successful execution
+		// NO-OP
 	}
 
 	@SuppressWarnings("unchecked")
@@ -218,6 +379,9 @@ public class CommandFacadeImpl implements CommandFacade {
 		// handle unsuccessful execution
 		if (!commandResult.isSuccess())
 			throw new CommandFacadeException(commandResult);
+
+		// handle successful execution
+		// NO-OP
 	}
 
 }

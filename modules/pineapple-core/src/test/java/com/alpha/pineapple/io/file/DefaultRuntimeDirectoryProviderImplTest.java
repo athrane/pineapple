@@ -1,8 +1,9 @@
 /*******************************************************************************
+
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
-* Copyright (C) 2007-2015 Allan Thrane Andersen.
+* Copyright (C) 2007-2019 Allan Thrane Andersen.
  * 
  * This file is part of Pineapple.
  * 
@@ -32,6 +33,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static com.alpha.javautils.FileUtils.USERS_DIR;
+
 
 import java.io.File;
 import java.util.Properties;
@@ -58,12 +61,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	/**
 	 * Root path on Windows.
 	 */
-	static final String WINDOWS_ROOT_PATH = "C:";
-
-	/**
-	 * Windows document and settings directory.
-	 */
-	static final String DOCUMENTS_AND_SETTINGS = "Documents and Settings";
+	static final String WINDOWS_ROOT_PATH = "C:\\";
 
 	/**
 	 * Windows C-drive.
@@ -166,16 +164,16 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 	/**
 	 * Test that home directory is resolved to
-	 * <code>C&#058;&#092;Documents and Settings&#092;&#036;&#123;user.name&#125;&#092;.pineapple</code>
+	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple</code>
 	 * with these conditions meet: 1) The system property
 	 * <code>pineapple.home.dir</code> isn't defined. 2) The <code>os.name</code>is
 	 * Windows something-something 3) The <code>user.home</code> is located at
-	 * <code>C&#058;&#092;Documents and Settings&#092;&#036;&#123;user.name&#125;</code>
+	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;</code>
 	 */
 	@Test
 	public void testHomeDirectoryForWindows() {
 
-		final String path = "C:\\Documents and Settings\\" + randomUser;
+		final String path = "C:\\Users\\" + randomUser;
 		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
 
 		// complete mock setup
@@ -189,14 +187,14 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(systemProperties);
 
 		// complete mock setup
-		expect(fileUtils.isPathInDocumentsAndSettingsDir(osIndependentPath, randomUser)).andReturn(false);
+		expect(fileUtils.isPathInUsersDir(osIndependentPath, randomUser)).andReturn(false);
 		replay(fileUtils);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
 		expected.append(File.separatorChar);
-		expected.append(DOCUMENTS_AND_SETTINGS);
+		expected.append(USERS_DIR);
 		expected.append(File.separatorChar);
 		expected.append(randomUser);
 		expected.append(File.separatorChar);
@@ -214,11 +212,11 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 	/**
 	 * Test that home directory is resolved to
-	 * <code>C&#058;&#092;Documents and Settings&#092;&#036;&#123;user.name&#125;&#092;.pineapple</code>
+	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple</code>
 	 * with these conditions meet: 1) The system property
 	 * <code>pineapple.home.dir</code> isn't defined. 2) The <code>os.name</code>is
 	 * Windows something-something 3) The <code>user.home</code> is located at
-	 * <code>C&#058;&#092;Documents and Settings&#092;&#036;&#123;user.name&#125;</code>
+	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;</code>
 	 */
 	@Test
 	public void testHomeDirectoryForWindows2() {
@@ -237,14 +235,14 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(systemProperties);
 
 		// complete mock setup
-		expect(fileUtils.isPathInDocumentsAndSettingsDir(osIndependentPath, randomUser)).andReturn(false);
+		expect(fileUtils.isPathInUsersDir(osIndependentPath, randomUser)).andReturn(false);
 		replay(fileUtils);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
 		expected.append(File.separatorChar);
-		expected.append(DOCUMENTS_AND_SETTINGS);
+		expected.append(USERS_DIR);
 		expected.append(File.separatorChar);
 		expected.append(randomUser);
 		expected.append(File.separatorChar);
@@ -262,7 +260,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 	/**
 	 * Test that home directory is resolved to
-	 * <code>C&#058;&#092;Documents and Settings&#092;&#036;&#123;user.name&#125;&#092;.pineapple</code>
+	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple</code>
 	 * 
 	 * with these conditions meet: 1) The system property
 	 * <code>pineapple.home.dir</code> isn't defined. 2) The <code>os.name</code>is
@@ -286,14 +284,14 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(systemProperties);
 
 		// complete mock setup
-		expect(fileUtils.isPathInDocumentsAndSettingsDir(osIndependentPath, randomUser)).andReturn(false);
+		expect(fileUtils.isPathInUsersDir(osIndependentPath, randomUser)).andReturn(false);
 		replay(fileUtils);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
 		expected.append(File.separatorChar);
-		expected.append(DOCUMENTS_AND_SETTINGS);
+		expected.append(USERS_DIR);
 		expected.append(File.separatorChar);
 		expected.append(randomUser);
 		expected.append(File.separatorChar);
@@ -350,7 +348,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 	/**
 	 * Test that modules directory is resolved to
-	 * <code>C&#058;&#092;Documents and Settings&#092;&#036;&#123;user.name&#125;&#092;.pineapple&#092;modules</code>
+	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple&#092;modules</code>
 	 * 
 	 * with these conditions meet: 1) The system property
 	 * <code>pineapple.home.dir</code> isn't defined. 2) The <code>os.name</code>is
@@ -374,14 +372,14 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(systemProperties);
 
 		// complete mock setup
-		expect(fileUtils.isPathInDocumentsAndSettingsDir(osIndependentPath, randomUser)).andReturn(false);
+		expect(fileUtils.isPathInUsersDir(osIndependentPath, randomUser)).andReturn(false);
 		replay(fileUtils);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
 		expected.append(File.separatorChar);
-		expected.append(DOCUMENTS_AND_SETTINGS);
+		expected.append(USERS_DIR);
 		expected.append(File.separatorChar);
 		expected.append(randomUser);
 		expected.append(File.separatorChar);
@@ -401,7 +399,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 	/**
 	 * Test that configuration directory is resolved to
-	 * <code>C&#058;&#092;Documents and Settings&#092;&#036;&#123;user.name&#125;&#092;.pineapple&#092;conf</code>
+	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple&#092;conf</code>
 	 * 
 	 * with these conditions meet: 1) The system property
 	 * <code>pineapple.home.dir</code> isn't defined. 2) The <code>os.name</code>is
@@ -425,14 +423,14 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(systemProperties);
 
 		// complete mock setup
-		expect(fileUtils.isPathInDocumentsAndSettingsDir(osIndependentPath, randomUser)).andReturn(false);
+		expect(fileUtils.isPathInUsersDir(osIndependentPath, randomUser)).andReturn(false);
 		replay(fileUtils);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
 		expected.append(File.separatorChar);
-		expected.append(DOCUMENTS_AND_SETTINGS);
+		expected.append(USERS_DIR);
 		expected.append(File.separatorChar);
 		expected.append(randomUser);
 		expected.append(File.separatorChar);
@@ -452,7 +450,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 	/**
 	 * Test that reports directory is resolved to
-	 * <code>C&#058;&#092;Documents and Settings&#092;&#036;&#123;user.name&#125;&#092;.pineapple&#092;reports</code>
+	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple&#092;reports</code>
 	 * 
 	 * with these conditions meet: 1) The system property
 	 * <code>pineapple.home.dir</code> isn't defined. 2) The <code>os.name</code>is
@@ -476,14 +474,14 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(systemProperties);
 
 		// complete mock setup
-		expect(fileUtils.isPathInDocumentsAndSettingsDir(osIndependentPath, randomUser)).andReturn(false);
+		expect(fileUtils.isPathInUsersDir(osIndependentPath, randomUser)).andReturn(false);
 		replay(fileUtils);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
 		expected.append(File.separatorChar);
-		expected.append(DOCUMENTS_AND_SETTINGS);
+		expected.append(USERS_DIR);
 		expected.append(File.separatorChar);
 		expected.append(randomUser);
 		expected.append(File.separatorChar);
@@ -649,7 +647,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	@Test
 	public void testGetTempDirectoryForWindows() throws Exception {
 
-		final String path = "C:\\Documents and Settings\\" + randomUser + "\\Local Settings\\Temp";
+		final String path = "C:\\Users\\" + randomUser + "\\Local Settings\\Temp";
 		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
 
 		// complete mock setup
@@ -668,7 +666,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
 		expected.append(File.separatorChar);
-		expected.append(DOCUMENTS_AND_SETTINGS);
+		expected.append(USERS_DIR);
 		expected.append(File.separatorChar);
 		expected.append(randomUser);
 		expected.append(File.separatorChar);
@@ -702,7 +700,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	@Test
 	public void testGetTempDirectoryForWindowsWithShortNames() throws Exception {
 
-		final String path = "C:\\Documents and Settings\\" + randomUser + "\\Local Settings\\Temp";
+		final String path = "C:\\Users\\" + randomUser + "\\Local Settings\\Temp";
 		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
 
 		final String shortPath = "C:\\DOCUME~1\\" + randomUser + "\\LOCALS~1\\Temp";
@@ -724,7 +722,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
 		expected.append(File.separatorChar);
-		expected.append(DOCUMENTS_AND_SETTINGS);
+		expected.append(USERS_DIR);
 		expected.append(File.separatorChar);
 		expected.append(randomUser);
 		expected.append(File.separatorChar);

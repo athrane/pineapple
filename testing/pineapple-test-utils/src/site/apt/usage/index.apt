@@ -42,8 +42,6 @@ Introduction
 	
 	* <<<DirectoryTestExecutionListener>>>
 	
-	* <<<NameAwareTestExecutionListener>>>	
-	
 	[]
 
 ** MessageProviderAnswerImpl
@@ -64,16 +62,6 @@ Introduction
 	This class should always be used with the Spring 
 	<<<DependencyInjectionTestExecutionListener>>> in integration test cases 
 	to enable the dependency injection.   
-
-** NameAwareTestExecutionListener
-
-	<<<com.alpha.springutils.NameAwareTestExecutionListener>>> is an Spring
-	test execution listener class which gives access to the name of the
-	currently executing test method.
-	
-	This class should always be used with the Spring 
-	<<<DependencyInjectionTestExecutionListener>>> in integration test cases 
-	to enable the dependency injection.   	
 
 ** SpringBeansUtils
 

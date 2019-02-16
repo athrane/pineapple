@@ -66,7 +66,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	/**
 	 * Windows C-drive.
 	 */
-	static final String C_DRIVE = WINDOWS_ROOT_PATH;
+	static final String C_DRIVE = "C:";
 
 	/**
 	 * Default name for pineapple directory.
@@ -677,6 +677,10 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// get directory
 		File dir = provider.getTempDirectory();
 
+		System.out.println("expected="+expected);
+		System.out.println("dir="+dir);
+		
+		
 		// test
 		assertEquals(new File(expected.toString()), dir);
 

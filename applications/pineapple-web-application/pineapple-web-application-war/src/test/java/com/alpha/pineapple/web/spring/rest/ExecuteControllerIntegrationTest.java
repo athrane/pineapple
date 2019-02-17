@@ -43,7 +43,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.log4j.Logger;
 import org.hamcrest.core.StringContains;
 import org.junit.After;
 import org.junit.Before;
@@ -125,7 +124,6 @@ public class ExecuteControllerIntegrationTest {
 		public void notify(ExecutionResultNotification notification) {
 			notifications.add(notification);
 		}
-
 	}
 
 	/**
@@ -144,11 +142,6 @@ public class ExecuteControllerIntegrationTest {
 	 */
 	@Resource
 	WebAppCoreFactory webAppCoreFactory;
-
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Object mother for environment configuration.
@@ -241,7 +234,6 @@ public class ExecuteControllerIntegrationTest {
 
 		// initialize Spring MVC mock
 		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).alwaysDo(print()).build();
-
 	}
 
 	@After
@@ -264,8 +256,7 @@ public class ExecuteControllerIntegrationTest {
 	 * 
 	 * The module contains a model which uses the hello world plugin.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	void createEnvConfigurationAndModule() throws Exception {
 		// create pineapple runtime sub directories, e.g conf and modules
@@ -295,8 +286,7 @@ public class ExecuteControllerIntegrationTest {
 	 * 
 	 * Capturing event listener is registered.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	void reinitializeCoreComponent() throws Exception {
 		coreComponent = webAppCoreFactory.createCore();
@@ -309,8 +299,7 @@ public class ExecuteControllerIntegrationTest {
 	/**
 	 * Wait until execution is completed.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	void waitForOperationToComplete() throws Exception {
 
@@ -324,14 +313,14 @@ public class ExecuteControllerIntegrationTest {
 
 		// wait until completed
 		while (notification.getResult().isExecuting()) {
+			ConcurrencyUtils.waitSomeMilliseconds(10);
 		}
 	}
 
 	/**
 	 * Test that POST "Execute" service invocation returns HTTP 201.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostExecute_ReturnsHttpCreated() throws Exception {
@@ -349,8 +338,7 @@ public class ExecuteControllerIntegrationTest {
 	/**
 	 * Test that POST "Execute" service invocation returns location header.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostExecute_ReturnsLocationHeader() throws Exception {
@@ -370,8 +358,7 @@ public class ExecuteControllerIntegrationTest {
 	 * Test that POST "Execute" service invocation returns content type
 	 * "application/xml".
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostExecute_ReturnsContentTypeApplicationXml() throws Exception {
@@ -385,8 +372,7 @@ public class ExecuteControllerIntegrationTest {
 	/**
 	 * Test that POST "Execute" service invocation returns encoding "utf-8".
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostExecute_ReturnsEncodingUtf8_FIXME() throws Exception {
@@ -404,8 +390,7 @@ public class ExecuteControllerIntegrationTest {
 	 * Test that POST "Execute" service invocation returns HTTP 404 for execution of
 	 * an unknown module.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostExecute_ReturnsNotFoundForUnknownModule() throws Exception {
@@ -417,8 +402,7 @@ public class ExecuteControllerIntegrationTest {
 	 * Test that POST "Execute" service invocation returns error message for
 	 * execution of an unknown module which contains the name of the unknown module.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostExecute_ReturnsErrorMessageForUnknownModule() throws Exception {
@@ -429,8 +413,7 @@ public class ExecuteControllerIntegrationTest {
 	/**
 	 * Test that GET "Get Operation Status" service invocation returns HTTP 200.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testGetOperationStatus_ReturnsHttpOk() throws Exception {
@@ -461,8 +444,7 @@ public class ExecuteControllerIntegrationTest {
 	 * Test that GET "Get Operation Status" service invocation returns HTTP 200
 	 * despite multiple invocations.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testGetOperationStatus_ReturnsHttpOkWithMultipleIncocations() throws Exception {
@@ -501,8 +483,7 @@ public class ExecuteControllerIntegrationTest {
 	 * Test that GET "Get Operation Status" service invocation returns HTTP 404 for
 	 * deleted execution ID.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testGetOperationStatus_ReturnsHttpNotFoundForDeleteExecutionId() throws Exception {
@@ -536,8 +517,7 @@ public class ExecuteControllerIntegrationTest {
 	/**
 	 * Test that GET "Get Operation Status" service invocation fails with HTTP 404.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testGetOperationStatus_ReturnsNotFoundForUnknownExecutionId() throws Exception {
@@ -548,8 +528,7 @@ public class ExecuteControllerIntegrationTest {
 	/**
 	 * Test that POST "Get Operation Status" service invocation fails with HTTP 405.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostGetOperationStatus_ReturnsMethodNotAllowed() throws Exception {
@@ -561,8 +540,7 @@ public class ExecuteControllerIntegrationTest {
 	 * Test that DELETE "Delete Operation Status" service invocation returns HTTP
 	 * 200 for known execution ID.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testDeleteOperationStatus_ReturnsHttpOk() throws Exception {
@@ -593,8 +571,7 @@ public class ExecuteControllerIntegrationTest {
 	 * Test that DELETE "Delete Operation Status" service invocation fails for
 	 * unknown execution ID
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testDeleteOperationStatus_ReturnsNotFoundForUnknownExecutionId() throws Exception {
@@ -606,8 +583,7 @@ public class ExecuteControllerIntegrationTest {
 	 * Test that DELETE "Delete Operation Status" service invocation returns HTTP
 	 * 404 for deleted execution ID.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testDeleteOperationStatus_ReturnsHttpNotFoundForDeletedExecutionId() throws Exception {
@@ -642,8 +618,7 @@ public class ExecuteControllerIntegrationTest {
 	 * Test that POST "Delete Operation Status" service invocation fails with HTTP
 	 * 405.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostDeleteOperationStatus_ReturnsMethodNotAllowed() throws Exception {

@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
- * Copyright (C) 2007-2012 Allan Thrane Andersen.
+ * Copyright (C) 2007-2019 Allan Thrane Andersen.
  * 
  * This file is part of Pineapple.
  * 
@@ -40,6 +40,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.hamcrest.core.StringContains;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.DirtiesContext;
@@ -55,6 +56,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.alpha.javautils.SystemUtils;
+import com.alpha.junitutils.CreateTestDirectoryRule;
 import com.alpha.pineapple.PineappleCore;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResultNotification;
@@ -113,6 +115,9 @@ public class WebAppCoreFactoryIntegrationTest {
 		}
 
 	}
+
+	@Rule
+	public CreateTestDirectoryRule testDirRule = new CreateTestDirectoryRule();
 
 	/**
 	 * Current test directory.
@@ -230,8 +235,7 @@ public class WebAppCoreFactoryIntegrationTest {
 	 * 
 	 * The module contains a model which uses the hello world plugin.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	void createEnvConfigurationAndModule() throws Exception {
 		// create pineapple runtime sub directories, e.g conf and modules
@@ -279,8 +283,7 @@ public class WebAppCoreFactoryIntegrationTest {
 	 * Test that core component configured by web application core factory as part
 	 * of the Spring configuration is configured with report generator.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testCoreInitializedBySpringIsConfiguredWithReportGenerator() throws Exception {
@@ -298,8 +301,7 @@ public class WebAppCoreFactoryIntegrationTest {
 	 * The core component initializes is runtime directories from the pineapple
 	 * system property.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testCreateCoreReturnsCoreComponent() throws Exception {
@@ -316,11 +318,10 @@ public class WebAppCoreFactoryIntegrationTest {
 	 * The core component initializes is runtime directories from the pineapple
 	 * system property.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
-	public void testCoreCreatedByFactoryIsSameInstanceAsCreateBYSpringContext() throws Exception {
+	public void testCoreCreatedByFactoryIsSameInstanceAsCreateBySpringContext() throws Exception {
 		createEnvConfigurationAndModule();
 
 		PineappleCore core = webAppCoreFactory.createCore();
@@ -330,14 +331,32 @@ public class WebAppCoreFactoryIntegrationTest {
 	}
 
 	/**
+	 * Test that core component is initialised successfully.
+	 *
+	 * The core component initializes is runtime directories from the pineapple
+	 * system property.
+	 * 
+	 * @throws Exception if test fails.
+	 */
+	@Test
+	public void testCoreIsInitialisedSuccessfully() throws Exception {
+		createEnvConfigurationAndModule();
+
+		// create core
+		PineappleCore core = webAppCoreFactory.createCore();
+
+		// test
+		assertTrue(core.getInitializationInfo().isSuccess());
+	}
+
+	/**
 	 * Test that core component created by web application core factory as part of
 	 * the Spring configuration is configured with report generator.
 	 *
 	 * The core component initializes is runtime directories from the pineapple
 	 * system property.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testCoreCreatedByFactoryIsConfiguredWithReportGenerator() throws Exception {
@@ -361,8 +380,7 @@ public class WebAppCoreFactoryIntegrationTest {
 	 * The core component initializes is runtime directories from the pineapple
 	 * system property.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testFactoryReturnsTheSameCoreInstance() throws Exception {
@@ -386,8 +404,7 @@ public class WebAppCoreFactoryIntegrationTest {
 	 * doesn't already exists. Result is that the listener is added the first time
 	 * only.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testFactoryReturnsCoreWithOneResultListenerDespiteMultipleCoreCreations() throws Exception {
@@ -415,8 +432,7 @@ public class WebAppCoreFactoryIntegrationTest {
 	/**
 	 * Test that factory method returns same report generator instance.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testFactoryReturnsCoreWithSameReportGeneratorInstance() throws Exception {
@@ -450,8 +466,7 @@ public class WebAppCoreFactoryIntegrationTest {
 	 * The core component initializes is runtime directories from the pineapple
 	 * system property.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testCoreCreatedByFactoryIsReinitialized() throws Exception {
@@ -481,8 +496,7 @@ public class WebAppCoreFactoryIntegrationTest {
 	 * The core component is re-initialized with one module and then re-initialized
 	 * with a second module added.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testModulesIsRefreshedWhenCoreComponentisReinitialized() throws Exception {

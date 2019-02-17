@@ -30,11 +30,6 @@ import static reactor.event.selector.Selectors.T;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
-import org.zkoss.zk.ui.select.annotation.WireVariable;
-
-import reactor.core.Reactor;
-import reactor.event.Event;
-import reactor.function.Consumer;
 
 import com.alpha.pineapple.CoreException;
 import com.alpha.pineapple.CoreFactory;
@@ -52,6 +47,10 @@ import com.alpha.pineapple.web.event.consumer.ResultNotificationNotifierImpl;
 import com.alpha.pineapple.web.model.ExecuteOperationActivity;
 import com.alpha.pineapple.web.model.OpenModuleActivity;
 import com.alpha.pineapple.web.report.ReportRepository;
+
+import reactor.core.Reactor;
+import reactor.event.Event;
+import reactor.function.Consumer;
 
 /**
  * Factory class for Pineapple core component.
@@ -132,8 +131,7 @@ public class WebAppCoreFactory {
 	 *
 	 * @return new Pineapple core instance.
 	 * 
-	 * @throws CoreException
-	 *             If core instance creation fails.
+	 * @throws CoreException If core instance creation fails.
 	 */
 	public PineappleCore createCore() throws CoreException {
 

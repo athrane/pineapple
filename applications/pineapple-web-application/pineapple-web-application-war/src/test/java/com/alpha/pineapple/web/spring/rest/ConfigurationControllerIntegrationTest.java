@@ -310,6 +310,8 @@ public class ConfigurationControllerIntegrationTest {
 	 * 
 	 * To trigger failure the Pineapple home directory is set to garbage.
 	 * 
+	 * The usage of "\0" is illegal in file and directory names on Windows and Linux.
+	 * 
 	 * @throws Exception
 	 *             if test fails.
 	 */
@@ -317,7 +319,7 @@ public class ConfigurationControllerIntegrationTest {
 	public void testPostRefreshEnvironmentConfiguration_ReturnsHttpServerError() throws Exception {
 
 		// set the pineapple.home.dir system property
-		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, RandomStringUtils.randomNumeric(8));
+		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, RandomStringUtils.randomNumeric(8)+"-and-illegal-char-\0");
 
 		mockMvc.perform(post(REST_CONFIGURATION_REFRESH_URI).accept(MediaType.APPLICATION_XML))
 				.andExpect(status().isInternalServerError());

@@ -38,6 +38,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -48,6 +49,7 @@ import com.alpha.pineapple.credential.CredentialProvider;
 import com.alpha.pineapple.credential.FileBasedCredentialProviderImpl;
 import com.alpha.pineapple.model.configuration.Configuration;
 import com.alpha.pineapple.model.configuration.Credential;
+import com.alpha.spring.config.IntegrationTestSpringConfig;
 import com.alpha.springutils.DirectoryTestExecutionListener;
 import com.alpha.testutils.ObjectMotherCredentialProvider;
 import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
@@ -61,7 +63,8 @@ import com.alpha.testutils.TestUtilsTestConstants;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
 		DirectoryTestExecutionListener.class })
-@ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
+@ContextHierarchy({ @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" }),
+		@ContextConfiguration(classes = IntegrationTestSpringConfig.class) })
 public class CredentialProviderIntegrationTest {
 
 	/**
@@ -127,8 +130,7 @@ public class CredentialProviderIntegrationTest {
 	 * Factory test, i.e. that credential provider can be created from
 	 * {@link CoreFactory}.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testCanCreateCredentialProviderFromFactory() throws CoreException {
@@ -150,8 +152,7 @@ public class CredentialProviderIntegrationTest {
 	 * Factory test, i.e. that credential provider can be created from
 	 * {@link CoreFactory}.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testCanCreatedCredentialProviderContainsExpectedUser() throws Exception {
@@ -182,8 +183,7 @@ public class CredentialProviderIntegrationTest {
 	 * will return the same provider instance when the factory method is invoked as
 	 * returned by the spring context.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testFactoryWithInjectedDependeciesReturnsSameProviderInstanceAsSpringContext() throws CoreException {
@@ -208,8 +208,7 @@ public class CredentialProviderIntegrationTest {
 	 * will return the same provider instance when invoked multiple times, e.g. the
 	 * method is idempotent.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testFactoryWithInjectedDependeciesIsIdempotentForProviderFactoryMethod() throws CoreException {

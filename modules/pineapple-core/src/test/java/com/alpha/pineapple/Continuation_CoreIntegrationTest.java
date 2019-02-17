@@ -34,12 +34,12 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -51,6 +51,7 @@ import com.alpha.pineapple.credential.CredentialProvider;
 import com.alpha.pineapple.execution.ExecutionInfo;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.model.configuration.Configuration;
+import com.alpha.spring.config.IntegrationTestSpringConfig;
 import com.alpha.springutils.DirectoryTestExecutionListener;
 import com.alpha.testutils.ObjectMotherCredentialProvider;
 import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
@@ -67,7 +68,8 @@ import com.alpha.testutils.testplugins.infiniteloop.noncoop.NonCoperativeInfinit
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
 		DirectoryTestExecutionListener.class })
-@ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
+@ContextHierarchy({ @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" }),
+		@ContextConfiguration(classes = IntegrationTestSpringConfig.class) })
 public class Continuation_CoreIntegrationTest {
 
 	/**
@@ -189,10 +191,8 @@ public class Continuation_CoreIntegrationTest {
 	/**
 	 * Wait until module execution is completed
 	 * 
-	 * @param executionInfo
-	 *            Execution info.
-	 * @throws InterruptedException
-	 *             if test fails
+	 * @param executionInfo Execution info.
+	 * @throws InterruptedException if test fails
 	 */
 	void waitForOperationToComplete(ExecutionInfo executionInfo) throws InterruptedException {
 		while (executionInfo.getResult().isExecuting()) {
@@ -203,8 +203,7 @@ public class Continuation_CoreIntegrationTest {
 	/**
 	 * Get execution result from core which contains the state of the initialization
 	 * 
-	 * @param core
-	 *            The core component.
+	 * @param core The core component.
 	 * 
 	 * @return execution result from core which contains the state of the
 	 *         initialization
@@ -219,14 +218,12 @@ public class Continuation_CoreIntegrationTest {
 	 * Configures Pineapple with directories, environment configuration and start
 	 * the core component.
 	 * 
-	 * @param pluginId
-	 *            Name of plugin id to add as resource in the environment
-	 *            configuration.
+	 * @param pluginId Name of plugin id to add as resource in the environment
+	 *                 configuration.
 	 * 
 	 * @return Running configured core component.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	PineappleCore configureAndStartPineapple(String pluginId) throws Exception {
 		// set the pineapple.home.dir system property
@@ -257,8 +254,7 @@ public class Continuation_CoreIntegrationTest {
 	 * The plugin implements a infinite loop, whihc co-operatively inspects whehter
 	 * the execution ihas been cancelled.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	// @Test
 
@@ -295,8 +291,7 @@ public class Continuation_CoreIntegrationTest {
 	 * The plugin implements a infinite loop, which adds child results, the addition
 	 * of child results triggers cancellation of the execution.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	// @Test
 	public void testCanCancelOperationWithNonCooperativePlugin() throws Exception {

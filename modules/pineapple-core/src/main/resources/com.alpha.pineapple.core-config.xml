@@ -322,11 +322,4 @@
 		use by clients. -->
 	<bean id="coreFactory" class="com.alpha.pineapple.CoreFactory" />
 
-	<!-- definitions used by the integration tests. Only available for test 
-		with @ActiveProfiles("integration-test") -->
-	<beans profile="integration-test">
-		<bean id="ObjectMotherCredentialProvider"
-			class="com.alpha.testutils.ObjectMotherCredentialProvider" />
-	</beans>
-
 </beans>

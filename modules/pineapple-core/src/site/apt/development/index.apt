@@ -792,9 +792,7 @@ Development documentation
 	
 **** Resolution of the temp directory
 	
-	If the operating system is Windows then temp directory is resolved from the system property <<<java.io.tempdir>>> where
-	all short names (e.g. DOS 8.3 format) are attempted to be converted into long directory names. If the
-	conversion fails then the original short name based path is returned.  
+	The temp directory is resolved from the system property <<<java.io.tempdir>>>.  
 
 **** Resolution of the credential provider master password file
 
@@ -1348,6 +1346,35 @@ s
 	
  	Implementation of the ObjectMother pattern, provides helper functions 
  	using credentials providers in unit tests.
+
+	The class is also defined as a Spring bean in the integration test 
+	Spring configuration class <<<IntegrationTestSpringConfig>>>.
+
+** Integration test Spring configuration class 
+
+	The package <<<com.alpha.spring.config>>> contains Spring helper classes.
+
+	The class <<<IntegrationTestSpringConfig>>> defines a Java based spring configuration
+	which is used by integration tests.
+	
+	The configuration is used by including it in the test class:
+	
++---
+@RunWith(SpringJUnit4ClassRunner.class)
+@ActiveProfiles("integration-test")
+@ContextHierarchy({ @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" }),
+		@ContextConfiguration(classes = IntegrationTestSpringConfig.class) })
+public class PluginActivatorImplIntegrationTest {
+
+	/**
+	 * Object mother for credential provider
+	 */
+	@Resource
+	ObjectMotherCredentialProvider providerMother;
+
+	....
+}	
++---
 
 ** Test files 
 

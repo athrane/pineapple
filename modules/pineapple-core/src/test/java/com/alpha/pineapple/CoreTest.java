@@ -49,6 +49,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -69,6 +70,7 @@ import com.alpha.pineapple.module.ModuleInfoImpl;
 import com.alpha.pineapple.module.ModuleNotFoundException;
 import com.alpha.pineapple.module.ModuleRepository;
 import com.alpha.pineapple.plugin.activation.PluginActivator;
+import com.alpha.spring.config.IntegrationTestSpringConfig;
 import com.alpha.springutils.DirectoryTestExecutionListener;
 import com.alpha.testutils.ObjectMotherCredentialProvider;
 import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
@@ -80,7 +82,8 @@ import com.alpha.testutils.TestUtilsTestConstants;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners(DirectoryTestExecutionListener.class)
-@ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
+@ContextHierarchy({ @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" }),
+		@ContextConfiguration(classes = IntegrationTestSpringConfig.class) })
 public class CoreTest {
 
 	/**
@@ -582,13 +585,13 @@ public class CoreTest {
 		expect(resultRepository.startExecution(isA(String.class))).andReturn(result);
 		expect(resultRepository.startExecution(isA(ModuleInfo.class), isA(String.class), isA(String.class)))
 				.andReturn(info);
-		replay(resultRepository);		
-		
+		replay(resultRepository);
+
 		completeCommandFacadeInitialization(result);
 		completeMockAdministrationInitialization();
 		completeMockScheduledOperationRepositoryInitialization(result);
 		completeMockResultInitializationWithReportMetadata(result);
-		
+
 		// complete mock execution result initialization
 		expect(result.getTime()).andReturn(randomTime);
 		expect(result.isSuccess()).andReturn(true);
@@ -604,7 +607,7 @@ public class CoreTest {
 
 		// complete mock module repository initialization
 		moduleRepository.initialize();
-		expect(moduleRepository.resolveModule(moduleName, environmentName)).andReturn(moduleInfo);		
+		expect(moduleRepository.resolveModule(moduleName, environmentName)).andReturn(moduleInfo);
 		replay(moduleRepository);
 
 		// complete mock task initialization
@@ -682,7 +685,7 @@ public class CoreTest {
 		ModuleInfo moduleInfo = createMock(ModuleInfo.class);
 		replay(moduleInfo);
 
-		// complete mock module repository initialization 
+		// complete mock module repository initialization
 		moduleRepository.initialize();
 		expect(moduleRepository.resolveModule(moduleName, environmentName)).andReturn(moduleInfo);
 		replay(moduleRepository);
@@ -690,7 +693,7 @@ public class CoreTest {
 		// complete mock task initialization which THROWS an exception
 		Exception e = new ModuleNotFoundException("exception-message");
 		asyncOperationTask.execute(info);
-		expectLastCall().andThrow(new ModuleNotFoundException("exception-message"));		
+		expectLastCall().andThrow(new ModuleNotFoundException("exception-message"));
 		replay(asyncOperationTask);
 
 		// initialize core component

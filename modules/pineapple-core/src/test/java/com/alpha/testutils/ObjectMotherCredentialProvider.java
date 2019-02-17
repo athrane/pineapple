@@ -26,8 +26,6 @@ import static org.junit.Assert.assertNotNull;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
-
 import com.alpha.pineapple.CoreFactory;
 import com.alpha.pineapple.credential.CredentialProvider;
 import com.alpha.pineapple.model.configuration.Configuration;
@@ -40,11 +38,6 @@ import com.alpha.pineapple.model.configuration.Configuration;
  * tests only since it have the core factory injected as a dependency.
  */
 public class ObjectMotherCredentialProvider {
-
-	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
 	 * Object mother for environment configuration.
@@ -64,8 +57,7 @@ public class ObjectMotherCredentialProvider {
 	 * 
 	 * @return empty credential provider object for unit testing..
 	 * 
-	 * @throws Exception
-	 *             if creation fails.
+	 * @throws Exception if creation fails.
 	 */
 	public CredentialProvider createEmptyCredentialProvider() throws Exception {
 		assertNotNull("The ObjectMotherCredentialProvider class is only intended for usage in integration tests",
@@ -88,8 +80,7 @@ public class ObjectMotherCredentialProvider {
 	 * 
 	 * @return credential provider object for unit testing, which contains
 	 *         Test-Resource credential.
-	 * @throws Exception
-	 *             if creation fails.
+	 * @throws Exception if creation fails.
 	 */
 	public CredentialProvider createProviderWithTestResourceCredential() throws Exception {
 		assertNotNull("The ObjectMotherCredentialProvider class is only intended for usage in integration tests",

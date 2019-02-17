@@ -36,13 +36,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.alpha.pineapple.credential.CredentialProvider;
 import com.alpha.pineapple.execution.ExecutionResult;
-import com.alpha.pineapple.execution.ExecutionResultImpl;
 import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
+import com.alpha.pineapple.execution.ExecutionResultImpl;
 import com.alpha.pineapple.model.configuration.Configuration;
+import com.alpha.spring.config.IntegrationTestSpringConfig;
 import com.alpha.testutils.ObjectMotherCredentialProvider;
 import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 
@@ -51,7 +53,8 @@ import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("integration-test")
-@ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
+@ContextHierarchy({ @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" }),
+		@ContextConfiguration(classes = IntegrationTestSpringConfig.class) })
 public class InitializePluginActivatorCommandIntegrationTest {
 
 	/**
@@ -111,8 +114,7 @@ public class InitializePluginActivatorCommandIntegrationTest {
 	/**
 	 * Test that command can successfully execute with empty input.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test

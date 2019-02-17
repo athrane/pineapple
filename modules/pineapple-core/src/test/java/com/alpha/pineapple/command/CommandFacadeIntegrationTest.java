@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -53,6 +54,7 @@ import com.alpha.pineapple.model.test.Root;
 import com.alpha.pineapple.module.ModuleInfo;
 import com.alpha.pineapple.module.ModuleInfoImpl;
 import com.alpha.pineapple.plugin.activation.PluginActivator;
+import com.alpha.spring.config.IntegrationTestSpringConfig;
 import com.alpha.springutils.DirectoryTestExecutionListener;
 import com.alpha.testutils.ObjectMotherCredentialProvider;
 import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
@@ -64,7 +66,10 @@ import com.alpha.testutils.ObjectMotherModule;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("integration-test")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirectoryTestExecutionListener.class })
-@ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
+@ContextHierarchy({ 
+	@ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" }),
+	@ContextConfiguration(classes = IntegrationTestSpringConfig.class) })
+
 public class CommandFacadeIntegrationTest {
 
 	/**
@@ -333,9 +338,9 @@ public class CommandFacadeIntegrationTest {
 
 		commandFacade.marshallJaxbObjects(file, root, executionResult);
 		assertTrue(executionResult.isExecuting());
-		assertTrue(executionResult.getFirstChild().isSuccess());		
+		assertTrue(executionResult.getFirstChild().isSuccess());
 	}
-	
+
 	/**
 	 * Test that thrown {@linkplain CommandFacadeException} contains embedded
 	 * {@linkplain ExecutionResult}.
@@ -400,8 +405,7 @@ public class CommandFacadeIntegrationTest {
 	/**
 	 * Test that plugin activator can be initialized with an empty configuration.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testCanInitializePluginProviderWithEmptyConfiguration() throws Exception {
@@ -418,8 +422,7 @@ public class CommandFacadeIntegrationTest {
 	/**
 	 * Test that a model with no triggers can be executed successfully.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testExecuteModelWithNoTriggers() throws Exception {
@@ -456,8 +459,7 @@ public class CommandFacadeIntegrationTest {
 	 * Test that a {@linkplain CommandFacadeException} is thrown if trigger module
 	 * is unknown.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test(expected = CommandFacadeException.class)
 	public void testFailsIfTriggerModuleIsUnknown() throws Exception {
@@ -491,7 +493,7 @@ public class CommandFacadeIntegrationTest {
 	}
 
 	/**
-	 * Test that default configuration  can be created .
+	 * Test that default configuration can be created .
 	 */
 	@Test
 	public void testCreateDefaultEnvironmentConfiguration() {
@@ -502,5 +504,5 @@ public class CommandFacadeIntegrationTest {
 		assertTrue(executionResult.isExecuting());
 		assertTrue(executionResult.getFirstChild().isSuccess());
 	}
-	
+
 }

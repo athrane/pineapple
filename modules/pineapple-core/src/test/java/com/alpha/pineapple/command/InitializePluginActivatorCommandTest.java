@@ -37,6 +37,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -49,6 +50,7 @@ import com.alpha.pineapple.model.configuration.Configuration;
 import com.alpha.pineapple.plugin.activation.PluginActivator;
 import com.alpha.pineapple.plugin.repository.PluginRuntimeRepository;
 import com.alpha.pineapple.resource.ResourceRepository;
+import com.alpha.spring.config.IntegrationTestSpringConfig;
 import com.alpha.testutils.ObjectMotherCredentialProvider;
 import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 
@@ -59,7 +61,8 @@ import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("integration-test")
-@ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
+@ContextHierarchy({ @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" }),
+		@ContextConfiguration(classes = IntegrationTestSpringConfig.class) })
 public class InitializePluginActivatorCommandTest {
 	/**
 	 * Object under test.

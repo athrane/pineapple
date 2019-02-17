@@ -44,6 +44,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -55,6 +56,7 @@ import com.alpha.pineapple.credential.CredentialProvider;
 import com.alpha.pineapple.execution.ExecutionInfo;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.model.configuration.Configuration;
+import com.alpha.spring.config.IntegrationTestSpringConfig;
 import com.alpha.springutils.DirectoryTestExecutionListener;
 import com.alpha.testutils.ObjectMotherCredentialProvider;
 import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
@@ -69,7 +71,8 @@ import com.alpha.testutils.ObjectMotherModule;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
 		DirectoryTestExecutionListener.class })
-@ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
+@ContextHierarchy({ @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" }),
+		@ContextConfiguration(classes = IntegrationTestSpringConfig.class) })
 public class Execution_CoreIntegrationTest {
 
 	/**
@@ -191,10 +194,8 @@ public class Execution_CoreIntegrationTest {
 	/**
 	 * Wait until module execution is completed
 	 * 
-	 * @param executionInfo
-	 *            Execution info.
-	 * @throws InterruptedException
-	 *             if test fails
+	 * @param executionInfo Execution info.
+	 * @throws InterruptedException if test fails
 	 */
 	void waitForOperationToComplete(ExecutionInfo executionInfo) throws InterruptedException {
 		while (executionInfo.getResult().isExecuting()) {
@@ -205,8 +206,7 @@ public class Execution_CoreIntegrationTest {
 	/**
 	 * Get execution result from core which contains the state of the initialization
 	 * 
-	 * @param core
-	 *            The core component.
+	 * @param core The core component.
 	 * 
 	 * @return execution result from core which contains the state of the
 	 *         initialization
@@ -239,8 +239,7 @@ public class Execution_CoreIntegrationTest {
 	 * Test that test operation can be executed with empty test model with a
 	 * generated default configuration
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testOperationSucceeds_WithEmptyModel_WithDefaultEnvConfig() throws Exception {
@@ -270,8 +269,7 @@ public class Execution_CoreIntegrationTest {
 	 * Test that test operation can be executed with empty test model with a custom
 	 * environment configuration
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testOperationSucceeds_WithEmptyModel_WithCustomConfig() throws Exception {
@@ -297,8 +295,7 @@ public class Execution_CoreIntegrationTest {
 	 * Test that execution of test operation fails with a simple test model with a
 	 * custom environment configuration due to non-existing module.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testOperationFailsDueToNonExistingModule_WithCustomConfig() throws Exception {
@@ -326,8 +323,7 @@ public class Execution_CoreIntegrationTest {
 	 * custom environment configuration due to module doen't contain model for
 	 * selected non-existing environment.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testOperationFailsDueToNonExistingModel_WithCustomConfig() throws Exception {
@@ -358,8 +354,7 @@ public class Execution_CoreIntegrationTest {
 	 * custom environment configuration due resource not defined for selected
 	 * environment.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testOperationFailsDueToNonExistingResource_WithCustomConfig() throws Exception {
@@ -389,8 +384,7 @@ public class Execution_CoreIntegrationTest {
 	 * Test that execution of XYZ operation fails with a simple test model with a
 	 * custom environment configuration due operation not supported for plugin.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testOperationFailsDueToUnspportedOperation_WithCustomConfig() throws Exception {
@@ -425,8 +419,7 @@ public class Execution_CoreIntegrationTest {
 	 * Test that test operation can be executed twice with empty model. with a
 	 * generated default configuration
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testOperationTwiceSucceeds_WithEmptyModel_WithDefaultEnvConfig() throws Exception {
@@ -464,8 +457,7 @@ public class Execution_CoreIntegrationTest {
 	 * Test that test operation can be executed twice with empty model. with a
 	 * custom configuration
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testOperationTwiceSucceeds_WithEmptyModel_WithCustomConfig() throws Exception {
@@ -499,8 +491,7 @@ public class Execution_CoreIntegrationTest {
 	 * Test that test operation can be executed with simple test model with a custom
 	 * environment configuration
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testOperationSucceeds_WithSimpleModelAndHelloWorldPlugin_WithCustomConfig() throws Exception {
@@ -526,8 +517,7 @@ public class Execution_CoreIntegrationTest {
 	 * Test that test operation can be executed with simple test model with a
 	 * generated default configuration
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testOperationSucceeds_WithSimpleModelAndHelloWorldPlugin_WithDefaultEnvConfig() throws Exception {

@@ -41,6 +41,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -52,6 +53,7 @@ import com.alpha.pineapple.credential.CredentialProvider;
 import com.alpha.pineapple.execution.ExecutionInfo;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.model.configuration.Configuration;
+import com.alpha.spring.config.IntegrationTestSpringConfig;
 import com.alpha.springutils.DirectoryTestExecutionListener;
 import com.alpha.testutils.ObjectMotherCredentialProvider;
 import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
@@ -69,7 +71,8 @@ import com.alpha.testutils.testplugins.pluginprovider.runtimedirectories.PluginI
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
 		DirectoryTestExecutionListener.class })
-@ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
+@ContextHierarchy({ @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" }),
+		@ContextConfiguration(classes = IntegrationTestSpringConfig.class) })
 public class PluginProviders_CoreIntegrationTest {
 
 	/**
@@ -192,8 +195,7 @@ public class PluginProviders_CoreIntegrationTest {
 	/**
 	 * Get execution result from core which contains the state of the initialization
 	 * 
-	 * @param core
-	 *            The core component.
+	 * @param core The core component.
 	 * 
 	 * @return execution result from core which contains the state of the
 	 *         initialization
@@ -208,14 +210,12 @@ public class PluginProviders_CoreIntegrationTest {
 	 * Configures Pineapple with directories, environment configuration and start
 	 * the core component.
 	 * 
-	 * @param pluginId
-	 *            Name of plugin id to add as resource in the environment
-	 *            configuration.
+	 * @param pluginId Name of plugin id to add as resource in the environment
+	 *                 configuration.
 	 * 
 	 * @return Running configured core component.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	PineappleCore configureAndStartPineapple(String pluginId) throws Exception {
 		// set the pineapple.home.dir system property
@@ -243,15 +243,12 @@ public class PluginProviders_CoreIntegrationTest {
 	/**
 	 * Execute operation.
 	 * 
-	 * @param core
-	 *            core component.
-	 * @param operation
-	 *            operation name.
+	 * @param core      core component.
+	 * @param operation operation name.
 	 * 
 	 * @return execution result.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	ExecutionInfo executeOperationAndWait(PineappleCore core, String operation) throws Exception {
 
@@ -272,8 +269,7 @@ public class PluginProviders_CoreIntegrationTest {
 	 * Test that operation can be executed with plugin which can access the runtime
 	 * directory provider.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testExecuteTestOperationSucceeds_CanAccessRuntimeDirectoryProvider() throws Exception {
@@ -306,8 +302,7 @@ public class PluginProviders_CoreIntegrationTest {
 	 * Test that operation can be executed with plugin which can access the runtime
 	 * info provider.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testExecuteTestOperationSucceeds_CanAccessRuntimeInfoProvider() throws Exception {
@@ -340,8 +335,7 @@ public class PluginProviders_CoreIntegrationTest {
 	 * Test that operation can be executed with plugin which can access the
 	 * administration provider.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testExecuteTestOperationSucceeds_CanAccessAdministrationProvider() throws Exception {

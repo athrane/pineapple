@@ -47,6 +47,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -59,6 +60,7 @@ import com.alpha.pineapple.execution.ExecutionResultNotification;
 import com.alpha.pineapple.execution.ResultListener;
 import com.alpha.pineapple.model.configuration.Configuration;
 import com.alpha.pineapple.module.ModuleInfo;
+import com.alpha.spring.config.IntegrationTestSpringConfig;
 import com.alpha.springutils.DirectoryTestExecutionListener;
 import com.alpha.testutils.ObjectMotherCredentialProvider;
 import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
@@ -73,7 +75,8 @@ import com.alpha.testutils.ObjectMotherModule;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
 		DirectoryTestExecutionListener.class })
-@ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" })
+@ContextHierarchy({ @ContextConfiguration(locations = { "/com.alpha.pineapple.core-config.xml" }),
+		@ContextConfiguration(classes = IntegrationTestSpringConfig.class) })
 public class CoreIntegrationTest {
 
 	/**
@@ -201,8 +204,7 @@ public class CoreIntegrationTest {
 	/**
 	 * Get execution result from core which contains the state of the initialization
 	 * 
-	 * @param core
-	 *            The core component.
+	 * @param core The core component.
 	 * 
 	 * @return execution result from core which contains the state of the
 	 *         initialization
@@ -221,8 +223,7 @@ public class CoreIntegrationTest {
 	 * 
 	 * The module contains a model which uses the hello world plugin.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	void createEnvConfigurationAndModule() throws Exception {
 		// create pineapple runtime sub directories, e.g conf and modules
@@ -276,8 +277,7 @@ public class CoreIntegrationTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testFactoryWithInjectedDependeciesReturnsSameCoreInstanceAsSpringContext() throws Exception {
@@ -303,8 +303,7 @@ public class CoreIntegrationTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test
 	public void testFactoryWithInjectedDependeciesIsIdempotentForCoreFactoryMethod() throws Exception {
@@ -328,8 +327,7 @@ public class CoreIntegrationTest {
 	 * Initialization FAILS since the plugins defined in the default configuration
 	 * isn't available on the class path.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testInitialize_WithPineappleHome_AndDefaultConfiguration_InitFails() throws CoreException {
@@ -363,8 +361,7 @@ public class CoreIntegrationTest {
 	 * Initialization FAILS since the plugins defined in the default configuration
 	 * isn't available on the class path.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testInitialize_WithPineappleHome_AndDefaultConfiguration_Contains4xExecutionResults()
@@ -398,8 +395,7 @@ public class CoreIntegrationTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testInitialize_WithPineappleHome_AndCredentialProvider_InitSucceeds() throws Exception {
@@ -437,8 +433,7 @@ public class CoreIntegrationTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testInitialize_WithPineappleHome_AndCredentialProvider_Contains3xExecutionResults() throws Exception {
@@ -469,8 +464,7 @@ public class CoreIntegrationTest {
 	 * The resource file activate the test plugin "com.alpha.pineapple.plugin.test"
 	 * located in the test-utils project.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testInitializeWithPineappleHome_DefaultConfigurationIsCreated() throws CoreException {
@@ -507,8 +501,7 @@ public class CoreIntegrationTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testInitializeMultipleTimesWithPineappleHome_InitSucceeds() throws Exception {
@@ -557,8 +550,7 @@ public class CoreIntegrationTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testCreateInstanceFromFactory_InitSucceeds() throws Exception {
@@ -594,8 +586,7 @@ public class CoreIntegrationTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testCreateInstanceFromFactory_WithZeroListeners() throws Exception {
@@ -631,8 +622,7 @@ public class CoreIntegrationTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testCreateInstanceFromFactory_WithOneListener() throws Exception {
@@ -670,8 +660,7 @@ public class CoreIntegrationTest {
 	 * src/test/resources/resources.xml and activate the test plugin
 	 * "com.alpha.pineapple.plugin.test" located in the test-utils project.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testCreateInstanceFromFactory_WithTwoListeners() throws Exception {
@@ -712,8 +701,7 @@ public class CoreIntegrationTest {
 	 * The credential provider will write the credentials to the Pineapple home set
 	 * by the system variable.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testCreateInstance_WithExternalResourcesFile() throws Exception {
@@ -756,8 +744,7 @@ public class CoreIntegrationTest {
 	 * The credential provider will write the credentials to the Pineapple home set
 	 * by the system variable.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testCreateInstance_WithExternalResourcesFile2() throws Exception {
@@ -804,8 +791,7 @@ public class CoreIntegrationTest {
 	 * The resources file defines the test plugin "com.alpha.pineapple.plugin.test"
 	 * located in the test-utils project.
 	 * 
-	 * @throws Exception
-	 *             if test fails
+	 * @throws Exception if test fails
 	 */
 	@Test
 	public void testCreateInstance_WithNamedInternalResourcesFile() throws Exception {
@@ -840,8 +826,7 @@ public class CoreIntegrationTest {
 	 * The credential provider will write the credentials to the Pineapple home set
 	 * by the system variable.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testCreateInstance_WithExternalResourcesFile_WithZeroListeners() throws Exception {
@@ -885,8 +870,7 @@ public class CoreIntegrationTest {
 	 * The credential provider will write the credentials to the Pineapple home set
 	 * by the system variable.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testCreateInstance_WithExternalResourcesFile_WithOneListener() throws Exception {
@@ -927,8 +911,7 @@ public class CoreIntegrationTest {
 	 * The credential provider will write the credentials to the Pineapple home set
 	 * by the system variable.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testCreateInstance_WithExternalResourcesFile_WithTwoListeners() throws Exception {
@@ -969,8 +952,7 @@ public class CoreIntegrationTest {
 	/**
 	 * Rejects undefined credential provider.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testInitializationRejectsUndefinedProvider() throws Exception {
@@ -980,8 +962,7 @@ public class CoreIntegrationTest {
 	/**
 	 * Rejects undefined resources file.
 	 * 
-	 * @throws Exception
-	 *             If test fails
+	 * @throws Exception If test fails
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testInitializationRejectsUndefinedResourcesFile() throws Exception {
@@ -991,8 +972,7 @@ public class CoreIntegrationTest {
 	/**
 	 * Rejects undefined listeners.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testInitializationRejectsUndefinedListeners() throws Exception {
@@ -1002,8 +982,7 @@ public class CoreIntegrationTest {
 	/**
 	 * Rejects undefined listeners.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testInitializationRejectsUndefinedListeners2() throws Exception {
@@ -1013,8 +992,7 @@ public class CoreIntegrationTest {
 	/**
 	 * Rejects undefined listeners.
 	 * 
-	 * @throws Exception
-	 *             If test fails.
+	 * @throws Exception If test fails.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testInitializationRejectsUndefinedListeners3() throws Exception {
@@ -1040,8 +1018,7 @@ public class CoreIntegrationTest {
 	 * The credential provider will write the credentials to the Pineapple home set
 	 * by the system variable.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testInitializationFailsIfResourcesFileDoesntExists() throws Exception {
@@ -1065,8 +1042,7 @@ public class CoreIntegrationTest {
 	/**
 	 * Test that initialization result is defined after initialization.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testGetInitializationResultIsDefinedAfterInitialization() throws CoreException {
@@ -1089,8 +1065,7 @@ public class CoreIntegrationTest {
 	/**
 	 * Test that initialization result isn't defined prior to initialization.
 	 * 
-	 * @throws CoreException
-	 *             If test fails.
+	 * @throws CoreException If test fails.
 	 */
 	@Test
 	public void testGetInitializationResultIsntDefinedPriorToInitialization() throws CoreException {
@@ -1108,8 +1083,7 @@ public class CoreIntegrationTest {
 	 * The core component is re-initialized with one module and then re-initialized
 	 * with a second module added.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testModulesIsRefreshedWhenbCoreComponentisReinitialized() throws Exception {

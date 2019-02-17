@@ -27,7 +27,6 @@ import static com.alpha.javautils.SystemUtils.JAVA_IO_TMPDIR;
 import static com.alpha.javautils.SystemUtils.PINEAPPLE_CREDENTIALPROVIDER_PASSWORD_FILE;
 import static com.alpha.javautils.SystemUtils.PINEAPPLE_HOMEDIR;
 import static com.alpha.javautils.SystemUtils.USER_HOME;
-import static com.alpha.javautils.SystemUtils.USER_NAME;
 import static com.alpha.pineapple.CoreConstants.CONF_DIR;
 import static com.alpha.pineapple.CoreConstants.CRDENTIALPROVIDER_PASSWORD_FILE;
 import static com.alpha.pineapple.CoreConstants.MODULES_DIR;
@@ -40,15 +39,11 @@ import java.util.Properties;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
-
-import com.alpha.javautils.ConversionFailedException;
-import com.alpha.javautils.FileUtils;
 import com.alpha.javautils.SystemUtils;
+import com.alpha.pineapple.CoreConstants;
 import com.alpha.pineapple.execution.ExecutionInfo;
 import com.alpha.pineapple.execution.ExecutionInfoProvider;
 import com.alpha.pineapple.execution.ExecutionResult;
-import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.module.ModuleInfo;
 
 /**
@@ -59,34 +54,10 @@ import com.alpha.pineapple.module.ModuleInfo;
  * If the system property <code>pineapple.home.dir</code> is set then the home
  * directory is resolved to this directory.
  * 
- * Otherwise if the the OS is Windows then runtime directory is resolved to
- * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple</code>
- * 
- * Finally, otherwise the runtime root directory is resolved to value of the
- * system property <code>&#036;&#123;user.home&#125;&#092;.pineapple</code>
+ * Otherwise the runtime root directory is resolved to value of the system
+ * property <code>&#036;&#123;user.home&#125;&#092;.pineapple</code>
  */
 public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProvider {
-
-	/**
-	 * Windows C drive.
-	 */
-	static final String C_DRIVE = "C:\\";
-
-	/**
-	 * Module path constant.
-	 */
-	static final String MODULEPATH = "modulepath:";
-
-	/**
-	 * Logger object
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
-
-	/**
-	 * Message provider for I18N support.
-	 */
-	@Resource
-	MessageProvider messageProvider;
 
 	/**
 	 * Java System properties.
@@ -99,12 +70,6 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 	 */
 	@Resource
 	SystemUtils systemUtils;
-
-	/**
-	 * File utilities.
-	 */
-	@Resource
-	FileUtils fileUtils;
 
 	/**
 	 * Execution info provider.
@@ -126,27 +91,6 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 
 		// get system properties
 		String userHome = systemUtils.getSystemProperty(USER_HOME, systemProperties);
-		String userName = systemUtils.getSystemProperty(USER_NAME, systemProperties);
-
-		// handle windows OS
-		if (systemUtils.isWindowsOperatingSystem(systemProperties)) {
-
-			// validate if user.home is located in the "Users" directory
-			if (!fileUtils.isPathInUsersDir(userHome, userName)) {
-
-				// construct home directory in in the "Users" directory
-				File rootDir = new File(C_DRIVE);
-				File documentAndSettingsDir = new File(rootDir, FileUtils.USERS_DIR);
-				File userHomeDir = new File(documentAndSettingsDir, userName);
-				File pineappleHomeDir = new File(userHomeDir, PINEAPPLE_DIR);
-
-				return pineappleHomeDir;
-			}
-
-			// use already set user home
-			File pineappleHomeDir = new File(userHome, PINEAPPLE_DIR);
-			return pineappleHomeDir;
-		}
 
 		// define default pineapple home directory
 		File pineappleHomeDir = new File(userHome, PINEAPPLE_DIR);
@@ -175,30 +119,8 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 
 	@Override
 	public File getTempDirectory() {
-
-		// get java.io.tmpdirfrom JVM
 		final String ioTempDirectory = systemUtils.getSystemProperty(JAVA_IO_TMPDIR, systemProperties);
-
-		// if OS isn't windows then exit
-		if (!systemUtils.isWindowsOperatingSystem(systemProperties)) {
-			return new File(ioTempDirectory);
-		}
-
-		// if OS is windows then convert to long file names
-		try {
-			// convert
-			return fileUtils.convertToLongWindowsPath(ioTempDirectory);
-
-		} catch (ConversionFailedException e) {
-
-			// log error
-			Object[] args = { e.toString() };
-			String message = messageProvider.getMessage("drdp.win_tempdir_conversion_failed", args);
-			logger.error(message);
-
-			// return unconverted path
-			return new File(ioTempDirectory);
-		}
+		return new File(ioTempDirectory);
 	}
 
 	@Override
@@ -209,7 +131,7 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 
 		// resolve path if it starts with 'modulepath:'
 		if (startsWithModulePathPrefix(path)) {
-			String pathWithoutPrefix = path.substring(MODULEPATH.length());
+			String pathWithoutPrefix = path.substring(CoreConstants.MODULEPATH.length());
 			File resolvedFile = new File(info.getDirectory(), pathWithoutPrefix);
 			return resolvedFile;
 
@@ -239,7 +161,9 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 
 	@Override
 	public boolean startsWithModulePathPrefix(String path) {
-		return path.startsWith(MODULEPATH);
+		notNull(path, "path is undefined");
+		notEmpty(path, "path is empty");
+		return path.startsWith(CoreConstants.MODULEPATH);
 	}
 
 	@Override

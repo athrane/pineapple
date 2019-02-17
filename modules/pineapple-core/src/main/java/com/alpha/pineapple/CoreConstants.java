@@ -53,6 +53,11 @@ public interface CoreConstants {
 	public static final String PINEAPPLE_DIR = ".pineapple";
 
 	/**
+	 * Module path constant.
+	 */
+	public String MODULEPATH = "modulepath:";
+	
+	/**
 	 * Default file name for credentials file.
 	 */
 	public static final String CREDENTIALS_FILE = "credentials.xml";
@@ -162,4 +167,5 @@ public interface CoreConstants {
 	 * Definition of wild card operation in trigger.
 	 */
 	public String TRIGGER_WILDCARD_RESULT = "*";
+
 }

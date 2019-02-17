@@ -781,14 +781,8 @@ Development documentation
 		[[1]] If the system property {{{./system-properties.html}<<<pineapple.home.dir>>>}}	is set then the home directory 
 		is resolved to this directory.
 	
-		[[2]] If the system property isn't defined then Pineapple will resolve to its home directory to
-		either one of these:
-		
-			* On Windows: <<<C:\\Users\\$\{user.name\}\\.pineapple>>>  	
-			
-			* Others: <<<$\{user.home\}/.pineapple>>>
-			
-			[]
+		[[2]] If the system property isn't defined then Pineapple will resolve to its home directory 
+		to: <<<$\{user.home\}/.pineapple>>>
 			
 		[]
 
@@ -1316,8 +1310,6 @@ s
 	The package <<<com.alpha.javautils>>> contains generic helper classes:
 	
 	* <<<ReflectionHelper>>>
-	
-	* <<<FileUtils>>>
 
 	* <<<ConversionFailedException>>> defines exception class for signaling errors during conversion of values.
 	
@@ -1331,15 +1323,7 @@ s
 	which take a single String as argument in the constructor.
 	
 	[]	
-	
-*** FileUtils
-
-	Provides helper functions for file operations such as:
-	
-	* Conversion of Windows directory names from the short DOS 8.3 format into long file names.	
-	
-	[]			
-		
+			
 * Unit test of the project
 
 	Commonly used constants in the unit tests are defined in the class

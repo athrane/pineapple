@@ -94,6 +94,7 @@ public class SystemUtils {
 	 * 
 	 * @return true if OS is Windows.
 	 */
+	@Deprecated
 	public boolean isWindowsOperatingSystem(Properties systemProperties) {
 		String osName = getSystemProperty(OS_NAME, systemProperties);
 		return (osName.startsWith(OS_NAME_WINDOWS_PREFIX));

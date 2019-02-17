@@ -27,14 +27,15 @@ import static com.alpha.javautils.SystemUtils.JAVA_IO_TMPDIR;
 import static com.alpha.javautils.SystemUtils.PINEAPPLE_CREDENTIALPROVIDER_PASSWORD_FILE;
 import static com.alpha.javautils.SystemUtils.PINEAPPLE_HOMEDIR;
 import static com.alpha.javautils.SystemUtils.USER_HOME;
-import static com.alpha.javautils.SystemUtils.USER_NAME;
+import static com.alpha.pineapple.CoreConstants.CONF_DIR;
+import static com.alpha.pineapple.CoreConstants.MODULES_DIR;
+import static com.alpha.pineapple.CoreConstants.PINEAPPLE_DIR;
+import static com.alpha.pineapple.CoreConstants.REPORTS_DIR;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
-import static com.alpha.javautils.FileUtils.USERS_DIR;
-
 
 import java.io.File;
 import java.util.Properties;
@@ -46,8 +47,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.alpha.javautils.FileUtils;
 import com.alpha.javautils.SystemUtils;
+import com.alpha.pineapple.CoreConstants;
 import com.alpha.pineapple.execution.ExecutionInfo;
 import com.alpha.pineapple.execution.ExecutionInfoProvider;
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -69,24 +70,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	static final String C_DRIVE = "C:";
 
 	/**
-	 * Default name for pineapple directory.
+	 * Windows Users directory.
 	 */
-	public static final String PINEAPPLE_DIR = ".pineapple";
-
-	/**
-	 * Default name for modules directory.
-	 */
-	public static final String MODULES_DIR = "modules";
-
-	/**
-	 * Default name for configuration directory.
-	 */
-	public static final String CONF_DIR = "conf";
-
-	/**
-	 * Default name for reports directory.
-	 */
-	public static final String REPORTS_DIR = "reports";
+	public static final String USERS_DIR = "Users";
 
 	/**
 	 * Object under test.
@@ -107,11 +93,6 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	 * Mock execution info provider.
 	 */
 	ExecutionInfoProvider coreExecutionInfoProvider;
-
-	/**
-	 * File utilities.
-	 */
-	FileUtils fileUtils;
 
 	/**
 	 * Random value.
@@ -145,7 +126,6 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		provider = new DefaultRuntimeDirectoryProviderImpl();
 
 		// create mocks
-		fileUtils = createMock(FileUtils.class);
 		systemProperties = createMock(Properties.class);
 		systemUtils = createMock(SystemUtils.class);
 		coreExecutionInfoProvider = createMock(ExecutionInfoProvider.class);
@@ -153,7 +133,6 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// inject mocks
 		ReflectionTestUtils.setField(provider, "systemProperties", systemProperties);
 		ReflectionTestUtils.setField(provider, "systemUtils", systemUtils);
-		ReflectionTestUtils.setField(provider, "fileUtils", fileUtils);
 		ReflectionTestUtils.setField(provider, "coreExecutionInfoProvider", coreExecutionInfoProvider);
 	}
 
@@ -165,30 +144,25 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	/**
 	 * Test that home directory is resolved to
 	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple</code>
-	 * with these conditions meet: 1) The system property
-	 * <code>pineapple.home.dir</code> isn't defined. 2) The <code>os.name</code>is
-	 * Windows something-something 3) The <code>user.home</code> is located at
+	 * with these conditions meet:
+	 * 
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
+	 * 
+	 * 2) The <code>user.home</code> is located at
 	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;</code>
 	 */
 	@Test
 	public void testHomeDirectoryForWindows() {
-
 		final String path = "C:\\Users\\" + randomUser;
 		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
 		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
-		expect(systemUtils.getSystemProperty(USER_NAME, systemProperties)).andReturn(randomUser);
-		expect(systemUtils.isWindowsOperatingSystem(systemProperties)).andReturn(true);
 		replay(systemUtils);
 
 		// complete mock setup
 		replay(systemProperties);
-
-		// complete mock setup
-		expect(fileUtils.isPathInUsersDir(osIndependentPath, randomUser)).andReturn(false);
-		replay(fileUtils);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
@@ -207,42 +181,38 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), dir);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
 	 * Test that home directory is resolved to
-	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple</code>
-	 * with these conditions meet: 1) The system property
-	 * <code>pineapple.home.dir</code> isn't defined. 2) The <code>os.name</code>is
-	 * Windows something-something 3) The <code>user.home</code> is located at
-	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;</code>
+	 * <code>C&#058;&#092;RANDOM&#092;&#036;&#123;user.name&#125;&#092;.pineapple</code>
+	 * with these conditions meet:
+	 * 
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
+	 * 
+	 * 2) The <code>user.home</code> is located at
+	 * <code>C&#058;&#092;RANDOM&#092;&#036;&#123;user.name&#125;</code>
 	 */
 	@Test
 	public void testHomeDirectoryForWindows2() {
 
-		final String path = "C:\\XXXX\\" + randomUser;
+		final String path = "C:\\" + randomValue + "\\" + randomUser;
 		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
 		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
-		expect(systemUtils.getSystemProperty(USER_NAME, systemProperties)).andReturn(randomUser);
-		expect(systemUtils.isWindowsOperatingSystem(systemProperties)).andReturn(true);
 		replay(systemUtils);
 
 		// complete mock setup
 		replay(systemProperties);
 
-		// complete mock setup
-		expect(fileUtils.isPathInUsersDir(osIndependentPath, randomUser)).andReturn(false);
-		replay(fileUtils);
-
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
 		expected.append(File.separatorChar);
-		expected.append(USERS_DIR);
+		expected.append(randomValue);
 		expected.append(File.separatorChar);
 		expected.append(randomUser);
 		expected.append(File.separatorChar);
@@ -255,20 +225,20 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), dir);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
-	 * Test that home directory is resolved to
-	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple</code>
+	 * Test that home directory is resolved to <code>C&#058;&#092;.pineapple</code>
 	 * 
-	 * with these conditions meet: 1) The system property
-	 * <code>pineapple.home.dir</code> isn't defined. 2) The <code>os.name</code>is
-	 * Windows something-something 3) The <code>user.home</code> is located at the
-	 * root of the C drive. e.g. c:
+	 * with these conditions meet:
+	 * 
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
+	 * 
+	 * 2) The <code>user.home</code> is located at the root of the C drive. e.g. c:
 	 */
 	@Test
-	public void testHomeDirectoryForWindowsIfUserHomeIsLocatedAtRoot() {
+	public void testHomeDirectoryIfUserHomeIsLocatedAtRoot() {
 
 		final String path = WINDOWS_ROOT_PATH;
 		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
@@ -276,24 +246,14 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
 		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
-		expect(systemUtils.getSystemProperty(USER_NAME, systemProperties)).andReturn(randomUser);
-		expect(systemUtils.isWindowsOperatingSystem(systemProperties)).andReturn(true);
 		replay(systemUtils);
 
 		// complete mock setup
 		replay(systemProperties);
 
-		// complete mock setup
-		expect(fileUtils.isPathInUsersDir(osIndependentPath, randomUser)).andReturn(false);
-		replay(fileUtils);
-
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
-		expected.append(USERS_DIR);
-		expected.append(File.separatorChar);
-		expected.append(randomUser);
 		expected.append(File.separatorChar);
 		expected.append(PINEAPPLE_DIR);
 
@@ -304,7 +264,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), dir);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
@@ -312,7 +272,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	 * property "pineapple.home.dir".
 	 */
 	@Test
-	public void testHomeDirectoryForWindowsWithPineappeHomeDefined() {
+	public void testHomeDirectoryWithPineappeHomeDefined() {
 
 		final String path = "C:\\Programs Files\\Pineapple";
 		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
@@ -324,9 +284,6 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// complete mock setup
 		replay(systemProperties);
-
-		// complete mock setup
-		replay(fileUtils);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
@@ -343,20 +300,21 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), dir);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
 	 * Test that modules directory is resolved to
-	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple&#092;modules</code>
+	 * <code>C&#058;&#092;.pineapple&#092;modules</code>
 	 * 
-	 * with these conditions meet: 1) The system property
-	 * <code>pineapple.home.dir</code> isn't defined. 2) The <code>os.name</code>is
-	 * Windows something-something 3) The <code>user.home</code> is located at the
-	 * root of the C drive. e.g. c:
+	 * with these conditions meet:
+	 * 
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
+	 * 
+	 * 2) The <code>user.home</code> is located at the root of the C drive. e.g. c:
 	 */
 	@Test
-	public void testModulesDirectoryForWindowsIfUserHomeIsLocatedAtRoot() {
+	public void testModulesDirectoryIfUserHomeIsLocatedAtRoot() {
 
 		final String path = WINDOWS_ROOT_PATH;
 		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
@@ -364,24 +322,14 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
 		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
-		expect(systemUtils.getSystemProperty(USER_NAME, systemProperties)).andReturn(randomUser);
-		expect(systemUtils.isWindowsOperatingSystem(systemProperties)).andReturn(true);
 		replay(systemUtils);
 
 		// complete mock setup
 		replay(systemProperties);
 
-		// complete mock setup
-		expect(fileUtils.isPathInUsersDir(osIndependentPath, randomUser)).andReturn(false);
-		replay(fileUtils);
-
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
-		expected.append(USERS_DIR);
-		expected.append(File.separatorChar);
-		expected.append(randomUser);
 		expected.append(File.separatorChar);
 		expected.append(PINEAPPLE_DIR);
 		expected.append(File.separatorChar);
@@ -394,20 +342,23 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), dir);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
 	 * Test that configuration directory is resolved to
 	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple&#092;conf</code>
 	 * 
-	 * with these conditions meet: 1) The system property
-	 * <code>pineapple.home.dir</code> isn't defined. 2) The <code>os.name</code>is
-	 * Windows something-something 3) The <code>user.home</code> is located at the
-	 * root of the C drive. e.g. c:
+	 * with these conditions meet:
+	 * 
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
+	 * 
+	 * 2) The <code>os.name</code>is Windows something-something
+	 * 
+	 * 3) The <code>user.home</code> is located at the root of the C drive. e.g. c:
 	 */
 	@Test
-	public void testConfDirectoryForWindowsIfUserHomeIsLocatedAtRoot() {
+	public void testConfDirectoryIfUserHomeIsLocatedAtRoot() {
 
 		final String path = WINDOWS_ROOT_PATH;
 		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
@@ -415,24 +366,14 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
 		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
-		expect(systemUtils.getSystemProperty(USER_NAME, systemProperties)).andReturn(randomUser);
-		expect(systemUtils.isWindowsOperatingSystem(systemProperties)).andReturn(true);
 		replay(systemUtils);
 
 		// complete mock setup
 		replay(systemProperties);
 
-		// complete mock setup
-		expect(fileUtils.isPathInUsersDir(osIndependentPath, randomUser)).andReturn(false);
-		replay(fileUtils);
-
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
-		expected.append(USERS_DIR);
-		expected.append(File.separatorChar);
-		expected.append(randomUser);
 		expected.append(File.separatorChar);
 		expected.append(PINEAPPLE_DIR);
 		expected.append(File.separatorChar);
@@ -445,20 +386,21 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), dir);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
 	 * Test that reports directory is resolved to
 	 * <code>C&#058;&#092;Users&#092;&#036;&#123;user.name&#125;&#092;.pineapple&#092;reports</code>
 	 * 
-	 * with these conditions meet: 1) The system property
-	 * <code>pineapple.home.dir</code> isn't defined. 2) The <code>os.name</code>is
-	 * Windows something-something 3) The <code>user.home</code> is located at the
-	 * root of the C drive. e.g. c:
+	 * with these conditions meet:
+	 * 
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
+	 * 
+	 * 2) The <code>user.home</code> is located at the root of the C drive. e.g. c:
 	 */
 	@Test
-	public void testReportsDirectoryForWindowsIfUserHomeIsLocatedAtRoot() {
+	public void testReportsDirectoryIfUserHomeIsLocatedAtRoot() {
 
 		final String path = WINDOWS_ROOT_PATH;
 		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
@@ -466,24 +408,14 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
 		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
-		expect(systemUtils.getSystemProperty(USER_NAME, systemProperties)).andReturn(randomUser);
-		expect(systemUtils.isWindowsOperatingSystem(systemProperties)).andReturn(true);
 		replay(systemUtils);
 
 		// complete mock setup
 		replay(systemProperties);
 
-		// complete mock setup
-		expect(fileUtils.isPathInUsersDir(osIndependentPath, randomUser)).andReturn(false);
-		replay(fileUtils);
-
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
-		expected.append(USERS_DIR);
-		expected.append(File.separatorChar);
-		expected.append(randomUser);
 		expected.append(File.separatorChar);
 		expected.append(PINEAPPLE_DIR);
 		expected.append(File.separatorChar);
@@ -496,33 +428,27 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), dir);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
 	 * Test that home directory is resolved to
 	 * <code>user.home&#092;.pineapple</code> if these conditions are meet:
 	 * 
-	 * 1) The system property <code>pineapple.home.dir</code> isn't defined. 2) The
-	 * <code>os.name</code> is different from Windows something-something.
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
 	 */
 	@Test
-	public void testHomeDirectoryIsResolvedForNonWindowsOS() {
+	public void testHomeDirectoryIsResolvedIfPineappleHomeIsntDefined() {
 
 		String osIndependentPath = randomValue + File.separator + randomValue2;
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
 		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
-		expect(systemUtils.getSystemProperty(USER_NAME, systemProperties)).andReturn(randomUser);
-		expect(systemUtils.isWindowsOperatingSystem(systemProperties)).andReturn(false);
 		replay(systemUtils);
 
 		// complete mock setup
 		replay(systemProperties);
-
-		// complete mock setup
-		replay(fileUtils);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
@@ -539,34 +465,28 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), dir);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
 	 * Test that home directory is resolved to
 	 * <code>user.home&#092;.pineapple</code> if these conditions are meet:
 	 * 
-	 * 1) The system property <code>pineapple.home.dir</code> isn't defined. 2) The
-	 * <code>os.name</code> is different from Windows something-something.
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
 	 */
 	@Test
-	public void testHomeDirectoryIsResolvedForNonWindowsOS2() {
+	public void testHomeDirectoryIsResolvedIfPineappleHomeIsntDefined2() {
 
-		final String path = "/home/"+randomValue+"/";
+		final String path = "/home/" + randomValue + "/";
 		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
 		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
-		expect(systemUtils.getSystemProperty(USER_NAME, systemProperties)).andReturn(randomUser);
-		expect(systemUtils.isWindowsOperatingSystem(systemProperties)).andReturn(false);
 		replay(systemUtils);
 
 		// complete mock setup
 		replay(systemProperties);
-
-		// complete mock setup
-		replay(fileUtils);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
@@ -584,18 +504,17 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), dir);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
 	 * Test that home directory is resolved to
 	 * <code>user.home&#092;.pineapple</code> if these conditions are meet:
 	 * 
-	 * 1) The system property <code>pineapple.home.dir</code> isn't defined. 2) The
-	 * <code>os.name</code> is different from Windows something-something.
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
 	 */
 	@Test
-	public void testHomeDirectoryIsResolvedForNonWindowsOS3() {
+	public void testHomeDirectoryIsResolvedIfPineappleHomeIsntDefined3() {
 
 		final String path = "/var/lib/";
 		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
@@ -603,15 +522,10 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
 		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
-		expect(systemUtils.getSystemProperty(USER_NAME, systemProperties)).andReturn(randomUser);
-		expect(systemUtils.isWindowsOperatingSystem(systemProperties)).andReturn(false);
 		replay(systemUtils);
 
 		// complete mock setup
 		replay(systemProperties);
-
-		// complete mock setup
-		replay(fileUtils);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
@@ -629,7 +543,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), dir);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
@@ -638,89 +552,22 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	 * 
 	 * if these conditions are meet:
 	 * 
-	 * 1) The system property <code>pineapple.home.dir</code> isn't defined. 2) The
-	 * <code>os.name</code> is Windows something-something.
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
-	public void testGetTempDirectoryForWindows() throws Exception {
+	public void testGetTempDirectoryIfPineappleHomeIsntDefined() throws Exception {
 
 		final String path = "C:\\Users\\" + randomUser + "\\Local Settings\\Temp";
 		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
 
 		// complete mock setup
 		expect(systemUtils.getSystemProperty(JAVA_IO_TMPDIR, systemProperties)).andReturn(osIndependentPath);
-		expect(systemUtils.isWindowsOperatingSystem(systemProperties)).andReturn(true);
 		replay(systemUtils);
 
 		// complete mock setup
 		replay(systemProperties);
-
-		// complete mock setup
-		expect(fileUtils.convertToLongWindowsPath(osIndependentPath)).andReturn(new File(osIndependentPath));
-		replay(fileUtils);
-
-		// create expected value
-		StringBuilder expected = new StringBuilder();
-		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
-		expected.append(USERS_DIR);
-		expected.append(File.separatorChar);
-		expected.append(randomUser);
-		expected.append(File.separatorChar);
-		expected.append("Local Settings");
-		expected.append(File.separatorChar);
-		expected.append("Temp");
-
-		// get directory
-		File dir = provider.getTempDirectory();
-
-		System.out.println("expected="+expected);
-		System.out.println("dir="+dir);
-		
-		
-		// test
-		assertEquals(new File(expected.toString()), dir);
-
-		// test
-		verify(systemUtils, systemProperties, fileUtils);
-	}
-
-	/**
-	 * Test that temporary directory is resolved to the value of the
-	 * <code>java.io.tempdir</code> system property.
-	 * 
-	 * if these conditions are meet:
-	 * 
-	 * 1) The system property <code>pineapple.home.dir</code> isn't defined. 2) The
-	 * <code>os.name</code> is Windows something-something.
-	 * 
-	 * @throws Exception
-	 *             if test fails.
-	 * 
-	 */
-	@Test
-	public void testGetTempDirectoryForWindowsWithShortNames() throws Exception {
-
-		final String path = "C:\\Users\\" + randomUser + "\\Local Settings\\Temp";
-		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
-
-		final String shortPath = "C:\\DOCUME~1\\" + randomUser + "\\LOCALS~1\\Temp";
-		String shortOsIndependentPath = StringUtils.replaceChars(shortPath, "\\", File.separator);
-
-		// complete mock setup
-		expect(systemUtils.getSystemProperty(JAVA_IO_TMPDIR, systemProperties)).andReturn(shortOsIndependentPath);
-		expect(systemUtils.isWindowsOperatingSystem(systemProperties)).andReturn(true);
-		replay(systemUtils);
-
-		// complete mock setup
-		replay(systemProperties);
-
-		// complete mock setup
-		expect(fileUtils.convertToLongWindowsPath(shortOsIndependentPath)).andReturn(new File(osIndependentPath));
-		replay(fileUtils);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
@@ -741,7 +588,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), dir);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
@@ -750,26 +597,20 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	 * 
 	 * if these conditions are meet:
 	 * 
-	 * 1) The system property <code>pineapple.home.dir</code> isn't defined. 2) The
-	 * <code>os.name</code> isn't Windows something-something.
-	 * 
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
 	 */
 	@Test
-	public void testGetTempDirectoryForLinux() {
+	public void testGetTempDirectoryIfPineappleHomeIsntDefined2() {
 
 		final String path = "/tmp";
 		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
 
 		// complete mock setup
 		expect(systemUtils.getSystemProperty(JAVA_IO_TMPDIR, systemProperties)).andReturn(osIndependentPath);
-		expect(systemUtils.isWindowsOperatingSystem(systemProperties)).andReturn(false);
 		replay(systemUtils);
 
 		// complete mock setup
 		replay(systemProperties);
-
-		// complete mock setup
-		replay(fileUtils);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
@@ -783,7 +624,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), dir);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
@@ -796,16 +637,16 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		final String path = "/var/lib/pineapple/modules/";
 		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
 
-		// complete mock setup
-		replay(systemUtils, systemProperties, fileUtils);
-
 		// model path
-		String modelPath = DefaultRuntimeDirectoryProviderImpl.MODULEPATH + "bin";
+		String modelPath = CoreConstants.MODULEPATH + "bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
 		expect(info.getDirectory()).andReturn(new File(osIndependentPath));
 		replay(info);
+
+		// complete mock setup
+		replay(systemUtils, systemProperties);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
@@ -828,7 +669,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// test
 		verify(info);
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
@@ -842,10 +683,10 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
 
 		// complete mock setup
-		replay(systemUtils, systemProperties, fileUtils);
+		replay(systemUtils, systemProperties);
 
 		// model path
-		String modelPath = DefaultRuntimeDirectoryProviderImpl.MODULEPATH + "bin";
+		String modelPath = CoreConstants.MODULEPATH + "bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -873,32 +714,30 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// test
 		verify(info);
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
 	 * Test that model path is resolved correctly for Linux, e.g. the 'modulepath'
 	 * identifier is resolved to the expected path, where the modulepath is contains
 	 * with a separator char, e.g modulepath:/bin
-	 * 
-	 * plea
 	 */
 	@Test
-	public void testModelPathIsResolvedWihichContainsSeparatorChar() {
+	public void testModelPathIsResolvedWhichContainsSeparatorChar() {
 
 		final String path = "/var/lib/pineapple/modules/";
 		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
 
-		// complete mock setup
-		replay(systemUtils, systemProperties, fileUtils);
-
 		// model path
-		String modelPath = DefaultRuntimeDirectoryProviderImpl.MODULEPATH + "/bin";
+		String modelPath = CoreConstants.MODULEPATH + "/bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
 		expect(info.getDirectory()).andReturn(new File(osIndependentPath));
 		replay(info);
+
+		// complete mock setup
+		replay(systemUtils, systemProperties);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
@@ -921,15 +760,13 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// test
 		verify(info);
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
 	 * Test that model path is resolved correctly for Linux, e.g. the 'modulepath'
 	 * identifier is resolved to the expected path, where the modulepath is contains
 	 * with a separator char, e.g modulepath:\\bin
-	 * 
-	 * plea
 	 */
 	@Test
 	public void testModelPathIsResolvedWihichContainsSeparatorChar2() {
@@ -938,10 +775,10 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
 
 		// complete mock setup
-		replay(systemUtils, systemProperties, fileUtils);
+		replay(systemUtils, systemProperties);
 
 		// model path
-		String modelPath = DefaultRuntimeDirectoryProviderImpl.MODULEPATH + "\\bin";
+		String modelPath = CoreConstants.MODULEPATH + "\\bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -969,15 +806,13 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// test
 		verify(info);
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
 	 * Test that model path is resolved correctly for Linux, e.g. the 'modulepath'
 	 * identifier is resolved to the expected path, where the modulepath is contains
 	 * with a separator char, e.g modulepath:\\bin
-	 * 
-	 * plea
 	 */
 	@Test
 	public void testModelPathIsResolvedWihichContainsSeparatorChar3() {
@@ -985,17 +820,17 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		final String path = "/var/lib/pineapple/modules/";
 		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
 
-		// complete mock setup
-		replay(systemUtils, systemProperties, fileUtils);
-
 		// model path
-		String modelPath = DefaultRuntimeDirectoryProviderImpl.MODULEPATH + File.separatorChar + "bin";
+		String modelPath = CoreConstants.MODULEPATH + File.separatorChar + "bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
 		expect(info.getDirectory()).andReturn(new File(osIndependentPath));
 		replay(info);
 
+		// complete mock setup
+		replay(systemUtils, systemProperties);
+		
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(File.separatorChar);
@@ -1017,7 +852,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// test
 		verify(info);
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
@@ -1029,17 +864,17 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		final String path = randomValue + File.separator + randomValue2;
 		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
 
-		// complete mock setup
-		replay(systemUtils, systemProperties, fileUtils);
-
 		// model path
-		String modelPath = DefaultRuntimeDirectoryProviderImpl.MODULEPATH + randomValue3;
+		String modelPath = CoreConstants.MODULEPATH + randomValue3;
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
 		expect(info.getDirectory()).andReturn(new File(osIndependentPath));
 		replay(info);
 
+		// complete mock setup
+		replay(systemUtils, systemProperties);
+		
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(randomValue);
@@ -1056,7 +891,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// test
 		verify(info);
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
@@ -1083,14 +918,14 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(executionInfo);
 
 		// complete mock setup
-		replay(systemUtils, systemProperties, fileUtils);
-
-		// complete mock setup
 		expect(coreExecutionInfoProvider.get(result)).andReturn(executionInfo);
 		replay(coreExecutionInfoProvider);
 
+		// complete mock setup
+		replay(systemUtils, systemProperties);
+		
 		// model path
-		String modelPath = DefaultRuntimeDirectoryProviderImpl.MODULEPATH + randomValue3;
+		String modelPath = CoreConstants.MODULEPATH + randomValue3;
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
@@ -1107,11 +942,8 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), dir);
 
 		// test
-		verify(executionInfo);
-		verify(info);
-		verify(result);
-		verify(coreExecutionInfoProvider);
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(executionInfo, info, result);
+		verify(coreExecutionInfoProvider, systemUtils, systemProperties);
 	}
 
 	/**
@@ -1129,7 +961,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(result);
 
 		// complete mock setup
-		replay(systemUtils, systemProperties, fileUtils);
+		replay(systemUtils, systemProperties);
 		replay(coreExecutionInfoProvider);
 
 		// create expected value
@@ -1148,8 +980,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// test
 		verify(result);
-		verify(coreExecutionInfoProvider);
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(coreExecutionInfoProvider, systemUtils, systemProperties);
 	}
 
 	/**
@@ -1163,8 +994,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(result);
 
 		// complete mock setup
-		replay(systemUtils, systemProperties, fileUtils);
-		replay(coreExecutionInfoProvider);
+		replay(systemUtils, systemProperties, coreExecutionInfoProvider);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
@@ -1189,8 +1019,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(result);
 
 		// complete mock setup
-		replay(systemUtils, systemProperties, fileUtils);
-		replay(coreExecutionInfoProvider);
+		replay(systemUtils, systemProperties, coreExecutionInfoProvider);
 
 		// get directory
 		provider.resolveModelPath("", result);
@@ -1207,11 +1036,10 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(result);
 
 		// complete mock setup
-		replay(systemUtils, systemProperties, fileUtils);
-		replay(coreExecutionInfoProvider);
+		replay(systemUtils, systemProperties, coreExecutionInfoProvider);
 
 		// model path
-		String modelPath = DefaultRuntimeDirectoryProviderImpl.MODULEPATH + randomValue3;
+		String modelPath = CoreConstants.MODULEPATH + randomValue3;
 
 		// get directory
 		provider.resolveModelPath(modelPath, (ExecutionResult) null);
@@ -1236,9 +1064,6 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// complete mock setup
 		replay(systemProperties);
 
-		// complete mock setup
-		replay(fileUtils);
-
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
@@ -1254,7 +1079,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), passwordFile);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 	/**
@@ -1276,9 +1101,6 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// complete mock setup
 		replay(systemProperties);
 
-		// complete mock setup
-		replay(fileUtils);
-
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
@@ -1298,7 +1120,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		assertEquals(new File(expected.toString()), passwordFile);
 
 		// test
-		verify(systemUtils, systemProperties, fileUtils);
+		verify(systemUtils, systemProperties);
 	}
 
 }

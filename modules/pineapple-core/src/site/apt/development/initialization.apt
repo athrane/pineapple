@@ -183,14 +183,8 @@ Core component initialization
 		[[1]] If the system property {{{./system-properties.html}<<<pineapple.home.dir>>>}}	is set then the home directory 
 		is resolved to this directory.
 	
-		[[2]] If the system property isn't defined then Pineapple will resolve to its home directory to
-		either one of these:
-		
-			* On Windows: <<<C:\\Users\\$\{user.name\}\\.pineapple>>>  	
-			
-			* Others: <<<$\{user.home\}/.pineapple>>>
-			
-			[]
+		[[2]] If the system property isn't defined then Pineapple will resolve to its 
+		home directory to: <<<$\{user.home\}/.pineapple>>>
 			
 		[]
 

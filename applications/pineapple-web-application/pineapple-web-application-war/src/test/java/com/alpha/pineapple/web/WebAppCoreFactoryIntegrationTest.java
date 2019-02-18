@@ -40,7 +40,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.hamcrest.core.StringContains;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.DirtiesContext;
@@ -56,7 +55,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.alpha.javautils.SystemUtils;
-import com.alpha.junitutils.CreateTestDirectoryRule;
 import com.alpha.pineapple.PineappleCore;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResultNotification;
@@ -115,9 +113,6 @@ public class WebAppCoreFactoryIntegrationTest {
 		}
 
 	}
-
-	//@Rule
-	//public CreateTestDirectoryRule testDirRule = new CreateTestDirectoryRule();
 
 	/**
 	 * Current test directory.

@@ -66,10 +66,18 @@
 									<include src="menu.zul" />	 
 									<space bar="true" spacing="20px" />															   	    		    	    							
 									<vlayout spacing="0" >
-										<hlayout >										
-							            		<label value="@load(vm.userName)" style="font-size:10px;font-weight:bold" />																				
-							            		<label value="@" style="font-size:10px" />																				
-							            		<label value="@load(vm.hostName)" style="font-size:10px;font-weight:bold" />																														
+										<hlayout >
+									        <toolbarbutton tooltiptext="The current user."  
+									        	label="@load(vm.userName)" 
+									        	style="font-size:10px;font-weight:bold" 
+												iconSclass="z-icon-user" />
+									        <toolbarbutton tooltiptext="IP address of the current user."  
+									        	label="@load(vm.hostName)" 
+									        	style="font-size:10px;font-weight:bold" 
+												iconSclass="z-icon-laptop" />
+
+ 
+
 										</hlayout>
 					            	</vlayout>	                    
 								</hlayout>

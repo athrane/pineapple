@@ -1,25 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Pineapple - a tool to install, configure and test Java web 
-  applications and infrastructure. 
-  
-  Copyright (C) 2007-2019 Allan Thrane Andersen..
-  
-  This file is part of Pineapple.
-  
-  Pineapple is free software: you can redistribute it and/or modify 
-  it under the terms of the GNU General Public License as published 
-  by the Free Software Foundation, either version 3 of the License, 
-  or (at your option) any later version.
-  
-  Pineapple is distributed in the hope that it will be useful, but WITHOUT 
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
-  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License along
-   with Pineapple. If not, see <http://www.gnu.org/licenses/>.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!-- Pineapple - a tool to install, configure and test Java web applications 
+	and infrastructure. Copyright (C) 2007-2019 Allan Thrane Andersen.. This 
+	file is part of Pineapple. Pineapple is free software: you can redistribute 
+	it and/or modify it under the terms of the GNU General Public License as 
+	published by the Free Software Foundation, either version 3 of the License, 
+	or (at your option) any later version. Pineapple is distributed in the hope 
+	that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+	warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+	GNU General Public License for more details. You should have received a copy 
+	of the GNU General Public License along with Pineapple. If not, see <http://www.gnu.org/licenses/>. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.alpha.pineapple</groupId>
@@ -38,52 +30,58 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>pineapple-test-utils</artifactId>
 			<scope>test</scope>
-		</dependency>																																		
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<scope>test</scope>			
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.easymock</groupId>  
+			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
-			<scope>test</scope>    		
-		</dependency>			
-		<dependency>
-			<groupId>org.springframework</groupId> 
-			<artifactId>spring-test</artifactId> 
 			<scope>test</scope>
-		</dependency>										
-		<!-- provides access to @resource annotation  -->
-  		<dependency>
-    		<groupId>javax.annotation</groupId>
-    		<artifactId>jsr250-api</artifactId>    		
-  		</dependency>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- JavaBeans Activation Framework (JAF), Java 11+ support -->
+		<dependency>
+		    <groupId>javax.activation</groupId>
+		    <artifactId>javax.activation-api</artifactId>
+			<scope>test</scope>		    
+		</dependency>				
+		<!-- provides access to @resource annotation -->
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>jsr250-api</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 		</dependency>
-		<!-- JAXB must be defined explicit as of Java 9 -->		
+		<!-- JAXB must be defined explicit as of Java 9 -->
 		<dependency>
-           	<groupId>javax.xml.bind</groupId>
-           	<artifactId>jaxb-api</artifactId>
-       	</dependency>
-       	<dependency>
-           	<groupId>com.sun.xml.bind</groupId>
-           	<artifactId>jaxb-impl</artifactId>
-       	</dependency>
-       	<dependency>
-           	<groupId>com.sun.xml.bind</groupId>
-           	<artifactId>jaxb-core</artifactId>
-       	</dependency>				
-				
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+		</dependency>
+
 	</dependencies>
 	<build>
-		<plugins>		
+		<plugins>
 			<plugin>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-xjc-plugin</artifactId>
@@ -105,9 +103,9 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>		
+			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>			
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
 					<execution>
@@ -122,14 +120,14 @@
 								<resource>
 									<directory>src/main/resources</directory>
 									<includes>
-          								<include>basichtmlreport_1_0.xsd</include>
-        							</includes>									
+										<include>basichtmlreport_1_0.xsd</include>
+									</includes>
 								</resource>
 							</resources>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>									
-		</plugins>		
-	</build>	
+			</plugin>
+		</plugins>
+	</build>
 </project>

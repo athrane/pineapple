@@ -45,6 +45,7 @@
 	
 	<!-- define ZK MVVM converters -->			
 	<bean id="treeNodeStateConverter" class="com.alpha.pineapple.web.zk.converter.TreeNodeStateConverter" />
+	<bean id="treeNodeStateIconConverter" class="com.alpha.pineapple.web.zk.converter.TreeNodeStateIconConverter" />
 	<bean id="treeNodeStartTimeConverter" class="com.alpha.pineapple.web.zk.converter.TreeNodeStartTimeConverter" />
 	<bean id="treeNodeDescriptionStyleConverter" class="com.alpha.pineapple.web.zk.converter.TreeNodeDescriptionStyleConverter" />
 	<bean id="executionStateStyleConverter" class="com.alpha.pineapple.web.zk.converter.ExecutionStateStyleConverter" />

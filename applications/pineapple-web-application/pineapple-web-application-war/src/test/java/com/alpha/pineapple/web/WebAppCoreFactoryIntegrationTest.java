@@ -116,8 +116,8 @@ public class WebAppCoreFactoryIntegrationTest {
 
 	}
 
-	@Rule
-	public CreateTestDirectoryRule testDirRule = new CreateTestDirectoryRule();
+	//@Rule
+	//public CreateTestDirectoryRule testDirRule = new CreateTestDirectoryRule();
 
 	/**
 	 * Current test directory.

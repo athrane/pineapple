@@ -152,6 +152,12 @@ public class ExecutionPanel {
 	Converter<String, Object, Component> treeNodeDescriptionStyleConverter;
 
 	/**
+	 * Tree node execution result state icon converter.
+	 */
+	@WireVariable
+	Converter<String, Object, Component> treeNodeStateIconConverter;
+	
+	/**
 	 * Tree model.
 	 */
 	DefaultTreeModel<ExecutionResult> treeModel;
@@ -198,6 +204,15 @@ public class ExecutionPanel {
 		return treeNodeStateConverter;
 	}
 
+	/**
+	 * Get tree node state icon converter.
+	 * 
+	 * @return tree node state icon converter.
+	 */
+	public Converter<String, Object, Component> getTreeNodeStateIconConverter() {
+		return treeNodeStateIconConverter;
+	}
+	
 	/**
 	 * Get tree node start time converter.
 	 * 

@@ -217,6 +217,9 @@ Development documentation
 	* Definition of <<<treeNodeStateConverter>>> bean which implements the <<<org.zkoss.bind.Converter>>>
 	which is use to convert the state of an execution result into a string for rendering in a tree.
 
+	* Definition of <<<treeNodeStateIconConverter>>> bean which implements the <<<org.zkoss.bind.Converter>>>
+	which is use to convert the state of an execution result into a FontAwesome icon for rendering in a tree.
+
 	* Definition of <<<treeNodeStartTimeConverter>>> bean which implements the <<<org.zkoss.bind.Converter>>>
 	which is use to convert the start time of an execution result into a string for rendering in a tree.
 

@@ -1,166 +1,160 @@
-<zk xmlns:w="http://www.zkoss.org/2005/zk/client" >
+<zk xmlns:w="http://www.zkoss.org/2005/zk/client" xmlns:h="native">
 
 	<!-- 
-		Adjust of menu margin, see PINEAPPLE-815.		
-	  -->
-	<style>
-    .z-menu-content i:not(.z-menu-icon), .z-menuitem-content i:not(.z-menu-icon) {
-        margin-right: 9px;
-    }
-	<!-- 
-		Compress details listbox height, see PINEAPPLE-1105.		
-	  -->    
-			
-    .detaillist .z-listcell-content {
-      padding: 0;
-    }	
-	</style>
-	
-	<!--
-		binder definition: binder="@init(queueName='pineapple-queue')" 
-		is required for view model to respond to global commands posted 
-		on the "pineapple-queue" queue:
-		
-		@GlobalCommand public void executeOperation() { .. }		
-		
-		The Menu controller, Menu.java posts global command using:		
-		BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, null, "executeOperation", NULL_GLOBALCOMMAND_ARGS);		     					
+		Link required to use animated icons in ZK 7.x
+		See: https://www.zkoss.org/wiki/ZK_Component_Reference/Base_Components/LabelImageElement
 	 -->
+	<h:link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet"/>
 
-	<window id="executionPanelWindow"	
+	<!-- Adjust of menu margin, see PINEAPPLE-815. -->
+	<style>
+		.z-menu-content i:not(.z-menu-icon), .z-menuitem-content
+		i:not(.z-menu-icon) {
+		margin-right: 9px;
+		}
+		<!-- Compress details listbox height, see PINEAPPLE-1105. -->
+
+		.detaillist .z-listcell-content {
+		padding: 0;
+		}
+	</style>
+
+
+	<!-- binder definition: binder="@init(queueName='pineapple-queue')" is required 
+		for view model to respond to global commands posted on the "pineapple-queue" 
+		queue: @GlobalCommand public void executeOperation() { .. } The Menu controller, 
+		Menu.java posts global command using: BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, 
+		null, "executeOperation", NULL_GLOBALCOMMAND_ARGS); -->
+	
+	<window id="executionPanelWindow"
 		apply="org.zkoss.bind.BindComposer, com.alpha.pineapple.web.zk.controller.ExecutionPanel"
 		binder="@init(queueName='pineapple-queue',queueScope='session')"
-		viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.ExecutionPanel')" 
-	 	hflex="1" vflex="1" border="none">
-	
-		<!-- 
-			Popup menu is declared here to avoid movement of buttons when popup menu is opened.
-			See PINEAPPLE-817.		
-		  -->
-		<menupopup id="executeOperationDropDown" >
-			<menuitem label="Test" 
+		viewModel="@id('vm') @init('com.alpha.pineapple.web.zk.viewmodel.ExecutionPanel')"
+		hflex="1" vflex="1" border="none">
+
+		<!-- Popup menu is declared here to avoid movement of buttons when popup 
+			menu is opened. See PINEAPPLE-817. -->
+		<menupopup id="executeOperationDropDown">
+			<menuitem label="Test"
 				tooltiptext="Execute the Test operation"
-				onClick="@command('executeTestOperation')" 			
-				iconSclass="z-icon-check-square-o"  />
-			<menuitem label="Deploy Configuration" 
+				onClick="@command('executeTestOperation')"
+				iconSclass="z-icon-check-square-o" />
+			<menuitem label="Deploy Configuration"
 				tooltiptext="Execute the Deploy Configuration operation"
-				onClick="@command('executeDeployConfigurationOperation')" 			
-				iconSclass="z-icon-star"/>
-			<menuitem label="Undeploy Configuration" 
+				onClick="@command('executeDeployConfigurationOperation')"
+				iconSclass="z-icon-star" />
+			<menuitem label="Undeploy Configuration"
 				tooltiptext="Execute the Undeploy Configuration operation"
-				onClick="@command('executeUndeployConfigurationOperation')" 			
+				onClick="@command('executeUndeployConfigurationOperation')"
 				iconSclass="z-icon-star-o" />
-			<menuitem label="Create Report" 
+			<menuitem label="Create Report"
 				tooltiptext="Execute Create Report operation"
-				onClick="@command('executeCreateReportOperation')" 			
-				iconSclass="z-icon-archive"  />
+				onClick="@command('executeCreateReportOperation')"
+				iconSclass="z-icon-archive" />
 			<menuseparator />
-			<menuitem label="Run Custom Operation"  disabled="true"/>
+			<menuitem label="Run Custom Operation" disabled="true" />
 		</menupopup>
-	
-	
-	   	<borderlayout>
-		    <north size="60%" border="none" hflex="1" vflex="1" splittable="true" >
 
-				<vbox hflex="1" vflex="1"  >
-	    		    
-					<hbox hflex="1" pack="right" >										
-						<button tooltiptext="Execute the Deploy Configuration operation" 
-							label="Deploy"
-							mold="trendy" 
-							onClick="@command('executeDeployConfigurationOperation')" 			
-							iconSclass="z-icon-star"/>
-						<button tooltiptext="Execute the Undeploy Configuration operation" 
-							label="Undeploy"
-							mold="trendy" 
-							onClick="@command('executeUndeployConfigurationOperation')" 			
+
+		<borderlayout>
+			<north size="60%" border="none" hflex="1" vflex="1"
+				splittable="true">
+
+				<vbox hflex="1" vflex="1">
+
+					<hbox hflex="1" pack="right">
+						<button
+							tooltiptext="Execute the Deploy Configuration operation"
+							label="Deploy" mold="trendy"
+							onClick="@command('executeDeployConfigurationOperation')"
+							iconSclass="z-icon-star" />
+						<button
+							tooltiptext="Execute the Undeploy Configuration operation"
+							label="Undeploy" mold="trendy"
+							onClick="@command('executeUndeployConfigurationOperation')"
 							iconSclass="z-icon-star-o" />
-						<button tooltiptext="Execute the Test operation" 
-							label="Test"
-							mold="trendy" 
-							onClick="@command('executeTestOperation')" 			
-							iconSclass="z-icon-check-square-o"  />
-						<button tooltiptext="Execute the Create Report operation" 
-							label="Report"
-							mold="trendy" 
-							onClick="@command('executeCreateReportOperation')" 			
-							iconSclass="z-icon-archive"  />
+						<button tooltiptext="Execute the Test operation"
+							label="Test" mold="trendy"
+							onClick="@command('executeTestOperation')"
+							iconSclass="z-icon-check-square-o" />
+						<button tooltiptext="Execute the Create Report operation"
+							label="Report" mold="trendy"
+							onClick="@command('executeCreateReportOperation')"
+							iconSclass="z-icon-archive" />
 
-						<button tooltiptext="Execute operation" 
-							label="Execute"
-							mold="trendy" 
-							style = "font-weight:bold"
-							popup="executeOperationDropDown, after_start" 
-							iconSclass="z-icon-play-circle-o" />																						
-						<button tooltiptext="Execute last operation" 
-							label="Execute Last"
-							onClick="@command('reexecuteLastOperation')" 
-							disabled="@load(vm.lastExecutedOperationStatus)"  
-							mold="trendy" 
-							iconSclass="z-icon-repeat" />			
-						<button tooltiptext="Cancel execution of the current operation"  
-							label="Cancel"
-							onClick="@command('cancelOperation')" 
-							mold="trendy" 
-							iconSclass="z-icon-stop" />			
-						<button tooltiptext="Expand/Collapse tree" 
+						<button tooltiptext="Execute operation" label="Execute"
+							mold="trendy" style="font-weight:bold"
+							popup="executeOperationDropDown, after_start"
+							iconSclass="z-icon-play-circle-o" />
+						<button tooltiptext="Execute last operation"
+							label="Execute Last" onClick="@command('reexecuteLastOperation')"
+							disabled="@load(vm.lastExecutedOperationStatus)" mold="trendy"
+							iconSclass="z-icon-repeat" />
+						<button
+							tooltiptext="Cancel execution of the current operation"
+							label="Cancel" onClick="@command('cancelOperation')"
+							mold="trendy" iconSclass="z-icon-stop" />
+						<button tooltiptext="Expand/Collapse tree"
 							label="Expand/Collapse"
-							onClick="@global-command('collapseExpandExecutionResultTree')" 
-							mold="trendy" 
-							iconSclass="z-icon-chevron-down" />			
+							onClick="@global-command('collapseExpandExecutionResultTree')"
+							mold="trendy" iconSclass="z-icon-chevron-down" />
 					</hbox>
-		    		    
-					<tree id="tree" 
-						model="@bind(vm.treeModel)" 
+
+					<tree id="tree" model="@bind(vm.treeModel)"
 						selectedItem="@bind(vm.selectedExecutionResult)"
-						onSelect="@command('showDetailsForSelectedItem')"					
-						hflex="1" vflex="1" >
-						
+						onSelect="@command('showDetailsForSelectedItem')" hflex="1"
+						vflex="1">
+
 						<treecols>
 							<treecol width="76%" label="Message" />
-							<treecol width="8%" label="Result" />							
+							<treecol width="8%" label="Status" />
 							<treecol width="8%" label="Start" />
 							<treecol width="8%" label="Duration (ms)" />
 						</treecols>
 						<template name="model" var="node">
 							<treeitem>
-	                            <treerow>
-	                                <treecell label="@load(node.data.description)" style="@load(node.data) @converter(vm.treeNodeDescriptionStyleConverter)"/>
-	                                <treecell label="@load(node.data.state) @converter(vm.treeNodeStateConverter)" style="@load(node.data) @converter(vm.treeNodeDescriptionStyleConverter)"/>                                	                                
-	                                <treecell label="@load(node.data) @converter(vm.treeNodeStartTimeConverter)" />
-	                                <treecell label="@load(node.data.time)" />
-	                            </treerow>                        
-	                        </treeitem>
-	                    </template>									
-					</tree>										
-				</vbox>	   							
-			</north>
-	   	
-	   		<center border="none" >			    								   		
-				<vbox hflex="1" vflex="1"  >		    		    				    
-					<listbox model="@load(vm.messages)" 
-						mold="default"
-						hflex="1" vflex="1"
-						emptyMessage="Selected result contains no properties." 
-						sclass="detaillist" >
-	
-						<listhead sizable="true" >
-	            			<listheader label="Property" width="15%" />            
-				            <listheader label="Value" width="85%" />
-	        			</listhead>
-	        														        													
-						<template name="model" var="item">
-		            		<listitem style="vertical-align:top;"> 
-		                		<listcell label="@load(item.key)" style="font-weight:bold" />
-		                		<listcell>
- 									<label value="@load(item.value)" pre="true" />		                		
-		                		</listcell>		                		
-		            		</listitem>
-		        		</template>				
-					</listbox>				    				    				
+								<treerow>
+									<treecell label="@load(node.data.description)"
+										style="@load(node.data) @converter(vm.treeNodeDescriptionStyleConverter)" />
+									<treecell
+										label="@load(node.data.state) @converter(vm.treeNodeStateConverter)"
+										style="@load(node.data) @converter(vm.treeNodeDescriptionStyleConverter)"
+										iconSclass="@load(node.data.state) @converter(vm.treeNodeStateIconConverter)" />
+									<treecell
+										label="@load(node.data) @converter(vm.treeNodeStartTimeConverter)" />
+									<treecell label="@load(node.data.time)" />
+								</treerow>
+							</treeitem>
+						</template>
+					</tree>
 				</vbox>
-  			</center>
-	   		
-	   	</borderlayout>	 
+			</north>
+
+			<center border="none">
+				<vbox hflex="1" vflex="1">
+					<listbox model="@load(vm.messages)" mold="default"
+						hflex="1" vflex="1"
+						emptyMessage="Selected result contains no properties."
+						sclass="detaillist">
+
+						<listhead sizable="true">
+							<listheader label="Property" width="15%" />
+							<listheader label="Value" width="85%" />
+						</listhead>
+
+						<template name="model" var="item">
+							<listitem style="vertical-align:top;">
+								<listcell label="@load(item.key)"
+									style="font-weight:bold" />
+								<listcell>
+									<label value="@load(item.value)" pre="true" />
+								</listcell>
+							</listitem>
+						</template>
+					</listbox>
+				</vbox>
+			</center>
+
+		</borderlayout>
 	</window>
 </zk>

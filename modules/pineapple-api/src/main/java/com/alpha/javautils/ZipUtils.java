@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
- * Copyright (C) 2007-2012 Allan Thrane Andersen.
+ * Copyright (C) 2007-2019 Allan Thrane Andersen.
  * 
  * This file is part of Pineapple.
  * 
@@ -81,7 +81,6 @@ public class ZipUtils {
 
 		// exit if target directory isn't a folder
 		if (!targetDirectory.isDirectory()) {
-			logger.debug("DEBUG is directory will exit.");
 			// TODO: throw exception
 			return;
 		}

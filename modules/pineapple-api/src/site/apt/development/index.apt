@@ -484,6 +484,10 @@ Development documentation
 	* <<<NetworkUtils>>> defines a helper class with network related functionality. 
 
 	* <<<StringUtils>>> defines a helper class to support manipulation of strings. 
+
+	* <<<ZipUtils>>> defines a helper class to support creation of ZIP archives and unpacking. 
+
+	* <<<ZipProgressCallback>>> defines a call back interface to monitor the progress of unpacking of a ZIP archive.
 	
 	[]
 

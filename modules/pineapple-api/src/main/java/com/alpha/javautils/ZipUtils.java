@@ -31,7 +31,6 @@ import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.utils.IOUtils;
-import org.apache.log4j.Logger;
 
 /**
  * Utility class for packing and unpacking files.
@@ -55,25 +54,18 @@ public class ZipUtils {
 	private static final ZipProgressCallback NULL_PROGRESS_CALLBACK = new NullProgressCallbackImpl();
 
 	/**
-	 * Logger object.
-	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
-
-	/**
 	 * Compress the content of a folder into a ZIP archive.
 	 * 
-	 * @param targetDirectory
-	 *            directory whose content is packed.
-	 * @param archiveFile
-	 *            File name of ZIP archive.
-	 * @param progress
-	 *            ZIP progress callback object which can be used by client to
-	 *            continuously notified about the compression operation.
+	 * @param targetDirectory directory whose content is packed.
+	 * @param archiveFile     File name of ZIP archive.
+	 * @param progress        ZIP progress callback object which can be used by
+	 *                        client to continuously notified about the compression
+	 *                        operation.
 	 * 
-	 * @throws Exception
-	 *             if archiving fails.
+	 * @throws Exception if archiving fails.
 	 */
-	public void zipFolder(File targetDirectory, File archiveFile, ZipProgressCallback progress) throws Exception {
+	public static void zipFolder(File targetDirectory, File archiveFile, ZipProgressCallback progress)
+			throws Exception {
 
 		// creates streams
 		final OutputStream fos = new FileOutputStream(archiveFile);
@@ -97,20 +89,15 @@ public class ZipUtils {
 	/**
 	 * Add entry to archive.
 	 * 
-	 * @param os
-	 *            archive output stream.
-	 * @param source
-	 *            file object for entry to add.
-	 * @param archivePath
-	 *            internal path in archive.
-	 * @param progress
-	 *            ZIP progress callback object which can be used by client to
-	 *            continuously notified about the compression operation.
+	 * @param os          archive output stream.
+	 * @param source      file object for entry to add.
+	 * @param archivePath internal path in archive.
+	 * @param progress    ZIP progress callback object which can be used by client
+	 *                    to continuously notified about the compression operation.
 	 * 
-	 * @throws Exception
-	 *             if archiving fails.
+	 * @throws Exception if archiving fails.
 	 */
-	void internalAddEntryToArchive(ArchiveOutputStream os, File source, String archivePath,
+	static void internalAddEntryToArchive(ArchiveOutputStream os, File source, String archivePath,
 			ZipProgressCallback progress) throws Exception {
 
 		// declare
@@ -165,14 +152,11 @@ public class ZipUtils {
 	/**
 	 * Compress the content of a folder into a ZIP archive.
 	 * 
-	 * @param targetDirectory
-	 *            directory whose content is packed.
-	 * @param archiveFile
-	 *            File name of ZIP archive.
-	 * @throws Exception
-	 *             if archiving fails.
+	 * @param targetDirectory directory whose content is packed.
+	 * @param archiveFile     File name of ZIP archive.
+	 * @throws Exception if archiving fails.
 	 */
-	public void zipFolder(File targetDirectory, File archiveFile) throws Exception {
+	public static void zipFolder(File targetDirectory, File archiveFile) throws Exception {
 		zipFolder(targetDirectory, archiveFile, NULL_PROGRESS_CALLBACK);
 	}
 

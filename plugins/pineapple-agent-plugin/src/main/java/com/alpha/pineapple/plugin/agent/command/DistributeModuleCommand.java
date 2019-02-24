@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
- * Copyright (C) 2007-2013 Allan Thrane Andersen..
+ * Copyright (C) 2007-2019 Allan Thrane Andersen..
  * 
  * This file is part of Pineapple.
  * 
@@ -25,7 +25,6 @@ package com.alpha.pineapple.plugin.agent.command;
 import static com.alpha.javautils.ZipUtils.zipFolder;
 import static com.alpha.pineapple.plugin.agent.AgentConstants.DISTRIBUTE_MODULE_FILE_PART;
 import static com.alpha.pineapple.plugin.agent.AgentConstants.DISTRIBUTE_MODULE_URI;
-import static com.alpha.pineapple.plugin.agent.AgentConstants.ZIP_FILE_POSTFIX;
 
 import java.io.File;
 
@@ -43,6 +42,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.alpha.javautils.ZipProgressCallback;
+import com.alpha.pineapple.ApiConstants;
 import com.alpha.pineapple.admin.AdministrationProvider;
 import com.alpha.pineapple.command.initialization.CommandInitializer;
 import com.alpha.pineapple.command.initialization.CommandInitializerImpl;
@@ -177,11 +177,9 @@ public class DistributeModuleCommand implements Command, ZipProgressCallback {
 	/**
 	 * Distribute module.
 	 * 
-	 * @param context
-	 *            Command context.
+	 * @param context Command context.
 	 * 
-	 * @throws Exception
-	 *             If distribution fails.
+	 * @throws Exception If distribution fails.
 	 */
 	void doDistribute(Context context) {
 		// validate module exists
@@ -196,7 +194,8 @@ public class DistributeModuleCommand implements Command, ZipProgressCallback {
 			executionResult.addMessage("Module Directory", moduleDirectory.getAbsolutePath());
 
 			// create archive file name
-			String archiveFileName = new StringBuilder().append(module).append(ZIP_FILE_POSTFIX).toString();
+			String archiveFileName = new StringBuilder().append(module).append(ApiConstants.ZIP_FILE_POSTFIX)
+					.toString();
 
 			// compress module
 			File archiveFile = new File(coreRuntimeDirectoryProvider.getTempDirectory(), archiveFileName);
@@ -244,10 +243,8 @@ public class DistributeModuleCommand implements Command, ZipProgressCallback {
 	/**
 	 * Compress module into temporary directory.
 	 * 
-	 * @param moduleDirectory
-	 *            module directory which is compressed.
-	 * @param archiveFile
-	 *            file object for target archive file.
+	 * @param moduleDirectory module directory which is compressed.
+	 * @param archiveFile     file object for target archive file.
 	 * 
 	 * @return true if module compression succeeds.
 	 */
@@ -294,8 +291,7 @@ public class DistributeModuleCommand implements Command, ZipProgressCallback {
 	/**
 	 * Upload module.
 	 * 
-	 * @param archiveFile
-	 *            archive file.
+	 * @param archiveFile archive file.
 	 * 
 	 * @return true if upload succeeds.
 	 */

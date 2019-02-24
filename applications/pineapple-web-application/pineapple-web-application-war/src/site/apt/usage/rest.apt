@@ -166,21 +166,53 @@ HTTP/1.1 200 OK
 	
 	* Parameters: 
 	
-		* <<<file>>> Multi part property which contains the module archive. Media type must be .. TODO: write
+		* <<<file>>> Multi part property which contains the module archive. Media type must be multipart/form-data.
 		
 		[]
 		
-	* Response: TODO: 			
+	* Successful response: 
+
+		* HTTP 201 (Created). 
+		
+		* Content: None.
+					
+		* Content Type: N/A, since no content is returned.
+					 								
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 400 (Bad Request) is returned if a parameter isn't defined.
+		
+		* Content: An error message.
+		
+		* Content Type: text/plain
+
+		[] 
+
+	* Unsuccessful response: 
+
+		* HTTP 500 (Internal Server Error) is returned if uploading or installation fails.
+		
+		* Content: An error message.
+		
+		* Content Type: text/plain
+
+		[] 
 		
 	[]						
 				
-	Example request: 	 
+***	Example request: 	 
 
-		TODO: 	 
++---
+POST http://dave.alpha:8080/api/module/upload
++---		 			
 	 
-	Example response: 	 	 
+***	Example response: 	 	 
 
-		TODO: 	 
++---
+HTTP/1.1 201 Created.
++---
 
 ** {Delete Module}
 

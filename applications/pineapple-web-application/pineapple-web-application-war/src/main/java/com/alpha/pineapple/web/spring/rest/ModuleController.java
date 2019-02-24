@@ -34,7 +34,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -54,9 +53,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alpha.javautils.StackTraceHelper;
 import com.alpha.pineapple.PineappleCore;
 import com.alpha.pineapple.admin.Administration;
 import com.alpha.pineapple.i18n.MessageProvider;
@@ -65,6 +64,7 @@ import com.alpha.pineapple.model.module.info.Modules;
 import com.alpha.pineapple.module.ModelNotFoundException;
 import com.alpha.pineapple.module.ModuleDeletionFailedException;
 import com.alpha.pineapple.module.ModuleInfo;
+import com.alpha.pineapple.module.ModuleInstallationFailedException;
 import com.alpha.pineapple.module.ModuleNotFoundException;
 import com.alpha.pineapple.module.ModuleRepository;
 import com.alpha.pineapple.web.WebApplicationConstants;
@@ -95,8 +95,8 @@ public class ModuleController {
 	/**
 	 * Message provider for I18N support.
 	 */
-	@Resource(name = "webMessageProvider")
-	MessageProvider messageProvider;
+	@Resource
+	MessageProvider webMessageProvider;
 
 	/**
 	 * Runtime directory resolver.
@@ -137,17 +137,13 @@ public class ModuleController {
 	/**
 	 * Create module model.
 	 * 
-	 * @param module
-	 *            module ID.
-	 * @param environment
-	 *            environment ID.
+	 * @param module      module ID.
+	 * @param environment environment ID.
 	 * 
-	 * @throws ModuleNotFoundException
-	 *             if creation fails. The exception is handled by the spring
-	 *             exception handler.
-	 * @throws IllegalArgumentException
-	 *             if parameters are illegal. The exception is handled by the spring
-	 *             exception handler.
+	 * @throws ModuleNotFoundException  if creation fails. The exception is handled
+	 *                                  by the spring exception handler.
+	 * @throws IllegalArgumentException if parameters are illegal. The exception is
+	 *                                  handled by the spring exception handler.
 	 */
 	@RequestMapping(value = REST_MODULE_CREATE_MODEL_PATH, method = RequestMethod.POST)
 	@ResponseBody
@@ -162,20 +158,15 @@ public class ModuleController {
 	/**
 	 * Delete module model.
 	 * 
-	 * @param module
-	 *            module ID.
-	 * @param environment
-	 *            environment ID.
+	 * @param module      module ID.
+	 * @param environment environment ID.
 	 * 
-	 * @throws ModuleNotFoundException
-	 *             if deletion fails. The exception is handled by the spring
-	 *             exception handler.
-	 * @throws ModelNotFoundException
-	 *             if deletion fails. The exception is handled by the spring
-	 *             exception handler.
-	 * @throws IllegalArgumentException
-	 *             if parameters are illegal. The exception is handled by the spring
-	 *             exception handler.
+	 * @throws ModuleNotFoundException  if deletion fails. The exception is handled
+	 *                                  by the spring exception handler.
+	 * @throws ModelNotFoundException   if deletion fails. The exception is handled
+	 *                                  by the spring exception handler.
+	 * @throws IllegalArgumentException if parameters are illegal. The exception is
+	 *                                  handled by the spring exception handler.
 	 */
 	@RequestMapping(value = REST_MODULE_DELETE_MODEL_PATH, method = RequestMethod.DELETE)
 	@ResponseBody
@@ -204,50 +195,70 @@ public class ModuleController {
 	/**
 	 * Upload module.
 	 * 
-	 * @param module
-	 *            name of module to upload.
-	 * @return view name.... MAYBE...
+	 * @param file multi part file which contains zipped module.
+	 * 
+	 * @throws IllegalArgumentException if parameters are illegal. The exception is
+	 *                                  handled by the spring exception handler.
+	 * @throws MultipartException       if request type isn't multi-part.
 	 */
 	@RequestMapping(value = REST_MODULE_UPLOAD_PATH, method = RequestMethod.POST)
 	@ResponseBody
-	public String upload(@RequestParam(value = "file") MultipartFile file) {
+	@ResponseStatus(HttpStatus.OK)
+	public void upload(@RequestParam(value = "file") MultipartFile file) {
+
+		// if file isn'r defined then throw exception
+		if (file == null) {
+			String message = webMessageProvider.getMessage("mc.upload_file_not_defined_failure");
+			throw new IllegalArgumentException(message);
+		}
+
 		try {
 
-			if (file == null) {
-				logger.error("File is null - exiting upload");
-				return "upload";
-			}
-
-			String fileName = file.getOriginalFilename();
-
 			// store uploaded file at temp directory.
+			String fileName = file.getOriginalFilename();			
 			File tmpFile = new File(runtimeDirectoryResolver.getTempDirectory(), fileName);
 			FileOutputStream fos = new FileOutputStream(tmpFile);
 			InputStream is = file.getInputStream();
 			IOUtils.copy(is, fos);
 
+			// exit if archive is empty
+			int numberEntries = countArchiveEntries(tmpFile);
+			if (numberEntries == 0) {
+				Object[] args = { fileName };
+				String message = webMessageProvider.getMessage("mc.upload_module_empty_zip_failure", args);
+				throw new ModuleInstallationFailedException(message);
+			}
+
 			// unpack zipped tmp file to module directory
-			unpackZippedModule(tmpFile);
+			unpackZippedModule(tmpFile, numberEntries);
 
-		} catch (IOException e) {
-			logger.error("ERROR:" + StackTraceHelper.getStrackTrace(e));
+			// get modules repository
+			Administration admin = coreComponent.getAdministration();
+			ModuleRepository modulesRepository = admin.getModuleRepository();
+
+			// refresh module repository
+			modulesRepository.initialize();
+
+		} catch (Exception e) {
+
+			// throw installation failure if installation fails
+			Object[] args = { e.getMessage() };
+			String message = webMessageProvider.getMessage("mc.upload_module_install_failed", args);
+			throw new ModuleInstallationFailedException(message, e);
 		}
-
-		return "upload";
 	}
 
 	/**
 	 * Delete module.
 	 * 
-	 * @param module
-	 *            name of module to delete.
+	 * @param module name of module to delete.
 	 * 
-	 * @throws ModuleNotFoundException
-	 *             if operation ID isn't known. The exception is handled by the
-	 *             spring exception handler.
-	 * @throws ModuleDeletionFailueException
-	 *             if deletion failed. The exception is handled by the spring
-	 *             exception handler.
+	 * @throws ModuleNotFoundException       if operation ID isn't known. The
+	 *                                       exception is handled by the spring
+	 *                                       exception handler.
+	 * @throws ModuleDeletionFailueException if deletion failed. The exception is
+	 *                                       handled by the spring exception
+	 *                                       handler.
 	 */
 	@RequestMapping(value = REST_MODULE_DELETE_PATH, method = RequestMethod.DELETE)
 	@ResponseBody
@@ -258,7 +269,15 @@ public class ModuleController {
 		moduleRepository.delete(module);
 	}
 
-	public void unpackZippedModule(File fileName) {
+	/**
+	 * Unpack zipped module.
+	 * 
+	 * @param fileName      file name of archive to unpack.
+	 * @param numberEntries number of entries in archive.
+	 * 
+	 * @throws Exception if unpacking fails.
+	 */
+	public void unpackZippedModule(File fileName, int numberEntries) throws Exception {
 
 		// declare streams
 		FileInputStream is = null;
@@ -270,7 +289,6 @@ public class ModuleController {
 		try {
 			// set counters
 			int entryNumber = 0;
-			int numberEntries = countArchiveEntries(fileName);
 
 			// get media as zip stream
 			is = new FileInputStream(fileName);
@@ -369,20 +387,6 @@ public class ModuleController {
 			zis.close();
 			is.close();
 
-			// get modules repository
-			Administration admin = coreComponent.getAdministration();
-			ModuleRepository modulesRepository = admin.getModuleRepository();
-
-			// refresh module repository
-			modulesRepository.initialize();
-
-		} catch (Exception e) {
-
-			// log error message
-			Object[] args = { StackTraceHelper.getStrackTrace(e) };
-			String message = messageProvider.getMessage("mc.install_failed", args);
-			logger.error(message);
-
 		} finally {
 			IOUtils.closeQuietly(bos);
 			IOUtils.closeQuietly(fos);
@@ -390,7 +394,6 @@ public class ModuleController {
 			IOUtils.closeQuietly(zis);
 			IOUtils.closeQuietly(is);
 		}
-
 	}
 
 	/**
@@ -398,8 +401,7 @@ public class ModuleController {
 	 * 
 	 * If file size is less than 1 KB then 1 KB is returned.
 	 * 
-	 * @param zipEntry
-	 *            Zip entry to calculate size for.
+	 * @param zipEntry Zip entry to calculate size for.
 	 * 
 	 * @return total file size in KB.
 	 */
@@ -414,10 +416,8 @@ public class ModuleController {
 	/**
 	 * Compute file unpack progress in percentage.
 	 * 
-	 * @param totalSize
-	 *            Total file size in KB.
-	 * @param counter
-	 *            Number of KB unpacked.
+	 * @param totalSize Total file size in KB.
+	 * @param counter   Number of KB unpacked.
 	 * 
 	 * @return file unpack progress in percentage.
 	 */
@@ -431,8 +431,7 @@ public class ModuleController {
 	/**
 	 * Create parent directory for zipped file.
 	 * 
-	 * @param file
-	 *            Zipped file.
+	 * @param file Zipped file.
 	 */
 	File createParentDirectory(File file) {
 		File dir = new File(file.getParent());
@@ -445,8 +444,7 @@ public class ModuleController {
 	 * 
 	 * @return number of archive entries.
 	 * 
-	 * @throws Exception
-	 *             If count operation fails.
+	 * @throws Exception If count operation fails.
 	 */
 	int countArchiveEntries(File fileName) throws Exception {
 
@@ -477,10 +475,8 @@ public class ModuleController {
 	/**
 	 * Exception handler for handling unknown module.
 	 * 
-	 * @param e
-	 *            module not found exception.
-	 * @param response
-	 *            HTTP response.
+	 * @param e        module not found exception.
+	 * @param response HTTP response.
 	 * 
 	 * @return module not found HTTP status code and error message.
 	 */
@@ -494,10 +490,8 @@ public class ModuleController {
 	/**
 	 * Exception handler for handling unknown model.
 	 * 
-	 * @param e
-	 *            model not found exception.
-	 * @param response
-	 *            HTTP response.
+	 * @param e        model not found exception.
+	 * @param response HTTP response.
 	 * 
 	 * @return model not found HTTP status code and error message.
 	 */
@@ -511,10 +505,8 @@ public class ModuleController {
 	/**
 	 * Exception handler for handling failed module deletion.
 	 * 
-	 * @param e
-	 *            module deletion failure exception.
-	 * @param response
-	 *            HTTP response.
+	 * @param e        module deletion failure exception.
+	 * @param response HTTP response.
 	 * 
 	 * @return module deletion failure HTTP status code and error message.
 	 */
@@ -526,12 +518,25 @@ public class ModuleController {
 	}
 
 	/**
+	 * Exception handler for handling failed module installation.
+	 * 
+	 * @param e        module deletion failure exception.
+	 * @param response HTTP response.
+	 * 
+	 * @return module installation failure HTTP status code and error message.
+	 */
+	@ExceptionHandler(ModuleInstallationFailedException.class)
+	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public String handleException(ModuleInstallationFailedException e, HttpServletResponse response) {
+		return e.getMessage();
+	}
+
+	/**
 	 * Exception handler for handling illegal argument exception.
 	 * 
-	 * @param e
-	 *            illegal argument exception.
-	 * @param response
-	 *            HTTP response.
+	 * @param e        illegal argument exception.
+	 * @param response HTTP response.
 	 * 
 	 * @return illegal argument HTTP status code and error message.
 	 */
@@ -539,6 +544,21 @@ public class ModuleController {
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public String handleException(IllegalArgumentException e, HttpServletResponse response) {
+		return e.getMessage();
+	}
+
+	/**
+	 * Exception handler for undefined multi-part request.
+	 * 
+	 * @param e        multipart Exception.
+	 * @param response HTTP response.
+	 * 
+	 * @return module not found HTTP status code and error message.
+	 */
+	@ExceptionHandler(MultipartException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public String handleException(MultipartException e, HttpServletResponse response) {
 		return e.getMessage();
 	}
 

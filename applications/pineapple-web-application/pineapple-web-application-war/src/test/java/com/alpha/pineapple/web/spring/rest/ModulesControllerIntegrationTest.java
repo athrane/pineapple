@@ -22,11 +22,14 @@
 
 package com.alpha.pineapple.web.spring.rest;
 
+import static com.alpha.pineapple.ApiConstants.ZIP_FILE_POSTFIX;
+import static com.alpha.pineapple.web.WebApplicationConstants.DISTRIBUTE_MODULE_FILE_PART;
 import static com.alpha.pineapple.web.WebApplicationConstants.REST_MODULE_CREATE_MODEL_URI;
 import static com.alpha.pineapple.web.WebApplicationConstants.REST_MODULE_DELETE_MODEL_URI;
 import static com.alpha.pineapple.web.WebApplicationConstants.REST_MODULE_DELETE_URI;
 import static com.alpha.pineapple.web.WebApplicationConstants.REST_MODULE_GET_MODULES_URI;
 import static com.alpha.pineapple.web.WebApplicationConstants.REST_MODULE_REFRESH_URI;
+import static com.alpha.pineapple.web.WebApplicationConstants.REST_MODULE_UPLOAD_URI;
 import static com.alpha.testutils.TestUtilsTestConstants.pluginIdHelloWorld;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -39,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Collections;
 import java.util.Map;
 
@@ -53,6 +57,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -60,10 +65,12 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.alpha.javautils.SystemUtils;
+import com.alpha.javautils.ZipUtils;
 import com.alpha.pineapple.PineappleCore;
 import com.alpha.pineapple.model.configuration.Configuration;
 import com.alpha.pineapple.module.ModuleInfo;
@@ -199,6 +206,10 @@ public class ModulesControllerIntegrationTest {
 		modulesDir = new File(testDirectory, "modules");
 		confDir = new File(testDirectory, "conf");
 
+		// create pineapple runtime sub directories, e.g conf and modules
+		confDir.mkdirs();
+		modulesDir.mkdirs();
+
 		// set the pineapple.home.dir system property
 		System.setProperty(SystemUtils.PINEAPPLE_HOMEDIR, testDirectory.getAbsolutePath());
 
@@ -214,13 +225,9 @@ public class ModulesControllerIntegrationTest {
 	 * 
 	 * The module contains a model which uses the hello world plugin.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	void createEnvConfigurationAndModule() throws Exception {
-		// create pineapple runtime sub directories, e.g conf and modules
-		confDir.mkdirs();
-		modulesDir.mkdirs();
 
 		// create module
 		moduleMother.createModuleWithSingleModel(modulesDir, randomModule, randomEnvironment, randomResource);
@@ -245,8 +252,7 @@ public class ModulesControllerIntegrationTest {
 	 * 
 	 * Capturing event listener is registered.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	void reinitializeCoreComponent() throws Exception {
 		coreComponent = webAppCoreFactory.createCore();
@@ -265,8 +271,7 @@ public class ModulesControllerIntegrationTest {
 	/**
 	 * Test that POST "Refresh Modules" service invocation returns HTTP 200.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostRefreshModules_ReturnsHttpOk() throws Exception {
@@ -276,8 +281,7 @@ public class ModulesControllerIntegrationTest {
 	/**
 	 * Test that POST "Refresh Modules" service invocation returns encoding "utf-8".
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	@Ignore
@@ -289,8 +293,7 @@ public class ModulesControllerIntegrationTest {
 	/**
 	 * Test that POST "Refresh Modules" service invocation returns no content
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostRefreshModules_ReturnsNoContent() throws Exception {
@@ -301,8 +304,7 @@ public class ModulesControllerIntegrationTest {
 	/**
 	 * Test that GET "Refresh Modules" service invocation fails with HTTP 405.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testGetRefreshModules_Fails() throws Exception {
@@ -313,8 +315,7 @@ public class ModulesControllerIntegrationTest {
 	/**
 	 * Test that POST "Delete Module" service invocation fails with HTTP 405.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostDeleteModule_Fails() throws Exception {
@@ -325,8 +326,7 @@ public class ModulesControllerIntegrationTest {
 	/**
 	 * Test that GET "Delete Module" service invocation fails with HTTP 405.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testGetDeleteModule_Fails() throws Exception {
@@ -338,8 +338,7 @@ public class ModulesControllerIntegrationTest {
 	 * Test that DELETE "Delete Module" service invocation fails with HTTP 404 for
 	 * unknown module.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testDeleteDeleteModule_FailsWithUnknownModule() throws Exception {
@@ -350,8 +349,7 @@ public class ModulesControllerIntegrationTest {
 	/**
 	 * Test that DELETE "Delete Module" service invocation can delete module.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testDeleteDeleteModule_ModuleIsDeletedFromModulesRepository() throws Exception {
@@ -372,8 +370,7 @@ public class ModulesControllerIntegrationTest {
 	/**
 	 * Test that DELETE "Delete Model" service invocation returns HTTP 200.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testDeleteDeleteModel_ReturnsHttpOk() throws Exception {
@@ -388,8 +385,7 @@ public class ModulesControllerIntegrationTest {
 	/**
 	 * Test that DELETE "Delete Model" service invocation returns no content.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testDeleteDeleteModel_ReturnsNoContent() throws Exception {
@@ -405,8 +401,7 @@ public class ModulesControllerIntegrationTest {
 	 * Test that DELETE "Delete Model" service invocation result in the deletion of
 	 * the model from the model.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testDeleteDeleteModel_ModelIsDeletedFromModulesRepository() throws Exception {
@@ -431,8 +426,7 @@ public class ModulesControllerIntegrationTest {
 	 * Test that DELETE "Delete Model" service invocation returns HTTP 404 if module
 	 * doesn't exists.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testDeleteDeleteModel_FailsIfModuleIsntDefined() throws Exception {
@@ -447,8 +441,7 @@ public class ModulesControllerIntegrationTest {
 	 * Test that DELETE "Delete Model" service invocation returns HTTP 404 if model
 	 * doesn't exists.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testDeleteDeleteModel_FailsIfModelIsntDefined() throws Exception {
@@ -462,8 +455,7 @@ public class ModulesControllerIntegrationTest {
 	/**
 	 * Test that POST "Create Model" service invocation returns HTTP 200.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostCreateModel_ReturnsHttpOk() throws Exception {
@@ -478,8 +470,7 @@ public class ModulesControllerIntegrationTest {
 	/**
 	 * Test that POST "Create Model" service invocation returns no content.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostCreateModel_ReturnsNoContent() throws Exception {
@@ -495,8 +486,7 @@ public class ModulesControllerIntegrationTest {
 	 * Test that POST "Create Model" service invocation creates model in modules
 	 * repository.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostCreateModel_ModelIsCreatedInModulesRepository() throws Exception {
@@ -521,8 +511,7 @@ public class ModulesControllerIntegrationTest {
 	 * Test that POST "Create Model" service invocation returns HTTP 404 if module
 	 * doesn't exists.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testPostCreateModel_FailsIfModuleIsntDefined() throws Exception {
@@ -536,8 +525,7 @@ public class ModulesControllerIntegrationTest {
 	/**
 	 * Test that Get "Get Modules" service invocation returns HTTP 200.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testGetGetModules_ReturnsHttpOk() throws Exception {
@@ -550,8 +538,7 @@ public class ModulesControllerIntegrationTest {
 	/**
 	 * Test that GET "Get Modules" service invocation returns content.
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testGetGetModules_ReturnsContent() throws Exception {
@@ -570,13 +557,140 @@ public class ModulesControllerIntegrationTest {
 	 * Test that GET "Get Modules" service invocation returns content type
 	 * "application/xml".
 	 * 
-	 * @throws Exception
-	 *             if test fails.
+	 * @throws Exception if test fails.
 	 */
 	@Test
 	public void testGetGetCredentials_ReturnsContentTypeApplicationXml() throws Exception {
 		mockMvc.perform(get(REST_MODULE_GET_MODULES_URI).accept(MediaType.APPLICATION_XML))
 				.andExpect(content().contentType(MediaType.APPLICATION_XML));
+	}
+
+	/**
+	 * Test that POST "Upload module" service invocation returns HTTP 400 if
+	 * multi-part request isn't defined..
+	 * 
+	 * @throws Exception if test fails.
+	 */
+	@Test
+	public void testPostUploadModule_FailsIfMultipartRequestIsntDefined() throws Exception {
+		reinitializeCoreComponent();
+
+		mockMvc.perform(
+				post(REST_MODULE_UPLOAD_URI, randomModule, randomEnvironment2).accept(MediaType.APPLICATION_XML))
+				.andExpect(status().isBadRequest());
+	}
+
+	/**
+	 * Test that POST "Upload module" service invocation returns HTTP 400 if
+	 * multi-part file isn't defined.
+	 * 
+	 * @throws Exception if test fails.
+	 */
+	@Test
+	public void testPostUploadModule_FailsIfMultipartFileIsntDefined() throws Exception {
+		reinitializeCoreComponent();
+
+		mockMvc.perform(
+				post(REST_MODULE_UPLOAD_URI, randomModule, randomEnvironment2).accept(MediaType.MULTIPART_FORM_DATA))
+				.andExpect(status().isBadRequest());
+	}
+
+	/**
+	 * Test that POST "Upload module" service invocation returns HTTP 200 if
+	 * multi-part file is defined an upload succeeds.
+	 * 
+	 * @throws Exception if test fails.
+	 */
+	@Test
+	public void testPostUploadModule_ReturnsHttpOk() throws Exception {
+		reinitializeCoreComponent();
+
+		// define module directory
+		File moduleStageDir = new File(testDirectory, randomModule);
+
+		// create module
+		moduleMother.createModuleWithSingleModel(testDirectory, randomModule, randomEnvironment, randomResource);
+
+		// zip module directory
+		String archiveFileName = new StringBuilder().append(randomModule).append(ZIP_FILE_POSTFIX).toString();
+		File archiveFile = new File(moduleStageDir, archiveFileName);
+		ZipUtils.zipFolder(moduleStageDir, archiveFile);
+
+		// create multi-part file
+		FileInputStream input = new FileInputStream(archiveFile);
+		MockMultipartFile multipartFile = new MockMultipartFile(DISTRIBUTE_MODULE_FILE_PART, archiveFileName,
+				MediaType.MULTIPART_FORM_DATA.toString(), input);
+
+		// upload module
+		mockMvc.perform(MockMvcRequestBuilders.fileUpload(REST_MODULE_UPLOAD_URI).file(multipartFile))
+				.andExpect(status().isOk());
+
+		// close stream
+		input.close();
+
+	}
+
+	/**
+	 * Test that POST "Upload module" adds and registers module.
+	 * 
+	 * @throws Exception if test fails.
+	 */
+	@Test
+	public void testPostUploadModule_ModuleIsAddedToRepository() throws Exception {
+		reinitializeCoreComponent();
+
+		// define module directory
+		File moduleStageDir = new File(testDirectory, randomModule);
+
+		// create module
+		moduleMother.createModuleWithSingleModel(testDirectory, randomModule, randomEnvironment, randomResource);
+
+		// zip module directory
+		String archiveFileName = new StringBuilder().append(randomModule).append(ZIP_FILE_POSTFIX).toString();
+		File archiveFile = new File(moduleStageDir, archiveFileName);
+		ZipUtils.zipFolder(moduleStageDir, archiveFile);
+
+		// create multi-part file
+		FileInputStream input = new FileInputStream(archiveFile);
+		MockMultipartFile multipartFile = new MockMultipartFile(DISTRIBUTE_MODULE_FILE_PART, archiveFileName,
+				MediaType.MULTIPART_FORM_DATA.toString(), input);
+
+		// test
+		ModuleRepository modulesRepository = coreComponent.getAdministration().getModuleRepository();
+		assertFalse(modulesRepository.contains(randomModule));
+
+		// upload module
+		mockMvc.perform(MockMvcRequestBuilders.fileUpload(REST_MODULE_UPLOAD_URI).file(multipartFile))
+				.andExpect(status().isOk());
+
+		// test
+		modulesRepository = coreComponent.getAdministration().getModuleRepository();
+		assertTrue(modulesRepository.contains(randomModule));
+		ModuleInfo info = modulesRepository.get(randomModule);
+		assertTrue(info.containsModel(randomEnvironment));
+
+		// close stream
+		input.close();
+	}
+
+	/**
+	 * Test that POST "Upload module" service invocation returns HTTP 500 if
+	 * multi-part file isn't a valid ZIP archive.
+	 * 
+	 * @throws Exception if test fails.
+	 */
+	@Test
+	public void testPostUploadModule_FailsIfMultipartFileIsntValidZipArchive() throws Exception {
+		reinitializeCoreComponent();
+
+		// create multi-part file
+		String archiveFileName = new StringBuilder().append(randomModule).append(ZIP_FILE_POSTFIX).toString();
+		MockMultipartFile multipartFile = new MockMultipartFile(DISTRIBUTE_MODULE_FILE_PART, archiveFileName,
+				MediaType.MULTIPART_FORM_DATA.toString(), "...some invalid input".getBytes());
+
+		// upload module
+		mockMvc.perform(MockMvcRequestBuilders.fileUpload(REST_MODULE_UPLOAD_URI).file(multipartFile))
+				.andExpect(status().isInternalServerError());
 	}
 
 }

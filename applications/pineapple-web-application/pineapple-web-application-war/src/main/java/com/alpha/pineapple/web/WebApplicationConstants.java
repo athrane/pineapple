@@ -581,6 +581,11 @@ public interface WebApplicationConstants {
 	public static final String REST_MODULE_UPLOAD_PATH = "";
 
 	/**
+	 * Module REST upload service path.
+	 */
+	public static final String REST_MODULE_UPLOAD_URI = REST_MODULE_URI + REST_MODULE_UPLOAD_PATH;
+	
+	/**
 	 * Module REST delete service path.
 	 */
 	public static final String REST_MODULE_DELETE_PATH = "/{module}";
@@ -812,4 +817,9 @@ public interface WebApplicationConstants {
 	 */
 	public static final String REPORTS_FILE = "reports.xml";
 
+	/**
+	 * Distribute module REST service file part.
+	 */
+	public static final String DISTRIBUTE_MODULE_FILE_PART = "file";
+	
 }

@@ -20,6 +20,7 @@
 	<bean id="operationUtils" class="com.alpha.javautils.OperationUtilsImpl" />		
 	<bean id="systemUtils" class="com.alpha.javautils.SystemUtils" />		
 	<bean id="propertyGetter" class="com.alpha.pineapple.resource.ResourcePropertyGetter" scope="prototype" />
+	<bean id="zipUtils" class="com.alpha.javautils.ZipUtils" />
 
 	<!--  define execution result factory -->	    		    		    			    		    		
 	<bean id="executionResultFactory" class="com.alpha.pineapple.execution.DefaultExecutionResultFactoryImpl" />
@@ -33,5 +34,6 @@
 	<bean id="scheduledOperationModelObjectFactory" class="com.alpha.pineapple.model.execution.scheduled.ObjectFactory" scope="singleton" />
 	<bean id="moduleModelObjectFactory" class="com.alpha.pineapple.model.module.info.ObjectFactory" scope="singleton" />
 	<bean id="reportModelObjectFactory" class="com.alpha.pineapple.model.report.ObjectFactory" scope="singleton" />
+
 
 </beans>

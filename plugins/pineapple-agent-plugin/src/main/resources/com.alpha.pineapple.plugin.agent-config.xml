@@ -74,9 +74,6 @@
 		<property name="requestFactory" ref="simpleClientHttpRequestFactory" />				
 	</bean>
 
-	<!-- define ZIP utility -->
-	<bean id="zipUtils" class="com.alpha.javautils.ZipUtils" />
-
 	<!-- define command objects -->
 	<bean id="distributeModuleCommand" class="com.alpha.pineapple.plugin.agent.command.DistributeModuleCommand" />
 	<bean id="deleteModuleCommand" class="com.alpha.pineapple.plugin.agent.command.DeleteModuleCommand" />

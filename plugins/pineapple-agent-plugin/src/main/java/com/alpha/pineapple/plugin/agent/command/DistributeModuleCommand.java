@@ -22,6 +22,7 @@
 
 package com.alpha.pineapple.plugin.agent.command;
 
+import static com.alpha.javautils.ZipUtils.zipFolder;
 import static com.alpha.pineapple.plugin.agent.AgentConstants.DISTRIBUTE_MODULE_FILE_PART;
 import static com.alpha.pineapple.plugin.agent.AgentConstants.DISTRIBUTE_MODULE_URI;
 import static com.alpha.pineapple.plugin.agent.AgentConstants.ZIP_FILE_POSTFIX;
@@ -42,7 +43,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.alpha.javautils.ZipProgressCallback;
-import com.alpha.javautils.ZipUtils;
 import com.alpha.pineapple.admin.AdministrationProvider;
 import com.alpha.pineapple.command.initialization.CommandInitializer;
 import com.alpha.pineapple.command.initialization.CommandInitializerImpl;
@@ -145,12 +145,6 @@ public class DistributeModuleCommand implements Command, ZipProgressCallback {
 	 */
 	@Resource
 	MessageProvider messageProvider;
-
-	/**
-	 * ZIP utility.
-	 */
-	@Resource
-	ZipUtils zipUtils;
 
 	/**
 	 * Core administration provider.
@@ -265,7 +259,7 @@ public class DistributeModuleCommand implements Command, ZipProgressCallback {
 
 		try {
 			// compress
-			zipUtils.zipFolder(moduleDirectory, archiveFile, this);
+			zipFolder(moduleDirectory, archiveFile, this);
 
 			compressResult.completeAsSuccessful(messageProvider, "dmc.distribute_module_compress_completed");
 			return true;

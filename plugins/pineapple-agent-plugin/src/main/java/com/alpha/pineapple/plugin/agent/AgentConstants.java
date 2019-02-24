@@ -45,11 +45,6 @@ public interface AgentConstants {
 	public static final String DEFAULT_TIMEOUT = "5000";
 
 	/**
-	 * ZIP file postfix.
-	 */
-	public static final String ZIP_FILE_POSTFIX = ".zip";
-
-	/**
 	 * Distribute module REST service URI.
 	 */
 	public static final String DISTRIBUTE_MODULE_URI = "/api/module";

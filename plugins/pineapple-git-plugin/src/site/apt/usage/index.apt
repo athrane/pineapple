@@ -1,0 +1,403 @@
+ ------
+ Usage
+ ------
+ Allan Thrane Andersen
+ ------
+ 
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+Introduction
+
+* Overview
+
+** Invoking the plugin
+
+	The plugin is invoked by when the core component is used by one of the Pineapple clients. 
+	To trigger invocation by the core component the plugin needs to be configured.  
+
+** Configuration
+
+[../images/configure-plugin.jpg]		
+
+	Two steps are needed to configure the plugin:
+
+	[[1]] {{{Define_resource}Define resource:}} Define resource which 
+	enables usage of the the plugin. The resource enables usage by:
+
+		* Definition of connectivity information used by the Docker plugin to connect to
+		the remote Docker daemon modeled by the resource.
+
+		* Definition of a mapping between the resource ID (e.g. some user 
+		defined key referenced from models) and the plugin ID (e.g. the Java 
+		package name which implements the plugin: <<<com.alpha.pineapple.plugin.git>>>.
+
+		[] 
+	
+	
+	[[2]] {{{Define_the_module_model}Define the module model}} and add 
+	content to the model by defining a set of directives which are executed at the targeted resource(s). The
+	directives are executed in sequence when the plugin is invoked with the model. The model is defined using the 
+	{{{The_docker_plugin_schema}The Docker plugin schema}}.
+							
+	[]
+
+	For more info about configuration of plugins:
+
+	* For info about <<resources>> and <<credentials>> read the 
+	{{{../../../usage/configuration-environment.html}Environment configuration}}
+	document.
+	
+	* For info about <<modules>> and <<module models>> read the	
+	{{{../../../usage/configuration-modules.html}Modules configuration}}
+	document.
+	
+	[]
+
+** Supported operations by the plugin	
+	
+	The plugin supports the operations:
+	
+    * <<test>>
+    
+    * <<create-report>>    
+    	
+    * <<deploy-configuration>>      
+    
+    * <<undeploy-configuration>>    
+
+	[]		
+		
+	For more information about the default operations, refer to the	
+	{{{../../../usage/operations.html}Operation and workflow reference.}}
+
+** Execution of the test operation
+
+	When invoked with this operation the plugin will traverse the module 
+	model and validate that the Docker entities (e.g. images and containers) 
+	defined in the model exists at the targeted Docker host:
+
+	* <<Container>>: For each named container element defined in the model, 
+	the corresponding container is tested in the Docker host.	
+	If no container exist with designated name then the test case for the container fails.
+	The <actual> runtime state of the container is validated against the <expected> runtime state 
+	defined in the model.
+
+	[]	
+
+** Execution of the create-report operation
+
+	When invoked with this operation the plugin will ignore the module model, 
+	but create a report that lists all defined images and containers
+	at the targeted Docker host.
+	
+** Execution of the deploy-configuration operation
+
+	When invoked with this operation the plugin will traverse the module model 
+	and create all the Docker entities (e.g. images and containers) defined in the model:
+
+	* <<Container>>: A named container is created from every container element defined in the model. 
+	If the container exists then the container creation is skipped and marked as successful 
+	- because the goal of ensuring existence of the named container is achieved. 
+	Since Docker doesn't support update of existing containers, then any existing container 
+	isn't updated to match the container configuration defined in the model.
+	
+	* <<Image>>: An image is pulled for every image element defined in the model.
+	If the image exists in the Docker host then the image creation is skipped and marked as successful 
+	- because the goal of ensuring availability of the image in the Docker host is achieved. 
+	The consequence is that the image isn't updated even if a newer version exists in the used repository.
+	
+	* <<Tagged image>>: A tagged image is created for every tagged image element defined in the model.
+	If the tagged image exists in the Docker host then the image tagging is skipped and marked as successful 
+	- because the goal of ensuring availability of the image in the Docker host is achieved. 
+	The consequence is that the image isn't updated even if a newer version of the source image exists in the used repository.
+
+	* <<Image from Dockerfile>>: An image is created for every image-from-Dockerfile element defined in the model.
+	If the image exists in the Docker host then the image creation is skipped and marked as successful 
+	- because the goal of ensuring availability of the image in the Docker host is achieved. 
+	The consequence is that the image isn't updated even if the Dockerfile is updated or a newer version exists of
+	the source image used by the Dockerfile.
+	
+	[]
+	
+	The result of this operation should be that the subsequent execution of the <<test>> 
+	operation should result in a 100% success (Otherwise you have found a bug in the plugin).	
+	
+** Execution of the undeploy-configuration operation
+
+	When invoked with this operation the plugin will traverse the module model 
+	and delete all the Docker entities (e.g. images and containers) defined in the model
+	at the target Docker host: 
+
+	* <<Container>>: For each named container element defined in the model, 
+	the corresponding container is deleted in the Docker host.
+	If no container exist with designated name then the deletion is skipped and marked as successful 
+	- because the goal of ensuring that the named container doens't exist is achieved. 
+	If the targeted container is running then it stopped prior to deletion.
+	If the targeted container is paused, then it is unpaused (i.e. started) and then stopped prior to deletion.	 
+
+	* <<Image>>: For each image element defined in the model, the corresponding image is deleted in the Docker host.
+	If no image exist with designated name then the deletion is skipped and marked as successful 
+	- because the goal of ensuring that the image doens't exist is achieved. 
+	If one or more containers exists, which are based on the image targeted for deletion, then the deletion fails.
+
+	* <<Tagged image>>: Same semantics as supported for image.
+	
+	* <<Image from Dockerfile>>: Same semantics as supported for image.
+	
+	[]
+	
+	The result of this operation should be that the subsequent execution of the <<test>> operation 
+	should result in a lot of failures since none of the resources should exist.	
+	
+* {Define resource}
+
+	The purpose of defining a resource for this plugin is twofold:
+
+		* Define a mapping between the resource ID and the plugin ID. 
+		The resource ID is the user defined key which is referenced from module models which are targeting the resource.
+		The plugin ID is the Java package name which implements the plugin: <<<com.alpha.pineapple.plugin.git>>>.
+		
+		* Define connectivity information used by the Docker plugin to connect to the remote Docker daemon.
+		
+		[]
+
+	To define a new resource, add a <<<resource>>> element to the target environment in the configuration file <<<$\{pineapple.home.dir}/conf/resources.xml>>>:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://pineapple.dev.java.net/ns/environment_1_0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <environments>
+    <environment id="linux-vagrant" >
+      <resources>
+        <resource id="git-node" plugin-id="com.alpha.pineapple.plugin.git" />
+          <property value="192.168.34.10" key="host"/>
+          <property value="8082" key="port"/>			
+          <property value="1000" key="timeout"/>								
+        </resource>
+      </resources>
+    </environment>								
+  </environments>
+</configuration>  	
++--------		 
+
+	For all the details about configuration of environments and resources, please visit the {{{../../../usage/configuration-environment.html}Environment Configuration Reference}}.	
+
+	The semantics of the resource element is:
+	 
+** The <<<id>>> attribute
+
+	Identifies the resource uniquely in the current environment. This ID is referenced from
+	models which intends to use the plugin.  
+		
+** The <<<plugin-id>>> element
+ 
+	The plugin ID defines the name of the Java package which implements the plugin. The plugin ID for this plugin is:
+	<<<com.alpha.pineapple.plugin.git>>>.
+	
+** The <<<property>>> attributes(s)
+	
+	Mandatory properties used by the plugin:
+	
+	* <<<host>>> - Host name of the remote Docker daemon whose REST services are invoked to execute commands.
+	
+	* <<<port>>> - Port number on the remote Docker daemon.
+
+	* <<<timeout>>> - Connection timeout in milli seconds.
+
+* {Define the module model}
+	
+[../images/module-directory-layout.jpg]		
+
+	A <<{{{../../../usage/configuration-modules.html}module}}>>		
+	defines the input used by Pineapple to execute operations. A module is defined by a directory 
+	layout. Part of a module is the <<model(s)>> which defines what happens when the module is invoked. A model
+	is put together by one or more sub models from different plugins. Each plugin defines its own schema 
+	for its particular model   
+		
+** {The Git plugin schema}	
+	
+	This plugin defines a schema named <<The Git plugin schema>> 
+	which defines the <<<http://pineapple.dev.java.net/ns/plugin/git_1_0>>> namespace. 
+	For more information about where the schema can be found, refer to the 
+	{{{../../../usage/schemas-plugins.html}Schema locations for plugins page.}} 
+		
+** Name and location of the the module model file	
+	
+	The list of commands which should be executed when the plugin is invoked are defined 
+	in the module model files which are located at
+	<<<$\{module-dir\}/models/$\{environment\}.xml>>> where:
+	
+	* <<<$\{module-dir\}>>> is the module root directory which identifies 
+	the module with a unique name and version. 
+
+	* <<<$\{environment\}.xml>>> is a module model file for a target environment,
+	with <<<$\{environment\}>>> substituted with the environment name, e.g. 
+	<<<linux-vagrant.xml>>> for an environment named <<<linux-vagrant>>>. 
+	
+	[]   	  
+	
+	If the model file doesn't exist for an environment where the agent should be used, 
+	then create the model file and name it after the target environment, e.g. 
+	<<<linux-vagrant.xml>>> for an environment named <<<linux-vagrant>>>.
+	
+** The module model configuration schema
+
+	Module model files are defined using the <<module model configuration schema>>
+	which defines the <<<http://pineapple.dev.java.net/ns/module_model_1_0>>>
+	namespace. Since module model files contain elements from multiple
+	namespace all the elements and attributes should be qualified. The header and
+	root element should be defined as (look in the 
+	{{{../../../usage/configuration-modules.html}Modules configuration}}	
+	document for more details):
+	
+	This example shows definition of the minimal model file for
+	<<<linux-vagrant>>>: 
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" />
++--------  
+
+** Adding the plugin schema to the model
+
+	The next step is to include the 
+	{{{The_docker_plugin_schema}The Docker plugin schema}}
+	to get access to the entities defined by the schema:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:gp="http://pineapple.dev.java.net/ns/plugin/git_1_0" />
++--------  
+	
+	Now we have a minimal module model file with three namespaces:
+	
+	* <<xs:>> The basic XMLSchema schema which is only used in the root element of the
+	document.
+	
+	* <<mmd:>> The module model schema which is used to define the skeleton of a model
+	file.
+	
+	* <<gp:>> The Git plugin schema which is used to define Git resources.
+
+	[]
+
+** Defining the model which targets resources
+
+	Add a new <<<model>>> stanza with a <<<target-resource>>> attribute. The value of
+	the <<<target-resource>>> should match the id of the resource which was 
+	defined previously in the section {{{Define_resource}Define resource}}, e.g. 
+	<<<git-node>>>:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:gp="http://pineapple.dev.java.net/ns/plugin/git_1_0" />
+  
+  <mmd:model target-resource="git-node">		
+    <mmd:content />				
+  </mmd:model>
+</mmd:models>  	 
++--------  
+
+	Add content to the model which uses the plugin through the
+	<<<git-node>>> reference:
+	 
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:gp="http://pineapple.dev.java.net/ns/plugin/git_1_0" />
+  
+  <mmd:model target-resource="git-node">		
+    <mmd:content>
+      <gp:docker>
+      </gp:docker>			
+    </mmd:content>      													    								
+  </mmd:model>
+</mmd:models>  	 
++--------  
+
+* {Define Git entities the module model} 
+
+	Define a sequence of entities which should be processed when Pineapple is invoked with the model:
+
++--------
+<?xml version="1.0" encoding="UTF-8"?>
+<mmd:models xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 		
+  xmlns:gp="http://pineapple.dev.java.net/ns/plugin/git_1_0" />
+  
+  <mmd:model target-resource="git-node">		
+    <mmd:content>
+      <gp:git>
+        <gp:clone uri="athrane/pineapple" branch="HEAD" destination="..." />
+      </gp:git>			
+    </mmd:content>
+  </mmd:model>
+</mmd:models>  	 
++--------	
+
+** Clone repository
+
+	Clones a remote Git repository.
+	A clone operation is defined through a Git clone tag:
+
++--------  
+  <gp:clone uri="athrane/pineapple" branch="HEAD" destination="..."  />
++--------	
+	
+	Operation semantics:
+	
+		* <<deploy-configuration>>: 
+		Clone remote repository. 
+		The image is created by pulling it from the used registry.
+		If an image already exists in the Docker host then the image creation is skipped and marked as successful,
+		the consequence is that the image isn't updated even if a newer version exists at the used repository.
+
+		* <<undeploy-configuration>>: Delete Docker image. 
+		If no image exist with designated name then the deletion is skipped and marked as successful. 
+		If one or more containers exists, which are based on the image targeted for deletion, then the deletion fails.
+
+		* <<create-report>>: Creates report which lists ....
+
+		* <<test>>: Test the local repository is identical to the remote repository.		
+	[]
+	
+	The semantics of the attributes are:
+	
+*** <<<uri>>> attribute	
+	
+	Mandatory attribute.
+	Defines the remote repository which is cloned.
+
+	Example of official repository name is <ubuntu> which holds Ubuntu images.
+
+*** <<<branch>>> attribute	
+	
+	Optional attribute.
+	Defines the image tag.
+	Default value is <HEAD>.
+
+	Example of image tags are: HEAD and 12.10.
+	
+*** <<<destination>>> attribute	
+	
+	Mandatory attribute.
+	Defines the local destination where the cloned repository is stored.
+
+	Example of official repository name is <ubuntu> which holds Ubuntu images.
+
+** Log
+
+	TODO: write....
+	
+	
+
+

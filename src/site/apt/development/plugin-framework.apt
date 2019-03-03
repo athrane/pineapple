@@ -582,7 +582,7 @@ public class PluginImpl {}
  	To define a unmarshaller, add the stanza:	
 
 +---
-	<oxm:jaxb2-marshaller id="unmarshaller" contextPath="com.alpha.pineapple.plugin.infrastructure.model"/>
+  <oxm:jaxb2-marshaller id="unmarshaller" contextPath="com.alpha.pineapple.plugin.infrastructure.model"/>
 +---	 
 
 	where the value if the <<<id>>> attribute must match the value of the 
@@ -959,41 +959,83 @@ public interface Session
 
 	A <model element path> (MEP) is a path definition which occurs in a module model which defines directories or 
 	files to be processed as part of the execution of an operation.
+
+** Model element path to identify files within the current module
 	
 	To support <location independent> model element paths, plugins can choose to support the <<<modulepath:>>> 
 	path prefix, which enabled users of plugin to define path such as:
 
 +-----
-		<some-path>modulepath:some/resource/path/myfile.txt</some-path>
+    <some-path>modulepath:some/resource/path/myfile.txt</some-path>
 +-----	
 
 	The runtime directory provider interface <<<RuntimeDirectoryProvider>>> provides two methods which can be 
 	used by plugins to resolve model element paths:
 
 +-----	
-	File resolvModelElementPath(String path, ModuleInfo info);	
-	boolean startsWithModulePathPrefix(String path);
+    File resolvModelElementPath(String path, ModuleInfo info);	
+    boolean startsWithModulePathPrefix(String path);
 +-----		
 	
 	If <<<resolvModelElementPath>>> is invoked with a path with starts with <modulepath:> then the path is resolved 
-	to the path <<<\${module-directory}/\${remaining-parh}>>>. 
+	to <<<$\{pineapple-home-directory\}\\modules\\$\{current-module-directory\}\\$\{remaining-path\}>>>. 
 	
-	Example: If the module <<<alpha-module>>> is located physically at
+	Example: If the module <<<alpha-module>>> is located physically at:
 
 +-----	
-	c:/pineapple/modules/alpha-module
+    c:/pineapple/modules/alpha-module
 +-----	
 	
-	then will the path
+	and some model within the module contains the path:
 	
 +-----	
-	modulepath:some/resource/path/myfile.txt
+    modulepath:some/resource/path/myfile.txt
 +-----	
 
-	be resolved to:
+	then during execution of the module, the path will be resolved to:
 	
 +-----	
-	c:/pineapple/modules/alpha-module/some/resource/path/myfile.txt
+    c:/pineapple/modules/alpha-module/some/resource/path/myfile.txt
++-----	
+
+** Model element path to identify files within the another module
+
+	To support <location independent> module element paths, plugins can choose to support the <<<moduleroot:>>> 
+	path prefix, which enabled users of plugin to define path such as:
+
++-----
+    <some-path>moduleroot:some-module</some-path>
++-----	
+
+	This allows one module to reference another module in a location independent way.
+
+	The runtime directory provider interface <<<RuntimeDirectoryProvider>>> provides two methods which can be 
+	used by plugins to resolve model element paths:
+
++-----	
+    File resolvModelElementPath(String path, ModuleInfo info);	
+    boolean startsWithModuleRootPrefix(String path);
++-----		
+	
+	If <<<resolvModelElementPath>>> is invoked with a path with starts with <moduleroot:> then the path is resolved 
+	to <<<$\{pineapple-home-directory\}\\modules\\$\{some-module\}>>>. 
+	
+	Example: If the Pineapple modules directory <<<$\{pineapple-home-directory\}\\modules>>> is located physically at:
+
++-----	
+    c:/pineapple/modules
++-----	
+	
+	And the module <<<beta-module>>>, contain a model with the path:
+		
++-----	
+    moduleroot:alpha-module
++-----	
+
+	then during execution of <<<beta-module>>> the path will be be resolved to:
+	
++-----	
+    c:/pineapple/modules/alpha-module
 +-----	
 
 * Inject administration provider to gain access to administration API
@@ -1474,135 +1516,6 @@ public class TestDeployedConfigurationTest
 
 	Use the <<<org.springframework.test.util.ReflectionTestUtils>>> to
 	inject mock object into the operation fields.	 		
-
-
-* Implement plugins using command objects
-	 
-	TODO: Write..
-
-	<<<DefaulChainFactoryImpl::ChainFactory>>> is used by visitors to access commands.
-	
-	<<<ParametersInitializerImpl::ParametersInitializer>>> is used map node values 
-	into command contexts.  
-
-	* If the visitor implements a test operation then use the test runner classes in
-	<<<com.alpha.pineapple.command.test>>> to run tests and collect test data.
-
-** Implementing  visitors which executes tests
- 	
-	TODO: rewrite...
-	
-	Pineapple defines operation which tests the state of the managed resources.
-	the resources should be be tested by <<test commands>> which test a single 
-	aspect of remote resource. Execution of test commands should be initiated 
-	and controlled from a test visitor.	
-		
-	The package <<<com.alpha.pineapple.command.test>>> contains classes to
-	implement test commands and to run the from a test visitor.
-	
-	The <<<TestCommand>>> interface is a marker interface which should be 
-	extended by all commands which implements a test case. The interface defines
-	context keys which are expected by the test runner.
-	
-	The <<<TestRunner>>> interface defines the interface for test runners. The
-	interface is implemented by the class <<<TestRunnerImpl>>> which should
-	used by visitors to run test commands and collect test data. 
-		
-** Mapping arguments to commands
-
-	A visitor is invoked with the <<<visitAfterChildren( ConfigurationNode node )>>> and/or the
-	<<<visitBeforeChildren( ConfigurationNode node )>>> method. Both of which is invoked with 
-	a <<<ConfigurationNode>>> argument.
-	
-	The child nodes of the node argument will often contains input to commands. The class 
-	<<<ParametersInitializerImpl::ParametersInitializer>>> in the pineapple-commands-api 
-	project should be used to map node values into command contexts.
-	
-*** Algorithm for initializing parameters	
-	
-	The <<<ParametersInitializerImpl::ParametersInitializer>>> implements the algorithm:
-	
-	* The mapping is controlled by the <<<@Initialize>>> annotation on the target command. The 
-	target command is scanned and every field which defines the <<<@Initialize>>> is 
-	tagged for parameter initialization. 
-	
-	* The child nodes is traversed. When the name of a child node matches the value of a 
-	<<<@Initialize>>> annotation, then value(s) of the child node is added to the context 
-	under the matched name (.e.g. name of the child node == <<<@Initialize>>> annotation value).   
-	
-	[]
-	
- *** Value conversion 
- 	
-	The class performs two types of value conversion:
-	
-	* Nodes with multiple String values -> String[]
-	
-	* Nodes with single String value -> String
-	
-	[]
-	
-	Mapping to the field types defined in the target command is handled internally
-	by the commands during execution by using the <<<CommandInitializerImpl::CommandInitializer>>>.
-	
-
-
-	 
-* Setting up a Maven project for plugin development
-
-	TODO: Write..
-
-	Define new Maven project for the plugin. Use the JAR archetype to create the 
-	project as the packaging type must be JAR. 
-	
-** Maven GroupID	
-	
-	Name the GroupID the same as the package (or a part of 
-	the package name) used for the plugin. 
-	
-	Plugins which are developed as part of the Pineapple project are
-	using the GroupId: <<<com.alpha.pineapple.>>>
-	
-** Maven ArtifactID	
-	
-	Name the ArtifactId the same as the identified name of the project.
-		 
-	Plugins which are developed as part of the Pineapple project are
-	named: <<<pineapple-\<plugin-name\>-plugin.>>>
-	
-	The ArtifactId for the WebLogic deployment plugin is:
-	<<<pineapple-weblogic-deployment-plugin>>>
-	
-** Required dependencies
-
-	* pineapple-api
-	
-	* spring
-	
-	* spring-oxm
-	
-	* spring-oxm-tiger
-	
-	[]				
-	
-** Plugin package layout example
-	
-+---+
-
-com.alpha.pineapple.plugin.weblogic.deployment
-     |
-     +--- WeblogicDeploymentFactoryImpl.java
-     |          
-     +--- session
-     |     +--- WeblogicDeploymentSession.java
-     |     `--- WeblogicDeploymentSessionImpl.java
-     |               
-     +--- traversal
-           +--- InstallApplicationVisitorImpl.java
-           +--- UninstallApplicationVisitorImpl.java           
-           `--- ....
-           
-+---+	 
 
 * Known issues
 

@@ -28,7 +28,7 @@ import static com.alpha.javautils.SystemUtils.PINEAPPLE_CREDENTIALPROVIDER_PASSW
 import static com.alpha.javautils.SystemUtils.PINEAPPLE_HOMEDIR;
 import static com.alpha.javautils.SystemUtils.USER_HOME;
 import static com.alpha.pineapple.CoreConstants.CONF_DIR;
-import static com.alpha.pineapple.CoreConstants.MODULES_DIR;
+import static com.alpha.pineapple.CoreConstants.*;
 import static com.alpha.pineapple.CoreConstants.PINEAPPLE_DIR;
 import static com.alpha.pineapple.CoreConstants.REPORTS_DIR;
 import static org.easymock.EasyMock.createMock;
@@ -36,6 +36,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static java.io.File.*;
 
 import java.io.File;
 import java.util.Properties;
@@ -154,7 +155,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	@Test
 	public void testHomeDirectoryForWindows() {
 		final String path = "C:\\Users\\" + randomUser;
-		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "\\", separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
@@ -167,11 +168,11 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(USERS_DIR);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomUser);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(PINEAPPLE_DIR);
 
 		// get directory
@@ -198,7 +199,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testHomeDirectoryForWindows2() {
 
 		final String path = "C:\\" + randomValue + "\\" + randomUser;
-		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "\\", separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
@@ -211,11 +212,11 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomValue);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomUser);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(PINEAPPLE_DIR);
 
 		// get directory
@@ -241,7 +242,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testHomeDirectoryIfUserHomeIsLocatedAtRoot() {
 
 		final String path = WINDOWS_ROOT_PATH;
-		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "\\", separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
@@ -254,7 +255,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(PINEAPPLE_DIR);
 
 		// get directory
@@ -275,7 +276,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testHomeDirectoryWithPineappeHomeDefined() {
 
 		final String path = "C:\\Programs Files\\Pineapple";
-		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "\\", separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(true);
@@ -288,9 +289,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("Programs Files");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("Pineapple");
 
 		// get directory
@@ -317,7 +318,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testModulesDirectoryIfUserHomeIsLocatedAtRoot() {
 
 		final String path = WINDOWS_ROOT_PATH;
-		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "\\", separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
@@ -330,9 +331,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(PINEAPPLE_DIR);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(MODULES_DIR);
 
 		// get directory
@@ -361,7 +362,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testConfDirectoryIfUserHomeIsLocatedAtRoot() {
 
 		final String path = WINDOWS_ROOT_PATH;
-		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "\\", separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
@@ -374,9 +375,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(PINEAPPLE_DIR);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(CONF_DIR);
 
 		// get directory
@@ -403,7 +404,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testReportsDirectoryIfUserHomeIsLocatedAtRoot() {
 
 		final String path = WINDOWS_ROOT_PATH;
-		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "\\", separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
@@ -416,9 +417,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(PINEAPPLE_DIR);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(REPORTS_DIR);
 
 		// get directory
@@ -440,7 +441,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	@Test
 	public void testHomeDirectoryIsResolvedIfPineappleHomeIsntDefined() {
 
-		String osIndependentPath = randomValue + File.separator + randomValue2;
+		String osIndependentPath = randomValue + separator + randomValue2;
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
@@ -453,9 +454,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(randomValue);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomValue2);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(PINEAPPLE_DIR);
 
 		// get directory
@@ -478,7 +479,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testHomeDirectoryIsResolvedIfPineappleHomeIsntDefined2() {
 
 		final String path = "/home/" + randomValue + "/";
-		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
@@ -490,11 +491,11 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("home");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomValue);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(PINEAPPLE_DIR);
 
 		// get directory
@@ -517,7 +518,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testHomeDirectoryIsResolvedIfPineappleHomeIsntDefined3() {
 
 		final String path = "/var/lib/";
-		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
@@ -529,11 +530,11 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("var");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("lib");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(PINEAPPLE_DIR);
 
 		// get directory
@@ -560,7 +561,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testGetTempDirectoryIfPineappleHomeIsntDefined() throws Exception {
 
 		final String path = "C:\\Users\\" + randomUser + "\\Local Settings\\Temp";
-		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "\\", separator);
 
 		// complete mock setup
 		expect(systemUtils.getSystemProperty(JAVA_IO_TMPDIR, systemProperties)).andReturn(osIndependentPath);
@@ -572,13 +573,13 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(USERS_DIR);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomUser);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("Local Settings");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("Temp");
 
 		// get directory
@@ -603,7 +604,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testGetTempDirectoryIfPineappleHomeIsntDefined2() {
 
 		final String path = "/tmp";
-		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// complete mock setup
 		expect(systemUtils.getSystemProperty(JAVA_IO_TMPDIR, systemProperties)).andReturn(osIndependentPath);
@@ -614,7 +615,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("tmp");
 
 		// get directory
@@ -635,10 +636,10 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testModelPathIsResolved() {
 
 		final String path = "/var/lib/pineapple/modules/";
-		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// model path
-		String modelPath = CoreConstants.MODULEPATH + "bin";
+		String modelPath = MODULEPATH + "bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -650,15 +651,15 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("var");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("lib");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("pineapple");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("modules");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("bin");
 
 		// get directory
@@ -680,13 +681,13 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testModelPathIsResolved2() {
 
 		final String path = "\\var\\lib\\pineapple\\modules\\";
-		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "\\", separator);
 
 		// complete mock setup
 		replay(systemUtils, systemProperties);
 
 		// model path
-		String modelPath = CoreConstants.MODULEPATH + "bin";
+		String modelPath = MODULEPATH + "bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -695,15 +696,15 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("var");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("lib");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("pineapple");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("modules");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("bin");
 
 		// get directory
@@ -726,10 +727,10 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testModelPathIsResolvedWhichContainsSeparatorChar() {
 
 		final String path = "/var/lib/pineapple/modules/";
-		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// model path
-		String modelPath = CoreConstants.MODULEPATH + "/bin";
+		String modelPath = MODULEPATH + "/bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -741,15 +742,15 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("var");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("lib");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("pineapple");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("modules");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("bin");
 
 		// get directory
@@ -772,13 +773,13 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testModelPathIsResolvedWihichContainsSeparatorChar2() {
 
 		final String path = "/var/lib/pineapple/modules/";
-		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// complete mock setup
 		replay(systemUtils, systemProperties);
 
 		// model path
-		String modelPath = CoreConstants.MODULEPATH + "\\bin";
+		String modelPath = MODULEPATH + "\\bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -787,15 +788,15 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("var");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("lib");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("pineapple");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("modules");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("bin");
 
 		// get directory
@@ -818,10 +819,10 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testModelPathIsResolvedWihichContainsSeparatorChar3() {
 
 		final String path = "/var/lib/pineapple/modules/";
-		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// model path
-		String modelPath = CoreConstants.MODULEPATH + File.separatorChar + "bin";
+		String modelPath = MODULEPATH + separatorChar + "bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -833,15 +834,15 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		
 		// create expected value
 		StringBuilder expected = new StringBuilder();
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("var");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("lib");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("pineapple");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("modules");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("bin");
 
 		// get directory
@@ -861,11 +862,11 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	@Test
 	public void testModelPathIsResolvedWithRandomPath() {
 
-		final String path = randomValue + File.separator + randomValue2;
-		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
+		final String path = randomValue + separator + randomValue2;
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// model path
-		String modelPath = CoreConstants.MODULEPATH + randomValue3;
+		String modelPath = MODULEPATH + randomValue3;
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -878,9 +879,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(randomValue);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomValue2);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomValue3);
 
 		// get directory
@@ -900,8 +901,8 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	@Test
 	public void testModelPathIsResolvedfromExecutionResult() {
 
-		final String path = randomValue + File.separator + randomValue2;
-		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
+		final String path = randomValue + separator + randomValue2;
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// create mock execution result
 		ExecutionResult result = createMock(ExecutionResult.class);
@@ -925,14 +926,14 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(systemUtils, systemProperties);
 		
 		// model path
-		String modelPath = CoreConstants.MODULEPATH + randomValue3;
+		String modelPath = MODULEPATH + randomValue3;
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(randomValue);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomValue2);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomValue3);
 
 		// get directory
@@ -948,13 +949,13 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 	/**
 	 * Test that model path can be resolved from {@linkplain ExecutionResult}. If
-	 * path doesn't contain the variable name the original path is returned.
+	 * path doesn't contain the variable name then original path is returned.
 	 */
 	@Test
 	public void testModelPathIsResolvedfromExecutionResultReturnsOrgPathIfVariableIsntFound() {
 
-		final String path = randomValue + File.separator + randomValue2;
-		String osIndependentPath = StringUtils.replaceChars(path, "/", File.separator);
+		final String path = randomValue + separator + randomValue2;
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// create mock execution result
 		ExecutionResult result = createMock(ExecutionResult.class);
@@ -962,14 +963,27 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// complete mock setup
 		replay(systemUtils, systemProperties);
+
+		// create module info mock
+		ModuleInfo info = createMock(ModuleInfo.class);
+		expect(info.getDirectory()).andReturn(new File(osIndependentPath));
+		replay(info);
+		
+		// create execution info mock
+		ExecutionInfo executionInfo = createMock(ExecutionInfo.class);
+		expect(executionInfo.getModuleInfo()).andReturn(info);
+		replay(executionInfo);
+		
+		// complete mock setup
+		expect(coreExecutionInfoProvider.get(result)).andReturn(executionInfo);
 		replay(coreExecutionInfoProvider);
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(randomValue);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomValue2);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomValue3);
 
 		// get directory
@@ -983,6 +997,52 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		verify(coreExecutionInfoProvider, systemUtils, systemProperties);
 	}
 
+	/**
+	 * Test that model path is resolved correctly for Linux, e.g. the 'moduleroot'
+	 * identifier is resolved to the expected path.
+	 */
+	@Test
+	public void testModelRootIsResolved() {
+
+		final String path = "/var/lib/pineapple/modules/"+randomValue;
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
+
+		// model path
+		String modelPath = MODULEROOT;
+
+		// create module info mock
+		ModuleInfo info = createMock(ModuleInfo.class);
+		expect(info.getDirectory()).andReturn(new File(osIndependentPath));
+		replay(info);
+
+		// complete mock setup
+		replay(systemUtils, systemProperties);
+
+		// create expected value
+		StringBuilder expected = new StringBuilder();
+		expected.append(separatorChar);
+		expected.append("var");
+		expected.append(separatorChar);
+		expected.append("lib");
+		expected.append(separatorChar);
+		expected.append("pineapple");
+		expected.append(separatorChar);
+		expected.append("modules");
+		expected.append(separatorChar);
+		expected.append(randomValue);
+
+		// get directory
+		File dir = provider.resolveModelPath(modelPath, info);
+
+		// test
+		assertEquals(new File(expected.toString()), dir);
+
+		// test
+		verify(info);
+		verify(systemUtils, systemProperties);
+	}
+	
+	
 	/**
 	 * Test that model path resolution fails if path is null.
 	 */
@@ -999,9 +1059,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(randomValue);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomValue2);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append(randomValue3);
 
 		// get directory
@@ -1039,7 +1099,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(systemUtils, systemProperties, coreExecutionInfoProvider);
 
 		// model path
-		String modelPath = CoreConstants.MODULEPATH + randomValue3;
+		String modelPath = MODULEPATH + randomValue3;
 
 		// get directory
 		provider.resolveModelPath(modelPath, (ExecutionResult) null);
@@ -1053,7 +1113,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testPasswordFileForWindowsWithPineappePasswordfileDefined() {
 
 		final String path = "C:\\Programs Files\\Pineapple";
-		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "\\", separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleCredentialProviderPasswordHomeDefined(systemProperties)).andReturn(true);
@@ -1067,9 +1127,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("Programs Files");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("Pineapple");
 
 		// get file
@@ -1090,7 +1150,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	public void testPasswordFileForWindowsWithPineappePasswordFileUndefined() {
 
 		final String path = "C:\\Programs Files\\Pineapple";
-		String osIndependentPath = StringUtils.replaceChars(path, "\\", File.separator);
+		String osIndependentPath = StringUtils.replaceChars(path, "\\", separator);
 
 		// complete mock setup
 		expect(systemUtils.isPineappleCredentialProviderPasswordHomeDefined(systemProperties)).andReturn(false);
@@ -1104,13 +1164,13 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(C_DRIVE);
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("Programs Files");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("Pineapple");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("conf");
-		expected.append(File.separatorChar);
+		expected.append(separatorChar);
 		expected.append("credentialprovider.password");
 
 		// get file

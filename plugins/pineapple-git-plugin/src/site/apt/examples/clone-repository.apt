@@ -1,0 +1,85 @@
+ ------
+ How-to: Create Docker image
+ ------
+ Allan Thrane Andersen
+ ------
+ May 2014
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Create Docker image
+
+* Overview
+
+	This example illustrates how the Docker plugin can be used to create a Docker image.
+
+** Part of the default configuration
+
+	This example named <<<docker-000-image-centos>>>, including all configuration files, is included in the 
+	{{{../../../usage/default-configuration.html}default configuration}} which is created by Pineapple, 
+	so there is no need to create it by hand.	
+	
+* Define the module 
+
+	Pineapple's unit of work is modules. A module is a self contained unit which 
+	can contain models, scripts and binaries. Models serves to specify test cases, 
+	deployment of applications, configuration of devices or execution of scripts. 
+	
+	The default directory for modules is <<<$\{user.home\}/.pineapple/modules>>> so we will 
+	create a module named <<<docker-000-image-centos>>> there. The module 
+	for this example will end up with the structure:
+
++---
+docker-000-image-centos
+ |
+ +--- models	 
+       +--- linux-vagrant.xml 
++---
+	
+* Define the module model
+
+	The model file for definition of the image:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0"       
+    xmlns:dkp="http://pineapple.dev.java.net/ns/plugin/docker_1_0" >
+    <mmd:model target-resource="docker-node" description="Define Docker image: centos:latest " >
+        <mmd:content>
+            <dkp:docker>
+                <dkp:image repository="centos" tag="latest" />
+            </dkp:docker>                       
+        </mmd:content>
+    </mmd:model>
+</mmd:models>
++----	 
+
+** The configuration details
+
+	Two schema are used in the model file. The <<<http://pineapple.dev.java.net/ns/module_model_1_0>>> is used
+	to define the namespace <<<mmd>>> which defines the general infrastructure for models. 
+	The <<<http://pineapple.dev.java.net/ns/plugin/docker_1_0>>> schema is used to
+	define the namespace <<<dkp>>> which is used to define the model for the Docker plugin. 
+	Since multiple schemas are used to define the model file, the elements are qualified.
+	
+	The <<<target-resource>>> attribute defines a reference to the resource which is targeted when the 
+	model executed. In this case, the value <<<docker-node>>> is a reference to a resource which defines a Docker daemon.
+	
+	The <<<dkp:docker>>> element defines the root of model for the Docker plugin. 
+	
+	The <<<dkp:image>>> element defines a Docker image which can be used for creation or deletion depending on the invoked operation.
+		 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<docker-000-image-centos>>
+	
+	* Select the <<linux-vagrant>> model.
+	
+	* Invoke the <<deploy-configuration>> to pull or create the image.
+	
+	[]
+
+	

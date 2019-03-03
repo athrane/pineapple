@@ -56,6 +56,11 @@ public interface CoreConstants {
 	 * Module path constant.
 	 */
 	public String MODULEPATH = "modulepath:";
+
+	/**
+	 * Module root constant.
+	 */
+	public String MODULEROOT = "moduleroot:";
 	
 	/**
 	 * Default file name for credentials file.

@@ -152,6 +152,17 @@ public interface RuntimeDirectoryProvider {
 	boolean startsWithModulePathPrefix(String path);
 
 	/**
+	 * Returns true if the model path starts with the 'moduleroot:' prefix.
+	 * 
+	 * @param path
+	 *            Model path.
+	 * 
+	 * @return true if the model path starts with the 'moduleroot:' prefix.
+	 */	
+	boolean startsWithModuleRootPrefix(String path);
+	
+	
+	/**
 	 * Get the credential provider password file location where Pineapple should
 	 * look for the file which contains the master password for symmetric encryption
 	 * of credentials.

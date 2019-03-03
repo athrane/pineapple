@@ -29,6 +29,8 @@ import static com.alpha.javautils.SystemUtils.PINEAPPLE_HOMEDIR;
 import static com.alpha.javautils.SystemUtils.USER_HOME;
 import static com.alpha.pineapple.CoreConstants.CONF_DIR;
 import static com.alpha.pineapple.CoreConstants.CRDENTIALPROVIDER_PASSWORD_FILE;
+import static com.alpha.pineapple.CoreConstants.MODULEPATH;
+import static com.alpha.pineapple.CoreConstants.MODULEROOT;
 import static com.alpha.pineapple.CoreConstants.MODULES_DIR;
 import static com.alpha.pineapple.CoreConstants.PINEAPPLE_DIR;
 import static com.alpha.pineapple.CoreConstants.REPORTS_DIR;
@@ -40,7 +42,6 @@ import java.util.Properties;
 import javax.annotation.Resource;
 
 import com.alpha.javautils.SystemUtils;
-import com.alpha.pineapple.CoreConstants;
 import com.alpha.pineapple.execution.ExecutionInfo;
 import com.alpha.pineapple.execution.ExecutionInfoProvider;
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -131,14 +132,20 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 
 		// resolve path if it starts with 'modulepath:'
 		if (startsWithModulePathPrefix(path)) {
-			String pathWithoutPrefix = path.substring(CoreConstants.MODULEPATH.length());
+			String pathWithoutPrefix = path.substring(MODULEPATH.length());
 			File resolvedFile = new File(info.getDirectory(), pathWithoutPrefix);
 			return resolvedFile;
-
-		} else {
-			// resolve path as file object
-			return new File(path);
 		}
+
+		// resolve path if it starts with 'moduleroot:'
+		if (startsWithModuleRootPrefix(path)) {
+			String pathWithoutPrefix = path.substring(MODULEROOT.length());
+			File resolvedFile = new File(getModulesDirectory(), pathWithoutPrefix);
+			return resolvedFile;
+		}
+
+		// resolve path as file object
+		return new File(path);
 	}
 
 	@Override
@@ -146,10 +153,6 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 		notNull(path, "path is undefined");
 		notEmpty(path, "path is empty");
 		notNull(result, "result is undefined");
-
-		// exit if prefix isn't present
-		if (!startsWithModulePathPrefix(path))
-			return new File(path);
 
 		// get module info
 		ExecutionInfo executionInfo = coreExecutionInfoProvider.get(result);
@@ -163,7 +166,14 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 	public boolean startsWithModulePathPrefix(String path) {
 		notNull(path, "path is undefined");
 		notEmpty(path, "path is empty");
-		return path.startsWith(CoreConstants.MODULEPATH);
+		return path.startsWith(MODULEPATH);
+	}
+
+	@Override
+	public boolean startsWithModuleRootPrefix(String path) {
+		notNull(path, "path is undefined");
+		notEmpty(path, "path is empty");
+		return path.startsWith(MODULEROOT);
 	}
 
 	@Override

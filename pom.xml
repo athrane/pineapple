@@ -270,6 +270,12 @@
 				<artifactId>javaee-api</artifactId>
 				<version>5</version>
 			</dependency>
+			<!-- used by the Git plugin project -->			
+			<dependency>
+			    <groupId>org.eclipse.jgit</groupId>
+			    <artifactId>org.eclipse.jgit</artifactId>
+			    <version>5.2.1.201812262042-r</version>
+			</dependency>			
 			<!-- used by the JSR88 project -->
 			<dependency>
 				<groupId>geronimo-spec</groupId>

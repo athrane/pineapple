@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" 
+	xmlns:cep="http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0" >	
+    <mmd:variables>
+		<mmd:variable key="kubectl-version" value="1.13.4" />
+		<mmd:variable key="minikube-version" value="0.35.0" />
+      	<mmd:variable key="tmp-dir" value="/tmp" />        	   		
+		<mmd:variable key="k8s.repo" value="kubernetes.repo" />      	
+    </mmd:variables>
+	
+    <mmd:model target-resource="composite-execution" description="Install Docker">
+        <mmd:content>
+            <cep:composite-execution>
+                <cep:module name="ssh-011-install-docker-latest-version-centos7" />
+            </cep:composite-execution>
+        </mmd:content>
+    </mmd:model>	
+
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Prepare OS for Kubernetes" >
+	    <mmd:content>
+			<shp:ssh>
+                <shp:execute command="sudo swapoff -a" />
+                <shp:execute command="sudo yum install -y socat" />                
+			</shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+			
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Install kubectl" >
+	    <mmd:content>
+			<shp:ssh>
+	          	<shp:copy-to source="modulepath:bin/${k8s.repo}" destination="${tmp-dir}/${k8s.repo}" chmod="775" />
+				<shp:execute command="sudo mv ${tmp-dir}/${k8s.repo} /etc/yum.repos.d/${k8s.repo}" />             
+                <shp:execute command="sudo yum install -y kubectl-${kubectl-version}" />
+			</shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+			
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Install Minikube" >
+	    <mmd:content>
+			<shp:ssh>
+                <shp:execute command="curl -Lo ${tmp-dir}/minikube https://storage.googleapis.com/minikube/releases/v${minikube-version}/minikube-linux-amd64" />
+				<shp:execute command="chmod +x ${tmp-dir}/minikube" />
+				<shp:execute command="sudo mv ${tmp-dir}/minikube /usr/local/bin/minikube" />
+			</shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Start Minikube" >
+	    <mmd:content>
+			<shp:ssh>
+                <shp:execute command="sudo /usr/local/bin/minikube start --vm-driver=none" />
+			</shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Start Kubernetes dashboard" >
+	    <mmd:content>
+			<shp:ssh>
+                <shp:execute command="sudo /usr/local/bin/minikube dashboard" />
+			</shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+
+    <mmd:model target-resource="ssh-node1" target-operation="{deploy-configuration, test}" description="Validate kubectl installation" >
+      <mmd:content>
+        <shp:ssh>        
+          <shp:assert-contains command="sudo kubectl version" expected-value="${kubectl-version}"/>                     
+        </shp:ssh>			
+      </mmd:content>
+    </mmd:model>
+
+    <mmd:model target-resource="ssh-node1" target-operation="{deploy-configuration, test}" description="Validate Minikube installation" >
+      <mmd:content>
+        <shp:ssh>        
+          <shp:assert-contains command="sudo /usr/local/bin/minikube status" expected-value="host: Running"/>                     
+          <shp:assert-contains command="sudo /usr/local/bin/minikube status" expected-value="kubelet: Running"/>                     
+          <shp:assert-contains command="sudo /usr/local/bin/minikube status" expected-value="apiserver: Running"/>                     
+          <shp:assert-contains command="sudo /usr/local/bin/minikube status" expected-value="kubectl: Correctly Configured"/>                     
+          <shp:assert-contains command="kubectl get namespaces" expected-value="default       Active"/>                     
+          <shp:assert-contains command="kubectl get namespaces" expected-value="kube-public   Active"/>                     
+          <shp:assert-contains command="kubectl get namespaces" expected-value="kube-system   Active"/>                     
+
+        </shp:ssh>			
+      </mmd:content>
+    </mmd:model>
+	
+</mmd:models>

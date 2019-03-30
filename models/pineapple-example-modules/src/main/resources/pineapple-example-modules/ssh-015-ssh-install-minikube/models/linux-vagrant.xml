@@ -3,8 +3,8 @@
 	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" 
 	xmlns:cep="http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0" >	
     <mmd:variables>
-		<mmd:variable key="kubectl-version" value="1.13.4" />
-		<mmd:variable key="minikube-version" value="0.35.0" />
+		<mmd:variable key="kubectl-version" value="1.14.0" />
+		<mmd:variable key="minikube-version" value="1.0.0" />
       	<mmd:variable key="tmp-dir" value="/tmp" />        	   		
 		<mmd:variable key="k8s.repo" value="kubernetes.repo" />      	
     </mmd:variables>
@@ -38,10 +38,10 @@
 			
     <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Install Minikube" >
 	    <mmd:content>
-			<shp:ssh>
-                <shp:execute command="curl -Lo ${tmp-dir}/minikube https://storage.googleapis.com/minikube/releases/v${minikube-version}/minikube-linux-amd64" />
-				<shp:execute command="chmod +x ${tmp-dir}/minikube" />
-				<shp:execute command="sudo mv ${tmp-dir}/minikube /usr/local/bin/minikube" />
+			<shp:ssh>		
+                <shp:execute command="curl -Lo ${tmp-dir}/minikube.rpm https://github.com/kubernetes/minikube/releases/download/v${minikube-version}/minikube-${minikube-version}.rpm" />
+				<shp:execute command="chmod a+x ${tmp-dir}/minikube.rpm" />
+				<shp:execute command="sudo yum --assumeyes install ${tmp-dir}/minikube.rpm" />
 			</shp:ssh>			
         </mmd:content>
     </mmd:model>
@@ -49,15 +49,7 @@
     <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Start Minikube" >
 	    <mmd:content>
 			<shp:ssh>
-                <shp:execute command="sudo /usr/local/bin/minikube start --vm-driver=none" />
-			</shp:ssh>			
-        </mmd:content>
-    </mmd:model>
-
-    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Start Kubernetes dashboard" >
-	    <mmd:content>
-			<shp:ssh>
-                <shp:execute command="sudo /usr/local/bin/minikube dashboard" />
+                <shp:execute command="sudo minikube start --vm-driver=none" />
 			</shp:ssh>			
         </mmd:content>
     </mmd:model>
@@ -73,16 +65,12 @@
     <mmd:model target-resource="ssh-node1" target-operation="{deploy-configuration, test}" description="Validate Minikube installation" >
       <mmd:content>
         <shp:ssh>        
-          <shp:assert-contains command="sudo /usr/local/bin/minikube status" expected-value="host: Running"/>                     
-          <shp:assert-contains command="sudo /usr/local/bin/minikube status" expected-value="kubelet: Running"/>                     
-          <shp:assert-contains command="sudo /usr/local/bin/minikube status" expected-value="apiserver: Running"/>                     
-          <shp:assert-contains command="sudo /usr/local/bin/minikube status" expected-value="kubectl: Correctly Configured"/>                     
-          <shp:assert-contains command="kubectl get namespaces" expected-value="default       Active"/>                     
-          <shp:assert-contains command="kubectl get namespaces" expected-value="kube-public   Active"/>                     
-          <shp:assert-contains command="kubectl get namespaces" expected-value="kube-system   Active"/>                     
-
+          <shp:assert-contains command="sudo minikube status" expected-value="host: Running"/>                     
+          <shp:assert-contains command="sudo minikube status" expected-value="kubelet: Running"/>                     
+          <shp:assert-contains command="sudo minikube status" expected-value="apiserver: Running"/>                     
+          <shp:assert-contains command="sudo minikube status" expected-value="kubectl: Correctly Configured"/>                     
         </shp:ssh>			
       </mmd:content>
     </mmd:model>
-	
+		
 </mmd:models>

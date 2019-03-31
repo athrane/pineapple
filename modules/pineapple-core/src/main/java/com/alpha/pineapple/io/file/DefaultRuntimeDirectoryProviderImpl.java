@@ -29,8 +29,8 @@ import static com.alpha.javautils.SystemUtils.PINEAPPLE_HOMEDIR;
 import static com.alpha.javautils.SystemUtils.USER_HOME;
 import static com.alpha.pineapple.CoreConstants.CONF_DIR;
 import static com.alpha.pineapple.CoreConstants.CRDENTIALPROVIDER_PASSWORD_FILE;
-import static com.alpha.pineapple.CoreConstants.MODULEPATH;
-import static com.alpha.pineapple.CoreConstants.MODULEROOT;
+import static com.alpha.pineapple.CoreConstants.MODULEPATH_EXP;
+import static com.alpha.pineapple.CoreConstants.MODULERS_EXP;
 import static com.alpha.pineapple.CoreConstants.MODULES_DIR;
 import static com.alpha.pineapple.CoreConstants.PINEAPPLE_DIR;
 import static com.alpha.pineapple.CoreConstants.REPORTS_DIR;
@@ -132,14 +132,14 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 
 		// resolve path if it starts with 'modulepath:'
 		if (startsWithModulePathPrefix(path)) {
-			String pathWithoutPrefix = path.substring(MODULEPATH.length());
+			String pathWithoutPrefix = path.substring(MODULEPATH_EXP.length());
 			File resolvedFile = new File(info.getDirectory(), pathWithoutPrefix);
 			return resolvedFile;
 		}
 
-		// resolve path if it starts with 'moduleroot:'
-		if (startsWithModuleRootPrefix(path)) {
-			String pathWithoutPrefix = path.substring(MODULEROOT.length());
+		// resolve path if it starts with 'modules:'
+		if (startsWithModulesPrefix(path)) {
+			String pathWithoutPrefix = path.substring(MODULERS_EXP.length());
 			File resolvedFile = new File(getModulesDirectory(), pathWithoutPrefix);
 			return resolvedFile;
 		}
@@ -166,14 +166,14 @@ public class DefaultRuntimeDirectoryProviderImpl implements RuntimeDirectoryProv
 	public boolean startsWithModulePathPrefix(String path) {
 		notNull(path, "path is undefined");
 		notEmpty(path, "path is empty");
-		return path.startsWith(MODULEPATH);
+		return path.startsWith(MODULEPATH_EXP);
 	}
 
 	@Override
-	public boolean startsWithModuleRootPrefix(String path) {
+	public boolean startsWithModulesPrefix(String path) {
 		notNull(path, "path is undefined");
 		notEmpty(path, "path is empty");
-		return path.startsWith(MODULEROOT);
+		return path.startsWith(MODULERS_EXP);
 	}
 
 	@Override

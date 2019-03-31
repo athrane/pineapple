@@ -28,15 +28,18 @@ import static com.alpha.javautils.SystemUtils.PINEAPPLE_CREDENTIALPROVIDER_PASSW
 import static com.alpha.javautils.SystemUtils.PINEAPPLE_HOMEDIR;
 import static com.alpha.javautils.SystemUtils.USER_HOME;
 import static com.alpha.pineapple.CoreConstants.CONF_DIR;
-import static com.alpha.pineapple.CoreConstants.*;
+import static com.alpha.pineapple.CoreConstants.MODULEPATH_EXP;
+import static com.alpha.pineapple.CoreConstants.MODULERS_EXP;
+import static com.alpha.pineapple.CoreConstants.MODULES_DIR;
 import static com.alpha.pineapple.CoreConstants.PINEAPPLE_DIR;
 import static com.alpha.pineapple.CoreConstants.REPORTS_DIR;
+import static java.io.File.separator;
+import static java.io.File.separatorChar;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
-import static java.io.File.*;
 
 import java.io.File;
 import java.util.Properties;
@@ -49,7 +52,6 @@ import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.alpha.javautils.SystemUtils;
-import com.alpha.pineapple.CoreConstants;
 import com.alpha.pineapple.execution.ExecutionInfo;
 import com.alpha.pineapple.execution.ExecutionInfoProvider;
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -633,13 +635,13 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	 * identifier is resolved to the expected path.
 	 */
 	@Test
-	public void testModelPathIsResolved() {
+	public void testModelPathIdentifierIsResolved() {
 
 		final String path = "/var/lib/pineapple/modules/";
 		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// model path
-		String modelPath = MODULEPATH + "bin";
+		String modelPath = MODULEPATH_EXP + "bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -678,7 +680,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	 * identifier is resolved to the expected path.
 	 */
 	@Test
-	public void testModelPathIsResolved2() {
+	public void testModelPathIdentifierIsResolved2() {
 
 		final String path = "\\var\\lib\\pineapple\\modules\\";
 		String osIndependentPath = StringUtils.replaceChars(path, "\\", separator);
@@ -687,7 +689,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(systemUtils, systemProperties);
 
 		// model path
-		String modelPath = MODULEPATH + "bin";
+		String modelPath = MODULEPATH_EXP + "bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -724,13 +726,13 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	 * with a separator char, e.g modulepath:/bin
 	 */
 	@Test
-	public void testModelPathIsResolvedWhichContainsSeparatorChar() {
+	public void testModelPathIdentifierIsResolvedWhichContainsSeparatorChar() {
 
 		final String path = "/var/lib/pineapple/modules/";
 		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// model path
-		String modelPath = MODULEPATH + "/bin";
+		String modelPath = MODULEPATH_EXP + "/bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -770,7 +772,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	 * with a separator char, e.g modulepath:\\bin
 	 */
 	@Test
-	public void testModelPathIsResolvedWihichContainsSeparatorChar2() {
+	public void testModelPathIdentifierIsResolvedWihichContainsSeparatorChar2() {
 
 		final String path = "/var/lib/pineapple/modules/";
 		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
@@ -779,7 +781,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(systemUtils, systemProperties);
 
 		// model path
-		String modelPath = MODULEPATH + "\\bin";
+		String modelPath = MODULEPATH_EXP + "\\bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -816,13 +818,13 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	 * with a separator char, e.g modulepath:\\bin
 	 */
 	@Test
-	public void testModelPathIsResolvedWihichContainsSeparatorChar3() {
+	public void testModelPathIdentifierIsResolvedWihichContainsSeparatorChar3() {
 
 		final String path = "/var/lib/pineapple/modules/";
 		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// model path
-		String modelPath = MODULEPATH + separatorChar + "bin";
+		String modelPath = MODULEPATH_EXP + separatorChar + "bin";
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -831,7 +833,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// complete mock setup
 		replay(systemUtils, systemProperties);
-		
+
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(separatorChar);
@@ -860,13 +862,13 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	 * Test that model path is resolved correctly when using randomized paths.
 	 */
 	@Test
-	public void testModelPathIsResolvedWithRandomPath() {
+	public void testModelPathIdentifierIsResolvedWithRandomPath() {
 
 		final String path = randomValue + separator + randomValue2;
 		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// model path
-		String modelPath = MODULEPATH + randomValue3;
+		String modelPath = MODULEPATH_EXP + randomValue3;
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
@@ -875,7 +877,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// complete mock setup
 		replay(systemUtils, systemProperties);
-		
+
 		// create expected value
 		StringBuilder expected = new StringBuilder();
 		expected.append(randomValue);
@@ -899,7 +901,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	 * Test that model path can be resolved from {@linkplain ExecutionResult}.
 	 */
 	@Test
-	public void testModelPathIsResolvedfromExecutionResult() {
+	public void testModelPathIdentifierIsResolvedfromExecutionResult() {
 
 		final String path = randomValue + separator + randomValue2;
 		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
@@ -924,9 +926,9 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 
 		// complete mock setup
 		replay(systemUtils, systemProperties);
-		
+
 		// model path
-		String modelPath = MODULEPATH + randomValue3;
+		String modelPath = MODULEPATH_EXP + randomValue3;
 
 		// create expected value
 		StringBuilder expected = new StringBuilder();
@@ -952,7 +954,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	 * path doesn't contain the variable name then original path is returned.
 	 */
 	@Test
-	public void testModelPathIsResolvedfromExecutionResultReturnsOrgPathIfVariableIsntFound() {
+	public void testModelPathIdentifierIsResolvedfromExecutionResultReturnsOrgPathIfVariableIsntFound() {
 
 		final String path = randomValue + separator + randomValue2;
 		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
@@ -968,12 +970,12 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		ModuleInfo info = createMock(ModuleInfo.class);
 		expect(info.getDirectory()).andReturn(new File(osIndependentPath));
 		replay(info);
-		
+
 		// create execution info mock
 		ExecutionInfo executionInfo = createMock(ExecutionInfo.class);
 		expect(executionInfo.getModuleInfo()).andReturn(info);
 		replay(executionInfo);
-		
+
 		// complete mock setup
 		expect(coreExecutionInfoProvider.get(result)).andReturn(executionInfo);
 		replay(coreExecutionInfoProvider);
@@ -998,24 +1000,28 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 	}
 
 	/**
-	 * Test that model path is resolved correctly for Linux, e.g. the 'moduleroot'
-	 * identifier is resolved to the expected path.
+	 * Test that model path is resolved correctly for Linux, e.g. the 'modules:'
+	 * identifier is resolved to the expected path. Assume these conditions are
+	 * meet:
+	 * 
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
 	 */
 	@Test
-	public void testModelRootIsResolved() {
+	public void testModulesIdentifierIsResolved() {
 
-		final String path = "/var/lib/pineapple/modules/"+randomValue;
+		final String path = "/var/somewhere";
 		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
 
 		// model path
-		String modelPath = MODULEROOT;
+		String modelPath = MODULERS_EXP;
 
 		// create module info mock
 		ModuleInfo info = createMock(ModuleInfo.class);
-		expect(info.getDirectory()).andReturn(new File(osIndependentPath));
 		replay(info);
 
 		// complete mock setup
+		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
+		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
 		replay(systemUtils, systemProperties);
 
 		// create expected value
@@ -1023,13 +1029,11 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		expected.append(separatorChar);
 		expected.append("var");
 		expected.append(separatorChar);
-		expected.append("lib");
+		expected.append("somewhere");
 		expected.append(separatorChar);
-		expected.append("pineapple");
+		expected.append(PINEAPPLE_DIR);
 		expected.append(separatorChar);
-		expected.append("modules");
-		expected.append(separatorChar);
-		expected.append(randomValue);
+		expected.append(MODULES_DIR);
 
 		// get directory
 		File dir = provider.resolveModelPath(modelPath, info);
@@ -1041,7 +1045,255 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		verify(info);
 		verify(systemUtils, systemProperties);
 	}
-	
+
+	/**
+	 * Test that model path is resolved correctly for Linux, e.g. the 'modules:'
+	 * identifier is resolved to the expected path. Assume these conditions are
+	 * meet:
+	 * 
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
+	 */
+	@Test
+	public void testModulesIdentifierIsResolved2() {
+
+		final String path = "/var/" + randomValue;
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
+
+		// model path
+		String modelPath = MODULERS_EXP;
+
+		// create module info mock
+		ModuleInfo info = createMock(ModuleInfo.class);
+		replay(info);
+
+		// complete mock setup
+		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
+		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
+		replay(systemUtils, systemProperties);
+
+		// create expected value
+		StringBuilder expected = new StringBuilder();
+		expected.append(separatorChar);
+		expected.append("var");
+		expected.append(separatorChar);
+		expected.append(randomValue);
+		expected.append(separatorChar);
+		expected.append(PINEAPPLE_DIR);
+		expected.append(separatorChar);
+		expected.append(MODULES_DIR);
+
+		// get directory
+		File dir = provider.resolveModelPath(modelPath, info);
+
+		// test
+		assertEquals(new File(expected.toString()), dir);
+
+		// test
+		verify(info);
+		verify(systemUtils, systemProperties);
+	}
+
+	/**
+	 * Test that model path is resolved correctly for Linux, e.g. the 'modules:'
+	 * identifier is resolved to the expected path, where the modulepath is contains
+	 * with a separator char, e.g modules:/<random-value>
+	 * 
+	 * Assume these conditions are meet:
+	 * 
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
+	 */
+	@Test
+	public void testModulesPathIdentifierIsResolvedWhichContainsSeparatorChar() {
+
+		final String path = "/var/" + randomValue;
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
+
+		// model path
+		String modelPath = MODULERS_EXP + "/" + randomValue2;
+
+		// create module info mock
+		ModuleInfo info = createMock(ModuleInfo.class);
+		replay(info);
+
+		// complete mock setup
+		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
+		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
+		replay(systemUtils, systemProperties);
+
+		// create expected value
+		StringBuilder expected = new StringBuilder();
+		expected.append(separatorChar);
+		expected.append("var");
+		expected.append(separatorChar);
+		expected.append(randomValue);
+		expected.append(separatorChar);
+		expected.append(PINEAPPLE_DIR);
+		expected.append(separatorChar);
+		expected.append(MODULES_DIR);
+		expected.append(separatorChar);
+		expected.append(randomValue2);
+
+		// get directory
+		File dir = provider.resolveModelPath(modelPath, info);
+
+		// test
+		assertEquals(new File(expected.toString()), dir);
+
+		// test
+		verify(info);
+		verify(systemUtils, systemProperties);
+	}
+
+	/**
+	 * Test that model path is resolved correctly for Linux, e.g. the 'modules:'
+	 * identifier is resolved to the expected path, where the modulepath is contains
+	 * with a separator char, e.g modules:/<random-value>
+	 * 
+	 * Assume these conditions are meet:
+	 * 
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
+	 */
+	@Test
+	public void testModulesPathIdentifierIsResolvedWhichContainsSeparatorChar2() {
+
+		final String path = "/var/" + randomValue;
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
+
+		// model path
+		String modelPath = MODULERS_EXP + "\\" + randomValue2;
+
+		// create module info mock
+		ModuleInfo info = createMock(ModuleInfo.class);
+		replay(info);
+
+		// complete mock setup
+		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
+		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
+		replay(systemUtils, systemProperties);
+
+		// create expected value
+		StringBuilder expected = new StringBuilder();
+		expected.append(separatorChar);
+		expected.append("var");
+		expected.append(separatorChar);
+		expected.append(randomValue);
+		expected.append(separatorChar);
+		expected.append(PINEAPPLE_DIR);
+		expected.append(separatorChar);
+		expected.append(MODULES_DIR);
+		expected.append(separatorChar);
+		expected.append(randomValue2);
+
+		// get directory
+		File dir = provider.resolveModelPath(modelPath, info);
+
+		// test
+		assertEquals(new File(expected.toString()), dir);
+
+		// test
+		verify(info);
+		verify(systemUtils, systemProperties);
+	}
+
+	/**
+	 * Test that model path is resolved correctly for Linux, e.g. the 'modules:'
+	 * identifier is resolved to the expected path, where the modulepath is contains
+	 * with a separator char, e.g modules:/<random-value>
+	 * 
+	 * Assume these conditions are meet:
+	 * 
+	 * 1) The system property <code>pineapple.home.dir</code> isn't defined.
+	 */
+	@Test
+	public void testModulesPathIdentifierIsResolvedWhichContainsSeparatorChar3() {
+
+		final String path = "/var/" + randomValue;
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
+
+		// model path
+		String modelPath = MODULERS_EXP + separatorChar + randomValue2;
+
+		// create module info mock
+		ModuleInfo info = createMock(ModuleInfo.class);
+		replay(info);
+
+		// complete mock setup
+		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(false);
+		expect(systemUtils.getSystemProperty(USER_HOME, systemProperties)).andReturn(osIndependentPath);
+		replay(systemUtils, systemProperties);
+
+		// create expected value
+		StringBuilder expected = new StringBuilder();
+		expected.append(separatorChar);
+		expected.append("var");
+		expected.append(separatorChar);
+		expected.append(randomValue);
+		expected.append(separatorChar);
+		expected.append(PINEAPPLE_DIR);
+		expected.append(separatorChar);
+		expected.append(MODULES_DIR);
+		expected.append(separatorChar);
+		expected.append(randomValue2);
+
+		// get directory
+		File dir = provider.resolveModelPath(modelPath, info);
+
+		// test
+		assertEquals(new File(expected.toString()), dir);
+
+		// test
+		verify(info);
+		verify(systemUtils, systemProperties);
+	}
+
+	/**
+	 * Test that model path is resolved correctly for Linux, e.g. the 'modules:'
+	 * identifier is resolved to the expected path, where the modulepath is contains
+	 * with a separator char, e.g modules:/<random-value>
+	 * 
+	 * Assume these conditions are meet:
+	 * 
+	 * 1) The system property <code>pineapple.home.dir</code> is defined.
+	 */
+	@Test
+	public void testModulesPathIdentifierIsResolvedIfPineappleHomeIsDefined() {
+
+		final String path = "/var/" + randomValue;
+		String osIndependentPath = StringUtils.replaceChars(path, "/", separator);
+
+		// model path
+		String modelPath = MODULERS_EXP + "/" + randomValue2;
+
+		// create module info mock
+		ModuleInfo info = createMock(ModuleInfo.class);
+		replay(info);
+
+		// complete mock setup
+		expect(systemUtils.isPineappleHomeDefined(systemProperties)).andReturn(true);
+		expect(systemUtils.getSystemProperty(PINEAPPLE_HOMEDIR, systemProperties)).andReturn(osIndependentPath);
+		replay(systemUtils, systemProperties);
+
+		// create expected value
+		StringBuilder expected = new StringBuilder();
+		expected.append(separatorChar);
+		expected.append("var");
+		expected.append(separatorChar);
+		expected.append(randomValue);
+		expected.append(separatorChar);
+		expected.append(MODULES_DIR);
+		expected.append(separatorChar);
+		expected.append(randomValue2);
+
+		// get directory
+		File dir = provider.resolveModelPath(modelPath, info);
+
+		// test
+		assertEquals(new File(expected.toString()), dir);
+
+		// test
+		verify(info);
+		verify(systemUtils, systemProperties);
+	}
 	
 	/**
 	 * Test that model path resolution fails if path is null.
@@ -1099,7 +1351,7 @@ public class DefaultRuntimeDirectoryProviderImplTest {
 		replay(systemUtils, systemProperties, coreExecutionInfoProvider);
 
 		// model path
-		String modelPath = MODULEPATH + randomValue3;
+		String modelPath = MODULEPATH_EXP + randomValue3;
 
 		// get directory
 		provider.resolveModelPath(modelPath, (ExecutionResult) null);

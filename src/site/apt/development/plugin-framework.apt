@@ -973,11 +973,11 @@ public interface Session
 	used by plugins to resolve model element paths:
 
 +-----	
-    File resolvModelElementPath(String path, ModuleInfo info);	
+    File resolveModelPath(String path, ModuleInfo info);	
     boolean startsWithModulePathPrefix(String path);
 +-----		
 	
-	If <<<resolvModelElementPath>>> is invoked with a path with starts with <modulepath:> then the path is resolved 
+	If <<<resolveModelPath>>> is invoked with a path with starts with <modulepath:> then the path is resolved 
 	to <<<$\{pineapple-home-directory\}\\modules\\$\{current-module-directory\}\\$\{remaining-path\}>>>. 
 	
 	Example: If the module <<<alpha-module>>> is located physically at:
@@ -1000,11 +1000,11 @@ public interface Session
 
 ** Model element path to identify files within the another module
 
-	To support <location independent> module element paths, plugins can choose to support the <<<moduleroot:>>> 
+	To support <location independent> module element paths, plugins can choose to support the <<<modules:>>> 
 	path prefix, which enabled users of plugin to define path such as:
 
 +-----
-    <some-path>moduleroot:some-module</some-path>
+    <some-path>modules:some-module</some-path>
 +-----	
 
 	This allows one module to reference another module in a location independent way.
@@ -1013,29 +1013,29 @@ public interface Session
 	used by plugins to resolve model element paths:
 
 +-----	
-    File resolvModelElementPath(String path, ModuleInfo info);	
-    boolean startsWithModuleRootPrefix(String path);
+    File resolveModelPath(String path, ModuleInfo info);	
+    boolean startsWithModulesPrefix(String path);
 +-----		
 	
-	If <<<resolvModelElementPath>>> is invoked with a path with starts with <moduleroot:> then the path is resolved 
+	If <<<resolveModelPath>>> is invoked with a path with starts with <modules:> then the path is resolved 	
 	to <<<$\{pineapple-home-directory\}\\modules\\$\{some-module\}>>>. 
 	
-	Example: If the Pineapple modules directory <<<$\{pineapple-home-directory\}\\modules>>> is located physically at:
+	Example: If the Pineapple modules directory <<<$\{pineapple-home-directory\}\\modules>>> is resolved to:
 
 +-----	
-    c:/pineapple/modules
+    /var/pineapple/modules
 +-----	
 	
 	And the module <<<beta-module>>>, contain a model with the path:
 		
 +-----	
-    moduleroot:alpha-module
+    moduleroot:alpha-module/some/path
 +-----	
 
 	then during execution of <<<beta-module>>> the path will be be resolved to:
 	
 +-----	
-    c:/pineapple/modules/alpha-module
+    /var/pineapple/modules/alpha-module/some/path
 +-----	
 
 * Inject administration provider to gain access to administration API

@@ -152,14 +152,14 @@ public interface RuntimeDirectoryProvider {
 	boolean startsWithModulePathPrefix(String path);
 
 	/**
-	 * Returns true if the model path starts with the 'moduleroot:' prefix.
+	 * Returns true if the model path starts with the 'modules:' prefix.
 	 * 
 	 * @param path
 	 *            Model path.
 	 * 
-	 * @return true if the model path starts with the 'moduleroot:' prefix.
+	 * @return true if the model path starts with the 'modules:' prefix.
 	 */	
-	boolean startsWithModuleRootPrefix(String path);
+	boolean startsWithModulesPrefix(String path);
 	
 	
 	/**

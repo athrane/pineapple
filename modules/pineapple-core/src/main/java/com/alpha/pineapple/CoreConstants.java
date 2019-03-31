@@ -53,14 +53,14 @@ public interface CoreConstants {
 	public static final String PINEAPPLE_DIR = ".pineapple";
 
 	/**
-	 * Module path constant.
+	 * Module path expression constant.
 	 */
-	public String MODULEPATH = "modulepath:";
+	public String MODULEPATH_EXP = "modulepath:";
 
 	/**
-	 * Module root constant.
+	 * Modules directory expression constant.
 	 */
-	public String MODULEROOT = "moduleroot:";
+	public String MODULERS_EXP = "modules:";
 	
 	/**
 	 * Default file name for credentials file.

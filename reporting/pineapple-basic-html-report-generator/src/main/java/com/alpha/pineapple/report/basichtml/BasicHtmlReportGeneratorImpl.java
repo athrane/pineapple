@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
- * Copyright (C) 2007-2013 Allan Thrane Andersen..
+ * Copyright (C) 2007-2019 Allan Thrane Andersen..
  * 
  * This file is part of Pineapple.
  * 
@@ -158,29 +158,26 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	/**
 	 * Set report root directory.
 	 * 
-	 * @param reportDirectory
-	 *            The report root directory.
+	 * @param reportDir The report root directory.
 	 */
-	public void setReportDirectory(File reportDirectory) {
-		this.reportDirectory = reportDirectory;
+	public void setReportDirectory(File reportDir) {
+		this.reportDirectory = reportDir;
 
 		// if report directory doesn't exist then create it
-		if (!reportDirectory.exists()) {
+		if (!reportDir.exists()) {
 
 			// log debug message
 			if (logger.isDebugEnabled()) {
-				Object[] args = { reportDirectory.getAbsolutePath() };
-				String message = messageProvider.getMessage("bhrg.create_root_directory", args);
+				String message = messageProvider.get("bhrg.create_root_directory", reportDir.getAbsolutePath() );
 				logger.debug(message);
 			}
 
-			reportDirectory.mkdirs();
+			reportDir.mkdirs();
 		}
 
 		// log debug message
 		if (logger.isDebugEnabled()) {
-			Object[] args = { reportDirectory.getAbsolutePath() };
-			String message = messageProvider.getMessage("bhrg.configured_root_directory", args);
+			String message = messageProvider.get("bhrg.configured_root_directory", reportDir.getAbsolutePath() );
 			logger.debug(message);
 		}
 	}
@@ -198,15 +195,14 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 		transformToHtml(xmlReport);
 
 		// add report message to result
-		File newReportDirectory = xmlReport.getParentFile();
-		notification.getResult().addMessage(ExecutionResult.MSG_REPORT, newReportDirectory.getName());
+		File newReportDir = xmlReport.getParentFile();
+		notification.getResult().addMessage(ExecutionResult.MSG_REPORT, newReportDir.getName());
 	}
 
 	/**
 	 * Transform XML report to HTML report.
 	 * 
-	 * @param xmlReport
-	 *            File name of the XML report.
+	 * @param xmlReport File name of the XML report.
 	 */
 	void transformToHtml(File xmlReport) {
 
@@ -218,8 +214,8 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 
 		// log debug message
 		if (logger.isDebugEnabled()) {
-			Object[] args = { xmlReport.getAbsolutePath(), REPORT_XSL, htmlReport };
-			String message = messageProvider.getMessage("bhrg.start_html_transform", args);
+			String message = messageProvider.get("bhrg.start_html_transform", xmlReport.getAbsolutePath(), REPORT_XSL,
+					htmlReport);
 			logger.debug(message);
 		}
 
@@ -256,14 +252,12 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 
 			// log debug message
 			if (logger.isDebugEnabled()) {
-				Object[] args = { htmlReport };
-				String message = messageProvider.getMessage("bhrg.completed_html_transform", args);
+				String message = messageProvider.get("bhrg.completed_html_transform", htmlReport);
 				logger.debug(message);
 			}
 
 		} catch (Exception e) {
-			Object[] args = { StackTraceHelper.getStrackTrace(e) };
-			String message = messageProvider.getMessage("bhrg.failed_html_transform", args);
+			String message = messageProvider.get("bhrg.failed_html_transform", StackTraceHelper.getStrackTrace(e));
 			logger.error(message);
 		}
 	}
@@ -271,8 +265,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	/**
 	 * Create report in an XML document.
 	 * 
-	 * @param result
-	 *            Root execution result object.
+	 * @param result Root execution result object.
 	 * 
 	 * @return File which contains the name of the XML document.
 	 */
@@ -317,35 +310,33 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 		}
 
 		// create report directory name
-		StringBuilder reportDirectoryName = new StringBuilder();
-		reportDirectoryName.append("report-");
-		reportDirectoryName.append(timestampFormat.format(new Date()));
+		StringBuilder reportDirName = new StringBuilder();
+		reportDirName.append("report-");
+		reportDirName.append(timestampFormat.format(new Date()));
 
 		// define report directory for this report
-		File newReportDirectory = new File(reportDirectory, reportDirectoryName.toString());
+		File newReportDir = new File(reportDirectory, reportDirName.toString());
 
 		// if directory doesn't exist then create it
-		if (!newReportDirectory.exists()) {
+		if (!newReportDir.exists()) {
 
 			// log debug message
 			if (logger.isDebugEnabled()) {
-				Object[] args = { newReportDirectory.getAbsolutePath() };
-				String message = messageProvider.getMessage("bhrg.create_instance_directory", args);
+				String message = messageProvider.get("bhrg.create_instance_directory", newReportDir.getAbsolutePath());
 				logger.debug(message);
 			}
 
-			newReportDirectory.mkdirs();
+			newReportDir.mkdirs();
 		}
 
-		return newReportDirectory;
+		return newReportDir;
 	}
 
 	/**
 	 * Return true if execution is completed, i.e. the root result signals that it
 	 * isn't running anymore.
 	 * 
-	 * @param result
-	 *            The execution result notification to test.
+	 * @param result The execution result notification to test.
 	 * 
 	 * @return true if execution is completed, i.e. the root result signals that it
 	 *         isn't running anymore.
@@ -359,10 +350,9 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	/**
 	 * Marshall object graph to file using JAXB.
 	 * 
-	 * @param rootObject
-	 *            rootObject Root object of object graph which should be marshalled.
-	 * @param file
-	 *            File that the environment configuration should be saved to.
+	 * @param rootObject rootObject Root object of object graph which should be
+	 *                   marshalled.
+	 * @param file       File that the environment configuration should be saved to.
 	 */
 	void jaxbMarshall(Object rootObject, File file) {
 		// define stream for exception handling
@@ -387,8 +377,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 
 				// log debug message
 				if (logger.isDebugEnabled()) {
-					Object[] args = { prefixMapper };
-					String message = messageProvider.getMessage("bhrg.set_prefixmapper", args);
+					String message = messageProvider.get("bhrg.set_prefixmapper", prefixMapper);
 					logger.debug(message);
 				}
 
@@ -402,9 +391,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 			marshaller.marshal(rootObject, os);
 			os.close();
 		} catch (Exception e) {
-
-			Object[] args = { StackTraceHelper.getStrackTrace(e) };
-			String message = messageProvider.getMessage("bhrg.failed_marshal", args);
+			String message = messageProvider.get("bhrg.failed_marshal", StackTraceHelper.getStrackTrace(e));
 			logger.error(message);
 
 		} finally {
@@ -482,8 +469,8 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	 * produce reports at the root directory defined by the parameter
 	 * <code>reportDirectory</code>.
 	 * 
-	 * @param reportDirectory
-	 *            Root directory where reports directories will be generated.
+	 * @param reportDirectory Root directory where reports directories will be
+	 *                        generated.
 	 * 
 	 * @return instance of the basic HTML report generator.
 	 */

@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
- * Copyright (C) 2007-2013 Allan Thrane Andersen..
+ * Copyright (C) 2007-2019 Allan Thrane Andersen..
  * 
  * This file is part of Pineapple.
  * 
@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.log4j.Logger;
@@ -264,7 +263,9 @@ public class MapperImpl implements Mapper {
 
 			// add message lines
 			if (lines != null) {
-				for (String line : lines) {
+				for (String line : lines) {					
+					
+					// create value object
 					MessageValue messageValue = objectFactory.createMessageValue();
 					messageValue.setValue(line);
 					message.getValue().add(messageValue);

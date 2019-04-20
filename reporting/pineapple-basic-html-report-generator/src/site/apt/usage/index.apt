@@ -3,7 +3,7 @@
  ------
  Allan Thrane Andersen
  ------
- October 2009
+ October 2019
 
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/guides/mini/guide-apt-format.html
@@ -31,7 +31,7 @@ Usage of the basic HTML report generator project
   <dependency>
     <groupId>com.alpha.pineapple</groupId>
     <artifactId>pineapple-basic-html-generator</artifactId>  
-    <version>1.0</version>      
+    <version>CURRENT_VERSION</version>      
   </dependency>
 +--------	
 	
@@ -119,6 +119,18 @@ Usage of the basic HTML report generator project
 
 	<<{{{../examples/invoke-generator.html}Look here for an example of how register and invoke the report generator to create a report.}}>>
 
+** Adding messages to the execution result
+
+	When the report is generated then two messages are added to the root execution result which triggered the report generation:
+	
+	* A message with the label <Report> is added with the value: <<<report-$\{TIMESTAMP}>>>.
+	
+	* A message is added to the message with the label <Message> which describes where the HTML report is stored.
+	
+	[]
+
+	If the report generation fail then a message with the label <Error Message> is added with the stack trace from the exception.
+
 * Customizing the report location	
 
 	The location of reports is configurable as an argument to the factory
@@ -137,5 +149,12 @@ Usage of the basic HTML report generator project
 	from the Spring context, the generator will generate reports in the default root 
 	directory: <<<$\{user.home}/.pineapple/reports/>>>		   	
 
+* Encoding
 
+	Both the XML and the HTML report are encoded using UTF-8.
+
+
+
+
+	
 	 	 									

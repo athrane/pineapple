@@ -22,8 +22,12 @@
 
 package com.alpha.pineapple.report.basichtml;
 
+import static com.alpha.pineapple.execution.ExecutionResult.MSG_ERROR_MESSAGE;
+import static com.alpha.pineapple.execution.ExecutionResult.MSG_REPORT;
+import static com.alpha.pineapple.execution.ExecutionResult.ExecutionState.SUCCESS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -41,7 +45,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.alpha.pineapple.execution.ExecutionResult;
-import com.alpha.pineapple.execution.ExecutionResult.ExecutionState;
 import com.alpha.pineapple.execution.ExecutionResultImpl;
 import com.alpha.pineapple.execution.ExecutionResultNotification;
 import com.alpha.pineapple.execution.ExecutionResultNotificationImpl;
@@ -102,18 +105,16 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 	 */
 	ExecutionResultNotification createNotificationAndRootResult() {
 		rootResult = new ExecutionResultImpl(OPERATION);
-		rootResult.setState(ExecutionState.SUCCESS);
-		notification = ExecutionResultNotificationImpl.getInstance(rootResult, ExecutionState.SUCCESS);
+		rootResult.setState(SUCCESS);
+		notification = ExecutionResultNotificationImpl.getInstance(rootResult, SUCCESS);
 		return notification;
 	}
 
 	/**
 	 * Return first file with suffix.
 	 * 
-	 * @param directory
-	 *            Directory to search.
-	 * @param suffix
-	 *            Suffix to search for.
+	 * @param directory Directory to search.
+	 * @param suffix    Suffix to search for.
 	 * 
 	 * @return Return first file with suffix.
 	 */
@@ -130,8 +131,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 	/**
 	 * Get content of time stamped directory.
 	 * 
-	 * @param generator
-	 *            Report generator.
+	 * @param generator Report generator.
 	 * 
 	 * @return content of time stamped directory.
 	 */
@@ -331,7 +331,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 		notification = createNotificationAndRootResult();
 
 		ExecutionResult child = rootResult.addChild("model#1");
-		child.setState(ExecutionState.SUCCESS);
+		child.setState(SUCCESS);
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
@@ -358,10 +358,10 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 		notification = createNotificationAndRootResult();
 
 		ExecutionResult child = rootResult.addChild("model#1");
-		child.setState(ExecutionState.SUCCESS);
+		child.setState(SUCCESS);
 
 		ExecutionResult child2 = rootResult.addChild("model#2");
-		child2.setState(ExecutionState.SUCCESS);
+		child2.setState(SUCCESS);
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
@@ -389,10 +389,10 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 		notification = createNotificationAndRootResult();
 
 		ExecutionResult modelResult = rootResult.addChild("model#1");
-		modelResult.setState(ExecutionState.SUCCESS);
+		modelResult.setState(SUCCESS);
 
 		ExecutionResult child = modelResult.addChild("child#1");
-		child.setState(ExecutionState.SUCCESS);
+		child.setState(SUCCESS);
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
@@ -420,10 +420,10 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 		notification = createNotificationAndRootResult();
 
 		ExecutionResult modelResult = rootResult.addChild("model#1");
-		modelResult.setState(ExecutionState.SUCCESS);
+		modelResult.setState(SUCCESS);
 
 		ExecutionResult child = modelResult.addChild("child#1");
-		child.setState(ExecutionState.SUCCESS);
+		child.setState(SUCCESS);
 		child.addMessage("Message", "...some message");
 		child.addMessage("AnotherMessage", "...another message");
 
@@ -461,8 +461,8 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// test
 		Map<String, String> messages = rootResult.getMessages();
-		assertTrue(messages.containsKey(ExecutionResult.MSG_REPORT));
-		assertNotNull(messages.get(ExecutionResult.MSG_REPORT));
+		assertTrue(messages.containsKey(MSG_REPORT));
+		assertNotNull(messages.get(MSG_REPORT));
 	}
 
 	/**
@@ -483,7 +483,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// get report ID
 		Map<String, String> messages = rootResult.getMessages();
-		String reportId = messages.get(ExecutionResult.MSG_REPORT);
+		String reportId = messages.get(MSG_REPORT);
 
 		// type cast
 		ReportGeneratorInfo generatorInfo = (ReportGeneratorInfo) factoryCreatedGenerator;
@@ -500,4 +500,98 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 	}
 
+	/**
+	 * Test that XSLT transformer throws an exception if the generated XML contains
+	 * an invalid XML char (Unicode: 0x1b).
+	 */
+	@Test
+	public void testHtmlReportIsntGeneratedIfXmlContainsInvalidXmlChar0x1b() {
+
+		notification = createNotificationAndRootResult();
+
+		ExecutionResult modelResult = rootResult.addChild("model#1");
+		modelResult.setState(SUCCESS);
+
+		ExecutionResult child = modelResult.addChild("child#1");
+		child.setState(SUCCESS);
+		child.addMessage("Message", "an invalid XML char:");
+
+		// create generator
+		File rootDirectory = new File(testDirectory, "reports");
+		ResultListener factoryCreatedGenerator;
+		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+
+		// create report
+		factoryCreatedGenerator.notify(notification);
+
+		// get content
+		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
+
+		// test
+		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));
+		assertNull(getFile(timestamedDirectoryContent, ".html"));
+	}
+
+	/**
+	 * Test that XSLT transformer throws an exception if the generated XML contains
+	 * an invalid XML char (Unicode: 0x1b).
+	 */
+	@Test
+	public void testErrorMessageIsAddedToRootResultIfIfXmlContainsInvalidXmlChar0x1b() {
+
+		notification = createNotificationAndRootResult();
+
+		ExecutionResult modelResult = rootResult.addChild("model#1");
+		modelResult.setState(SUCCESS);
+
+		ExecutionResult child = modelResult.addChild("child#1");
+		child.setState(SUCCESS);
+		child.addMessage("Message", "an invalid XML char:");
+
+		// create generator
+		File rootDirectory = new File(testDirectory, "reports");
+		ResultListener factoryCreatedGenerator;
+		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+
+		// create report
+		factoryCreatedGenerator.notify(notification);
+
+		// test
+		Map<String, String> messages = rootResult.getMessages();
+		assertTrue(messages.containsKey(MSG_ERROR_MESSAGE));
+		assertNotNull(messages.get(MSG_ERROR_MESSAGE));
+	}
+	
+	/**
+	 * Test that XSLT transformer throws an exception if the generated XML contains
+	 * an invalid XML char (Unicode: 0x1b) .
+	 */
+	@Test
+	public void testTransformerThrowsExceptionOnInvalidXmlChar0x1b() {
+
+		notification = createNotificationAndRootResult();
+
+		ExecutionResult modelResult = rootResult.addChild("model#1");
+		modelResult.setState(SUCCESS);
+
+		ExecutionResult child = modelResult.addChild("child#1");
+		child.setState(SUCCESS);
+		child.addMessage("Message", "an invalid XML char:");
+
+		// create generator
+		File rootDirectory = new File(testDirectory, "reports");
+		ResultListener factoryCreatedGenerator;
+		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+
+		// create report
+		factoryCreatedGenerator.notify(notification);
+
+		// get content
+		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
+
+		// test
+		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));
+		assertNull(getFile(timestamedDirectoryContent, ".html"));
+	}
+	
 }

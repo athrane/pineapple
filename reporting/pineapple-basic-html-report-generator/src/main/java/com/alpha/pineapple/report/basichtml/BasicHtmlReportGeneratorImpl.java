@@ -23,6 +23,12 @@
 package com.alpha.pineapple.report.basichtml;
 
 import static com.alpha.javautils.ArgumentUtils.notNull;
+import static com.alpha.javautils.StackTraceHelper.getStrackTrace;
+import static com.alpha.pineapple.execution.ExecutionResult.MSG_ERROR_MESSAGE;
+import static com.alpha.pineapple.execution.ExecutionResult.MSG_MESSAGE;
+import static com.alpha.pineapple.execution.ExecutionResult.MSG_REPORT;
+import static com.alpha.pineapple.execution.ExecutionResult.ExecutionState.EXECUTING;
+import static javax.xml.transform.OutputKeys.ENCODING;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,16 +42,19 @@ import java.util.Date;
 import javax.annotation.Resource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.w3c.dom.Document;
 
-import com.alpha.javautils.StackTraceHelper;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResultNotification;
 import com.alpha.pineapple.execution.ResultListener;
@@ -108,6 +117,11 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	static final String REPORT_HTML = "basic-report.html";
 
 	/**
+	 * HTML output encoding.
+	 */
+	static final String UTF_8 = "UTF-8";
+	
+	/**
 	 * Logger object.
 	 */
 	Logger logger = Logger.getLogger(this.getClass().getName());
@@ -168,7 +182,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 
 			// log debug message
 			if (logger.isDebugEnabled()) {
-				String message = messageProvider.get("bhrg.create_root_directory", reportDir.getAbsolutePath() );
+				String message = messageProvider.get("bhrg.create_root_directory", reportDir.getAbsolutePath());
 				logger.debug(message);
 			}
 
@@ -177,7 +191,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 
 		// log debug message
 		if (logger.isDebugEnabled()) {
-			String message = messageProvider.get("bhrg.configured_root_directory", reportDir.getAbsolutePath() );
+			String message = messageProvider.get("bhrg.configured_root_directory", reportDir.getAbsolutePath());
 			logger.debug(message);
 		}
 	}
@@ -192,25 +206,22 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 		File xmlReport = createXmlReport(notification.getResult());
 
 		// create HTML report from XML file
-		transformToHtml(xmlReport);
-
-		// add report message to result
-		File newReportDir = xmlReport.getParentFile();
-		notification.getResult().addMessage(ExecutionResult.MSG_REPORT, newReportDir.getName());
+		transformToHtml(xmlReport, notification.getResult());
 	}
 
 	/**
 	 * Transform XML report to HTML report.
 	 * 
-	 * @param xmlReport File name of the XML report.
+	 * @param xmlReport       File name of the XML report.
+	 * @param executionResult root execution result.
 	 */
-	void transformToHtml(File xmlReport) {
+	void transformToHtml(File xmlReport, ExecutionResult executionResult) {
 
 		// define report directory for this report
-		File newReportDirectory = xmlReport.getParentFile();
+		File newReportDir = xmlReport.getParentFile();
 
 		// create HTML file name.
-		File htmlReport = new File(newReportDirectory, REPORT_HTML);
+		File htmlReport = new File(newReportDir, REPORT_HTML);
 
 		// log debug message
 		if (logger.isDebugEnabled()) {
@@ -219,46 +230,48 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 			logger.debug(message);
 		}
 
-		// define stream
-		FileOutputStream fileOutputStream = null;
-
 		try {
+
+			// load XML report as DOM
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			dbFactory.setNamespaceAware(true);
+			DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
+			Document xmlDoc = documentBuilder.parse(xmlReport);
+			DOMSource dom = new DOMSource(xmlDoc);
+
 			// create XSLT transformer factory
 			TransformerFactory factory = TransformerFactory.newInstance();
 
-			// get style sheet for class loader
+			// get style sheet from class loader
 			InputStream xslStream;
 			xslStream = this.getClass().getResourceAsStream(REPORT_XSL);
 
 			// create streams
 			StreamSource xsl = new StreamSource(xslStream);
-			StreamSource xml = new StreamSource(xmlReport);
-			fileOutputStream = new FileOutputStream(htmlReport);
-			StreamResult html = new StreamResult(fileOutputStream);
+			StreamResult html = new StreamResult(htmlReport);
 
 			// create XSLT transformer
 			Transformer transformer = factory.newTransformer(xsl);
-			transformer.setParameter("output.dir", newReportDirectory.getAbsolutePath());
+			transformer.setOutputProperty(ENCODING, UTF_8);
 
-			try {
-				// transform
-				transformer.transform(xml, html);
-			} finally {
-				// if not null then close
-				if (fileOutputStream != null) {
-					fileOutputStream.close();
-				}
-			}
+			// transform
+			transformer.transform(dom, html);
 
 			// log debug message
-			if (logger.isDebugEnabled()) {
-				String message = messageProvider.get("bhrg.completed_html_transform", htmlReport);
+			String message = messageProvider.get("bhrg.completed_html_transform", htmlReport);
+			if (logger.isDebugEnabled())
 				logger.debug(message);
-			}
+
+			// add report message to result
+			executionResult.addMessage(MSG_REPORT, newReportDir.getName());
+			executionResult.addMessage(MSG_MESSAGE, message);
 
 		} catch (Exception e) {
-			String message = messageProvider.get("bhrg.failed_html_transform", StackTraceHelper.getStrackTrace(e));
+			String message = messageProvider.get("bhrg.failed_html_transform", getStrackTrace(e));
 			logger.error(message);
+
+			// post error in execution result
+			executionResult.addMessage(MSG_ERROR_MESSAGE, message);
 		}
 	}
 
@@ -272,7 +285,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	File createXmlReport(ExecutionResult result) {
 
 		// create directory for this report
-		File newReportDirectory = createReportInstanceDirectory();
+		File newReportDir = createReportInstanceDirectory();
 
 		// create report root object
 		Report reportRoot = mapper.createReport();
@@ -289,7 +302,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 		}
 
 		// create report file name
-		File reportFile = new File(newReportDirectory, REPORT_XML);
+		File reportFile = new File(newReportDir, REPORT_XML);
 
 		// marshall to XML file
 		jaxbMarshall(reportRoot, reportFile);
@@ -344,7 +357,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	boolean isExecutionCompleted(ExecutionResultNotification notification) {
 		if (!notification.getResult().isRoot())
 			return false;
-		return (!notification.getState().equals(ExecutionResult.ExecutionState.EXECUTING));
+		return (!notification.getState().equals(EXECUTING));
 	}
 
 	/**
@@ -384,14 +397,15 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 				marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", prefixMapper);
 			}
 
-			// set pretty print
+			// set pretty print and encoding
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			marshaller.setProperty(Marshaller.JAXB_ENCODING, UTF_8);
 
 			os = new FileOutputStream(file);
 			marshaller.marshal(rootObject, os);
 			os.close();
 		} catch (Exception e) {
-			String message = messageProvider.get("bhrg.failed_marshal", StackTraceHelper.getStrackTrace(e));
+			String message = messageProvider.get("bhrg.failed_marshal", getStrackTrace(e));
 			logger.error(message);
 
 		} finally {
@@ -403,8 +417,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 				} catch (IOException e) {
 
 					// log error message
-					Object[] args = { StackTraceHelper.getStrackTrace(e) };
-					String message = messageProvider.getMessage("bhrg.failed_close", args);
+					String message = messageProvider.get("bhrg.failed_close", getStrackTrace(e));
 					logger.error(message);
 				}
 			}

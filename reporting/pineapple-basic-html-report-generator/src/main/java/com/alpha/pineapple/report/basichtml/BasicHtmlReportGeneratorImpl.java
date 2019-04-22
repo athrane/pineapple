@@ -44,6 +44,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -120,7 +121,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 	 * HTML output encoding.
 	 */
 	static final String UTF_8 = "UTF-8";
-	
+
 	/**
 	 * Logger object.
 	 */
@@ -243,8 +244,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 			TransformerFactory factory = TransformerFactory.newInstance();
 
 			// get style sheet from class loader
-			InputStream xslStream;
-			xslStream = this.getClass().getResourceAsStream(REPORT_XSL);
+			InputStream xslStream = this.getClass().getResourceAsStream(REPORT_XSL);
 
 			// create streams
 			StreamSource xsl = new StreamSource(xslStream);
@@ -253,6 +253,7 @@ public class BasicHtmlReportGeneratorImpl implements ResultListener, ReportGener
 			// create XSLT transformer
 			Transformer transformer = factory.newTransformer(xsl);
 			transformer.setOutputProperty(ENCODING, UTF_8);
+			transformer.setOutputProperty(OutputKeys.METHOD, "html");
 
 			// transform
 			transformer.transform(dom, html);

@@ -22,19 +22,20 @@
 
 package com.alpha.pineapple.report.basichtml;
 
-import static com.alpha.pineapple.execution.ExecutionResult.MSG_ERROR_MESSAGE;
 import static com.alpha.pineapple.execution.ExecutionResult.MSG_REPORT;
 import static com.alpha.pineapple.execution.ExecutionResult.ExecutionState.SUCCESS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -163,8 +164,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 	 */
 	@Test
 	public void testCanGetInstanceFromNoArgFactoryMethod() {
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance();
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance();
 		assertNotNull(factoryCreatedGenerator);
 	}
 
@@ -173,10 +173,9 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 	 */
 	@Test
 	public void testCanGetInstanceFromFactoryMethod() {
-
 		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 		assertNotNull(factoryCreatedGenerator);
 	}
 
@@ -186,8 +185,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testRejectsUndefinedReportDirectory() {
 
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(null);
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(null);
 		assertNotNull(factoryCreatedGenerator);
 	}
 
@@ -201,8 +199,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 
 		// create report
 		factoryCreatedGenerator.notify(notification);
@@ -229,8 +226,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 
 		// create report
 		factoryCreatedGenerator.notify(notification);
@@ -260,8 +256,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 
 		// create report
 		factoryCreatedGenerator.notify(notification);
@@ -284,8 +279,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 
 		// create report
 		factoryCreatedGenerator.notify(notification);
@@ -308,8 +302,8 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 
 		// create report
 		factoryCreatedGenerator.notify(notification);
@@ -335,8 +329,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 
 		// create report
 		factoryCreatedGenerator.notify(notification);
@@ -365,8 +358,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 
 		// create report
 		factoryCreatedGenerator.notify(notification);
@@ -396,8 +388,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 
 		// create report
 		factoryCreatedGenerator.notify(notification);
@@ -429,8 +420,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 
 		// create report
 		factoryCreatedGenerator.notify(notification);
@@ -453,8 +443,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 
 		// create report
 		factoryCreatedGenerator.notify(notification);
@@ -475,8 +464,7 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 
 		// create report
 		factoryCreatedGenerator.notify(notification);
@@ -501,12 +489,11 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 	}
 
 	/**
-	 * Test that XSLT transformer throws an exception if the generated XML contains
-	 * an invalid XML char (Unicode: 0x1b).
+	 * Test that XSLT transformer can generate HTML from XML which contains an
+	 * invalid XML char (Unicode: 0x1b).
 	 */
 	@Test
-	public void testHtmlReportIsntGeneratedIfXmlContainsInvalidXmlChar0x1b() {
-
+	public void testHtmlReportIsGeneratedIfXmlContainsInvalidXmlChar0x1b() {
 		notification = createNotificationAndRootResult();
 
 		ExecutionResult modelResult = rootResult.addChild("model#1");
@@ -514,12 +501,11 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		ExecutionResult child = modelResult.addChild("child#1");
 		child.setState(SUCCESS);
-		child.addMessage("Message", "an invalid XML char:");
+		child.addMessage("Message", "invalid XML char:");
 
 		// create generator
 		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 
 		// create report
 		factoryCreatedGenerator.notify(notification);
@@ -529,69 +515,200 @@ public class BasicHtmlReportGeneratorImplIntegrationTest {
 
 		// test
 		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));
-		assertNull(getFile(timestamedDirectoryContent, ".html"));
+		assertNotNull(getFile(timestamedDirectoryContent, ".html"));
 	}
 
 	/**
-	 * Test that XSLT transformer throws an exception if the generated XML contains
-	 * an invalid XML char (Unicode: 0x1b).
+	 * Test that invalid XML char (Unicode: 0x1b) is removed (as part of escaping to
+	 * XML1.0) from the resulting XML file.
+	 * 
+	 * @throws IOException if test fails.
 	 */
 	@Test
-	public void testErrorMessageIsAddedToRootResultIfIfXmlContainsInvalidXmlChar0x1b() {
+	public void testInvalidXmlChar0x1bIsRemovedFromXmlFile() throws IOException {
+		var testString = "invalid XML char:";
+		var testStringWithRemovedChar = "invalid XML char:";
 
 		notification = createNotificationAndRootResult();
 
-		ExecutionResult modelResult = rootResult.addChild("model#1");
+		var modelResult = rootResult.addChild("model#1");
 		modelResult.setState(SUCCESS);
 
-		ExecutionResult child = modelResult.addChild("child#1");
+		var child = modelResult.addChild("child#1");
 		child.setState(SUCCESS);
-		child.addMessage("Message", "an invalid XML char:");
+		child.addMessage("Message", testString);
 
 		// create generator
-		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
-
-		// create report
-		factoryCreatedGenerator.notify(notification);
-
-		// test
-		Map<String, String> messages = rootResult.getMessages();
-		assertTrue(messages.containsKey(MSG_ERROR_MESSAGE));
-		assertNotNull(messages.get(MSG_ERROR_MESSAGE));
-	}
-	
-	/**
-	 * Test that XSLT transformer throws an exception if the generated XML contains
-	 * an invalid XML char (Unicode: 0x1b) .
-	 */
-	@Test
-	public void testTransformerThrowsExceptionOnInvalidXmlChar0x1b() {
-
-		notification = createNotificationAndRootResult();
-
-		ExecutionResult modelResult = rootResult.addChild("model#1");
-		modelResult.setState(SUCCESS);
-
-		ExecutionResult child = modelResult.addChild("child#1");
-		child.setState(SUCCESS);
-		child.addMessage("Message", "an invalid XML char:");
-
-		// create generator
-		File rootDirectory = new File(testDirectory, "reports");
-		ResultListener factoryCreatedGenerator;
-		factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+		var rootDirectory = new File(testDirectory, "reports");
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
 
 		// create report
 		factoryCreatedGenerator.notify(notification);
 
 		// get content
 		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
+		var xmlReportFile = getFile(timestamedDirectoryContent, ".xml");
+		var htmlReportFile = getFile(timestamedDirectoryContent, ".html");
+		var xmlReport = FileUtils.readFileToString(xmlReportFile, "UTF-8");
 
 		// test
-		assertNotNull(getFile(timestamedDirectoryContent, ".xml"));
-		assertNull(getFile(timestamedDirectoryContent, ".html"));
+		assertNotNull(xmlReportFile);
+		assertNotNull(htmlReportFile);
+		assertTrue(xmlReport.contains(testStringWithRemovedChar));
 	}
-	
+
+	/**
+	 * Test that char which defines a grid: ├─ is retained (as part of escaping
+	 * to XML1.0) in the resulting XML file.
+	 * 
+	 * @throws IOException if test fails.
+	 */
+	@Test
+	public void testGridCharIsRetainedInXmlFile() throws IOException {
+		var testString = "grid char:├─";
+
+		notification = createNotificationAndRootResult();
+
+		var modelResult = rootResult.addChild("model#1");
+		modelResult.setState(SUCCESS);
+
+		var child = modelResult.addChild("child#1");
+		child.setState(SUCCESS);
+		child.addMessage("Message", testString);
+
+		// create generator
+		var rootDirectory = new File(testDirectory, "reports");
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+
+		// create report
+		factoryCreatedGenerator.notify(notification);
+
+		// get content
+		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
+		var xmlReportFile = getFile(timestamedDirectoryContent, ".xml");
+		var htmlReportFile = getFile(timestamedDirectoryContent, ".html");
+		var xmlReport = FileUtils.readFileToString(xmlReportFile, "UTF-8");
+
+		// test
+		assertNotNull(xmlReportFile);
+		assertNotNull(htmlReportFile);
+		assertTrue(xmlReport.contains(testString));
+	}
+
+	/**
+	 * Test that char which defines a grid: ├─ is retained (as part of escaping
+	 * to XML1.0) in the resulting HTML file.
+	 * 
+	 * @throws IOException if test fails.
+	 */
+	@Test
+	public void testGridCharIsRetainedInHtmlFile() throws IOException {
+		var testString = "grid char:├─";
+
+		notification = createNotificationAndRootResult();
+
+		var modelResult = rootResult.addChild("model#1");
+		modelResult.setState(SUCCESS);
+
+		var child = modelResult.addChild("child#1");
+		child.setState(SUCCESS);
+		child.addMessage("Message", testString);
+
+		// create generator
+		var rootDirectory = new File(testDirectory, "reports");
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+
+		// create report
+		factoryCreatedGenerator.notify(notification);
+
+		// get content
+		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
+		var xmlReportFile = getFile(timestamedDirectoryContent, ".xml");
+		var htmlReportFile = getFile(timestamedDirectoryContent, ".html");
+		var htmlReport = FileUtils.readFileToString(htmlReportFile, "UTF-8");
+
+		// test
+		assertNotNull(xmlReportFile);
+		assertNotNull(htmlReportFile);
+		assertTrue(htmlReport.contains(testString));
+	}
+
+	/**
+	 * Test that ampersand char is escaped (as part of escaping to XML1.0) in
+	 * the resulting XML file.
+	 * 
+	 * @throws IOException if test fails.
+	 */
+	@Test
+	public void testAmpersandCharIsEscapedInXmlFile() throws IOException {
+		var testString = "ampersand char:&";
+		var escapedTestString = "ampersand char:&amp;";
+
+		notification = createNotificationAndRootResult();
+
+		var modelResult = rootResult.addChild("model#1");
+		modelResult.setState(SUCCESS);
+
+		var child = modelResult.addChild("child#1");
+		child.setState(SUCCESS);
+		child.addMessage("Message", testString);
+
+		// create generator
+		var rootDirectory = new File(testDirectory, "reports");
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+
+		// create report
+		factoryCreatedGenerator.notify(notification);
+
+		// get content
+		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
+		var xmlReportFile = getFile(timestamedDirectoryContent, ".xml");
+		var htmlReportFile = getFile(timestamedDirectoryContent, ".html");
+		var xmlReport = FileUtils.readFileToString(xmlReportFile, "UTF-8");
+
+		// test
+		assertNotNull(xmlReportFile);
+		assertNotNull(htmlReportFile);
+		assertTrue(xmlReport.contains(escapedTestString));
+	}
+
+	/**
+	 * Test that ampersand char is escaped (as part of escaping
+	 * to XML1.0) in the resulting HTML file.
+	 * 
+	 * @throws IOException if test fails.
+	 */
+	@Test
+	public void testAmpersandCharIsEscapedInHtmlFile() throws IOException {
+		var testString = "ampersand char:& END";
+		var escapedTestString = "ampersand char:&amp;";
+
+		notification = createNotificationAndRootResult();
+
+		var modelResult = rootResult.addChild("model#1");
+		modelResult.setState(SUCCESS);
+
+		var child = modelResult.addChild("child#1");
+		child.setState(SUCCESS);
+		child.addMessage("Message", testString);
+
+		// create generator
+		var rootDirectory = new File(testDirectory, "reports");
+		var factoryCreatedGenerator = BasicHtmlReportGeneratorImpl.getInstance(rootDirectory);
+
+		// create report
+		factoryCreatedGenerator.notify(notification);
+
+		// get content
+		File[] timestamedDirectoryContent = getTimeStampedDirectoryContent(factoryCreatedGenerator);
+		var xmlReportFile = getFile(timestamedDirectoryContent, ".xml");
+		var htmlReportFile = getFile(timestamedDirectoryContent, ".html");
+		var htmlReport = FileUtils.readFileToString(htmlReportFile, "UTF-8");
+
+		// test
+		assertNotNull(xmlReportFile);
+		assertNotNull(htmlReportFile);
+		assertTrue(htmlReport.contains(escapedTestString));
+	}
+
 }

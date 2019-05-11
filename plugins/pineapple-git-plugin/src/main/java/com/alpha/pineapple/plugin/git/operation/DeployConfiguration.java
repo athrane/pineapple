@@ -27,11 +27,17 @@ import static com.alpha.pineapple.OperationNames.DEPLOY_CONFIGURATION;
 import static com.alpha.pineapple.execution.ExecutionResult.MSG_MESSAGE;
 import static com.alpha.pineapple.plugin.git.GitConstants.BRANCH_HEAD;
 import static com.alpha.pineapple.plugin.git.GitConstants.LEGAL_CONTENT_TYPES;
+import static com.alpha.pineapple.plugin.git.GitConstants.RESOURCE_PROPERTY_URI;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Resource;
+
+import org.apache.commons.io.FileUtils;
 
 import com.alpha.javautils.OperationUtils;
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -45,6 +51,7 @@ import com.alpha.pineapple.plugin.git.model.Git;
 import com.alpha.pineapple.plugin.git.model.GitCommand;
 import com.alpha.pineapple.plugin.git.model.Log;
 import com.alpha.pineapple.plugin.git.session.GitSession;
+import com.alpha.pineapple.resource.ResourcePropertyGetter;
 import com.alpha.pineapple.session.Session;
 
 /**
@@ -58,7 +65,7 @@ public class DeployConfiguration implements Operation {
 	/**
 	 * Message provider for I18N support.
 	 */
-	@Resource
+	@Resource(name = "gitMessageProvider")
 	MessageProvider messageProvider;
 
 	/**
@@ -118,7 +125,7 @@ public class DeployConfiguration implements Operation {
 
 			// enforce continuation policy
 			if (!result.getContinuationPolicy().continueExecution()) {
-				String message = messageProvider.getMessage("dc.contination_policy_enforcement_info");
+				String message = messageProvider.get("dc.contination_policy_enforcement_info");
 				result.addMessage(ExecutionResult.MSG_MESSAGE, message);
 				return;
 			}
@@ -146,42 +153,51 @@ public class DeployConfiguration implements Operation {
 	void cloneRepository(GitSession session, CloneRepository command, ExecutionResult result) {
 
 		// create execution result
-		Object[] args = { command.getUri() };
-		String message = messageProvider.getMessage("dc.clone_repository_info", args);
-		ExecutionResult cloneResult = result.addChild(message);
+		var getter = new ResourcePropertyGetter(session.getResource());
+		var uri = getter.getProperty(RESOURCE_PROPERTY_URI, "N/A");
+		var message = messageProvider.get("dc.clone_repository_info", uri);
+		var cloneResult = result.addChild(message);
 
 		try {
 
-			// if branch is undefined set to HEAD
-			String branch = command.getBranch();
+			// if branch is undefined set default value to HEAD
+			var branch = command.getBranch();
 			if (branch.isBlank())
 				branch = BRANCH_HEAD;
 
 			// add branch info message
-			Object[] args2 = { branch };
-			message = messageProvider.getMessage("dc.clone_repository_branch_info", args2);
+			message = messageProvider.get("dc.clone_repository_branch_info", branch);
 			cloneResult.addMessage(MSG_MESSAGE, message);
 
-			// resolve destination dir
-			File destination = coreRuntimeDirectoryProvider.resolveModelPath(command.getDestination(), result);
-			
+			// if undefined destination set default value
+			var destName = command.getDestination();
+			if (destName.isBlank())
+				destName = session.getRepositoryName();
+
+			// resolve destination directory
+			var dest = coreRuntimeDirectoryProvider.resolveModelPath(destName, result);
+
 			// add destination info message
-			Object[] args3 = { command.getDestination(), destination };
-			message = messageProvider.getMessage("dc.clone_repository_destination_info", args3);
+			message = messageProvider.get("dc.clone_repository_destination_info", command.getDestination(), dest);
 			cloneResult.addMessage(MSG_MESSAGE, message);
 
-			// create destination dir if it doesn't exist
-			if(!destination.exists()) {
-				destination.mkdirs();
-				
-				// add info message
-				Object[] args4 = { destination };
-				message = messageProvider.getMessage("dc.clone_repository_create_destination_info", args4);
-				cloneResult.addMessage(MSG_MESSAGE, message);				
+			// delete destination directory if it exist
+			if (command.isOverwrite()) {
+				if (dest.exists()) {
+
+					Files.walk(dest.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
+							.forEach(File::canRead);
+
+					FileUtils.forceDelete(dest);
+
+					// add info message
+					message = messageProvider.get("dc.clone_repository_delete_destination_info", dest);
+					cloneResult.addMessage(MSG_MESSAGE, message);
+				}
 			}
-			
+
 			// clone
-			session.cloneRepository(command.getUri(), branch, destination);
+			session.cloneRepository(branch, dest);
 
 		} catch (Exception e) {
 			Object[] args5 = { e.toString() };

@@ -22,7 +22,7 @@
 
 package com.alpha.pineapple.plugin.git.operation;
 
-import static com.alpha.pineapple.plugin.git.GitConstants.BRANCH_1_0;
+import static com.alpha.pineapple.plugin.git.GitConstants.*;
 import static com.alpha.pineapple.plugin.git.GitConstants.BRANCH_HEAD;
 import static com.alpha.pineapple.plugin.git.GitConstants.PLUGIN_APP_CONTEXT;
 import static com.alpha.pineapple.plugin.git.GitTestConstants.TEST_REPO_URI;
@@ -52,11 +52,11 @@ import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResultImpl;
 import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.io.file.RuntimeDirectoryProvider;
-import com.alpha.pineapple.plugin.git.model.Git;
-import com.alpha.pineapple.plugin.git.session.GitSession;
-import com.alpha.pineapple.plugin.git.session.GitSessionImpl;
+import com.alpha.pineapple.session.SessionConnectException;
 import com.alpha.springutils.DirectoryTestExecutionListener;
+import com.alpha.testutils.GitTestHelper;
 import com.alpha.testutils.ObjectMotherContent;
+import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 
 /**
  * Integration test for the <code>DeployConfiguration</code> class.
@@ -68,6 +68,11 @@ import com.alpha.testutils.ObjectMotherContent;
 public class DeployConfigurationSystemTest {
 
 	/**
+	 * Empty string.
+	 */
+	static final String EMPTY_STR = "";
+
+	/**
 	 * Object under test.
 	 */
 	@Resource
@@ -76,23 +81,29 @@ public class DeployConfigurationSystemTest {
 	/**
 	 * Message provider for I18N support.
 	 */
-	@Resource
+	@Resource(name = "gitMessageProvider")
 	MessageProvider messageProvider;
+
+	/**
+	 * Git test helper.
+	 */
+	@Resource
+	GitTestHelper gitHelper;
 
 	/**
 	 * Current test directory.
 	 */
 	File testDirectory;
-	
+
 	/**
-	 * Object mother for the docker model.
+	 * Object mother for the Git model.
 	 */
 	ObjectMotherContent contentMother;
 
 	/**
-	 * Git session.
+	 * Object mother for environment configuration.
 	 */
-	GitSession session;
+	ObjectMotherEnvironmentConfiguration envConfigMother;
 
 	/**
 	 * Execution result.
@@ -116,21 +127,24 @@ public class DeployConfigurationSystemTest {
 	String randomBranch;
 
 	/**
-	 * Random key.
+	 * Random value.
 	 */
 	String randomDir;
+
+	/**
+	 * Random value.
+	 */
+	String randomCredId;
 
 	@Before
 	public void setUp() throws Exception {
 		randomDir = RandomStringUtils.randomAlphanumeric(10);
 		randomRepo = RandomStringUtils.randomAlphanumeric(10);
 		randomBranch = RandomStringUtils.randomAlphanumeric(10);
+		randomCredId = RandomStringUtils.randomAlphanumeric(10);
 
 		// get the test directory
 		testDirectory = DirectoryTestExecutionListener.getCurrentTestDirectory();
-
-		// create mock session
-		session = createDefaultSession();
 
 		// create execution result
 		result = new ExecutionResultImpl("Root result");
@@ -138,24 +152,15 @@ public class DeployConfigurationSystemTest {
 		// create content mother
 		contentMother = new ObjectMotherContent();
 
+		// create environment configuration object mother
+		envConfigMother = new ObjectMotherEnvironmentConfiguration();
+
 		// reset plugin provider
 		reset(coreRuntimeDirectoryProvider);
 	}
 
 	@After
 	public void tearDown() throws Exception {
-	}
-
-	/**
-	 * Create connected Git session with default settings: 
-	 * 
-	 * @return connected Git session with default settings.
-	 * 
-	 * @throws Exception if session creation fails.
-	 */
-	public GitSession createDefaultSession() throws Exception {
-		GitSession session = new GitSessionImpl(messageProvider);
-		return session;
 	}
 
 	/**
@@ -171,10 +176,10 @@ public class DeployConfigurationSystemTest {
 	 */
 	@Test
 	public void testCanExecuteWithMinimalModel() throws Exception {
-		session = createDefaultSession();
+		var session = gitHelper.createDefaultSession();
 
 		// create model
-		Git content = contentMother.createEmptyGitModel();
+		var content = contentMother.createEmptyGitModel();
 
 		// invoke operation
 		deployOperation.execute(content, session, result);
@@ -184,178 +189,133 @@ public class DeployConfigurationSystemTest {
 	}
 
 	/**
-	 * Test that the operation can clone repository from HEAD.
+	 * Test that the operation can clone repository from "master".
+	 * 
+	 * Credential is defined with no user/pwd to disable authentification.
 	 */
 	@Test
-	public void testCanCloneRepositoryFromHead() throws Exception {
-		session = createDefaultSession();
-				
+	public void testCanCloneRepositoryFromMaster() throws Exception {
+		var session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
+		var destDir = new File(testDirectory, randomDir);
+
 		// create model
-		String dest = testDirectory.getAbsolutePath();
-		String branch = BRANCH_HEAD;
-		String uri = TEST_REPO_URI;
-		Git content = contentMother.createGitModelWithCloneCommand(uri, branch, dest);
+		var dest = destDir.getAbsolutePath();
+		var branch = BRANCH_MASTER;
+		var content = contentMother.createGitModelWithCloneCommand(branch, destDir.getAbsolutePath());
 
 		// complete runtime provider setup
-		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(testDirectory);		
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(destDir);
 		replay(coreRuntimeDirectoryProvider);
-		
+
 		// invoke operation
 		deployOperation.execute(content, session, result);
 
 		// test
 		assertTrue(result.isSuccess());
-		verify(coreRuntimeDirectoryProvider);		
+		verify(coreRuntimeDirectoryProvider);
 	}
 
 	/**
 	 * Test that the operation can clone repository from branch "1.0".
+	 * 
+	 * Credential is defined with no user/pwd to disable authentification.
 	 */
 	@Test
-	public void testCanCloneRepositoryFrom1Dot0() throws Exception {
-		session = createDefaultSession();
+	public void testCanCloneRepositoryFromBranch1Dot0() throws Exception {
+		var session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
+		var destDir = new File(testDirectory, randomDir);
 
 		// create model
-		String dest = testDirectory.getAbsolutePath();
-		String branch = BRANCH_1_0;
-		String uri = TEST_REPO_URI;
-		Git content = contentMother.createGitModelWithCloneCommand(uri, branch, dest);
+		var dest = destDir.getAbsolutePath();
+		var branch = BRANCH_1_0;
+		var content = contentMother.createGitModelWithCloneCommand(branch, dest);
 
 		// complete runtime provider setup
-		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(testDirectory);		
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(destDir);
 		replay(coreRuntimeDirectoryProvider);
-		
+
 		// invoke operation
 		deployOperation.execute(content, session, result);
 
 		// test
 		assertTrue(result.isSuccess());
-		verify(coreRuntimeDirectoryProvider);		
+		verify(coreRuntimeDirectoryProvider);
 	}
 
 	/**
-	 * Test that the operation can clone repository from empty branch.
+	 * Test that the operation can clone repository from empty branch. Empty branch
+	 * is resolved to HEAD.
+	 * 
+	 * Credential is defined with no user/pwd to disable authentification.
 	 */
 	@Test
 	public void testCanCloneRepositoryWithEmptyBranch() throws Exception {
-		session = createDefaultSession();
+		var session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
+		var destDir = new File(testDirectory, randomDir);
 
 		// create model
-		String dest = testDirectory.getAbsolutePath();
-		String branch = "";
-		String uri = TEST_REPO_URI;
-		Git content = contentMother.createGitModelWithCloneCommand(uri, branch, dest);
+		var dest = destDir.getAbsolutePath();
+		var branch = EMPTY_STR;
+		var content = contentMother.createGitModelWithCloneCommand(branch, dest);
 
 		// complete runtime provider setup
-		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(testDirectory);		
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(destDir);
 		replay(coreRuntimeDirectoryProvider);
-		
+
 		// invoke operation
 		deployOperation.execute(content, session, result);
 
 		// test
 		assertTrue(result.isSuccess());
-		verify(coreRuntimeDirectoryProvider);				
+		verify(coreRuntimeDirectoryProvider);
 	}
-	
+
 	/**
 	 * Test that the operation fails to clone non-existing repository.
 	 */
-	@Test
+	@Test(expected = SessionConnectException.class)
 	public void testFailsToCloneNonexistingRepository() throws Exception {
-		session = createDefaultSession();
-
-		// create model
-		String dest = testDirectory.getAbsolutePath();
-		String branch = BRANCH_HEAD;
-		String uri = "https://github.com/athrane/" + randomRepo + ".git";
-		Git content = contentMother.createGitModelWithCloneCommand(uri, branch, dest);
-
-		// complete runtime provider setup
-		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(testDirectory);		
-		replay(coreRuntimeDirectoryProvider);
-		
-		// invoke operation
-		deployOperation.execute(content, session, result);
-
-		// test
-		assertTrue(result.isFailed());
-		verify(coreRuntimeDirectoryProvider);						
+		var uri = "https://github.com/athrane/" + randomRepo + ".git";
+		gitHelper.initSessionWithNoAuth(uri, randomCredId);
 	}
 
 	/**
 	 * Test that the operation fails to clone empty repository.
 	 */
-	@Test
+	@Test(expected = SessionConnectException.class)
 	public void testFailsToCloneEmptyRepository() throws Exception {
-		session = createDefaultSession();
+		gitHelper.initSessionWithNoAuth(EMPTY_STR, randomCredId);
+	}
+
+	/**
+	 * Test that the operation can clone repository and overwrite if directory
+	 * exists.
+	 * 
+	 * Credential is defined with no user/pwd to disable authentification.
+	 */
+	@Test
+	public void testCanCloneRepositoryAndOverwrite() throws Exception {
+		var session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
 
 		// create model
-		String dest = testDirectory.getAbsolutePath();
-		String branch = BRANCH_HEAD;
-		String uri = "";
-		Git content = contentMother.createGitModelWithCloneCommand(uri, branch, dest);
+		var dest = testDirectory.getAbsolutePath() + File.separator + randomDir;
+		var branch = BRANCH_HEAD;
+		var content = contentMother.createGitModelWithCloneCommand(branch, dest);
 
 		// complete runtime provider setup
-		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(testDirectory);		
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(new File(dest));
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(new File(dest));
 		replay(coreRuntimeDirectoryProvider);
-		
+
 		// invoke operation
 		deployOperation.execute(content, session, result);
 
-		// test
-		assertTrue(result.isFailed());
-		verify(coreRuntimeDirectoryProvider);						
-	}
-	
-	/**
-	 * Test that the operation fails to clone repository with non-existing branch.
-	 */
-	@Test
-	public void testCanCloneRepositoryWithNonexistingBranch() throws Exception {
-		session = createDefaultSession();
-
-		// create model
-		String dest = testDirectory.getAbsolutePath();
-		String branch = randomBranch;
-		String uri = TEST_REPO_URI;
-		Git content = contentMother.createGitModelWithCloneCommand(uri, branch, dest);
-
-		// complete runtime provider setup
-		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(testDirectory);		
-		replay(coreRuntimeDirectoryProvider);
-		
-		// invoke operation
+		// invoke operation again
 		deployOperation.execute(content, session, result);
 
 		// test
 		assertTrue(result.isSuccess());
-		verify(coreRuntimeDirectoryProvider);								
+		verify(coreRuntimeDirectoryProvider);
 	}
 
-	/**
-	 * Test that the operation can clone repository to other destination.
-	 */
-	@Test
-	public void testCanCloneRepositoryToOtherDestination() throws Exception {
-		session = createDefaultSession();
-				
-		// create model
-		String dest = testDirectory.getAbsolutePath() + File.separator+ randomDir;
-		String branch = BRANCH_HEAD;
-		String uri = TEST_REPO_URI;
-		Git content = contentMother.createGitModelWithCloneCommand(uri, branch, dest);
-
-		// complete runtime provider setup
-		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(new File(dest));		
-		replay(coreRuntimeDirectoryProvider);
-		
-		// invoke operation
-		deployOperation.execute(content, session, result);
-
-		// test
-		assertTrue(result.isSuccess());
-		verify(coreRuntimeDirectoryProvider);		
-	}
-	
 }

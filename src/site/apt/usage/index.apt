@@ -68,6 +68,8 @@ Usage
 
 	* {{{../pineapple-plugins/pineapple-ssh-plugin/index.html}SSH plugin.}}
 
+	* {{{../pineapple-plugins/pineapple-git-plugin/index.html}Git plugin.}}
+
 	* {{{../pineapple-plugins/pineapple-docker-plugin/index.html}Docker plugin.}}
 	
 	* {{{../pineapple-modules/pineapple-infrastructure-test-plugin/index.html}Infrastructure test plugin.}}		

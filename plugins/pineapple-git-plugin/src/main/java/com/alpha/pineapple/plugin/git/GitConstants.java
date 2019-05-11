@@ -50,8 +50,18 @@ public interface GitConstants {
 	public static final String BRANCH_HEAD = "HEAD"; 
 
 	/**
+	 * Master branch identifier.
+	 */
+	public static final String BRANCH_MASTER = "master"; 
+	
+	/**
 	 * 1.0 branch identifier.
 	 */
-	public static final String BRANCH_1_0 = "1.0"; 
+	public static final String BRANCH_1_0 = "1.0";
+
+	/**
+	 * Resource property.
+	 */
+	public String RESOURCE_PROPERTY_URI = "uri"; 
 	
 }

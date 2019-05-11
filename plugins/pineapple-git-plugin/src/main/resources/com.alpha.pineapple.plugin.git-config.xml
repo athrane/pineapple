@@ -23,9 +23,12 @@
 	<oxm:jaxb2-marshaller id="unmarshaller" contextPath="com.alpha.pineapple.plugin.git.model"/>
 
 	<!-- define message provider for internationalization  -->
-	<bean id="messageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">
+	<bean id="gitMessageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">
     	<property name="basename" value="com.alpha.pineapple.plugin.git-messages"/>
 	</bean>	
+
+	<!-- define command objects -->
+	<bean id="cloneRepositoryCommand" class="com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand" />
 	    	    			
  	<!-- 
  		definitions used by the integration tests. 
@@ -36,6 +39,7 @@
 		<bean id="coreRuntimeDirectoryProvider" class="org.easymock.EasyMock" factory-method="createMock">
 			<constructor-arg value="com.alpha.pineapple.io.file.RuntimeDirectoryProvider"/>
 		</bean>
+		<bean id="gitHelper" class="com.alpha.testutils.GitTestHelper" />			    	    						
 	</beans>	
 		    	    
 </beans>

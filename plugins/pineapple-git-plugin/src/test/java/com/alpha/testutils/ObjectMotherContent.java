@@ -24,6 +24,8 @@ package com.alpha.testutils;
 
 import java.util.List;
 
+import com.alpha.pineapple.model.configuration.Property;
+import com.alpha.pineapple.model.configuration.Resource;
 import com.alpha.pineapple.plugin.git.model.CloneRepository;
 import com.alpha.pineapple.plugin.git.model.Git;
 import com.alpha.pineapple.plugin.git.model.GitCommand;
@@ -38,13 +40,20 @@ public class ObjectMotherContent {
 	/**
 	 * Docker object factory.
 	 */
-	ObjectFactory dockerFactory;
+	ObjectFactory gitFactory;
+
+	/**
+	 * Object mother for resources.
+	 */
+	ObjectMotherResource resourceMother;
 
 	/**
 	 * ObjectMotherContent constructor.
 	 */
 	public ObjectMotherContent() {
-		dockerFactory = new ObjectFactory();
+		gitFactory = new ObjectFactory();
+		resourceMother = new ObjectMotherResource();
+
 	}
 
 	/**
@@ -53,21 +62,19 @@ public class ObjectMotherContent {
 	 * @return empty Git document.
 	 */
 	public Git createEmptyGitModel() {
-		return dockerFactory.createGit();
+		return gitFactory.createGit();
 	}
 
 	/**
 	 * Create clone repository command.
 	 * 
-	 * @param uri         repository URI.
 	 * @param branch      repository branch
 	 * @param destination local destination.
 	 * 
 	 * @return image command.
 	 */
-	public CloneRepository createCloneCommand(String uri, String branch, String destination) {
-		CloneRepository command = dockerFactory.createCloneRepository();
-		command.setUri(uri);
+	public CloneRepository createCloneCommand(String branch, String destination) {
+		CloneRepository command = gitFactory.createCloneRepository();
 		command.setBranch(branch);
 		command.setDestination(destination);
 		return command;
@@ -76,17 +83,32 @@ public class ObjectMotherContent {
 	/**
 	 * Create Git document with clone command.
 	 * 
-	 * @param uri    repository URI.
 	 * @param branch repository branch
 	 * @param dest   local destination.
 	 * 
 	 * @return Docker document with image command.
 	 */
-	public Git createGitModelWithCloneCommand(String uri, String branch, String dest) {
+	public Git createGitModelWithCloneCommand(String branch, String dest) {
 		Git model = createEmptyGitModel();
 		List<GitCommand> cmds = model.getCommands();
-		cmds.add(createCloneCommand(uri, branch, dest));
+		cmds.add(createCloneCommand(branch, dest));
 		return model;
+	}
+
+	/**
+	 * Create Git Resoure.
+	 * 
+	 * @param uri resource URI.
+	 * 
+	 * @return Git resource with the URI property defined.
+	 */
+	public Resource createResource(String uri) {
+		Resource resource = resourceMother.createResourceWithNoProperties();
+		var property = new Property();
+		property.setKey("uri");
+		property.setValue(uri);
+		resource.getProperty().add(property);
+		return resource;
 	}
 
 }

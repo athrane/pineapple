@@ -23,6 +23,9 @@
 package com.alpha.pineapple.plugin.git.session;
 
 import java.io.File;
+import java.util.Collection;
+
+import org.eclipse.jgit.lib.Ref;
 
 import com.alpha.pineapple.session.Session;
 
@@ -32,14 +35,31 @@ import com.alpha.pineapple.session.Session;
 public interface GitSession extends Session {
 
 	/**
-	 * Clone remote repository
+	 * Get repository name.
 	 * 
-	 * @param uri    repository URI.
+	 * @return repository name.
+	 * 
+	 * @throws Exception if resolution od repository name fails.
+	 */
+	String getRepositoryName() throws Exception;
+
+	/**
+	 * Clone remote repository.
+	 * 
 	 * @param branch repository branch.
 	 * @param dest   local destination for repository
 	 * 
 	 * @throws Exception if clone fails
 	 */
-	void cloneRepository(String uri, String branch, File dest) throws Exception;
+	void cloneRepository(String branch, File dest) throws Exception;
+
+	/**
+	 * Execute Git ls-remote.
+	 * 
+	 * @return a map from names to references in the remote repository.
+	 * 
+	 * @throws Exception if ls-remote fails.
+	 */
+	Collection<Ref> lsRemote() throws Exception;
 
 }

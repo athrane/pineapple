@@ -21,6 +21,8 @@ Pineapple plugins overview
 	* Composite execution plugin
 	
 	* SSH plugin
+
+	* Git plugin
 		
 	* Docker plugin
 
@@ -45,6 +47,12 @@ Pineapple plugins overview
 	Plugin for remote access to hosts using SSH.
 	
 	{{{../pineapple-plugins/pineapple-ssh-plugin/index.html}Plugin documentation.}}			
+
+* Git plugin	
+	
+	Plugin for working with modules stored in Git repositories.
+	
+	{{{../pineapple-plugins/pineapple-git-plugin/index.html}Plugin documentation.}}			
 
 * Docker plugin	
 	

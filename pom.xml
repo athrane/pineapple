@@ -124,6 +124,11 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>pineapple-git-plugin</artifactId>
+				<version>${project.version}</version>
+			</dependency>			
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>pineapple-test-utils</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -223,7 +228,7 @@
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>2.3</version>
+				<version>2.6</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-net</groupId>
@@ -265,6 +270,11 @@
 				<artifactId>commons-fileupload</artifactId>
 				<version>1.4</version>
 			</dependency>
+			<dependency>
+			   <groupId>org.apache.commons</groupId>
+			   <artifactId>commons-text</artifactId>
+			   <version>1.6</version>
+			</dependency>			
 			<dependency>
 				<groupId>javaee</groupId>
 				<artifactId>javaee-api</artifactId>

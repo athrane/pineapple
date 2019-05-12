@@ -60,10 +60,10 @@ git-000-clone-repo
 	xmlns:gp="http://pineapple.dev.java.net/ns/plugin/git_1_0" >
     <mmd:model target-resource="git-pineapple-example-repo">
         <mmd:content>
-			<gp:git>
-				<gp:clone destination="modules:pineapple-git-plugin-test-repository" branch="head" />
-			</gp:git>
-		</mmd:content>
+            <gp:git>
+                <gp:clone destination="modules:pineapple-git-plugin-test-repository" branch="head" />
+            </gp:git>
+        </mmd:content>
     </mmd:model>
 </mmd:models>
 +----	 

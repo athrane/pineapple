@@ -22,6 +22,9 @@
 
 package com.alpha.pineapple.command;
 
+import static com.alpha.pineapple.CoreConstants.CREDENTIALS_FILE;
+import static com.alpha.pineapple.CoreConstants.RESOURCE_FILE;
+import static com.alpha.pineapple.CoreConstants.WILDCARD_ENVIRONMENT_ID;
 import static com.alpha.pineapple.test.matchers.PineappleMatchers.doesFileExist;
 
 import java.io.File;
@@ -34,7 +37,6 @@ import javax.annotation.Resource;
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 
-import com.alpha.pineapple.CoreConstants;
 import com.alpha.pineapple.command.initialization.CommandInitializer;
 import com.alpha.pineapple.command.initialization.CommandInitializerImpl;
 import com.alpha.pineapple.command.initialization.Initialize;
@@ -181,8 +183,8 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 
 		// defines directories
 		File confDirectory = runtimeDirectoryProvider.getConfigurationDirectory();
-		File resourcesFile = new File(confDirectory, CoreConstants.RESOURCE_FILE);
-		File credentialsFile = new File(confDirectory, CoreConstants.CREDENTIALS_FILE);
+		File resourcesFile = new File(confDirectory, RESOURCE_FILE);
+		File credentialsFile = new File(confDirectory, CREDENTIALS_FILE);
 
 		// exit if configuration exist
 		if (validateConfigurationExist(resourcesFile, credentialsFile)) {
@@ -293,8 +295,8 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 		configuration.setEnvironments(factory.createEnvironments());
 		List<Environment> environments = configuration.getEnvironments().getEnvironment();
 
-		// create local environment
-		Environment environment = createEnvironment(environments, CoreConstants.WILDCARD_ENVIRONMENT_ID, WILDCARD_DESC);
+		// create wildcard environment
+		Environment environment = createEnvironment(environments, WILDCARD_ENVIRONMENT_ID, WILDCARD_DESC);
 		addInfrastructureTestResource(environment);
 		addCompositeExecutionResource(environment);
 		addGitResource(environment, "git-pineapple-example-repo",

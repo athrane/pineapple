@@ -22,13 +22,12 @@
 
 package com.alpha.pineapple.plugin.ssh.operation;
 import static com.alpha.javautils.ArgumentUtils.notNull;
-import static org.apache.commons.lang3.Validate.notEmpty;
-
 import static com.alpha.pineapple.plugin.ssh.SshConstants.EXECUTION_PAUSE;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -36,7 +35,6 @@ import javax.annotation.Resource;
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 
 import com.alpha.javautils.ConcurrencyUtils;
@@ -501,7 +499,7 @@ public class DefaultOperation implements Operation {
 	 *             If addition fails.
 	 */
 	String addCommandOutputToResult(ExecutionResult result, String messageKey, InputStream in) throws Exception {
-		String message = IOUtils.toString(in);
+		String message = IOUtils.toString(in, StandardCharsets.UTF_8);
 		result.addMessage(messageKey, message);
 		return message;
 	}

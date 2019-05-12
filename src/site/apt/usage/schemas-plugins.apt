@@ -36,6 +36,14 @@ Schema locations for plugins
 	{{{../pineapple-plugins/pineapple-composite-execution-plugin/index.html}pineapple-composite-execution-plugin project.}}	
 	The jar file is named <<<pineapple-composite-execution-plugin-$\{version\}.jar>>>.	
 
+* SSH plugin
+
+	The schema can be found at <<{{{../ns/plugin/ssh_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/ssh_1_0.xsd}}>>
+
+	The schema can be found in the root of the jar created by the
+	{{{../pineapple-plugins/pineapple-ssh-plugin/index.html}pineapple-ssh-plugin project.}}	
+	The jar file is named <<<pineapple-ssh-plugin-$\{version\}.jar>>>.	
+
 * Docker plugin
 
 	The schema can be found at <<{{{../ns/plugin/docker_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/docker_1_0.xsd}}>>
@@ -43,6 +51,14 @@ Schema locations for plugins
 	The schema can be found in the root of the jar created by the
 	{{{../pineapple-plugins/pineapple-docker-plugin/index.html}pineapple-docker-plugin project.}}	
 	The jar file is named <<<pineapple-docker-plugin-$\{version\}.jar>>>.	
+
+* Git plugin
+
+	The schema can be found at <<{{{../ns/plugin/git_1_0.xsd}http://pineapple.dev.java.net/ns/plugin/git_1_0.xsd}}>>
+
+	The schema can be found in the root of the jar created by the
+	{{{../pineapple-plugins/pineapple-git-plugin/index.html}pineapple-git-plugin project.}}	
+	The jar file is named <<<pineapple-git-plugin-$\{version\}.jar>>>.	
 			
 * Infrastructure test plugin
 

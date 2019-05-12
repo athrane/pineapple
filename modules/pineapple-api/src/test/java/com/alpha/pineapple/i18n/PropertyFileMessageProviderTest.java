@@ -77,7 +77,6 @@ public class PropertyFileMessageProviderTest {
 	 */
 	@Test
 	public void testCanInitializeResourceBundle() throws MessageProviderInitializationException {
-
 		provider = new PropertyFileMessageProviderImpl();
 		provider.setBasename(BASE_NAME_1);
 	}
@@ -90,7 +89,6 @@ public class PropertyFileMessageProviderTest {
 	 */
 	@Test(expected = MessageProviderInitializationException.class)
 	public void testFailsIfPropertyFileDoesntExist() throws MessageProviderInitializationException {
-
 		provider = new PropertyFileMessageProviderImpl();
 		provider.setBasename(NOEXISTING_BASE_NAME);
 	}
@@ -103,7 +101,6 @@ public class PropertyFileMessageProviderTest {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testFailsIfPropertyFileIsUndefined() throws MessageProviderInitializationException {
-
 		provider = new PropertyFileMessageProviderImpl();
 		provider.setBasename(null);
 	}
@@ -115,13 +112,12 @@ public class PropertyFileMessageProviderTest {
 	 */
 	@Test
 	public void testCanGetMessageWithNoArgs() throws MessageProviderInitializationException {
-
 		// create provider
 		provider = new PropertyFileMessageProviderImpl();
 		provider.setBasename(BASE_NAME_1);
 
 		// get key1 from bundle
-		String value = provider.getMessage("key1");
+		var value = provider.getMessage("key1");
 
 		// test
 		assertEquals("value1", value);
@@ -139,8 +135,8 @@ public class PropertyFileMessageProviderTest {
 		provider = new PropertyFileMessageProviderImpl();
 		provider.setBasename(BASE_NAME_1);
 
-		// get key1 from bundle
-		String value = provider.getMessage(null);
+		// get key from bundle
+		provider.getMessage(null);
 	}
 
 	/**
@@ -155,8 +151,8 @@ public class PropertyFileMessageProviderTest {
 		provider = new PropertyFileMessageProviderImpl();
 		provider.setBasename(BASE_NAME_1);
 
-		// get key1 from bundle
-		String value = provider.getMessage(null, null);
+		// get key from bundle
+		provider.getMessage(null, null);
 	}
 
 	/**
@@ -173,9 +169,26 @@ public class PropertyFileMessageProviderTest {
 
 		// get key1 from bundle
 		Object[] args = { "param0", "param1" };
-		String value = provider.getMessage(null, args);
+		provider.getMessage(null, args);
 	}
 
+	/**
+	 * Test that getMessage() method throws exception if key is null.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testCanGetMessageFailsIfKeyIsNull3() throws Exception {
+
+		// create provider
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(BASE_NAME_1);
+
+		// get key1 from bundle
+		Object[] args = { "param0", "param1" };
+		provider.get(null, args);
+	}
+	
 	/**
 	 * Test that message with single argument can be resolved.
 	 * 
@@ -222,7 +235,7 @@ public class PropertyFileMessageProviderTest {
 	 * @throws MessageProviderInitializationException
 	 */
 	@Test
-	public void testCanGetMessageWithThreergs() throws MessageProviderInitializationException {
+	public void testCanGetMessageWithThreeArgs() throws MessageProviderInitializationException {
 
 		// create provider
 		provider = new PropertyFileMessageProviderImpl();
@@ -236,4 +249,64 @@ public class PropertyFileMessageProviderTest {
 		assertEquals("value is [XXX], [YYY] and [ZZZ].", value);
 	}
 
+	/**
+	 * Test that message with single argument can be resolved.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 */
+	@Test
+	public void testCanGetMessageVarArgsWithOneArg() throws MessageProviderInitializationException {
+
+		// create provider
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(BASE_NAME_1);
+
+		// get key1 from bundle
+		Object[] args = { "XXX" };
+		String value = provider.get("key2", args);
+
+		// test
+		assertEquals("value is [XXX].", value);
+	}
+
+	/**
+	 * Test that message with two arguments can be resolved.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 */
+	@Test
+	public void testCanGetMessageVarArgsWithTwoArgs() throws MessageProviderInitializationException {
+
+		// create provider
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(BASE_NAME_1);
+
+		// get key1 from bundle
+		Object[] args = { "XXX", "YYY" };
+		String value = provider.get("key3", args);
+
+		// test
+		assertEquals("value is [XXX] and [YYY].", value);
+	}
+
+	/**
+	 * Test that message with three arguments can be resolved.
+	 * 
+	 * @throws MessageProviderInitializationException
+	 */
+	@Test
+	public void testCanGetMessageVarArgsWithThreeArgs() throws MessageProviderInitializationException {
+
+		// create provider
+		provider = new PropertyFileMessageProviderImpl();
+		provider.setBasename(BASE_NAME_1);
+
+		// get key1 from bundle
+		Object[] args = { "XXX", "YYY", "ZZZ" };
+		String value = provider.get("key4", args);
+
+		// test
+		assertEquals("value is [XXX], [YYY] and [ZZZ].", value);
+	}
+	
 }

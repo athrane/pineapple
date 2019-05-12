@@ -806,6 +806,19 @@ Development documentation
 		
 		[]		
 
+**** Resolution of model paths	
+
+	To support location independent model element path (MEP) within module models the provider can 
+	resolve these path prefixes:
+	
+	* <<<modulepath:>>> resolves the path to the root of the current module. 
+	This can be used to define the location of files within a module in a location independent way .
+		
+	* <<<moduleroot:>>> resolves the path to the root of another module. 
+	This can be used to define the location of files within another module in a location independent way .
+	
+	[]	
+
 ** Plugin activation classes
 
 	The package <<<com.alpha.pineapple.plugin.activation>>> contains classes for invocation of plugins at runtime:

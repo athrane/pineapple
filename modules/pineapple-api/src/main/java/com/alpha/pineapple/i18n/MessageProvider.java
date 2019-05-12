@@ -70,6 +70,20 @@ public interface MessageProvider {
 	 * @throws IllegalArgumentException
 	 *             if the key is undefined.
 	 */
+	public String get(String key, Object... args);
+	
+	/**
+	 * Get resolve message from resource bundle.
+	 * 
+	 * @param key
+	 *            Message key in resource bundle.
+	 * @return resolved message.
+	 * 
+	 * @throws MissingResourceException
+	 *             if no message with the key could be found.
+	 * @throws IllegalArgumentException
+	 *             if the key is undefined.
+	 */
 	public String getMessage(String key);
 
 }

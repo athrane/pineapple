@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
- * Copyright (C) 2007-2013 Allan Thrane Andersen..
+ * Copyright (C) 2007-2019 Allan Thrane Andersen..
  * 
  * This file is part of Pineapple.
  * 
@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 import com.alpha.pineapple.execution.ExecutionResult;
@@ -94,7 +94,7 @@ public class MapperImpl implements Mapper {
 
 		// create report object for operation
 		Result operationResult = objectFactory.createResult();
-		operationResult.setDescription(result.getDescription());
+		operationResult.setDescription(removeIllegalXmlChars(result.getDescription()));		
 		operationResult.setStartTime(formatedTime);
 		operationResult.setTime((float) result.getTime());
 		operationResult.setState(result.getState().toString());
@@ -142,7 +142,7 @@ public class MapperImpl implements Mapper {
 
 		// create report object for operation
 		Result reportResult = objectFactory.createResult();
-		reportResult.setDescription(result.getDescription());
+		reportResult.setDescription(removeIllegalXmlChars(result.getDescription()));
 		reportResult.setStartTime(formatedTime);
 		reportResult.setTime((float) result.getTime());
 		reportResult.setState(result.getState().toString());
@@ -198,7 +198,7 @@ public class MapperImpl implements Mapper {
 
 		// create report object for operation
 		Result reportResult = objectFactory.createResult();
-		reportResult.setDescription(result.getDescription());
+		reportResult.setDescription(removeIllegalXmlChars(result.getDescription()));
 		reportResult.setTime((float) result.getTime());
 		reportResult.setStartTime(formatedTime);
 		reportResult.setState(result.getState().toString());
@@ -254,9 +254,9 @@ public class MapperImpl implements Mapper {
 	 *            List of mapped messages.
 	 */
 	void mapMessages(Map<String, String> sourceMessages, List<Message> destinationMessages) {
-		for (String key : sourceMessages.keySet()) {
-			Message message = objectFactory.createMessage();
-			message.setName(key);
+		for (String key : sourceMessages.keySet()) {			
+			Message message = objectFactory.createMessage();						
+			message.setName(removeIllegalXmlChars(key));
 			destinationMessages.add(message);
 
 			// split message into multiple lines
@@ -264,9 +264,11 @@ public class MapperImpl implements Mapper {
 
 			// add message lines
 			if (lines != null) {
-				for (String line : lines) {
+				for (String line : lines) {					
+					
+					// create value object
 					MessageValue messageValue = objectFactory.createMessageValue();
-					messageValue.setValue(line);
+					messageValue.setValue(removeIllegalXmlChars(line));
 					message.getValue().add(messageValue);
 				}
 
@@ -298,4 +300,22 @@ public class MapperImpl implements Mapper {
 		this.IdGenerator = 0;
 	}
 
+	/**
+	 * Remove illegal XML chars.
+	 * 
+	 * To removed all invalid XML chars then then all text is escaped to XML 1.0 
+	 * and then unescaped again mediately. The purpose of the unescaping is to 
+	 * let JAXB and the XSLT transformer handling the escaping of XML.
+	 * 
+	 * @param string to remove illegal XML chars from.
+	 * 
+	 * @return string without illegal XML chars.
+	 */
+	String removeIllegalXmlChars(String string) {
+		var escaped = StringEscapeUtils.escapeXml10(string);
+		return StringEscapeUtils.unescapeXml(escaped);		
+	}
+	
+	
+	
 }

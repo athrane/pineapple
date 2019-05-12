@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:context="http://www.springframework.org/schema/context"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    		http://www.springframework.org/schema/oxm 
+    		http://www.springframework.org/schema/oxm/spring-oxm-3.0.xsd
+    		http://www.springframework.org/schema/context 
+    		http://www.springframework.org/schema/context/spring-context-3.0.xsd" >    		
+
+	<!-- Configures pineapple-api -->
+	<import resource="classpath:com.alpha.pineapple.api-config.xml" />
+
+	<!-- Configures pineapple-commands-api -->
+	<import resource="classpath:com.alpha.pineapple.commands-api-config.xml" />
+        
+	<!-- enable annotation based configuration / dependency injection -->
+	<context:annotation-config />
+    
+	<oxm:jaxb2-marshaller id="unmarshaller" contextPath="com.alpha.pineapple.plugin.git.model"/>
+
+	<!-- define message provider for internationalization  -->
+	<bean id="gitMessageProvider" class="com.alpha.pineapple.i18n.PropertyFileMessageProviderImpl">
+    	<property name="basename" value="com.alpha.pineapple.plugin.git-messages"/>
+	</bean>	
+
+	<!-- define command objects -->
+	<bean id="cloneRepositoryCommand" class="com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand" />
+	    	    			
+ 	<!-- 
+ 		definitions used by the integration tests. 
+ 		Only available for test with @ActiveProfiles("integration-test") 
+ 	-->
+	<beans profile="integration-test" >
+		<bean id="deployConfiguration" class="com.alpha.pineapple.plugin.git.operation.DeployConfiguration" />		
+		<bean id="coreRuntimeDirectoryProvider" class="org.easymock.EasyMock" factory-method="createMock">
+			<constructor-arg value="com.alpha.pineapple.io.file.RuntimeDirectoryProvider"/>
+		</bean>
+		<bean id="gitHelper" class="com.alpha.testutils.GitTestHelper" />			    	    						
+	</beans>	
+		    	    
+</beans>

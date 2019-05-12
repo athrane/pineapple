@@ -45,7 +45,8 @@
 			<item name="Agent" href="./pineapple-plugins/pineapple-agent-plugin/index.html" />		
 			<item name="Composite Execution" href="./pineapple-plugins/pineapple-composite-execution-plugin/index.html" />
 			<item name="SSH" href="./pineapple-plugins/pineapple-ssh-plugin/index.html" />						
-			<item name="Docker" href="./pineapple-plugins/pineapple-docker-plugin/index.html" />		
+			<item name="Git" href="./pineapple-plugins/pineapple-git-plugin/index.html" />		
+			<item name="Docker" href="./pineapple-plugins/pineapple-docker-plugin/index.html" />					
 			<item name="Infrastructure Test" href="./pineapple-modules/pineapple-infrastructure-test-plugin/index.html" />
 		</menu>
 

@@ -35,5 +35,6 @@
 		<module>pineapple-composite-execution-plugin</module>		
 		<module>pineapple-agent-plugin</module>		
 		<module>pineapple-docker-plugin</module>		
+		<module>pineapple-git-plugin</module>		
     </modules>
 </project>

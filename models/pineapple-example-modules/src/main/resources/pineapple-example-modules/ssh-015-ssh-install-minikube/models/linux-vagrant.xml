@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:shp="http://pineapple.dev.java.net/ns/plugin/ssh_1_0" 
+	xmlns:cep="http://pineapple.dev.java.net/ns/plugin/composite_execution_1_0" >	
+    <mmd:variables>
+		<mmd:variable key="kubectl-version" value="1.14.0" />
+		<mmd:variable key="minikube-version" value="1.0.0" />
+      	<mmd:variable key="tmp-dir" value="/tmp" />        	   		
+		<mmd:variable key="k8s-repo" value="kubernetes.repo" />
+		<mmd:variable key="dashboard-ingress" value="dashboard-ingress.yaml" />						      	
+    </mmd:variables>
+	
+    <mmd:model target-resource="composite-execution" description="Install Docker">
+        <mmd:content>
+            <cep:composite-execution>
+                <cep:module name="ssh-011-install-docker-latest-version-centos7" />
+            </cep:composite-execution>
+        </mmd:content>
+    </mmd:model>	
+
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Prepare OS for Kubernetes" >
+	    <mmd:content>
+			<shp:ssh>
+                <shp:execute command="sudo swapoff -a" />
+                <shp:execute command="sudo yum install -y socat" />                
+			</shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+			
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Install kubectl" >
+	    <mmd:content>
+			<shp:ssh>
+	          	<shp:copy-to source="modulepath:bin/${k8s-repo}" destination="${tmp-dir}/${k8s-repo}" chmod="775" />
+				<shp:execute command="sudo mv ${tmp-dir}/${k8s-repo} /etc/yum.repos.d/${k8s-repo}" />             
+                <shp:execute command="sudo yum install -y kubectl-${kubectl-version}" />
+			</shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+			
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Install Minikube" >
+	    <mmd:content>
+			<shp:ssh>		
+                <shp:execute command="curl -Lo ${tmp-dir}/minikube.rpm https://github.com/kubernetes/minikube/releases/download/v${minikube-version}/minikube-${minikube-version}.rpm" />
+				<shp:execute command="chmod a+x ${tmp-dir}/minikube.rpm" />
+				<shp:execute command="sudo yum --assumeyes install ${tmp-dir}/minikube.rpm" />
+				<shp:execute command="export MINIKUBE_WANTUPDATENOTIFICATION=false" />
+				<shp:execute command="export MINIKUBE_WANTREPORTERRORPROMPT=false" />
+				<shp:execute command="export MINIKUBE_HOME=$HOME" />
+				<shp:execute command="export CHANGE_MINIKUBE_NONE_USER=true" />
+				<shp:execute command="export KUBECONFIG=$HOME/.kube/config" />			
+				<shp:execute command="sudo mkdir -p $HOME/.kube $HOME/.minikube" />
+				<shp:execute command="sudo touch $KUBECONFIG" />
+			</shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+
+    <mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Start Minikube" >
+	    <mmd:content>
+			<shp:ssh>
+                <shp:execute command="sudo -E minikube start --vm-driver=none" />
+			</shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+
+    <mmd:model target-resource="ssh-node1" target-operation="{deploy-configuration, test}" description="Validate installation" >
+      <mmd:content>
+        <shp:ssh>        
+          <shp:assert-contains command="sudo kubectl version" expected-value="${kubectl-version}"/>                     
+          <shp:assert-contains command="sudo minikube status" expected-value="host: Running"/>                     
+          <shp:assert-contains command="sudo minikube status" expected-value="kubelet: Running"/>                     
+          <shp:assert-contains command="sudo minikube status" expected-value="apiserver: Running"/>                     
+          <shp:assert-contains command="sudo minikube status" expected-value="kubectl: Correctly Configured"/>                     
+        </shp:ssh>			
+      </mmd:content>
+    </mmd:model>
+
+	<mmd:model target-resource="ssh-node1" target-operation="deploy-configuration" description="Expose dashboard via ingress" >
+	    <mmd:content>
+			<shp:ssh>
+                <shp:execute command="sudo minikube addons enable dashboard" />		
+                <shp:execute command="sudo minikube addons enable ingress" />			
+	          	<shp:copy-to source="modulepath:bin/${dashboard-ingress}" destination="${tmp-dir}/${dashboard-ingress}" chmod="775" />			
+                <shp:execute command="sudo kubectl apply -f ${tmp-dir}/${dashboard-ingress}"/>			
+			</shp:ssh>			
+        </mmd:content>
+    </mmd:model>
+
+    <mmd:model target-resource="ssh-node1" target-operation="{deploy-configuration, test}" description="Validate Minikube dashboard ingress" >
+      <mmd:content>
+        <shp:ssh>        
+          <shp:assert-contains command="sudo kubectl get pods -n kube-system" expected-value="nginx-ingress-controller"/>
+          <shp:assert-contains command="sudo kubectl get service --all-namespaces" expected-value="kubernetes-dashboard"/>                     
+          <shp:assert-contains command="sudo kubectl get ingress --all-namespaces" expected-value="dashboard-ingress"/>                                                    
+          <shp:assert-contains command="curl -L --insecure http://127.0.0.1" expected-value="kubernetesDashboard"/>                               
+          <shp:assert-contains command="curl -L --insecure http://0.0.0.0" expected-value="kubernetesDashboard"/>                               
+          <shp:assert-contains command="curl -L --insecure http://192.168.34.10" expected-value="kubernetesDashboard"/>                               
+        </shp:ssh>			
+      </mmd:content>
+    </mmd:model>
+		
+</mmd:models>

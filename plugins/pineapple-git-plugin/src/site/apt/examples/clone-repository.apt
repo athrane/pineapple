@@ -1,0 +1,108 @@
+ ------
+ How-to: Clone remote repository
+ ------
+ Allan Thrane Andersen
+ ------
+ 
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Clone remote repository
+
+* Overview
+
+	This example illustrates how the Git plugin can be used to clone a remote repository into the modules directory.
+	The cloned repository contains a Pineapple module.	
+	This feature enables execution based on modules hosted in a Git repository as opposed to modules stored locally in the module directory.
+
+** Part of the default configuration
+
+	This example named <<<git-000-clone-repo>>>, including all configuration files, is included in the 
+	{{{../../../usage/default-configuration.html}default configuration}} which is created by Pineapple, 
+	so there is no need to create it by hand.	
+
+*** The used resource (and credentials)
+	
+	In order to abstract away connection and authentication details away for the model, the specifics for accessing a
+	Git repository is defined in a resource.
+	
+	The resource to define a Git repository contains these properties:
+	
+	* URI - which defines the URI to the Git repository. Example: <<<https://github.com/athrane/pineapple-git-plugin-test-repository.git>>>.
+	
+	If the repository requires authentication then a credential must be defined and the resource must reference it.
+	The credential must define a user name an password.			
+		
+* Define the module 
+
+	Pineapple's unit of work is modules. A module is a self contained unit which 
+	can contain models, scripts and binaries. Models serves to specify test cases, 
+	deployment of applications, configuration of devices or execution of scripts. 
+	
+	The default directory for modules is <<<$\{user.home\}/.pineapple/modules>>> so we will 
+	create a module named <<<git-000-repo>>> there. The module 
+	for this example will end up with the structure:
+
++---
+git-000-clone-repo
+ |
+ +--- models	 
+       +--- local.xml 
++---
+	
+* Define the module model
+
+	The model file for definition of the image:
+	
++----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mmd:models xmlns:mmd="http://pineapple.dev.java.net/ns/module_model_1_0" 	
+	xmlns:gp="http://pineapple.dev.java.net/ns/plugin/git_1_0" >
+    <mmd:model target-resource="git-pineapple-example-repo">
+        <mmd:content>
+			<gp:git>
+				<gp:clone destination="modules:pineapple-git-plugin-test-repository" branch="head" />
+			</gp:git>
+		</mmd:content>
+    </mmd:model>
+</mmd:models>
++----	 
+
+** The configuration details
+
+	Two schema are used in the model file. The <<<http://pineapple.dev.java.net/ns/module_model_1_0>>> is used
+	to define the namespace <<<mmd>>> which defines the general infrastructure for models. 
+	The <<<http://pineapple.dev.java.net/ns/plugin/git_1_0>>> schema is used to
+	define the namespace <<<gp>>> which is used to define the model for the Git plugin. 
+	Since multiple schemas are used to define the model file, the elements are qualified.
+	
+	The <<<target-resource>>> attribute defines a reference to the resource which is targeted when the 
+	model executed. In this case, the value <<<git-pineapple-example-repo>>> is a reference to a resource 
+	which defines the (connection and authentication) details of the Git repository .
+	
+	The <<<gp:git>>> element defines the root of model for the Docker plugin. 
+	
+	The <<<gp:clone>>> element defines a Clone operation to executed on the Git repository defined in the targeted resource.
+
+	The optional <<<clone.destination>>> attribute defines a path expression for the target directory where the cloned repository is stored.
+	The value should probably be an absolution path. 
+	The value can be prefixed with the <<<modules:>>> identifier. 
+	If the identifier is present then Pineapple with interpret the path as an relative path is located in the Pineapple modules directory.
+	In the above example the value is <<<modules:>>> and a directory name, in this case the repository is cloned into the Pineapple modules directory
+	and can be used as a module if the repository contains a module.
+			 
+	The optional <<<clone.branch>>> attribute defines which branch of the repository to clone.		 
+		 
+* Invoke Pineapple to execute model 
+
+	Start your Pineapple client of choice:
+	
+	* Select the module named <<git-000-clone-repo>>
+	
+	* Select the <<local>> model.
+	
+	* Invoke the <<deploy-configuration>> to clone the repository.
+	
+	[]
+
+	

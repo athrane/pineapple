@@ -91,6 +91,10 @@
 	</dependency>
 	<dependency>
 		<groupId>${project.groupId}</groupId>
+		<artifactId>pineapple-git-plugin</artifactId>
+	</dependency>	
+	<dependency>
+		<groupId>${project.groupId}</groupId>
 		<artifactId>pineapple-hamcrest-support</artifactId>                       
 	</dependency>   							
 	<dependency>

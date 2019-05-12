@@ -33,8 +33,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 
 import com.alpha.pineapple.CoreConstants;
 import com.alpha.pineapple.command.initialization.CommandInitializer;
@@ -299,6 +297,8 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 		Environment environment = createEnvironment(environments, CoreConstants.WILDCARD_ENVIRONMENT_ID, WILDCARD_DESC);
 		addInfrastructureTestResource(environment);
 		addCompositeExecutionResource(environment);
+		addGitResource(environment, "git-pineapple-example-repo",
+				"https://github.com/athrane/pineapple-git-plugin-test-repository.git");
 
 		// create local environment
 		environment = createEnvironment(environments, "local", LOCAL_DESC);
@@ -418,6 +418,23 @@ public class CreateDefaultEnvironmentConfigurationCommand implements Command {
 		properties.put("host", host);
 		properties.put("port", port);
 		properties.put("timeout", "5000");
+		addProperties(properties, resource);
+	}
+
+	/**
+	 * Create resource for Git plugin.
+	 * 
+	 * @param environment Environment where resource is added to.
+	 * @param id          Resource ID.
+	 * @param uri         Git repository URI.
+	 */
+	void addGitResource(Environment environment, String id, String uri) {
+		com.alpha.pineapple.model.configuration.Resource resource = factory.createResource();
+		resource.setId(id);
+		resource.setPluginId("com.alpha.pineapple.plugin.git");
+		environment.getResources().getResource().add(resource);
+		HashMap<String, String> properties = new HashMap<String, String>();
+		properties.put("uri", uri);
 		addProperties(properties, resource);
 	}
 

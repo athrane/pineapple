@@ -55,6 +55,7 @@ pineapple-project
      |     +--- pineapple-agent-plugin          
      |     +--- pineapple-composite-execution-plugin     
      |     +--- pineapple-ssh-plugin     
+     |     +--- pineapple-git-plugin     
      |     +--- pineapple-docker-plugin     
      |     +--- pineapple-filesystem-plugin     
      |                	 
@@ -255,13 +256,23 @@ pineapple-project
 
 ** pineapple-ssh-plugin
 
-	Location: pineapple-project/plugins/pineapple-composite-execution-plugin
+	Location: pineapple-project/plugins/pineapple-ssh-plugin
 
 	JAR-type project which produces a JAR file which implements a plugin for 
 	SSH access to remote hosts.
 	
 	A link to the project documentation for the plugin can be found 
 	{{{../pineapple-plugins/pineapple-ssh-plugin/index.html}here}}.		
+
+** pineapple-git-plugin
+
+	Location: pineapple-project/plugins/pineapple-git-plugin
+
+	JAR-type project which produces a JAR file which implements a plugin for 
+	performing Git operations on module.
+	
+	A link to the project documentation for the plugin can be found 
+	{{{../pineapple-plugins/pineapple-git-plugin/index.html}here}}.		
 
 ** pineapple-docker-plugin
 

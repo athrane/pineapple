@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   xmlns="http://pineapple.dev.java.net/ns/plugin/git_1_0" 
+		   targetNamespace="http://pineapple.dev.java.net/ns/plugin/git_1_0" 
+		   elementFormDefault="qualified" 
+		   attributeFormDefault="unqualified">
+
+	<xs:element name="git" >
+		<xs:annotation>
+			<xs:documentation>Git project.</xs:documentation>
+		</xs:annotation>	
+		<xs:complexType >
+			<xs:sequence>
+				<xs:choice  minOccurs="0" maxOccurs="unbounded" >							
+					<xs:element name="clone" type="cloneRepositoryType" />
+					<xs:element name="log" type="logType" />
+				 </xs:choice>
+			</xs:sequence>								
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType abstract="true" name="commandType">
+		<xs:annotation>
+			<xs:documentation>Abstract Pineapple Git command.</xs:documentation>
+		</xs:annotation>				
+	</xs:complexType>
+				
+	<xs:complexType name="cloneRepositoryType">
+		<xs:annotation>
+			<xs:documentation>Clone Git repository.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="destination" type="xs:string" use="required"/>				
+				<xs:attribute name="branch" type="xs:string" use="optional" default="HEAD"/>
+				<xs:attribute name="overwrite" type="xs:boolean" use="optional" default="true"/>				
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+	<xs:complexType name="logType">
+		<xs:annotation>
+			<xs:documentation>View changes command.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent> 
+			<xs:extension base="commandType"> 
+				<xs:attribute name="uri" type="xs:string" use="required"/>
+			</xs:extension> 
+		</xs:complexContent> 				
+	</xs:complexType>
+
+</xs:schema>

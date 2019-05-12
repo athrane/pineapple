@@ -159,6 +159,7 @@ public class PropertyFileMessageProviderImpl implements MessageProvider {
 		}
 	}
 
+	@Override	
 	public String getMessage(String key, Object[] args) {
 
 		// handle undefined args case
@@ -178,12 +179,33 @@ public class PropertyFileMessageProviderImpl implements MessageProvider {
 		return value;
 	}
 
+	@Override	
 	public String getMessage(String key) {
 		notNull(key, "key is undefined");
 		String value = messages.getString(key);
 		return value;
 	}
 
+	@Override
+	public String get(String key, Object... args) {
+
+		// handle undefined args case
+		if (args == null) {
+			return getMessage(key);
+		}
+
+		// validate argument
+		notNull(key, "key is undefined");
+
+		// get message formatter
+		MessageFormat formatter = getMessageFormat(key);
+
+		// format string with args
+		String value = formatter.format(args);
+
+		return value;		
+	}
+		
 	/**
 	 * Create file name for resource bundle. The base name is prefixed with a "/"
 	 * and postfixed with a ".properties".
@@ -230,5 +252,5 @@ public class PropertyFileMessageProviderImpl implements MessageProvider {
 
 		return formatter;
 	}
-
+	
 }

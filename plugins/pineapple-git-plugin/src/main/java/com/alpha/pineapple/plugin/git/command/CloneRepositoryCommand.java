@@ -1,7 +1,7 @@
 package com.alpha.pineapple.plugin.git.command;
 
 import static com.alpha.pineapple.execution.ExecutionResult.MSG_MESSAGE;
-import static com.alpha.pineapple.plugin.git.GitConstants.BRANCH_HEAD;
+import static com.alpha.pineapple.plugin.git.GitConstants.BRANCH_MASTER;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -161,9 +161,9 @@ public class CloneRepositoryCommand implements Command {
 
 		try {
 
-			// if branch is undefined set default value to HEAD
+			// if branch is undefined set default value to 'master'
 			if (branch.isBlank())
-				branch = BRANCH_HEAD;
+				branch = BRANCH_MASTER;
 
 			// add branch info message
 			var message = messageProvider.get("crc.clone_repository_branch_info", branch);
@@ -192,13 +192,15 @@ public class CloneRepositoryCommand implements Command {
 					Files.walk(destDir.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(f -> {
 						// delete file
 						f.delete();
-						
+																		
 						// add info message
 						var message2 = messageProvider.get("crc.clone_repository_delete_destination_file_info", f);
 						executionResult.addMessage(MSG_MESSAGE, message2);
-					});
+					});										
 				}
+				
 			}
+			
 			// clone
 			session.cloneRepository(branch, destDir);
 

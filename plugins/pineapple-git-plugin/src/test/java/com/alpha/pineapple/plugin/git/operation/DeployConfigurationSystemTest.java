@@ -22,11 +22,13 @@
 
 package com.alpha.pineapple.plugin.git.operation;
 
-import static com.alpha.pineapple.plugin.git.GitConstants.*;
-import static com.alpha.pineapple.plugin.git.GitConstants.BRANCH_HEAD;
+import static com.alpha.pineapple.plugin.git.GitConstants.BRANCH_1_0;
+import static com.alpha.pineapple.plugin.git.GitConstants.BRANCH_MASTER;
 import static com.alpha.pineapple.plugin.git.GitConstants.PLUGIN_APP_CONTEXT;
 import static com.alpha.pineapple.plugin.git.GitTestConstants.TEST_REPO_URI;
+import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
@@ -59,7 +61,7 @@ import com.alpha.testutils.ObjectMotherContent;
 import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 
 /**
- * Integration test for the <code>DeployConfiguration</code> class.
+ * Integration test for the {@linkplain DeployConfiguration} class.
  */
 @ActiveProfiles("integration-test")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -191,7 +193,7 @@ public class DeployConfigurationSystemTest {
 	/**
 	 * Test that the operation can clone repository from "master".
 	 * 
-	 * Credential is defined with no user/pwd to disable authentification.
+	 * Credential is defined with no user/pwd to disable authentication.
 	 */
 	@Test
 	public void testCanCloneRepositoryFromMaster() throws Exception {
@@ -204,7 +206,7 @@ public class DeployConfigurationSystemTest {
 		var content = contentMother.createGitModelWithCloneCommand(branch, destDir.getAbsolutePath());
 
 		// complete runtime provider setup
-		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(destDir);
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(eq(dest), isA(ExecutionResult.class))).andReturn(destDir);
 		replay(coreRuntimeDirectoryProvider);
 
 		// invoke operation
@@ -218,7 +220,7 @@ public class DeployConfigurationSystemTest {
 	/**
 	 * Test that the operation can clone repository from branch "1.0".
 	 * 
-	 * Credential is defined with no user/pwd to disable authentification.
+	 * Credential is defined with no user/pwd to disable authentication.
 	 */
 	@Test
 	public void testCanCloneRepositoryFromBranch1Dot0() throws Exception {
@@ -231,7 +233,7 @@ public class DeployConfigurationSystemTest {
 		var content = contentMother.createGitModelWithCloneCommand(branch, dest);
 
 		// complete runtime provider setup
-		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(destDir);
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(eq(dest), isA(ExecutionResult.class))).andReturn(destDir);
 		replay(coreRuntimeDirectoryProvider);
 
 		// invoke operation
@@ -244,9 +246,36 @@ public class DeployConfigurationSystemTest {
 
 	/**
 	 * Test that the operation can clone repository from empty branch. Empty branch
-	 * is resolved to HEAD.
+	 * is resolved to 'master'.
 	 * 
-	 * Credential is defined with no user/pwd to disable authentification.
+	 * Credential is defined with no user/pwd to disable authentication.
+	 */
+	@Test
+	public void testCanCloneRepositoryWithUndefinedBranch() throws Exception {
+		var session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
+		var destDir = new File(testDirectory, randomDir);
+
+		// create model
+		var dest = destDir.getAbsolutePath();
+		var content = contentMother.createGitModelWithCloneCommand(null, dest);
+
+		// complete runtime provider setup
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(eq(dest), isA(ExecutionResult.class))).andReturn(destDir);
+		replay(coreRuntimeDirectoryProvider);
+
+		// invoke operation
+		deployOperation.execute(content, session, result);
+
+		// test
+		assertTrue(result.isSuccess());
+		verify(coreRuntimeDirectoryProvider);
+	}
+
+	/**
+	 * Test that the operation can clone repository from undefined branch. Empty
+	 * branch is resolved to HEAD.
+	 * 
+	 * Credential is defined with no user/pwd to disable authentication.
 	 */
 	@Test
 	public void testCanCloneRepositoryWithEmptyBranch() throws Exception {
@@ -259,7 +288,7 @@ public class DeployConfigurationSystemTest {
 		var content = contentMother.createGitModelWithCloneCommand(branch, dest);
 
 		// complete runtime provider setup
-		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(destDir);
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(eq(dest), isA(ExecutionResult.class))).andReturn(destDir);
 		replay(coreRuntimeDirectoryProvider);
 
 		// invoke operation
@@ -291,7 +320,7 @@ public class DeployConfigurationSystemTest {
 	 * Test that the operation can clone repository and overwrite if directory
 	 * exists.
 	 * 
-	 * Credential is defined with no user/pwd to disable authentification.
+	 * Credential is defined with no user/pwd to disable authentication.
 	 */
 	@Test
 	public void testCanCloneRepositoryAndOverwrite() throws Exception {
@@ -299,17 +328,25 @@ public class DeployConfigurationSystemTest {
 
 		// create model
 		var dest = testDirectory.getAbsolutePath() + File.separator + randomDir;
-		var branch = BRANCH_HEAD;
+		var branch = BRANCH_MASTER;
 		var content = contentMother.createGitModelWithCloneCommand(branch, dest);
 
 		// complete runtime provider setup
-		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(new File(dest));
-		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(new File(dest));
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(eq(dest), isA(ExecutionResult.class)))
+				.andReturn(new File(dest));
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(eq(dest), isA(ExecutionResult.class)))
+				.andReturn(new File(dest));
 		replay(coreRuntimeDirectoryProvider);
 
 		// invoke operation
 		deployOperation.execute(content, session, result);
 
+		// close Git repository through session disconnect to release resources (file)
+		session.disconnect();
+
+		// connect session 
+		session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
+		
 		// invoke operation again
 		deployOperation.execute(content, session, result);
 

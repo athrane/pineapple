@@ -110,31 +110,42 @@ public interface RuntimeDirectoryProvider {
 	File getTempDirectory();
 
 	/**
-	 * Resolve model path to the physical path where the module is located on disk,
-	 * e.g. the module directory. A model element path is a path definition which
-	 * occurs in a module model which starts with the prefix 'modulepath:'.
+	 * Resolve model path to a physical path. A model element path is a path
+	 * definition which occurs in a module model which starts with a prefix, either
+	 * 'modulepath:' or 'modules:".
 	 * 
-	 * If the model path dosn't start with the 'modulepath:' prefix then the path is
-	 * resolved from a string into a File object.
+	 * If the model element path starts with the 'modulepath:' prefix then the path
+	 * is resolved to the path where the module is located on disk.
 	 * 
-	 * @param path
-	 *            Model element path.
-	 * @param info
-	 *            Module info object used to resolve the path.
+	 * If the model element path starts with the 'modules:' prefix then the path is
+	 * resolved to the modules directory.
+	 * 
+	 * If the model path dosn't start with any prefix then the path is resolved from
+	 * a string into a File object.
+	 * 
+	 * @param path Model element path.
+	 * @param info Module info object used to resolve the path.
 	 * 
 	 * @return resolved model element path.
 	 */
 	File resolveModelPath(String path, ModuleInfo info);
 
 	/**
-	 * Resolve model path to the physical path where the module is located on disk,
-	 * e.g. the module directory. A model element path is a path definition which
-	 * occurs in a module model which starts with the prefix 'modulepath:'.
+	 * Resolve model path to a physical path. A model element path is a path
+	 * definition which occurs in a module model which starts with a prefix, either
+	 * 'modulepath:' or 'modules:".
 	 * 
-	 * @param path
-	 *            Model element path.
-	 * @param result
-	 *            Execution result used to look up execution info.
+	 * If the model element path starts with the 'modulepath:' prefix then the path
+	 * is resolved to the path where the module is located on disk.
+	 * 
+	 * If the model element path starts with the 'modules:' prefix then the path is
+	 * resolved to the modules directory.
+	 * 
+	 * If the model path dosn't start with any prefix then the path is resolved from
+	 * a string into a File object.
+	 * 
+	 * @param path   Model element path.
+	 * @param result Execution result used to look up execution info.
 	 * 
 	 * @return Resolved local file path where 'modulepath' prefix is resolved to
 	 *         physical module directory.
@@ -144,8 +155,7 @@ public interface RuntimeDirectoryProvider {
 	/**
 	 * Returns true if the model path starts with the 'modulepath:' prefix.
 	 * 
-	 * @param path
-	 *            Model path.
+	 * @param path Model path.
 	 * 
 	 * @return true if the model path starts with the 'modulepath:' prefix.
 	 */
@@ -154,14 +164,12 @@ public interface RuntimeDirectoryProvider {
 	/**
 	 * Returns true if the model path starts with the 'modules:' prefix.
 	 * 
-	 * @param path
-	 *            Model path.
+	 * @param path Model path.
 	 * 
 	 * @return true if the model path starts with the 'modules:' prefix.
-	 */	
+	 */
 	boolean startsWithModulesPrefix(String path);
-	
-	
+
 	/**
 	 * Get the credential provider password file location where Pineapple should
 	 * look for the file which contains the master password for symmetric encryption

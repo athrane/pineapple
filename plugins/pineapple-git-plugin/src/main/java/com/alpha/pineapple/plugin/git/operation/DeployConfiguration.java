@@ -24,22 +24,22 @@ package com.alpha.pineapple.plugin.git.operation;
 
 import static com.alpha.javautils.ArgumentUtils.notNull;
 import static com.alpha.pineapple.OperationNames.DEPLOY_CONFIGURATION;
-import static com.alpha.pineapple.execution.ExecutionResult.MSG_MESSAGE;
-import static com.alpha.pineapple.plugin.git.GitConstants.BRANCH_HEAD;
 import static com.alpha.pineapple.plugin.git.GitConstants.LEGAL_CONTENT_TYPES;
 import static com.alpha.pineapple.plugin.git.GitConstants.RESOURCE_PROPERTY_URI;
+import static com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand.BRANCH_KEY;
+import static com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand.DESTINATION_KEY;
+import static com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand.OVERWRITE_KEY;
+import static com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand.SESSION_KEY;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.chain.Command;
+import org.apache.commons.chain.Context;
 
 import com.alpha.javautils.OperationUtils;
+import com.alpha.pineapple.command.execution.CommandRunner;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.io.file.RuntimeDirectoryProvider;
@@ -79,6 +79,18 @@ public class DeployConfiguration implements Operation {
 	 */
 	@Resource
 	RuntimeDirectoryProvider coreRuntimeDirectoryProvider;
+
+	/**
+	 * Command runner
+	 */
+	@Resource
+	CommandRunner commandRunner;
+
+	/**
+	 * Clone repository command.
+	 */
+	@Resource
+	Command cloneRepositoryCommand;
 
 	public void execute(Object content, Session session, ExecutionResult result) throws PluginExecutionFailedException {
 		notNull(content, "content is undefined.");
@@ -150,6 +162,7 @@ public class DeployConfiguration implements Operation {
 	 * @param command Clone repository command.
 	 * @param result  execution result
 	 */
+	@SuppressWarnings("unchecked")
 	void cloneRepository(GitSession session, CloneRepository command, ExecutionResult result) {
 
 		// create execution result
@@ -158,55 +171,15 @@ public class DeployConfiguration implements Operation {
 		var message = messageProvider.get("dc.clone_repository_info", uri);
 		var cloneResult = result.addChild(message);
 
-		try {
+		// setup context
+		Context context = commandRunner.createContext();
+		context.put(SESSION_KEY, session);
+		context.put(BRANCH_KEY, command.getBranch());
+		context.put(DESTINATION_KEY, command.getDestination());
+		context.put(OVERWRITE_KEY, command.isOverwrite());
 
-			// if branch is undefined set default value to HEAD
-			var branch = command.getBranch();
-			if (branch.isBlank())
-				branch = BRANCH_HEAD;
-
-			// add branch info message
-			message = messageProvider.get("dc.clone_repository_branch_info", branch);
-			cloneResult.addMessage(MSG_MESSAGE, message);
-
-			// if undefined destination set default value
-			var destName = command.getDestination();
-			if (destName.isBlank())
-				destName = session.getRepositoryName();
-
-			// resolve destination directory
-			var dest = coreRuntimeDirectoryProvider.resolveModelPath(destName, result);
-
-			// add destination info message
-			message = messageProvider.get("dc.clone_repository_destination_info", command.getDestination(), dest);
-			cloneResult.addMessage(MSG_MESSAGE, message);
-
-			// delete destination directory if it exist
-			if (command.isOverwrite()) {
-				if (dest.exists()) {
-
-					Files.walk(dest.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile)
-							.forEach(File::canRead);
-
-					FileUtils.forceDelete(dest);
-
-					// add info message
-					message = messageProvider.get("dc.clone_repository_delete_destination_info", dest);
-					cloneResult.addMessage(MSG_MESSAGE, message);
-				}
-			}
-
-			// clone
-			session.cloneRepository(branch, dest);
-
-		} catch (Exception e) {
-			Object[] args5 = { e.toString() };
-			cloneResult.completeAsFailure(messageProvider, "dc.clone_repository_failure", args5);
-			return;
-		}
-
-		// handle successful execution
-		cloneResult.completeAsSuccessful(messageProvider, "dc.clone_repository_success");
+		// run command
+		commandRunner.run(cloneRepositoryCommand, cloneResult, context);
 	}
 
 	/**

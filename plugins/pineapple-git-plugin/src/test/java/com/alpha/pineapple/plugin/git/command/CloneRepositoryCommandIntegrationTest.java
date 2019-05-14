@@ -80,7 +80,7 @@ import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DirectoryTestExecutionListener.class, DependencyInjectionTestExecutionListener.class })
 @ContextConfiguration(locations = { PLUGIN_APP_CONTEXT })
-public class CloneRepositoryCommandSystemTest {
+public class CloneRepositoryCommandIntegrationTest {
 
 	/**
 	 * Empty string.
@@ -538,7 +538,7 @@ public class CloneRepositoryCommandSystemTest {
 		setupRuntimeDirectoryProviderWithNoOp(destDir);
 
 		// invoke command
-		context.put(BRANCH_KEY, BRANCH_HEAD);
+		context.put(BRANCH_KEY, BRANCH_MASTER);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
 		context.put(OVERWRITE_KEY, true);
@@ -567,7 +567,7 @@ public class CloneRepositoryCommandSystemTest {
 		replay(coreRuntimeDirectoryProvider);
 
 		// invoke command
-		context.put(BRANCH_KEY, BRANCH_HEAD);
+		context.put(BRANCH_KEY, BRANCH_MASTER);
 		context.put(DESTINATION_KEY, EMPTY_STR);
 		context.put(EXECUTIONRESULT_KEY, result);
 		context.put(OVERWRITE_KEY, true);
@@ -598,7 +598,7 @@ public class CloneRepositoryCommandSystemTest {
 		replay(coreRuntimeDirectoryProvider);
 
 		// invoke command
-		context.put(BRANCH_KEY, BRANCH_HEAD);
+		context.put(BRANCH_KEY, BRANCH_MASTER);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
 		context.put(OVERWRITE_KEY, true);
@@ -634,7 +634,7 @@ public class CloneRepositoryCommandSystemTest {
 		replay(coreRuntimeDirectoryProvider);
 
 		// invoke command
-		context.put(BRANCH_KEY, BRANCH_HEAD);
+		context.put(BRANCH_KEY, BRANCH_MASTER);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
 		context.put(OVERWRITE_KEY, true);
@@ -656,7 +656,7 @@ public class CloneRepositoryCommandSystemTest {
 	 * Test that cloning can delete directory if it exists.
 	 * 
 	 * Command is invoked wit overwrite, i.e. deletion of existing local repository.
-	 * Command is executed twice to delete repository when execute the secind time.
+	 * Command is executed twice to delete repository when execute the second time.
 	 * 
 	 * Credential is defined with no user/pwd to disable authentification.
 	 */
@@ -672,7 +672,7 @@ public class CloneRepositoryCommandSystemTest {
 		replay(coreRuntimeDirectoryProvider);
 
 		// invoke command with overwrite
-		context.put(BRANCH_KEY, BRANCH_HEAD);
+		context.put(BRANCH_KEY, BRANCH_MASTER);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
 		context.put(OVERWRITE_KEY, true);
@@ -690,6 +690,7 @@ public class CloneRepositoryCommandSystemTest {
 		session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
 
 		// clone and delete/overwrite
+		context.put(SESSION_KEY, session);		
 		cloneRepositoryCommand.execute(context);
 
 		// test #2

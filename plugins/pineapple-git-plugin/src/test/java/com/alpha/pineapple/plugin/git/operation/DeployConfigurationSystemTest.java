@@ -54,6 +54,7 @@ import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResultImpl;
 import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.io.file.RuntimeDirectoryProvider;
+import com.alpha.pineapple.plugin.git.GitConstants;
 import com.alpha.pineapple.session.SessionConnectException;
 import com.alpha.springutils.DirectoryTestExecutionListener;
 import com.alpha.testutils.GitTestHelper;
@@ -300,6 +301,38 @@ public class DeployConfigurationSystemTest {
 	}
 
 	/**
+	 * Test that the operation can clone repository with undefined destination.
+	 * Undefined destination is resolved to empty destination by operation and then
+	 * again be the command.
+	 * 
+	 * Credential is defined with no user/pwd to disable authentication.
+	 */
+	@Test
+	public void testCanCloneRepositoryWithEmptyDestination() throws Exception {
+		var session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
+		var destDir = new File(testDirectory, randomDir);
+
+		// create model
+		var dest = destDir.getAbsolutePath();
+		String nullDest = null;
+		var branch = BRANCH_MASTER;
+		var content = contentMother.createGitModelWithCloneCommand(branch, nullDest);
+
+		// complete runtime provider setup
+		var unresolvedDest = GitConstants.MODULES_EXP + session.getRepositoryName();
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(eq(unresolvedDest), isA(ExecutionResult.class)))
+				.andReturn(destDir);
+		replay(coreRuntimeDirectoryProvider);
+
+		// invoke operation
+		deployOperation.execute(content, session, result);
+
+		// test
+		assertTrue(result.isSuccess());
+		verify(coreRuntimeDirectoryProvider);
+	}
+
+	/**
 	 * Test that the operation fails to clone non-existing repository.
 	 */
 	@Test(expected = SessionConnectException.class)
@@ -344,9 +377,9 @@ public class DeployConfigurationSystemTest {
 		// close Git repository through session disconnect to release resources (file)
 		session.disconnect();
 
-		// connect session 
+		// connect session
 		session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
-		
+
 		// invoke operation again
 		deployOperation.execute(content, session, result);
 

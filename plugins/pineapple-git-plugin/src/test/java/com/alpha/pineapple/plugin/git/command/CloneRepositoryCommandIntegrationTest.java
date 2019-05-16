@@ -31,7 +31,6 @@ import static com.alpha.pineapple.plugin.git.GitTestConstants.TEST_REPO_URI;
 import static com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand.BRANCH_KEY;
 import static com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand.DESTINATION_KEY;
 import static com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand.EXECUTIONRESULT_KEY;
-import static com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand.OVERWRITE_KEY;
 import static com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand.SESSION_KEY;
 import static com.alpha.pineapple.test.matchers.PineappleMatchers.doesDirectoryExist;
 import static org.easymock.EasyMock.expect;
@@ -63,10 +62,12 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
+import com.alpha.pineapple.command.initialization.CommandInitializationFailedException;
 import com.alpha.pineapple.execution.ExecutionResult;
 import com.alpha.pineapple.execution.ExecutionResultImpl;
 import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.io.file.RuntimeDirectoryProvider;
+import com.alpha.pineapple.plugin.git.GitConstants;
 import com.alpha.pineapple.plugin.git.session.GitSession;
 import com.alpha.springutils.DirectoryTestExecutionListener;
 import com.alpha.testutils.GitTestHelper;
@@ -173,7 +174,7 @@ public class CloneRepositoryCommandIntegrationTest {
 
 		// create session
 		session = gitHelper.createDefaultSession();
-		
+
 		// create context
 		context = new ContextBase();
 
@@ -242,7 +243,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, BRANCH_HEAD);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -268,7 +268,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, BRANCH_HEAD);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -295,7 +294,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, BRANCH_MASTER);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -322,7 +320,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, BRANCH_MASTER);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -349,7 +346,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, BRANCH_1_0);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -376,7 +372,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, BRANCH_HEAD);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -403,7 +398,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, EMPTY_STR);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -430,7 +424,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, BRANCH_HEAD);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -457,7 +450,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, BRANCH_HEAD);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -484,7 +476,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, randomBranch);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -511,7 +502,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, randomBranch);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -541,7 +531,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, BRANCH_MASTER);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -561,7 +550,7 @@ public class CloneRepositoryCommandIntegrationTest {
 	public void testCloneToBlankDestination() throws Exception {
 		var session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
 		var destDir = new File(testDirectory, session.getRepositoryName());
-		var dest = CloneRepositoryCommand.MODULES_EXP + session.getRepositoryName();
+		var dest = GitConstants.MODULES_EXP + session.getRepositoryName();
 
 		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(destDir);
 		replay(coreRuntimeDirectoryProvider);
@@ -570,7 +559,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, BRANCH_MASTER);
 		context.put(DESTINATION_KEY, EMPTY_STR);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -580,6 +568,29 @@ public class CloneRepositoryCommandIntegrationTest {
 		verify(coreRuntimeDirectoryProvider);
 	}
 
+	/**
+	 * Test that repository fails to clone to undefined destination.
+	 * 
+	 * Credential is defined with no user/pwd to disable authentification.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(expected=CommandInitializationFailedException.class)
+	public void testFailsToCloneToUndefinedDestination() throws Exception {
+		var session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
+		var destDir = new File(testDirectory, session.getRepositoryName());
+		var dest = GitConstants.MODULES_EXP + session.getRepositoryName();
+
+		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(destDir);
+		replay(coreRuntimeDirectoryProvider);
+
+		// invoke command
+		context.put(BRANCH_KEY, BRANCH_MASTER);
+		context.put(DESTINATION_KEY, null);
+		context.put(EXECUTIONRESULT_KEY, result);
+		context.put(SESSION_KEY, session);
+		cloneRepositoryCommand.execute(context);
+	}
+	
 	/**
 	 * Test that cloned repository can be deleted after session disconnect, meaning
 	 * that the JGit APi has release all internal handles on files as part of the
@@ -601,7 +612,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, BRANCH_MASTER);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -637,7 +647,6 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, BRANCH_MASTER);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
@@ -675,22 +684,21 @@ public class CloneRepositoryCommandIntegrationTest {
 		context.put(BRANCH_KEY, BRANCH_MASTER);
 		context.put(DESTINATION_KEY, dest);
 		context.put(EXECUTIONRESULT_KEY, result);
-		context.put(OVERWRITE_KEY, true);
 		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
 		// test #1
 		assertTrue(result.isSuccess());
 		assertRepositoryFiles(destDir);
-		
+
 		// close Git repository through session disconnect to release resources (file)
 		session.disconnect();
 
-		// connect session 
+		// connect session
 		session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
 
 		// clone and delete/overwrite
-		context.put(SESSION_KEY, session);		
+		context.put(SESSION_KEY, session);
 		cloneRepositoryCommand.execute(context);
 
 		// test #2

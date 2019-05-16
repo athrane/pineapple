@@ -62,6 +62,11 @@ public interface GitConstants {
 	/**
 	 * Resource property.
 	 */
-	public String RESOURCE_PROPERTY_URI = "uri"; 
+	public String RESOURCE_PROPERTY_URI = "uri";
+
+	/**
+	 * Modules directory expression constant.
+	 */
+	public String MODULES_EXP = "modules:"; 
 	
 }

@@ -28,7 +28,6 @@ import static com.alpha.pineapple.plugin.git.GitConstants.LEGAL_CONTENT_TYPES;
 import static com.alpha.pineapple.plugin.git.GitConstants.RESOURCE_PROPERTY_URI;
 import static com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand.BRANCH_KEY;
 import static com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand.DESTINATION_KEY;
-import static com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand.OVERWRITE_KEY;
 import static com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand.SESSION_KEY;
 
 import java.util.List;
@@ -62,6 +61,11 @@ import com.alpha.pineapple.session.Session;
 @PluginOperation(DEPLOY_CONFIGURATION)
 public class DeployConfiguration implements Operation {
 
+	/**
+	 * Empty string.
+	 */
+	static final String EMPTY_STR = "";
+	
 	/**
 	 * Message provider for I18N support.
 	 */
@@ -174,9 +178,10 @@ public class DeployConfiguration implements Operation {
 		// setup context
 		Context context = commandRunner.createContext();
 		context.put(SESSION_KEY, session);
-		context.put(BRANCH_KEY, command.getBranch());
-		context.put(DESTINATION_KEY, command.getDestination());
-		context.put(OVERWRITE_KEY, command.isOverwrite());
+		context.put(BRANCH_KEY, command.getBranch());				
+		var dest = command.getDestination();
+		if ( dest == null) dest = EMPTY_STR;
+		context.put(DESTINATION_KEY, dest);
 
 		// run command
 		commandRunner.run(cloneRepositoryCommand, cloneResult, context);

@@ -60,10 +60,10 @@ git-000-clone-repo
 	xmlns:gp="http://pineapple.dev.java.net/ns/plugin/git_1_0" >
     <mmd:model target-resource="git-pineapple-example-repo">
         <mmd:content>
-			<gp:git>
-				<gp:clone destination="modules:pineapple-git-plugin-test-repository" branch="head" />
-			</gp:git>
-		</mmd:content>
+            <gp:git>
+                <gp:clone destination="modules:pineapple-git-plugin-test-repository" branch="master" />
+            </gp:git>
+        </mmd:content>
     </mmd:model>
 </mmd:models>
 +----	 
@@ -91,7 +91,8 @@ git-000-clone-repo
 	In the above example the value is <<<modules:>>> and a directory name, in this case the repository is cloned into the Pineapple modules directory
 	and can be used as a module if the repository contains a module.
 			 
-	The optional <<<clone.branch>>> attribute defines which branch of the repository to clone.		 
+	The optional <<<clone.branch>>> attribute defines which branch of the repository is cloned.
+	The 'master' branch is cloned in this example.		 
 		 
 * Invoke Pineapple to execute model 
 

@@ -1,7 +1,8 @@
 package com.alpha.pineapple.plugin.git.command;
 
 import static com.alpha.pineapple.execution.ExecutionResult.MSG_MESSAGE;
-import static com.alpha.pineapple.plugin.git.GitConstants.BRANCH_HEAD;
+import static com.alpha.pineapple.plugin.git.GitConstants.BRANCH_MASTER;
+import static com.alpha.pineapple.plugin.git.GitConstants.MODULES_EXP;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,9 +25,9 @@ import com.alpha.pineapple.plugin.git.session.GitSession;
 
 /**
  * <p>
- * Implementation of the {@linkplain Command} interface which clones a GIT
+ * Implementation of the {@linkplain Command} interface which clones a Git
  * repository.
- *
+ * 
  * <p>
  * Precondition for execution of the command is definition of these keys in the
  * context:
@@ -39,12 +40,9 @@ import com.alpha.pineapple.plugin.git.session.GitSession;
  * <li><code>destination</code> defines the destination directory for the clone.
  * The destination is resolved using the {@linkplain RuntimeDirectoryProvider}
  * to support resolution of module path variables. If the destination is blank
- * then value is resolved to 'modules:REPOSITORY_NAME'. The type is
- * {@linkplain String}.</li>
- * 
- * <li><code>overwrite</code> defines whether an existing clone at the
- * destination should be deleted if it exists. The type is
- * {@linkplain Boolean}.</li>
+ * then value is resolved to 'modules:REPOSITORY_NAME'. If the resolved
+ * destination directory exists then it is deleted prior to cloning the
+ * repository.The type is {@linkplain String}.</li>
  * 
  * <li><code>session</code> defines the plugin session used communicate with an
  * agent. The type is {@linkplain GitSession}.</li>
@@ -74,11 +72,6 @@ import com.alpha.pineapple.plugin.git.session.GitSession;
 public class CloneRepositoryCommand implements Command {
 
 	/**
-	 * Modules directory expression constant.
-	 */
-	static final String MODULES_EXP = "modules:";
-
-	/**
 	 * Key used to identify property in context: Contains execution result object,.
 	 */
 	public static final String EXECUTIONRESULT_KEY = "execution-result";
@@ -98,12 +91,6 @@ public class CloneRepositoryCommand implements Command {
 	 * directory.
 	 */
 	public static final String DESTINATION_KEY = "destination";
-
-	/**
-	 * Key used to identify property in context: Contains directive if exiting clone
-	 * should be overwritten.
-	 */
-	public static final String OVERWRITE_KEY = "overwrite";
 
 	/**
 	 * Defines execution result object.
@@ -134,13 +121,6 @@ public class CloneRepositoryCommand implements Command {
 	String destination;
 
 	/**
-	 * Overwrite policy for exiting clone.
-	 */
-	@Initialize(OVERWRITE_KEY)
-	@ValidateValue(ValidationPolicy.NOT_NULL)
-	boolean overwrite;
-
-	/**
 	 * Message provider for I18N support.
 	 */
 	@Resource(name = "gitMessageProvider")
@@ -161,9 +141,9 @@ public class CloneRepositoryCommand implements Command {
 
 		try {
 
-			// if branch is undefined set default value to HEAD
+			// if branch is undefined set default value to 'master'
 			if (branch.isBlank())
-				branch = BRANCH_HEAD;
+				branch = BRANCH_MASTER;
 
 			// add branch info message
 			var message = messageProvider.get("crc.clone_repository_branch_info", branch);
@@ -181,24 +161,23 @@ public class CloneRepositoryCommand implements Command {
 			executionResult.addMessage(MSG_MESSAGE, message);
 
 			// delete destination directory if it exist
-			if (overwrite) {
-				if (destDir.exists()) {
+			if (destDir.exists()) {
+
+				// add info message
+				message = messageProvider.get("crc.clone_repository_delete_destination_info", destDir);
+				executionResult.addMessage(MSG_MESSAGE, message);
+
+				// delete directory sub-directories and files
+				Files.walk(destDir.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(f -> {
+					// delete file
+					f.delete();
 
 					// add info message
-					message = messageProvider.get("crc.clone_repository_delete_destination_info", destDir);
-					executionResult.addMessage(MSG_MESSAGE, message);
-
-					// delete directory sub-directories and files
-					Files.walk(destDir.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(f -> {
-						// delete file
-						f.delete();
-						
-						// add info message
-						var message2 = messageProvider.get("crc.clone_repository_delete_destination_file_info", f);
-						executionResult.addMessage(MSG_MESSAGE, message2);
-					});
-				}
+					var message2 = messageProvider.get("crc.clone_repository_delete_destination_file_info", f);
+					executionResult.addMessage(MSG_MESSAGE, message2);
+				});
 			}
+
 			// clone
 			session.cloneRepository(branch, destDir);
 

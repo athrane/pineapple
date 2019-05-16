@@ -31,9 +31,9 @@
 		</xs:annotation>
 		<xs:complexContent> 
 			<xs:extension base="commandType"> 
-				<xs:attribute name="uri" type="xs:string" use="required"/>
 				<xs:attribute name="destination" type="xs:string" use="required"/>				
 				<xs:attribute name="branch" type="xs:string" use="optional" default="HEAD"/>
+				<xs:attribute name="overwrite" type="xs:boolean" use="optional" default="true"/>				
 			</xs:extension> 
 		</xs:complexContent> 				
 	</xs:complexType>

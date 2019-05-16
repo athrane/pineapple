@@ -54,13 +54,13 @@ import com.alpha.springutils.DirectoryTestExecutionListener;
 import com.alpha.testutils.ObjectMotherContent;
 
 /**
- * Integration test for the <code>DeployConfiguration</code> class.
+ * Unit test {@linkplain DeployConfiguration class.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("integration-test")
+@RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DirectoryTestExecutionListener.class, DependencyInjectionTestExecutionListener.class })
 @ContextConfiguration(locations = { PLUGIN_APP_CONTEXT })
-public class DeployConfigurationIntegrationTest {
+public class DeployConfigurationTest {
 
 	/**
 	 * Current test directory.
@@ -174,5 +174,5 @@ public class DeployConfigurationIntegrationTest {
 		assertTrue(result.isSuccess());
 		verify(session);
 	}
-	
+
 }

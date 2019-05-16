@@ -2,6 +2,7 @@
 Description
 -------------
 This example illustrates how the Git plugin can be used to clone a public repository from GitHub.
+The 'master' branch is cloned.
 The cloned repository is an empty Pineapple module.
 
 The model is targeted to the resource named "docker-node" in the "linux-vagrant" environment.

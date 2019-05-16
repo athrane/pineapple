@@ -77,10 +77,13 @@ Default Configuration
     xsi:schemaLocation="http://pineapple.dev.java.net/ns/environment_1_0
     http://pineapple.dev.java.net/ns/environment_1_0.xsd">
     <environments>
-      <environment description="Wildcard environment for definition of resources available in ALL evironments." id="*">
+      <environment description="Wildcard environment for definition of resources available in ALL environments." id="*">
           <resources>
               <resource plugin-id="com.alpha.pineapple.plugin.net" id="infrastructure-test"/>
               <resource plugin-id="com.alpha.pineapple.plugin.composite-execution" id="composite-execution"/>
+                <resource id="git-pineapple-example-repo" plugin-id="com.alpha.pineapple.plugin.git">
+                    <property key="uri" value="https://github.com/athrane/pineapple-git-plugin-test-repository.git"/>
+                </resource>              
           </resources>
       </environment>
 
@@ -93,6 +96,9 @@ Default Configuration
 	The <<<infrastructure-test>>> resource enables usage of the infrastructure test plugin in all environments.
 	
 	The <<<composite-execution>>> resource enables usage of the composite execution plugin in all environments.
+
+	The <<<git-pineapple-example-repo>>> resource enables usage of the Git repository 
+	located at <<<https://github.com/athrane/pineapple-git-plugin-test-repository.git>>> in all environments.
 	
 ** The linux-vagrant environment
 

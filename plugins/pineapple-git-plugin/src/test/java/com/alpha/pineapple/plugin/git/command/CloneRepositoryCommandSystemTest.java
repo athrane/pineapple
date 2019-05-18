@@ -81,7 +81,7 @@ import com.alpha.testutils.ObjectMotherEnvironmentConfiguration;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DirectoryTestExecutionListener.class, DependencyInjectionTestExecutionListener.class })
 @ContextConfiguration(locations = { PLUGIN_APP_CONTEXT })
-public class CloneRepositoryCommandIntegrationTest {
+public class CloneRepositoryCommandSystemTest {
 
 	/**
 	 * Empty string.

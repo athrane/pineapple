@@ -171,7 +171,7 @@ Introduction
 		
 ** Name and location of the the module model file	
 	
-	The list of commands which should be executed when the plugin is invoked are defined 
+	The list of directives which should be processed when the plugin is invoked are defined 
 	in the module model files which are located at
 	<<<$\{module-dir\}/models/$\{environment\}.xml>>> where:
 	

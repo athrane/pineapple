@@ -549,8 +549,8 @@ public class CloneRepositoryCommandIntegrationTest {
 	@Test
 	public void testCloneToBlankDestination() throws Exception {
 		var session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
-		var destDir = new File(testDirectory, session.getRepositoryName());
-		var dest = GitConstants.MODULES_EXP + session.getRepositoryName();
+		var destDir = new File(testDirectory, session.getProjectName());
+		var dest = GitConstants.MODULES_EXP + session.getProjectName();
 
 		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(destDir);
 		replay(coreRuntimeDirectoryProvider);
@@ -577,8 +577,8 @@ public class CloneRepositoryCommandIntegrationTest {
 	@Test(expected=CommandInitializationFailedException.class)
 	public void testFailsToCloneToUndefinedDestination() throws Exception {
 		var session = gitHelper.initSessionWithNoAuth(TEST_REPO_URI, randomCredId);
-		var destDir = new File(testDirectory, session.getRepositoryName());
-		var dest = GitConstants.MODULES_EXP + session.getRepositoryName();
+		var destDir = new File(testDirectory, session.getProjectName());
+		var dest = GitConstants.MODULES_EXP + session.getProjectName();
 
 		expect(coreRuntimeDirectoryProvider.resolveModelPath(dest, result)).andReturn(destDir);
 		replay(coreRuntimeDirectoryProvider);

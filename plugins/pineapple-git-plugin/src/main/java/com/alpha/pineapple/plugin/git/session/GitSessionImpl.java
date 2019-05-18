@@ -23,6 +23,8 @@
 package com.alpha.pineapple.plugin.git.session;
 
 import static com.alpha.javautils.ArgumentUtils.notNull;
+import static com.alpha.pineapple.plugin.git.GitConstants.GIT_REPO_SUFFIX;
+import static com.alpha.pineapple.plugin.git.GitConstants.RESOURCE_PROPERTY_URI;
 
 import java.io.File;
 import java.util.Collection;
@@ -36,7 +38,6 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.model.configuration.Credential;
 import com.alpha.pineapple.plugin.PluginSession;
-import com.alpha.pineapple.plugin.git.GitConstants;
 import com.alpha.pineapple.resource.ResourcePropertyGetter;
 import com.alpha.pineapple.session.SessionConnectException;
 import com.alpha.pineapple.session.SessionDisconnectException;
@@ -49,12 +50,7 @@ import com.alpha.pineapple.session.SessionException;
 public class GitSessionImpl implements GitSession {
 
 	/**
-	 * Git repository suffix.
-	 */
-	static final String GIT_REPO_SUFFIX = ".git";
-
-	/**
-	 * No check out whne cloning a repository.
+	 * No check out when cloning a repository.
 	 */
 	boolean NO_CHECK_OUT = true;
 
@@ -120,7 +116,7 @@ public class GitSessionImpl implements GitSession {
 
 			// get resource attributes
 			var getter = new ResourcePropertyGetter(resource);
-			uri = getter.getProperty(GitConstants.RESOURCE_PROPERTY_URI);
+			uri = getter.getProperty(RESOURCE_PROPERTY_URI);
 
 			// ls-remote to verify repository can be accessed, result isn't used
 			lsRemote();
@@ -154,7 +150,7 @@ public class GitSessionImpl implements GitSession {
 	}
 
 	@Override
-	public String getRepositoryName() throws Exception {
+	public String getProjectName() throws Exception {
 		if (uri == null) {
 			throw new SessionException(messageProvider.get("gs.get_reponame_uri_failure", resource.getId()));
 		}

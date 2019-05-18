@@ -26,10 +26,10 @@ import java.util.List;
 
 import com.alpha.pineapple.model.configuration.Property;
 import com.alpha.pineapple.model.configuration.Resource;
-import com.alpha.pineapple.plugin.git.model.CloneRepository;
 import com.alpha.pineapple.plugin.git.model.Git;
 import com.alpha.pineapple.plugin.git.model.GitCommand;
 import com.alpha.pineapple.plugin.git.model.ObjectFactory;
+import com.alpha.pineapple.plugin.git.model.Repository;
 
 /**
  * Implementation of the ObjectMother pattern, provides helper functions for
@@ -66,15 +66,15 @@ public class ObjectMotherContent {
 	}
 
 	/**
-	 * Create clone repository command.
+	 * Create repository command.
 	 * 
 	 * @param branch      repository branch
 	 * @param destination local destination.
 	 * 
 	 * @return image command.
 	 */
-	public CloneRepository createCloneCommand(String branch, String destination) {
-		CloneRepository command = gitFactory.createCloneRepository();
+	public Repository createRepository(String branch, String destination) {
+		Repository command = gitFactory.createRepository();
 		command.setBranch(branch);
 		command.setDestination(destination);
 		return command;
@@ -91,7 +91,7 @@ public class ObjectMotherContent {
 	public Git createGitModelWithCloneCommand(String branch, String dest) {
 		Git model = createEmptyGitModel();
 		List<GitCommand> cmds = model.getCommands();
-		cmds.add(createCloneCommand(branch, dest));
+		cmds.add(createRepository(branch, dest));
 		return model;
 	}
 

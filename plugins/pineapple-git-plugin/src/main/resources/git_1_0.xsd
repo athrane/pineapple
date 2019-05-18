@@ -12,7 +12,7 @@
 		<xs:complexType >
 			<xs:sequence>
 				<xs:choice  minOccurs="0" maxOccurs="unbounded" >							
-					<xs:element name="clone" type="cloneRepositoryType" />
+					<xs:element name="repository" type="repositoryType" />
 					<xs:element name="log" type="logType" />
 				 </xs:choice>
 			</xs:sequence>								
@@ -25,9 +25,9 @@
 		</xs:annotation>				
 	</xs:complexType>
 				
-	<xs:complexType name="cloneRepositoryType">
+	<xs:complexType name="repositoryType">
 		<xs:annotation>
-			<xs:documentation>Clone Git repository.</xs:documentation>
+			<xs:documentation>Git repository.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent> 
 			<xs:extension base="commandType"> 

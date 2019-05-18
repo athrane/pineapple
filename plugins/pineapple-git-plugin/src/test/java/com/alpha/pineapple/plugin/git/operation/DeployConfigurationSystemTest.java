@@ -319,7 +319,7 @@ public class DeployConfigurationSystemTest {
 		var content = contentMother.createGitModelWithCloneCommand(branch, nullDest);
 
 		// complete runtime provider setup
-		var unresolvedDest = GitConstants.MODULES_EXP + session.getRepositoryName();
+		var unresolvedDest = GitConstants.MODULES_EXP + session.getProjectName();
 		expect(coreRuntimeDirectoryProvider.resolveModelPath(eq(unresolvedDest), isA(ExecutionResult.class)))
 				.andReturn(destDir);
 		replay(coreRuntimeDirectoryProvider);

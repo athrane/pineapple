@@ -35,13 +35,13 @@ import com.alpha.pineapple.session.Session;
 public interface GitSession extends Session {
 
 	/**
-	 * Get repository name.
+	 * Get project name.
 	 * 
-	 * @return repository name.
+	 * @return project name.
 	 * 
-	 * @throws Exception if resolution od repository name fails.
+	 * @throws Exception if resolution of project name fails.
 	 */
-	String getRepositoryName() throws Exception;
+	String getProjectName() throws Exception;
 
 	/**
 	 * Clone remote repository.

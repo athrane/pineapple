@@ -3,8 +3,6 @@
  ------
  Allan Thrane Andersen 
  ------
- May 2014
- ------
 
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/guides/mini/guide-apt-format.html
@@ -20,7 +18,7 @@ Development documentation
 	During the <<<site>>> phase the schema is copied to the main site in the 
 	<<<pineapple-project>>>. The schema is copied to the directory: <<</ns/plugin>>>.
 	
-	This is implemented in the <<<pom.xml>>> for the <<<pineapple-docker-plugin>>> project. 
+	This is implemented in the <<<pom.xml>>> for the <<<pineapple-git-plugin>>> project. 
 
 * Generation of classes from XML schemas
 
@@ -30,7 +28,7 @@ Development documentation
 ** Customized package names
 	 	
 	The generated classes are mapping into the package 
-	<<<com.alpha.pineapple.plugin.docker.model>>> using the JAXB bindings file at:
+	<<<com.alpha.pineapple.plugin.git.model>>> using the JAXB bindings file at:
 	<<<src/main/resources/bindings.xjb>>>.
 
 ** Customized type names
@@ -57,13 +55,13 @@ Development documentation
 	The plugin contains a configuration file which defines a Spring 
 	application context. The Spring application context defines the 
 	input unmarshalling for the plugin. The file is located in 
-	<<<src/main/resources/com.alpha.pineapple.plugin.docker-config.xml>>>.
+	<<<src/main/resources/com.alpha.pineapple.plugin.git-config.xml>>>.
 	
 ** Internationalization (I18N) configuration file 
 
 	The report generator uses internationalization. Messages 
 	used by classes in the project are located in the file
-	<<<src/main/resources/com.alpha.pineapple.plugin.docker-messages.properties>>>.		 
+	<<<src/main/resources/com.alpha.pineapple.plugin.git-messages.properties>>>.		 
 
 ** JAXB binding file 
 
@@ -78,48 +76,55 @@ Development documentation
 
 ** Plugin class
 
-	The package <<<com.alpha.pineapple.plugin.docker>>> is the root
+	The package <<<com.alpha.pineapple.plugin.git>>> is the root
 	package of the plugin and contains the plugin class <<<PluginImpl>>>. 
 	
-	Furthermore the package contains the interface <<<DockerConstants>>> which
+	Furthermore the package contains the interface <<<GitConstants>>> which
 	constant used by the plugin.
 	
 ** Session class
 
-	The package <<com.alpha.pineapple.plugin.docker.session>> contains the session classes for the plugin:
+	The package <<com.alpha.pineapple.plugin.git.session>> contains the session classes for the plugin:
 
-	* <<<DockerPluginSessionImpl>>> extends the <<<DockerSessionImpl>>> class which implements logic for 
-	connecting and invoking REST services at a Docker daemon. 
-	<<<DockerSessionImpl>>> and its interface are implemented in the <<<pineapple-docker-support>>> project.
+	* <<<GitSession>>> defines the interface for Git sessions.
 
+	* <<<GitSessionImpl>>> implements the session interface and contains logic to access and manipulate Git repositories.
 	[]
 	
 ** Operation classes
 
-	The package <<<com.alpha.pineapple.plugin.docker.operation>>> contains
+	The package <<<com.alpha.pineapple.plugin.git.operation>>> contains
 	the operation classes for the plugin.
 	
 	The plugin implement these default operations: 
 
 	* <<<DeployConfiguration>>> implements the operation <<<deploy-configuration>>>. 
-
-	* <<<UndeployConfiguration>>> implements the operation <<<undeploy-configuration>>>. 
-
-	* <<<CreateReport>> implements the operation <<<create-report>>>. 
 			
 	[]
 		
 ** Model helper classes
 
-	The package <<<com.alpha.pineapple.plugin.docker.model>>> contains model mapper
-	classes for mapping values from the plugin model (e.g. the schema generated classes) to
-	the command contexts:
-	
-	* <<<Mapper>>> defines the interface for mapping values defined in the plugin model
-	to command contexts.
-
-	* <<<MapperImpl>>> implements the <<<Mapper>>> interface.
+	N/A. Model handling is implemented in the operation classes.
 			
 ** Commands
 
-	The command objects from the <<<pineapple-docker-support>>> are used.
+	The package <<com.alpha.pineapple.plugin.git.command>> contains the command classes for the plugin.
+	The plugin implement these commands: 
+
+	* <<<CloneRepositoryCommand>>> implements command to clone a remote Git repository.
+
+	[]
+	
+* Test helper classes
+
+	The package <<com.alpha.testutils>> contains the test helper classes for the plugin.
+	The plugin implement these helpers: 
+
+	* <<<GitTestHelper>>> implements functions to ease testing of the plugin.
+	
+	* <<<ObjectMotherContent>>> implements functions to create models used for testing.
+	
+	[]
+	
+	
+	

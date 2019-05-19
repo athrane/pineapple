@@ -67,11 +67,15 @@ Introduction
 
 	<<<com.alpha.springutils.SpringBeansUtils>>> is small utility class
 	for accessing Spring managed beans in integration tests.
-	
+
+* Interface for system tests
+
+	The package <<<com.alpha.junitutils.category>>> contains marker interfaces 
+	to categorise test cases: <<<UnitTest>>>, <<<IntegrationTest>>> and <<<SystemTest>>>.
 
 * Object mothers
 
-	the object mothers are implementations of the ObjectMother pattern which
+	The object mothers are implementations of the ObjectMother pattern which
 	can manufacture complete objects used in tests. 
 
 	Object mother classes:
@@ -134,8 +138,7 @@ Introduction
 
 	The class defines the default name for directory based JUnit test cases in the constant
 	<<<TestUtilsTestConstants.TEST_DEFAULT_DIRECTORY>>>. 
-	
-	
+		
 * Test context configuration with plugin providers
 
 	The application context file <<<com.alpha.pineapple.testutils-config.xml>>> contains

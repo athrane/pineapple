@@ -164,7 +164,7 @@ How-to: Write unit tests in Pineapple
 
 ** Locate the classes in test source folder
 		
-	The unnit test cases are placed in the <<<src/test/java>>> folder. 
+	The unit test cases are placed in the <<<src/test/java>>> folder. 
 	
 ** Postfix the class names with <<<Test>>>
 	

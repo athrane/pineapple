@@ -148,6 +148,8 @@ Development documentation
 
 	* {{{../pineapple-test-projects/pineapple-test-utils/examples/writing-integration-test.html}How-to: Write integration tests in Pineapple.}}  	
 
+	* {{{../pineapple-test-projects/pineapple-test-utils/examples/writing-system-test.html}How-to: Write system tests in Pineapple.}}  	
+
 	* {{{../examples/generate-module-code.html}How-to: Write code to generate modules.}}	
 
 	[]

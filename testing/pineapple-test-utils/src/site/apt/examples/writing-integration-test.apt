@@ -16,9 +16,6 @@ How-to: Write integration tests in Pineapple
 	Dependencies are managed using dependency injection using Spring.	
 	Mocking is used some exceptions to mock special dependencies. 
 
-An integration test is a test of single class, where dependencies are satisfied using real classes.
-
-
 * How to write integration tests 
 
 	To write integration test do:
@@ -147,6 +144,8 @@ An integration test is a test of single class, where dependencies are satisfied 
 			<artifactId>hamcrest-library</artifactId>
 		</dependency>	
 +-----		
+
+* Write tests
 		
 ** Locate the classes in test source folder
 		
@@ -162,11 +161,6 @@ An integration test is a test of single class, where dependencies are satisfied 
 	
 	Example: The integration test class for the class <<<TestDeployedConfiguration>>> 
 	should be named <<<TestDeployedConfigurationIntegrationTest>>>.
-
-** Annotate the class as an integration test
-
-	The test class should annotated with t
-
 	
 ** Configure the class to be run with the Spring JUnit class runner
 

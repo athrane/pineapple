@@ -3,8 +3,6 @@
  ------
  Allan Thrane Andersen 
  ------
- January 2008
- ------
 
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/guides/mini/guide-apt-format.html
@@ -146,9 +144,9 @@ Development documentation
 
 	* {{{../pineapple-test-projects/pineapple-test-utils/examples/use-mock-messageprovider.html}How-to: Mock the <<<MessageProvider>>> in tests.}}		
 
-	* {{{../pineapple-test-projects/pineapple-test-utils/examples/writing-integration-test.html}How-to: Write integration tests in Pineapple.}}  	
-
 	* {{{../pineapple-test-projects/pineapple-test-utils/examples/writing-unit-test.html}How-to: Write unit tests in Pineapple.}}  		
+
+	* {{{../pineapple-test-projects/pineapple-test-utils/examples/writing-integration-test.html}How-to: Write integration tests in Pineapple.}}  	
 
 	* {{{../examples/generate-module-code.html}How-to: Write code to generate modules.}}	
 

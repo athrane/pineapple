@@ -3,12 +3,19 @@
  ------
  Allan Thrane Andersen
  ------
- July 2009
-
+ 
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/guides/mini/guide-apt-format.html
 
 How-to: Write unit tests in Pineapple
+
+* Definition 
+
+	In the context of the Pineapple project, a unit test is an isolated test of a single class. 
+	Mocking is often used to satisfy dependencies to other classes. 
+	Dependencies are often injected into the class under test.
+
+* How to write unit tests 
 
 	To write unit test do:
 	
@@ -91,7 +98,7 @@ How-to: Write unit tests in Pineapple
 	Version information is located in the <<<pineapple-project/pom.xml>>>. The dependency
 	should be scoped with <<<test>>> as we will only use it to write unit tests.  	 
 	 			 		 	
-** Example: pineapple-weblogic-jmx-plugin dependencies
+** Example: pineapple-helloworld-plugin dependencies
 		
 +-----
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -102,9 +109,9 @@ How-to: Write unit tests in Pineapple
 		<artifactId>pineapple-modules</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>pineapple-weblogic-jmx-plugin</artifactId>
+	<artifactId>pineapple-helloworld-plugin</artifactId>
 	<packaging>jar</packaging>
-	<name>Pineapple WebLogic JMX plugin</name>
+	<name>Pineapple Hello World plugin</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
 		<!-- pineapple internal dependencies -->
@@ -141,26 +148,15 @@ How-to: Write unit tests in Pineapple
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>weblogic</groupId>
-			<artifactId>weblogic</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-configuration</groupId>
-			<artifactId>commons-configuration</artifactId>
-		</dependency>
 		<!-- provides access to @resource annotation  -->		
   		<dependency>
     		<groupId>javax.annotation</groupId>
     		<artifactId>jsr250-api</artifactId>    		
   		</dependency> 				
-		<dependency>
-			<groupId>org.apache.xmlbeans</groupId>
-			<artifactId>xmlbeans</artifactId>			
-		</dependency>  												
 	</dependencies>
+
+    ....
 	
-	<!-- a lot of other stuff here.... -->
 </project>
 +-----		
 		
@@ -175,7 +171,7 @@ How-to: Write unit tests in Pineapple
 	Test classes are named <<<XxxTest>>> where <<<Xxx>>> is the 
 	name of the class which is integration tested. 
 	
-	Example: The integration test class for the class <<<TestDeployedConfiguration>>> 
+	Example: The unit test class for the class <<<TestDeployedConfiguration>>> 
 	should be named <<<TestDeployedConfigurationTest>>>.
 		
 ** Use the Spring ReflectionTestUtils to inject annotated dependencies into the class under test
@@ -197,11 +193,11 @@ How-to: Write unit tests in Pineapple
 	[]
 	
 	Example: The class <<<TestDeployedConfiguration>>> in
-	the <<<pineapple-weblogic-jmx-plugin>>> project, has a field named <<<director>>>
-	which is which is annotated with the <<<@Resource>>> annotation:
+	the <<<pineapple-helloworld-plugin>>> project, could have a field named <<<director>>>
+	which is annotated with the <<<@Resource>>> annotation:
 	
 +-----
-package com.alpha.pineapple.plugin.weblogic.jmx.operation;
+package com.alpha.pineapple.plugin.helloworld.operation;
 
 import javax.annotation.Resource;
 
@@ -267,7 +263,6 @@ public class TestDeployedConfigurationTest
 	
 	[]
  
-
 +-----
 @Test
 public void testSomething()
@@ -295,39 +290,7 @@ public void testSomething()
     EasyMock.verify( domainMbean );                    
 }
 +-----
-	
-	
-** Mock objects with no interface
-
-	To mock objects with no interface:
-	
-	* Add Maven dependency to the EasyMock Class Extension project.
-	
-	* Mock object using the Easy mock Object in the package <<<org.easymock.classextension.EasyMock>>>.  
-
-	[]
-	
-	First, add this stanza to the Maven project:	
-
-+-----
-  <dependency>
-    <groupId>org.easymock</groupId>  
-    <artifactId>easymockclassextension</artifactId>  
-    <scope>test</scope>  		
-  </dependency>				
-+-----	
-	 	 
-	Second, use the EasyMock class in <<<org.easymock.classextension>>> instead of
-	<<<org.easymock>>>. If you need to mock interfaces and objects in the same test class
-	then use a fully qualified package name to mock objects: 	 	 	 
-
-+-----
-    // create mock director
-    director = org.easymock.classextension.EasyMock.createMock( TraversalDirector.class );
-+-----	 
-
-	{{{http://easymock.org/EasyMock2_4_ClassExtension_Documentation.html}Link to the EasyMock Class Extension documentation.}}	
-	
+		
 * Inspect log files
 
 	If the projects doesn't define any <<<log4j.properties>> in 

@@ -1,0 +1,80 @@
+ ------
+ How-to: Write system tests in Pineapple  
+ ------
+ Allan Thrane Andersen
+ ------
+ 
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/guides/mini/guide-apt-format.html
+
+How-to: Write integration tests in Pineapple
+
+* Definition 
+
+	In the context of the Pineapple project, a system test is a test that have dependencies to external resources
+	like servers, containers, repositories or infrastructure.	
+	Otherwise, system tests are implemented using the same techniques used for integration tests.
+
+* How to write system tests 
+
+	* Add Maven dependencies to the project
+	
+	* Write tests.	
+	
+	* Inspect log files.
+	
+	* Automate the creation and destruction of external resources.
+	
+	[]		  
+		 
+* Add Maven dependencies to the project	
+
+	Implement the Maven dependencies in the same way that they would be implemented for integration tests.		 
+		 
+* Write tests
+
+	Implement the test using the same techniques used for integration tests.		 
+
+** Locate the classes in test source folder
+		
+	The integration test cases are placed in the <<<src/test/java>>> folder. 
+	
+	Integration tests are located in same folders as the unit tests. The tests 
+	are separated by the used naming convention, as shown in the next section.		
+	
+** Postfix the class names with <<<SystemTest>>>
+	
+	Test classes are named <<<XxxSystemTest>>> where <<<Xxx>>> is the 
+	name of the class which is system tested. 
+	
+	Example: The integration test class for the class <<<TestDeployedConfiguration>>> 
+	should be named <<<TestDeployedConfigurationSystemTest>>>.
+
+** Annotate the class with the JUnit category <<Systemtest>>
+		 
+	System test classes are annotated with the JUnit category to identify it as system test classes:
+			 
++-----
+@Category(SystemTest.class)
+public class MySystemTest {
+
+}
++-----			 
+		 
+	The purpose is to isolate the execution of system tests since they take longer times and have more 
+	elaborate requirements.		 
+		 
+* Inspect log files
+
+	If the projects doesn't define any <<<log4j.properties>> in 
+	<<<src/java/resources/log4.properties>>> then the <<<pineapple-test-utils>>> project
+	contains a log4j configuration file defined in the directory 
+	<<<src/java/resources/log4.properties>>> for use by dependent projects as 
+	part of their test configuration. 
+	
+	The test configuration configures Log4j to write log files 
+	to <<<$\{user.home}/.pineapple/logs/pineapple-.log>>>.
+		 		
+		 		
+		
+		

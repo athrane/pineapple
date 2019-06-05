@@ -3,12 +3,20 @@
  ------
  Allan Thrane Andersen
  ------
- January 2009
-
+ 
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/guides/mini/guide-apt-format.html
 
 How-to: Write integration tests in Pineapple
+
+* Definition 
+
+	In the context of the Pineapple project, an integration test is an isolated test of a single class or a set of classes.
+	Dependencies to other classes are satisfied using real classes.
+	Dependencies are managed using dependency injection using Spring.	
+	Mocking is used some exceptions to mock special dependencies. 
+
+* How to write integration tests 
 
 	To write integration test do:
 		
@@ -39,7 +47,7 @@ How-to: Write integration tests in Pineapple
   <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>org.springframework.test</artifactId>
-	<scope>test</scope>		
+    <scope>test</scope>		
   </dependency>					
 +-----
 
@@ -72,16 +80,16 @@ How-to: Write integration tests in Pineapple
 +-----
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.alpha.pineapple</groupId>
-		<artifactId>pineapple-modules</artifactId>
-		<version>1.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>pineapple-infrastructure-test-plugin</artifactId>
-	<packaging>jar</packaging>
-	<name>Pineapple infrastructure test plugin</name>
-	<url>http://maven.apache.org</url>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+    <groupId>com.alpha.pineapple</groupId>
+        <artifactId>pineapple-modules</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>pineapple-infrastructure-test-plugin</artifactId>
+    <packaging>jar</packaging>
+    <name>Pineapple infrastructure test plugin</name>
+    <url>http://maven.apache.org</url>
 	<dependencies>
 		<!-- pineapple internal dependencies -->
 		<dependency>
@@ -98,12 +106,6 @@ How-to: Write integration tests in Pineapple
 			<scope>test</scope>									
 		</dependency>														
 		<!-- external dependencies -->
-		<!-- junit-dep version is used to be able to import hamcrest 1.2  -->				
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit-dep</artifactId>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>  
 			<artifactId>easymock</artifactId>  
@@ -114,42 +116,9 @@ How-to: Write integration tests in Pineapple
 			<artifactId>org.springframework.test</artifactId> 
 			<scope>test</scope>
 		</dependency>			
-		<!-- required due to jaxb marshaller declaration -->
-		<dependency>
-			<groupId>org.springframework</groupId> 			
-			<artifactId>org.springframework.oxm</artifactId> 
-			<scope>test</scope>
-		</dependency>	
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<scope>test</scope>						    		
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-servlet</artifactId>
-			<scope>test</scope>						    		
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-webapp</artifactId>
-			<scope>test</scope>						    		
-		</dependency>														 									
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-net</groupId>
-			<artifactId>commons-net</artifactId>
 		</dependency>
 		<!-- provides access to @resource annotation  -->
   		<dependency>
@@ -174,15 +143,10 @@ How-to: Write integration tests in Pineapple
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-library</artifactId>
 		</dependency>	
-		<dependency>
-			<groupId>htmlcleaner</groupId>
-			<artifactId>htmlcleaner</artifactId>
-		</dependency>																					 																			 						
-	</dependencies>	
 +-----		
-		
-* Write tests
 
+* Write tests
+		
 ** Locate the classes in test source folder
 		
 	The integration test cases are placed in the <<<src/test/java>>> folder. 
@@ -216,15 +180,15 @@ How-to: Write integration tests in Pineapple
 	application context from the designated location(s). 	
 
 	Example: The integration class <<<TestDeployedConfigurationIntegrationTest>>> in 
-	the <<<pineapple-weblogic-jmx-plugin-integration-test>>> project is configured with:	
+	the <<<pineapple-helloworld-plugin-integration-test>>> project could be configured with:	
 	
-	* <<<@ContextConfiguration( locations = { "/com.alpha.pineapple.plugin.weblogic.jmx-config.xml" } )>>>
+	* <<<@ContextConfiguration( locations = { "/com.alpha.pineapple.plugin.helloworld-config.xml" } )>>>
 	to load the application context from the <<<src/main/resources directory>>> from the 
-	<<<pineapple-weblogic-jmx-plugin>>> project. <<Please notice:>> The integration test uses the Spring 
+	<<<pineapple-helloword-plugin>>> project. <<Please notice:>> The integration test uses the Spring 
 	application context file which is used to configure the project. 
 		
 +-----		
-package com.alpha.pineapple.plugin.weblogic.jmx.operation;
+package com.alpha.pineapple.plugin.helloworld.operation;
 
 import ...;
 
@@ -232,7 +196,7 @@ import ...;
  * Integration test for the <code>TestDeployedConfiguration</code> class.  
  */
 @RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration( locations = { "/com.alpha.pineapple.plugin.weblogic.jmx-config.xml" } )
+@ContextConfiguration( locations = { "/com.alpha.pineapple.plugin.helloworld-config.xml" } )
 public class TestDeployedConfigurationIntegrationTest
 {
 	// class content goes here... 
@@ -255,12 +219,12 @@ public class TestDeployedConfigurationIntegrationTest
 	application context file.
 	
 	Example: The integration class <<<TestDeployedConfigurationIntegrationTest>>> in 
-	the <<<pineapple-weblogic-jmx-plugin-integration-test>>> project, is implemented 
+	the <<<pineapple-helloworld-plugin>>> project, could be implemented 
 	with the field <<<TestDeployedConfiguration operation;>>> which is annotated with
 	the <<<@Resource>>> annotation:
 	
 +-----		
-package com.alpha.pineapple.plugin.weblogic.jmx.operation;
+package com.alpha.pineapple.plugin.helloworld.operation;
 
 import ...;
 
@@ -268,7 +232,7 @@ import ...;
  * Integration test for the <code>TestDeployedConfiguration</code> class.  
  */
 @RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration( locations = { "/com.alpha.pineapple.plugin.weblogic.jmx-config.xml" } )
+@ContextConfiguration( locations = { "/com.alpha.pineapple.plugin.helloworld-config.xml" } )
 public class TestDeployedConfigurationIntegrationTest
 {
     /**
@@ -281,13 +245,78 @@ public class TestDeployedConfigurationIntegrationTest
 }		
 +-----			
 
-   The bean is defined in the application context file for the <<<pineapple-weblogic-jmx-plugin>>> project:
+
+** Add Spring environment profile to support injection of the class under test
+
+	In order to enable Spring to inject the class under test (as described in the previous paragraph) it is required 
+	to add the class to Spring context configuration.
+
+	Some classes are added to the context in order for them to be injected, e.g. command classes and the message provider.
+	But other classes are discovered by the class scanning as part of the plugin framework initialized of plugins, e.g. operation classes.
+	The bean is defined in the application context file for the <<<pineapple-helloworld-plugin>>> project:
 
 +-----			   
-<bean id="testDeployedConfiguration" class="com.alpha.pineapple.plugin.weblogic.jmx.operation.TestDeployedConfiguration" />
+    <bean id="testDeployedConfiguration" class="com.alpha.pineapple.plugin.helloworld.operation.TestDeployedConfiguration" />
++-----			   
+	 	
+** Define mock plugin providers
+
+	There are two approaches to define mock objects for plugin providers in integration tests:
+	
+	* Define mock providers in the Spring application context
+	
+	* Use mock providers from the test-utils project
+	
+	[]
+
+*** Define mock providers in the Spring application context
+
+	If an integration test requires usage of plugin providers, then a mock provider can be defined 
+	in the Spring application context using the Spring feature classed environment profile.
+	
+	An environment profile allows for the definition of beans which are only accessible when the test
+	is executed with the profile defined as being active.
+	
+	To enable it: 	
+	
+	* Define an environment profile named <integration-test>.
+	
+	* Define mock providers and other test classes to be injected into test classes 
+	in the application context within the profile section:
+
++-----			   
+    <!-- 
+        definitions used by the integration tests. 
+        Only available for test with @ActiveProfiles("integration-test") 
+    -->
+    <beans profile="integration-test" >
+        <bean id="defaultOperation" class="com.alpha.pineapple.plugin.agent.operation.DefaultOperation" />		
+        <bean id="coreAdministrationProvider" class="org.easymock.EasyMock" factory-method="createMock" primary="true" >
+            <constructor-arg value="com.alpha.pineapple.admin.AdministrationProvider"/>
+        </bean>
+        <bean id="coreExecutionInfoProvider" class="org.easymock.EasyMock" factory-method="createMock">
+            <constructor-arg value="com.alpha.pineapple.execution.ExecutionInfoProvider"/>
+        </bean>
+        <bean id="coreRuntimeDirectoryProvider" class="org.easymock.EasyMock" factory-method="createMock">
+            <constructor-arg value="com.alpha.pineapple.io.file.RuntimeDirectoryProvider"/>
+        </bean>					    	    	
+    </beans>
 +-----			   
 
-** Use the test context configuration to test classes which uses plugin providers
+	* A test class that need access to the mock providers (or other test classes to be injected) must be annotated with
+	the <<<@ActiveProfiles("integration-test")>>>:
+
++-----			   
+@ActiveProfiles("integration-test")
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestExecutionListeners({ DirectoryTestExecutionListener.class, DependencyInjectionTestExecutionListener.class })
+@ContextConfiguration(locations = { PLUGIN_APP_CONTEXT })
+public class CloneRepositoryCommandSystemTest {
++-----			   
+
+ 	[]
+
+*** Use the test context configuration to test classes which uses plugin providers
 
 	The plugin framework defines two plugin providers which can provide a plugin with 
 	useful information at runtime:
@@ -334,7 +363,7 @@ public class TestDeployedConfigurationIntegrationTest
 	classes. Example:
 
 +-----		
-package com.alpha.pineapple.plugin.weblogic.jmx.operation;
+package com.alpha.pineapple.plugin.helloworld.operation;
 
 import ...;
 
@@ -342,7 +371,7 @@ import ...;
  * Integration test for the <code>TestDeployedConfiguration</code> class.  
  */
 @RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration( locations = { "/com.alpha.pineapple.testutils-config.xml", "/com.alpha.pineapple.plugin.weblogic.jmx-config.xml" } )
+@ContextConfiguration( locations = { "/com.alpha.pineapple.testutils-config.xml", "/com.alpha.pineapple.plugin.helloworld-config.xml" } )
 public class TestDeployedConfigurationIntegrationTest
 {
 	// class content goes here... 

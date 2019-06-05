@@ -3,9 +3,7 @@
  ------
  Allan Thrane Andersen 
  ------
- September 2013
- ------
-
+ 
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/guides/mini/guide-apt-format.html
 
@@ -15,8 +13,7 @@ Pineapple Continuous Integration
 	and test the Pineapple project.
 
 	Two setups are used to develop Pineapple:
-	
-		
+			
 	* A CI setup is implemented at Shippable.
 	
 	* A local setup is implemented which can be installed as a module.
@@ -726,7 +723,24 @@ end
 	
 	[]
 		 				 		
+* Organisation of tests in Pineapple
+
+	Test cases in Pineapple are organised into three groups: 
+	
+	* Unit tests. A unit test is an isolated test of a single class. Mocking is often used to satisfy dependencies. 
+	For information about how to write unit tests in Pineapple, see: {{{../pineapple-test-projects/pineapple-test-utils/examples/writing-unit-test.html}How-to: Write unit tests in Pineapple.}}  		
+	
+	* Integration tests. An integration test is a test of single class, where dependencies are satisfied using real classes.
+	For information about how to write integration tests in Pineapple, see: {{{../pineapple-test-projects/pineapple-test-utils/examples/writing-integration-test.html}How-to: Write integration tests in Pineapple.}}  	
+	
+	* System tests. A system test is a integration like test with dependencies to external resources e.g. servers, containers repositories and infrastructure.
+	For information about how to write system tests in Pineapple, see: {{{../pineapple-test-projects/pineapple-test-utils/examples/writing-system-test.html}How-to: Write system tests in Pineapple.}}  	
+		
+	[] 			
+
+
 * Configuration		
+	
 
 ** Test setup for the Docker support project
 
@@ -758,75 +772,11 @@ end
 
 	TODO: write..
 
-** Test setup for the Weblogic JMX plugin
-
-*** Requirements to test the WebLogic JMX plugin
-
-	To test the plugin one virtual server must be provisioned. 
-	
-	The server is provisioned independently of the tests, and the tests assume that 
-	the server is available in a well defined state:
-	
-	* Expected network configuration.
-	
-	* Expected services are running.
-	
-	* Expected users and directories exists (with the right access rights).
-	
-	* Expected shared directories exists on the host and the guests. 
-
-	* A JVM is installed. 
-		 	
-	* WebLogic is installed.
-	 		 	
-	[]
-
 
 ** Test setup for the SSH plugin
 
 	TODO: write..
 
-*** Requirements to test the SSH plugin
+** Test setup for the Git plugin
 
-	To test the SSH plugin one virtual server must be provisioned. 
-
-	The server is provisioned independently of the tests, and the tests assume that 
-	the server is available in a well defined state:
-	
-	* Expected network configuration.
-	
-	* Expected services are running.
-	
-	* Expected users and directories exists (with the right access rights).
-	
-	* Expected shared directories exists on the host and the guests. 
-		 	
-	[]
-
-** Shared Test Server Configuration - OLD SETUP TO BE REWORKED
-
-*** Shared Folders
-
-	The shared folder <<</testcases>>> exists on the guest and it is mapped to the 
-	directory <<<$\{java.io.tmpdir\}/testcases>>> on the host which is the default directory 
-	for directory based JUnit test cases in Pineapple. The default directory for directory 
-	based JUnit test cases is defined by the constant <<<com.alpha.testutils.TestUtilsTestConstants.runtimeDirectory>>>.
-
-** Test Server Configuration for the SSH plugin
-
-	Additional configurations to support testing the SSH plugin.
-
-*** Network
-
-	* SSH Test host:
-	
-		* Purpose: Integration test of the SSH Plugin. 
-	
-		* IP address: 192.168.100.10
-		
-		[]
-
-
-		 		
-		 		
-		 		
+	No requirements for integration and system tests.

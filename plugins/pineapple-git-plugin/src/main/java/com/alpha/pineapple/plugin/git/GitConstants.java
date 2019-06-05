@@ -67,6 +67,11 @@ public interface GitConstants {
 	/**
 	 * Modules directory expression constant.
 	 */
-	public String MODULES_EXP = "modules:"; 
+	public String MODULES_EXP = "modules:";
+
+	/**
+	 * Git repository suffix.
+	 */
+	public String GIT_REPO_SUFFIX = ".git"; 
 	
 }

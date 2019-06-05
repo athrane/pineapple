@@ -40,7 +40,7 @@ import com.alpha.pineapple.plugin.git.session.GitSession;
  * <li><code>destination</code> defines the destination directory for the clone.
  * The destination is resolved using the {@linkplain RuntimeDirectoryProvider}
  * to support resolution of module path variables. If the destination is blank
- * then value is resolved to 'modules:REPOSITORY_NAME'. If the resolved
+ * then value is resolved to 'modules:project'. If the resolved
  * destination directory exists then it is deleted prior to cloning the
  * repository.The type is {@linkplain String}.</li>
  * 
@@ -151,7 +151,7 @@ public class CloneRepositoryCommand implements Command {
 
 			// if undefined destination set default value
 			if (destination.isBlank())
-				destination = MODULES_EXP + session.getRepositoryName();
+				destination = MODULES_EXP + session.getProjectName();
 
 			// resolve destination directory
 			var destDir = coreRuntimeDirectoryProvider.resolveModelPath(destination, executionResult);

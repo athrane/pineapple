@@ -61,7 +61,7 @@ git-000-clone-repo
     <mmd:model target-resource="git-pineapple-example-repo">
         <mmd:content>
             <gp:git>
-                <gp:clone destination="modules:pineapple-git-plugin-test-repository" branch="master" />
+                <gp:repository destination="modules:pineapple-git-plugin-test-repository" branch="master" />
             </gp:git>
         </mmd:content>
     </mmd:model>
@@ -82,16 +82,17 @@ git-000-clone-repo
 	
 	The <<<gp:git>>> element defines the root of model for the Docker plugin. 
 	
-	The <<<gp:clone>>> element defines a Clone operation to executed on the Git repository defined in the targeted resource.
+	The <<<gp:repository>>> element defines a repository entity.
 
-	The optional <<<clone.destination>>> attribute defines a path expression for the target directory where the cloned repository is stored.
+	The optional <<<repository.destination>>> attribute defines a path expression for the target directory where the repository is stored when it is cloned. 
 	The value should probably be an absolution path. 
 	The value can be prefixed with the <<<modules:>>> identifier. 
-	If the identifier is present then Pineapple with interpret the path as an relative path is located in the Pineapple modules directory.
-	In the above example the value is <<<modules:>>> and a directory name, in this case the repository is cloned into the Pineapple modules directory
-	and can be used as a module if the repository contains a module.
+	If the identifier is present then Pineapple will interpret the path as an relative path where the root is the Pineapple modules directory.
+	If the identifier is present then the path is resolved with the root in Pineapple modules directory.
+	In this case the directory is created as a sub directory relative to Pineapple modules directory and the repository is cloned into this directory.
+	Afterwards the cloned repository is positioned and can be used as a module if the repository contains a module.
 			 
-	The optional <<<clone.branch>>> attribute defines which branch of the repository is cloned.
+	The optional <<<repository.branch>>> attribute defines which branch of the repository should be cloned.
 	The 'master' branch is cloned in this example.		 
 		 
 * Invoke Pineapple to execute model 

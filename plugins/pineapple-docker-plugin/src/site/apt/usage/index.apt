@@ -38,8 +38,8 @@ Introduction
 	
 	
 	[[2]] {{{Define_the_module_model}Define the module model}} and add 
-	content to the model by defining a set of directives which are executed at the targeted resource(s). The
-	directives are executed in sequence when the plugin is invoked with the model. The model is defined using the 
+	content to the model by defining a set of entities which are processed at the targeted resource(s). The
+	entities are processed in sequence when the plugin is invoked with the model. The model is defined using the 
 	{{{The_docker_plugin_schema}The Docker plugin schema}}.
 							
 	[]
@@ -228,7 +228,7 @@ Introduction
 		
 ** Name and location of the the module model file	
 	
-	The list of commands which should be executed when the plugin is invoked are defined 
+	The list of entities which should be processed when the plugin is invoked are defined 
 	in the module model files which are located at
 	<<<$\{module-dir\}/models/$\{environment\}.xml>>> where:
 	
@@ -241,7 +241,7 @@ Introduction
 	
 	[]   	  
 	
-	If the model file doesn't exist for an environment where the agent should be used, 
+	If the model file doesn't exist for an environment where the plugin should be used, 
 	then create the model file and name it after the target environment, e.g. 
 	<<<linux-vagrant.xml>>> for an environment named <<<linux-vagrant>>>.
 	
@@ -250,7 +250,7 @@ Introduction
 	Module model files are defined using the <<module model configuration schema>>
 	which defines the <<<http://pineapple.dev.java.net/ns/module_model_1_0>>>
 	namespace. Since module model files contain elements from multiple
-	namespace all the elements and attributes should be qualified. The header and
+	namespaces all the elements and attributes should be qualified. The header and
 	root element should be defined as (look in the 
 	{{{../../../usage/configuration-modules.html}Modules configuration}}	
 	document for more details):

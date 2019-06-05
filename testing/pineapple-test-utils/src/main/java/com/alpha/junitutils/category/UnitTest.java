@@ -2,7 +2,7 @@
  * Pineapple - a tool to install, configure and test Java web applications 
  * and infrastructure. 
  * 
- * Copyright (C) 2007-2019 Allan Thrane Andersen..
+ * Copyright (C) 2007-2019 Allan Thrane Andersen.
  * 
  * This file is part of Pineapple.
  * 
@@ -20,46 +20,11 @@
  * with Pineapple. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package com.alpha.pineapple.plugin.git.session;
-
-import java.io.File;
-import java.util.Collection;
-
-import org.eclipse.jgit.lib.Ref;
-
-import com.alpha.pineapple.session.Session;
+package com.alpha.junitutils.category;
 
 /**
- * Session which provides access to a Git session.
+ * Marker interface for identification of system tests.
  */
-public interface GitSession extends Session {
-
-	/**
-	 * Get project name.
-	 * 
-	 * @return project name.
-	 * 
-	 * @throws Exception if resolution of project name fails.
-	 */
-	String getProjectName() throws Exception;
-
-	/**
-	 * Clone remote repository.
-	 * 
-	 * @param branch repository branch.
-	 * @param dest   local destination for repository
-	 * 
-	 * @throws Exception if clone fails
-	 */
-	void cloneRepository(String branch, File dest) throws Exception;
-
-	/**
-	 * Execute Git ls-remote.
-	 * 
-	 * @return a map from names to references in the remote repository.
-	 * 
-	 * @throws Exception if ls-remote fails.
-	 */
-	Collection<Ref> lsRemote() throws Exception;
+public interface UnitTest {
 
 }

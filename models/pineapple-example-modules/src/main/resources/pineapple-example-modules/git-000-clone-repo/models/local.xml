@@ -4,7 +4,7 @@
     <mmd:model target-resource="git-pineapple-example-repo">
         <mmd:content>
 			<gp:git>
-				<gp:clone destination="modules:pineapple-git-plugin-test-repository" branch="master" />
+				<gp:repository destination="modules:pineapple-git-plugin-test-repository" branch="master" />
 			</gp:git>
 		</mmd:content>
     </mmd:model>

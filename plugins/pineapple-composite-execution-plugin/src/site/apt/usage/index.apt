@@ -34,7 +34,7 @@ Introduction
 	
 	[[2]] {{{Define_the_module_model}Define the module model}} and add 
 	content to the model by defining a list of composite modules. The composite
-	modules are executed in sequence when the plugin is invoked with the model. The model is defined using the 
+	modules are processed in sequence when the plugin is invoked with the model. The model is defined using the 
 	{{{The_composite_execution_plugin_schema}The composite execution plugin schema}}.
 							
 	[]

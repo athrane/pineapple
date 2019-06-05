@@ -56,9 +56,11 @@ Overview
 	* {{{./examples/write-testcase-with-directories.html}How-to: Write test cases that requires disk access.}}		
 	
 	* {{{./examples/use-mock-messageprovider.html}How-to: Mock the <<<MessageProvider>>> in tests.}}		
+
+	* {{{./examples/writing-unit-test.html}How-to: Write unit tests in Pineapple.}}
 	
 	* {{{./examples/writing-integration-test.html}How-to: Write integration tests in Pineapple.}}
 	
-	* {{{./examples/writing-unit-test.html}How-to: Write unit tests in Pineapple.}}
-	
+	* {{{./examples/writing-system-test.html}How-to: Write system tests in Pineapple.}}
+		
 	[]  

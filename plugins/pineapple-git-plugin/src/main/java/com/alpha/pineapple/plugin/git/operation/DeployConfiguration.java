@@ -45,10 +45,10 @@ import com.alpha.pineapple.io.file.RuntimeDirectoryProvider;
 import com.alpha.pineapple.plugin.Operation;
 import com.alpha.pineapple.plugin.PluginExecutionFailedException;
 import com.alpha.pineapple.plugin.PluginOperation;
-import com.alpha.pineapple.plugin.git.model.CloneRepository;
 import com.alpha.pineapple.plugin.git.model.Git;
 import com.alpha.pineapple.plugin.git.model.GitCommand;
 import com.alpha.pineapple.plugin.git.model.Log;
+import com.alpha.pineapple.plugin.git.model.Repository;
 import com.alpha.pineapple.plugin.git.session.GitSession;
 import com.alpha.pineapple.resource.ResourcePropertyGetter;
 import com.alpha.pineapple.session.Session;
@@ -146,13 +146,13 @@ public class DeployConfiguration implements Operation {
 				return;
 			}
 
-			if (command instanceof CloneRepository) {
-				cloneRepository(session, (CloneRepository) command, result);
+			if (command instanceof Repository) {
+				cloneRepository(session, (Repository) command, result);
 				continue;
 			}
 
 			if (command instanceof Log) {
-				log(session, (CloneRepository) command, result);
+				log(session, (Repository) command, result);
 				continue;
 			}
 
@@ -163,11 +163,11 @@ public class DeployConfiguration implements Operation {
 	 * Clone repository .
 	 * 
 	 * @param session Git session.
-	 * @param command Clone repository command.
+	 * @param command repository command.
 	 * @param result  execution result
 	 */
 	@SuppressWarnings("unchecked")
-	void cloneRepository(GitSession session, CloneRepository command, ExecutionResult result) {
+	void cloneRepository(GitSession session, Repository command, ExecutionResult result) {
 
 		// create execution result
 		var getter = new ResourcePropertyGetter(session.getResource());
@@ -194,7 +194,7 @@ public class DeployConfiguration implements Operation {
 	 * @param command Clone repository command.
 	 * @param result  execution result
 	 */
-	void log(GitSession session, CloneRepository command, ExecutionResult result) {
+	void log(GitSession session, Repository command, ExecutionResult result) {
 		// TOOD: implement
 	}
 

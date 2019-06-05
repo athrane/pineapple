@@ -30,12 +30,14 @@
 	<!-- define command objects -->
 	<bean id="cloneRepositoryCommand" class="com.alpha.pineapple.plugin.git.command.CloneRepositoryCommand" />
 	    	    			
+	<!-- define operation objects -->	    	    			
+	<bean id="deployConfiguration" class="com.alpha.pineapple.plugin.git.operation.DeployConfiguration" />
+			    	    			
  	<!-- 
  		definitions used by the integration tests. 
  		Only available for test with @ActiveProfiles("integration-test") 
  	-->
 	<beans profile="integration-test" >
-		<bean id="deployConfiguration" class="com.alpha.pineapple.plugin.git.operation.DeployConfiguration" />		
 		<bean id="coreRuntimeDirectoryProvider" class="org.easymock.EasyMock" factory-method="createMock">
 			<constructor-arg value="com.alpha.pineapple.io.file.RuntimeDirectoryProvider"/>
 		</bean>

@@ -36,7 +36,7 @@ Overview
 		
 		[]
 
-	* <<Execution of scheduled operations>> 
+	* <<Execution of scheduled operations:>> 
 
 		* Execution of modules can be scheduled with a fixed frequency.
 		
@@ -50,7 +50,7 @@ Overview
 
 		[]
 
-	* <<Git support :>>
+	* <<Git support:>>
 	
 		* Pineapple modules can be pulled from Git repositories.
 		

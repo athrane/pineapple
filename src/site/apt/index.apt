@@ -3,9 +3,7 @@
  ------
  Allan Thrane Andersen 
  ------
- January 2008
- ------
-
+ 
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/guides/mini/guide-apt-format.html
 
@@ -38,18 +36,26 @@ Overview
 		
 		[]
 
-	* <<Execution of scheduled operations>> 
+	* <<Execution of scheduled operations:>> 
 
-		* Jobs can be scheduled with a fixed frequency.
+		* Execution of modules can be scheduled with a fixed frequency.
+		
+		[]
 		
 	* <<Configuration and test of Linux:>>
 	
 		* SSH based test of settings on Linux hosts.
 			
 		* SSH based configuration of Linux hosts.
-		
-	[]
+
+		[]
+
+	* <<Git support:>>
 	
+		* Pineapple modules can be pulled from Git repositories.
+		
+		[]
+		
 * Usage
 
 	Follow the <<{{{./usage/installation.html}Installation guide}}>> to download or build Pineapple. 

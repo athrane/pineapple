@@ -26,15 +26,8 @@ Overview
 
 	The plugin supports the default operations:
 	
-    * <<test>> (from the test workflow). When the plugin is invoked with this operation, it will do nothing.
-    
-    * <<create-report>> (from the report workflow). When the plugin is invoked with this operation, it will do nothing.
-
-    * <<deploy-configuration>> (from the Deployment workflow). When the plugin is invoked with this operation,
-    it will perform all the defined Git operations.
-    
-    * <<undeploy-configuration>> (from the Deployment workflow). When the plugin is invoked with this operation,
-    it will do nothing .
+    * <<deploy-configuration>> (from the Deployment workflow). When the plugin is invoked with this operation,    
+    it will pull remote repositories.
     
     []
 		

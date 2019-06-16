@@ -29,12 +29,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.log4j.Logger;
-import org.jasypt.salt.RandomSaltGenerator;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -42,16 +39,13 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zul.Messagebox;
 
-import com.alpha.javautils.StackTraceHelper;
 import com.alpha.pineapple.OperationNames;
 import com.alpha.pineapple.i18n.MessageProvider;
 import com.alpha.pineapple.model.execution.scheduled.ScheduledOperation;
 import com.alpha.pineapple.model.execution.scheduled.ScheduledOperations;
 import com.alpha.pineapple.model.module.info.Model;
 import com.alpha.pineapple.model.module.info.Module;
-import com.alpha.pineapple.module.ModuleInfo;
 import com.alpha.pineapple.web.spring.rest.ModuleController;
 import com.alpha.pineapple.web.spring.rest.ScheduledOperationController;
 import com.alpha.pineapple.web.zk.utils.ErrorMessageBoxHelper;
@@ -222,8 +216,7 @@ public class CreateScheduledOperationModalPanel {
 	 * Event handler for onChanging and onFocus events from the name text box. Will
 	 * update the creation status.
 	 * 
-	 * @param event
-	 *            event from text box.
+	 * @param event event from text box.
 	 */
 	@Command
 	@NotifyChange({ "creationStatus", "creationStatusAsString" })
@@ -236,8 +229,7 @@ public class CreateScheduledOperationModalPanel {
 	 * Event handler for onChanging and onFocus events from the description text
 	 * box. Will update the creation status.
 	 * 
-	 * @param event
-	 *            event from text box.
+	 * @param event event from text box.
 	 */
 	@Command
 	@NotifyChange({ "creationStatus", "creationStatusAsString" })
@@ -250,8 +242,7 @@ public class CreateScheduledOperationModalPanel {
 	 * Event handler for onChanging and events from the cron text box. Will update
 	 * the creation status.
 	 * 
-	 * @param cron
-	 *            cron scheduling expression.
+	 * @param cron cron scheduling expression.
 	 */
 	@Command
 	@NotifyChange({ "creationStatus", "creationStatusAsString" })
@@ -272,8 +263,7 @@ public class CreateScheduledOperationModalPanel {
 	/**
 	 * Set module.
 	 * 
-	 * @param module
-	 *            module.
+	 * @param module module.
 	 */
 	@NotifyChange({ "creationStatus", "creationStatusAsString", "models" })
 	public void setModule(Module module) {
@@ -295,8 +285,7 @@ public class CreateScheduledOperationModalPanel {
 	/**
 	 * Set model.
 	 * 
-	 * @param model
-	 *            model.
+	 * @param model model.
 	 */
 	@NotifyChange({ "creationStatus", "creationStatusAsString" })
 	public void setModel(Model model) {
@@ -316,8 +305,7 @@ public class CreateScheduledOperationModalPanel {
 	/**
 	 * Set operation name.
 	 * 
-	 * @param name
-	 *            operation name.
+	 * @param name operation name.
 	 */
 	@NotifyChange({ "creationStatus", "creationStatusAsString", "models" })
 	public void setOperation(String operation) {
@@ -337,8 +325,7 @@ public class CreateScheduledOperationModalPanel {
 	/**
 	 * Set name.
 	 * 
-	 * @param name
-	 *            name.
+	 * @param name name.
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -356,8 +343,7 @@ public class CreateScheduledOperationModalPanel {
 	/**
 	 * Set description.
 	 * 
-	 * @param description
-	 *            description.
+	 * @param description description.
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -375,8 +361,7 @@ public class CreateScheduledOperationModalPanel {
 	/**
 	 * Set scheduling expression.
 	 * 
-	 * @param cron
-	 *            scheduling expression.
+	 * @param cron scheduling expression.
 	 */
 	public void setCron(String cron) {
 		this.cron = cron;

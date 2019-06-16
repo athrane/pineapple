@@ -35,17 +35,12 @@ import java.util.Set;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.ContextParam;
-import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 
 import com.alpha.pineapple.i18n.MessageProvider;
-import com.alpha.pineapple.model.module.info.Module;
 import com.alpha.pineapple.module.ModuleInfo;
 
 /**
@@ -82,8 +77,7 @@ public class CreateModelModalPanel {
 	/**
 	 * Initialize view model.
 	 * 
-	 * @param moduleInfo
-	 *            selected module info.
+	 * @param moduleInfo selected module info.
 	 */
 	@Init
 	public void init(@ExecutionArgParam("selectedModule") ModuleInfo moduleInfo) {
@@ -99,8 +93,7 @@ public class CreateModelModalPanel {
 	/**
 	 * Initialize set of existing models.
 	 * 
-	 * @param info
-	 *            module info.
+	 * @param info module info.
 	 */
 	void initializeExistingModels(ModuleInfo info) {
 		if (info == null)
@@ -142,8 +135,7 @@ public class CreateModelModalPanel {
 	 * Event handler for onChanging and onFocus events from the modelName text box.
 	 * Will update the model status.
 	 * 
-	 * @param name
-	 *            model name text box.
+	 * @param name model name text box.
 	 */
 	@Command
 	@NotifyChange({ "modelStatus", "modelStatusAsString" })
@@ -164,8 +156,7 @@ public class CreateModelModalPanel {
 	/**
 	 * Set model Name.
 	 * 
-	 * @param name
-	 *            model name.
+	 * @param name model name.
 	 */
 	public void setModelName(String name) {
 		this.modelName = name;

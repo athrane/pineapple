@@ -27,7 +27,7 @@
 				</cell>
 				<cell valign="top">
 					<textbox id="stacktrace" value="@load(vm.stacktrace)" rows="10"
-						style="font-weight:bold;overflow:auto;" width="90%" height="200px" />
+						style="overflow:auto;" width="90%" height="200px" />
 				</cell>
 			</row>
 			<row>

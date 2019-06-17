@@ -29,14 +29,14 @@ import static org.zkoss.zk.ui.Executions.createComponents;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
-import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import com.alpha.javautils.StackTraceHelper;
 import com.alpha.pineapple.i18n.MessageProvider;
-import com.alpha.pineapple.web.spring.rest.ScheduledOperationController;
 
 /**
  * Helper class for showing a modal error message with details about an
@@ -45,15 +45,9 @@ import com.alpha.pineapple.web.spring.rest.ScheduledOperationController;
 public class ErrorMessageBoxHelper {
 
 	/**
-	 * Spring REST scheduled operation controller.
-	 */
-	@WireVariable
-	ScheduledOperationController scheduledOperationController;
-
-	/**
 	 * Message provider for I18N support.
 	 */
-	@WireVariable
+	@Resource
 	MessageProvider webMessageProvider;
 
 	/**
@@ -64,15 +58,16 @@ public class ErrorMessageBoxHelper {
 	/**
 	 * Log and show modal message box with exception.
 	 * 
-	 * @param e
-	 *            exception to be reported.
+	 * @param e exception to be reported.
 	 */
 	public void showAndLogException(Exception e) {
 		Window modalWindow = null;
 
 		try {
 			// log error
-			logger.error(StackTraceHelper.getStrackTrace(e));
+			Object[] args0 = { e.getMessage() };
+			String message = webMessageProvider.getMessage("embh.gui_error", args0);
+			logger.error(message);
 
 			// add parameters
 			Map<String, Object> args = new HashMap<>();
@@ -86,8 +81,8 @@ public class ErrorMessageBoxHelper {
 
 			// show and log error message
 			logger.error(StackTraceHelper.getStrackTrace(e2));
-			Object[] args = { e2.getMessage() };
-			String message = webMessageProvider.getMessage("embh.show_error_message_failed", args);
+			Object[] args2 = { e2.getMessage() };
+			String message = webMessageProvider.getMessage("embh.show_error_message_failed", args2);
 			Messagebox.show(message);
 
 			// detach window

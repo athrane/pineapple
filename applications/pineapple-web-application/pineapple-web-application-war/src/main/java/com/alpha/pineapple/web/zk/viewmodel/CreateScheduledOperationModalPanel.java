@@ -23,7 +23,7 @@
 package com.alpha.pineapple.web.zk.viewmodel;
 
 import static com.alpha.pineapple.web.WebApplicationConstants.CREATE_SCHEDULED_OPERATION_CONFIRMED_GLOBALCOMMAND;
-import static com.alpha.pineapple.web.WebApplicationConstants.PINEAPPLE_ZK_QUEUE;
+import static com.alpha.pineapple.web.WebApplicationConstants.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -404,7 +404,7 @@ public class CreateScheduledOperationModalPanel {
 			// post global command with APPLICATION scope which triggers update
 			// of the scheduled operations panel in all GUI's
 			BindUtils.postGlobalCommand(PINEAPPLE_ZK_QUEUE, EventQueues.APPLICATION,
-					CREATE_SCHEDULED_OPERATION_CONFIRMED_GLOBALCOMMAND, null);
+					CREATE_SCHEDULED_OPERATION_CONFIRMED_GLOBALCOMMAND, NULL_GLOBALCOMMAND_ARGS);
 
 		} catch (Exception e) {
 			errorMessageBoxHelper.showAndLogException(e);

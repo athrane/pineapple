@@ -213,7 +213,7 @@ public class CreateScheduledOperationModalPanel {
 	}
 
 	/**
-	 * Event handler for onChanging and onFocus events from the name text box. Will
+	 * Event handler for onChanging and onFocus events from the "name" text box. Will
 	 * update the creation status.
 	 * 
 	 * @param event event from text box.
@@ -226,7 +226,7 @@ public class CreateScheduledOperationModalPanel {
 	}
 
 	/**
-	 * Event handler for onChanging and onFocus events from the description text
+	 * Event handler for onChanging and onFocus events from the "description" text
 	 * box. Will update the creation status.
 	 * 
 	 * @param event event from text box.
@@ -239,7 +239,7 @@ public class CreateScheduledOperationModalPanel {
 	}
 
 	/**
-	 * Event handler for onChanging and events from the cron text box. Will update
+	 * Event handler for onChanging and events from the "cron" text box. Will update
 	 * the creation status.
 	 * 
 	 * @param cron cron scheduling expression.
